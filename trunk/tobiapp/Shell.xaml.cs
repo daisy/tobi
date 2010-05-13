@@ -822,80 +822,86 @@ namespace Tobi
                 //PopupModalWindow.DialogButtonsSet.Cancel,
                 //PopupModalWindow.DialogButton.Cancel,
                                                    false, 500, 120, details, 80);
-
+#if SKIP_EVENT_ON_INTERVAL
             Stopwatch m_StopWatch = null;
             Stopwatch m_StopWatch2 = null;
-
+#endif
             reporter.ProgressChangedEvent += (sender, args) =>
             {
+#if SKIP_EVENT_ON_INTERVAL
                 if (m_StopWatch != null) m_StopWatch.Stop();
                 if (m_StopWatch == null || m_StopWatch.ElapsedMilliseconds >= 300)
                 {
-                    if (args.ProgressPercentage < 0)
-                    {
-                        progressBar.IsIndeterminate = true;
+#endif
+                if (args.ProgressPercentage < 0)
+                {
+                    progressBar.IsIndeterminate = true;
 
 #if NET40
-                        TaskbarItemInfo.ProgressValue = 0;
-                        TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
+                    TaskbarItemInfo.ProgressValue = 0;
+                    TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
 #endif
-                    }
-                    else
-                    {
-                        progressBar.IsIndeterminate = false;
-                        progressBar.Value = args.ProgressPercentage;
+                }
+                else
+                {
+                    progressBar.IsIndeterminate = false;
+                    progressBar.Value = args.ProgressPercentage;
 
 #if NET40
-                        TaskbarItemInfo.ProgressValue = (double)args.ProgressPercentage / 100;
-                        TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
+                    TaskbarItemInfo.ProgressValue = (double)args.ProgressPercentage / 100;
+                    TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Normal;
 #endif
-                    }
+                }
 
-                    label.Text = (string)args.UserState;
-
+                label.Text = (string)args.UserState;
+#if SKIP_EVENT_ON_INTERVAL
                     if (m_StopWatch == null) m_StopWatch = new Stopwatch();
                     m_StopWatch.Reset();
                 }
                 m_StopWatch.Start();
+#endif
             };
 
             reporter.SubProgressChangedEvent += (sender, e) =>
             {
+#if SKIP_EVENT_ON_INTERVAL
                 if (m_StopWatch2 != null) m_StopWatch2.Stop();
                 if (m_StopWatch2 == null || m_StopWatch2.ElapsedMilliseconds >= 300)
                 {
-                    if (e.ProgressPercentage < 0 && e.UserState == null)
-                    {
-                        details.Visibility = Visibility.Collapsed;
-                        //progressBar2.Visibility = Visibility.Hidden;
-                        //label2.Visibility = Visibility.Hidden;
-                        return;
-                    }
-                    if (details.Visibility != Visibility.Visible)
-                        details.Visibility = Visibility.Visible;
+#endif
+                if (e.ProgressPercentage < 0 && e.UserState == null)
+                {
+                    details.Visibility = Visibility.Collapsed;
+                    //progressBar2.Visibility = Visibility.Hidden;
+                    //label2.Visibility = Visibility.Hidden;
+                    return;
+                }
+                if (details.Visibility != Visibility.Visible)
+                    details.Visibility = Visibility.Visible;
 
-                    //if (progressBar2.Visibility != Visibility.Visible)
-                    //    progressBar2.Visibility = Visibility.Visible;
+                //if (progressBar2.Visibility != Visibility.Visible)
+                //    progressBar2.Visibility = Visibility.Visible;
 
-                    //if (label2.Visibility != Visibility.Visible)
-                    //    label2.Visibility = Visibility.Visible;
+                //if (label2.Visibility != Visibility.Visible)
+                //    label2.Visibility = Visibility.Visible;
 
-                    if (e.ProgressPercentage < 0)
-                    {
-                        progressBar2.IsIndeterminate = true;
-                    }
-                    else
-                    {
-                        progressBar2.IsIndeterminate = false;
-                        progressBar2.Value = e.ProgressPercentage;
-                    }
+                if (e.ProgressPercentage < 0)
+                {
+                    progressBar2.IsIndeterminate = true;
+                }
+                else
+                {
+                    progressBar2.IsIndeterminate = false;
+                    progressBar2.Value = e.ProgressPercentage;
+                }
 
-                    label2.Text = (string)e.UserState;
-
+                label2.Text = (string)e.UserState;
+#if SKIP_EVENT_ON_INTERVAL
                     if (m_StopWatch2 == null) m_StopWatch2 = new Stopwatch();
                     m_StopWatch2.Reset();
                 }
                 m_StopWatch2.Start();
+#endif
             };
 
             reporter.SetDoEventsMethod(() =>
@@ -909,14 +915,16 @@ namespace Tobi
             Exception workException = null;
             Dispatcher.BeginInvoke((Action)(() =>
             {
+#if SKIP_EVENT_ON_INTERVAL
                 if (m_StopWatch != null) m_StopWatch.Stop();
                 m_StopWatch = null;
                 if (m_StopWatch2 != null) m_StopWatch2.Stop();
                 m_StopWatch2 = null;
+#endif
 
                 try
                 {
-                    reporter.DoWork();
+                    reporter.RunTask();
                 }
                 catch (Exception ex)
                 {
@@ -929,10 +937,12 @@ namespace Tobi
                 }
                 finally
                 {
+#if SKIP_EVENT_ON_INTERVAL
                     if (m_StopWatch != null) m_StopWatch.Stop();
                     m_StopWatch = null;
                     if (m_StopWatch2 != null) m_StopWatch2.Stop();
                     m_StopWatch2 = null;
+#endif
                 }
                 windowForcedClose = true;
                 if (reporter.RequestCancellation)
@@ -1127,74 +1137,83 @@ namespace Tobi
                     return;
                 }
 
+#if SKIP_EVENT_ON_INTERVAL
                 Stopwatch m_StopWatch = null;
                 Stopwatch m_StopWatch2 = null;
-
+#endif
                 reporter.ProgressChangedEvent += (sender, e) =>
                 {
+#if SKIP_EVENT_ON_INTERVAL
                     if (m_StopWatch != null) m_StopWatch.Stop();
                     if (m_StopWatch == null || m_StopWatch.ElapsedMilliseconds >= 500)
                     {
-                        backWorker.ReportProgress(e.ProgressPercentage, e.UserState);
+#endif
+                    backWorker.ReportProgress(e.ProgressPercentage, e.UserState);
 
+#if SKIP_EVENT_ON_INTERVAL
                         if (m_StopWatch == null) m_StopWatch = new Stopwatch();
                         m_StopWatch.Reset();
                     }
                     m_StopWatch.Start();
+#endif
                 };
 
                 reporter.SubProgressChangedEvent += (sender, e) =>
                     Dispatcher.BeginInvoke((Action)(
                    () =>
                    {
+#if SKIP_EVENT_ON_INTERVAL
                        if (m_StopWatch2 != null) m_StopWatch2.Stop();
                        if (m_StopWatch2 == null || m_StopWatch2.ElapsedMilliseconds >= 500)
                        {
-                           if (e.ProgressPercentage < 0 && e.UserState == null)
-                           {
-                               details.Visibility = Visibility.Collapsed;
-                               //progressBar2.Visibility = Visibility.Hidden;
-                               //label2.Visibility = Visibility.Hidden;
-                               return;
-                           }
-                           if (details.Visibility != Visibility.Visible)
-                               details.Visibility = Visibility.Visible;
+#endif
+                       if (e.ProgressPercentage < 0 && e.UserState == null)
+                       {
+                           details.Visibility = Visibility.Collapsed;
+                           //progressBar2.Visibility = Visibility.Hidden;
+                           //label2.Visibility = Visibility.Hidden;
+                           return;
+                       }
+                       if (details.Visibility != Visibility.Visible)
+                           details.Visibility = Visibility.Visible;
 
-                           //if (progressBar2.Visibility != Visibility.Visible)
-                           //    progressBar2.Visibility = Visibility.Visible;
+                       //if (progressBar2.Visibility != Visibility.Visible)
+                       //    progressBar2.Visibility = Visibility.Visible;
 
-                           //if (label2.Visibility != Visibility.Visible)
-                           //    label2.Visibility = Visibility.Visible;
+                       //if (label2.Visibility != Visibility.Visible)
+                       //    label2.Visibility = Visibility.Visible;
 
-                           if (e.ProgressPercentage < 0)
-                           {
-                               progressBar2.IsIndeterminate = true;
-                           }
-                           else
-                           {
-                               progressBar2.IsIndeterminate = false;
-                               progressBar2.Value = e.ProgressPercentage;
-                           }
+                       if (e.ProgressPercentage < 0)
+                       {
+                           progressBar2.IsIndeterminate = true;
+                       }
+                       else
+                       {
+                           progressBar2.IsIndeterminate = false;
+                           progressBar2.Value = e.ProgressPercentage;
+                       }
 
-                           label2.Text = (string)e.UserState;
-
+                       label2.Text = (string)e.UserState;
+#if SKIP_EVENT_ON_INTERVAL
                            if (m_StopWatch2 == null) m_StopWatch2 = new Stopwatch();
                            m_StopWatch2.Reset();
                        }
                        m_StopWatch2.Start();
+#endif
                    }
                                ),
                        DispatcherPriority.Normal);
-
+#if SKIP_EVENT_ON_INTERVAL
                 if (m_StopWatch != null) m_StopWatch.Stop();
                 m_StopWatch = null;
                 if (m_StopWatch2 != null) m_StopWatch2.Stop();
                 m_StopWatch2 = null;
+#endif
 #if DEBUG
                 try
                 {
 #endif
-                    reporter.DoWork();
+                    reporter.RunTask();
 
                     args.Result = @"dummy result";
 #if DEBUG
@@ -1206,10 +1225,12 @@ namespace Tobi
                 }
                 finally
                 {
+#if SKIP_EVENT_ON_INTERVAL
                     if (m_StopWatch != null) m_StopWatch.Stop();
                     m_StopWatch = null;
                     if (m_StopWatch2 != null) m_StopWatch2.Stop();
                     m_StopWatch2 = null;
+#endif
                 }
 #endif
             };
