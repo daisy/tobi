@@ -29,6 +29,7 @@ namespace Tobi.Common.UI.XAML
 
         #endregion
     }
+
     [ValueConversion(typeof(bool), typeof(Visibility))]
     public class BooleanToOppositeVisibilityConverter : ValueConverterMarkupExtensionBase<BooleanToOppositeVisibilityConverter>
     {

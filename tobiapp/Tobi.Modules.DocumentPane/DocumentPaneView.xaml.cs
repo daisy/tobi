@@ -482,12 +482,13 @@ namespace Tobi.Plugin.DocumentPane
 
             var editBox = new TextBox
                               {
-                                  Text = text
+                                  Text = text,
+                                  TextWrapping = TextWrapping.WrapWithOverflow
                               };
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdEditText_ShortDesc),
-                                                   editBox,
+                                                   new ScrollViewer { Content = editBox },
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 300, 160, null, 40);
