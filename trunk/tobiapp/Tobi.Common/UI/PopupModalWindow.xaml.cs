@@ -327,17 +327,58 @@ namespace Tobi.Common.UI
             Title = "Tobi: " + title;
             Icon = null;
             ContentPlaceHolder.Content = content;
-            DetailsPlaceHolder.Content = details;
-            DialogButtons = buttons;
-            DefaultDialogButton = button;
-            AllowEscapeAndCloseButton = allowEscapeAndCloseButton;
 
+            DetailsPlaceHolder.Content = details;
+            //if (details != null && details is UIElement)
+            //{
+            //    ((UIElement)details).IsVisibleChanged += (sender, ev) => DetailsPlaceHolder.Visibility = ((UIElement)details).Visibility;
+            //}
             var ui = DetailsPlaceHolder.Content as UIElement;
             if (ui != null)
             {
-                ui.IsVisibleChanged += (obj, args) => m_PropertyChangeHandler.RaisePropertyChanged(() => HasDetails);
+                DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(UIElement.VisibilityProperty, typeof(UIElement));
+                if (dpd != null)
+                {
+                    dpd.AddValueChanged(ui, delegate
+                    {
+                        m_PropertyChangeHandler.RaisePropertyChanged(() => HasDetails);
+                        //m_PropertyChangeHandler.RaisePropertyChanged(() => IsDetailsExpanded);
+                        CommandManager.InvalidateRequerySuggested();
+                    });
+                }
+                //ui.IsVisibleChanged += (obj, args) => m_PropertyChangeHandler.RaisePropertyChanged(() => HasDetails);
             }
+
+            DialogButtons = buttons;
+            DefaultDialogButton = button;
+            AllowEscapeAndCloseButton = allowEscapeAndCloseButton;
         }
+
+        //        public void RaiseHasDetailChanged()
+        //        {
+        //            m_PropertyChangeHandler.RaisePropertyChanged(() => HasDetails);
+        //        }
+
+        //        static PopupModalWindow()
+        //        {
+        //            VisibilityProperty.OverrideMetadata(typeof(PopupModalWindow),
+        //                   new FrameworkPropertyMetadata(true,
+        //                       new PropertyChangedCallback(OnVisibilityChanged)));
+        //        }
+
+        //        private static void OnVisibilityChanged(DependencyObject source, DependencyPropertyChangedEventArgs args)
+        //        {
+        //            var pop = source as PopupModalWindow;
+        //            if (pop == null)
+        //            {
+        //#if DEBUG
+        //                Debugger.Break();
+        //#endif
+        //                return;
+        //            }
+        //            var vis = (Visibility)args.NewValue;
+        //            pop.RaiseHasDetailChanged();
+        //        }
 
         //public PopupModalWindow(IShellView window, string title, object content,
         //    DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton, double width, double height)
