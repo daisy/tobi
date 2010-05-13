@@ -17,7 +17,9 @@ namespace Tobi.Plugin.Urakawa
 
             var converter = new Daisy3_Import(DocumentFilePath,
                 Path.Combine(Path.GetDirectoryName(DocumentFilePath),
-                XUK_DIR)); //Directory.GetParent(bookfile).FullName
+                XUK_DIR),
+                IsAcmCodecsDisabled
+                ); //Directory.GetParent(bookfile).FullName
 
 
             if (File.Exists(converter.XukPath))

@@ -623,7 +623,7 @@ namespace Tobi.Plugin.AudioPane
             m_PeakMeterValues = new double[2];
 
             m_AudioFormatConvertorSession_NoProject =
-                new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY, null);
+                new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY, null, m_UrakawaSession.IsAcmCodecsDisabled);
         }
 
         #endregion Initialization
@@ -1025,7 +1025,7 @@ namespace Tobi.Plugin.AudioPane
                     new AudioFormatConvertorSession(
                     //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
                     project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
-                project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat);
+                project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat, m_UrakawaSession.IsAcmCodecsDisabled);
 
                 project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
