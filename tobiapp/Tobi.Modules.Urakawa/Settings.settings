@@ -2,6 +2,9 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.Urakawa" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
+    <Setting Name="AudioCodecDisableACM" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="AudioExportEncodeToMp3" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>

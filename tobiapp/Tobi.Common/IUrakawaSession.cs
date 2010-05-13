@@ -31,6 +31,8 @@ namespace Tobi.Common
         /// </summary>
         bool IsDirty { get; }
 
+        bool IsAcmCodecsDisabled { get; }
+
         /// <summary>
         /// Requests to close the current document.
         /// </summary>

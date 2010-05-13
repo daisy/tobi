@@ -136,6 +136,11 @@ namespace Tobi.Plugin.Urakawa
                 RaisePropertyChanged(() => DocumentFilePath);
             }
         }
+        
+        public bool IsAcmCodecsDisabled
+        {
+            get { return Settings.Default.AudioCodecDisableACM; }
+        }
 
         //private bool m_IsDirty;
         public bool IsDirty
