@@ -436,9 +436,12 @@ Background="{Binding
 
 
       <Separator/>
-      <!--<StackPanel Orientation="Horizontal"
-                  DataContext="{StaticResource familyCollection}">-->
 
+      <UI:ButtonRichCommand
+        RichCommand="{Binding CommandEditText}"
+                                 />
+
+      <Separator/>
 
       <ComboBox x:Name="comboListOfFonts"
                  DataContext="{StaticResource familyCollection}"

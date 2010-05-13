@@ -61,6 +61,24 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Modify the text of the selected document phrase.
+        /// </summary>
+        public static string CmdEditText_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdEditText_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit text.
+        /// </summary>
+        public static string CmdEditText_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdEditText_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select the next text fragment in the document.
         /// </summary>
         public static string CmdEventSwitchNext_LongDesc {

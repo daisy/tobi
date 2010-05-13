@@ -7,6 +7,80 @@ namespace Tobi.Common.UI
 {
     public static class VisualLogicalTreeWalkHelper
     {
+        public static IEnumerable<T> FindObjectsInLogicalTreeWithMatchingType<T>(
+            DependencyObject parent, Func<T, bool> filterCondition)
+            where T : DependencyObject
+        {
+            if (parent is T)
+            {
+                if (filterCondition == null
+                    || filterCondition((T)parent))
+                {
+                    yield return (T)parent;
+                }
+            }
+
+            foreach (DependencyObject child in LogicalTreeHelper.GetChildren(parent))
+            {
+                var childOfChild = FindObjectInLogicalTreeWithMatchingType<T>(child, filterCondition);
+                if (childOfChild != null)
+                {
+                    yield return childOfChild;
+                }
+            }
+
+            yield break;
+        }
+        public static T FindObjectInLogicalTreeWithMatchingType<T>(
+            DependencyObject parent, Func<T, bool> filterCondition)
+            where T : DependencyObject
+        {
+            if (parent is T)
+            {
+                if (filterCondition == null
+                    || filterCondition((T)parent))
+                {
+                    return (T)parent;
+                }
+            }
+
+            foreach (DependencyObject child in LogicalTreeHelper.GetChildren(parent))
+            {
+                var childOfChild = FindObjectInLogicalTreeWithMatchingType<T>(child, filterCondition);
+                if (childOfChild != null)
+                {
+                    return childOfChild;
+                }
+            }
+            return null;
+        }
+
+        public static IEnumerable<T> FindObjectsInVisualTreeWithMatchingType<T>(
+            DependencyObject parent, Func<T, bool> filterCondition)
+            where T : DependencyObject
+        {
+            if (parent is T)
+            {
+                if (filterCondition == null
+                    || filterCondition((T)parent))
+                {
+                    yield return (T)parent;
+                }
+            }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+
+                var childOfChild = FindObjectInVisualTreeWithMatchingType<T>(child, filterCondition);
+                if (childOfChild != null)
+                {
+                    yield return childOfChild;
+                }
+            }
+
+            yield break;
+        }
         public static T FindObjectInVisualTreeWithMatchingType<T>(
             DependencyObject parent, Func<T, bool> filterCondition)
             where T : DependencyObject
@@ -23,7 +97,7 @@ namespace Tobi.Common.UI
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-                
+
                 var childOfChild = FindObjectInVisualTreeWithMatchingType<T>(child, filterCondition);
                 if (childOfChild != null)
                 {

@@ -138,6 +138,12 @@
   <data name="TextOnly" xml:space="preserve">
     <value>Text-only view</value>
   </data>
+  <data name="CmdEditText_ShortDesc" xml:space="preserve">
+    <value>Edit text</value>
+  </data>
+  <data name="CmdEditText_LongDesc" xml:space="preserve">
+    <value>Modify the text of the selected document phrase</value>
+  </data>
   <data name="DocumentPanePlugin_Name" xml:space="preserve">
     <value>Document pane.</value>
   </data>
