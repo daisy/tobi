@@ -51,7 +51,7 @@ namespace Tobi.Plugin.MetadataPane
                 Tobi_Plugin_MetadataPane_Lang.CmdShowMetadata_ShortDesc,
                 Tobi_Plugin_MetadataPane_Lang.CmdShowMetadata_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon(@"accessories-text-editor"),
+                m_ShellView.LoadGnomeGionIcon(@"Gion_text-x-readme"),
                 ShowDialog,
                 CanShowDialog,
                 Settings_KeyGestures.Default,

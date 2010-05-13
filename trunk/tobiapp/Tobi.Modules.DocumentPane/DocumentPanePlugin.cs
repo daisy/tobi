@@ -67,6 +67,7 @@ namespace Tobi.Plugin.DocumentPane
         private int m_MenuBarId_2;
         private int m_MenuBarId_3;
         private int m_MenuBarId_4;
+        private int m_MenuBarId_5;
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(
@@ -80,6 +81,12 @@ namespace Tobi.Plugin.DocumentPane
                 null, //Tobi_Common_Lang.Menu_Navigation,
                 PreferredPosition.First, true,
                 new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext });
+
+            m_MenuBarId_5 = m_MenuBarView.AddMenuBarGroup(
+                Tobi_Common_Lang.Menu_Text, PreferredPosition.Last, true,
+                null, //Tobi_Common_Lang.Menu_Navigation,
+                PreferredPosition.Last, true,
+                new[] { m_DocView.CommandEditText });
 
             m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_View, PreferredPosition.Last, true,
@@ -109,6 +116,7 @@ namespace Tobi.Plugin.DocumentPane
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_View, m_MenuBarId_4);
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Text, m_MenuBarId_2);
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Text, m_MenuBarId_1);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Text, m_MenuBarId_5);
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_View, m_MenuBarId_3);
 
                 m_Logger.Log(@"Document commands removed from menubar", Category.Debug, Priority.Medium);

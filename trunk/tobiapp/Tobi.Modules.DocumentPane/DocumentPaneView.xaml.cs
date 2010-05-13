@@ -475,6 +475,38 @@ namespace Tobi.Plugin.DocumentPane
             m_PropertyChangeHandler.RaisePropertyChanged(() => CmdFindPreviousGlobal);
         }
 
+        private string showDialogTextEdit(string text)
+        {
+            m_Logger.Log("showDialogTextEdit", Category.Debug, Priority.Medium);
+
+
+            var editBox = new TextBox
+                              {
+                                  Text = text
+                              };
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdEditText_ShortDesc),
+                                                   editBox,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 300, 160, null, 40);
+
+            windowPopup.ShowModal();
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                if (string.IsNullOrEmpty(editBox.Text))
+                {
+                    return null;
+                }
+                return editBox.Text;
+            }
+
+            return null;
+        }
+
+
         //public event PropertyChangedEventHandler PropertyChanged;
         //public void RaisePropertyChanged(PropertyChangedEventArgs e)
         //{
@@ -496,6 +528,8 @@ namespace Tobi.Plugin.DocumentPane
 
         public RichDelegateCommand CommandSwitchPhrasePrevious { get; private set; }
         public RichDelegateCommand CommandSwitchPhraseNext { get; private set; }
+
+        public RichDelegateCommand CommandEditText { get; private set; }
 
         public RichDelegateCommand CommandStructureUp { get; private set; }
         public RichDelegateCommand CommandStructureDown { get; private set; }
@@ -614,6 +648,52 @@ namespace Tobi.Plugin.DocumentPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructureSelectDown));
 
             m_ShellView.RegisterRichCommand(CommandStructureDown);
+            //
+
+            CommandEditText = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdEditText_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdEditText_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    TreeNode node = null;
+                    if (m_MouseDownTextElementForEdit != null)
+                    {
+                        Debug.Assert(m_MouseDownTextElementForEdit.Tag is TreeNode);
+                        node = (TreeNode)m_MouseDownTextElementForEdit.Tag;
+                        m_MouseDownTextElementForEdit = null;
+                    }
+                    else
+                    {
+                        Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                        node = selection.Item2 ?? selection.Item1;
+                    }
+
+                    string oldTxt = node.GetTextMedia().Text;
+                    string txt = showDialogTextEdit(oldTxt);
+
+                    if (string.IsNullOrEmpty(txt) || txt == oldTxt) return;
+
+                    m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+                    var cmd = node.Presentation.CommandFactory.CreateTreeNodeChangeTextCommand(node, txt);
+                    node.Presentation.UndoRedoManager.Execute(cmd);
+                },
+                () =>
+                {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    return node != null && node.GetTextMedia() != null && !string.IsNullOrEmpty(node.GetTextMedia().Text)
+                        || m_MouseDownTextElementForEdit != null;
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_EditText));
+
+            m_ShellView.RegisterRichCommand(CommandEditText);
+
             //
             CommandStructureUp = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdStructureUp_ShortDesc,
@@ -1012,10 +1092,12 @@ namespace Tobi.Plugin.DocumentPane
                 if (textElement != null)
                 {
                     m_MouseDownTextElement = textElement;
+                    m_MouseDownTextElementForEdit = null;
                 }
             }
         }
 
+        private TextElement m_MouseDownTextElementForEdit;
         private void OnFlowDocLostMouseCapture(object sender, RoutedEventArgs e)
         {
             var mouseDownTextElement = m_MouseDownTextElement;
@@ -1027,39 +1109,56 @@ namespace Tobi.Plugin.DocumentPane
 
                 var textElement = getFirstAncestorWithTreeNodeTag(Mouse.DirectlyOver);
 
+                Debug.Assert(textElement.Tag != null);
+
                 if (textElement != null && textElement == mouseDownTextElement)
                 {
+                    var before = (m_lastHighlightedSub ?? m_lastHighlighted);
+                    if (isAltKeyDown())
+                    {
+                        m_MouseDownTextElementForEdit = textElement;
+                        CommandEditText.Execute();
+                    }
+                    var after = (m_lastHighlightedSub ?? m_lastHighlighted);
+                    if (before != after) return; // selection already performed
+
                     if (textElement != (m_lastHighlightedSub ?? m_lastHighlighted))
                     {
                         m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
                     }
 
-                    if (isControlKeyDown())
+                    if (m_lastHighlighted != null)
                     {
-                        if (m_lastHighlighted == null) return;
-
                         textElement = m_lastHighlightedSub ?? m_lastHighlighted;
 
-                        TextElement hyperlink = textElement;
-                        do
+                        if (isAltKeyDown())
                         {
-                            if (hyperlink is Hyperlink && ((Hyperlink)hyperlink).NavigateUri != null
-                                && hyperlink.Tag != null && hyperlink.Tag is TreeNode)
+                            // See above (we edit before treenode selection, otherwise we may miss innaccessible Runs because of audio higher up in the hierarchy => selection redirection by Urakawa Session)
+                            //CommandEditText.Execute();
+                        }
+                        else if (isControlKeyDown())
+                        {
+                            TextElement hyperlink = textElement;
+                            do
                             {
-                                NavigateUri(((Hyperlink)hyperlink).NavigateUri);
-                                return;
-                            }
-                            hyperlink = hyperlink.Parent as TextElement;
-                        } while (hyperlink != null);
+                                if (hyperlink is Hyperlink && ((Hyperlink)hyperlink).NavigateUri != null
+                                    && hyperlink.Tag != null && hyperlink.Tag is TreeNode)
+                                {
+                                    NavigateUri(((Hyperlink)hyperlink).NavigateUri);
+                                    return;
+                                }
+                                hyperlink = hyperlink.Parent as TextElement;
+                            } while (hyperlink != null);
 
-                        // Fallback:
-                        Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                            (Action)(() =>
-                            {
-                                if (FlowDocReader.Selection != null)
-                                    FlowDocReader.Selection.Select(textElement.ContentStart, textElement.ContentEnd);
-                            })
-                            );
+                            // Fallback:
+                            Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                                (Action)(() =>
+                                {
+                                    if (FlowDocReader.Selection != null)
+                                        FlowDocReader.Selection.Select(textElement.ContentStart, textElement.ContentEnd);
+                                })
+                                );
+                        }
                     }
                 }
             }));
@@ -1264,9 +1363,14 @@ namespace Tobi.Plugin.DocumentPane
         private Dictionary<string, TextElement> m_idLinkTargets;
         private Dictionary<string, List<TextElement>> m_idLinkSources;
 
-        private void findAndUpdateTreeNodeAudioStatus(Command cmd, bool done)
+        private void findAndUpdateTreeNodeAudioTextStatus(Command cmd, bool done)
         {
-            if (cmd is ManagedAudioMediaInsertDataCommand)
+            if (cmd is TreeNodeChangeTextCommand)
+            {
+                var command = (TreeNodeChangeTextCommand)cmd;
+                findAndUpdateTreeNodeText(command, done);
+            }
+            else if (cmd is ManagedAudioMediaInsertDataCommand)
             {
                 var command = (ManagedAudioMediaInsertDataCommand)cmd;
                 findAndUpdateTreeNodeAudioStatus(command.TreeNode);
@@ -1285,7 +1389,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_YieldEnumerable)
                 {
-                    findAndUpdateTreeNodeAudioStatus(childCommand, done);
+                    findAndUpdateTreeNodeAudioTextStatus(childCommand, done);
                 }
             }
         }
@@ -1323,7 +1427,7 @@ namespace Tobi.Plugin.DocumentPane
 
             Command cmd = eventt.Command;
 
-            findAndUpdateTreeNodeAudioStatus(cmd, done);
+            findAndUpdateTreeNodeAudioTextStatus(cmd, done);
         }
 
         private bool bTreeNodeNeedsAudio(TreeNode node)
@@ -1336,6 +1440,67 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             return false;
+        }
+
+        private void findAndUpdateTreeNodeText(TreeNodeChangeTextCommand cmd, bool done)
+        {
+            TreeNode node = cmd.TreeNode;
+
+            TextElement text = null;
+            if (m_lastHighlighted != null && m_lastHighlighted.Tag == node)
+            {
+                text = m_lastHighlighted;
+            }
+            if (m_lastHighlightedSub != null && m_lastHighlightedSub.Tag == node)
+            {
+                text = m_lastHighlightedSub;
+            }
+            if (text == null)
+            {
+                text = FindTextElement(node);
+            }
+            if (text != null)
+            {
+                Debug.Assert(node == text.Tag);
+                if (node == text.Tag)
+                {
+                    var media = node.GetTextMedia();
+                    Debug.Assert(media != null);
+                    Debug.Assert(!string.IsNullOrEmpty(media.Text));
+
+                    //Run run = VisualLogicalTreeWalkHelper.FindObjectInLogicalTreeWithMatchingType<Run>(text, null);
+                    Run run = null;
+                    foreach (var run_ in VisualLogicalTreeWalkHelper.FindObjectsInLogicalTreeWithMatchingType<Run>(text, null))
+                    {
+                        if (run != null)
+                        {
+                            run = null;
+                            Debug.Fail("WTF ?");
+                            break;
+                        }
+                        run = run_;
+                    }
+                    if (run != null)
+                    {
+                        //ThreadPool.QueueUserWorkItem(obj =>
+                        Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
+                        {
+                            run.Text = done ? cmd.NewText : cmd.OldText;
+                        }));
+
+                        Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                        TreeNode selected = selection.Item2 ?? selection.Item1;
+                        if (selected != node)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(node);
+                        }
+                        else
+                        {
+                            updateSimpleTextView(selected);
+                        }
+                    }
+                }
+            }
         }
 
         private void findAndUpdateTreeNodeAudioStatus(TreeNode node)
@@ -1669,6 +1834,7 @@ namespace Tobi.Plugin.DocumentPane
             string str = treeNode.GetTextMediaFlattened(true);
             if (string.IsNullOrEmpty(str))
             {
+                m_TextOnlyViewRun.Text = "";
                 return;
             }
 
@@ -2559,6 +2725,18 @@ namespace Tobi.Plugin.DocumentPane
 
         //        }
 
+        public static bool isAltKeyDown()
+        {
+            return (Keyboard.Modifiers &
+                    (ModifierKeys.Alt
+                //| ModifierKeys.Shift
+                    )
+                    ) != ModifierKeys.None;
+
+            //Keyboard.IsKeyDown(Key.LeftShift)
+            //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
+            // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
+        }
         public static bool isControlKeyDown()
         {
             return (Keyboard.Modifiers &
