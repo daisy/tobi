@@ -144,6 +144,9 @@
   <data name="AudioPanePlugin_Name" xml:space="preserve">
     <value>Audio waveform editor.</value>
   </data>
+  <data name="ProcessingAudioClip" xml:space="preserve">
+    <value>Processing audio clip...</value>
+  </data>
   <data name="AudioAutoPlay" xml:space="preserve">
     <value>Autoplay</value>
   </data>

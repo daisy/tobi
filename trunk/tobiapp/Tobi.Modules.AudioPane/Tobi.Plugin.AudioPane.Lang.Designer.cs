@@ -889,6 +889,15 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Processing audio clip....
+        /// </summary>
+        public static string ProcessingAudioClip {
+            get {
+                return ResourceManager.GetString("ProcessingAudioClip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ready..
         /// </summary>
         public static string Ready {
