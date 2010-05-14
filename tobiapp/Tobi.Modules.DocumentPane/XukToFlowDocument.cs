@@ -545,7 +545,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 data.Foreground = brushFontAudio;
                 //data.Cursor = Cursors.Hand;
-                
+
                 return;
             }
 
@@ -558,7 +558,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 data.Foreground = brushFontAudio;
                 data.Cursor = Cursors.Cross;
-                
+
                 return;
             }
 
@@ -1149,14 +1149,38 @@ namespace Tobi.Plugin.DocumentPane
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
             XmlAttribute attr = xmlProp.GetAttribute("href");
-
-            if (attr != null && !String.IsNullOrEmpty(attr.Value))
+            if (attr != null)
             {
-                var uri = new Uri(attr.Value, UriKind.RelativeOrAbsolute);
-                //removed to avoid swallowing the mouse click
-                //data.NavigateUri = uri;
-                //data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
-                data.ToolTip = uri.ToString();
+                if (!String.IsNullOrEmpty(attr.Value))
+                {
+                    var uri = new Uri(attr.Value, UriKind.RelativeOrAbsolute);
+                    //removed to avoid swallowing the mouse click
+                    //data.NavigateUri = uri;
+                    //data.RequestNavigate += new RequestNavigateEventHandler(OnRequestNavigate);
+                    data.ToolTip = uri.ToString();
+                }
+            }
+            else
+            {
+                attr = xmlProp.GetAttribute("name");
+                if (attr != null)
+                {
+                    if (!String.IsNullOrEmpty(attr.Value))
+                    {
+                        data.ToolTip = attr.Value;
+                    }
+                }
+                else
+                {
+                    attr = xmlProp.GetAttribute("id");
+                    if (attr != null)
+                    {
+                        if (!String.IsNullOrEmpty(attr.Value))
+                        {
+                            data.ToolTip = attr.Value;
+                        }
+                    }
+                }
             }
 
             if (node.Children.Count == 0)
@@ -1222,7 +1246,7 @@ namespace Tobi.Plugin.DocumentPane
                 data.NavigateUri = new Uri("#" + id, UriKind.Relative);
 
                 //// Now using LostMouseCapture data.RequestNavigate += m_DocumentPaneView.OnTextElementRequestNavigate;
-                
+
                 //data.MouseDown += m_DocumentPaneView.OnTextElementHyperLinkMouseDown;
 
                 data.ToolTip = data.NavigateUri.ToString();
@@ -1673,6 +1697,9 @@ namespace Tobi.Plugin.DocumentPane
                 //assumption based on the caller: node.Children.Count == 0 && textMedia != null
                 if (textMedia.Text.Length == 0)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     return parent;
                 }
 
@@ -2081,12 +2108,12 @@ namespace Tobi.Plugin.DocumentPane
                                     XmlProperty xmlProp = node.GetProperty<XmlProperty>();
                                     if (xmlProp == null) return;
 
-                                    XmlAttribute attr = xmlProp.GetAttribute("pronounce");
+                                    XmlAttribute attr = xmlProp.GetAttribute("title");
                                     if (attr == null) return;
 
                                     if (!String.IsNullOrEmpty(attr.Value))
                                     {
-                                        data.ToolTip = "pronounce = " + attr.Value;
+                                        data.ToolTip = attr.Value;
                                     }
                                 }
                                 );

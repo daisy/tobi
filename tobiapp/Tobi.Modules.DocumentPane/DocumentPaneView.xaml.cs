@@ -493,7 +493,15 @@ namespace Tobi.Plugin.DocumentPane
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 300, 160, null, 40);
+
+            editBox.Loaded += new RoutedEventHandler((sender, ev) =>
+            {
+                editBox.SelectAll();
+                FocusHelper.FocusBeginInvoke(editBox);
+            });
+
             windowPopup.ShowModal();
+
 
             if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
             {
@@ -659,11 +667,11 @@ namespace Tobi.Plugin.DocumentPane
                 () =>
                 {
                     TreeNode node = null;
-                    if (m_MouseDownTextElementForEdit != null)
+                    if (m_TextElementForEdit != null)
                     {
-                        Debug.Assert(m_MouseDownTextElementForEdit.Tag is TreeNode);
-                        node = (TreeNode)m_MouseDownTextElementForEdit.Tag;
-                        m_MouseDownTextElementForEdit = null;
+                        Debug.Assert(m_TextElementForEdit.Tag is TreeNode);
+                        node = (TreeNode)m_TextElementForEdit.Tag;
+                        m_TextElementForEdit = null;
                     }
                     else
                     {
@@ -691,8 +699,8 @@ namespace Tobi.Plugin.DocumentPane
 
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
-                    return node != null && !string.IsNullOrEmpty(TreeNodeChangeTextCommand.GetText(node))
-                        || m_MouseDownTextElementForEdit != null;
+                    return m_TextElementForEdit != null
+                            || node != null && !string.IsNullOrEmpty(TreeNodeChangeTextCommand.GetText(node));
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_EditText));
@@ -1097,12 +1105,12 @@ namespace Tobi.Plugin.DocumentPane
                 if (textElement != null)
                 {
                     m_MouseDownTextElement = textElement;
-                    m_MouseDownTextElementForEdit = null;
+                    m_TextElementForEdit = null;
                 }
             }
         }
 
-        private TextElement m_MouseDownTextElementForEdit;
+        private TextElement m_TextElementForEdit;
         private void OnFlowDocLostMouseCapture(object sender, RoutedEventArgs e)
         {
             var mouseDownTextElement = m_MouseDownTextElement;
@@ -1118,13 +1126,21 @@ namespace Tobi.Plugin.DocumentPane
 
                 Debug.Assert(textElement.Tag != null);
 
-                if (textElement == mouseDownTextElement)
+                if (textElement != mouseDownTextElement)
+                {
+                    m_TextElementForEdit = null;
+                }
+                else
                 {
                     var before = (m_lastHighlightedSub ?? m_lastHighlighted);
+                    m_TextElementForEdit = textElement;
                     if (isAltKeyDown())
                     {
-                        m_MouseDownTextElementForEdit = textElement;
                         CommandEditText.Execute();
+                    }
+                    else
+                    {
+                        CommandManager.InvalidateRequerySuggested();
                     }
                     var after = (m_lastHighlightedSub ?? m_lastHighlighted);
                     if (before != after) return; // selection already performed
@@ -1827,15 +1843,23 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             clearLastHighlighteds();
-
+            
+            m_TextElementForEdit = null;
+            
             if (textElement2 == null)
             {
+                //m_TextElementForEdit = textElement1;
+                //Debug.Assert(m_TextElementForEdit.Tag != null);
+
                 doLastHighlightedOnly(textElement1, false);
 
                 scrollToView(textElement1);
             }
             else
             {
+                //m_TextElementForEdit = textElement2;
+                //Debug.Assert(m_TextElementForEdit.Tag != null);
+
                 doLastHighlightedAndSub(textElement1, textElement2, false);
 
                 scrollToView(textElement2);
@@ -2585,7 +2609,7 @@ namespace Tobi.Plugin.DocumentPane
 
             //                     data.Background = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
             //                 });
-            
+
             setOrRemoveTextDecoration_SelectUnderline(m_MouseOverTextElement, false, true);
         }
 
@@ -2598,7 +2622,7 @@ namespace Tobi.Plugin.DocumentPane
                 //                {
                 //                    data.Background = m_MouseOverTextElementBackground ?? null;
                 //                });
-            
+
                 setOrRemoveTextDecoration_SelectUnderline(m_MouseOverTextElement, true, true);
             }
         }
