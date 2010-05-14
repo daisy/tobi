@@ -44,7 +44,7 @@ namespace Tobi.Common.Validation
                 if (node.GetTextMedia().Text.Length > 10)
                 {
                     xml += node.GetTextMedia().Text.Substring(0, 10);
-                    if (node.Children.Count == 0 && node.GetTextMedia() != null)
+                    if (node.Children.Count == 0)
                     {
                         xml += ("...");
                     }
@@ -119,9 +119,11 @@ namespace Tobi.Common.Validation
             string nodeText = node.GetTextMediaFlattened(false);
             if (nodeText == null) return "";
             if (nodeText.Length > 100)
+            {
                 nodeText = nodeText.Substring(0, 100);
+                nodeText += "...";
+            }
 
-            nodeText += "...";
 
             //if this is a mixed content model node with previous sibling(s), add some ellipses before the text too
             if (node.GetXmlElementQName() == null && node.PreviousSibling != null)
@@ -193,11 +195,11 @@ namespace Tobi.Common.Validation
             {
                 paragraph.Inlines.Add(new LineBreak());
             }
-            else
-            {
-                if (node.GetTextMedia() != null)
-                    paragraph.Inlines.Add(new Run("..."));
-            }
+            //else
+            //{
+            //    if (node.GetTextMedia() != null)
+            //        paragraph.Inlines.Add(new Run("..."));
+            //}
             if (!emptyElement)
                 paragraph.Inlines.Add(new Bold(new Run(string.Format("</{0}>", nodeName))));
             doc.Blocks.Add(paragraph);
