@@ -434,8 +434,7 @@ namespace Tobi.Plugin.StructureTrailPane
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Background = SystemColors.ControlBrush;
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
-            var tb = new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document))
-                         {Margin = new Thickness(4, 2, 0, 2)};
+            var tb = new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document)) { Margin = new Thickness(4, 2, 0, 2) };
             BreadcrumbPanel.Children.Add(tb);
 
             PathToCurrentTreeNode = null;
@@ -620,6 +619,7 @@ namespace Tobi.Plugin.StructureTrailPane
             }
 
             if (!(eventt.Command is ManagedAudioMediaInsertDataCommand)
+                && !(eventt.Command is TreeNodeChangeTextCommand)
                 && !(eventt.Command is TreeNodeSetManagedAudioMediaCommand)
                 && !(eventt.Command is TreeNodeAudioStreamDeleteCommand)
                 && !(eventt.Command is CompositeCommand)

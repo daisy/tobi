@@ -165,12 +165,17 @@ namespace Tobi.Plugin.AudioPane
             m_ViewModel.CommandRefresh.Execute();
         }
 
-        private void OnWaveFormScrollChanged(object sender, ScrollChangedEventArgs e)
+        public void InvalidateWaveFormOverlay()
         {
             if (m_WaveFormTimeTicksAdorner != null)
             {
                 m_WaveFormTimeTicksAdorner.InvalidateVisual();
             }
+        }
+
+        private void OnWaveFormScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            InvalidateWaveFormOverlay();
         }
 
         private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)

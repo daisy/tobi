@@ -20,8 +20,11 @@ namespace Tobi.Common.UI
                 }
             }
 
-            foreach (DependencyObject child in LogicalTreeHelper.GetChildren(parent))
+            foreach (object obj in LogicalTreeHelper.GetChildren(parent))
             {
+                var child = obj as DependencyObject;
+                if (child == null) continue;
+
                 var childOfChild = FindObjectInLogicalTreeWithMatchingType<T>(child, filterCondition);
                 if (childOfChild != null)
                 {
@@ -31,6 +34,7 @@ namespace Tobi.Common.UI
 
             yield break;
         }
+
         public static T FindObjectInLogicalTreeWithMatchingType<T>(
             DependencyObject parent, Func<T, bool> filterCondition)
             where T : DependencyObject
@@ -44,8 +48,11 @@ namespace Tobi.Common.UI
                 }
             }
 
-            foreach (DependencyObject child in LogicalTreeHelper.GetChildren(parent))
+            foreach (object obj in LogicalTreeHelper.GetChildren(parent))
             {
+                var child = obj as DependencyObject;
+                if (child == null) continue;
+
                 var childOfChild = FindObjectInLogicalTreeWithMatchingType<T>(child, filterCondition);
                 if (childOfChild != null)
                 {

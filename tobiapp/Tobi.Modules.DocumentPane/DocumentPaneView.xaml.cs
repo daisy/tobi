@@ -376,7 +376,8 @@ namespace Tobi.Plugin.DocumentPane
 
             if (hit != null && !string.IsNullOrEmpty(hit.Text))
             {
-                Debug.Assert(hit.Text.ToLower() == SearchTerm.ToLower());
+                //Debug.Assert(hit.Text.ToLower() == SearchTerm.ToLower());
+
                 if (FlowDocReader.Selection != null)
                 {
                     if (select && !Settings.Default.Document_EnableInstantSearch)
@@ -492,7 +493,6 @@ namespace Tobi.Plugin.DocumentPane
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 300, 160, null, 40);
-
             windowPopup.ShowModal();
 
             if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
@@ -670,8 +670,12 @@ namespace Tobi.Plugin.DocumentPane
                         Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                         node = selection.Item2 ?? selection.Item1;
                     }
+                    if (node == null) return;
 
-                    string oldTxt = node.GetTextMedia().Text;
+                    string oldTxt = TreeNodeChangeTextCommand.GetText(node);
+
+                    if (string.IsNullOrEmpty(oldTxt)) return;
+
                     string txt = showDialogTextEdit(oldTxt);
 
                     if (string.IsNullOrEmpty(txt) || txt == oldTxt) return;
@@ -687,7 +691,7 @@ namespace Tobi.Plugin.DocumentPane
 
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
-                    return node != null && node.GetTextMedia() != null && !string.IsNullOrEmpty(node.GetTextMedia().Text)
+                    return node != null && !string.IsNullOrEmpty(TreeNodeChangeTextCommand.GetText(node))
                         || m_MouseDownTextElementForEdit != null;
                 },
                 Settings_KeyGestures.Default,
@@ -1110,9 +1114,11 @@ namespace Tobi.Plugin.DocumentPane
 
                 var textElement = getFirstAncestorWithTreeNodeTag(Mouse.DirectlyOver);
 
+                if (textElement == null) return;
+
                 Debug.Assert(textElement.Tag != null);
 
-                if (textElement != null && textElement == mouseDownTextElement)
+                if (textElement == mouseDownTextElement)
                 {
                     var before = (m_lastHighlightedSub ?? m_lastHighlighted);
                     if (isAltKeyDown())
@@ -1465,9 +1471,9 @@ namespace Tobi.Plugin.DocumentPane
                 Debug.Assert(node == text.Tag);
                 if (node == text.Tag)
                 {
-                    var media = node.GetTextMedia();
-                    Debug.Assert(media != null);
-                    Debug.Assert(!string.IsNullOrEmpty(media.Text));
+                    //var media = node.GetTextMedia();
+                    //Debug.Assert(media != null);
+                    //Debug.Assert(!string.IsNullOrEmpty(media.Text));
 
                     //Run run = VisualLogicalTreeWalkHelper.FindObjectInLogicalTreeWithMatchingType<Run>(text, null);
                     Run run = null;
@@ -1488,17 +1494,43 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             run.Text = done ? cmd.NewText : cmd.OldText;
                         }));
+                    }
+                    else
+                    {
+#if DEBUG // Normally, the TextBlock's Run is picked-up with the code above, no need for the code below
+                        Debugger.Break();
+#endif
+                        TextBlock tb = null;
+                        foreach (var tb_ in VisualLogicalTreeWalkHelper.FindObjectsInLogicalTreeWithMatchingType<TextBlock>(text, null))
+                        {
+                            if (tb != null)
+                            {
+                                tb = null;
+                                Debug.Fail("WTF ?");
+                                break;
+                            }
+                            tb = tb_;
+                        }
+                        if (tb != null)
+                        {
+                            //ThreadPool.QueueUserWorkItem(obj =>
+                            Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
+                            {
+                                tb.Text = done ? cmd.NewText : cmd.OldText;
+                            }));
+                        }
+                    }
 
-                        Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                        TreeNode selected = selection.Item2 ?? selection.Item1;
-                        if (selected != node)
-                        {
-                            m_UrakawaSession.PerformTreeNodeSelection(node);
-                        }
-                        else
-                        {
-                            updateSimpleTextView(selected);
-                        }
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode selected = selection.Item2 ?? selection.Item1;
+                    if (selected != node)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(node);
+                    }
+                    else
+                    {
+                        updateSimpleTextView(selected);
                     }
                 }
             }
@@ -2053,6 +2085,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (m_MouseOverTextElement == data)
                 {
+                    restoreMouseOverHighlight();
                     m_MouseOverTextElement = null;
                 }
 
@@ -2146,6 +2179,7 @@ namespace Tobi.Plugin.DocumentPane
 
                                  if (m_MouseOverTextElement == data)
                                  {
+                                     restoreMouseOverHighlight();
                                      m_MouseOverTextElement = null;
                                  }
 
@@ -2199,7 +2233,7 @@ namespace Tobi.Plugin.DocumentPane
             //m_lastHighlighted.Background = brushBack2;
             //m_lastHighlighted.Foreground = brushFont;
 
-            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, false);
+            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, false, false);
         }
 
         private void doLastHighlightedAndSub(TextElement textElement1, TextElement textElement2, bool onlyUpdateColors)
@@ -2248,6 +2282,7 @@ namespace Tobi.Plugin.DocumentPane
 
                                  if (m_MouseOverTextElement == data)
                                  {
+                                     restoreMouseOverHighlight();
                                      m_MouseOverTextElement = null;
                                  }
 
@@ -2313,7 +2348,7 @@ namespace Tobi.Plugin.DocumentPane
                 ((Block)m_lastHighlightedSub).BorderThickness = new Thickness(1);
             }
 
-            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, false);
+            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, false, false);
         }
 
         private void clearLastHighlighteds()
@@ -2323,7 +2358,7 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true);
+            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true, false);
 
 #if !USE_WALKTREE_FOR_SELECT
 #if USE_FLOWDOCSELECTION_FOR_SELECT
@@ -2367,7 +2402,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (m_lastHighlightedSub != null)
             {
-                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true);
+                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true, false);
             }
 
             TextElement backup = m_lastHighlighted;
@@ -2535,22 +2570,36 @@ namespace Tobi.Plugin.DocumentPane
         }
 
         private TextElement m_MouseOverTextElement;
-        private Brush m_MouseOverTextElementBackground;
+        //private Brush m_MouseOverTextElementBackground;
         public void OnTextElementMouseEnter(object sender, MouseEventArgs e)
         {
             restoreMouseOverHighlight();
 
             var textElem = (TextElement)sender;
             m_MouseOverTextElement = textElem;
-            m_MouseOverTextElementBackground = m_MouseOverTextElement.Background;
-            m_MouseOverTextElement.Background = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
+            //m_MouseOverTextElementBackground = null;
+            //WalkDocumentTree(m_MouseOverTextElement,
+            //                 data =>
+            //                 {
+            //                     m_MouseOverTextElementBackground = data.Background;
+
+            //                     data.Background = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
+            //                 });
+            
+            setOrRemoveTextDecoration_SelectUnderline(m_MouseOverTextElement, false, true);
         }
 
         private void restoreMouseOverHighlight()
         {
             if (m_MouseOverTextElement != null)
             {
-                m_MouseOverTextElement.Background = m_MouseOverTextElementBackground ?? null;
+                //WalkDocumentTree(m_MouseOverTextElement,
+                //                data =>
+                //                {
+                //                    data.Background = m_MouseOverTextElementBackground ?? null;
+                //                });
+            
+                setOrRemoveTextDecoration_SelectUnderline(m_MouseOverTextElement, true, true);
             }
         }
 
@@ -2900,9 +2949,9 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private void setOrRemoveTextDecoration_SelectUnderline(TextElement textElement, bool remove)
+        private void setOrRemoveTextDecoration_SelectUnderline(TextElement textElement, bool remove, bool overrideUseDottedSelect)
         {
-            if (remove == false && !Settings.Default.Document_UseDottedSelect)
+            if (!remove && !overrideUseDottedSelect && !Settings.Default.Document_UseDottedSelect)
             {
                 return;
             }
@@ -2912,7 +2961,7 @@ namespace Tobi.Plugin.DocumentPane
                 var blocks = ((ListItem)textElement).Blocks;
                 foreach (var block in blocks)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(block, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(block, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is TableRowGroup) // TEXT_ELEMENT
@@ -2920,7 +2969,7 @@ namespace Tobi.Plugin.DocumentPane
                 var rows = ((TableRowGroup)textElement).Rows;
                 foreach (var row in rows)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(row, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(row, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is TableRow) // TEXT_ELEMENT
@@ -2928,7 +2977,7 @@ namespace Tobi.Plugin.DocumentPane
                 var cells = ((TableRow)textElement).Cells;
                 foreach (var cell in cells)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(cell, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(cell, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is TableCell) // TEXT_ELEMENT
@@ -2936,7 +2985,7 @@ namespace Tobi.Plugin.DocumentPane
                 var blocks = ((TableCell)textElement).Blocks;
                 foreach (var block in blocks)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(block, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(block, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is Table) // BLOCK
@@ -2944,7 +2993,7 @@ namespace Tobi.Plugin.DocumentPane
                 var rowGs = ((Table)textElement).RowGroups;
                 foreach (var rowG in rowGs)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(rowG, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(rowG, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is Paragraph) // BLOCK
@@ -2952,7 +3001,7 @@ namespace Tobi.Plugin.DocumentPane
                 var inlines = ((Paragraph)textElement).Inlines;
                 foreach (var inline in inlines)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(inline, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(inline, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is Section) // BLOCK
@@ -2960,7 +3009,7 @@ namespace Tobi.Plugin.DocumentPane
                 var blocks = ((Section)textElement).Blocks;
                 foreach (var block in blocks)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(block, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(block, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is List) // BLOCK
@@ -2968,7 +3017,7 @@ namespace Tobi.Plugin.DocumentPane
                 var lis = ((List)textElement).ListItems;
                 foreach (var li in lis)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(li, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(li, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is BlockUIContainer) // BLOCK
@@ -2980,7 +3029,7 @@ namespace Tobi.Plugin.DocumentPane
                 var inlines = ((Span)textElement).Inlines;
                 foreach (var inline in inlines)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(inline, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(inline, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is Floater) // INLINE
@@ -2988,7 +3037,7 @@ namespace Tobi.Plugin.DocumentPane
                 var blocks = ((Floater)textElement).Blocks;
                 foreach (var block in blocks)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(block, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(block, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is Figure) // INLINE
@@ -2996,7 +3045,7 @@ namespace Tobi.Plugin.DocumentPane
                 var blocks = ((Figure)textElement).Blocks;
                 foreach (var block in blocks)
                 {
-                    setOrRemoveTextDecoration_SelectUnderline(block, remove);
+                    setOrRemoveTextDecoration_SelectUnderline(block, remove, overrideUseDottedSelect);
                 }
             }
             else if (textElement is Inline) // includes InlineUIContainer, LineBreak and Run
@@ -3025,22 +3074,22 @@ namespace Tobi.Plugin.DocumentPane
                 TextDecorationLocation.Underline,
                 new Pen(brush, 1)
                 {
-                    DashStyle = DashStyles.Dot
+                    DashStyle = DashStyles.Solid
                 },
                 2,
                 TextDecorationUnit.Pixel,
-                TextDecorationUnit.FontRecommended
+                TextDecorationUnit.Pixel
             );
 
             var decOver = new TextDecoration(
                 TextDecorationLocation.OverLine,
                 new Pen(brush, 1)
                 {
-                    DashStyle = DashStyles.Dot
+                    DashStyle = DashStyles.Solid
                 },
                 0,
                 TextDecorationUnit.Pixel,
-                TextDecorationUnit.FontRecommended
+                TextDecorationUnit.Pixel
             );
 
             var decs = new TextDecorationCollection { decUnder, decOver };

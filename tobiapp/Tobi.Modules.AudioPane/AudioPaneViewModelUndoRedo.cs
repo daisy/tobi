@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Threading;
-using Microsoft.Practices.Composite.Logging;
-using Tobi.Common;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
@@ -433,6 +431,7 @@ namespace Tobi.Plugin.AudioPane
             if (!(eventt.Command is ManagedAudioMediaInsertDataCommand)
                 && !(eventt.Command is TreeNodeSetManagedAudioMediaCommand)
                 && !(eventt.Command is TreeNodeAudioStreamDeleteCommand)
+                && !(eventt.Command is TreeNodeChangeTextCommand)
                 && !compCmdAudio
                 )
             {
@@ -456,6 +455,33 @@ namespace Tobi.Plugin.AudioPane
             }
 
 
+            if (eventt.Command is TreeNodeChangeTextCommand)
+            {
+                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                if (selection.Item1 != null)
+                {
+                    if (((TreeNodeChangeTextCommand)eventt.Command).TreeNode == selection.Item1
+                        || ((TreeNodeChangeTextCommand)eventt.Command).TreeNode.IsDescendantOf(selection.Item1))
+                    {
+                        if (State.Audio.HasContent && State.Audio.PlayStreamMarkers != null)
+                        {
+                            if (State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextPreRenderThreshold)
+                            {
+                                if (View != null)
+                                {
+                                    View.InvalidateWaveFormOverlay();
+                                }
+                            }
+                            else
+                            {
+                                CommandRefresh.Execute();
+                            }
+                        }
+                    }
+                }
+                return;
+            }
+
             if (View != null)
             {
                 View.CancelWaveFormLoad(false);
@@ -468,6 +494,9 @@ namespace Tobi.Plugin.AudioPane
             }
 
             CommandPause.Execute();
+
+
+
 
             //AudioCues.PlayTockTock();
 

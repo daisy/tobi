@@ -44,19 +44,19 @@
       <Value Profile="(Default)">#FF696969</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_UnderOverLine" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFFF6347</Value>
+      <Value Profile="(Default)">#FF000080</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Font" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FF8B0000</Value>
+      <Value Profile="(Default)">#FF0000CD</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Border" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFB22222</Value>
+      <Value Profile="(Default)">#FFB0C4DE</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Back1" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFFAFAD2</Value>
+      <Value Profile="(Default)">#FFF0FFF0</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Back2" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFF0E68C</Value>
+      <Value Profile="(Default)">#FFE0FFFF</Value>
     </Setting>
   </Settings>
 </SettingsFile>
