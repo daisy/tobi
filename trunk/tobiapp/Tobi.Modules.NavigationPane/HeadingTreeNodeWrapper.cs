@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.core;
@@ -233,6 +234,7 @@ namespace Tobi.Plugin.NavigationPane
         {
             if (level == null && heading == null)
             {
+                Debug.Fail("WTF ?");
                 return "!??!";
             }
             string str = (heading != null
@@ -406,6 +408,11 @@ namespace Tobi.Plugin.NavigationPane
             {
                 return m_TreeNodeHeading;
             }
+        }
+
+        public void RaiseTitleChanged()
+        {
+            RaisePropertyChanged(() => Title);
         }
 
         public string Title
