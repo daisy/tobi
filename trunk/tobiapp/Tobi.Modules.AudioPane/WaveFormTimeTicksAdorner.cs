@@ -7,8 +7,6 @@ using System.Windows.Media;
 using AudioLib;
 using urakawa.core;
 using urakawa.media.timing;
-using urakawa.property.xml;
-using urakawa.xuk;
 
 namespace Tobi.Plugin.AudioPane
 {

@@ -35,6 +35,7 @@
         void ClearSelection();
         void SelectAll();
         void ZoomSelection();
+        void InvalidateWaveFormOverlay();
         void ZoomFitFull();
         void InitGraphicalCommandBindings();
 
