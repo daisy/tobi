@@ -41,6 +41,12 @@ namespace Tobi.Plugin.NavigationPane
                 RaisePropertyChanged(() => IsSelected);
             }
         }
+
+        public void RaiseNameChanged()
+        {
+            RaisePropertyChanged(() => Name);
+        }
+
         public string Name
         {
             get
