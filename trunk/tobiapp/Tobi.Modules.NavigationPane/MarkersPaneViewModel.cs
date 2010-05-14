@@ -326,8 +326,24 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
-            if (!(eventt.Command is TreeNodeSetIsMarkedCommand))
+            if (!(eventt.Command is TreeNodeSetIsMarkedCommand)
+                && !(eventt.Command is TreeNodeChangeTextCommand))
             {
+                return;
+            }
+
+            if (eventt.Command is TreeNodeChangeTextCommand)
+            {
+                var node = ((TreeNodeChangeTextCommand)eventt.Command).TreeNode;
+
+                foreach (var markedTreeNode in MarkersNavigator_MarkedTreeNodes)
+                {
+                    if (node == markedTreeNode.TreeNode
+                        || node.IsDescendantOf(markedTreeNode.TreeNode))
+                    {
+                        markedTreeNode.RaiseDescriptionChanged();
+                    }
+                }
                 return;
             }
 

@@ -35,7 +35,7 @@ namespace Tobi.Plugin.NavigationPane
             QualifiedName qname = treeNode.GetXmlElementQName();
             if (qname != null)
             {
-                str = qname.LocalName;
+                str = "[" + qname.LocalName + "] ";
             }
             string text = treeNode.GetTextMediaFlattened(true);
             if (!string.IsNullOrEmpty(text))
@@ -44,9 +44,15 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     text = text.Substring(0, 40) + "(...)";
                 }
-                str = str + " /// " + text;
+                str = str + text;
             }
             return str;
+        }
+
+
+        public void RaiseDescriptionChanged()
+        {
+            RaisePropertyChanged(() => Description);
         }
 
         public string Description
