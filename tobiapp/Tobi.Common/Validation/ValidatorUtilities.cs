@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Data;
@@ -41,13 +42,11 @@ namespace Tobi.Common.Validation
 
             if (node.GetTextMedia() != null)
             {
-                if (node.GetTextMedia().Text.Length > 10)
+                Debug.Assert(node.Children.Count == 0);
+
+                if (node.GetTextMedia().Text.Length > 20)
                 {
-                    xml += node.GetTextMedia().Text.Substring(0, 10);
-                    if (node.Children.Count == 0)
-                    {
-                        xml += ("...");
-                    }
+                    xml += node.GetTextMedia().Text.Substring(0, 20) + "...";
                 }
                 else
                 {
@@ -115,15 +114,12 @@ namespace Tobi.Common.Validation
 
         public static string GetTreeNodeTextExcerpt(TreeNode node)
         {
-
             string nodeText = node.GetTextMediaFlattened(false);
             if (nodeText == null) return "";
             if (nodeText.Length > 100)
             {
-                nodeText = nodeText.Substring(0, 100);
-                nodeText += "...";
+                nodeText = nodeText.Substring(0, 100) + "...";
             }
-
 
             //if this is a mixed content model node with previous sibling(s), add some ellipses before the text too
             if (node.GetXmlElementQName() == null && node.PreviousSibling != null)
@@ -150,7 +146,7 @@ namespace Tobi.Common.Validation
             doc.Background = SystemColors.WindowBrush;
             doc.Foreground = SystemColors.WindowTextBrush;
             WriteNodeXml_Flat(node, doc);
-            
+
             return doc;
         }
 
@@ -170,10 +166,12 @@ namespace Tobi.Common.Validation
             }
             if (node.GetTextMedia() != null)
             {
+                Debug.Assert(node.Children.Count == 0);
+
                 string txt;
-                if (node.GetTextMedia().Text.Length > 10)
+                if (node.GetTextMedia().Text.Length > 20)
                 {
-                    txt = node.GetTextMedia().Text.Substring(0, 10);
+                    txt = node.GetTextMedia().Text.Substring(0, 20) + "...";
                 }
                 else
                 {
