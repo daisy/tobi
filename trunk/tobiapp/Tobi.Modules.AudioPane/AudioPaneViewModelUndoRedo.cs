@@ -60,6 +60,17 @@ namespace Tobi.Plugin.AudioPane
             {
                 Debug.Assert(done); // can be the initial execute or the redo
 
+                //HandleInsertDelete(command.CurrentTreeNode,
+                //                   command.SelectionData.m_TreeNode,
+                //                   bytesBegin,
+                //                   bytesEnd - bytesBegin,
+                //                   audioMedia,
+                //                   !done);
+                if (View != null)
+                {
+                    View.ResetAll();
+                }
+
                 //Debug.Assert(command.SelectionData.m_LocalStreamLeftMark == -1);
                 //Debug.Assert(command.SelectionData.m_LocalStreamRightMark == -1);
 
@@ -148,11 +159,18 @@ namespace Tobi.Plugin.AudioPane
             ManagedAudioMedia managedAudioMediaTarget,
             bool done)
         {
-            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+            if (View != null)
+            {
+                View.ResetAll();
+            }
 
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+            Tuple<TreeNode, TreeNode> treeNodeSelectionAfter = treeNodeSelection;
+            
             m_StateToRestore = null;
 
-            if (treeNodeSelection.Item1 != currentTreeNode)
+            if (treeNodeSelection.Item1 != currentTreeNode
+                && treeNodeSelection.Item2 != currentTreeNode)
             {
                 //StateToRestore? state = new StateToRestore
                 //{
@@ -166,6 +184,18 @@ namespace Tobi.Plugin.AudioPane
                 //Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
                 //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(currentTreeNode);
                 m_UrakawaSession.PerformTreeNodeSelection(currentTreeNode);
+
+                treeNodeSelectionAfter = m_UrakawaSession.GetTreeNodeSelection();
+                if (treeNodeSelectionAfter.Item1 != currentTreeNode)
+                {
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
+                    }
+                    m_CurrentAudioStreamProvider();
+
+                    CommandRefresh.Execute();
+                }
 
                 //m_StateToRestore = state;
 
@@ -195,11 +225,6 @@ namespace Tobi.Plugin.AudioPane
             //                        ? getTimeOffset(treeNode, managedAudioMediaTarget)
             //                        : 0;
 
-            Tuple<TreeNode, TreeNode> treeNodeSelectionAfter = m_UrakawaSession.GetTreeNodeSelection();
-            if (treeNodeSelectionAfter.Item1 != currentTreeNode)
-            {
-                CommandRefresh.Execute();
-            }
 
             long byteOffset = 0;
             if (managedAudioMediaTarget == null)
@@ -492,18 +517,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 View.CancelWaveFormLoad(true);
             }
-
             CommandPause.Execute();
-
-
-
-
-            //AudioCues.PlayTockTock();
-
-            if (View != null)
-            {
-                View.ResetAll();
-            }
 
 
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
@@ -593,6 +607,11 @@ namespace Tobi.Plugin.AudioPane
 #if DEBUG
             Debugger.Break();
 #endif
+
+            if (View != null)
+            {
+                View.ResetAll();
+            }
 
             m_LastSetPlayBytePosition = 0;
             m_StateToRestore = null;
