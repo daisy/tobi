@@ -502,7 +502,9 @@ namespace Tobi.Plugin.AudioPane
                 var media = treeNode.GetManagedAudioMediaOrSequenceMedia();
                 if (media != null)
                 {
-                    Debug.Fail("Waht ??");
+#if DEBUG
+                    Debugger.Break();
+#endif
                     return;
                 }
                 Debug.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
@@ -550,7 +552,9 @@ namespace Tobi.Plugin.AudioPane
                 }
                 else
                 {
-                    Debug.Fail("WTF ??!");
+#if DEBUG
+                    Debugger.Break();
+#endif
                 }
 
                 if (allWasDeleted) //!State.Audio.HasContent)
@@ -565,7 +569,9 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        Debug.Fail("WTF ??!");
+#if DEBUG
+                        Debugger.Break();
+#endif
                     }
 
                     treeNode.Presentation.UndoRedoManager.EndTransaction();
@@ -597,7 +603,9 @@ namespace Tobi.Plugin.AudioPane
                     var media = treeNode.GetManagedAudioMediaOrSequenceMedia();
                     if (media != null)
                     {
-                        Debug.Fail("Waht ??");
+#if DEBUG
+                        Debugger.Break();
+#endif
                         return;
                     }
                     Debug.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
@@ -617,8 +625,9 @@ namespace Tobi.Plugin.AudioPane
             bool match = State.Audio.FindInPlayStreamMarkers(bytePositionInsert, out treeNodeTarget, out index, out bytesLeft, out bytesRight);
             if (!match)
             {
-                Debug.Fail("Waht ??");
-
+#if DEBUG
+                Debugger.Break();
+#endif
                 if (transaction)
                 {
                     treeNode.Presentation.UndoRedoManager.EndTransaction();
@@ -631,7 +640,14 @@ namespace Tobi.Plugin.AudioPane
             }
 
             Media treeNodeAudio = treeNodeTarget.GetManagedAudioMedia();
-            Debug.Assert(treeNodeAudio != null);
+
+            if (treeNodeAudio == null)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
 
             Command command = treeNode.Presentation.CommandFactory.
                    CreateManagedAudioMediaInsertDataCommand(
