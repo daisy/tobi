@@ -14,6 +14,8 @@ namespace Tobi.Common
         void TryOpenFile(string filename);
 
         Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode clickedNode);
+        Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode clickedNode, bool allowAutoSubNodeAndToggle, TreeNode subClickedNode);
+
         Tuple<TreeNode, TreeNode> GetTreeNodeSelection();
 
         /// <summary>

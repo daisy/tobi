@@ -14,6 +14,11 @@ namespace Tobi.Plugin.Urakawa
 
         public Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode clickedNode)
         {
+            return PerformTreeNodeSelection(clickedNode, true, null);
+        }
+
+        public Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode clickedNode, bool allowAutoSubNodeAndToggle, TreeNode subClickedNode)
+        {
             if (clickedNode == null) throw new ArgumentNullException("clickedNode");
 
             // Reminder: the "lock" block statement is equivalent to:
@@ -38,6 +43,22 @@ namespace Tobi.Plugin.Urakawa
                 TreeNode clickedDescendantAudio = clickedNode.GetFirstDescendantWithManagedAudio();
                 TreeNode clickedAncestorAudio = clickedNode.GetFirstAncestorWithManagedAudio();
 
+                bool subClickedHasDirectAudio = subClickedNode != null && subClickedNode.GetManagedAudioMediaOrSequenceMedia() != null;
+                TreeNode subClickedDescendantAudio = subClickedNode != null ? subClickedNode.GetFirstDescendantWithManagedAudio() : null;
+                TreeNode subClickedAncestorAudio = subClickedNode != null ? subClickedNode.GetFirstAncestorWithManagedAudio() : null;
+
+                if (subClickedNode != null)
+                {
+                    if (subClickedDescendantAudio != null || subClickedAncestorAudio != null
+                        || !subClickedNode.IsDescendantOf(clickedNode))
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        subClickedNode = null;
+                    }
+                }
+
                 if (m_TreeNode == null) // brand new selection
                 {
                     Debug.Assert(m_SubTreeNode == null);
@@ -61,15 +82,15 @@ namespace Tobi.Plugin.Urakawa
                     else if (clickedDescendantAudio != null) // sub shift down
                     {
                         m_TreeNode = clickedNode;
-                        m_SubTreeNode = clickedDescendantAudio;
+                        m_SubTreeNode = subClickedNode ?? clickedDescendantAudio;
 #if DEBUG
                         verifyTreeNodeSelection();
 #endif
                     }
-                    else // no audio on this branch, always legal position
+                    else // no audio on self, no audio on path from self to root, no audio in self's subtree
                     {
                         m_TreeNode = clickedNode;
-                        m_SubTreeNode = null;
+                        m_SubTreeNode = subClickedNode;
 #if DEBUG
                         verifyTreeNodeSelection();
 #endif
@@ -77,7 +98,6 @@ namespace Tobi.Plugin.Urakawa
                 }
                 else // we know that: m_TreeNode != null 
                 {
-
                     bool treenodeHasDirectAudio = m_TreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
                     TreeNode treenodeDescendantAudio = m_TreeNode.GetFirstDescendantWithManagedAudio();
                     TreeNode treenodeAncestorAudio = m_TreeNode.GetFirstAncestorWithManagedAudio();
@@ -102,7 +122,7 @@ namespace Tobi.Plugin.Urakawa
 
                     if (clickedHasDirectAudio) // right on
                     {
-                        if (clickedIsTreeNodeDescendant && !clickedIsSubTreeNode)
+                        if (allowAutoSubNodeAndToggle && subClickedNode == null && clickedIsTreeNodeDescendant && !clickedIsSubTreeNode)
                         {
                             m_SubTreeNode = clickedNode;
 #if DEBUG
@@ -120,7 +140,7 @@ namespace Tobi.Plugin.Urakawa
                     }
                     else if (clickedAncestorAudio != null) // shift up
                     {
-                        if (clickedAncestorAudio.IsDescendantOf(m_TreeNode))
+                        if (allowAutoSubNodeAndToggle && subClickedNode == null && clickedAncestorAudio.IsDescendantOf(m_TreeNode))
                         {
                             m_SubTreeNode = clickedAncestorAudio;
 #if DEBUG
@@ -140,7 +160,7 @@ namespace Tobi.Plugin.Urakawa
                     {
                         if (subtreenodeHasDirectAudio && clickedIsSubTreeNodeAncestor)
                         {
-                            if (clickedIsTreeNode) // toggle
+                            if (allowAutoSubNodeAndToggle && subClickedNode == null && clickedIsTreeNode) // toggle
                             {
                                 m_TreeNode = m_SubTreeNode;
                                 m_SubTreeNode = null;
@@ -151,6 +171,10 @@ namespace Tobi.Plugin.Urakawa
                             else
                             {
                                 m_TreeNode = clickedNode;
+                                if (subClickedNode != null)
+                                {
+                                    m_SubTreeNode = subClickedNode;
+                                }
 #if DEBUG
                                 verifyTreeNodeSelection();
 #endif
@@ -158,7 +182,7 @@ namespace Tobi.Plugin.Urakawa
                         }
                         else if (treenodeHasDirectAudio && clickedIsTreeNodeAncestor)
                         {
-                            m_SubTreeNode = m_TreeNode;
+                            m_SubTreeNode = subClickedNode ?? m_TreeNode;
                             m_TreeNode = clickedNode;
 #if DEBUG
                             verifyTreeNodeSelection();
@@ -167,23 +191,34 @@ namespace Tobi.Plugin.Urakawa
                         else
                         {
                             m_TreeNode = clickedNode;
-                            m_SubTreeNode = clickedDescendantAudio;
+                            if (m_SubTreeNode == null || !m_SubTreeNode.IsDescendantOf(m_TreeNode) || subClickedNode != null)
+                            {
+                                m_SubTreeNode = subClickedNode ?? clickedDescendantAudio;
+                            }
 #if DEBUG
                             verifyTreeNodeSelection();
 #endif
                         }
                     }
-                    else // no audio on this branch, always legal position
+                    else  // no audio on self, no audio on path from self to root, no audio in self's subtree
                     {
                         if (clickedIsSubTreeNode)// toggle
                         {
-                            if (treenodeDescendantAudio != null)
+                            if (allowAutoSubNodeAndToggle && subClickedNode == null)
                             {
-                                m_SubTreeNode = treenodeDescendantAudio;
+                                if (treenodeDescendantAudio != null)
+                                {
+                                    m_SubTreeNode = treenodeDescendantAudio;
+                                }
+                                else
+                                {
+                                    m_SubTreeNode = null;
+                                }
                             }
                             else
                             {
-                                m_SubTreeNode = null;
+                                m_TreeNode = clickedNode;
+                                m_SubTreeNode = subClickedNode;
                             }
 #if DEBUG
                             verifyTreeNodeSelection();
@@ -191,10 +226,18 @@ namespace Tobi.Plugin.Urakawa
                         }
                         else if (clickedIsTreeNode)// toggle
                         {
-                            if (m_SubTreeNode != null)
+                            if (allowAutoSubNodeAndToggle && subClickedNode == null)
                             {
-                                m_TreeNode = m_SubTreeNode;
-                                m_SubTreeNode = null;
+                                if (m_SubTreeNode != null)
+                                {
+                                    m_TreeNode = m_SubTreeNode;
+                                    m_SubTreeNode = null;
+                                }
+                            }
+                            else
+                            {
+                                m_TreeNode = clickedNode;
+                                m_SubTreeNode = subClickedNode;
                             }
 #if DEBUG
                             verifyTreeNodeSelection();
@@ -202,18 +245,34 @@ namespace Tobi.Plugin.Urakawa
                         }
                         else if (clickedNode.IsDescendantOf(m_TreeNode))
                         {
-                            m_SubTreeNode = clickedNode;
+                            if (allowAutoSubNodeAndToggle && subClickedNode == null)
+                            {
+                                m_SubTreeNode = clickedNode;
+                            }
+                            else
+                            {
+                                m_TreeNode = clickedNode;
+                                m_SubTreeNode = subClickedNode;
+                            }
 #if DEBUG
                             verifyTreeNodeSelection();
 #endif
                         }
                         else if (clickedNode.IsAncestorOf(m_TreeNode))
                         {
-                            if (m_SubTreeNode == null)
+                            if (allowAutoSubNodeAndToggle && subClickedNode == null)
                             {
-                                m_SubTreeNode = m_TreeNode;
+                                if (m_SubTreeNode == null)
+                                {
+                                    m_SubTreeNode = m_TreeNode;
+                                }
+                                m_TreeNode = clickedNode;
                             }
-                            m_TreeNode = clickedNode;
+                            else
+                            {
+                                m_TreeNode = clickedNode;
+                                m_SubTreeNode = subClickedNode;
+                            }
 #if DEBUG
                             verifyTreeNodeSelection();
 #endif
@@ -221,7 +280,7 @@ namespace Tobi.Plugin.Urakawa
                         else
                         {
                             m_TreeNode = clickedNode;
-                            m_SubTreeNode = null;
+                            m_SubTreeNode = subClickedNode;
 #if DEBUG
                             verifyTreeNodeSelection();
 #endif

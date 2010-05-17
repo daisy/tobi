@@ -126,18 +126,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () =>
                 {
-                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-
-                    return AudioClipboard != null && !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
-                           && m_UrakawaSession.DocumentProject != null
-                           &&
-                           (
-                           State.Audio.PlayStreamMarkers != null
-                           ||
-                           treeNodeSelection.Item1 != null
-                           && treeNodeSelection.Item1.GetXmlElementQName() != null
-                           && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
-                           );
+                    return AudioClipboard != null && CommandInsertFile.CanExecute();
                 }
                 //&& IsAudioLoaded
                       ,
@@ -177,17 +166,14 @@ namespace Tobi.Plugin.AudioPane
                 () =>
                 {
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-
-                    return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
-                           && m_UrakawaSession.DocumentProject != null
-                           &&
-                           (
-                           State.Audio.PlayStreamMarkers != null
-                           ||
-                           treeNodeSelection.Item1 != null
-                           && treeNodeSelection.Item1.GetXmlElementQName() != null
-                           && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
-                           );
+                    TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+                    return !IsPlaying && !IsMonitoring && !IsRecording && !IsWaveFormLoading
+                        && m_UrakawaSession.DocumentProject != null
+                        && node != null
+                           && node.GetXmlElementQName() != null
+                           && node.GetFirstAncestorWithManagedAudio() == null
+                           && node.GetFirstDescendantWithManagedAudio() == null
+                           ;
                 }
                 //&& IsAudioLoaded
                       ,
@@ -510,7 +496,7 @@ namespace Tobi.Plugin.AudioPane
                 Debug.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
                 Debug.Assert(treeNode.GetFirstAncestorWithManagedAudio() == null);
 
-                var command_ = treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+                var command_ = treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia, treeNodeSelection.Item1);
                 treeNode.Presentation.UndoRedoManager.Execute(command_);
 
                 return;
@@ -563,8 +549,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         TreeNode treeNode_ = selData[0].m_TreeNode;
                         var command_ =
-                            treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode_,
-                                                                                                           manMedia);
+                            treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode_, manMedia, treeNodeSelection.Item1);
                         treeNode.Presentation.UndoRedoManager.Execute(command_);
                     }
                     else
@@ -611,7 +596,7 @@ namespace Tobi.Plugin.AudioPane
                     Debug.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
                     Debug.Assert(treeNode.GetFirstAncestorWithManagedAudio() == null);
 
-                    var command_ = treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia);
+                    var command_ = treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia, treeNodeSelection.Item1);
                     treeNode.Presentation.UndoRedoManager.Execute(command_);
 
                     return;
