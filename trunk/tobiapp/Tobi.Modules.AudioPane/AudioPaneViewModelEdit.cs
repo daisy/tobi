@@ -8,12 +8,10 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.command;
 using urakawa.core;
-using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
-using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -21,6 +19,7 @@ namespace Tobi.Plugin.AudioPane
     {
         public RichDelegateCommand CommandOpenFile { get; private set; }
         public RichDelegateCommand CommandInsertFile { get; private set; }
+        public RichDelegateCommand CommandGenTTS { get; private set; }
         public RichDelegateCommand CommandDeleteAudioSelection { get; private set; }
 
         public RichDelegateCommand CopyCommand { get; private set; }
@@ -77,11 +76,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-                    return !IsWaveFormLoading
-                           && !IsPlaying && !IsMonitoring && !IsRecording
-                           && m_UrakawaSession.DocumentProject != null
-                           && treeNodeSelection.Item1 != null
-                           && State.Audio.HasContent && IsSelectionSet;
+                    return CommandDeleteAudioSelection.CanExecute();
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Copy));
@@ -102,11 +97,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-                    return !IsWaveFormLoading
-                           && !IsPlaying && !IsMonitoring && !IsRecording
-                           && m_UrakawaSession.DocumentProject != null
-                           && treeNodeSelection.Item1 != null
-                           && State.Audio.HasContent && IsSelectionSet;
+                    return CommandDeleteAudioSelection.CanExecute();
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Cut));
@@ -126,7 +117,8 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () =>
                 {
-                    return AudioClipboard != null && CommandInsertFile.CanExecute();
+                    return AudioClipboard != null
+                        && CommandInsertFile.CanExecute();
                 }
                 //&& IsAudioLoaded
                       ,
@@ -165,15 +157,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () =>
                 {
-                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
-                    return !IsPlaying && !IsMonitoring && !IsRecording && !IsWaveFormLoading
-                        && m_UrakawaSession.DocumentProject != null
-                        && node != null
-                           && node.GetXmlElementQName() != null
-                           && node.GetFirstAncestorWithManagedAudio() == null
-                           && node.GetFirstDescendantWithManagedAudio() == null
-                           ;
+                    return !IsPlaying && CommandStartRecord.CanExecute();
                 }
                 //&& IsAudioLoaded
                       ,
@@ -181,6 +165,87 @@ namespace Tobi.Plugin.AudioPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_InsertFile));
 
             m_ShellView.RegisterRichCommand(CommandInsertFile);
+            //
+            //
+            CommandGenTTS = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioGenTTS_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioGenTTS_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("audio-x-generic"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandGenTTS", Category.Debug, Priority.Medium);
+
+                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+                    if (node == null) return;
+
+                    var text = node.GetTextMediaFlattened(true);
+                    if (string.IsNullOrEmpty(text)) return;
+
+                    bool cancelled = false;
+
+                    var pcmFormat = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+
+                    var converter = new AudioTTSGenerator(text, pcmFormat.Data, m_Recorder.RecordingDirectory, m_SpeechSynthesizer);
+
+                    bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                        Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio,
+                        converter,
+                        () =>
+                        {
+                            Logger.Log(@"Audio TTS CANCELLED", Category.Debug, Priority.Medium);
+                            cancelled = true;
+                        },
+                        () =>
+                        {
+                            Logger.Log(@"Audio TTS DONE", Category.Debug, Priority.Medium);
+                            cancelled = false;
+                        });
+
+                    if (cancelled)
+                    {
+                        Debug.Assert(!result);
+                        return;
+                    }
+
+                    if (!File.Exists(converter.GeneratedAudioFilePath))
+                    {
+                        return;
+                    }
+
+                    if (treeNodeSelection.Item2 == null)
+                    {
+                        CommandSelectAll.Execute();
+                    }
+                    else
+                    {
+                        long byteOffset = getByteOffset(treeNodeSelection.Item2, null);
+                        SelectChunk(byteOffset);
+                    }
+
+                    openFile(converter.GeneratedAudioFilePath, true, true, pcmFormat);
+                },
+                () =>
+                {
+                    // because we change the selection in the execute code
+                    //return CommandInsertFile.CanExecute();
+
+                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+
+                    return !IsMonitoring && !IsRecording && !IsWaveFormLoading && !IsPlaying
+                        && m_UrakawaSession.DocumentProject != null
+                   && node != null
+                   && node.GetXmlElementQName() != null
+                   && node.GetFirstAncestorWithManagedAudio() == null
+                   && node.GetFirstDescendantWithManagedAudio() == null;
+                }
+                      ,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GenTTS));
+
+            m_ShellView.RegisterRichCommand(CommandGenTTS);
             //
             CommandDeleteAudioSelection = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdAudioDelete_ShortDesc,
@@ -233,13 +298,8 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () =>
                 {
-                    //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-                    return !IsWaveFormLoading
-                           && !IsPlaying && !IsMonitoring && !IsRecording
-                           && m_UrakawaSession.DocumentProject != null
-                        //&& treeNodeSelection.Item1 != null
-                           && State.Audio.PlayStreamMarkers != null
-                           && State.Audio.HasContent && IsSelectionSet;
+                    return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
+                         && State.Audio.PlayStreamMarkers != null && IsSelectionSet && State.Audio.HasContent;
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Delete));
@@ -248,6 +308,19 @@ namespace Tobi.Plugin.AudioPane
             //
         }
 
+        private bool canDeleteInsertReplaceAudio()
+        {
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+
+            return CommandDeleteAudioSelection.CanExecute()
+                ||
+                m_UrakawaSession.DocumentProject != null
+                   && node != null
+                   && node.GetXmlElementQName() != null
+                   && node.GetFirstAncestorWithManagedAudio() == null
+                   && node.GetFirstDescendantWithManagedAudio() == null;
+        }
 
 
         private void openFile(String str, bool insert, bool deleteAfterInsert, PCMFormatInfo pcmInfo)

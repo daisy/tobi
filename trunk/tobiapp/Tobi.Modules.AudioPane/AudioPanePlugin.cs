@@ -149,7 +149,8 @@ namespace Tobi.Plugin.AudioPane
                 null, PreferredPosition.Any, true,
                 new[]
                  {
-                     m_AudioPaneViewModel.CommandInsertFile
+                     m_AudioPaneViewModel.CommandInsertFile,
+                     m_AudioPaneViewModel.CommandGenTTS
                  });
 
             m_MenuBarId_10 = m_MenuBarView.AddMenuBarGroup(

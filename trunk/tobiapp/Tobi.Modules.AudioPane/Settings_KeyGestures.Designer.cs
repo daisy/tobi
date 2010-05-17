@@ -133,6 +133,18 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] G")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_GenTTS {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_GenTTS"]));
+            }
+            set {
+                this["Keyboard_Audio_GenTTS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] I")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_InsertFile {
             get {

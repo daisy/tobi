@@ -4,7 +4,8 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
-using System.Security;
+using System.Speech.AudioFormat;
+using System.Speech.Synthesis;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AudioLib;
@@ -22,6 +23,92 @@ using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
 {
+    public class AudioTTSGenerator : DualCancellableProgressReporter
+    {
+        private readonly string Text;
+        private readonly AudioLibPCMFormat PcmFormat;
+        private readonly string OutputDirectory;
+        private readonly SpeechSynthesizer SpeechSynthesizer;
+
+        public AudioTTSGenerator(string text, AudioLibPCMFormat pcmFormat, string outputDirectory, SpeechSynthesizer speechSynthesizer)
+        {
+            Text = text;
+            PcmFormat = pcmFormat;
+            OutputDirectory = outputDirectory;
+            SpeechSynthesizer = speechSynthesizer;
+        }
+
+        public string GeneratedAudioFilePath
+        {
+            get;
+            private set;
+        }
+
+        private static long m_ttsFileNameCounter;
+
+        public override void DoWork()
+        {
+            if (PcmFormat.BitDepth != 16)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+            var formatInfo = new SpeechAudioFormatInfo((int)PcmFormat.SampleRate, AudioBitsPerSample.Sixteen, PcmFormat.NumberOfChannels == 2 ? AudioChannel.Stereo : AudioChannel.Mono);
+
+            int i = 0;
+
+        tryagain:
+            i++;
+
+            var filePath = Path.Combine(OutputDirectory, "tts_" + m_ttsFileNameCounter + ".wav");
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
+            try
+            {
+                SpeechSynthesizer.SetOutputToWaveFile(filePath, formatInfo);
+            }
+            catch (Exception ex)
+            {
+                if (i > 100) return;
+                goto tryagain;
+            }
+
+            var watch = new Stopwatch();
+            watch.Start();
+
+            SpeechSynthesizer.SpeakProgress += (sender, ev) =>
+            {
+                if (watch.ElapsedMilliseconds > 500)
+                {
+                    watch.Stop();
+
+                    int percent = 100 * (ev.CharacterPosition + ev.CharacterCount) / Text.Length;
+                    if (percent < 0) percent = 0;
+                    if (percent > 100) percent = 100;
+
+                    reportProgress(percent, Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio);
+
+                    watch.Reset();
+                    watch.Start();
+                }
+            };
+
+            SpeechSynthesizer.Speak(Text);
+
+            SpeechSynthesizer.SetOutputToNull();
+            SpeechSynthesizer.Speak("null");
+
+            watch.Stop();
+
+            GeneratedAudioFilePath = filePath;
+        }
+    }
+
     public class AudioClipConverter : DualCancellableProgressReporter
     {
         private readonly string SourceFilePath;
@@ -37,7 +124,8 @@ namespace Tobi.Plugin.AudioPane
 
         public string ConvertedFilePath
         {
-            get; private set;
+            get;
+            private set;
         }
 
         public override void DoWork()
@@ -242,7 +330,21 @@ namespace Tobi.Plugin.AudioPane
             if (!e.PropertyName.StartsWith(@"AudioWaveForm_")
                 && !e.PropertyName.StartsWith(@"Audio_")) return;
 
-            if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_InputDevice))
+            if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_TTS_Voice))
+            {
+                try
+                {
+                    m_SpeechSynthesizer.SelectVoice(Settings.Default.Audio_TTS_Voice);
+
+                    if (m_SpeechSynthesizer.Voice.Name != Settings.Default.Audio_TTS_Voice)
+                        Settings.Default.Audio_TTS_Voice = m_SpeechSynthesizer.Voice.Name; // will generate a call to OnSettingsPropertyChanged again
+                }
+                catch (Exception ex)
+                {
+                    Settings.Default.Audio_TTS_Voice = m_SpeechSynthesizer.Voice.Name;
+                }
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_InputDevice))
             {
                 if (m_Recorder.CurrentState == AudioRecorder.State.Stopped
                     || m_Recorder.CurrentState == AudioRecorder.State.NotReady)
@@ -612,6 +714,9 @@ namespace Tobi.Plugin.AudioPane
         private void initializeAudioStuff()
         {
             Logger.Log("AudioPaneViewModel.initializeAudioStuff", Category.Debug, Priority.Medium);
+
+            OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_TTS_Voice)));
+            //m_SpeechSynthesizer.AddLexicon();
 
             m_ShellView.DeviceArrived += new EventHandler(OnDeviceArrived);
             m_ShellView.DeviceRemoved += new EventHandler(OnDeviceRemoved);

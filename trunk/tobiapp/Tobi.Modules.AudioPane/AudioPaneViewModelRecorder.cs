@@ -185,16 +185,8 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () =>
                 {
-                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
                     return !IsMonitoring && !IsRecording && !IsWaveFormLoading //!IsPlaying && 
-                        && (m_UrakawaSession.DocumentProject == null
-                        ||
-                           node != null
-                           && node.GetXmlElementQName() != null
-                           && node.GetFirstAncestorWithManagedAudio() == null
-                           && node.GetFirstDescendantWithManagedAudio() == null
-                           );
+                        && canDeleteInsertReplaceAudio();
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopRecord));
@@ -468,7 +460,7 @@ namespace Tobi.Plugin.AudioPane
                 if (!textIsPunctuation(enumtor.Current))
                     return false;
             }
-            return true;
+            return true; // includes empty "text" (when space is trimmed on caller's side)
         }
 
         private void OnStateChanged_Recorder(object sender, AudioRecorder.StateChangedEventArgs e)
