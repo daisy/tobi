@@ -286,5 +286,17 @@ namespace Tobi.Plugin.AudioPane {
                 this["Audio_InputDevice"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("default")]
+        public string Audio_TTS_Voice {
+            get {
+                return ((string)(this["Audio_TTS_Voice"]));
+            }
+            set {
+                this["Audio_TTS_Voice"] = value;
+            }
+        }
     }
 }

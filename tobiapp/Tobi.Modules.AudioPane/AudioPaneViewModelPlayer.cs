@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Speech.Synthesis;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -300,6 +302,43 @@ namespace Tobi.Plugin.AudioPane
             get
             {
                 return !IsMonitoring && !IsRecording;
+            }
+        }
+
+        public SpeechSynthesizer m_SpeechSynthesizer = new SpeechSynthesizer();
+
+        private List<VoiceInfo> m_TTSVoices;
+        public List<VoiceInfo> TTSVoices
+        {
+            get
+            {
+                m_TTSVoices = new List<VoiceInfo>();
+                foreach (var installedVoice in m_SpeechSynthesizer.GetInstalledVoices())
+                {
+                    m_TTSVoices.Add(installedVoice.VoiceInfo);
+                }
+                return m_TTSVoices;
+            }
+        }
+        public VoiceInfo TTSVoice
+        {
+            get
+            {
+                if (m_TTSVoices != null)
+                    foreach (var voice in m_TTSVoices)
+                    {
+                        if (voice.Name == m_SpeechSynthesizer.Voice.Name)
+                            return voice;
+                    }
+                return m_SpeechSynthesizer.Voice;
+            }
+            set
+            {
+                if (value != null
+                    && (m_SpeechSynthesizer.Voice.Name != value.Name))
+                {
+                    Settings.Default.Audio_TTS_Voice = value.Name;
+                }
             }
         }
 

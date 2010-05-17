@@ -7,7 +7,8 @@
             Columns="2" Rows="2"
                     HorizontalAlignment="Left">
   
-    <TextBlock x:Name="LabelOutputDevices" Focusable="True" Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Playback}"/>
+    <TextBlock x:Name="LabelOutputDevices" Focusable="True" Margin="6, 0, 0, 0" VerticalAlignment="Center"
+               Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Playback}"/>
   <ComboBox ItemsSource="{Binding OutputDevices, Mode=OneWay}"
             SelectedItem="{Binding OutputDevice, Mode=TwoWay}"
             
@@ -38,7 +39,8 @@
     </ComboBox.ItemContainerStyle>
   </ComboBox>
 
-    <TextBlock x:Name="LabelInputDevices" Focusable="True"  Margin="6, 0, 0, 0" VerticalAlignment="Center" Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Recording}"/>
+    <TextBlock x:Name="LabelInputDevices" Focusable="True"  Margin="6, 0, 0, 0" VerticalAlignment="Center"
+               Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Recording}"/>
     <ComboBox ItemsSource="{Binding InputDevices, Mode=OneWay}"
               SelectedItem="{Binding InputDevice, Mode=TwoWay}"
               SelectedValuePath="Name"
@@ -67,5 +69,36 @@
         </Style>
       </ComboBox.ItemContainerStyle>
     </ComboBox>
+
+
+  <TextBlock x:Name="LabelTTSVoices" Focusable="True"  Margin="6, 0, 0, 0" VerticalAlignment="Center"
+             Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_TTS}"/>
+  <ComboBox ItemsSource="{Binding TTSVoices, Mode=OneWay}"
+            SelectedItem="{Binding TTSVoice, Mode=TwoWay}"
+            SelectedValuePath="Name"
+            Margin="2"
+            VirtualizingStackPanel.IsVirtualizing="False"
+            AutomationProperties.LabeledBy="{Binding ElementName=LabelTTSVoices}">
+    <!--DisplayMemberPath="Name"-->
+
+    <ComboBox.ItemTemplate>
+      <DataTemplate>
+
+        <TextBlock Text="{Binding Name}"/>
+
+      </DataTemplate>
+
+    </ComboBox.ItemTemplate>
+
+
+    <ComboBox.ItemContainerStyle>
+
+      <Style TargetType="{x:Type ComboBoxItem}">
+
+        <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
+
+      </Style>
+    </ComboBox.ItemContainerStyle>
+  </ComboBox>
 
 </UniformGrid>

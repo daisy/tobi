@@ -31,6 +31,9 @@
     <Setting Name="Keyboard_Audio_Delete" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] Delete</Value>
     </Setting>
+    <Setting Name="Keyboard_Audio_GenTTS" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] G</Value>
+    </Setting>
     <Setting Name="Keyboard_Audio_InsertFile" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] I</Value>
     </Setting>

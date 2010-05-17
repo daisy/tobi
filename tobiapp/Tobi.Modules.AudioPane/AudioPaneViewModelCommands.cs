@@ -79,7 +79,6 @@ namespace Tobi.Plugin.AudioPane
 
             m_ShellView.RegisterRichCommand(CommandZoomFitFull);
             //
-            //
             CommandAudioSettings = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdAudioSettings_ShortDesc,
                 Tobi_Plugin_AudioPane_Lang.CmdAudioSettings_LongDesc,

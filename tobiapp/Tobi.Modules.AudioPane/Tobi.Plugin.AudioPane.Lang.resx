@@ -147,6 +147,9 @@
   <data name="ProcessingAudioClip" xml:space="preserve">
     <value>Processing audio clip...</value>
   </data>
+  <data name="GeneratingTTSAudio" xml:space="preserve">
+    <value>Generating TTS audio...</value>
+  </data>
   <data name="AudioAutoPlay" xml:space="preserve">
     <value>Autoplay</value>
   </data>
@@ -210,11 +213,17 @@
   <data name="CmdAudioGotoEnd_LongDesc" xml:space="preserve">
     <value>Jump to the end of the audio content</value>
   </data>
+  <data name="CmdAudioGenTTS_ShortDesc" xml:space="preserve">
+    <value>_Generate TTS audio</value>
+  </data>
+  <data name="CmdAudioGenTTS_LongDesc" xml:space="preserve">
+    <value>Create audio for the selected text using a Text To Speech synthesizer</value>
+  </data>
   <data name="CmdAudioInsertFile_ShortDesc" xml:space="preserve">
     <value>_Import audio file</value>
   </data>
   <data name="CmdAudioInsertFile_LongDesc" xml:space="preserve">
-    <value>Insert a local WAV or MP3 file</value>
+    <value>Import a local WAV or MP3 file</value>
   </data>
   <data name="CmdAudioOpenFile_ShortDesc" xml:space="preserve">
     <value>_Open audio file</value>
@@ -286,10 +295,10 @@
     <value>Select the entire audio chunk preceding the cursor</value>
   </data>
   <data name="CmdAudioSettings_ShortDesc" xml:space="preserve">
-    <value>Device se_ttings...</value>
+    <value>Audio se_ttings...</value>
   </data>
   <data name="CmdAudioSettings_LongDesc" xml:space="preserve">
-    <value>Settings for the audio player and recorder</value>
+    <value>Settings for the audio TTS, player and recorder</value>
   </data>
   <data name="CmdAudioStartMonitor_ShortDesc" xml:space="preserve">
     <value>St_art monitoring</value>
@@ -347,6 +356,9 @@
   </data>
   <data name="ComboLabel_Recording" xml:space="preserve">
     <value>Recording:</value>
+  </data>
+  <data name="ComboLabel_TTS" xml:space="preserve">
+    <value>TTS:</value>
   </data>
   <data name="Loading" xml:space="preserve">
     <value>Loading (ESC to stop)</value>

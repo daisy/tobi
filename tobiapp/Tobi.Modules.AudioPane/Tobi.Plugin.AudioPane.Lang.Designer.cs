@@ -241,6 +241,24 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create audio for the selected text using a Text To Speech synthesizer.
+        /// </summary>
+        public static string CmdAudioGenTTS_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioGenTTS_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Generate TTS audio.
+        /// </summary>
+        public static string CmdAudioGenTTS_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioGenTTS_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Jump to the begining of the audio content.
         /// </summary>
         public static string CmdAudioGotoBegin_LongDesc {
@@ -277,7 +295,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert a local WAV or MP3 file.
+        ///   Looks up a localized string similar to Import a local WAV or MP3 file.
         /// </summary>
         public static string CmdAudioInsertFile_LongDesc {
             get {
@@ -547,7 +565,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings for the audio player and recorder.
+        ///   Looks up a localized string similar to Settings for the audio TTS, player and recorder.
         /// </summary>
         public static string CmdAudioSettings_LongDesc {
             get {
@@ -556,7 +574,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Device se_ttings....
+        ///   Looks up a localized string similar to Audio se_ttings....
         /// </summary>
         public static string CmdAudioSettings_ShortDesc {
             get {
@@ -799,11 +817,29 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TTS:.
+        /// </summary>
+        public static string ComboLabel_TTS {
+            get {
+                return ResourceManager.GetString("ComboLabel_TTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Countdown: .
         /// </summary>
         public static string Countdown {
             get {
                 return ResourceManager.GetString("Countdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generating TTS audio....
+        /// </summary>
+        public static string GeneratingTTSAudio {
+            get {
+                return ResourceManager.GetString("GeneratingTTSAudio", resourceCulture);
             }
         }
         
