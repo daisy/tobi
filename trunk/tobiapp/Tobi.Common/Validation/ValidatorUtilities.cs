@@ -114,7 +114,7 @@ namespace Tobi.Common.Validation
 
         public static string GetTreeNodeTextExcerpt(TreeNode node)
         {
-            string nodeText = node.GetTextMediaFlattened(false);
+            string nodeText = node.GetTextFlattened(false);
             if (nodeText == null) return "";
             if (nodeText.Length > 100)
             {

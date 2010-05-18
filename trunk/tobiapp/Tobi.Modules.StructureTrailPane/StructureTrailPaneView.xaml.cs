@@ -529,7 +529,7 @@ namespace Tobi.Plugin.StructureTrailPane
                                        ? ""
                                        : Tobi_Plugin_StructureTrailPane_Lang.NoAudio;
 
-                string text1 = newTreeNodeSelection.Item1.GetTextMediaFlattened(true);
+                string text1 = newTreeNodeSelection.Item1.GetTextFlattened(true);
                 if (!string.IsNullOrEmpty(text1)
                      && text1.Length > 100)
                 {
@@ -563,7 +563,7 @@ namespace Tobi.Plugin.StructureTrailPane
                                        ? ""
                                        : Tobi_Plugin_StructureTrailPane_Lang.NoAudio;
 
-                string text2 = newTreeNodeSelection.Item2.GetTextMediaFlattened(true);
+                string text2 = newTreeNodeSelection.Item2.GetTextFlattened(true);
                 if (!string.IsNullOrEmpty(text2)
                      && text2.Length > 100)
                 {
