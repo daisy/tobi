@@ -370,51 +370,13 @@ namespace Tobi.Plugin.AudioPane
                 TreeNode treeNode = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
                 if (treeNode != null)
                 {
-                    TreeNode node = treeNode;
-                tryNext:
-                    TreeNode next = node.GetNextSiblingWithText(true);
+                    TreeNode next = electNextRecordableNode(treeNode);
+
                     if (next != null)
                     {
-                    tryParent:
-                        if (next.Parent != null)
-                        {
-                            foreach (var child in next.Parent.Children.ContentsAs_YieldEnumerable)
-                            {
-                                string text = child.GetTextMediaFlattened(true);
-                                if (!string.IsNullOrEmpty(text))
-                                {
-                                    text = text.Trim(); // we discard punctuation
-
-                                    if (textOnlyContainsPunctuation(text))
-                                    {
-                                        if (child == next)
-                                        {
-                                            node = next;
-                                            goto tryNext;
-                                        }
-                                    }
-                                    else if (child.GetXmlElementQName() == null)
-                                    {
-                                        next = next.Parent;
-                                        goto tryParent;
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            QualifiedName qName = next.GetXmlElementQName();
-                            if (qName == null)
-                            {
-                                node = next;
-                                goto tryNext;
-                            }
-                        }
-
                         m_StateToRestore = null;
 
                         m_UrakawaSession.PerformTreeNodeSelection(next);
-
 
                         m_RecordAndContinue = false;
                         State.Audio.PcmFormatRecordingMonitoring = null;
@@ -446,22 +408,57 @@ namespace Tobi.Plugin.AudioPane
             m_RecordAndContinue = false;
             State.Audio.PcmFormatRecordingMonitoring = null;
         }
-        private bool textIsPunctuation(char text)
+
+
+        private TreeNode electNextRecordableNode(TreeNode current)
         {
-            return text == '.' || text == ',' || text == '?' || text == '!' || text == '"' || text == '\'' ||
-                   text == '(' || text == ')' || text == '{' || text == '}' || text == '[' || text == ']';
+            TreeNode node = current;
+        tryNext:
+            TreeNode next = node.GetNextSiblingWithText(true);
+            if (next != null)
+            {
+            tryParent:
+                if (next.Parent != null)
+                {
+                    foreach (var child in next.Parent.Children.ContentsAs_YieldEnumerable)
+                    {
+                        string text = child.GetTextFlattened(true);
+                        if (!string.IsNullOrEmpty(text))
+                        {
+                            text = text.Trim(); // we discard punctuation
+
+                            if (TreeNode.TextOnlyContainsPunctuation(text))
+                            {
+                                if (child == next)
+                                {
+                                    node = next;
+                                    goto tryNext;
+                                }
+                            }
+                            else if (child.GetXmlElementQName() == null)
+                            {
+                                next = next.Parent;
+                                goto tryParent;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    QualifiedName qName = next.GetXmlElementQName();
+                    if (qName == null)
+                    {
+                        node = next;
+                        goto tryNext;
+                    }
+                }
+
+                return next;
+            }
+
+            return null;
         }
 
-        private bool textOnlyContainsPunctuation(string text)
-        {
-            CharEnumerator enumtor = text.GetEnumerator();
-            while (enumtor.MoveNext())
-            {
-                if (!textIsPunctuation(enumtor.Current))
-                    return false;
-            }
-            return true; // includes empty "text" (when space is trimmed on caller's side)
-        }
 
         private void OnStateChanged_Recorder(object sender, AudioRecorder.StateChangedEventArgs e)
         {

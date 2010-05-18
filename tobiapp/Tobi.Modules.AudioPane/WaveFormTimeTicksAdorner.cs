@@ -443,7 +443,7 @@ namespace Tobi.Plugin.AudioPane
                         //}
                         //string nodeTxt = !String.IsNullOrEmpty(imgAlt) ? imgAlt : marker.m_TreeNode.GetTextMediaFlattened(false);
 
-                        string nodeTxt = marker.m_TreeNode.GetTextMediaFlattened(true);
+                        string nodeTxt = marker.m_TreeNode.GetTextFlattened(true);
 
                         if (!String.IsNullOrEmpty(nodeTxt))
                         {

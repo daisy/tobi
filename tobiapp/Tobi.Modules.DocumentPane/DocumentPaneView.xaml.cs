@@ -1888,7 +1888,7 @@ namespace Tobi.Plugin.DocumentPane
                 TheFlowDocumentSimple.Blocks.Add(block);
             }
 
-            string str = treeNode.GetTextMediaFlattened(true);
+            string str = treeNode.GetTextFlattened(true);
             if (string.IsNullOrEmpty(str))
             {
                 m_TextOnlyViewRun.Text = "";

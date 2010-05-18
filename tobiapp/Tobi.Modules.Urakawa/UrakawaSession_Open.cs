@@ -11,6 +11,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.core;
 using urakawa.exception;
 using urakawa.xuk;
 
@@ -180,28 +181,28 @@ namespace Tobi.Plugin.Urakawa
                 bool cancelled = false;
 
                 bool result = m_ShellView.RunModalCancellableProgressTask(true,
-                    Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc, action,     
-                    ()=>
-                        {
-                            cancelled = true;
-
-                            DocumentFilePath = null;
-                            DocumentProject = null;
-
-                            //backWorker.CancelAsync();
-                        },
+                    Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc, action,
                     () =>
-                        {
-                            cancelled = false;
+                    {
+                        cancelled = true;
 
-                            if (project.Presentations.Count == 0)
-                            {
-                                Debug.Fail("Project does not contain a Presentation !" + Environment.NewLine + fileUri.ToString());
-                                //workException = new XukException()
-                            }
-                            else
-                                DocumentProject = project;   
+                        DocumentFilePath = null;
+                        DocumentProject = null;
+
+                        //backWorker.CancelAsync();
+                    },
+                    () =>
+                    {
+                        cancelled = false;
+
+                        if (project.Presentations.Count == 0)
+                        {
+                            Debug.Fail("Project does not contain a Presentation !" + Environment.NewLine + fileUri.ToString());
+                            //workException = new XukException()
                         }
+                        else
+                            DocumentProject = project;
+                    }
                     );
 
                 if (!result)
@@ -216,7 +217,7 @@ namespace Tobi.Plugin.Urakawa
 
                     m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
 
-                    var treeNode = DocumentProject.Presentations.Get(0).RootNode.GetFirstDescendantWithText(true);
+                    var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(DocumentProject.Presentations.Get(0).RootNode, null);
                     if (treeNode != null)
                     {
                         //m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded", Category.Debug, Priority.Medium);

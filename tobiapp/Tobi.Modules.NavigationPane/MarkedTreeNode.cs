@@ -37,7 +37,7 @@ namespace Tobi.Plugin.NavigationPane
             {
                 str = "[" + qname.LocalName + "] ";
             }
-            string text = treeNode.GetTextMediaFlattened(true);
+            string text = treeNode.GetTextFlattened(true);
             if (!string.IsNullOrEmpty(text))
             {
                 if (text.Length > 40)

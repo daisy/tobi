@@ -238,7 +238,7 @@ namespace Tobi.Plugin.NavigationPane
                 return "!??!";
             }
             string str = (heading != null
-                ? "[" + heading.GetXmlElementQName().LocalName + "] " + heading.GetTextMediaFlattened(true)
+                ? "[" + heading.GetXmlElementQName().LocalName + "] " + heading.GetTextFlattened(true)
                 : "[" + level.GetXmlElementQName().LocalName + Tobi_Plugin_NavigationPane_Lang.NoHeading);
             return str.Trim();
 

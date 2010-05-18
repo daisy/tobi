@@ -268,7 +268,7 @@ namespace Tobi.Plugin.DocumentPane
             }
             else
             {
-                string innerText = node.GetTextMediaFlattened(true);
+                string innerText = node.GetTextFlattened(true);
                 if (!string.IsNullOrEmpty(innerText))
                 {
                     pageID = generatePageId(innerText);

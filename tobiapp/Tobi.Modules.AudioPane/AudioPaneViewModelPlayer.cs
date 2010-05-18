@@ -596,7 +596,11 @@ namespace Tobi.Plugin.AudioPane
                 {
                     View.ShowHideWaveFormLoadingMessage(true);
                 }
-
+                if (delayMilliseconds == 0)
+                {
+                    AudioPlayer_LoadWaveForm();
+                    return;
+                }
                 if (m_WaveFormLoadTimer == null)
                 {
                     m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
@@ -1102,7 +1106,7 @@ namespace Tobi.Plugin.AudioPane
 
             //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
 
-            
+
             CommandManager.InvalidateRequerySuggested();
 
             resetPeakMeter();
