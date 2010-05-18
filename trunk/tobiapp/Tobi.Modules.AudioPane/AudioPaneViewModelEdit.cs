@@ -206,6 +206,12 @@ namespace Tobi.Plugin.AudioPane
                     if (cancelled)
                     {
                         Debug.Assert(!result);
+
+                        if (!string.IsNullOrEmpty(converter.GeneratedAudioFilePath)
+                            && File.Exists(converter.GeneratedAudioFilePath))
+                        {
+                            File.Delete(converter.GeneratedAudioFilePath);
+                        }
                         return;
                     }
 

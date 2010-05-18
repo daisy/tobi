@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Speech.AudioFormat;
 using System.Speech.Synthesis;
+using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AudioLib;
@@ -78,11 +79,26 @@ namespace Tobi.Plugin.AudioPane
                 goto tryagain;
             }
 
+            var manualResetEvent = new ManualResetEvent(false);
+
             var watch = new Stopwatch();
             watch.Start();
 
+            bool done = false;
+
             SpeechSynthesizer.SpeakProgress += (sender, ev) =>
             {
+                if (done)
+                {
+                    return;
+                }
+
+                if (RequestCancellation)
+                {
+                    SpeechSynthesizer.SpeakAsyncCancelAll();
+                    return;
+                }
+
                 if (watch.ElapsedMilliseconds > 500)
                 {
                     watch.Stop();
@@ -98,12 +114,37 @@ namespace Tobi.Plugin.AudioPane
                 }
             };
 
-            SpeechSynthesizer.Speak(Text);
+            SpeechSynthesizer.SpeakCompleted += (sender, ev) =>
+            {
+                if (ev.Cancelled)
+                {
+                    int debug = 1;
+                }
+                manualResetEvent.Set();
+            };
 
+            //SpeechSynthesizer.StateChanged += (sender, ev) =>
+            //{
+            //    if (ev.PreviousState == SynthesizerState.Speaking
+            //        //&& ev.State == SynthesizerState.Paused
+            //        )
+            //    {
+            //        manualResetEvent.Set();
+            //    }
+            //};
+
+            SpeechSynthesizer.SpeakAsync(Text);
+            manualResetEvent.WaitOne();
+
+            done = true;
+            watch.Stop();
+
+            Thread.Sleep(100); // TTS flush buffers
+
+            manualResetEvent.Reset();
             SpeechSynthesizer.SetOutputToNull();
             SpeechSynthesizer.Speak("null");
-
-            watch.Stop();
+            //manualResetEvent.WaitOne();
 
             GeneratedAudioFilePath = filePath;
         }
