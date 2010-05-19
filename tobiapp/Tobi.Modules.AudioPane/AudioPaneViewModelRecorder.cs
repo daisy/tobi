@@ -281,7 +281,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private AudioRecorder m_Recorder;
+        internal AudioRecorder m_Recorder;
 
         private List<InputDevice> m_InputDevices;
         public List<InputDevice> InputDevices
@@ -335,12 +335,12 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnAudioRecordingFinished(object sender, AudioRecorder.AudioRecordingFinishEventArgs e)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                TheDispatcher.BeginInvoke(DispatcherPriority.Normal,
                                   (Action<object, AudioRecorder.AudioRecordingFinishEventArgs>)OnAudioRecordingFinished_,
                                   sender, e);
                 return;
@@ -462,10 +462,10 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnStateChanged_Recorder(object sender, AudioRecorder.StateChangedEventArgs e)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                TheDispatcher.BeginInvoke(DispatcherPriority.Normal,
                                   (Action<object, AudioRecorder.StateChangedEventArgs>)OnStateChanged_Recorder_, sender,
                                   e);
                 return;

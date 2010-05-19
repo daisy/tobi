@@ -1433,7 +1433,9 @@ namespace Tobi.Plugin.DocumentPane
             if (!(eventt is DoneEventArgs
                            || eventt is UnDoneEventArgs
                            || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs))
+                           || eventt is TransactionEndedEventArgs
+                           || eventt is TransactionCancelledEventArgs
+                           ))
             {
                 Debug.Fail("This should never happen !!");
                 return;
@@ -1447,6 +1449,7 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
+            Debug.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
 
             Command cmd = eventt.Command;
 
@@ -1618,6 +1621,7 @@ namespace Tobi.Plugin.DocumentPane
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
 
             OnProjectLoaded(null);
         }
@@ -1691,6 +1695,7 @@ namespace Tobi.Plugin.DocumentPane
                 project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
+                project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
             }
 
             createFlowDocumentFromXuk(project);

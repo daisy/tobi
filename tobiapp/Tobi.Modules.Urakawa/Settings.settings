@@ -11,6 +11,9 @@
     <Setting Name="AudioExportSampleRate" Type="AudioLib.SampleRate" Scope="User">
       <Value Profile="(Default)">Hz44100</Value>
     </Setting>
+    <Setting Name="AudioProjectSampleRate" Type="AudioLib.SampleRate" Scope="User">
+      <Value Profile="(Default)">Hz44100</Value>
+    </Setting>
     <Setting Name="XUK_PrettyFormat" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>

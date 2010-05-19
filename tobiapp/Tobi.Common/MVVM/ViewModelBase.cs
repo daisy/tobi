@@ -10,12 +10,12 @@ namespace Tobi.Common.MVVM
     /// </summary>
     public class ViewModelBase : PropertyChangedNotifyBase, IDisposable
     {
-        protected Dispatcher Dispatcher { get; private set; }
+        public Dispatcher TheDispatcher { get; private set; }
 
         protected ViewModelBase()
         {
             // Note: ViewModels must be created on the UI thread.
-            Dispatcher = Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher;
+            TheDispatcher = Application.Current != null ? Application.Current.Dispatcher : Dispatcher.CurrentDispatcher;
         }
 
         #region Debug

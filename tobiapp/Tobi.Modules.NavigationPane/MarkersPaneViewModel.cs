@@ -304,12 +304,12 @@ namespace Tobi.Plugin.NavigationPane
         }
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal,
+                TheDispatcher.Invoke(DispatcherPriority.Normal,
                                   (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
                 return;
             }
@@ -359,12 +359,12 @@ namespace Tobi.Plugin.NavigationPane
 
         private void onMarkedTreeNodeFoundByFlowDocumentParser(TreeNode data)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<TreeNode>)onMarkedTreeNodeFoundByFlowDocumentParser, data);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<TreeNode>)onMarkedTreeNodeFoundByFlowDocumentParser, data);
                 return;
             }
             MarkersNavigator.AddMarkedTreeNode(data);

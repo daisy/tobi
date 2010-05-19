@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Speech.Synthesis;
@@ -305,7 +304,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        public SpeechSynthesizer m_SpeechSynthesizer = new SpeechSynthesizer();
+        internal SpeechSynthesizer m_SpeechSynthesizer = new SpeechSynthesizer();
 
         private List<VoiceInfo> m_TTSVoices;
         public List<VoiceInfo> TTSVoices
@@ -313,9 +312,18 @@ namespace Tobi.Plugin.AudioPane
             get
             {
                 m_TTSVoices = new List<VoiceInfo>();
-                foreach (var installedVoice in m_SpeechSynthesizer.GetInstalledVoices())
+                try
                 {
-                    m_TTSVoices.Add(installedVoice.VoiceInfo);
+                    foreach (var installedVoice in m_SpeechSynthesizer.GetInstalledVoices())
+                    {
+                        m_TTSVoices.Add(installedVoice.VoiceInfo);
+                    }
+                }
+                catch (Exception ex_)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
                 }
                 return m_TTSVoices;
             }
@@ -324,20 +332,39 @@ namespace Tobi.Plugin.AudioPane
         {
             get
             {
-                if (m_TTSVoices != null)
-                    foreach (var voice in m_TTSVoices)
-                    {
-                        if (voice.Name == m_SpeechSynthesizer.Voice.Name)
-                            return voice;
-                    }
-                return m_SpeechSynthesizer.Voice;
+                try
+                {
+                    if (m_TTSVoices != null)
+                        foreach (var voice in m_TTSVoices)
+                        {
+                            if (voice.Name == m_SpeechSynthesizer.Voice.Name)
+                                return voice;
+                        }
+                    return m_SpeechSynthesizer.Voice;
+                }
+                catch (Exception ex_)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+                return null;
             }
             set
             {
-                if (value != null
-                    && (m_SpeechSynthesizer.Voice.Name != value.Name))
+                try
                 {
-                    Settings.Default.Audio_TTS_Voice = value.Name;
+                    if (value != null
+                        && (m_SpeechSynthesizer.Voice.Name != value.Name))
+                    {
+                        Settings.Default.Audio_TTS_Voice = value.Name;
+                    }
+                }
+                catch (Exception ex_)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
                 }
             }
         }
@@ -632,12 +659,12 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, EventArgs>)OnWaveFormLoadTimerTick, sender, e);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, EventArgs>)OnWaveFormLoadTimerTick, sender, e);
                 return;
             }
             //Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
@@ -1023,9 +1050,9 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnAudioPlaybackFinished(object sender, AudioPlayer.AudioPlaybackFinishEventArgs e)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                TheDispatcher.BeginInvoke(DispatcherPriority.Normal,
                                   (Action<object, AudioPlayer.AudioPlaybackFinishEventArgs>)OnAudioPlaybackFinished_,
                                   sender, e);
                 return;
@@ -1093,9 +1120,9 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnStateChanged_Player(object sender, AudioPlayer.StateChangedEventArgs e)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                TheDispatcher.BeginInvoke(DispatcherPriority.Normal,
                                   (Action<object, AudioPlayer.StateChangedEventArgs>)OnStateChanged_Player_, sender, e);
                 return;
             }
