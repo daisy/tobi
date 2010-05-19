@@ -96,4 +96,32 @@ namespace Tobi.Plugin.Validator.Metadata
             return definition.Synonyms != null && definition.Synonyms.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
         }
     }
+    [ValueConversion(typeof(ValidationItem), typeof(string))]
+    public class MetadataNameConverter : ValueConverterMarkupExtensionBase<MetadataNameConverter>
+    {
+        //return the name associated with the error
+        //a converter is necessary because the name could be on the definition or on the target object, depending on the
+        //error type and whether the target object is a custom metadata item.
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            if (!(value is ValidationItem)) return "";
+
+            if (value is MetadataMissingItemValidationError)
+            {
+                return (value as MetadataMissingItemValidationError).Definition.Name;
+            }
+            if (value is MetadataDuplicateItemValidationError)
+            {
+                return (value as MetadataDuplicateItemValidationError).Definition.Name;
+            }
+            if (value is MetadataFormatValidationError)
+            {
+                return (value as MetadataFormatValidationError).Target.NameContentAttribute.Name;
+            }
+
+            return "";
+
+        }
+    }
 }

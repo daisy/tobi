@@ -94,7 +94,7 @@
           <TextBlock TextWrapping="Wrap"  Focusable="true">
             <TextBlock.Text>
               <MultiBinding StringFormat="{x:Static local:Tobi_Plugin_MetadataPane_Lang.NameAndDescription}">
-                <Binding Source="{StaticResource MetadatasCVS}" Path="/Definition.Name"/>
+                <Binding Source="{StaticResource MetadatasCVS}" Path="/Name"/>
                 <Binding Source="{StaticResource MetadatasCVS}" Path="/Definition.Description"/>
               </MultiBinding>
             </TextBlock.Text>

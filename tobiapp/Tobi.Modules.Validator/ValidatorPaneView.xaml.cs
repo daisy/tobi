@@ -188,6 +188,28 @@ namespace Tobi.Plugin.Validator
                 Debug.Fail(string.Format("Clipboad exception: {0}", ex.Message));
             }
         }
+
+        private void Tabs_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.IsVisible == false) return;
+            if (e.OriginalSource != Tabs) return;
+            //SelectFirstInValidationItemsList();
+        }
+
+        private void SelectFirstInValidationItemsList()
+        {
+            DataTemplate template = Tabs.ContentTemplate;
+            var contentPresenter = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ContentPresenter>(Tabs, null);
+            if (contentPresenter == null) return;
+            var list = (ListBox)template.FindName("ValidationItemsListBox", contentPresenter);
+
+            if (list == null) return;
+
+            if (list.Items.Count > 0)
+            {
+                list.SelectedItem = list.Items[0];
+            }
+        }
     }
 
     [ValueConversion(typeof(ValidationSeverity), typeof(bool))]
