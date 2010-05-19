@@ -61,6 +61,18 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Hz44100")]
+        public global::AudioLib.SampleRate AudioProjectSampleRate {
+            get {
+                return ((global::AudioLib.SampleRate)(this["AudioProjectSampleRate"]));
+            }
+            set {
+                this["AudioProjectSampleRate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool XUK_PrettyFormat {
             get {

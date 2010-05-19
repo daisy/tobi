@@ -4,9 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
-using System.Speech.AudioFormat;
-using System.Speech.Synthesis;
-using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AudioLib;
@@ -24,132 +21,6 @@ using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
 {
-    public class AudioTTSGenerator : DualCancellableProgressReporter
-    {
-        private readonly string Text;
-        private readonly AudioLibPCMFormat PcmFormat;
-        private readonly string OutputDirectory;
-        private readonly SpeechSynthesizer SpeechSynthesizer;
-
-        public AudioTTSGenerator(string text, AudioLibPCMFormat pcmFormat, string outputDirectory, SpeechSynthesizer speechSynthesizer)
-        {
-            Text = text;
-            PcmFormat = pcmFormat;
-            OutputDirectory = outputDirectory;
-            SpeechSynthesizer = speechSynthesizer;
-        }
-
-        public string GeneratedAudioFilePath
-        {
-            get;
-            private set;
-        }
-
-        private static long m_ttsFileNameCounter;
-
-        public override void DoWork()
-        {
-            if (PcmFormat.BitDepth != 16)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                return;
-            }
-            var formatInfo = new SpeechAudioFormatInfo((int)PcmFormat.SampleRate, AudioBitsPerSample.Sixteen, PcmFormat.NumberOfChannels == 2 ? AudioChannel.Stereo : AudioChannel.Mono);
-
-            int i = 0;
-
-        tryagain:
-            i++;
-
-            var filePath = Path.Combine(OutputDirectory, "tts_" + m_ttsFileNameCounter + ".wav");
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
-            try
-            {
-                SpeechSynthesizer.SetOutputToWaveFile(filePath, formatInfo);
-            }
-            catch (Exception ex)
-            {
-                if (i > 100) return;
-                goto tryagain;
-            }
-
-            var manualResetEvent = new ManualResetEvent(false);
-
-            var watch = new Stopwatch();
-            watch.Start();
-
-            bool done = false;
-
-            SpeechSynthesizer.SpeakProgress += (sender, ev) =>
-            {
-                if (done)
-                {
-                    return;
-                }
-
-                if (RequestCancellation)
-                {
-                    SpeechSynthesizer.SpeakAsyncCancelAll();
-                    return;
-                }
-
-                if (watch.ElapsedMilliseconds > 500)
-                {
-                    watch.Stop();
-
-                    int percent = 100 * (ev.CharacterPosition + ev.CharacterCount) / Text.Length;
-                    if (percent < 0) percent = 0;
-                    if (percent > 100) percent = 100;
-
-                    reportProgress(percent, Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio);
-
-                    watch.Reset();
-                    watch.Start();
-                }
-            };
-
-            SpeechSynthesizer.SpeakCompleted += (sender, ev) =>
-            {
-                if (ev.Cancelled)
-                {
-                    int debug = 1;
-                }
-                manualResetEvent.Set();
-            };
-
-            //SpeechSynthesizer.StateChanged += (sender, ev) =>
-            //{
-            //    if (ev.PreviousState == SynthesizerState.Speaking
-            //        //&& ev.State == SynthesizerState.Paused
-            //        )
-            //    {
-            //        manualResetEvent.Set();
-            //    }
-            //};
-
-            SpeechSynthesizer.SpeakAsync(Text);
-            manualResetEvent.WaitOne();
-
-            done = true;
-            watch.Stop();
-
-            Thread.Sleep(100); // TTS flush buffers
-
-            manualResetEvent.Reset();
-            SpeechSynthesizer.SetOutputToNull();
-            SpeechSynthesizer.Speak("null");
-            //manualResetEvent.WaitOne();
-
-            GeneratedAudioFilePath = filePath;
-        }
-    }
-
     public class AudioClipConverter : DualCancellableProgressReporter
     {
         private readonly string SourceFilePath;
@@ -290,7 +161,7 @@ namespace Tobi.Plugin.AudioPane
                             {
                                 stopWatch.Stop();
 
-                                Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(() =>
+                                TheDispatcher.BeginInvoke(DispatcherPriority.Render, (Action)(() =>
                                 {
                                     long timeInLocalUnits = pcmFormat.Data.ConvertBytesToTime(totalLength);
 
@@ -382,7 +253,16 @@ namespace Tobi.Plugin.AudioPane
                 }
                 catch (Exception ex)
                 {
-                    Settings.Default.Audio_TTS_Voice = m_SpeechSynthesizer.Voice.Name;
+                    try
+                    {
+                        Settings.Default.Audio_TTS_Voice = m_SpeechSynthesizer.Voice.Name;
+                    }
+                    catch (Exception ex_)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
                 }
             }
             else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_InputDevice))
@@ -548,7 +428,7 @@ namespace Tobi.Plugin.AudioPane
 
         #region Initialization
 
-        protected IAudioPaneView View { get; private set; }
+        internal IAudioPaneView View { get; private set; }
         public void SetView(IAudioPaneView view)
         {
             View = view;
@@ -585,12 +465,12 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnEscape(object obj)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object>)OnEscape, obj);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object>)OnEscape, obj);
                 return;
             }
 
@@ -931,12 +811,12 @@ namespace Tobi.Plugin.AudioPane
         {
             //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action<Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>>)OnTreeNodeSelectionChanged, oldAndNewTreeNodeSelection);
+                TheDispatcher.BeginInvoke(DispatcherPriority.Normal, (Action<Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>>)OnTreeNodeSelectionChanged, oldAndNewTreeNodeSelection);
                 return;
             }
 
@@ -1147,12 +1027,12 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnProjectUnLoaded(Project project)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
                 return;
             }
 
@@ -1162,18 +1042,19 @@ namespace Tobi.Plugin.AudioPane
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
 
             OnProjectLoaded(null);
         }
 
         private void OnProjectLoaded(Project project)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
                 return;
             }
 
@@ -1208,6 +1089,7 @@ namespace Tobi.Plugin.AudioPane
                 project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
+                project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
 
                 m_Recorder.RecordingDirectory = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath; //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY
 
@@ -1689,9 +1571,9 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnPeakMeterUpdated(object sender, VuMeter.PeakMeterUpdateEventArgs e)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                TheDispatcher.BeginInvoke(DispatcherPriority.Normal,
                                   (Action<object, VuMeter.PeakMeterUpdateEventArgs>)OnPeakMeterUpdated_, sender, e);
                 return;
             }
@@ -1735,10 +1617,10 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnPeakMeterOverloaded(object sender, VuMeter.PeakOverloadEventArgs e)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                TheDispatcher.BeginInvoke(DispatcherPriority.Normal,
                                   (Action<object, VuMeter.PeakOverloadEventArgs>)OnPeakMeterOverloaded_, sender, e);
                 return;
             }

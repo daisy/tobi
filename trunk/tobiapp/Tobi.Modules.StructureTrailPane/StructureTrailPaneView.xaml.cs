@@ -447,6 +447,7 @@ namespace Tobi.Plugin.StructureTrailPane
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
         }
 
         private void OnProjectLoaded(Project project)
@@ -473,6 +474,7 @@ namespace Tobi.Plugin.StructureTrailPane
             project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
         }
 
         //private TreeNode m_CurrentTreeNode;
@@ -605,7 +607,9 @@ namespace Tobi.Plugin.StructureTrailPane
             if (!(eventt is DoneEventArgs
                            || eventt is UnDoneEventArgs
                            || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs))
+                           || eventt is TransactionEndedEventArgs
+                           || eventt is TransactionCancelledEventArgs
+                           ))
             {
                 Debug.Fail("This should never happen !!");
                 return;

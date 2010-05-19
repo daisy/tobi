@@ -209,12 +209,12 @@ namespace Tobi.Plugin.NavigationPane
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
                 return;
             }
 
@@ -223,7 +223,9 @@ namespace Tobi.Plugin.NavigationPane
             if (!(eventt is DoneEventArgs
                            || eventt is UnDoneEventArgs
                            || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs))
+                           || eventt is TransactionEndedEventArgs
+                           || eventt is TransactionCancelledEventArgs
+                           ))
             {
                 Debug.Fail("This should never happen !!");
                 return;
@@ -237,6 +239,7 @@ namespace Tobi.Plugin.NavigationPane
             }
 
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
+            Debug.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
 
             var cmd = eventt.Command as TreeNodeChangeTextCommand;
 
@@ -258,6 +261,7 @@ namespace Tobi.Plugin.NavigationPane
             project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
 
             PagesNavigator = new PagesNavigator(View);
             View.LoadProject();
@@ -268,6 +272,7 @@ namespace Tobi.Plugin.NavigationPane
             project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
+            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
 
             PagesNavigator = null;
             View.UnloadProject();
@@ -275,12 +280,12 @@ namespace Tobi.Plugin.NavigationPane
 
         private void onPageFoundByFlowDocumentParser(TreeNode treeNode)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<TreeNode>)onPageFoundByFlowDocumentParser, treeNode);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<TreeNode>)onPageFoundByFlowDocumentParser, treeNode);
                 return;
             }
             PagesNavigator.AddPage(treeNode);

@@ -610,12 +610,12 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
-            if (!Dispatcher.CheckAccess())
+            if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
                 return;
             }
             //Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
@@ -623,7 +623,9 @@ namespace Tobi.Plugin.AudioPane
             if (!(eventt is DoneEventArgs
                            || eventt is UnDoneEventArgs
                            || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs))
+                           || eventt is TransactionEndedEventArgs
+                           || eventt is TransactionCancelledEventArgs
+                           ))
             {
                 Debug.Fail("This should never happen !!");
                 return;
@@ -667,7 +669,7 @@ namespace Tobi.Plugin.AudioPane
             }
             if (eventt.Command is CompositeCommand)
             {
-                Debug.Assert(eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs);
+                Debug.Assert(eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs || eventt is TransactionCancelledEventArgs);
             }
 
 
@@ -712,7 +714,7 @@ namespace Tobi.Plugin.AudioPane
 
 
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            Debug.Assert(done == !(eventt is UnDoneEventArgs));
+            Debug.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
 
 
             updateTotalDuration(eventt.Command, done);
@@ -722,7 +724,7 @@ namespace Tobi.Plugin.AudioPane
             if (cmd is CompositeCommand)
             {
                 Debug.Assert(!(eventt is DoneEventArgs)
-                    && (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs)); // during a transaction every single command is executed.
+                    && (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs || eventt is TransactionCancelledEventArgs)); // during a transaction every single command is executed.
 
                 var command = (CompositeCommand)cmd;
 

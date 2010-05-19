@@ -176,183 +176,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandGenTTS", Category.Debug, Priority.Medium);
 
-                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode treeNode = treeNodeSelection.Item1;
-
-                    bool initial = true;
-                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio, Tobi_Plugin_AudioPane_Lang.CmdAudioGenTTS_LongDesc);
-                    try
-                    {
-                        CommandSelectAll.Execute();
-                        CommandDeleteAudioSelection.Execute();
-                        CommandRefresh.Execute();
-
-                    next:
-                        var adjustedNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(treeNodeSelection.Item1, initial ? null : treeNode);
-                        if (adjustedNode == null)
-                        {
-                            return;
-                        }
-                        initial = false;
-
-                        var text = adjustedNode.GetTextFlattened(true);
-                        if (string.IsNullOrEmpty(text))
-                        {
-                            return;
-                        }
-
-                        bool cancelled = false;
-
-                        var pcmFormat = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
-
-                        var converter = new AudioTTSGenerator(text, pcmFormat.Data, m_Recorder.RecordingDirectory, m_SpeechSynthesizer);
-
-                        bool result = m_ShellView.RunModalCancellableProgressTask(true,
-                            Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio,
-                            converter,
-                            () =>
-                            {
-                                Logger.Log(@"Audio TTS CANCELLED", Category.Debug, Priority.Medium);
-                                cancelled = true;
-                            },
-                            () =>
-                            {
-                                Logger.Log(@"Audio TTS DONE", Category.Debug, Priority.Medium);
-                                cancelled = false;
-                            });
-
-                        if (cancelled)
-                        {
-                            Debug.Assert(!result);
-
-                            if (!string.IsNullOrEmpty(converter.GeneratedAudioFilePath)
-                                && File.Exists(converter.GeneratedAudioFilePath))
-                            {
-                                File.Delete(converter.GeneratedAudioFilePath);
-                            }
-                            return;
-                        }
-
-                        if (!File.Exists(converter.GeneratedAudioFilePath))
-                        {
-                            return;
-                        }
-
-                        Tuple<TreeNode, TreeNode> newSelection = m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelection.Item1, false, adjustedNode);
-                        if (newSelection.Item1 != treeNodeSelection.Item1 || newSelection.Item2 != adjustedNode)
-                        {
-                            return;
-                        }
-
-                        openFile(converter.GeneratedAudioFilePath, true, true, pcmFormat);
-
-                        CommandRefresh.Execute();
-                        if (View != null)
-                        {
-                            View.CancelWaveFormLoad(true);
-                        }
-
-                        treeNode = adjustedNode.GetNextSiblingWithText(true);
-                        while (treeNode != null && (treeNode.GetXmlElementQName() == null
-                                || TreeNode.TextOnlyContainsPunctuation(treeNode.GetText(true).Trim())
-                                ))
-                        {
-                            treeNode = treeNode.GetNextSiblingWithText(true);
-                        }
-
-                        if (treeNode == null)
-                        {
-                            return;
-                        }
-
-                        goto next;
-                    }
-                    finally
-                    {
-                        m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
-
-                        m_LastSetPlayBytePosition = -1;
-
-                        //AudioPlayer_UpdateWaveFormPlayHead();
-                        if (View != null)
-                        {
-                            View.RefreshUI_WaveFormPlayHead();
-                        }
-
-                        //RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
-
-                        if (View != null)
-                        {
-                            View.ResetAll();
-                        }
-
-                        if (AudioPlaybackStreamKeepAlive)
-                        {
-                            ensurePlaybackStreamIsDead();
-                        }
-                        if (m_CurrentAudioStreamProvider() != null)
-                        {
-                            m_StateToRestore = null;
-                            CommandRefresh.Execute();
-                        }
-                    }
-
-
-                    //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-                    //TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
-                    //if (node == null) return;
-
-                    //var text = node.GetTextMediaFlattened(true);
-                    //if (string.IsNullOrEmpty(text)) return;
-
-                    //bool cancelled = false;
-
-                    //var pcmFormat = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
-
-                    //var converter = new AudioTTSGenerator(text, pcmFormat.Data, m_Recorder.RecordingDirectory, m_SpeechSynthesizer);
-
-                    //bool result = m_ShellView.RunModalCancellableProgressTask(true,
-                    //    Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio,
-                    //    converter,
-                    //    () =>
-                    //    {
-                    //        Logger.Log(@"Audio TTS CANCELLED", Category.Debug, Priority.Medium);
-                    //        cancelled = true;
-                    //    },
-                    //    () =>
-                    //    {
-                    //        Logger.Log(@"Audio TTS DONE", Category.Debug, Priority.Medium);
-                    //        cancelled = false;
-                    //    });
-
-                    //if (cancelled)
-                    //{
-                    //    Debug.Assert(!result);
-
-                    //    if (!string.IsNullOrEmpty(converter.GeneratedAudioFilePath)
-                    //        && File.Exists(converter.GeneratedAudioFilePath))
-                    //    {
-                    //        File.Delete(converter.GeneratedAudioFilePath);
-                    //    }
-                    //    return;
-                    //}
-
-                    //if (!File.Exists(converter.GeneratedAudioFilePath))
-                    //{
-                    //    return;
-                    //}
-
-                    //if (treeNodeSelection.Item2 == null)
-                    //{
-                    //    CommandSelectAll.Execute();
-                    //}
-                    //else
-                    //{
-                    //    long byteOffset = getByteOffset(treeNodeSelection.Item2, null);
-                    //    SelectChunk(byteOffset);
-                    //}
-
-                    //openFile(converter.GeneratedAudioFilePath, true, true, pcmFormat);
+                    CommandGenTTS_Execute();
                 },
                 () =>
                 {
@@ -363,7 +187,8 @@ namespace Tobi.Plugin.AudioPane
                        && treeNodeSelection.Item1 != null
                        && treeNodeSelection.Item1.GetXmlElementQName() != null
                        && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
-                       && treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null;
+                       //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
+                       ;
 
                     //// because we change the selection in the execute code
                     ////return CommandInsertFile.CanExecute();
@@ -460,7 +285,7 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        private void openFile(String str, bool insert, bool deleteAfterInsert, PCMFormatInfo pcmInfo)
+        internal void openFile(String str, bool insert, bool deleteAfterInsert, PCMFormatInfo pcmInfo)
         {
             Logger.Log("AudioPaneViewModel.OpenFile", Category.Debug, Priority.Medium);
 
