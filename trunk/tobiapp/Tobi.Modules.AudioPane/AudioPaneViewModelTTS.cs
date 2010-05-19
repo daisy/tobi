@@ -36,106 +36,142 @@ namespace Tobi.Plugin.AudioPane
 
         public override void DoWork()
         {
-            if (PcmFormat.BitDepth != 16)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                return;
-            }
-            var formatInfo = new SpeechAudioFormatInfo((int)PcmFormat.SampleRate, AudioBitsPerSample.Sixteen, PcmFormat.NumberOfChannels == 2 ? AudioChannel.Stereo : AudioChannel.Mono);
-
-            int i = 0;
-
-        tryagain:
-            i++;
-
-            var filePath = Path.Combine(OutputDirectory, "tts_" + m_ttsFileNameCounter + ".wav");
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-
+            EventHandler<SpeakProgressEventArgs> delegateProgress = null;
+            EventHandler<SpeakCompletedEventArgs> delegateCompleted = null;
             try
             {
-                SpeechSynthesizer.SetOutputToWaveFile(filePath, formatInfo);
-            }
-            catch (Exception ex)
-            {
-                if (i > 100) return;
-                goto tryagain;
-            }
-
-            var manualResetEvent = new ManualResetEvent(false);
-
-            var watch = new Stopwatch();
-            watch.Start();
-
-            bool done = false;
-
-            string msg = Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio + " [" + (Text.Length > 20 ? Text.Substring(0, 19) + "..." : Text) + "]";
-
-            SpeechSynthesizer.SpeakProgress += (sender, ev) =>
-            {
-                if (done)
+                if (PcmFormat.BitDepth != 16)
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     return;
                 }
+                var formatInfo = new SpeechAudioFormatInfo((int)PcmFormat.SampleRate, AudioBitsPerSample.Sixteen, PcmFormat.NumberOfChannels == 2 ? AudioChannel.Stereo : AudioChannel.Mono);
 
-                if (RequestCancellation)
+                int i = 0;
+
+            tryagain:
+                i++;
+
+                var filePath = Path.Combine(OutputDirectory, "tts_" + m_ttsFileNameCounter + ".wav");
+                if (File.Exists(filePath))
                 {
-                    SpeechSynthesizer.SpeakAsyncCancelAll();
-                    return;
+                    File.Delete(filePath);
                 }
 
-                if (watch.ElapsedMilliseconds > 500)
+                try
                 {
-                    watch.Stop();
-
-                    int percent = 100 * (ev.CharacterPosition + ev.CharacterCount) / Text.Length;
-                    if (percent < 0) percent = 0;
-                    if (percent > 100) percent = 100;
-
-                    reportProgress(percent, msg);
-
-                    watch.Reset();
-                    watch.Start();
+                    SpeechSynthesizer.SetOutputToWaveFile(filePath, formatInfo);
                 }
-            };
+                catch (Exception ex)
+                {
+                    SpeechSynthesizer.SetOutputToNull();
+                    if (i > 100) return;
+                    goto tryagain;
+                }
 
-            SpeechSynthesizer.SpeakCompleted += (sender, ev) =>
+                var manualResetEvent = new ManualResetEvent(false);
+
+                var watch = new Stopwatch();
+                watch.Start();
+
+                bool done = false;
+
+                string msg = Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio + " [" + (Text.Length > 20 ? Text.Substring(0, 19) + "..." : Text) + "]";
+
+                delegateProgress = (sender, ev) =>
+                {
+                    if (done)
+                    {
+                        return;
+                    }
+
+                    if (RequestCancellation)
+                    {
+                        SpeechSynthesizer.SpeakAsyncCancelAll();
+                        return;
+                    }
+
+                    if (true || watch.ElapsedMilliseconds > 500)
+                    {
+                        watch.Stop();
+
+                        int percent = 100 * (ev.CharacterPosition + ev.CharacterCount) / Text.Length;
+                        if (percent < 0) percent = 0;
+                        if (percent > 100) percent = 100;
+
+                        //Console.WriteLine("%%%%%%%% " + percent);
+
+                        reportProgress(percent, msg);
+
+                        watch.Reset();
+                        watch.Start();
+                    }
+                };
+                SpeechSynthesizer.SpeakProgress += delegateProgress;
+
+                delegateCompleted = (sender, ev) =>
+                {
+                    if (ev.Cancelled)
+                    {
+                        int debug = 1;
+                    }
+
+                    var filePrompt = ev.Prompt as FilePrompt;
+                    string str = ev.Prompt.ToString();
+                    if (SpeechSynthesizer.State == SynthesizerState.Ready)
+                    {
+                        manualResetEvent.Set();
+                    }
+                    else
+                    {
+                        int debug = 1;
+                    }
+                };
+                SpeechSynthesizer.SpeakCompleted += delegateCompleted;
+
+                //SpeechSynthesizer.StateChanged += (sender, ev) =>
+                //{
+                //    if (ev.PreviousState == SynthesizerState.Speaking
+                //        //&& ev.State == SynthesizerState.Paused
+                //        )
+                //    {
+                //        manualResetEvent.Set();
+                //    }
+                //};
+
+                SpeechSynthesizer.SpeakAsync(Text);
+                manualResetEvent.WaitOne();
+
+                done = true;
+                watch.Stop();
+
+                SpeechSynthesizer.SpeakCompleted -= delegateCompleted;
+                SpeechSynthesizer.SpeakProgress -= delegateProgress;
+
+                Thread.Sleep(100); // TTS flush buffers
+
+                manualResetEvent.Reset();
+                manualResetEvent = null;
+
+                SpeechSynthesizer.SetOutputToNull(); // TTS flush buffers
+                SpeechSynthesizer.Speak("null"); // TTS flush buffers
+                //manualResetEvent.WaitOne();
+
+                GeneratedAudioFilePath = filePath;
+            }
+            finally
             {
-                if (ev.Cancelled)
+                if (delegateCompleted != null)
                 {
-                    int debug = 1;
+                    SpeechSynthesizer.SpeakCompleted -= delegateCompleted;
                 }
-                manualResetEvent.Set();
-            };
-
-            //SpeechSynthesizer.StateChanged += (sender, ev) =>
-            //{
-            //    if (ev.PreviousState == SynthesizerState.Speaking
-            //        //&& ev.State == SynthesizerState.Paused
-            //        )
-            //    {
-            //        manualResetEvent.Set();
-            //    }
-            //};
-
-            SpeechSynthesizer.SpeakAsync(Text);
-            manualResetEvent.WaitOne();
-
-            done = true;
-            watch.Stop();
-
-            Thread.Sleep(100); // TTS flush buffers
-
-            manualResetEvent.Reset();
-            SpeechSynthesizer.SetOutputToNull();
-            SpeechSynthesizer.Speak("null");
-            //manualResetEvent.WaitOne();
-
-            GeneratedAudioFilePath = filePath;
+                if (delegateProgress != null)
+                {
+                    SpeechSynthesizer.SpeakProgress -= delegateProgress;
+                }
+            }
         }
     }
 
@@ -172,11 +208,24 @@ namespace Tobi.Plugin.AudioPane
                 {
                     return;
                 }
+
+                if (adjustedNode.GetManagedAudioMedia() != null
+                    || adjustedNode.GetFirstDescendantWithManagedAudio() != null)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return;
+                }
+
                 initial = false;
 
                 var text = adjustedNode.GetTextFlattened(true);
                 if (string.IsNullOrEmpty(text))
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
                     return;
                 }
 
@@ -198,16 +247,35 @@ namespace Tobi.Plugin.AudioPane
 
                 if (!File.Exists(converter.GeneratedAudioFilePath))
                 {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    RequestCancellation = true;
                     return;
                 }
 
                 //var manualResetEvent = new ManualResetEvent(false);
-                m_viewModel.TheDispatcher.Invoke(DispatcherPriority.Background, (Action)(() =>
+                m_viewModel.TheDispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
                {
                    TreeNode sub = adjustedNode == treeNodeSelection.Item1 ? null : adjustedNode;
                    Tuple<TreeNode, TreeNode> newSelection = m_viewModel.m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelection.Item1, false, sub);
                    if (newSelection.Item1 != treeNodeSelection.Item1 || newSelection.Item2 != sub)
                    {
+#if DEBUG
+                       Debugger.Break();
+#endif
+                       RequestCancellation = true;
+                       return;
+                   }
+
+                   TreeNode selectedNode = newSelection.Item2 ?? newSelection.Item1;
+                   if (selectedNode.GetManagedAudioMedia() != null
+                       || selectedNode.GetFirstDescendantWithManagedAudio() != null)
+                   {
+#if DEBUG
+                       Debugger.Break();
+#endif
+                       RequestCancellation = true;
                        return;
                    }
 
@@ -219,6 +287,16 @@ namespace Tobi.Plugin.AudioPane
                        m_viewModel.View.CancelWaveFormLoad(true);
                    }
                }));
+
+                if (RequestCancellation)
+                {
+                    if (!string.IsNullOrEmpty(converter.GeneratedAudioFilePath)
+                        && File.Exists(converter.GeneratedAudioFilePath))
+                    {
+                        File.Delete(converter.GeneratedAudioFilePath);
+                    }
+                    return;
+                }
 
                 treeNode = adjustedNode.GetNextSiblingWithText(true);
                 while (treeNode != null && (treeNode.GetXmlElementQName() == null

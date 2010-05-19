@@ -744,11 +744,30 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
-                    TreeNode nodeToNavigate = node.GetPreviousSiblingWithText(true);
-                    if (nodeToNavigate == null)
+
+                    TreeNode previousDirect = node.GetPreviousSiblingWithText(true);
+                    if (previousDirect == null)
+                    {
                         AudioCues.PlayBeep();
+                    }
                     else
-                        m_UrakawaSession.PerformTreeNodeSelection(nodeToNavigate);
+                    {
+                        TreeNode previous = previousDirect;
+                        while (previous != null && (previous.GetXmlElementQName() == null
+                               || TreeNode.TextOnlyContainsPunctuation(previous.GetText(true).Trim())
+                               ))
+                        {
+                            previous = previous.GetPreviousSiblingWithText(true);
+                        }
+                        previous = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, previous);
+
+                        if (previous == null)
+                        {
+                            previous = previousDirect;
+                        }
+
+                        m_UrakawaSession.PerformTreeNodeSelection(previous);
+                    }
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)
                     //{
@@ -810,11 +829,30 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
-                    TreeNode nodeToNavigate = node.GetNextSiblingWithText(true);
-                    if (nodeToNavigate == null)
+
+                    TreeNode nextDirect = node.GetNextSiblingWithText(true);
+                    if (nextDirect == null)
+                    {
                         AudioCues.PlayBeep();
+                    }
                     else
-                        m_UrakawaSession.PerformTreeNodeSelection(nodeToNavigate);
+                    {
+                        TreeNode next = nextDirect;
+                        while (next != null && (next.GetXmlElementQName() == null
+                               || TreeNode.TextOnlyContainsPunctuation(next.GetText(true).Trim())
+                               ))
+                        {
+                            next = next.GetNextSiblingWithText(true);
+                        }
+                        next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
+
+                        if (next == null)
+                        {
+                            next = nextDirect;
+                        }
+
+                        m_UrakawaSession.PerformTreeNodeSelection(next);
+                    }
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)
                     //{
@@ -1848,9 +1886,9 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             clearLastHighlighteds();
-            
+
             m_TextElementForEdit = null;
-            
+
             if (textElement2 == null)
             {
                 //m_TextElementForEdit = textElement1;

@@ -769,6 +769,10 @@ namespace Tobi.Plugin.AudioPane
                         {
                             cmd = childCmd;
                         }
+                        else if (childCmd is TreeNodeSetManagedAudioMediaCommand)
+                        {
+                            cmd = childCmd;
+                        }
                     }
                 }
             }

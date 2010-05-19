@@ -24,7 +24,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AudioWaveForm_Resolution" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">4</Value>
+      <Value Profile="(Default)">3</Value>
     </Setting>
     <Setting Name="AudioWaveForm_IsFilled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

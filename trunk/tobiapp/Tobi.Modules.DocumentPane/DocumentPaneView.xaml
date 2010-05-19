@@ -428,8 +428,9 @@ Background="{Binding
                                  />
 
       <Separator/>
-
+      <!--ToolTip="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.CmdTextOnlyViewToggle_LongDesc}"-->
       <CheckBox Content="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.TextOnly}"
+                ToolTip="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Keyboard_ToggleTextOnly, Mode=OneWay}"
                 Margin="3"
                  VerticalAlignment="Center"
    IsChecked="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView, Mode=TwoWay}"/>
