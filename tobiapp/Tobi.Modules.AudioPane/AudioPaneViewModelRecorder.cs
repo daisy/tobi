@@ -370,8 +370,17 @@ namespace Tobi.Plugin.AudioPane
                 TreeNode treeNode = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
                 if (treeNode != null)
                 {
-                    TreeNode next = electNextRecordableNode(treeNode);
+                    //TreeNode next = electNextRecordableNode(treeNode);
 
+                    TreeNode next = treeNode.GetNextSiblingWithText(true);
+                    while (next != null && (next.GetXmlElementQName() == null
+                            || TreeNode.TextOnlyContainsPunctuation(next.GetText(true).Trim())
+                            ))
+                    {
+                        next = next.GetNextSiblingWithText(true);
+                    }
+                    next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
+                   
                     if (next != null)
                     {
                         m_StateToRestore = null;
@@ -385,7 +394,8 @@ namespace Tobi.Plugin.AudioPane
                         TreeNode treeNodeNew = treeNodeSelectionNew.Item2 ?? treeNodeSelectionNew.Item1;
                         if (treeNodeNew != null)
                         {
-                            if (treeNodeNew.GetManagedAudioMedia() == null)
+                            if (treeNodeNew.GetManagedAudioMedia() == null
+                                && treeNodeNew.GetFirstDescendantWithManagedAudio() == null)
                             {
                                 if (IsWaveFormLoading && View != null)
                                 {
@@ -396,7 +406,8 @@ namespace Tobi.Plugin.AudioPane
                             }
                             else
                             {
-                                CommandPlay.Execute();
+                                //CommandPlay.Execute();
+                                CommandSelectAll.Execute();
                             }
                         }
 
@@ -410,54 +421,54 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        private TreeNode electNextRecordableNode(TreeNode current)
-        {
-            TreeNode node = current;
-        tryNext:
-            TreeNode next = node.GetNextSiblingWithText(true);
-            if (next != null)
-            {
-            tryParent:
-                if (next.Parent != null)
-                {
-                    foreach (var child in next.Parent.Children.ContentsAs_YieldEnumerable)
-                    {
-                        string text = child.GetTextFlattened(true);
-                        if (!string.IsNullOrEmpty(text))
-                        {
-                            text = text.Trim(); // we discard punctuation
+        //private TreeNode electNextRecordableNode(TreeNode current)
+        //{
+        //    TreeNode node = current;
+        //tryNext:
+        //    TreeNode next = node.GetNextSiblingWithText(true);
+        //    if (next != null)
+        //    {
+        //    tryParent:
+        //        if (next.Parent != null)
+        //        {
+        //            foreach (var child in next.Parent.Children.ContentsAs_YieldEnumerable)
+        //            {
+        //                string text = child.GetTextFlattened(true);
+        //                if (!string.IsNullOrEmpty(text))
+        //                {
+        //                    text = text.Trim(); // we discard punctuation
 
-                            if (TreeNode.TextOnlyContainsPunctuation(text))
-                            {
-                                if (child == next)
-                                {
-                                    node = next;
-                                    goto tryNext;
-                                }
-                            }
-                            else if (child.GetXmlElementQName() == null)
-                            {
-                                next = next.Parent;
-                                goto tryParent;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    QualifiedName qName = next.GetXmlElementQName();
-                    if (qName == null)
-                    {
-                        node = next;
-                        goto tryNext;
-                    }
-                }
+        //                    if (TreeNode.TextOnlyContainsPunctuation(text))
+        //                    {
+        //                        if (child == next)
+        //                        {
+        //                            node = next;
+        //                            goto tryNext;
+        //                        }
+        //                    }
+        //                    else if (child.GetXmlElementQName() == null)
+        //                    {
+        //                        next = next.Parent;
+        //                        goto tryParent;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            QualifiedName qName = next.GetXmlElementQName();
+        //            if (qName == null)
+        //            {
+        //                node = next;
+        //                goto tryNext;
+        //            }
+        //        }
 
-                return next;
-            }
+        //        return next;
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
 
         private void OnStateChanged_Recorder(object sender, AudioRecorder.StateChangedEventArgs e)

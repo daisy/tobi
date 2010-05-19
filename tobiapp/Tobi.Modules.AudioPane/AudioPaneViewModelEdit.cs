@@ -187,7 +187,7 @@ namespace Tobi.Plugin.AudioPane
                        && treeNodeSelection.Item1 != null
                        && treeNodeSelection.Item1.GetXmlElementQName() != null
                        && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
-                       //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
+                        //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
                        ;
 
                     //// because we change the selection in the execute code
@@ -281,7 +281,9 @@ namespace Tobi.Plugin.AudioPane
                    && node != null
                    && node.GetXmlElementQName() != null
                    && node.GetFirstAncestorWithManagedAudio() == null
-                   && node.GetFirstDescendantWithManagedAudio() == null;
+                   && node.GetFirstDescendantWithManagedAudio() == null
+                   //&& node.GetManagedAudioMedia() == null
+                   ;
         }
 
 

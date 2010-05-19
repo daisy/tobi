@@ -129,13 +129,34 @@ namespace Tobi.Plugin.StructureTrailPane
 
                     foreach (TreeNode child in n.Children.ContentsAs_YieldEnumerable)
                     {
+                        bool childIsInPath = PathToCurrentTreeNode.Contains(child);
+
                         var menuItem = new MenuItem();
                         QualifiedName qnameChild = child.GetXmlElementQName();
                         if (qnameChild != null)
                         {
-                            menuItem.Header = qnameChild.LocalName;
+                            if (childIsInPath)
+                            {
+                                var runMenuItem = new Run(qnameChild.LocalName) { FontWeight = FontWeights.ExtraBold };
+                                menuItem.Header = runMenuItem;
+                            }
+                            else
+                            {
+                                menuItem.Header = qnameChild.LocalName;
+                            }
                         }
-                        else menuItem.Header = "TEXT";
+                        else
+                        {
+                            if (childIsInPath)
+                            {
+                                var runMenuItem = new Run("TXT") { FontWeight = FontWeights.ExtraBold };
+                                menuItem.Header = runMenuItem;
+                            }
+                            else
+                            {
+                                menuItem.Header = "TXT";
+                            }
+                        }
                         menuItem.Tag = child;
                         menuItem.Click += menuItem_Click;
                         tb.ContextMenu.Items.Add(menuItem);
