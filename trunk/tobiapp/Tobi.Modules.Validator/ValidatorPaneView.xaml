@@ -11,13 +11,14 @@
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-<UI:LazyKeepAliveTabControl VerticalAlignment="Stretch"
+<TabControl VerticalAlignment="Stretch"
             HorizontalAlignment="Stretch"
             x:Name="Tabs"
             ItemsSource="{Binding Path=Validators}"
             mc:Ignorable="d"
             IsSynchronizedWithCurrentItem ="True"
-            Grid.Row="0">
+            Grid.Row="0"
+                            SelectionChanged="Tabs_OnSelectionChanged">
   <TabControl.Resources>
     <Style TargetType="{x:Type TextBlock}">
       <Setter Property="TextWrapping" Value="Wrap"/>
@@ -117,7 +118,7 @@ AlternationCount="2"
       </Grid>
     </DataTemplate>
   </TabControl.ContentTemplate>
-</UI:LazyKeepAliveTabControl>
+</TabControl>
   
   <TextBlock Margin="0,3,0,3" Grid.Row="1">
     <Hyperlink Click="OnClipboardCopyAllLinkClick">
