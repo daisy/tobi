@@ -23,15 +23,6 @@
 
     <Style TargetType="{x:Type ListViewItem}">
       <Setter Property="Margin" Value="4"/>
-      <!--<Setter>
-        <Setter.Property>AutomationProperties.Name</Setter.Property>
-        <Setter.Value>
-          <MultiBinding Converter="{local:FullDescriptionConverter}">
-            <Binding Path="Name"/>
-            <Binding Path="Content"/>
-          </MultiBinding>
-        </Setter.Value>
-      </Setter>-->
       <Style.Triggers>
         <Trigger Property="ItemsControl.AlternationIndex" Value="0">
           <Setter Property="Background"
@@ -192,7 +183,7 @@
         </UI:SortableGridViewColumn>
 
         <UI:SortableGridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Content}"
-                        Width="Auto"
+                        Width="150"
                         SortPropertyName="Content">
           <GridViewColumn.CellTemplate>
             <DataTemplate>
