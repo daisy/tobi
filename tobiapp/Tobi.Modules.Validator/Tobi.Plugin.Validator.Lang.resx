@@ -152,8 +152,7 @@
     </value>
   </data>
   <data name="ClipboardTotalErrorCount" xml:space="preserve">
-    <value>Total errors: {0}
-    </value>
+    <value>Total errors: {0}</value>
     <comment>{0} = number of errors</comment>
   </data>
   <data name="ClipboardValidatorEntry" xml:space="preserve">
