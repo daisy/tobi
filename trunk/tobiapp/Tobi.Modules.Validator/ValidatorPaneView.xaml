@@ -11,114 +11,113 @@
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-<TabControl VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch"
-            x:Name="Tabs"
-            ItemsSource="{Binding Path=Validators}"
-            mc:Ignorable="d"
-            IsSynchronizedWithCurrentItem ="True"
-            Grid.Row="0"
-                            SelectionChanged="Tabs_OnSelectionChanged">
-  <TabControl.Resources>
-    <Style TargetType="{x:Type TextBlock}">
-      <Setter Property="TextWrapping" Value="Wrap"/>
-    </Style>
-  </TabControl.Resources>
+  <TabControl VerticalAlignment="Stretch"
+              HorizontalAlignment="Stretch"
+              x:Name="Tabs"
+              ItemsSource="{Binding Path=Validators}"
+              mc:Ignorable="d"
+              IsSynchronizedWithCurrentItem ="True"
+              Grid.Row="0"
+              SelectionChanged="Tabs_OnSelectionChanged"
+              Loaded="Tabs_OnLoaded">
+    <TabControl.Resources>
+      <Style TargetType="{x:Type TextBlock}">
+        <Setter Property="TextWrapping" Value="Wrap"/>
+      </Style>
+    </TabControl.Resources>
 
-  <TabControl.ItemContainerStyle>
-    <Style TargetType="{x:Type TabItem}">
-      <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
-    </Style>
-  </TabControl.ItemContainerStyle>
-  
-  <TabControl.ItemTemplate>
-    <DataTemplate>
-      <TextBlock Text="{Binding Mode=OneWay, Path=NameAndNumberOfIssues}"
-     ToolTip="{Binding Mode=OneWay, Path=Description}"/>
-    </DataTemplate>
-  </TabControl.ItemTemplate>
+    <TabControl.ItemContainerStyle>
+      <Style TargetType="{x:Type TabItem}">
+        <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
+      </Style>
+    </TabControl.ItemContainerStyle>
 
-  <TabControl.ContentTemplate>
-    <DataTemplate x:Name="tabContent">
-      <Grid Height="Auto" Width="Auto">
+    <TabControl.ItemTemplate>
+      <DataTemplate>
+        <TextBlock Text="{Binding Mode=OneWay, Path=NameAndNumberOfIssues}"
+       ToolTip="{Binding Mode=OneWay, Path=Description}"/>
+      </DataTemplate>
+    </TabControl.ItemTemplate>
 
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="200"/>
-          <ColumnDefinition Width="Auto"/>
-          <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <TabControl.ContentTemplate>
+      <DataTemplate x:Name="tabContent">
+        <Grid Height="Auto" Width="Auto">
 
-        <ListBox Grid.Column="0" Grid.Row="0"
-                 ItemsSource="{Binding ValidationItems}"
-                 x:Name="ValidationItemsListBox"
-                 Margin="0,0,0,0"
-                 HorizontalContentAlignment="Stretch"
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+
+          <ListBox Grid.Column="0" Grid.Row="0"
+                   ItemsSource="{Binding ValidationItems}"
+                   x:Name="ValidationItemsListBox"
+                   Margin="0,0,0,0"
+                   HorizontalContentAlignment="Stretch"
                  
-                 ListBoxItem.MouseDoubleClick="ValidationItemsListBox_OnMouseDoubleClick"
-                 
-              SelectionMode="Single"
-
-            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-            ScrollViewer.VerticalScrollBarVisibility="Visible"
-AlternationCount="2"
+                   ListBoxItem.MouseDoubleClick="ValidationItemsListBox_OnMouseDoubleClick"
+                  SelectionMode="Single"
+                  ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                  AlternationCount="2"
                  >
-          <ListBox.ItemContainerStyle>
-            <Style TargetType="{x:Type ListBoxItem}">
-              <Setter Property="AutomationProperties.Name" Value="{Binding Message}"/>
-              <Setter Property="ToolTip" Value="{Binding Message}"/>
+            <ListBox.ItemContainerStyle>
+              <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="AutomationProperties.Name" Value="{Binding Message}"/>
+                <Setter Property="ToolTip" Value="{Binding Message}"/>
 
-              <Style.Triggers>
-                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                  <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                </Trigger>
-              </Style.Triggers>
-            </Style>
-          </ListBox.ItemContainerStyle>
+                <Style.Triggers>
+                  <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </ListBox.ItemContainerStyle>
 
-          <ListBox.ItemTemplate>
-            <DataTemplate>
-              <TextBlock Padding="4" Text="{Binding Message}"/>
-              
-             </DataTemplate>
-          </ListBox.ItemTemplate>
-        
-        
-      </ListBox>
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Padding="4" Text="{Binding Message}"/>
 
-        <GridSplitter
-            Grid.Column="1" Grid.Row="0"
-             Focusable="False"
-             HorizontalAlignment="Center" VerticalAlignment="Stretch">
-        </GridSplitter>
-
-        <StackPanel
-           Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-           Focusable="False" Grid.Column="2"  Grid.Row="0" Margin="4">
-          <StackPanel.DataContext>
-            <Binding ElementName="ValidationItemsListBox"
-                     Path="SelectedItem"/>
-          </StackPanel.DataContext>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
 
 
-          
-          <ContentControl Focusable="False" Content="{Binding}"/>
-              
-          
-          <TextBlock Margin="5,0,0,0"
-                     Visibility="{Binding  Mode=OneWay, Converter={Validator:VisibilityConverter}}">
-            <Hyperlink Click="OnClipboardLinkClick">
-              <Run Text="{x:Static Validator:Tobi_Plugin_Validator_Lang.CopyLink}"/>
-            </Hyperlink>
-          </TextBlock>
-        </StackPanel>
+          </ListBox>
 
-      </Grid>
-    </DataTemplate>
-  </TabControl.ContentTemplate>
-</TabControl>
+          <GridSplitter
+              Grid.Column="1" Grid.Row="0"
+               Focusable="False"
+               HorizontalAlignment="Center" VerticalAlignment="Stretch">
+          </GridSplitter>
+
+          <StackPanel
+             Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+             Focusable="False" Grid.Column="2"  Grid.Row="0" Margin="4">
+            <StackPanel.DataContext>
+              <Binding ElementName="ValidationItemsListBox"
+                       Path="SelectedItem"/>
+            </StackPanel.DataContext>
+
+
+
+            <ContentControl Focusable="False" Content="{Binding}"/>
+
+
+            <TextBlock Margin="5,0,0,0"
+                       Visibility="{Binding  Mode=OneWay, Converter={Validator:VisibilityConverter}}">
+              <Hyperlink Click="OnClipboardLinkClick">
+                <Run Text="{x:Static Validator:Tobi_Plugin_Validator_Lang.CopyLink}"/>
+              </Hyperlink>
+            </TextBlock>
+          </StackPanel>
+
+        </Grid>
+      </DataTemplate>
+    </TabControl.ContentTemplate>
+  </TabControl>
   
   <TextBlock Margin="0,3,0,3" Grid.Row="1">
     <Hyperlink Click="OnClipboardCopyAllLinkClick">

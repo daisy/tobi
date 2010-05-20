@@ -192,8 +192,18 @@ namespace Tobi.Plugin.Validator
         private void Tabs_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.IsVisible == false) return;
+
+            //filter out SelectionChanged events bubbling up from other controls
             if (e.OriginalSource != Tabs) return;
+            
+            //this doesn't work because the tab changes before the tab content loads
+            //the list will therefore always be the *old* list, not the new one.
             //SelectFirstInValidationItemsList();
+        }
+
+        private void Tabs_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            SelectFirstInValidationItemsList();
         }
 
         private void SelectFirstInValidationItemsList()
@@ -210,6 +220,8 @@ namespace Tobi.Plugin.Validator
                 list.SelectedItem = list.Items[0];
             }
         }
+
+       
     }
 
     [ValueConversion(typeof(ValidationSeverity), typeof(bool))]
