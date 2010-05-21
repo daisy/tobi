@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Threading;
@@ -608,5 +609,71 @@ namespace Tobi.Plugin.AudioPane
             //openFile(converter.GeneratedAudioFilePath, true, true, pcmFormat);
         }
 
+
+        internal SpeechSynthesizer m_SpeechSynthesizer = new SpeechSynthesizer();
+
+        private List<VoiceInfo> m_TTSVoices;
+        public List<VoiceInfo> TTSVoices
+        {
+            get
+            {
+                m_TTSVoices = new List<VoiceInfo>();
+                try
+                {
+                    foreach (var installedVoice in m_SpeechSynthesizer.GetInstalledVoices())
+                    {
+                        m_TTSVoices.Add(installedVoice.VoiceInfo);
+                    }
+                }
+                catch (Exception ex_)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+                return m_TTSVoices;
+            }
+        }
+
+        public VoiceInfo TTSVoice
+        {
+            get
+            {
+                try
+                {
+                    if (m_TTSVoices != null)
+                        foreach (var voice in m_TTSVoices)
+                        {
+                            if (voice.Name == m_SpeechSynthesizer.Voice.Name)
+                                return voice;
+                        }
+                    return m_SpeechSynthesizer.Voice;
+                }
+                catch (Exception ex_)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+                return null;
+            }
+            set
+            {
+                try
+                {
+                    if (value != null
+                        && (m_SpeechSynthesizer.Voice.Name != value.Name))
+                    {
+                        Settings.Default.Audio_TTS_Voice = value.Name;
+                    }
+                }
+                catch (Exception ex_)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+            }
+        }
     }
 }
