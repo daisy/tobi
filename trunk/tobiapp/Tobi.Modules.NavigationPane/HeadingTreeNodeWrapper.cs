@@ -90,7 +90,7 @@ namespace Tobi.Plugin.NavigationPane
                         }
                     }
                     if (qname != null &&
-                        (HeadingsNavigator.IsHeading(qname.LocalName) || qname.LocalName == "doctitle"))
+                        (HeadingsNavigator.IsHeading(qname.LocalName)))
                     {
                         heading = nd;
                     }
@@ -132,7 +132,9 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
 
-                    if (WrappedTreeNode_Level != null && WrappedTreeNode_LevelHeading == node)
+                    if (WrappedTreeNode_Level != null && WrappedTreeNode_LevelHeading != null
+                        && (WrappedTreeNode_LevelHeading == node
+                            || HeadingsNavigator.IsHeading(WrappedTreeNode_LevelHeading.GetXmlElementQName().LocalName)))
                     {
                         continue;
                     }
