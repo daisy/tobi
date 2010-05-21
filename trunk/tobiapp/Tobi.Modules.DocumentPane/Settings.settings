@@ -8,7 +8,7 @@
       <Value Profile="(Default)">#FF00FFFF</Value>
     </Setting>
     <Setting Name="Document_Color_PageNum_Back" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FF00FF00</Value>
+      <Value Profile="(Default)">#FFDCDCDC</Value>
     </Setting>
     <Setting Name="Document_Back" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FFFFFFFF</Value>
@@ -35,28 +35,28 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Document_Color_Font_Audio" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#ff000000</Value>
+      <Value Profile="(Default)">#FF000000</Value>
     </Setting>
     <Setting Name="Document_Color_Font_TextOnly" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#ff333333</Value>
+      <Value Profile="(Default)">#FF000000</Value>
     </Setting>
     <Setting Name="Document_Color_Font_NoAudio" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF696969</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_UnderOverLine" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FF000080</Value>
+      <Value Profile="(Default)">#FF00FF00</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Font" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FF0000CD</Value>
+      <Value Profile="(Default)">#FF000000</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Border" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFB0C4DE</Value>
+      <Value Profile="(Default)">#FF6B8E23</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Back1" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFF0FFF0</Value>
+      <Value Profile="(Default)">#FFF5F5F5</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_Back2" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFE0FFFF</Value>
+      <Value Profile="(Default)">#FF98FB98</Value>
     </Setting>
   </Settings>
 </SettingsFile>
