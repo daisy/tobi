@@ -910,7 +910,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                 IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"
                 Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.AudioAutoPlay}"
                 IsThreeState="False"
-              ToolTip="{Binding Source={x:Static AudioPane:Settings.Default}, Path=Keyboard_Audio_AutoPlay, Mode=OneWay}"
+              ToolTip="{Binding Source={x:Static AudioPane:Settings_KeyGestures.Default}, Path=Keyboard_Audio_AutoPlay, Mode=OneWay}"
               VerticalAlignment="Center"
     Margin="2,0,2,0"/>
 

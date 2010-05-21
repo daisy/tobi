@@ -106,6 +106,7 @@
                VerticalAlignment="Center"
                 IsChecked="{Binding Path=CurrentTreeNodeIsMarked, Mode=TwoWay}"
                 Content="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Marked}"
+               ToolTip="{Binding Source={x:Static local:Settings_KeyGestures.Default}, Path=Keyboard_ToggleDocMark, Mode=OneWay}"
                 IsThreeState="False"
     Margin="4,4,4,4"/>
 
