@@ -142,7 +142,7 @@
     <value>Navigation pane focus</value>
   </data>
   <data name="NoHeading" xml:space="preserve">
-    <value>] (No heading)</value>
+    <value>(No heading)</value>
   </data>
   <data name="PageFindNext" xml:space="preserve">
     <value>Find Next</value>
