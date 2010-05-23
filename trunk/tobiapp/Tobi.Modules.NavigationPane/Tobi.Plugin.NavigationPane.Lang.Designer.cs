@@ -232,7 +232,7 @@ namespace Tobi.Plugin.NavigationPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ] (No heading).
+        ///   Looks up a localized string similar to (No heading).
         /// </summary>
         public static string NoHeading {
             get {

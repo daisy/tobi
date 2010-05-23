@@ -69,32 +69,32 @@ namespace Tobi.Plugin.NavigationPane
             if (HeadingsNavigator.IsLevel(qName.LocalName))
             {
                 level = node;
+
+                if (level.Children.Count > 0)
+                {
+                    TreeNode nd = level.Children.Get(0);
+                    if (nd != null)
+                    {
+                        QualifiedName qname = nd.GetXmlElementQName();
+                        if (qname != null && qname.LocalName == "pagenum" && level.Children.Count > 1)
+                        {
+                            nd = level.Children.Get(1);
+                            if (nd != null)
+                            {
+                                qname = nd.GetXmlElementQName();
+                            }
+                        }
+                        if (qname != null &&
+                            (HeadingsNavigator.IsHeading(qname.LocalName)))
+                        {
+                            heading = nd;
+                        }
+                    }
+                }
             }
             else if (HeadingsNavigator.IsHeading(qName.LocalName))
             {
                 heading = node;
-            }
-
-            if (level != null && level.Children.Count > 0)
-            {
-                TreeNode nd = level.Children.Get(0);
-                if (nd != null)
-                {
-                    QualifiedName qname = nd.GetXmlElementQName();
-                    if (qname != null && qname.LocalName == "pagenum" && level.Children.Count > 1)
-                    {
-                        nd = level.Children.Get(1);
-                        if (nd != null)
-                        {
-                            qname = nd.GetXmlElementQName();
-                        }
-                    }
-                    if (qname != null &&
-                        (HeadingsNavigator.IsHeading(qname.LocalName)))
-                    {
-                        heading = nd;
-                    }
-                }
             }
 
             return new Tuple<TreeNode, TreeNode>(level, heading);
@@ -132,9 +132,11 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
 
-                    if (WrappedTreeNode_Level != null && WrappedTreeNode_LevelHeading != null
+                    if (WrappedTreeNode_LevelHeading != null
                         && (WrappedTreeNode_LevelHeading == node
-                            || HeadingsNavigator.IsHeading(WrappedTreeNode_LevelHeading.GetXmlElementQName().LocalName)))
+                            //|| HeadingsNavigator.IsHeading(node.GetXmlElementQName().LocalName)
+                            )
+                        )
                     {
                         continue;
                     }
@@ -171,7 +173,7 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
 
-                    if (WrappedTreeNode_Level != null && WrappedTreeNode_LevelHeading == node)
+                    if (WrappedTreeNode_LevelHeading == node)
                     {
                         continue;
                     }
@@ -203,6 +205,8 @@ namespace Tobi.Plugin.NavigationPane
         }
         private bool CheckMatches(TreeNode baseNode)
         {
+            string lower = m_navigator.SearchTerm.ToLower();
+
             bool bResult = false;
             int n = m_navigator.GetChildCount(baseNode);
             for (int index = 0; index < n; index++)
@@ -219,7 +223,7 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     continue;
                 }
-                bResult |= sText.ToLower().Contains(m_navigator.SearchTerm.ToLower());
+                bResult |= sText.ToLower().Contains(lower);
                 if (!bResult)
                 {
                     bResult |= CheckMatches(node);
@@ -241,7 +245,7 @@ namespace Tobi.Plugin.NavigationPane
             }
             string str = (heading != null
                 ? "[" + heading.GetXmlElementQName().LocalName + "] " + heading.GetTextFlattened(true)
-                : "[" + level.GetXmlElementQName().LocalName + Tobi_Plugin_NavigationPane_Lang.NoHeading);
+                : "[" + level.GetXmlElementQName().LocalName + "] " + Tobi_Plugin_NavigationPane_Lang.NoHeading);
             return str.Trim();
 
             //string sResult = string.Empty;
