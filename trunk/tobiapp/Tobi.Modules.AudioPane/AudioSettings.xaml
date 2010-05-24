@@ -1,15 +1,36 @@
-﻿<UniformGrid x:Class="Tobi.Plugin.AudioPane.AudioSettings"
+﻿<Grid x:Class="Tobi.Plugin.AudioPane.AudioSettings"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
             xmlns:AudioPane="clr-namespace:Tobi.Plugin.AudioPane"
              
-            Columns="2" Rows="2"
-                    HorizontalAlignment="Left">
+                    HorizontalAlignment="Stretch">
+
+  <Grid.Resources>
+
+    </Grid.Resources>
+
+
+  <Grid.ColumnDefinitions>
+    <ColumnDefinition Width="*"/>
+    <ColumnDefinition Width="*"/>
+  </Grid.ColumnDefinitions>
   
-    <TextBlock x:Name="LabelOutputDevices" Focusable="True" Margin="6, 0, 0, 0" VerticalAlignment="Center"
+  <Grid.RowDefinitions>
+    <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
+  </Grid.RowDefinitions>
+  
+      <TextBlock x:Name="LabelOutputDevices"
+                  VerticalAlignment="Top"  HorizontalAlignment="Left"
+                 Grid.Row="0" Grid.Column="0"
+                 Focusable="True" Margin="6, 0, 0, 0"
                Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Playback}"/>
-  <ComboBox ItemsSource="{Binding OutputDevices, Mode=OneWay}"
+  <ComboBox
+                  VerticalAlignment="Top"  HorizontalAlignment="Stretch"
+    Grid.Row="0" Grid.Column="1"
+    ItemsSource="{Binding OutputDevices, Mode=OneWay}"
             SelectedItem="{Binding OutputDevice, Mode=TwoWay}"
             
             SelectedValuePath="Name"
@@ -39,9 +60,15 @@
     </ComboBox.ItemContainerStyle>
   </ComboBox>
 
-    <TextBlock x:Name="LabelInputDevices" Focusable="True"  Margin="6, 0, 0, 0" VerticalAlignment="Center"
+    <TextBlock x:Name="LabelInputDevices"
+                  VerticalAlignment="Top"  HorizontalAlignment="Left"
+               Grid.Row="1" Grid.Column="0"
+               Focusable="True"  Margin="6, 0, 0, 0" 
                Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Recording}"/>
-    <ComboBox ItemsSource="{Binding InputDevices, Mode=OneWay}"
+  <ComboBox
+                  VerticalAlignment="Top"  HorizontalAlignment="Stretch"
+    Grid.Row="1" Grid.Column="1"
+    ItemsSource="{Binding InputDevices, Mode=OneWay}"
               SelectedItem="{Binding InputDevice, Mode=TwoWay}"
               SelectedValuePath="Name"
               Margin="2"
@@ -71,9 +98,15 @@
     </ComboBox>
 
 
-  <TextBlock x:Name="LabelTTSVoices" Focusable="True"  Margin="6, 0, 0, 0" VerticalAlignment="Center"
+  <TextBlock x:Name="LabelTTSVoices"
+                  VerticalAlignment="Top"  HorizontalAlignment="Left"
+             Grid.Row="2" Grid.Column="0"
+             Focusable="True"  Margin="6, 0, 0, 0" 
              Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_TTS}"/>
-  <ComboBox ItemsSource="{Binding TTSVoices, Mode=OneWay}"
+  <ComboBox
+                  VerticalAlignment="Top"  HorizontalAlignment="Stretch"
+    Grid.Row="2" Grid.Column="1"
+    ItemsSource="{Binding TTSVoices, Mode=OneWay}"
             SelectedItem="{Binding TTSVoice, Mode=TwoWay}"
             SelectedValuePath="Name"
             Margin="2"
@@ -101,4 +134,4 @@
     </ComboBox.ItemContainerStyle>
   </ComboBox>
 
-</UniformGrid>
+</Grid>
