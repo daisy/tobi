@@ -93,7 +93,7 @@ namespace Tobi.Plugin.AudioPane
                                                            new AudioSettings(this),
                                                            PopupModalWindow.DialogButtonsSet.Close,
                                                            PopupModalWindow.DialogButton.Close,
-                                                           true, 500, 180, null, 0);
+                                                           true, 420, 180, null, 0);
 
                     windowPopup.ShowFloating(null);
                 },

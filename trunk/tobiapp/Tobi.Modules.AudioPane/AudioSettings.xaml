@@ -12,7 +12,7 @@
 
 
   <Grid.ColumnDefinitions>
-    <ColumnDefinition Width="*"/>
+    <ColumnDefinition Width="Auto"/>
     <ColumnDefinition Width="*"/>
   </Grid.ColumnDefinitions>
   
@@ -23,9 +23,9 @@
   </Grid.RowDefinitions>
   
       <TextBlock x:Name="LabelOutputDevices"
-                  VerticalAlignment="Top"  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"  HorizontalAlignment="Left"
                  Grid.Row="0" Grid.Column="0"
-                 Focusable="True" Margin="6, 0, 0, 0"
+                 Focusable="True" Margin="6, 0, 6, 0"
                Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Playback}"/>
   <ComboBox
                   VerticalAlignment="Top"  HorizontalAlignment="Stretch"
@@ -61,9 +61,9 @@
   </ComboBox>
 
     <TextBlock x:Name="LabelInputDevices"
-                  VerticalAlignment="Top"  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"  HorizontalAlignment="Left"
                Grid.Row="1" Grid.Column="0"
-               Focusable="True"  Margin="6, 0, 0, 0" 
+               Focusable="True"  Margin="6, 0, 6, 0" 
                Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Recording}"/>
   <ComboBox
                   VerticalAlignment="Top"  HorizontalAlignment="Stretch"
@@ -99,9 +99,9 @@
 
 
   <TextBlock x:Name="LabelTTSVoices"
-                  VerticalAlignment="Top"  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"  HorizontalAlignment="Left"
              Grid.Row="2" Grid.Column="0"
-             Focusable="True"  Margin="6, 0, 0, 0" 
+             Focusable="True"  Margin="6, 0, 6, 0" 
              Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_TTS}"/>
   <ComboBox
                   VerticalAlignment="Top"  HorizontalAlignment="Stretch"
