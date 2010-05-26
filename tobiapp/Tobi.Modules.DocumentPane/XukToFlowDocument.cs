@@ -1821,6 +1821,7 @@ namespace Tobi.Plugin.DocumentPane
                                      data.Padding = new Thickness(2.0);
                                      data.FontWeight = FontWeights.Light;
                                      data.FontSize = m_FlowDoc.FontSize / 1.2;
+                                     data.TextAlignment = TextAlignment.Center;
                                      //data.Foreground = Brushes.DarkGreen;
 
                                      //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
