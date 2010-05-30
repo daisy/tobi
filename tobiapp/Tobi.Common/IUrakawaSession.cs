@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI;
 using urakawa;
@@ -17,6 +18,9 @@ namespace Tobi.Common
         Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode clickedNode, bool allowAutoSubNodeAndToggle, TreeNode subClickedNode);
 
         Tuple<TreeNode, TreeNode> GetTreeNodeSelection();
+        
+        void SaveRecentFiles();
+        ObservableCollection<Uri> RecentFiles { get; }
 
         /// <summary>
         /// The Project instance for the currently active document.

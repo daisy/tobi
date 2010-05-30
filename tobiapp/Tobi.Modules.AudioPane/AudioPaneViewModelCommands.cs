@@ -20,7 +20,7 @@ namespace Tobi.Plugin.AudioPane
 
         public RichDelegateCommand CommandFocus { get; private set; }
         public RichDelegateCommand CommandFocusStatusBar { get; private set; }
-        
+
         public RichDelegateCommand CommandZoomSelection { get; private set; }
         public RichDelegateCommand CommandZoomFitFull { get; private set; }
         public RichDelegateCommand CommandRefresh { get; private set; }
@@ -33,13 +33,14 @@ namespace Tobi.Plugin.AudioPane
                 null, // KeyGesture obtained from settings (see last parameters below)
                 //null, //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
                 m_ShellView.LoadTangoIcon("view-refresh"),
-                ()=>
+                () =>
                 {
                     //Logger.Log("AudioPaneViewModel.CommandRefresh", Category.Debug, Priority.Medium);
 
                     StartWaveFormLoadTimer(0);
                 },
-                () => !IsWaveFormLoading,
+                () => CanManipulateWaveForm,
+                //!IsWaveFormLoading,
                 null, null); //IsAudioLoaded
 
             m_ShellView.RegisterRichCommand(CommandRefresh);
@@ -50,13 +51,16 @@ namespace Tobi.Plugin.AudioPane
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Search")),
                 //shellView.LoadTangoIcon("system-search"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandZoomSelection", Category.Debug, Priority.Medium);
 
                     View.ZoomSelection();
                 },
-                () => View != null && !IsWaveFormLoading && IsSelectionSet,
+                () => View != null
+                    && CanManipulateWaveForm
+                    //&&!IsWaveFormLoading
+                    && IsSelectionSet,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ZoomSelection));
 
@@ -67,13 +71,15 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdAudioFitFull_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandZoomFitFull", Category.Debug, Priority.Medium);
 
                     View.ZoomFitFull();
                 },
-                () => View != null && !IsWaveFormLoading,
+                () => View != null
+                    && CanManipulateWaveForm,
+                //&& !IsWaveFormLoading,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ZoomFitFull));
 
@@ -84,7 +90,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdAudioSettings_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon("Neu_audio-x-generic"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandAudioSettings", Category.Debug, Priority.Medium);
 
@@ -139,7 +145,7 @@ namespace Tobi.Plugin.AudioPane
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("audio-volume-low"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandFocus", Category.Debug, Priority.Medium);
 
@@ -156,7 +162,7 @@ namespace Tobi.Plugin.AudioPane
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon("Neu_utilities-terminal"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandFocusStatusBar", Category.Debug, Priority.Medium);
 

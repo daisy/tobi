@@ -196,6 +196,24 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open the recent files dialog.
+        /// </summary>
+        public static string CmdOpenRecent_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdOpenRecent_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Open recent ....
+        /// </summary>
+        public static string CmdOpenRecent_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdOpenRecent_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Execute the last action that was undone.
         /// </summary>
         public static string CmdRedo_LongDesc {
@@ -277,6 +295,24 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove the selected items from the list of recent files.
+        /// </summary>
+        public static string DeleteRecentFile_Long {
+            get {
+                return ResourceManager.GetString("DeleteRecentFile_Long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove selected items.
+        /// </summary>
+        public static string DeleteRecentFile_Short {
+            get {
+                return ResourceManager.GetString("DeleteRecentFile_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exporting....
         /// </summary>
         public static string Exporting {
@@ -338,6 +374,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string OverwriteConfirm_Folder {
             get {
                 return ResourceManager.GetString("OverwriteConfirm_Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File path.
+        /// </summary>
+        public static string RecentFileLocation {
+            get {
+                return ResourceManager.GetString("RecentFileLocation", resourceCulture);
             }
         }
         

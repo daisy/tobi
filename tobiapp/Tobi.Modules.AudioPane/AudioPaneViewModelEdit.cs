@@ -26,10 +26,29 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CutCommand { get; private set; }
         public RichDelegateCommand PasteCommand { get; private set; }
 
+        public RichDelegateCommand CommandResetSessionCounter { get; private set; }
+
         public ManagedAudioMedia AudioClipboard { get; private set; }
 
         private void initializeCommands_Edit()
         {
+            CommandResetSessionCounter = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioResetSessionCounter_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioResetSessionCounter_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("appointment-new"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandResetSessionCounter", Category.Debug, Priority.Medium);
+
+                    TotalSessionAudioDurationInLocalUnits = 0;
+                },
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ResetSessionCounter));
+
+            m_ShellView.RegisterRichCommand(CommandResetSessionCounter);
+            //
             CopyCommand = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdCopy_ShortDesc,
                 Tobi_Plugin_AudioPane_Lang.CmdCopy_LongDesc,

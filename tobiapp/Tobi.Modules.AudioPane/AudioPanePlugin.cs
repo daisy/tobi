@@ -81,6 +81,7 @@ namespace Tobi.Plugin.AudioPane
         private int m_MenuBarId_13;
         private int m_MenuBarId_14;
         private int m_MenuBarId_15;
+        //private int m_MenuBarId_16;
         protected override void OnMenuBarReady()
         {
             var dataMonitor = new TwoStateMenuItemRichCommand_DataContextWrapper
@@ -144,15 +145,6 @@ namespace Tobi.Plugin.AudioPane
                      m_AudioPaneViewModel.CommandDeleteAudioSelection
                  });
 
-            m_MenuBarId_12 = m_MenuBarView.AddMenuBarGroup(
-                Tobi_Common_Lang.Menu_Audio, PreferredPosition.Last, true,
-                null, PreferredPosition.Any, true,
-                new[]
-                 {
-                     m_AudioPaneViewModel.CommandInsertFile,
-                     m_AudioPaneViewModel.CommandGenTTS
-                 });
-
             m_MenuBarId_10 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_Audio, PreferredPosition.Last, true,
                 null, PreferredPosition.Any, true,
@@ -165,7 +157,7 @@ namespace Tobi.Plugin.AudioPane
                  });
 
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
-                Tobi_Common_Lang.Menu_Audio, PreferredPosition.First, true,
+                Tobi_Common_Lang.Menu_Audio, PreferredPosition.First, false,
                 Tobi_Common_Lang.Menu_AudioRecording, PreferredPosition.First, true,
                 new[]
                  {
@@ -173,12 +165,22 @@ namespace Tobi.Plugin.AudioPane
                  });
 
             m_MenuBarId_15 = m_MenuBarView.AddMenuBarGroup(
-                Tobi_Common_Lang.Menu_Audio, PreferredPosition.First, true,
+                Tobi_Common_Lang.Menu_Audio, PreferredPosition.First, false,
                 Tobi_Common_Lang.Menu_AudioRecording, PreferredPosition.Last, true,
                 new object[]
                  {
                      dataRecord,
                      m_AudioPaneViewModel.CommandStopRecordAndContinue
+                 });
+
+            m_MenuBarId_12 = m_MenuBarView.AddMenuBarGroup(
+                Tobi_Common_Lang.Menu_Audio, PreferredPosition.First, false,
+                null, PreferredPosition.Any, true,
+                new[]
+                 {
+                     m_AudioPaneViewModel.CommandInsertFile,
+                     m_AudioPaneViewModel.CommandGenTTS,
+                     m_AudioPaneViewModel.CommandResetSessionCounter
                  });
 
             m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(

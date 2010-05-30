@@ -49,6 +49,18 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableRecentFilesMenu {
+            get {
+                return ((bool)(this["EnableRecentFilesMenu"]));
+            }
+            set {
+                this["EnableRecentFilesMenu"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Hz44100")]
         public global::AudioLib.SampleRate AudioExportSampleRate {
             get {

@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Tobi.Common.UI;
 
-namespace Tobi.Plugin.Settings
+namespace Tobi.Common.UI
 {
-    /// <summary>
-    /// Exposes attached behaviors that can be
-    /// applied to TreeViewItem objects.
-    /// </summary>
     public static class ListViewItemBehavior
     {
         #region IsBroughtIntoViewWhenSelected

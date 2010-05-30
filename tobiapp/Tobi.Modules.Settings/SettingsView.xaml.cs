@@ -479,7 +479,7 @@ namespace Tobi.Plugin.Settings
         public RichDelegateCommand CommandFindPrev { get; private set; }
         private void intializeCommands()
         {
-            m_Logger.Log("HeadingPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
+            m_Logger.Log("SettingsViewModel.initializeCommands", Category.Debug, Priority.Medium);
             //
             CommandFindFocus = new RichDelegateCommand(
                 @"SETTINGS CommandFindFocus DUMMY TXT",

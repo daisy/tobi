@@ -120,8 +120,17 @@
   <data name="TotalDuration" xml:space="preserve">
     <value>Total: </value>
   </data>
+  <data name="SessionDuration" xml:space="preserve">
+    <value>Session: </value>
+  </data>
   <data name="Countdown" xml:space="preserve">
     <value>Countdown: </value>
+  </data>
+  <data name="CmdAudioResetSessionCounter_ShortDesc" xml:space="preserve">
+    <value>_Reset audio counter</value>
+  </data>
+  <data name="CmdAudioResetSessionCounter_LongDesc" xml:space="preserve">
+    <value>Reset the audio time counter for the editing session</value>
   </data>
   <data name="CmdCopy_ShortDesc" xml:space="preserve">
     <value>_Copy</value>

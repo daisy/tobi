@@ -180,6 +180,7 @@
     <Compile Include="UI\KeyGestureString.cs" />
     <Compile Include="UI\KeyGestureStringConverter.cs" />
     <Compile Include="UI\LazyKeepAliveTabControl.cs" />
+    <Compile Include="UI\ListViewItemBehavior.cs" />
     <Compile Include="UI\MenuItemRichCommand.cs" />
     <Compile Include="UI\PopupModalWindow.xaml.cs">
       <DependentUpon>PopupModalWindow.xaml</DependentUpon>
