@@ -61,15 +61,6 @@ namespace Tobi.Plugin.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check / uncheck all.
-        /// </summary>
-        public static string CheckUnCheckAll {
-            get {
-                return ResourceManager.GetString("CheckUnCheckAll", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Preferences....
         /// </summary>
         public static string Cmd_ApplicationPref {

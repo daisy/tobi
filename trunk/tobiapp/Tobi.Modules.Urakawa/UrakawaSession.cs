@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -15,6 +16,7 @@ using Tobi.Common.Validation;
 using urakawa;
 using urakawa.data;
 using urakawa.events;
+
 
 namespace Tobi.Plugin.Urakawa
 {
@@ -36,6 +38,7 @@ namespace Tobi.Plugin.Urakawa
         private readonly ILoggerFacade m_Logger;
         private readonly IEventAggregator m_EventAggregator;
         private readonly IShellView m_ShellView;
+        private readonly IUnityContainer m_Container;
 
         [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true)]
         private IEnumerable<IValidator> m_Validators;
@@ -45,16 +48,19 @@ namespace Tobi.Plugin.Urakawa
         /// No document is open and IsDirty is initialized to false.
         ///</summary>
         ///<param name="logger">normally obtained from the Unity container, it's a built-in CAG service</param>
+        ///<param name="container">normally obtained from the Unity dependency injection container, it's a built-in CAG service</param>
         ///<param name="eventAggregator">normally obtained from the Unity container, it's a built-in CAG service</param>
         ///<param name="shellView">normally obtained from the Unity container, it's a Tobi-specific entity</param>
         [ImportingConstructor]
         public UrakawaSession(
             ILoggerFacade logger,
+            IUnityContainer container,
             IEventAggregator eventAggregator,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView)
         {
             m_Logger = logger;
+            m_Container = container;
             m_EventAggregator = eventAggregator;
             m_ShellView = shellView;
 

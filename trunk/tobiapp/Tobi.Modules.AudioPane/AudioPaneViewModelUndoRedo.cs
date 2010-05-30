@@ -529,26 +529,32 @@ namespace Tobi.Plugin.AudioPane
             {
                 var command = (ManagedAudioMediaInsertDataCommand)cmd;
 
+                long dur = command.ManagedAudioMediaSource.Duration.AsLocalUnits;
                 if (done)
                 {
-                    TotalDocumentAudioDurationInLocalUnits += command.ManagedAudioMediaSource.Duration.AsLocalUnits;
+                    TotalDocumentAudioDurationInLocalUnits += dur;
+                    TotalSessionAudioDurationInLocalUnits += dur;
                 }
                 else
                 {
-                    TotalDocumentAudioDurationInLocalUnits -= command.ManagedAudioMediaSource.Duration.AsLocalUnits;
+                    TotalDocumentAudioDurationInLocalUnits -= dur;
+                    //TotalSessionAudioDurationInLocalUnits -= dur;
                 }
             }
             else if (cmd is TreeNodeSetManagedAudioMediaCommand)
             {
                 var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
 
+                long dur = command.ManagedAudioMedia.Duration.AsLocalUnits;
                 if (done)
                 {
-                    TotalDocumentAudioDurationInLocalUnits += command.ManagedAudioMedia.Duration.AsLocalUnits;
+                    TotalDocumentAudioDurationInLocalUnits += dur;
+                    TotalSessionAudioDurationInLocalUnits += dur;
                 }
                 else
                 {
-                    TotalDocumentAudioDurationInLocalUnits -= command.ManagedAudioMedia.Duration.AsLocalUnits;
+                    TotalDocumentAudioDurationInLocalUnits -= dur;
+                    //TotalSessionAudioDurationInLocalUnits -= dur;
                 }
             }
             else if (cmd is TreeNodeAudioStreamDeleteCommand)
@@ -575,13 +581,16 @@ namespace Tobi.Plugin.AudioPane
                             TimesAreEqualWithOneMillisecondTolerance(diff.AsLocalUnits, command.OriginalManagedAudioMedia.Duration.AsLocalUnits));
                 }
 
+                long dur = diff.AsLocalUnits;
                 if (done)
                 {
-                    TotalDocumentAudioDurationInLocalUnits -= diff.AsLocalUnits;
+                    TotalDocumentAudioDurationInLocalUnits -= dur;
+                    //TotalSessionAudioDurationInLocalUnits -= dur;
                 }
                 else
                 {
-                    TotalDocumentAudioDurationInLocalUnits += diff.AsLocalUnits;
+                    TotalDocumentAudioDurationInLocalUnits += dur;
+                    //TotalSessionAudioDurationInLocalUnits += dur;
                 }
             }
             else if (cmd is CompositeCommand)

@@ -33,7 +33,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdAudioSelectPreviousChunk_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("go-previous"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectPreviousChunk", Category.Debug, Priority.Medium);
 
@@ -52,7 +52,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdAudioSelectNextChunk_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("go-next"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectNextChunk", Category.Debug, Priority.Medium);
 
@@ -72,7 +72,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdAudioEndSelection_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Right1")),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandEndSelection", Category.Debug, Priority.Medium);
 
@@ -120,7 +120,11 @@ namespace Tobi.Plugin.AudioPane
                     //    //AudioPlayer_PlayFromTo(bytesFrom, bytesTo);
                     //}
                 },
-                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && m_SelectionBeginTmpBytePosition >= 0,
+                () => CommandSelectAll.CanExecute()
+                    //CanManipulateWaveForm
+                    // //&& !IsWaveFormLoading && !IsRecording && !IsMonitoring
+                    // && State.Audio.HasContent
+                     && m_SelectionBeginTmpBytePosition >= 0,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_EndSelection));
 
@@ -141,7 +145,12 @@ namespace Tobi.Plugin.AudioPane
 
                     //AudioCues.PlayTock();
                 },
-                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent,
+                () => CommandSelectLeft.CanExecute(),
+                //CommandSelectAll.CanExecute()
+                //         //CanManipulateWaveForm
+                //         ////&& !IsWaveFormLoading && !IsRecording && !IsMonitorin
+                //         //&& State.Audio.HasContent,
+                //         && PlayBytePosition >= 0,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_BeginSelection));
 
@@ -165,7 +174,11 @@ namespace Tobi.Plugin.AudioPane
                     State.Selection.SetSelectionBytes(0, PlayBytePosition);
                     //AudioCues.PlayTock();
                 },
-                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && PlayBytePosition >= 0,
+                () => CommandSelectAll.CanExecute()
+                    //CanManipulateWaveForm
+                    // //&& !IsWaveFormLoading && !IsRecording && !IsMonitoring
+                    // && State.Audio.HasContent
+                     && PlayBytePosition >= 0,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectLeft));
 
@@ -189,7 +202,10 @@ namespace Tobi.Plugin.AudioPane
                     State.Selection.SetSelectionBytes(PlayBytePosition, State.Audio.DataLength);
                     //AudioCues.PlayTock();
                 },
-                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && PlayBytePosition >= 0,
+                () => CommandSelectLeft.CanExecute(),
+                //CanManipulateWaveForm
+                // //&& !IsWaveFormLoading && !IsRecording && !IsMonitoring
+                // && State.Audio.HasContent && PlayBytePosition >= 0,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectRight));
 
@@ -200,7 +216,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdSelectAll_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("view-fullscreen"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectAll", Category.Debug, Priority.Medium);
 
@@ -214,10 +230,12 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     State.Selection.SetSelectionBytes(0, State.Audio.DataLength);
-                    
+
                     //AudioCues.PlayTockTock();
                 },
-                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent,
+                () => CanManipulateWaveForm
+                    //&& !IsWaveFormLoading && !IsRecording && !IsMonitoring
+                     && State.Audio.HasContent,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_SelectAll));
 
@@ -227,13 +245,17 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdAudioClearSelection_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("edit-clear"),
-                ()=>
+                () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandClearSelection", Category.Debug, Priority.Medium);
 
                     State.Selection.ClearSelection();
                 },
-                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring && State.Audio.HasContent && IsSelectionSet,
+                () => CommandSelectAll.CanExecute()
+                    //CanManipulateWaveForm
+                    // //&& !IsWaveFormLoading && !IsRecording && !IsMonitoring
+                    // && State.Audio.HasContent
+                     && IsSelectionSet,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ClearSelection));
 

@@ -12,6 +12,17 @@ namespace Tobi.Plugin.AudioPane
 {
     public partial class AudioPaneViewModel
     {
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
+        [NotifyDependsOn("IsWaveFormLoading")]
+        public bool CanManipulateWaveForm
+        {
+            get
+            {
+                return !IsMonitoring && !IsRecording && !IsWaveFormLoading;
+            }
+        }
+
         public class StreamStateData
         {
             private AudioPaneViewModel m_viewModel;

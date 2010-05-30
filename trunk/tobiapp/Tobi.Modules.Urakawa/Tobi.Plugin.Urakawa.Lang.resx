@@ -145,6 +145,15 @@
     <value>There are validation issues.
 Press OK to ignore, or CANCEL to see the issues.</value>
   </data>
+  <data name="DeleteRecentFile_Short" xml:space="preserve">
+    <value>Remove selected items</value>
+  </data>
+  <data name="DeleteRecentFile_Long" xml:space="preserve">
+    <value>Remove the selected items from the list of recent files</value>
+  </data>
+  <data name="RecentFileLocation" xml:space="preserve">
+    <value>File path</value>
+  </data>
   <data name="CmdClose_ShortDesc" xml:space="preserve">
     <value>_Close</value>
   </data>
@@ -169,11 +178,17 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="CmdMenuClearRecentFiles_LongDesc" xml:space="preserve">
     <value>Clear the list of recently-opened files.</value>
   </data>
-  <data name="CmdOpen_ShortDesc" xml:space="preserve">
-    <value>_Open / import</value>
+  <data name="CmdOpenRecent_ShortDesc" xml:space="preserve">
+    <value>_Open recent ...</value>
+  </data>
+  <data name="CmdOpenRecent_LongDesc" xml:space="preserve">
+    <value>Open the recent files dialog</value>
   </data>
   <data name="UrakawaOpenAction_ShortDesc" xml:space="preserve">
     <value>Opening XUK file...</value>
+  </data>
+  <data name="CmdOpen_ShortDesc" xml:space="preserve">
+    <value>_Open / import</value>
   </data>
   <data name="CmdOpen_LongDesc" xml:space="preserve">
     <value>Open or import a document</value>

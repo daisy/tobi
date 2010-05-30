@@ -1057,6 +1057,8 @@ namespace Tobi.Plugin.AudioPane
                 TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
                 return;
             }
+            
+            TotalSessionAudioDurationInLocalUnits = 0;
 
             if (View != null)
             {
@@ -1342,6 +1344,33 @@ namespace Tobi.Plugin.AudioPane
             if (wasAutoPlay) IsAutoPlay = false;
             PlayBytePosition = bytePosition;
             if (wasAutoPlay) IsAutoPlay = true;
+        }
+
+        [NotifyDependsOn("TotalSessionAudioDurationInLocalUnits")]
+        public string TotalSessionAudioDurationString
+        {
+            get
+            {
+                return Tobi_Plugin_AudioPane_Lang.SessionDuration
+                    + FormatTimeSpan_Units(new Time(TotalSessionAudioDurationInLocalUnits));
+            }
+        }
+        private long m_TotalSessionAudioDurationInLocalUnits;
+        public long TotalSessionAudioDurationInLocalUnits
+        {
+            get
+            {
+                return m_TotalSessionAudioDurationInLocalUnits;
+            }
+            set
+            {
+                if (m_TotalSessionAudioDurationInLocalUnits == value)
+                {
+                    return;
+                }
+                m_TotalSessionAudioDurationInLocalUnits = value;
+                RaisePropertyChanged(() => TotalSessionAudioDurationInLocalUnits);
+            }
         }
 
         [NotifyDependsOn("TotalDocumentAudioDurationInLocalUnits")]

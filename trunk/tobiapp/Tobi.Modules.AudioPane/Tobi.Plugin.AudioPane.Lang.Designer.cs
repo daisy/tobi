@@ -475,6 +475,24 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset the audio time counter for the editing session.
+        /// </summary>
+        public static string CmdAudioResetSessionCounter_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioResetSessionCounter_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Reset audio counter.
+        /// </summary>
+        public static string CmdAudioResetSessionCounter_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioResetSessionCounter_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Jump backwards by a pre-defined time increment.
         /// </summary>
         public static string CmdAudioRewind_LongDesc {
@@ -957,6 +975,15 @@ namespace Tobi.Plugin.AudioPane {
         public static string RecordingStopped {
             get {
                 return ResourceManager.GetString("RecordingStopped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Session: .
+        /// </summary>
+        public static string SessionDuration {
+            get {
+                return ResourceManager.GetString("SessionDuration", resourceCulture);
             }
         }
         

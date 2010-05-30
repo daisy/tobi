@@ -79,6 +79,15 @@ namespace Tobi.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check / uncheck all.
+        /// </summary>
+        public static string CheckUnCheckAll {
+            get {
+                return ResourceManager.GetString("CheckUnCheckAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Close.
         /// </summary>
         public static string CloseDialog {
@@ -291,6 +300,15 @@ namespace Tobi.Common {
         public static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not found.
+        /// </summary>
+        public static string NotFound {
+            get {
+                return ResourceManager.GetString("NotFound", resourceCulture);
             }
         }
         
