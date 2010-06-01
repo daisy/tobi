@@ -1057,7 +1057,7 @@ namespace Tobi.Plugin.AudioPane
                 TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
                 return;
             }
-            
+
             TotalSessionAudioDurationInLocalUnits = 0;
 
             if (View != null)
@@ -1352,7 +1352,9 @@ namespace Tobi.Plugin.AudioPane
             get
             {
                 return Tobi_Plugin_AudioPane_Lang.SessionDuration
-                    + FormatTimeSpan_Units(new Time(TotalSessionAudioDurationInLocalUnits));
+                    + (TotalSessionAudioDurationInLocalUnits < 0
+                    ? "-" + FormatTimeSpan_Units(new Time(-TotalSessionAudioDurationInLocalUnits))
+                    : FormatTimeSpan_Units(new Time(TotalSessionAudioDurationInLocalUnits)));
             }
         }
         private long m_TotalSessionAudioDurationInLocalUnits;

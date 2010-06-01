@@ -538,7 +538,7 @@ namespace Tobi.Plugin.AudioPane
                 else
                 {
                     TotalDocumentAudioDurationInLocalUnits -= dur;
-                    //TotalSessionAudioDurationInLocalUnits -= dur;
+                    TotalSessionAudioDurationInLocalUnits -= dur;
                 }
             }
             else if (cmd is TreeNodeSetManagedAudioMediaCommand)
@@ -554,7 +554,7 @@ namespace Tobi.Plugin.AudioPane
                 else
                 {
                     TotalDocumentAudioDurationInLocalUnits -= dur;
-                    //TotalSessionAudioDurationInLocalUnits -= dur;
+                    TotalSessionAudioDurationInLocalUnits -= dur;
                 }
             }
             else if (cmd is TreeNodeAudioStreamDeleteCommand)
@@ -585,12 +585,12 @@ namespace Tobi.Plugin.AudioPane
                 if (done)
                 {
                     TotalDocumentAudioDurationInLocalUnits -= dur;
-                    //TotalSessionAudioDurationInLocalUnits -= dur;
+                    TotalSessionAudioDurationInLocalUnits -= dur;
                 }
                 else
                 {
                     TotalDocumentAudioDurationInLocalUnits += dur;
-                    //TotalSessionAudioDurationInLocalUnits += dur;
+                    TotalSessionAudioDurationInLocalUnits += dur;
                 }
             }
             else if (cmd is CompositeCommand)
