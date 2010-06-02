@@ -16,6 +16,16 @@ using InputDevice = AudioLib.InputDevice;
 
 namespace Tobi.Plugin.AudioPane
 {
+    public struct DeferredRecordingData
+    {
+        public string RecordedFilePath;
+        public TreeNode TreeNode1;
+        public TreeNode TreeNode2;
+        public long PlayBytePosition;
+        public long SelectionBeginBytePosition;
+        public long SelectionEndBytePosition;
+    }
+
     public partial class AudioPaneViewModel
     {
         #region Audio Recorder
@@ -348,18 +358,132 @@ namespace Tobi.Plugin.AudioPane
 
             OnAudioRecordingFinished_(sender, e);
         }
+
+        private List<DeferredRecordingData> m_DeferredRecordingDataItems;
+
+        private void registerRecordedAudioFileForDeferredAddition(string filePath)
+        {
+            CommandPause.Execute();
+
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+            var data = new DeferredRecordingData
+            {
+                RecordedFilePath = filePath,
+                TreeNode1 = treeNodeSelection.Item1,
+                TreeNode2 = treeNodeSelection.Item2,
+                PlayBytePosition = PlayBytePosition,
+                SelectionBeginBytePosition = State.Selection.SelectionBeginBytePosition,
+                SelectionEndBytePosition = State.Selection.SelectionEndBytePosition,
+            };
+
+            if (m_DeferredRecordingDataItems == null)
+            {
+                m_DeferredRecordingDataItems = new List<DeferredRecordingData>();
+            }
+            m_DeferredRecordingDataItems.Add(data);
+        }
+
+        private void checkAndAddDeferredRecordingDataItems()
+        {
+            if (m_DeferredRecordingDataItems == null) return;
+
+            IsAutoPlay = false;
+
+            foreach (var deferredRecordingDataItem in m_DeferredRecordingDataItems)
+            {
+                Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.PerformTreeNodeSelection(deferredRecordingDataItem.TreeNode1, false, deferredRecordingDataItem.TreeNode2);
+                if (treeNodeSelection.Item1 != deferredRecordingDataItem.TreeNode1
+                    || treeNodeSelection.Item2 != deferredRecordingDataItem.TreeNode2)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    continue;
+                }
+
+                if (IsWaveFormLoading && View != null)
+                {
+                    View.CancelWaveFormLoad(true);
+                }
+
+                if (deferredRecordingDataItem.PlayBytePosition >= 0)
+                {
+                    PlayBytePosition = deferredRecordingDataItem.PlayBytePosition;
+                }
+                else
+                {
+                    m_LastSetPlayBytePosition = deferredRecordingDataItem.PlayBytePosition;
+                }
+
+                if (PlayBytePosition != deferredRecordingDataItem.PlayBytePosition)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    continue;
+                }
+
+                if (deferredRecordingDataItem.SelectionBeginBytePosition >= 0
+                    && deferredRecordingDataItem.SelectionEndBytePosition > 0)
+                {
+                    State.Selection.SetSelectionBytes(deferredRecordingDataItem.SelectionBeginBytePosition, deferredRecordingDataItem.SelectionEndBytePosition);
+                }
+                else
+                {
+                    State.Selection.ClearSelection();
+                }
+
+                if (State.Selection.SelectionBeginBytePosition != deferredRecordingDataItem.SelectionBeginBytePosition
+                    || State.Selection.SelectionEndBytePosition != deferredRecordingDataItem.SelectionEndBytePosition)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    continue;
+                }
+
+                openFile(deferredRecordingDataItem.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
+            }
+
+            m_DeferredRecordingDataItems = null;
+        }
+
+        private bool isTreeNodeSkippable(TreeNode node)
+        {
+            QualifiedName qname = node.GetXmlElementQName();
+            if (qname != null && qname.LocalName.ToLower() == "pagenum")
+            {
+                return true;
+            }
+            if (node.Parent == null)
+            {
+                return false;
+            }
+            return isTreeNodeSkippable(node.Parent);
+        }
+
         private void OnAudioRecordingFinished_(object sender, AudioRecorder.AudioRecordingFinishEventArgs e)
         {
             if (m_InterruptRecording)
             {
                 m_RecordAndContinue = false;
                 m_InterruptRecording = false;
+                checkAndAddDeferredRecordingDataItems();
                 return;
             }
 
             if (!String.IsNullOrEmpty(e.RecordedFilePath))
             {
-                openFile(e.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
+                //m_RecordAndContinue && 
+                if (Settings.Default.Audio_EnableDeferredRecord)
+                {
+                    registerRecordedAudioFileForDeferredAddition(e.RecordedFilePath);
+                }
+                else
+                {
+                    openFile(e.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
+                }
             }
 
             if (m_RecordAndContinue)
@@ -370,8 +494,8 @@ namespace Tobi.Plugin.AudioPane
                 TreeNode treeNode = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
                 if (treeNode != null)
                 {
-                    //TreeNode next = electNextRecordableNode(treeNode);
-
+                //TreeNode next = electNextRecordableNode(treeNode);
+                tryNext:
                     TreeNode next = treeNode.GetNextSiblingWithText(true);
                     while (next != null && (next.GetXmlElementQName() == null
                             || TreeNode.TextOnlyContainsPunctuation(next.GetText(true).Trim())
@@ -380,12 +504,19 @@ namespace Tobi.Plugin.AudioPane
                         next = next.GetNextSiblingWithText(true);
                     }
                     next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
-                   
+
                     if (next != null)
                     {
+                        if (isTreeNodeSkippable(next))
+                        {
+                            treeNode = next;
+                            goto tryNext;
+                        }
+
                         m_StateToRestore = null;
 
                         m_UrakawaSession.PerformTreeNodeSelection(next);
+                        State.Selection.ClearSelection();
 
                         m_RecordAndContinue = false;
                         State.Audio.PcmFormatRecordingMonitoring = null;
@@ -406,8 +537,19 @@ namespace Tobi.Plugin.AudioPane
                             }
                             else
                             {
+                                if (m_DeferredRecordingDataItems != null)
+                                {
+                                    checkAndAddDeferredRecordingDataItems();
+
+                                    if (IsWaveFormLoading && View != null)
+                                    {
+                                        View.CancelWaveFormLoad(true);
+                                    }
+
+                                    m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelectionNew.Item1, false, treeNodeSelectionNew.Item2);
+                                }
                                 //CommandPlay.Execute();
-                                CommandSelectAll.Execute();
+                                //CommandSelectAll.Execute();
                             }
                         }
 
@@ -417,6 +559,7 @@ namespace Tobi.Plugin.AudioPane
             }
 
             m_RecordAndContinue = false;
+            checkAndAddDeferredRecordingDataItems();
             State.Audio.PcmFormatRecordingMonitoring = null;
         }
 

@@ -26,6 +26,18 @@ namespace Tobi.Plugin.AudioPane {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Audio_EnableDeferredRecord {
+            get {
+                return ((bool)(this["Audio_EnableDeferredRecord"]));
+            }
+            set {
+                this["Audio_EnableDeferredRecord"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool AudioWaveForm_SkipDrawing {
             get {
                 return ((bool)(this["AudioWaveForm_SkipDrawing"]));
