@@ -112,6 +112,7 @@
     <Compile Include="AudioCues.cs" />
     <Compile Include="Colors.cs" />
     <Compile Include="EscapeEvent.cs" />
+    <Compile Include="IAudioViewModel.cs" />
     <Compile Include="IFileDialogService.cs" />
     <Compile Include="IGlobalSearchCommands.cs" />
     <Compile Include="IMenuBarView.cs" />

@@ -57,7 +57,8 @@ namespace Tobi.Plugin.AudioPane
     /// Single shared instance (singleton) of the audio view
     ///</summary>
     [Export(typeof(AudioPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class AudioPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
+    [Export(typeof(IAudioViewModel))]
+    public partial class AudioPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification, IAudioViewModel
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()

@@ -55,6 +55,8 @@
   <Grid.RowDefinitions>
     <RowDefinition Height="*"/>
     <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
   </Grid.RowDefinitions>
 
   <DockPanel LastChildFill="True"
@@ -345,7 +347,7 @@ Background="{Binding
           Padding="0,0,0,0"
           
     Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2"
-           DockPanel.Dock="Bottom"
+           
           
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ButtonBarVisible,
               Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}"
@@ -412,6 +414,29 @@ Background="{Binding
           />
 
 
+      <UI:TwoStateButtonRichCommand
+  Visibility="{Binding Path=IsNarratorMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+        RichCommandOne="{Binding AudioViewModel.CommandStopRecord}"
+        RichCommandTwo="{Binding AudioViewModel.CommandStartRecord}"
+        InputBindingManager="{Binding InputBindingManager}"
+              RichCommandActive="{Binding AudioViewModel.IsRecording, Mode=OneWay}"/>
+
+      <UI:ButtonRichCommand
+        Visibility="{Binding Path=IsNarratorMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+          RichCommand="{Binding AudioViewModel.CommandStopRecordAndContinue}"/>
+
+      <UI:TwoStateButtonRichCommand
+        Visibility="{Binding Path=IsNarratorMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+        RichCommandOne="{Binding AudioViewModel.CommandPause}"
+        RichCommandTwo="{Binding AudioViewModel.CommandPlay}"
+        InputBindingManager="{Binding InputBindingManager}"
+              RichCommandActive="{Binding AudioViewModel.IsPlaying, Mode=OneWay}"/>
+
+      <Separator
+        Visibility="{Binding Path=IsNarratorMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+                 />
+
+
       <UI:ButtonRichCommand
                           RichCommand="{Binding CommandStructureUp}"
                                  />
@@ -427,13 +452,22 @@ Background="{Binding
         RichCommand="{Binding CommandSwitchPhraseNext}"
                                  />
 
-      <Separator/>
+
+      <Separator
+                 />
       <!--ToolTip="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.CmdTextOnlyViewToggle_LongDesc}"-->
-      <CheckBox Content="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.TextOnly}"
+      <CheckBox
+        Content="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.TextOnly}"
                 ToolTip="{Binding Source={x:Static DocumentPane:Settings_KeyGestures.Default}, Path=Keyboard_ToggleTextOnly, Mode=OneWay}"
                 Margin="3"
                  VerticalAlignment="Center"
    IsChecked="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView, Mode=TwoWay}"/>
+
+      <!--<Separator/>
+      <CheckBox Content="Narrator view"
+                Margin="3"
+                 VerticalAlignment="Center"
+   IsChecked="{Binding IsNarratorMode, Mode=TwoWay}"/>-->
 
 
       <!--<Separator/>
@@ -552,5 +586,19 @@ Background="{Binding
 
     </UI:WrapPanelLastChildFill>
   </Border>
+
+
+  <TextBlock
+    Visibility="{Binding Path=IsNarratorMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+    Focusable="False"
+         Text=""
+             Height="10"
+             VerticalAlignment="Center"
+             HorizontalAlignment="Stretch"
+                 
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="3"
+    
+              Background="{Binding AudioViewModel.IsRecording, Mode=OneWay, Converter={DocumentPane:BooleanToBrushConverter}}"
+          />
 
 </Grid>
