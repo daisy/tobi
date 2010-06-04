@@ -396,9 +396,15 @@ namespace Tobi.Common.UI
             private set;
         }
 
+        public bool IgnoreEscape
+        {
+            get;
+            set;
+        }
+
         protected override void OnKeyUp(KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
+            if (!IgnoreEscape && e.Key == Key.Escape)
             {
                 if (AllowEscapeAndCloseButton)
                 {

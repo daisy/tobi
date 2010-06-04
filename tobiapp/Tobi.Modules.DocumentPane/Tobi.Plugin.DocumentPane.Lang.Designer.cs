@@ -151,7 +151,25 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Alternate between the text view styles (full, minimalist).
+        ///   Looks up a localized string similar to Alternate between the normal document view and the narrator window.
+        /// </summary>
+        public static string CmdSwitchNarratorView_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdSwitchNarratorView_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Switch narrator window.
+        /// </summary>
+        public static string CmdSwitchNarratorView_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdSwitchNarratorView_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alternate between the text styles: full or simple document view.
         /// </summary>
         public static string CmdTextOnlyViewToggle_LongDesc {
             get {
@@ -232,6 +250,15 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Narrator view.
+        /// </summary>
+        public static string NarratorView {
+            get {
+                return ResourceManager.GetString("NarratorView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No document..
         /// </summary>
         public static string No_Document {
@@ -241,7 +268,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text-only view.
+        ///   Looks up a localized string similar to Simple view.
         /// </summary>
         public static string TextOnly {
             get {

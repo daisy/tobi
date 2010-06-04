@@ -21,6 +21,7 @@ using System.Windows.Threading;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Composite.Regions;
 using Tobi.Common;
 using Tobi.Common._UnusedCode;
 using Tobi.Common.MVVM;
@@ -35,8 +36,39 @@ using urakawa.events.undo;
 using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
 
+#if NET40
+using System.Windows.Shell;
+#endif
+
 namespace Tobi.Plugin.DocumentPane
 {
+    [ValueConversion(typeof(bool), typeof(Brush))]
+    public class BooleanToBrushConverter : ValueConverterMarkupExtensionBase<BooleanToBrushConverter>
+    {
+        #region IValueConverter Members
+
+        public override object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(Brush))
+                throw new InvalidOperationException("The target must be a Brush !");
+
+            return ((bool)value ? Brushes.Red : SystemColors.ControlBrush);
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(bool))
+                throw new InvalidOperationException("The target must be Boolean !");
+
+            return true;
+        }
+
+        #endregion
+    }
+
+
     [ValueConversion(typeof(Color), typeof(Brush))]
     public class BackgroundColorToBrushConverter : ValueConverterMarkupExtensionBase<BackgroundColorToBrushConverter>
     {
@@ -138,15 +170,193 @@ namespace Tobi.Plugin.DocumentPane
             return (DataTemplate)presenter.FindResource("FontFamilyComboExpanded");
         }
     }
+
     /// <summary>
     /// Interaction logic for DocumentPaneView.xaml
     /// </summary>
     [Export(typeof(DocumentPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class DocumentPaneView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx
+    public partial class DocumentPaneView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx, IInputBindingManager
     {
+        private readonly IRegionManager m_RegionManager;
+
+        private PopupModalWindow m_DocumentNarratorWindow;
+        //private FocusActiveAwareAdapter m_DocumentNarratorWindowActiveAware;
+        private readonly object m_DocumentNarratorWindowLOCK = new object();
+
+        public bool AddInputBinding(InputBinding inputBinding)
+        {
+            lock (m_DocumentNarratorWindowLOCK)
+            {
+                if (m_DocumentNarratorWindow!=null)
+                {
+                    m_DocumentNarratorWindow.AddInputBinding(inputBinding);
+                }
+            }
+            return m_ShellView.AddInputBinding(inputBinding);
+        }
+
+        public void RemoveInputBinding(InputBinding inputBinding)
+        {
+            lock (m_DocumentNarratorWindowLOCK)
+            {
+                if (m_DocumentNarratorWindow != null)
+                {
+                    m_DocumentNarratorWindow.RemoveInputBinding(inputBinding);
+                }
+            }
+            m_ShellView.RemoveInputBinding(inputBinding);
+        }
+
+        public IInputBindingManager InputBindingManager
+        {
+            get { return this; }
+        }
+
+        [Import(typeof(IAudioViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IAudioViewModel m_AudioViewModel;
+        public IAudioViewModel AudioViewModel
+        {
+            get
+            {
+                //        if (m_AudioViewModel == null)
+                //        {
+                //            m_AudioViewModel = m_Container.Resolve<IAudioViewModel>();
+                //            m_Container.IsRegistered(typeof (IAudioViewModel));
+                //        }
+                return m_AudioViewModel;
+            }
+        }
+
+        private bool m_AudioViewModelDone = false;
+        private void tryAudioViewModel()
+        {
+            if (m_AudioViewModel == null || m_AudioViewModelDone)
+            {
+                return;
+            }
+            m_AudioViewModelDone = true;
+
+            m_PropertyChangeHandler.RaisePropertyChanged(() => AudioViewModel);
+        }
+
+        private bool m_IsNarratorMode;
+        public bool IsNarratorMode
+        {
+            get
+            {
+                return m_IsNarratorMode;
+            }
+            set
+            {
+                if (m_IsNarratorMode == value) return;
+                m_IsNarratorMode = value;
+                m_PropertyChangeHandler.RaisePropertyChanged(() => IsNarratorMode);
+
+                lock (m_DocumentNarratorWindowLOCK)
+                {
+                    if (m_DocumentNarratorWindow != null)
+                    {
+                        var window = m_DocumentNarratorWindow;
+                        m_DocumentNarratorWindow = null;
+                        window.ForceClose(PopupModalWindow.DialogButton.ESC);
+                    }
+                }
+
+                var region = m_RegionManager.Regions[RegionNames.DocumentPane];
+
+                var listOfViews = new List<Object>();
+                foreach (var view in region.Views)
+                {
+                    listOfViews.Add(view);
+                }
+                foreach (var view in listOfViews)
+                {
+                    region.Remove(view);
+                }
+
+                if (m_IsNarratorMode)
+                {
+                    var obj = region.GetView(DocumentPanePlugin.VIEW_NAME);
+                    if (obj != null)
+                    {
+                        region.Remove(obj);
+                    }
+                    lock (m_DocumentNarratorWindowLOCK)
+                    {
+//                        m_DocumentNarratorWindow = new Window
+//                        {
+//                            Title = "Tobi",
+//                            WindowStartupLocation = WindowStartupLocation.Manual,
+//                            WindowState = WindowState.Normal,
+//                            WindowStyle = WindowStyle.SingleBorderWindow,
+//                            SizeToContent = SizeToContent.Manual,
+//                            Topmost = false,
+//                            ShowInTaskbar = true,
+//                            ShowActivated = true,
+//                            ResizeMode = ResizeMode.CanResizeWithGrip,
+//                            AllowsTransparency = false,
+//                            Width = 800,
+//                            Height = 600,
+//                            Top = 10,
+//                            Left = 10,
+//                            Content = this,
+//                            //Owner = (Window)m_ShellView,
+//                            Owner = Application.Current.MainWindow,
+//#if NET40
+//                            TaskbarItemInfo = new TaskbarItemInfo(),
+//#endif
+//                        };
+
+                        m_DocumentNarratorWindow = new PopupModalWindow(m_ShellView,
+                            Tobi_Plugin_DocumentPane_Lang.NarratorView,
+                            this,
+                            PopupModalWindow.DialogButtonsSet.None,
+                            PopupModalWindow.DialogButton.Close,
+                            true, 800, 600, null, 0);
+                        
+                        m_DocumentNarratorWindow.IgnoreEscape = true;
+
+                        m_DocumentNarratorWindow.InputBindings.AddRange(Application.Current.MainWindow.InputBindings);
+
+                        m_DocumentNarratorWindow.KeyUp += (object sender, KeyEventArgs e) =>
+                            {
+                                var key = (e.Key == Key.System
+                                                ? e.SystemKey
+                                                : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+                                if (key == Key.Escape)
+                                {
+                                    m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+                                }
+                            };
+
+                        m_DocumentNarratorWindow.Closed += (sender, ev) => Dispatcher.BeginInvoke(
+                            DispatcherPriority.Background,
+                            (Action)(() =>
+                            {
+                                lock (m_DocumentNarratorWindowLOCK)
+                                {
+                                    if (m_DocumentNarratorWindow != null)
+                                    {
+                                        IsNarratorMode = false;
+                                    }
+                                }
+                            }));
+                    }
+                    m_DocumentNarratorWindow.ShowFloating(null);
+                }
+                else
+                {
+                    m_RegionManager.RegisterNamedViewWithRegion(RegionNames.DocumentPane,
+                        new PreferredPositionNamedView { m_viewInstance = this, m_viewName = DocumentPanePlugin.VIEW_NAME });
+                }
+            }
+        }
+
         public void OnImportsSatisfied()
         {
             trySearchCommands();
+            tryAudioViewModel();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -546,6 +756,7 @@ namespace Tobi.Plugin.DocumentPane
         public RichDelegateCommand CommandFocus { get; private set; }
 
         public RichDelegateCommand CommandToggleTextOnlyView { get; private set; }
+        public RichDelegateCommand CommandSwitchNarratorView { get; private set; }
 
         private readonly ILoggerFacade m_Logger;
 
@@ -559,6 +770,7 @@ namespace Tobi.Plugin.DocumentPane
         ///</summary>
         [ImportingConstructor]
         public DocumentPaneView(
+            IRegionManager regionManager,
             IEventAggregator eventAggregator,
             ILoggerFacade logger,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
@@ -569,9 +781,11 @@ namespace Tobi.Plugin.DocumentPane
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
 
-            m_UrakawaSession = urakawaSession;
+            m_RegionManager = regionManager;
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
+
+            m_UrakawaSession = urakawaSession;
             m_ShellView = shellView;
 
             DataContext = this;
@@ -612,6 +826,21 @@ namespace Tobi.Plugin.DocumentPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ToggleTextOnly));
 
             m_ShellView.RegisterRichCommand(CommandToggleTextOnlyView);
+            //
+            CommandSwitchNarratorView = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdSwitchNarratorView_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdSwitchNarratorView_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("preferences-system-windows"),
+                () =>
+                {
+                    IsNarratorMode = !IsNarratorMode;
+                },
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_SwitchNarratorView));
+
+            m_ShellView.RegisterRichCommand(CommandSwitchNarratorView);
             //
             CommandStructureDown = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdStructureDown_ShortDesc,
@@ -1081,11 +1310,19 @@ namespace Tobi.Plugin.DocumentPane
 
         private void refreshCommandsIsActive()
         {
-            CommandFindFocus.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
-            CommandFindNext.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
-            CommandFindPrev.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
+            lock (m_DocumentNarratorWindowLOCK)
+            {
+                CommandFindFocus.IsActive = m_DocumentNarratorWindow != null
+                                                ? m_DocumentNarratorWindow.ActiveAware.IsActive
+                                                : m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
+                CommandFindNext.IsActive = m_DocumentNarratorWindow != null
+                                               ? m_DocumentNarratorWindow.ActiveAware.IsActive
+                                               : m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
+                CommandFindPrev.IsActive = m_DocumentNarratorWindow != null
+                                               ? m_DocumentNarratorWindow.ActiveAware.IsActive
+                                               : m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
+            }
         }
-
 
         public RichDelegateCommand CommandFindFocus { get; private set; }
         public RichDelegateCommand CommandFindNext { get; private set; }
@@ -2637,6 +2874,7 @@ namespace Tobi.Plugin.DocumentPane
         }
 
         private TextElement m_MouseOverTextElement;
+
         //private Brush m_MouseOverTextElementBackground;
         public void OnTextElementMouseEnter(object sender, MouseEventArgs e)
         {

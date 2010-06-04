@@ -20,6 +20,8 @@ namespace Tobi.Plugin.DocumentPane
 
         private readonly ILoggerFacade m_Logger;
 
+        public const string VIEW_NAME = @"ViewOf_" + RegionNames.DocumentPane;
+
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
@@ -44,7 +46,7 @@ namespace Tobi.Plugin.DocumentPane
             m_DocView = docView;
 
             m_RegionManager.RegisterNamedViewWithRegion(RegionNames.DocumentPane,
-                new PreferredPositionNamedView { m_viewInstance = m_DocView, m_viewName = @"ViewOf_" + RegionNames.DocumentPane });
+                new PreferredPositionNamedView { m_viewInstance = m_DocView, m_viewName = VIEW_NAME });
 
             //m_RegionManager.RegisterViewWithRegion(RegionNames.DocumentPane, typeof(DocumentPaneView));
 
@@ -92,7 +94,7 @@ namespace Tobi.Plugin.DocumentPane
                 Tobi_Common_Lang.Menu_View, PreferredPosition.Last, true,
                 null, //Tobi_Common_Lang.Menu_Navigation,
                 PreferredPosition.First, true,
-                new[] { m_DocView.CommandToggleTextOnlyView });
+                new[] { m_DocView.CommandToggleTextOnlyView, m_DocView.CommandSwitchNarratorView });
 
             m_MenuBarId_3 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_View, PreferredPosition.First, true,

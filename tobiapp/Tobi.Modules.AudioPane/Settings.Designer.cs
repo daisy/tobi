@@ -25,7 +25,19 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Audio_EnableSkipDuringRecord {
+            get {
+                return ((bool)(this["Audio_EnableSkipDuringRecord"]));
+            }
+            set {
+                this["Audio_EnableSkipDuringRecord"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool Audio_EnableDeferredRecord {
             get {
                 return ((bool)(this["Audio_EnableDeferredRecord"]));
