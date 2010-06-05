@@ -390,6 +390,11 @@ namespace Tobi.Plugin.AudioPane
 
             IsAutoPlay = false;
 
+            bool needsRefresh = false;
+
+            bool skipDrawing = Settings.Default.AudioWaveForm_SkipDrawing;
+            Settings.Default.AudioWaveForm_SkipDrawing = true;
+
             foreach (var deferredRecordingDataItem in m_DeferredRecordingDataItems)
             {
                 Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.PerformTreeNodeSelection(deferredRecordingDataItem.TreeNode1, false, deferredRecordingDataItem.TreeNode2);
@@ -444,9 +449,24 @@ namespace Tobi.Plugin.AudioPane
                 }
 
                 openFile(deferredRecordingDataItem.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
+
+                needsRefresh = true;
+
+                //m_viewModel.CommandRefresh.Execute();
+                //if (m_viewModel.View != null)
+                //{
+                //    m_viewModel.View.CancelWaveFormLoad(true);
+                //}
             }
 
             m_DeferredRecordingDataItems = null;
+
+            Settings.Default.AudioWaveForm_SkipDrawing = skipDrawing;
+
+            if (needsRefresh)
+            {
+                CommandRefresh.Execute();
+            }
         }
 
         private bool isTreeNodeSkippable(TreeNode node)

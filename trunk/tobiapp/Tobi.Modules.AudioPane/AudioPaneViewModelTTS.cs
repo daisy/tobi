@@ -200,6 +200,10 @@ namespace Tobi.Plugin.AudioPane
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_viewModel.m_UrakawaSession.GetTreeNodeSelection();
             TreeNode treeNode = treeNodeSelection.Item1;
 
+            bool needsRefresh = false;
+            bool skipDrawing = Settings.Default.AudioWaveForm_SkipDrawing;
+            Settings.Default.AudioWaveForm_SkipDrawing = true;
+
             bool initial = true;
             try
             {
@@ -282,11 +286,13 @@ namespace Tobi.Plugin.AudioPane
 
                    m_viewModel.openFile(converter.GeneratedAudioFilePath, true, true, pcmFormat);
 
-                   m_viewModel.CommandRefresh.Execute();
-                   if (m_viewModel.View != null)
-                   {
-                       m_viewModel.View.CancelWaveFormLoad(true);
-                   }
+                   needsRefresh = true;
+
+                   //m_viewModel.CommandRefresh.Execute();
+                   //if (m_viewModel.View != null)
+                   //{
+                   //    m_viewModel.View.CancelWaveFormLoad(true);
+                   //}
                }));
 
                 if (RequestCancellation)
@@ -323,7 +329,16 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
             finally
-            {//
+            {
+                m_viewModel.TheDispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                {
+                    Settings.Default.AudioWaveForm_SkipDrawing = skipDrawing;
+
+                    if (needsRefresh)
+                    {
+                        m_viewModel.CommandRefresh.Execute();
+                    }
+                }));
             }
         }
     }

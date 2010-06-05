@@ -559,7 +559,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     text1 = text1.Substring(0, 100) + ". . .";
                 }
 
-                str = qName1_ + " // " + text1 + audioInfo1;
+                str = qName1_ + " // " + text1 + " *** " + audioInfo1;
 
                 // IMAGE ALT IS NOW IN THE FLATTENED TREENODE TEXT
                 //string imgAlt = null;
@@ -593,7 +593,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     text2 = text2.Substring(0, 100) + ". . .";
                 }
 
-                str = qName1_ + " >> " + qName2_ + " // " + text2 + audioInfo2;
+                str = qName1_ + " >> " + qName2_ + " // " + text2 + " *** " + audioInfo2;
             }
 
             Console.WriteLine(@"}}}}}" + str);
