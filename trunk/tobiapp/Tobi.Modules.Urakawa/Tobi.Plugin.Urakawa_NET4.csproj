@@ -55,6 +55,10 @@
     </Reference>
     <Reference Include="PresentationFramework">
     </Reference>
+    <Reference Include="saxon9he-api, Version=9.3.0.4, Culture=neutral, PublicKeyToken=e1fdd002d5083fe6, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\Saxon\saxon9he-api.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
     </Reference>
@@ -138,6 +142,9 @@
   <ItemGroup>
     <Content Include="empty-dtbook-z3986-2005.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Obi-to-XUK2.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

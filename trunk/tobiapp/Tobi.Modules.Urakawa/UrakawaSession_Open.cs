@@ -1,9 +1,12 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Xml;
+using Saxon.Api;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
 using Tobi.Common;
@@ -48,7 +51,7 @@ namespace Tobi.Plugin.Urakawa
                         FileName = @"",
                         DefaultExt = @".xml",
 #if DEBUG
-                        Filter = @"DTBook, OPF, XUK or EPUB (*.xml, *.opf, *.xuk, *.epub)|*.xml;*.opf;*.xuk;*.epub",
+                        Filter = @"DTBook, OPF, XUK or EPUB (*.xml, *.opf, *.xuk, *.epub, *.obi)|*.xml;*.opf;*.xuk;*.epub;*.obi",
 #else
                         Filter = @"DTBook, OPF or XUK (*.xml, *.opf, *.xuk)|*.xml;*.opf;*.xuk",
 #endif //DEBUG
@@ -337,6 +340,34 @@ namespace Tobi.Plugin.Urakawa
                 //    cancelFlag = true;
                 //    return false;
                 //}
+            }
+            else if (ext == @".obi")
+            {
+                string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string xslFilePath = Path.Combine(workingDirectory, "Obi-to-XUK2.xsl");
+                TextReader input = new StreamReader(xslFilePath);
+
+                var processor = new Processor();
+                XsltCompiler compiler = processor.NewXsltCompiler();
+                XsltTransformer transformer = compiler.Compile(input).Load();
+                input.Close();
+
+                var xmlDoc = new XmlDocument();
+                xmlDoc.Load(fileUri.LocalPath);
+
+                XdmNode inputNode = processor.NewDocumentBuilder().Build(xmlDoc);
+                transformer.InitialContextNode = inputNode;
+
+                string outputFileName = fileUri.LocalPath + ".xuk";
+                using (StreamWriter streamWriter = new StreamWriter(outputFileName, false, Encoding.UTF8))
+                {
+                    var xmlWriter = new XmlTextWriter(streamWriter);
+
+                    var dest = new TextWriterDestination(xmlWriter);
+                    transformer.Run(dest);
+                }
+
+                OpenFile(outputFileName);
             }
             else
             {
