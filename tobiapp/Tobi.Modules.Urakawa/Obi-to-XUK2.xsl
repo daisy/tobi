@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns="http://www.daisy.org/urakawa/xuk/2.0"
-    xmlns:oldXuk="http://www.daisy.org/urakawa/xuk/1.0"
-    xmlns:newXuk="http://www.daisy.org/urakawa/xuk/2.0" xmlns:obi="http://www.daisy.org/urakawa/obi"
+    xmlns:xuk1="http://www.daisy.org/urakawa/xuk/1.0"
+    xmlns:xuk2="http://www.daisy.org/urakawa/xuk/2.0" xmlns:obi="http://www.daisy.org/urakawa/obi"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema"
     exclude-result-prefixes="xs" version="2.0">
     <xsl:output method="xml" indent="yes" omit-xml-declaration="no" version="1.0"/>
@@ -9,12 +9,30 @@
     <!-- xsl:template match="text()[not(normalize-space())]"/ -->
     <xsl:template match="text()"/>
 
-    <xsl:variable name="skipExtraTobiDTBookData" as="xs:boolean" select="false()"/>
+    <!--
+        This XUK transformation works on these 3 types of XML documents:
+        (1) OBI_XUK1 => used by old Obi up to v1.2 (included), based on Urakawa SDK 1.1
+        (2) OBI_XUK2 => used by new Obi from v2.0 (under development), based on Urakawa SDK 2, with custom data model extensions and specific node structure (no use of XmlProperty).
+        (3) TOBI_XUK2 => used by all versions of Tobi, based on Urakawa SDK 2, without data model extensions, generic tree nodes but with full use of XmlProperty to represent document markup.
+        This XUK transformation can convert the following:
+        (1) OBI_XUK1 to OBI_XUK2 (upgrade old Obi projects to new ones)
+        (2) OBI_XUK1 to TOBI_XUK2 (repurpose old Obi projects into full-text, full-audio Tobi projects)
+        (3) OBI_XUK2 to TOBI_XUK2 (repurpose new Obi projects into full-text, full-audio Tobi projects)
+        Note that there is no reverse transformation from the Tobi format to the Obi formats,
+        or from the new Obi format to the old one.
+        The choice of (1) or (2) is controlled by $generateObiFormat [false => (2), true => (1)].
+        Option (3) implies $generateObiFormat = false, and is automatically used when OBI_XUK2 is detected.
+    -->
+    <xsl:variable name="generateObiFormat" as="xs:boolean" select="true()"/>
+    <xsl:variable name="generateTobiFormat" as="xs:boolean" select="not($generateObiFormat)"/>
 
+    <!-- MAIN ENTRY POINT -->
     <xsl:template match="/">
         <xsl:apply-templates/>
     </xsl:template>
-    <xsl:template match="oldXuk:Xuk | newXuk:Xuk">
+
+    <!-- XUK root -->
+    <xsl:template match="xuk1:Xuk | xuk2:Xuk">
         <Xuk>
             <xsl:namespace name="xsi">
                 <xsl:text>http://www.w3.org/2001/XMLSchema-instance</xsl:text>
@@ -26,7 +44,9 @@
             <xsl:apply-templates/>
         </Xuk>
     </xsl:template>
-    <xsl:template match="oldXuk:Project | newXuk:Project">
+
+    <!-- Project root -->
+    <xsl:template match="xuk1:Project | xuk2:Project">
         <Project>
             <PresentationFactory>
                 <RegisteredTypes>
@@ -38,251 +58,317 @@
                         XukNamespaceUri="http://www.daisy.org/urakawa/obi"
                         BaseXukLocalName="Presentation"
                         BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="Obi" AssemblyVersion="0.0.0.0"
-                        FullName="Obi.ObiPresentation"/>
+                        AssemblyName="Obi" AssemblyVersion="0.0.0.0" FullName="Obi.ObiPresentation"
+                    />
                 </RegisteredTypes>
             </PresentationFactory>
             <xsl:apply-templates/>
         </Project>
     </xsl:template>
-    <xsl:template match="oldXuk:mPresentations | newXuk:Presentations">
+
+    <!-- List of Presentations -->
+    <xsl:template match="xuk1:mPresentations | xuk2:Presentations">
         <Presentations>
             <xsl:apply-templates/>
         </Presentations>
     </xsl:template>
-    <xsl:template match="obi:Presentation | obi:ObiPresentation">
-        <obi:ObiPresentation>
-            <xsl:attribute name="RootUri">
-                <xsl:text>./</xsl:text>
-            </xsl:attribute>
-            <TreeNodeFactory>
-                <RegisteredTypes>
-                    <Type XukLocalName="TreeNode"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.core.TreeNode"/>
-                    <Type XukLocalName="root" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
-                        BaseXukLocalName="TreeNode"
-                        BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="Obi" AssemblyVersion="0.0.0.0" FullName="Obi.ObiRootNode"/>
-                    <Type XukLocalName="section" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
-                        BaseXukLocalName="TreeNode"
-                        BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="Obi" AssemblyVersion="0.0.0.0" FullName="Obi.SectionNode"/>
-                    <Type XukLocalName="phrase" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
-                        BaseXukLocalName="TreeNode"
-                        BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="Obi" AssemblyVersion="0.0.0.0" FullName="Obi.PhraseNode"/>
-                    <Type XukLocalName="empty" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
-                        BaseXukLocalName="TreeNode"
-                        BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="Obi" AssemblyVersion="0.0.0.0" FullName="Obi.EmptyNode"/>
-                </RegisteredTypes>
-            </TreeNodeFactory>
-            <PropertyFactory DefaultXmlNamespaceUri="http://www.daisy.org/z3986/2005/dtbook/">
-                <RegisteredTypes>
-                    <Type XukLocalName="ChannelsProperty"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.property.channel.ChannelsProperty"/>
-                    <Type XukLocalName="XmlProperty"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.property.xml.XmlProperty"/>
-                </RegisteredTypes>
-            </PropertyFactory>
-            <ChannelFactory>
-                <RegisteredTypes>
-                    <Type XukLocalName="Channel"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.property.channel.Channel"/>
-                    <Type XukLocalName="TextChannel"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.property.channel.TextChannel"/>
-                    <Type XukLocalName="ImageChannel"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.property.channel.ImageChannel"/>
-                    <Type XukLocalName="AudioChannel"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.property.channel.AudioChannel"/>
-                </RegisteredTypes>
-            </ChannelFactory>
-            <MediaFactory>
-                <RegisteredTypes>
-                    <Type XukLocalName="ManagedImageMedia"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.media.data.image.ManagedImageMedia"/>
-                    <Type XukLocalName="ManagedAudioMedia"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.media.data.audio.ManagedAudioMedia"/>
-                    <Type XukLocalName="TextMedia"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.media.TextMedia"/>
-                    <Type XukLocalName="ExternalImageMedia"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.media.ExternalImageMedia"/>
-                    <Type XukLocalName="ExternalVideoMedia"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.media.ExternalVideoMedia"/>
-                    <Type XukLocalName="ExternalTextMedia"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.media.ExternalTextMedia"/>
-                    <Type XukLocalName="ExternalAudioMedia"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.media.ExternalAudioMedia"/>
-                    <Type XukLocalName="SequenceMedia"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.media.SequenceMedia"/>
-                </RegisteredTypes>
-            </MediaFactory>
-            <DataProviderFactory>
-                <RegisteredTypes>
-                    <Type XukLocalName="FileDataProvider"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.data.FileDataProvider"/>
-                </RegisteredTypes>
-            </DataProviderFactory>
-            <MediaDataFactory>
-                <RegisteredTypes>
-                    <Type XukLocalName="JpgImageMediaData"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.media.data.image.codec.JpgImageMediaData"/>
-                    <Type XukLocalName="WavAudioMediaData"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.media.data.audio.codec.WavAudioMediaData"/>
-                </RegisteredTypes>
-            </MediaDataFactory>
-            <CommandFactory>
-                <RegisteredTypes>
-                    <Type XukLocalName="CompositeCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.command.CompositeCommand"/>
-                    <Type XukLocalName="TreeNodeSetManagedAudioMediaCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.commands.TreeNodeSetManagedAudioMediaCommand"/>
-                    <Type XukLocalName="ManagedAudioMediaInsertDataCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.commands.ManagedAudioMediaInsertDataCommand"/>
-                    <Type XukLocalName="TreeNodeAudioStreamDeleteCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.commands.TreeNodeAudioStreamDeleteCommand"/>
-                    <Type XukLocalName="TreeNodeSetIsMarkedCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.commands.TreeNodeSetIsMarkedCommand"/>
-                    <Type XukLocalName="TreeNodeChangeTextCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.commands.TreeNodeChangeTextCommand"/>
-                    <Type XukLocalName="MetadataAddCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.commands.MetadataAddCommand"/>
-                    <Type XukLocalName="MetadataRemoveCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.commands.MetadataRemoveCommand"/>
-                    <Type XukLocalName="MetadataSetContentCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.commands.MetadataSetContentCommand"/>
-                    <Type XukLocalName="MetadataSetNameCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.commands.MetadataSetNameCommand"/>
-                    <Type XukLocalName="MetadataSetIdCommand"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.commands.MetadataSetIdCommand"/>
-                </RegisteredTypes>
-            </CommandFactory>
-            <MetadataFactory>
-                <RegisteredTypes>
-                    <Type XukLocalName="Metadata"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.metadata.Metadata"/>
-                </RegisteredTypes>
-            </MetadataFactory>
-            <ExternalFileDataFactory>
-                <RegisteredTypes>
-                    <Type XukLocalName="CssExternalFileData"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.ExternalFiles.CSSExternalFileData"/>
-                    <Type XukLocalName="XsltExternalFileData"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.ExternalFiles.XSLTExternalFileData"/>
-                    <Type XukLocalName="DTDExternalFileData"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.ExternalFiles.DTDExternalFileData"/>
-                </RegisteredTypes>
-            </ExternalFileDataFactory>
-            <ChannelsManager>
-                <Channels>
-                    <AudioChannel Uid="CHID0000" Name="The Audio Channel"/>
-                    <TextChannel Uid="CHID0001" Name="The Text Channel"/>
-                    <ImageChannel Uid="CHID0002" Name="The Image Channel"/>
-                </Channels>
-            </ChannelsManager>
-            <ExternalFileDataManager>
-                <ExternalFileDatas/>
-            </ExternalFileDataManager>
-            <xsl:apply-templates/>
-        </obi:ObiPresentation>
+
+    <!-- Presentation factories and managers (full warm-up of all the XukAble types) -->
+    <xsl:template name="PresentationFactoriesAndManagers">
+        <TreeNodeFactory>
+            <RegisteredTypes>
+                <Type XukLocalName="TreeNode" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.core.TreeNode"/>
+                <Type XukLocalName="root" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
+                    BaseXukLocalName="TreeNode"
+                    BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="Obi"
+                    AssemblyVersion="0.0.0.0" FullName="Obi.ObiRootNode"/>
+                <Type XukLocalName="section" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
+                    BaseXukLocalName="TreeNode"
+                    BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="Obi"
+                    AssemblyVersion="0.0.0.0" FullName="Obi.SectionNode"/>
+                <Type XukLocalName="phrase" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
+                    BaseXukLocalName="TreeNode"
+                    BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="Obi"
+                    AssemblyVersion="0.0.0.0" FullName="Obi.PhraseNode"/>
+                <Type XukLocalName="empty" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
+                    BaseXukLocalName="TreeNode"
+                    BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="Obi"
+                    AssemblyVersion="0.0.0.0" FullName="Obi.EmptyNode"/>
+            </RegisteredTypes>
+        </TreeNodeFactory>
+        <PropertyFactory DefaultXmlNamespaceUri="http://www.daisy.org/z3986/2005/dtbook/">
+            <RegisteredTypes>
+                <Type XukLocalName="ChannelsProperty"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.property.channel.ChannelsProperty"/>
+                <Type XukLocalName="XmlProperty"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.property.xml.XmlProperty"/>
+            </RegisteredTypes>
+        </PropertyFactory>
+        <ChannelFactory>
+            <RegisteredTypes>
+                <Type XukLocalName="Channel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.property.channel.Channel"/>
+                <Type XukLocalName="TextChannel"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.property.channel.TextChannel"/>
+                <Type XukLocalName="ImageChannel"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.property.channel.ImageChannel"/>
+                <Type XukLocalName="AudioChannel"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.property.channel.AudioChannel"/>
+            </RegisteredTypes>
+        </ChannelFactory>
+        <MediaFactory>
+            <RegisteredTypes>
+                <Type XukLocalName="ManagedImageMedia"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.media.data.image.ManagedImageMedia"/>
+                <Type XukLocalName="ManagedAudioMedia"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.media.data.audio.ManagedAudioMedia"/>
+                <Type XukLocalName="TextMedia"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.media.TextMedia"/>
+                <Type XukLocalName="ExternalImageMedia"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.media.ExternalImageMedia"/>
+                <Type XukLocalName="ExternalVideoMedia"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.media.ExternalVideoMedia"/>
+                <Type XukLocalName="ExternalTextMedia"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.media.ExternalTextMedia"/>
+                <Type XukLocalName="ExternalAudioMedia"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.media.ExternalAudioMedia"/>
+                <Type XukLocalName="SequenceMedia"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.media.SequenceMedia"/>
+            </RegisteredTypes>
+        </MediaFactory>
+        <DataProviderFactory>
+            <RegisteredTypes>
+                <Type XukLocalName="FileDataProvider"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.data.FileDataProvider"/>
+            </RegisteredTypes>
+        </DataProviderFactory>
+        <MediaDataFactory>
+            <RegisteredTypes>
+                <Type XukLocalName="JpgImageMediaData"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.media.data.image.codec.JpgImageMediaData"/>
+                <Type XukLocalName="WavAudioMediaData"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.media.data.audio.codec.WavAudioMediaData"/>
+            </RegisteredTypes>
+        </MediaDataFactory>
+        <CommandFactory>
+            <RegisteredTypes>
+                <Type XukLocalName="CompositeCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.command.CompositeCommand"/>
+                <Type XukLocalName="TreeNodeSetManagedAudioMediaCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.commands.TreeNodeSetManagedAudioMediaCommand"/>
+                <Type XukLocalName="ManagedAudioMediaInsertDataCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.commands.ManagedAudioMediaInsertDataCommand"/>
+                <Type XukLocalName="TreeNodeAudioStreamDeleteCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.commands.TreeNodeAudioStreamDeleteCommand"/>
+                <Type XukLocalName="TreeNodeSetIsMarkedCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.commands.TreeNodeSetIsMarkedCommand"/>
+                <Type XukLocalName="TreeNodeChangeTextCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.commands.TreeNodeChangeTextCommand"/>
+                <Type XukLocalName="MetadataAddCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.commands.MetadataAddCommand"/>
+                <Type XukLocalName="MetadataRemoveCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.commands.MetadataRemoveCommand"/>
+                <Type XukLocalName="MetadataSetContentCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.commands.MetadataSetContentCommand"/>
+                <Type XukLocalName="MetadataSetNameCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.commands.MetadataSetNameCommand"/>
+                <Type XukLocalName="MetadataSetIdCommand"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.commands.MetadataSetIdCommand"/>
+            </RegisteredTypes>
+        </CommandFactory>
+        <MetadataFactory>
+            <RegisteredTypes>
+                <Type XukLocalName="Metadata" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.metadata.Metadata"/>
+            </RegisteredTypes>
+        </MetadataFactory>
+        <ExternalFileDataFactory>
+            <RegisteredTypes>
+                <Type XukLocalName="CssExternalFileData"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.ExternalFiles.CSSExternalFileData"/>
+                <Type XukLocalName="XsltExternalFileData"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.ExternalFiles.XSLTExternalFileData"/>
+                <Type XukLocalName="DTDExternalFileData"
+                    XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                    AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                    FullName="urakawa.ExternalFiles.DTDExternalFileData"/>
+            </RegisteredTypes>
+        </ExternalFileDataFactory>
+        <ChannelsManager>
+            <Channels>
+                <AudioChannel Uid="CHID0000" Name="The Audio Channel"/>
+                <TextChannel Uid="CHID0001" Name="The Text Channel"/>
+                <ImageChannel Uid="CHID0002" Name="The Image Channel"/>
+            </Channels>
+        </ChannelsManager>
+        <ExternalFileDataManager>
+            <ExternalFileDatas/>
+        </ExternalFileDataManager>
     </xsl:template>
-    <xsl:template match="oldXuk:mRootNode | newXuk:RootNode">
+
+    <!-- Presentation root -->
+    <xsl:template match="obi:Presentation | obi:ObiPresentation">
+        <xsl:choose>
+            <xsl:when test="$generateObiFormat">
+                <obi:ObiPresentation>
+                    <xsl:attribute name="RootUri">
+                        <xsl:text>./</xsl:text>
+                    </xsl:attribute>
+                    <xsl:call-template name="PresentationFactoriesAndManagers"/>
+                    <xsl:apply-templates/>
+                </obi:ObiPresentation>
+            </xsl:when>
+            <xsl:otherwise>
+                <Presentation>
+                    <xsl:attribute name="RootUri">
+                        <xsl:text>./</xsl:text>
+                    </xsl:attribute>
+                    <xsl:call-template name="PresentationFactoriesAndManagers"/>
+                    <xsl:apply-templates/>
+                </Presentation>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+    <!-- Document root -->
+    <xsl:template match="xuk1:mRootNode | xuk2:RootNode">
         <RootNode>
             <xsl:apply-templates/>
         </RootNode>
     </xsl:template>
-    <xsl:template match="obi:empty">
-        <!-- obi:empty>
-            <xsl:apply-templates/>
-            </obi:empty -->
-    </xsl:template>
+
+    <!-- Obi "empty" nodes are ignored (skipped) -->
+    <xsl:template match="obi:empty"/>
+
+    <!-- Obi "root" node -->
     <xsl:template match="obi:root">
-        <obi:root>
-            <xsl:apply-templates/>
-        </obi:root>
+        <xsl:choose>
+            <xsl:when test="$generateObiFormat">
+                <obi:root>
+                    <xsl:apply-templates/>
+                </obi:root>
+            </xsl:when>
+            <xsl:otherwise>
+                <TreeNode>
+                    <xsl:apply-templates/>
+                </TreeNode>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
+
+    <!-- Obi "section" nodes -->
     <xsl:template match="obi:section">
-        <obi:section>
-            <xsl:apply-templates/>
-        </obi:section>
+        <xsl:choose>
+            <xsl:when test="$generateObiFormat">
+                <obi:section>
+                    <xsl:apply-templates/>
+                </obi:section>
+            </xsl:when>
+            <xsl:otherwise>
+                <TreeNode>
+                    <xsl:apply-templates/>
+                </TreeNode>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
+
+    <!-- Obi "phrase" nodes -->
     <xsl:template match="obi:phrase">
         <xsl:choose>
-            <xsl:when test="$skipExtraTobiDTBookData">
+            <!-- $generateObiFormat => clone phrase data -->
+            <xsl:when test="$generateObiFormat">
                 <obi:phrase>
+                    <xsl:if test="./@kind">
+                        <xsl:attribute name="kind">
+                            <xsl:value-of select="./@kind"/>
+                        </xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="./@page">
+                        <xsl:attribute name="page">
+                            <xsl:value-of select="./@page"/>
+                        </xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="./@pageKind">
+                        <xsl:attribute name="pageKind">
+                            <xsl:value-of select="./@pageKind"/>
+                        </xsl:attribute>
+                    </xsl:if>
+                    <xsl:if test="./@pageText">
+                        <xsl:attribute name="pageText">
+                            <xsl:value-of select="./@pageText"/>
+                        </xsl:attribute>
+                    </xsl:if>
                     <xsl:apply-templates/>
                 </obi:phrase>
             </xsl:when>
+            <!-- $generateTobiFormat => skip heading phrase (do nothing, will be extracted separately to be associated with the level-hd) -->
+            <xsl:when test="./@kind = 'Heading'"> </xsl:when>
             <xsl:when
-                test="(./@kind = 'Heading') or (./Properties/XmlProperty/XmlAttributes/XmlAttribute[@LocalName='kind' and @Value='Heading'])"> </xsl:when>
-            <xsl:when test="./count(./preceding-sibling::*) = 0"> </xsl:when>
-            <xsl:when test="./count(./preceding-sibling::*[local-name()!='empty']) = 0"> </xsl:when>
+                test="./count(./@kind) = 0
+                                and
+                            ./count(./preceding-sibling::obi:phrase[@kind = 'Heading' or count(@kind) = 0]) = 0"> </xsl:when>
             <xsl:otherwise>
                 <obi:phrase>
                     <xsl:apply-templates/>
@@ -290,12 +376,16 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    <xsl:template match="oldXuk:mChildren | newXuk:Children">
+
+    <!-- List of child tree nodes -->
+    <xsl:template match="xuk1:mChildren | xuk2:Children">
         <Children>
             <xsl:choose>
-                <xsl:when test="$skipExtraTobiDTBookData">
+                <xsl:when test="$generateObiFormat">
                     <xsl:apply-templates/>
                 </xsl:when>
+                <!-- $generateTobiFormat => special content injection to meet DTBOOK structural requirements -->
+                <!-- Injection of the level's hd heading, using the audio from the first eligable phrase -->
                 <xsl:when test="../local-name() = 'section'">
                     <TreeNode>
                         <Properties>
@@ -310,16 +400,16 @@
                                         <TextMedia>
                                             <Text>
                                                 <xsl:choose>
-                                                    <xsl:when test="../oldXuk:mProperties">
-                                                        <xsl:value-of
-                                                            select="../oldXuk:mProperties/oldXuk:ChannelsProperty/oldXuk:mChannelMappings/oldXuk:mChannelMapping/oldXuk:TextMedia/oldXuk:mText"
-                                                        />
-                                                    </xsl:when>
-                                                    <xsl:otherwise>
-                                                        <xsl:value-of
-                                                            select="../newXuk:Properties/newXuk:ChannelsProperty/newXuk:ChannelMappings/newXuk:ChannelMapping/newXuk:TextMedia/newXuk:Text"
-                                                        />
-                                                    </xsl:otherwise>
+                                                  <xsl:when test="../xuk1:mProperties">
+                                                  <xsl:value-of
+                                                  select="../xuk1:mProperties/xuk1:ChannelsProperty/xuk1:mChannelMappings/xuk1:mChannelMapping/xuk1:TextMedia/xuk1:mText"
+                                                  />
+                                                  </xsl:when>
+                                                  <xsl:otherwise>
+                                                  <xsl:value-of
+                                                  select="../xuk2:Properties/xuk2:ChannelsProperty/xuk2:ChannelMappings/xuk2:ChannelMapping/xuk2:TextMedia/xuk2:Text"
+                                                  />
+                                                  </xsl:otherwise>
                                                 </xsl:choose>
                                             </Text>
                                         </TextMedia>
@@ -327,24 +417,31 @@
                                     <ChannelMapping Channel="CHID0000">
                                         <ManagedAudioMedia>
                                             <xsl:choose>
-                                                <xsl:when test="../oldXuk:mChildren">
-                                                    <xsl:attribute name="MediaDataUid">
-                                                        <xsl:value-of
-                                                            select="../oldXuk:mChildren/obi:phrase[@kind='Heading' or count(./preceding-sibling::*)=0 or count(./preceding-sibling::*[local-name()!='empty'])=0]/oldXuk:mProperties/oldXuk:ChannelsProperty/oldXuk:mChannelMappings/oldXuk:mChannelMapping/oldXuk:ManagedAudioMedia/@audioMediaDataUid"
-                                                        />
-                                                    </xsl:attribute>
+                                                <xsl:when test="../xuk1:mChildren">
+                                                  <xsl:attribute name="MediaDataUid">
+                                                  <xsl:value-of
+                                                  select="../xuk1:mChildren/obi:phrase
+                                                  [@kind='Heading' or
+                                                  count(@kind) = 0
+                                                  and
+                                                  count(preceding-sibling::obi:phrase[@kind = 'Heading' or count(@kind) = 0]) = 0]
+                                                  [1]
+                                                  /xuk1:mProperties/xuk1:ChannelsProperty/xuk1:mChannelMappings/xuk1:mChannelMapping/xuk1:ManagedAudioMedia/@audioMediaDataUid"
+                                                  />
+                                                  </xsl:attribute>
                                                 </xsl:when>
                                                 <xsl:otherwise>
-                                                    <xsl:attribute name="MediaDataUid">
-                                                        <xsl:value-of
-                                                            select="../newXuk:Children/
-                                                            obi:phrase[
-                                                            ./Properties/XmlProperty/XmlAttributes/XmlAttribute[@LocalName='kind']/@Value='Heading'
-                                                            or count(./preceding-sibling::*)=0
-                                                            or count(./preceding-sibling::*[local-name()!='empty'])=0]
-                                                            /newXuk:Properties/newXuk:ChannelsProperty/newXuk:ChannelMappings/newXuk:ChannelMapping/newXuk:ManagedAudioMedia/@MediaDataUid"
-                                                        />
-                                                    </xsl:attribute>
+                                                  <xsl:attribute name="MediaDataUid">
+                                                  <xsl:value-of
+                                                  select="../xuk2:Children/obi:phrase
+                                                          [@kind='Heading' or
+                                                          count(@kind) = 0
+                                                          and
+                                                          count(preceding-sibling::obi:phrase[@kind = 'Heading' or count(@kind) = 0]) = 0]
+                                                          [1]
+                                                          /xuk2:Properties/xuk2:ChannelsProperty/xuk2:ChannelMappings/xuk2:ChannelMapping/xuk2:ManagedAudioMedia/@MediaDataUid"
+                                                  />
+                                                  </xsl:attribute>
                                                 </xsl:otherwise>
                                             </xsl:choose>
                                         </ManagedAudioMedia>
@@ -355,7 +452,7 @@
                         <Children/>
                     </TreeNode>
                     <xsl:choose>
-                        <xsl:when test="count(./*[local-name()!='empty']) = 1">
+                        <xsl:when test="count(./*[local-name() = 'phrase']) = 1">
                             <TreeNode>
                                 <Properties>
                                     <XmlProperty>
@@ -367,7 +464,7 @@
                                         <ChannelMappings>
                                             <ChannelMapping Channel="CHID0001">
                                                 <TextMedia>
-                                                    <Text> </Text>
+                                                  <Text>.</Text>
                                                 </TextMedia>
                                             </ChannelMapping>
                                         </ChannelMappings>
@@ -380,9 +477,11 @@
                     </xsl:choose>
                     <xsl:apply-templates/>
                 </xsl:when>
+                <!-- this shouldn't create anymore content, as phrases have no child TreeNodes -->
                 <xsl:when test="../local-name() = 'phrase'">
                     <xsl:apply-templates/>
                 </xsl:when>
+                <!-- injection of DTBOOK frontmatter and doctitle/docauthor -->
                 <xsl:when test="../local-name() = 'root'">
                     <TreeNode>
                         <Properties>
@@ -400,7 +499,7 @@
                                         <ChannelMappings>
                                             <ChannelMapping Channel="CHID0001">
                                                 <TextMedia>
-                                                    <Text>Doc Title</Text>
+                                                  <Text>Doc Title</Text>
                                                 </TextMedia>
                                             </ChannelMapping>
                                         </ChannelMappings>
@@ -415,7 +514,7 @@
                                         <ChannelMappings>
                                             <ChannelMapping Channel="CHID0001">
                                                 <TextMedia>
-                                                    <Text>Doc Author</Text>
+                                                  <Text>Doc Author</Text>
                                                 </TextMedia>
                                             </ChannelMapping>
                                         </ChannelMappings>
@@ -431,9 +530,15 @@
             </xsl:choose>
         </Children>
     </xsl:template>
-    <xsl:template match="oldXuk:mProperties | newXuk:Properties">
+
+    <!-- List of node properties -->
+    <xsl:template match="xuk1:mProperties | xuk2:Properties">
         <Properties>
             <xsl:choose>
+                <xsl:when test="$generateObiFormat">
+                    <xsl:apply-templates/>
+                </xsl:when>
+                <!-- $generateTobiFormat => special content injection to meet DTBOOK structural requirements -->
                 <xsl:when test="../local-name() = 'root'">
                     <XmlProperty LocalName="book"/>
                 </xsl:when>
@@ -459,28 +564,6 @@
                                 </XmlAttributes>
                             </XmlProperty>
                         </xsl:when>
-                        <xsl:when
-                            test="../Properties/XmlProperty/XmlAttributes/XmlAttribute[@LocalName='kind' and @Value='Page']">
-                            <XmlProperty LocalName="pagenum">
-                                <XmlAttributes>
-                                    <XmlAttribute LocalName="page">
-                                        <xsl:attribute name="Value">
-                                            <xsl:value-of
-                                                select="../Properties/XmlProperty/XmlAttributes/XmlAttribute[@LocalName='pageKind']/@Value"
-                                            />
-                                        </xsl:attribute>
-                                    </XmlAttribute>
-                                    <XmlAttribute LocalName="id">
-                                        <xsl:attribute name="Value">
-                                            <xsl:text>Page_</xsl:text>
-                                            <xsl:value-of
-                                                select="../Properties/XmlProperty/XmlAttributes/XmlAttribute[@LocalName='page']/@Value"
-                                            />
-                                        </xsl:attribute>
-                                    </XmlAttribute>
-                                </XmlAttributes>
-                            </XmlProperty>
-                        </xsl:when>
                         <xsl:otherwise>
                             <XmlProperty LocalName="p"/>
                         </xsl:otherwise>
@@ -488,11 +571,14 @@
                 </xsl:when>
                 <xsl:otherwise> </xsl:otherwise>
             </xsl:choose>
-            <xsl:apply-templates/>
         </Properties>
-    </xsl:template><xsl:template match="oldXuk:ChannelsProperty | newXuk:ChannelsProperty">
+    </xsl:template>
+
+    <!-- Root of Audio and Text Channels -->
+    <xsl:template match="xuk1:ChannelsProperty | xuk2:ChannelsProperty">
         <xsl:choose>
-            <xsl:when test="not($skipExtraTobiDTBookData) and (../../local-name() = 'section')"> </xsl:when>
+            <!-- We skip Obi's section text media (which goes in the hd heading instead) -->
+            <xsl:when test="$generateTobiFormat and (../../local-name() = 'section')"> </xsl:when>
             <xsl:otherwise>
                 <ChannelsProperty>
                     <xsl:apply-templates/>
@@ -500,47 +586,35 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    <xsl:template match="oldXuk:mChannelMappings | newXuk:ChannelMappings">
+
+    <!-- Audio and Text Channels -->
+    <xsl:template match="xuk1:mChannelMappings | xuk2:ChannelMappings">
         <ChannelMappings>
             <xsl:choose>
-                <xsl:when test="not($skipExtraTobiDTBookData) and (../../../local-name() = 'phrase')">
+                <xsl:when test="$generateTobiFormat and (../../../local-name() = 'phrase')">
                     <ChannelMapping Channel="CHID0001">
                         <TextMedia>
                             <xsl:choose>
-                                <xsl:when test="../../../@kind">
-                                    <xsl:choose>
-                                        <xsl:when test="../../../@kind = 'Page'">
-                                            <Text>
-                                                <xsl:value-of select="../../../@pageText"/>
-                                            </Text>
-                                        </xsl:when>
-                                        <xsl:otherwise>
-                                            <Text>Phrase <xsl:text> </xsl:text>
-                                                <xsl:value-of
-                                                  select="oldXuk:mChannelMapping/oldXuk:ManagedAudioMedia/@audioMediaDataUid"
-                                                />
-                                            </Text>
-                                        </xsl:otherwise>
-                                    </xsl:choose>
+                                <xsl:when test="../../../@kind = 'Page'">
+                                    <Text>
+                                        <xsl:value-of select="../../../@pageText"/>
+                                    </Text>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <xsl:choose>
-                                        <xsl:when
-                                            test="../../../Properties/XmlProperty/XmlAttributes/XmlAttribute[@LocalName='kind']/@Value='Page'">
-                                            <Text>
+                                    <Text>Phrase <xsl:text> </xsl:text>
+                                        <xsl:choose>
+                                            <xsl:when test="xuk1:mChannelMapping">
                                                 <xsl:value-of
-                                                  select="../../../Properties/XmlProperty/XmlAttributes/XmlAttribute[@LocalName='pageText']/@Value"
+                                                    select="xuk1:mChannelMapping/xuk1:ManagedAudioMedia/@audioMediaDataUid"
                                                 />
-                                            </Text>
-                                        </xsl:when>
-                                        <xsl:otherwise>
-                                            <Text>Phrase <xsl:text> </xsl:text>
+                                            </xsl:when>
+                                            <xsl:otherwise>
                                                 <xsl:value-of
-                                                  select="newXuk:ChannelMapping/newXuk:ManagedAudioMedia/@MediaDataUid"
+                                                    select="xuk2:ChannelMapping/xuk2:ManagedAudioMedia/@MediaDataUid"
                                                 />
-                                            </Text>
-                                        </xsl:otherwise>
-                                    </xsl:choose>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </Text>
                                 </xsl:otherwise>
                             </xsl:choose>
                         </TextMedia>
@@ -551,275 +625,335 @@
             <xsl:apply-templates/>
         </ChannelMappings>
     </xsl:template>
-    <xsl:template match="oldXuk:mChannelMapping">
+    
+    <!-- Audio and Text Channels (clone from source) -->
+    <xsl:template match="xuk1:mChannelMapping | xuk2:ChannelMapping">
         <ChannelMapping>
             <xsl:attribute name="Channel">
-                <xsl:value-of select="@channel"/>
+                <xsl:choose>
+                    <xsl:when test="@channel">
+                        <xsl:value-of select="@channel"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="@Channel"/>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:attribute>
             <xsl:apply-templates/>
         </ChannelMapping>
     </xsl:template>
-    <xsl:template match="newXuk:ChannelMapping">
-        <ChannelMapping>
-            <xsl:attribute name="Channel">
-                <xsl:value-of select="@Channel"/>
-            </xsl:attribute>
-            <xsl:apply-templates/>
-        </ChannelMapping>
-    </xsl:template>
-    <xsl:template match="oldXuk:TextMedia | newXuk:TextMedia">
+    
+    <!-- Text media -->
+    <xsl:template match="xuk1:TextMedia | xuk2:TextMedia">
         <TextMedia>
             <xsl:apply-templates/>
         </TextMedia>
     </xsl:template>
-    <xsl:template match="oldXuk:mText | newXuk:Text">
+    
+    <!-- Text content -->
+    <xsl:template match="xuk1:mText | xuk2:Text">
         <Text>
             <xsl:value-of select="text()"/>
         </Text>
     </xsl:template>
-    <xsl:template match="oldXuk:ManagedAudioMedia">
+    
+    <!-- Audio media -->
+    <xsl:template match="xuk1:ManagedAudioMedia | xuk2:ManagedAudioMedia">
         <ManagedAudioMedia>
             <xsl:attribute name="MediaDataUid">
-                <xsl:value-of select="@audioMediaDataUid"/>
+                <xsl:choose>
+                    <xsl:when test="@audioMediaDataUid">
+                        <xsl:value-of select="@audioMediaDataUid"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="@MediaDataUid"/>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:attribute>
             <xsl:apply-templates/>
         </ManagedAudioMedia>
     </xsl:template>
-    <xsl:template match="newXuk:ManagedAudioMedia">
-        <ManagedAudioMedia>
-            <xsl:attribute name="MediaDataUid">
-                <xsl:value-of select="@MediaDataUid"/>
-            </xsl:attribute>
-            <xsl:apply-templates/>
-        </ManagedAudioMedia>
-    </xsl:template>
-    <xsl:template match="oldXuk:XmlProperty">
+    
+    <!-- XML element -->
+    <xsl:template match="xuk1:XmlProperty | xuk2:XmlProperty">
         <XmlProperty>
-            <xsl:attribute name="LocalName">
-                <xsl:value-of select="@localName"/>
-            </xsl:attribute>
-            <xsl:attribute name="NamespaceUri">
-                <xsl:value-of select="@namespaceUri"/>
-            </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="@localName">
+                    <xsl:attribute name="LocalName">
+                        <xsl:value-of select="@localName"/>
+                    </xsl:attribute>
+                    <xsl:if test="@namespaceUri">
+                        <xsl:attribute name="NamespaceUri">
+                            <xsl:value-of select="@namespaceUri"/>
+                        </xsl:attribute>
+                    </xsl:if>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="LocalName">
+                        <xsl:value-of select="@LocalName"/>
+                    </xsl:attribute>
+                    <xsl:if test="@NamespaceUri">
+                        <xsl:attribute name="NamespaceUri">
+                            <xsl:value-of select="@NamespaceUri"/>
+                        </xsl:attribute>
+                    </xsl:if>
+                </xsl:otherwise>
+            </xsl:choose>
             <xsl:apply-templates/>
         </XmlProperty>
     </xsl:template>
-    <xsl:template match="newXuk:XmlProperty">
-        <XmlProperty>
-            <xsl:attribute name="LocalName">
-                <xsl:value-of select="@LocalName"/>
-            </xsl:attribute>
-            <xsl:attribute name="NamespaceUri">
-                <xsl:value-of select="@NamespaceUri"/>
-            </xsl:attribute>
-            <xsl:apply-templates/>
-        </XmlProperty>
-    </xsl:template>
-    <xsl:template match="oldXuk:mXmlAttributes | newXuk:XmlAttributes">
+    
+    <!-- List of XML attributes -->
+    <xsl:template match="xuk1:mXmlAttributes | xuk2:XmlAttributes">
         <XmlAttributes>
             <xsl:apply-templates/>
         </XmlAttributes>
     </xsl:template>
-    <xsl:template match="oldXuk:XmlAttribute">
+    
+    <!-- XML attribute -->
+    <xsl:template match="xuk1:XmlAttribute | xuk2:XmlAttribute">
         <XmlAttribute>
-            <xsl:attribute name="LocalName">
-                <xsl:value-of select="@localName"/>
-            </xsl:attribute>
-            <xsl:attribute name="Value">
-                <xsl:value-of select="@Value"/>
-            </xsl:attribute>
-            <xsl:attribute name="NamespaceUri">
-                <xsl:value-of select="@namespaceUri"/>
-            </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="@localName">
+                    <xsl:attribute name="LocalName">
+                        <xsl:value-of select="@localName"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="Value">
+                        <xsl:value-of select="@Value"/>
+                    </xsl:attribute>
+                    <xsl:if test="@namespaceUri">
+                        <xsl:attribute name="NamespaceUri">
+                            <xsl:value-of select="@namespaceUri"/>
+                        </xsl:attribute>
+                    </xsl:if>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="LocalName">
+                        <xsl:value-of select="@LocalName"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="Value">
+                        <xsl:value-of select="@Value"/>
+                    </xsl:attribute>
+                    <xsl:if test="@NamespaceUri">
+                        <xsl:attribute name="NamespaceUri">
+                            <xsl:value-of select="@NamespaceUri"/>
+                        </xsl:attribute>
+                    </xsl:if>
+                </xsl:otherwise>
+            </xsl:choose>
             <xsl:apply-templates/>
         </XmlAttribute>
     </xsl:template>
-    <xsl:template match="newXuk:XmlAttribute">
-        <XmlAttribute>
-            <xsl:attribute name="LocalName">
-                <xsl:value-of select="@LocalName"/>
-            </xsl:attribute>
-            <xsl:attribute name="Value">
-                <xsl:value-of select="@Value"/>
-            </xsl:attribute>
-            <xsl:attribute name="NamespaceUri">
-                <xsl:value-of select="@NamespaceUri"/>
-            </xsl:attribute>
-            <xsl:apply-templates/>
-        </XmlAttribute>
-    </xsl:template>
-    <xsl:template match="oldXuk:mMediaData | newXuk:MediaDatas">
+    
+    <!-- List of MediaDatas -->
+    <xsl:template match="xuk1:mMediaData | xuk2:MediaDatas">
         <MediaDatas>
             <xsl:apply-templates/>
         </MediaDatas>
     </xsl:template>
-    <xsl:template match="oldXuk:mMediaDataItem | newXuk:MediaDataItem">
+    
+    <!-- MediaData container -->
+    <xsl:template match="xuk1:mMediaDataItem | xuk2:MediaDataItem">
         <xsl:apply-templates/>
     </xsl:template>
-    <xsl:template match="oldXuk:WavAudioMediaData">
+    
+    <!-- XML attribute -->
+    <xsl:template match="xuk1:WavAudioMediaData | xuk2:WavAudioMediaData">
         <WavAudioMediaData>
-            <xsl:attribute name="Uid">
-                <xsl:value-of select="../@uid"/>
-            </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="../@uid">
+                    <xsl:attribute name="Uid">
+                        <xsl:value-of select="../@uid"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="Uid">
+                        <xsl:value-of select="../@Uid"/>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
             <xsl:apply-templates/>
         </WavAudioMediaData>
     </xsl:template>
-    <xsl:template match="newXuk:WavAudioMediaData">
-        <WavAudioMediaData>
-            <xsl:attribute name="Uid">
-                <xsl:value-of select="../@Uid"/>
-            </xsl:attribute>
-            <xsl:apply-templates/>
-        </WavAudioMediaData>
-    </xsl:template>
-    <xsl:template match="oldXuk:mPCMFormat | newXuk:PCMFormat">
-        <!-- PCMFormat>
-            <xsl:apply-templates/>
-        </PCMFormat -->
-    </xsl:template>
-    <xsl:template match="oldXuk:mWavClips | newXuk:WavClips">
+    
+    <!-- PCM format (skipped, as we re-create everything "manually") -->
+    <xsl:template match="xuk1:mPCMFormat | xuk2:PCMFormat"/>
+    
+    <!-- List of WavClips -->
+    <xsl:template match="xuk1:mWavClips | xuk2:WavClips">
         <WavClips>
             <xsl:apply-templates/>
         </WavClips>
     </xsl:template>
-    <xsl:template match="oldXuk:WavClip">
+    
+    <!-- WavClip -->
+    <xsl:template match="xuk1:WavClip | xuk2:WavClip">
         <WavClip>
-            <xsl:attribute name="DataProvider">
-                <xsl:value-of select="@dataProvider"/>
-            </xsl:attribute>
-            <xsl:if test="@clipBegin">
-                <xsl:attribute name="ClipBegin">
-                    <xsl:value-of select="@clipBegin"/>
-                </xsl:attribute>
-            </xsl:if>
             <xsl:choose>
-                <xsl:when test="@clipEnd">
-                    <xsl:attribute name="ClipEnd">
-                        <xsl:value-of select="@clipEnd"/>
+                <xsl:when test="@dataProvider">
+                    <xsl:attribute name="DataProvider">
+                        <xsl:value-of select="@dataProvider"/>
                     </xsl:attribute>
+                    <xsl:if test="@clipBegin">
+                        <xsl:attribute name="ClipBegin">
+                            <xsl:value-of select="@clipBegin"/>
+                        </xsl:attribute>
+                    </xsl:if>
+                    <xsl:choose>
+                        <xsl:when test="@clipEnd">
+                            <xsl:attribute name="ClipEnd">
+                                <xsl:value-of select="@clipEnd"/>
+                            </xsl:attribute>
+                        </xsl:when>
+                        <xsl:otherwise> </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:when>
-                <xsl:otherwise> </xsl:otherwise>
+                <xsl:otherwise>
+                    <xsl:attribute name="DataProvider">
+                        <xsl:value-of select="@DataProvider"/>
+                    </xsl:attribute>
+                    <xsl:if test="@ClipBegin">
+                        <xsl:attribute name="ClipBegin">
+                            <xsl:value-of select="@ClipBegin"/>
+                        </xsl:attribute>
+                    </xsl:if>
+                    <xsl:choose>
+                        <xsl:when test="@ClipEnd">
+                            <xsl:attribute name="ClipEnd">
+                                <xsl:value-of select="@ClipEnd"/>
+                            </xsl:attribute>
+                        </xsl:when>
+                        <xsl:otherwise> </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:otherwise>
             </xsl:choose>
         </WavClip>
     </xsl:template>
-    <xsl:template match="newXuk:WavClip">
-        <WavClip>
-            <xsl:attribute name="DataProvider">
-                <xsl:value-of select="@DataProvider"/>
-            </xsl:attribute>
-            <xsl:if test="@ClipBegin">
-                <xsl:attribute name="ClipBegin">
-                    <xsl:value-of select="@ClipBegin"/>
-                </xsl:attribute>
-            </xsl:if>
-            <xsl:choose>
-                <xsl:when test="@ClipEnd">
-                    <xsl:attribute name="ClipEnd">
-                        <xsl:value-of select="@ClipEnd"/>
-                    </xsl:attribute>
-                </xsl:when>
-                <xsl:otherwise> </xsl:otherwise>
-            </xsl:choose>
-        </WavClip>
-    </xsl:template>
-    <xsl:template match="oldXuk:mDataProviderManager | newXuk:DataProviderManager">
+    
+    <!-- DataProviderManager -->
+    <xsl:template match="xuk1:mDataProviderManager | xuk2:DataProviderManager">
         <xsl:apply-templates/>
     </xsl:template>
-    <xsl:template match="oldXuk:FileDataProviderManager">
+    
+    <!-- FileDataProviderManager -->
+    <xsl:template match="xuk1:FileDataProviderManager | xuk2:FileDataProviderManager">
         <DataProviderManager>
-            <xsl:attribute name="DataFileDirectoryPath">
-                <xsl:value-of select="@dataFileDirectoryPath"/>
-            </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="@dataFileDirectoryPath">
+                    <xsl:attribute name="DataFileDirectoryPath">
+                        <xsl:value-of select="@dataFileDirectoryPath"/>
+                    </xsl:attribute>        
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="DataFileDirectoryPath">
+                        <xsl:value-of select="@DataFileDirectoryPath"/>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
             <xsl:apply-templates/>
         </DataProviderManager>
     </xsl:template>
-    <xsl:template match="newXuk:FileDataProviderManager">
-        <DataProviderManager>
-            <xsl:attribute name="DataFileDirectoryPath">
-                <xsl:value-of select="@DataFileDirectoryPath"/>
-            </xsl:attribute>
-            <xsl:apply-templates/>
-        </DataProviderManager>
-    </xsl:template>
-    <xsl:template match="oldXuk:mDataProviders | newXuk:DataProviders">
+    
+    <!-- List of DataProviders -->
+    <xsl:template match="xuk1:mDataProviders | xuk2:DataProviders">
         <DataProviders>
             <xsl:apply-templates/>
         </DataProviders>
     </xsl:template>
-    <xsl:template match="oldXuk:mDataProviderItem | newXuk:DataProviderItem">
+    
+    <!-- DataProvider container -->
+    <xsl:template match="xuk1:mDataProviderItem | xuk2:DataProviderItem">
         <xsl:apply-templates/>
     </xsl:template>
-    <xsl:template match="oldXuk:FileDataProvider">
+    
+    <!-- FileDataProvider -->
+    <xsl:template match="xuk1:FileDataProvider | xuk2:FileDataProvider">
         <FileDataProvider>
-            <xsl:attribute name="Uid">
-                <xsl:value-of select="../@uid"/>
-            </xsl:attribute>
-            <xsl:attribute name="DataFileRelativePath">
-                <xsl:value-of select="@dataFileRelativePath"/>
-            </xsl:attribute>
-            <xsl:attribute name="MimeType">
-                <xsl:value-of select="@mimeType"/>
-            </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="../@uid">
+                    <xsl:attribute name="Uid">
+                        <xsl:value-of select="../@uid"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="DataFileRelativePath">
+                        <xsl:value-of select="@dataFileRelativePath"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="MimeType">
+                        <xsl:value-of select="@mimeType"/>
+                    </xsl:attribute>                
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="Uid">
+                        <xsl:value-of select="../@Uid"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="DataFileRelativePath">
+                        <xsl:value-of select="@DataFileRelativePath"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="MimeType">
+                        <xsl:value-of select="@MimeType"/>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
         </FileDataProvider>
     </xsl:template>
-    <xsl:template match="newXuk:FileDataProvider">
-        <FileDataProvider>
-            <xsl:attribute name="Uid">
-                <xsl:value-of select="../@Uid"/>
-            </xsl:attribute>
-            <xsl:attribute name="DataFileRelativePath">
-                <xsl:value-of select="@DataFileRelativePath"/>
-            </xsl:attribute>
-            <xsl:attribute name="MimeType">
-                <xsl:value-of select="@MimeType"/>
-            </xsl:attribute>
-        </FileDataProvider>
+    
+    <!-- MediaDataManager container -->
+    <xsl:template match="xuk1:mMediaDataManager">
+            <xsl:apply-templates/>        
     </xsl:template>
-    <xsl:template match="oldXuk:mMediaDataManager | newXuk:MediaDataManager">
-        <xsl:apply-templates/>
-    </xsl:template>
-    <xsl:template match="obi:DataManager | newXuk:MediaDataManager">
+    
+    <!-- MediaDataManager -->
+    <xsl:template match="obi:DataManager | xuk2:MediaDataManager">
         <MediaDataManager enforceSinglePCMFormat="true">
             <xsl:apply-templates/>
         </MediaDataManager>
     </xsl:template>
-    <xsl:template match="oldXuk:mDefaultPCMFormat | newXuk:DefaultPCMFormat">
+    
+    <!-- Default PCM format -->
+    <xsl:template match="xuk1:mDefaultPCMFormat | xuk2:DefaultPCMFormat">
         <DefaultPCMFormat>
             <xsl:apply-templates/>
         </DefaultPCMFormat>
     </xsl:template>
-    <xsl:template match="oldXuk:PCMFormatInfo">
+    
+    <!-- PCM format info -->
+    <xsl:template match="xuk1:PCMFormatInfo | xuk2:PCMFormatInfo">
         <PCMFormatInfo>
-            <xsl:attribute name="NumberOfChannels">
-                <xsl:value-of select="@numberOfChannels"/>
-            </xsl:attribute>
-            <xsl:attribute name="SampleRate">
-                <xsl:value-of select="@sampleRate"/>
-            </xsl:attribute>
-            <xsl:attribute name="BitDepth">
-                <xsl:value-of select="@bitDepth"/>
-            </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="@numberOfChannels">
+                    <xsl:attribute name="NumberOfChannels">
+                        <xsl:value-of select="@numberOfChannels"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="SampleRate">
+                        <xsl:value-of select="@sampleRate"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="BitDepth">
+                        <xsl:value-of select="@bitDepth"/>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:attribute name="NumberOfChannels">
+                        <xsl:value-of select="@NumberOfChannels"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="SampleRate">
+                        <xsl:value-of select="@SampleRate"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="BitDepth">
+                        <xsl:value-of select="@BitDepth"/>
+                    </xsl:attribute>
+                </xsl:otherwise>
+            </xsl:choose>
         </PCMFormatInfo>
     </xsl:template>
-    <xsl:template match="newXuk:PCMFormatInfo">
-        <PCMFormatInfo>
-            <xsl:attribute name="NumberOfChannels">
-                <xsl:value-of select="@NumberOfChannels"/>
-            </xsl:attribute>
-            <xsl:attribute name="SampleRate">
-                <xsl:value-of select="@SampleRate"/>
-            </xsl:attribute>
-            <xsl:attribute name="BitDepth">
-                <xsl:value-of select="@BitDepth"/>
-            </xsl:attribute>
-        </PCMFormatInfo>
-    </xsl:template>
-    <xsl:template match="oldXuk:mMetadata | newXuk:Metadatas">
+    
+    <!-- List of metadatas -->
+    <xsl:template match="xuk1:mMetadata | xuk2:Metadatas">
         <Metadatas>
             <xsl:apply-templates/>
         </Metadatas>
     </xsl:template>
-    <xsl:template match="oldXuk:Metadata">
+    
+    <!-- Metadata -->
+    <xsl:template match="xuk1:Metadata">
         <Metadata>
             <MetadataAttribute>
                 <xsl:attribute name="Name">
@@ -831,12 +965,16 @@
             </MetadataAttribute>
         </Metadata>
     </xsl:template>
-    <xsl:template match="newXuk:Metadata">
+    
+    <!-- Metadata -->
+    <xsl:template match="xuk2:Metadata">
         <Metadata>
             <xsl:apply-templates/>
         </Metadata>
     </xsl:template>
-    <xsl:template match="newXuk:MetadataAttribute">
+    
+    <!-- Metadata attribute -->
+    <xsl:template match="xuk2:MetadataAttribute">
         <MetadataAttribute>
             <xsl:attribute name="Name">
                 <xsl:value-of select="@Name"/>
