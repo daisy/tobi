@@ -27,10 +27,16 @@
         <Project>
             <PresentationFactory>
                 <RegisteredTypes>
-                    <Type XukLocalName="Presentation"
-                        XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
-                        FullName="urakawa.Presentation"/>
+                  <Type XukLocalName="Presentation"
+                      XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                      AssemblyName="UrakawaSDK.core" AssemblyVersion="2.0.0.0"
+                      FullName="urakawa.Presentation"/>
+                  <Type
+                    XukLocalName="ObiPresentation"
+                      XukNamespaceUri="http://www.daisy.org/urakawa/obi"
+                    BaseXukLocalName="Presentation"
+                      BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                      AssemblyName="Obi.exe" AssemblyVersion="0.0.0.0" FullName="Obi.ObiPresentation"/>
                 </RegisteredTypes>
             </PresentationFactory>
             <xsl:apply-templates/>
@@ -42,7 +48,7 @@
         </Presentations>
     </xsl:template>
     <xsl:template match="obi:Presentation">
-        <Presentation>
+        <obi:ObiPresentation>
             <xsl:attribute name="RootUri">
                 <xsl:text>./</xsl:text>
             </xsl:attribute>
@@ -55,15 +61,19 @@
                     <Type XukLocalName="root" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
                         BaseXukLocalName="TreeNode"
                         BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="Obi.exe" AssemblyVersion="0.0.0.0" FullName="obi.RootNode"/>
+                        AssemblyName="Obi.exe" AssemblyVersion="0.0.0.0" FullName="Obi.RootNode"/>
                     <Type XukLocalName="section" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
                         BaseXukLocalName="TreeNode"
                         BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="Obi.exe" AssemblyVersion="0.0.0.0" FullName="obi.SectionNode"/>
-                    <Type XukLocalName="phrase" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
+                        AssemblyName="Obi.exe" AssemblyVersion="0.0.0.0" FullName="Obi.SectionNode"/>
+                  <Type XukLocalName="phrase" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
+                      BaseXukLocalName="TreeNode"
+                      BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
+                      AssemblyName="Obi.exe" AssemblyVersion="0.0.0.0" FullName="Obi.PhraseNode"/>
+                  <Type XukLocalName="empty" XukNamespaceUri="http://www.daisy.org/urakawa/obi"
                         BaseXukLocalName="TreeNode"
                         BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0"
-                        AssemblyName="Obi.exe" AssemblyVersion="0.0.0.0" FullName="obi.PhraseNode"/>
+                        AssemblyName="Obi.exe" AssemblyVersion="0.0.0.0" FullName="Obi.EmptyNode"/>
                 </RegisteredTypes>
             </TreeNodeFactory>
             <PropertyFactory DefaultXmlNamespaceUri="http://www.daisy.org/z3986/2005/dtbook/">
@@ -237,8 +247,8 @@
                 <ExternalFileDatas/>
             </ExternalFileDataManager>
             <xsl:apply-templates/>
-        </Presentation>
-    </xsl:template>
+        </obi:ObiPresentation>
+      </xsl:template>
     <xsl:template match="oldXuk:mRootNode">
         <RootNode>
             <xsl:apply-templates/>
@@ -264,11 +274,16 @@
             <xsl:apply-templates/>
         </obi:root>
     </xsl:template>
-    <xsl:template match="obi:section">
-        <obi:section>
-            <xsl:apply-templates/>
-        </obi:section>
-    </xsl:template>
+  <xsl:template match="obi:section">
+    <obi:section>
+      <xsl:apply-templates/>
+    </obi:section>
+  </xsl:template>
+  <xsl:template match="obi:empty">
+    <obi:empty>
+      <xsl:apply-templates/>
+    </obi:empty>
+  </xsl:template>
     <xsl:template match="obi:phrase">
         <xsl:choose>
             <xsl:when test="./@kind = 'Heading'"> </xsl:when>

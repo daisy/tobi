@@ -67,7 +67,7 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     ManagedAudioMedia managedAudioMediaClipboard = listOfTreeNodeAndStreamSelection[0].m_TreeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
-                    var mediaDataClipboard = (WavAudioMediaData)listOfTreeNodeAndStreamSelection[0].m_TreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
+                    AudioMediaData mediaDataClipboard = listOfTreeNodeAndStreamSelection[0].m_TreeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
                     managedAudioMediaClipboard.AudioMediaData = mediaDataClipboard;
 
                     foreach (var treeNodeAndStreamSelection in listOfTreeNodeAndStreamSelection)
