@@ -23,7 +23,7 @@
         The choice of (1) or (2) is controlled by $generateObiFormat [false => (2), true => (1)].
         Option (3) implies $generateObiFormat = false, and is automatically used when OBI_XUK2 is detected.
     -->
-    <xsl:variable name="generateObiFormat" as="xs:boolean" select="true()"/>
+    <xsl:variable name="generateObiFormat" as="xs:boolean" select="false()"/>
     <xsl:variable name="generateTobiFormat" as="xs:boolean" select="not($generateObiFormat)"/>
 
     <!-- MAIN ENTRY POINT -->
@@ -300,7 +300,17 @@
     </xsl:template>
 
     <!-- Obi "empty" nodes are ignored (skipped) -->
-    <xsl:template match="obi:empty"/>
+    <xsl:template match="obi:empty">
+        <xsl:choose>
+            <xsl:when test="$generateObiFormat">
+                <obi:empty>
+                    <xsl:apply-templates/>
+                </obi:empty>
+            </xsl:when>
+            <xsl:otherwise>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
 
     <!-- Obi "root" node -->
     <xsl:template match="obi:root">
@@ -370,9 +380,9 @@
                                 and
                             ./count(./preceding-sibling::obi:phrase[@kind = 'Heading' or count(@kind) = 0]) = 0"> </xsl:when>
             <xsl:otherwise>
-                <obi:phrase>
+                <TreeNode>
                     <xsl:apply-templates/>
-                </obi:phrase>
+                </TreeNode>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -563,9 +573,11 @@
                                     </XmlAttribute>
                                 </XmlAttributes>
                             </XmlProperty>
+                            <xsl:apply-templates/>
                         </xsl:when>
                         <xsl:otherwise>
                             <XmlProperty LocalName="p"/>
+                            <xsl:apply-templates/>
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:when>
@@ -768,7 +780,7 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:attribute name="Uid">
-                        <xsl:value-of select="../@Uid"/>
+                        <xsl:value-of select="@Uid"/>
                     </xsl:attribute>
                 </xsl:otherwise>
             </xsl:choose>
@@ -831,12 +843,12 @@
     </xsl:template>
     
     <!-- DataProviderManager -->
-    <xsl:template match="xuk1:mDataProviderManager | xuk2:DataProviderManager">
+    <xsl:template match="xuk1:mDataProviderManager">
         <xsl:apply-templates/>
     </xsl:template>
     
     <!-- FileDataProviderManager -->
-    <xsl:template match="xuk1:FileDataProviderManager | xuk2:FileDataProviderManager">
+    <xsl:template match="xuk1:FileDataProviderManager | xuk2:DataProviderManager">
         <DataProviderManager>
             <xsl:choose>
                 <xsl:when test="@dataFileDirectoryPath">
@@ -883,7 +895,7 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:attribute name="Uid">
-                        <xsl:value-of select="../@Uid"/>
+                        <xsl:value-of select="@Uid"/>
                     </xsl:attribute>
                     <xsl:attribute name="DataFileRelativePath">
                         <xsl:value-of select="@DataFileRelativePath"/>
