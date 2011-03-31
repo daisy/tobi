@@ -127,7 +127,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
                     tb.ContextMenu = new ContextMenu();
 
-                    foreach (TreeNode child in n.Children.ContentsAs_YieldEnumerable)
+                    foreach (TreeNode child in n.Children.ContentsAs_Enumerable)
                     {
                         bool childIsInPath = PathToCurrentTreeNode.Contains(child);
 

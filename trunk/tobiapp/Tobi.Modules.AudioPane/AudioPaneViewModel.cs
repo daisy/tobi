@@ -1152,7 +1152,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
 
-                foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
+                foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_Enumerable)
                 {
                     var manMedia = (ManagedAudioMedia)media;
                     if (media == managedMedia)

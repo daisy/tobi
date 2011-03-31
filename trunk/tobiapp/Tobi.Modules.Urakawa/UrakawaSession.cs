@@ -331,7 +331,7 @@ namespace Tobi.Plugin.Urakawa
             else
             {
                 var listOfDataProviderFiles = new List<string>();
-                foreach (var dataProvider in project.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_YieldEnumerable)
+                foreach (var dataProvider in project.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_Enumerable)
                 {
                     var fileDataProvider = dataProvider as FileDataProvider;
                     if (fileDataProvider == null) continue;

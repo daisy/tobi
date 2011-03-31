@@ -1685,7 +1685,7 @@ namespace Tobi.Plugin.DocumentPane
             }
             else if (cmd is CompositeCommand)
             {
-                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_YieldEnumerable)
+                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_Enumerable)
                 {
                     findAndUpdateTreeNodeAudioTextStatus(childCommand, done);
                 }
@@ -1832,7 +1832,7 @@ namespace Tobi.Plugin.DocumentPane
 
         private void findAndUpdateTreeNodeAudioStatus(TreeNode node)
         {
-            foreach (var childTreeNode in node.Children.ContentsAs_YieldEnumerable)
+            foreach (var childTreeNode in node.Children.ContentsAs_Enumerable)
             {
                 findAndUpdateTreeNodeAudioStatus(childTreeNode);
             }
