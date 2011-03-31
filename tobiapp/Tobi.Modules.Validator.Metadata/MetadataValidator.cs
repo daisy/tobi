@@ -135,7 +135,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
         private bool isAllCommandsMetadata(CompositeCommand comp)
         {
-            foreach (var cmd in comp.ChildCommands.ContentsAs_YieldEnumerable)
+            foreach (var cmd in comp.ChildCommands.ContentsAs_Enumerable)
             {
                 if (!isCommandMetadata(cmd))
                 {

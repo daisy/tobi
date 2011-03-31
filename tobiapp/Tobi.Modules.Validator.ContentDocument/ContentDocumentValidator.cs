@@ -217,7 +217,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         public bool ValidateNode(TreeNode node)
         {
             bool result = ValidateNodeContent(node);
-            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in node.Children.ContentsAs_Enumerable)
             {
                 result = result & ValidateNode(child);
             }

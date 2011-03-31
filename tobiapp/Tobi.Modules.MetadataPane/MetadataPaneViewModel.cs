@@ -115,7 +115,7 @@ namespace Tobi.Plugin.MetadataPane
             Presentation presentation = m_UrakawaSession.DocumentProject.Presentations.Get(0);
             List<MetadataRemoveCommand> removalsList = new List<MetadataRemoveCommand>();
 
-            foreach (Metadata m in presentation.Metadatas.ContentsAs_YieldEnumerable)
+            foreach (Metadata m in presentation.Metadatas.ContentsAs_Enumerable)
             {
                 if (string.IsNullOrEmpty(m.NameContentAttribute.Name))
                 {
@@ -187,7 +187,7 @@ namespace Tobi.Plugin.MetadataPane
             {
                 data += string.Format("{0} = {1}" + Environment.NewLine, m.Name, m.Content);
 
-                foreach (var optAttr in m.UrakawaMetadata.OtherAttributes.ContentsAs_YieldEnumerable)
+                foreach (var optAttr in m.UrakawaMetadata.OtherAttributes.ContentsAs_Enumerable)
                 {
                     data += string.Format("-- {0} = {1} (NS: {2})" + Environment.NewLine, optAttr.Name, optAttr.Value, optAttr.NamespaceUri);
                 }
@@ -205,7 +205,7 @@ namespace Tobi.Plugin.MetadataPane
             {
                 data += string.Format("{0} = {1}" + Environment.NewLine, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
 
-                foreach (var optAttr in m.OtherAttributes.ContentsAs_YieldEnumerable)
+                foreach (var optAttr in m.OtherAttributes.ContentsAs_Enumerable)
                 {
                     data += string.Format("-- {0} = {1} (NS: {2})" + Environment.NewLine, optAttr.Name, optAttr.Value, optAttr.NamespaceUri);
                 }

@@ -54,7 +54,7 @@ namespace Tobi.Common.Validation
                 }
             }
 
-            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in node.Children.ContentsAs_Enumerable)
             {
                 string childNodeText = GetTreeNodeTextExcerpt(child);
                 string childNodeName = GetTreeNodeName(child);
@@ -82,7 +82,7 @@ namespace Tobi.Common.Validation
                 xml += string.Format("\n{0}<{1}>", indent, nodeName);
             }
 
-            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in node.Children.ContentsAs_Enumerable)
             {
                 xml += GetNodeXml_Deep(child, level++);
             }
@@ -180,7 +180,7 @@ namespace Tobi.Common.Validation
                 paragraph.Inlines.Add(new Run(txt));
             }
 
-            foreach (TreeNode child in node.Children.ContentsAs_YieldEnumerable)
+            foreach (TreeNode child in node.Children.ContentsAs_Enumerable)
             {
                 string childNodeText = ValidatorUtilities.GetTreeNodeTextExcerpt(child);
                 string childNodeName = ValidatorUtilities.GetTreeNodeName(child);

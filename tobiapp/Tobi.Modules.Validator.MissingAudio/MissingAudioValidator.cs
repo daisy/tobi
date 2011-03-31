@@ -119,7 +119,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
         private void updateTreeNodeAudioStatus(TreeNode node)
         {
-            foreach (var childTreeNode in node.Children.ContentsAs_YieldEnumerable)
+            foreach (var childTreeNode in node.Children.ContentsAs_Enumerable)
             {
                 updateTreeNodeAudioStatus(childTreeNode);
             }
@@ -216,7 +216,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
             }
             else if (cmd is CompositeCommand)
             {
-                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_YieldEnumerable)
+                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_Enumerable)
                 {
                     updateTreeNodeAudioStatus(childCommand, done);
                 }

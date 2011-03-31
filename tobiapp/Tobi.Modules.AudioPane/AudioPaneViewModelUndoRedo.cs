@@ -597,7 +597,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 if (done)
                 {
-                    foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_YieldEnumerable)
+                    foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_Enumerable)
                     {
                         updateTotalDuration(childCommand, done);
                     }
@@ -643,7 +643,7 @@ namespace Tobi.Plugin.AudioPane
             bool compCmdAudio = false;
             if (eventt.Command is CompositeCommand)
             {
-                foreach (var childCmd in ((CompositeCommand)eventt.Command).ChildCommands.ContentsAs_YieldEnumerable)
+                foreach (var childCmd in ((CompositeCommand)eventt.Command).ChildCommands.ContentsAs_Enumerable)
                 {
                     if (childCmd is ManagedAudioMediaInsertDataCommand
                         || childCmd is TreeNodeSetManagedAudioMediaCommand
