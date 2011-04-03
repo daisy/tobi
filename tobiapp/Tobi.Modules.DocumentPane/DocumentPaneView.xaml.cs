@@ -1533,9 +1533,13 @@ namespace Tobi.Plugin.DocumentPane
             //string id = XukToFlowDocument.IdToName(uid);
 
             TextElement textElement = null;
-            if (m_idLinkTargets.ContainsKey(uid))
+
+            TextElement te;
+            m_idLinkTargets.TryGetValue(uid, out te);
+
+            if (te != null) //m_idLinkTargets.ContainsKey(uid))
             {
-                textElement = m_idLinkTargets[uid];
+                textElement = te; // m_idLinkTargets[uid];
             }
             //            if (textElement == null)
             //            {
@@ -1551,9 +1555,13 @@ namespace Tobi.Plugin.DocumentPane
                     Debug.Assert(treeNode == (TreeNode)textElement.Tag);
                 }
             }
-            if (m_idLinkSources.ContainsKey(uid))
+
+            List<TextElement> lte;
+            m_idLinkSources.TryGetValue(uid, out lte);
+
+            if (lte != null) //m_idLinkSources.ContainsKey(uid))
             {
-                var list = m_idLinkSources[uid];
+                var list = lte; // m_idLinkSources[uid];
 #if DEBUG
                 if (list.Count > 1) Debugger.Break();
 #endif //DEBUG
@@ -2321,7 +2329,10 @@ namespace Tobi.Plugin.DocumentPane
 
             string colorString = color.ToString();
 
-            if (!m_SolidColorBrushCache.ContainsKey(colorString))
+            SolidColorBrush obj;
+            m_SolidColorBrushCache.TryGetValue(colorString, out obj);
+
+            if (obj == null) //!m_SolidColorBrushCache.ContainsKey(colorString))
             {
                 bool found = false;
                 foreach (PropertyInfo propertyInfo in typeof(Brushes).GetProperties(BindingFlags.Public | BindingFlags.Static))
@@ -2332,18 +2343,20 @@ namespace Tobi.Plugin.DocumentPane
                         if (brush.Color.ToString() == colorString)
                         {
                             found = true;
-                            m_SolidColorBrushCache.Add(colorString, brush);
+                            obj = brush;
+                            m_SolidColorBrushCache.Add(colorString, obj);
                             break;
                         }
                     }
                 }
                 if (!found)
                 {
-                    m_SolidColorBrushCache.Add(colorString, new SolidColorBrush(color));
+                    obj = new SolidColorBrush(color);
+                    m_SolidColorBrushCache.Add(colorString, obj);
                 }
             }
 
-            return m_SolidColorBrushCache[colorString];
+            return obj; // m_SolidColorBrushCache[colorString];
         }
 
         //public static TextPointer AlignTextPointer(TextPointer start, int x)
@@ -2861,9 +2874,12 @@ namespace Tobi.Plugin.DocumentPane
         }
         public void AddIdLinkSource(string name, TextElement textElement)
         {
-            if (m_idLinkSources.ContainsKey(name))
+            List<TextElement> lte;
+            m_idLinkSources.TryGetValue(name, out lte);
+
+            if (lte != null) // m_idLinkSources.ContainsKey(name))
             {
-                var list = m_idLinkSources[name];
+                var list = lte; // m_idLinkSources[name];
                 list.Add(textElement);
             }
             else
@@ -3227,9 +3243,13 @@ namespace Tobi.Plugin.DocumentPane
             //string id = XukToFlowDocument.IdToName(uid);
 
             TextElement textElement = null;
-            if (m_idLinkTargets.ContainsKey(uid))
+
+            TextElement te;
+            m_idLinkTargets.TryGetValue(uid, out te);
+
+            if (te != null) //m_idLinkTargets.ContainsKey(uid))
             {
-                textElement = m_idLinkTargets[uid];
+                textElement = te; // m_idLinkTargets[uid];
             }
             //            if (textElement == null)
             //            {
