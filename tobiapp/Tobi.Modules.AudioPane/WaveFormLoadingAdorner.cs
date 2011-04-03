@@ -60,13 +60,14 @@ namespace Tobi.Plugin.AudioPane
 
         protected override void OnRender(DrawingContext drawingContext)
         {
+            var txt = (DisplayRecorderTime ? m_AudioPaneViewModel.TimeStringCurrent : Tobi_Plugin_AudioPane_Lang.Loading);
             var formattedText = new FormattedText(
-                (DisplayRecorderTime ? m_AudioPaneViewModel.TimeStringCurrent : Tobi_Plugin_AudioPane_Lang.Loading),
+                txt,
                 m_culture,
                 FlowDirection.LeftToRight,
                 m_typeFace,
                 30,
-                m_textPen.Brush
+                m_textBrush //m_textPen.Brush
                 );
 
             const double margin = 20;
@@ -92,11 +93,11 @@ namespace Tobi.Plugin.AudioPane
                                                 10.0, 10.0);
             m_pointText.X = leftOffset;
             m_pointText.Y = topOffset;
-            Geometry textGeometry = formattedText.BuildGeometry(m_pointText);
 
-            drawingContext.DrawGeometry(m_textBrush,
-                                        m_textPen,
-                                        textGeometry);
+            //Geometry textGeometry = formattedText.BuildGeometry(m_pointText);
+            //drawingContext.DrawGeometry(m_textBrush, m_textPen, textGeometry);
+
+            drawingContext.DrawText(formattedText, m_pointText);
         }
     }
 }

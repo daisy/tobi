@@ -125,42 +125,43 @@ namespace Tobi.Plugin.StructureTrailPane
                         IsTabStop = true
                     };
 
-                    tb.ContextMenu = new ContextMenu();
+                    // DEFERRED LAZY LOADING ! (see OnBreadCrumbSeparatorClick)
+                    //tb.ContextMenu = new ContextMenu();
 
-                    foreach (TreeNode child in n.Children.ContentsAs_Enumerable)
-                    {
-                        bool childIsInPath = PathToCurrentTreeNode.Contains(child);
+                    //foreach (TreeNode child in n.Children.ContentsAs_Enumerable)
+                    //{
+                    //    bool childIsInPath = PathToCurrentTreeNode.Contains(child);
 
-                        var menuItem = new MenuItem();
-                        QualifiedName qnameChild = child.GetXmlElementQName();
-                        if (qnameChild != null)
-                        {
-                            if (childIsInPath)
-                            {
-                                var runMenuItem = new Run(qnameChild.LocalName) { FontWeight = FontWeights.ExtraBold };
-                                menuItem.Header = runMenuItem;
-                            }
-                            else
-                            {
-                                menuItem.Header = qnameChild.LocalName;
-                            }
-                        }
-                        else
-                        {
-                            if (childIsInPath)
-                            {
-                                var runMenuItem = new Run("TXT") { FontWeight = FontWeights.ExtraBold };
-                                menuItem.Header = runMenuItem;
-                            }
-                            else
-                            {
-                                menuItem.Header = "TXT";
-                            }
-                        }
-                        menuItem.Tag = child;
-                        menuItem.Click += menuItem_Click;
-                        tb.ContextMenu.Items.Add(menuItem);
-                    }
+                    //    var menuItem = new MenuItem();
+                    //    QualifiedName qnameChild = child.GetXmlElementQName();
+                    //    if (qnameChild != null)
+                    //    {
+                    //        if (childIsInPath)
+                    //        {
+                    //            var runMenuItem = new Run(qnameChild.LocalName) { FontWeight = FontWeights.ExtraBold };
+                    //            menuItem.Header = runMenuItem;
+                    //        }
+                    //        else
+                    //        {
+                    //            menuItem.Header = qnameChild.LocalName;
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        if (childIsInPath)
+                    //        {
+                    //            var runMenuItem = new Run("TXT") { FontWeight = FontWeights.ExtraBold };
+                    //            menuItem.Header = runMenuItem;
+                    //        }
+                    //        else
+                    //        {
+                    //            menuItem.Header = "TXT";
+                    //        }
+                    //    }
+                    //    menuItem.Tag = child;
+                    //    menuItem.Click += menuItem_Click;
+                    //    tb.ContextMenu.Items.Add(menuItem);
+                    //}
 
                     tb.Click += OnBreadCrumbSeparatorClick;
 
@@ -212,6 +213,53 @@ namespace Tobi.Plugin.StructureTrailPane
             {
                 return;
             }
+            var n = ui.Tag as TreeNode;
+            if (n == null)
+            {
+                return;
+            }
+
+            if (ui.ContextMenu == null)
+            {
+                ui.ContextMenu = new ContextMenu();
+
+                foreach (TreeNode child in n.Children.ContentsAs_Enumerable)
+                {
+                    bool childIsInPath = PathToCurrentTreeNode.Contains(child);
+
+                    var menuItem = new MenuItem();
+                    QualifiedName qnameChild = child.GetXmlElementQName();
+                    if (qnameChild != null)
+                    {
+                        if (childIsInPath)
+                        {
+                            var runMenuItem = new Run(qnameChild.LocalName) {FontWeight = FontWeights.ExtraBold};
+                            menuItem.Header = runMenuItem;
+                        }
+                        else
+                        {
+                            menuItem.Header = qnameChild.LocalName;
+                        }
+                    }
+                    else
+                    {
+                        if (childIsInPath)
+                        {
+                            var runMenuItem = new Run("TXT") {FontWeight = FontWeights.ExtraBold};
+                            menuItem.Header = runMenuItem;
+                        }
+                        else
+                        {
+                            menuItem.Header = "TXT";
+                        }
+                    }
+                    menuItem.Tag = child;
+                    menuItem.Click += menuItem_Click;
+                    ui.ContextMenu.Items.Add(menuItem);
+                }
+            }
+
+
             ui.ContextMenu.PlacementTarget = ui;
             ui.ContextMenu.Placement = PlacementMode.Bottom;
             //ui.ContextMenu.PlacementRectangle=ui.
