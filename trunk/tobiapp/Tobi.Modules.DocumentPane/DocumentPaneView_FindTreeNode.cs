@@ -1,4 +1,5 @@
-﻿using System.Windows.Documents;
+﻿using System.Diagnostics;
+using System.Windows.Documents;
 using urakawa.core;
 
 namespace Tobi.Plugin.DocumentPane
@@ -7,6 +8,12 @@ namespace Tobi.Plugin.DocumentPane
     {
         private TextElement FindTextElement(TreeNode node)
         {
+            var te = node.Tag as TextElement;
+            if (te != null) return te;
+
+#if DEBUG
+            Debugger.Break();
+#endif
             return FindTextElement(node, TheFlowDocument.Blocks);
         }
         private TextElement FindTextElement(TreeNode node, InlineCollection ic)

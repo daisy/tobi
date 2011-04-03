@@ -609,6 +609,7 @@ namespace Tobi.Plugin.DocumentPane
             Debug.Assert(data.Tag == null);
 
             data.Tag = node;
+            node.Tag = data;
             //data.Foreground = Brushes.Red; // default is normally overriden
 
             if (data is Block)
