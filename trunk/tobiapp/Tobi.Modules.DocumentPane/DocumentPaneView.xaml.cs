@@ -33,6 +33,7 @@ using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
+using urakawa.property.alt;
 using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
 
@@ -187,7 +188,7 @@ namespace Tobi.Plugin.DocumentPane
         {
             lock (m_DocumentNarratorWindowLOCK)
             {
-                if (m_DocumentNarratorWindow!=null)
+                if (m_DocumentNarratorWindow != null)
                 {
                     m_DocumentNarratorWindow.AddInputBinding(inputBinding);
                 }
@@ -283,29 +284,29 @@ namespace Tobi.Plugin.DocumentPane
                     }
                     lock (m_DocumentNarratorWindowLOCK)
                     {
-//                        m_DocumentNarratorWindow = new Window
-//                        {
-//                            Title = "Tobi",
-//                            WindowStartupLocation = WindowStartupLocation.Manual,
-//                            WindowState = WindowState.Normal,
-//                            WindowStyle = WindowStyle.SingleBorderWindow,
-//                            SizeToContent = SizeToContent.Manual,
-//                            Topmost = false,
-//                            ShowInTaskbar = true,
-//                            ShowActivated = true,
-//                            ResizeMode = ResizeMode.CanResizeWithGrip,
-//                            AllowsTransparency = false,
-//                            Width = 800,
-//                            Height = 600,
-//                            Top = 10,
-//                            Left = 10,
-//                            Content = this,
-//                            //Owner = (Window)m_ShellView,
-//                            Owner = Application.Current.MainWindow,
-//#if NET40
-//                            TaskbarItemInfo = new TaskbarItemInfo(),
-//#endif
-//                        };
+                        //                        m_DocumentNarratorWindow = new Window
+                        //                        {
+                        //                            Title = "Tobi",
+                        //                            WindowStartupLocation = WindowStartupLocation.Manual,
+                        //                            WindowState = WindowState.Normal,
+                        //                            WindowStyle = WindowStyle.SingleBorderWindow,
+                        //                            SizeToContent = SizeToContent.Manual,
+                        //                            Topmost = false,
+                        //                            ShowInTaskbar = true,
+                        //                            ShowActivated = true,
+                        //                            ResizeMode = ResizeMode.CanResizeWithGrip,
+                        //                            AllowsTransparency = false,
+                        //                            Width = 800,
+                        //                            Height = 600,
+                        //                            Top = 10,
+                        //                            Left = 10,
+                        //                            Content = this,
+                        //                            //Owner = (Window)m_ShellView,
+                        //                            Owner = Application.Current.MainWindow,
+                        //#if NET40
+                        //                            TaskbarItemInfo = new TaskbarItemInfo(),
+                        //#endif
+                        //                        };
 
                         m_DocumentNarratorWindow = new PopupModalWindow(m_ShellView,
                             Tobi_Plugin_DocumentPane_Lang.NarratorView,
@@ -313,7 +314,7 @@ namespace Tobi.Plugin.DocumentPane
                             PopupModalWindow.DialogButtonsSet.None,
                             PopupModalWindow.DialogButton.Close,
                             true, 800, 600, null, 0);
-                        
+
                         m_DocumentNarratorWindow.IgnoreEscape = true;
 
                         m_DocumentNarratorWindow.InputBindings.AddRange(Application.Current.MainWindow.InputBindings);
@@ -749,6 +750,7 @@ namespace Tobi.Plugin.DocumentPane
         public RichDelegateCommand CommandSwitchPhraseNext { get; private set; }
 
         public RichDelegateCommand CommandEditText { get; private set; }
+        public RichDelegateCommand CommandEditDescription { get; private set; }
 
         public RichDelegateCommand CommandStructureUp { get; private set; }
         public RichDelegateCommand CommandStructureDown { get; private set; }
@@ -888,6 +890,68 @@ namespace Tobi.Plugin.DocumentPane
             m_ShellView.RegisterRichCommand(CommandStructureDown);
             //
 
+            CommandEditDescription = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdEditDescription_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdEditDescription_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("edit-find-replace"),
+                () =>
+                {
+                    TreeNode node = null;
+                    if (m_TextElementForEdit != null)
+                    {
+                        Debug.Assert(m_TextElementForEdit.Tag is TreeNode);
+                        node = (TreeNode)m_TextElementForEdit.Tag;
+                        m_TextElementForEdit = null;
+                    }
+                    else
+                    {
+                        Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                        node = selection.Item2 ?? selection.Item1;
+                    }
+                    if (node == null) return;
+
+                    AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+
+                    string oldTxt = null;
+                    if (altProp != null && altProp.ShortDescription != null)
+                    {
+                        oldTxt = altProp.ShortDescription.Text.Text;
+                    }
+
+                    string txt = showDialogTextEdit(oldTxt);
+
+                    if (txt == oldTxt) return;
+
+                    m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+                    if (string.IsNullOrEmpty(txt))
+                    {
+                        //remove ShortDescription
+                    }
+                    else
+                    {
+                        //change ShortDescription text
+                    }
+
+                    //var cmd = node.Presentation.CommandFactory.CreateTreeNodeAddAlternateContentCommand();
+                    //node.Presentation.UndoRedoManager.Execute(cmd);
+                },
+                () =>
+                {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    return m_TextElementForEdit != null
+                            || node != null && node.GetXmlElementQName().LocalName == "img";
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_EditDescription));
+
+            m_ShellView.RegisterRichCommand(CommandEditDescription);
+
+            //
             CommandEditText = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdEditText_ShortDesc,
                 Tobi_Plugin_DocumentPane_Lang.CmdEditText_LongDesc,
@@ -1411,7 +1475,14 @@ namespace Tobi.Plugin.DocumentPane
                     m_TextElementForEdit = textElement;
                     if (isAltKeyDown())
                     {
-                        CommandEditText.Execute();
+                        if (isControlKeyDown())
+                        {
+                            CommandEditDescription.Execute();
+                        }
+                        else
+                        {
+                            CommandEditText.Execute();
+                        }
                     }
                     else
                     {
