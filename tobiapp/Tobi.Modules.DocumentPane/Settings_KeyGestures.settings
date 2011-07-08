@@ -1,7 +1,7 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.DocumentPane" GeneratedClassName="Settings_KeyGestures">
   <Profiles>
-    <Profile Name="(Default)" />
+    <Profile Name="(Default)"/>
   </Profiles>
   <Settings>
     <Setting Name="Keyboard_Doc_Event_SwitchPrevious" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
@@ -18,6 +18,9 @@
     </Setting>
     <Setting Name="Keyboard_EditText" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] T</Value>
+    </Setting>
+    <Setting Name="Keyboard_EditDescription" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] D</Value>
     </Setting>
     <Setting Name="Keyboard_StructureSelectUp" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] OemComma (,)</Value>
