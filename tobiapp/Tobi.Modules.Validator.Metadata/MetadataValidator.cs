@@ -500,23 +500,12 @@ namespace Tobi.Plugin.Validator.Metadata
         //works for both double and int
         private bool _validateNumber(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
-            try
-            {
-                int x = Convert.ToInt32(metadata.NameContentAttribute.Value);
-            }
-            catch (Exception)
-            {
-                double x = Convert.ToDouble(metadata.NameContentAttribute.Value);
-            }
-            catch
-            {
-                MetadataFormatValidationError err = 
-                    new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
-                err.Hint = m_NumericHint;
-                
-                m_ParentValidator.ReportError(err);
-                return false;
-            }
+            bool res = _validateInteger(metadata, definition);
+            if (!res) return false;
+
+            res = _validateDouble(metadata, definition);
+            if (!res) return false;
+
             return true;
         }
         private bool _validateLanguageCode(urakawa.metadata.Metadata metadata, MetadataDefinition definition)

@@ -61,7 +61,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] W")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] N")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_SwitchNarratorView {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_SwitchNarratorView"]));

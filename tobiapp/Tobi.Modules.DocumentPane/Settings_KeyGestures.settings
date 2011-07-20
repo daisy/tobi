@@ -14,7 +14,7 @@
       <Value Profile="(Default)">[ CTRL ] T</Value>
     </Setting>
     <Setting Name="Keyboard_SwitchNarratorView" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] W</Value>
+      <Value Profile="(Default)">[ CTRL ] N</Value>
     </Setting>
     <Setting Name="Keyboard_EditText" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] T</Value>

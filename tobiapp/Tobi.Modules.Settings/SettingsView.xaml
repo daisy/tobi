@@ -683,12 +683,17 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
         </Style.Setters>
 
         <Style.Triggers>
-          <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+          <MultiTrigger>
+            <MultiTrigger.Conditions>
+              <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+              <Condition Property="IsSelected" Value="False"/>
+            </MultiTrigger.Conditions>
             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-          </Trigger>
-          <Trigger Property="IsSelected" Value="True">
+          </MultiTrigger>
+          <!-- REMOVED to avoid interference with IsChanged / Message style activation
+          Trigger Property="IsSelected" Value="True">
             <Setter Property="FontWeight" Value="Bold" />
-          </Trigger>
+          </Trigger -->
           <Trigger Property="search:SearchOperations.IsMatch" Value="True">
             <Setter Property="Background">
               <Setter.Value>

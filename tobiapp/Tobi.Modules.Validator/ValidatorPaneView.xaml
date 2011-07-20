@@ -70,9 +70,13 @@
                 <Setter Property="ToolTip" Value="{Binding Message}"/>
 
                 <Style.Triggers>
-                  <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+                      <Condition Property="IsSelected" Value="False"/>
+                    </MultiTrigger.Conditions>
                     <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                  </Trigger>
+                  </MultiTrigger>
                 </Style.Triggers>
               </Style>
             </ListBox.ItemContainerStyle>
