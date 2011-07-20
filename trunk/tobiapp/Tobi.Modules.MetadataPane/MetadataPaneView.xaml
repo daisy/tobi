@@ -17,21 +17,6 @@
       <Setter Property="Focusable" Value="True"/>
     </Style>
     
-    <Style TargetType="{x:Type ListView}">
-      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
-    </Style>
-
-    <Style TargetType="{x:Type ListViewItem}">
-      <Setter Property="Margin" Value="4"/>
-      <Style.Triggers>
-        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-          <Setter Property="Background"
-                  Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-        </Trigger>
-      </Style.Triggers>
-    </Style>
-
-
     <!-- display the name field; do not allow editing -->
     <DataTemplate x:Key="FixedNameTemplate">
       <TextBlock Text="{Binding Path=Name, Converter={local:LowerCaseConverter}}" Width="Auto"/>
@@ -42,7 +27,11 @@
       
       <ComboBox Grid.Row="2" Grid.Column="1" MinWidth="100"
       x:Name="namesComboBox"
-      SelectedItem="{Binding Path=Name, Converter={local:LowerCaseConverter}}">
+      SelectedItem="{Binding Path=Name, Converter={local:LowerCaseConverter}}"
+                
+                  Control.IsTabStop="true"
+                  AlternationCount="2"
+                >
         
         <ComboBox.ItemsSource>
           <MultiBinding Converter="{local:AvailableMetadataNamesConverter}" UpdateSourceTrigger="PropertyChanged">
@@ -51,6 +40,24 @@
             <Binding Path="Name"/>
           </MultiBinding>
         </ComboBox.ItemsSource>
+        <ComboBox.ItemContainerStyle>
+
+          <Style TargetType="{x:Type ComboBoxItem}">
+
+            <Style.Setters>
+              <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+              <Setter Property="VerticalContentAlignment" Value="Center" />
+              <!--<Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>-->
+            </Style.Setters>
+
+            <Style.Triggers>
+              <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+
+        </ComboBox.ItemContainerStyle>
       </ComboBox>
 
     </DataTemplate>
@@ -137,8 +144,18 @@
     IsSynchronizedWithCurrentItem="True"
     x:Name="MetadataList">
 
+    <ListView.Style>
+    <Style TargetType="{x:Type ListView}">
+      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+    </Style>
+      </ListView.Style>
+
     <ListView.ItemContainerStyle>
       <Style TargetType="{x:Type ListViewItem}">
+
+        <Style.Setters>
+
+          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="AutomationProperties.Name">
           <Setter.Value>
             <MultiBinding Converter="{local:FullSummaryConverter}">
@@ -149,7 +166,21 @@
             </MultiBinding>
           </Setter.Value>
         </Setter>
+        </Style.Setters>
 
+        <Style.Triggers>
+          <MultiTrigger>
+            <MultiTrigger.Conditions>
+              <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+              <Condition Property="IsSelected" Value="False"/>
+            </MultiTrigger.Conditions>
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+          </MultiTrigger>
+          <Trigger Property="IsSelected" Value="True">
+            <Setter Property="FontWeight" Value="Bold" />
+          </Trigger>
+        </Style.Triggers>
+     
       </Style>
     </ListView.ItemContainerStyle>
 
