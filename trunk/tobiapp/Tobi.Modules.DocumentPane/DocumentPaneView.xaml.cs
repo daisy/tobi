@@ -750,7 +750,6 @@ namespace Tobi.Plugin.DocumentPane
         public RichDelegateCommand CommandSwitchPhraseNext { get; private set; }
 
         public RichDelegateCommand CommandEditText { get; private set; }
-        public RichDelegateCommand CommandEditDescription { get; private set; }
 
         public RichDelegateCommand CommandStructureUp { get; private set; }
         public RichDelegateCommand CommandStructureDown { get; private set; }
@@ -888,69 +887,6 @@ namespace Tobi.Plugin.DocumentPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructureSelectDown));
 
             m_ShellView.RegisterRichCommand(CommandStructureDown);
-            //
-
-            CommandEditDescription = new RichDelegateCommand(
-                Tobi_Plugin_DocumentPane_Lang.CmdEditDescription_ShortDesc,
-                Tobi_Plugin_DocumentPane_Lang.CmdEditDescription_LongDesc,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("edit-find-replace"),
-                () =>
-                {
-                    TreeNode node = null;
-                    if (m_TextElementForEdit != null)
-                    {
-                        Debug.Assert(m_TextElementForEdit.Tag is TreeNode);
-                        node = (TreeNode)m_TextElementForEdit.Tag;
-                        m_TextElementForEdit = null;
-                    }
-                    else
-                    {
-                        Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                        node = selection.Item2 ?? selection.Item1;
-                    }
-                    if (node == null) return;
-
-                    AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
-
-                    string oldTxt = null;
-                    if (altProp != null && altProp.ShortDescription != null)
-                    {
-                        oldTxt = altProp.ShortDescription.Text.Text;
-                    }
-
-                    string txt = showDialogTextEdit(oldTxt);
-
-                    if (txt == oldTxt) return;
-
-                    m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
-
-                    if (string.IsNullOrEmpty(txt))
-                    {
-                        //remove ShortDescription
-                    }
-                    else
-                    {
-                        //change ShortDescription text
-                    }
-
-                    //var cmd = node.Presentation.CommandFactory.CreateTreeNodeAddAlternateContentCommand();
-                    //node.Presentation.UndoRedoManager.Execute(cmd);
-                },
-                () =>
-                {
-                    if (m_UrakawaSession.DocumentProject == null) return false;
-
-                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = selection.Item2 ?? selection.Item1;
-                    return m_TextElementForEdit != null
-                            || node != null && node.GetXmlElementQName().LocalName == "img";
-                },
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_EditDescription));
-
-            m_ShellView.RegisterRichCommand(CommandEditDescription);
-
             //
             CommandEditText = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdEditText_ShortDesc,
@@ -1477,7 +1413,7 @@ namespace Tobi.Plugin.DocumentPane
                     {
                         if (isControlKeyDown())
                         {
-                            CommandEditDescription.Execute();
+                            //CommandEditDescription.Execute();
                         }
                         else
                         {

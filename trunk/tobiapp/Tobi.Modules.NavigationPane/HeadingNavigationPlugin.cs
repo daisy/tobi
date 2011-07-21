@@ -44,7 +44,13 @@ namespace Tobi.Plugin.NavigationPane
             // generates an exception, because the region does not exist yet (see "parent" plugin constructor, RegionManager.SetRegionManager(), etc.)
 
             m_RegionManager.RegisterNamedViewWithRegion(RegionNames.NavigationPaneTabs,
-                new PreferredPositionNamedView { m_viewInstance = m_TocPane, m_viewName = @"ViewOf_" + RegionNames.NavigationPaneTabs + @"_Headings" });
+                new PreferredPositionNamedView
+                    {
+                        m_viewInstance = m_TocPane,
+                        m_viewName = @"ViewOf_" + RegionNames.NavigationPaneTabs + @"_Headings",
+                        m_viewPreferredPosition = PreferredPosition.First
+                    }
+                );
 
             //m_RegionManager.RegisterViewWithRegion(RegionNames.NavigationPaneTabs, typeof(IHeadingPaneView));
 

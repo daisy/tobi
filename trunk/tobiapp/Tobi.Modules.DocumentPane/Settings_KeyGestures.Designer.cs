@@ -85,18 +85,6 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] D")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_EditDescription {
-            get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_EditDescription"]));
-            }
-            set {
-                this["Keyboard_EditDescription"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] OemComma (,)")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_StructureSelectUp {
             get {
@@ -128,6 +116,18 @@ namespace Tobi.Plugin.DocumentPane {
             }
             set {
                 this["Keyboard_Focus_Txt"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F6")]
+        public string Keyboard_Focus_Doc {
+            get {
+                return ((string)(this["Keyboard_Focus_Doc"]));
+            }
+            set {
+                this["Keyboard_Focus_Doc"] = value;
             }
         }
     }

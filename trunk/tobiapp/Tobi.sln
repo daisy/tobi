@@ -91,6 +91,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Unity2", "ExternalLibs\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.ServiceLocation", "ExternalLibs\ServiceLocation\Lib.ServiceLocation.csproj", "{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.Descriptions", "Tobi.Modules.Descriptions\Tobi.Plugin.Descriptions.csproj", "{F21BA164-A132-45B8-B058-90D0E948BD88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

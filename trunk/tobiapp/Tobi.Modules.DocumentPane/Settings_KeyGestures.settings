@@ -1,8 +1,6 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.DocumentPane" GeneratedClassName="Settings_KeyGestures">
-  <Profiles>
-    <Profile Name="(Default)"/>
-  </Profiles>
+  <Profiles />
   <Settings>
     <Setting Name="Keyboard_Doc_Event_SwitchPrevious" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] OemComma (,)</Value>
@@ -19,9 +17,6 @@
     <Setting Name="Keyboard_EditText" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] T</Value>
     </Setting>
-    <Setting Name="Keyboard_EditDescription" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] D</Value>
-    </Setting>
     <Setting Name="Keyboard_StructureSelectUp" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] OemComma (,)</Value>
     </Setting>
@@ -30,6 +25,9 @@
     </Setting>
     <Setting Name="Keyboard_Focus_Txt" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F10</Value>
+    </Setting>
+    <Setting Name="Keyboard_Focus_Doc" Type="System.String" Scope="User">
+      <Value Profile="(Default)">[ NONE ] F6</Value>
     </Setting>
   </Settings>
 </SettingsFile>

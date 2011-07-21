@@ -61,24 +61,6 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Modify the description of the selected document item.
-        /// </summary>
-        public static string CmdEditDescription_LongDesc {
-            get {
-                return ResourceManager.GetString("CmdEditDescription_LongDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Edit description.
-        /// </summary>
-        public static string CmdEditDescription_ShortDesc {
-            get {
-                return ResourceManager.GetString("CmdEditDescription_ShortDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Modify the text of the selected document phrase.
         /// </summary>
         public static string CmdEditText_LongDesc {

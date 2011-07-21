@@ -21,6 +21,7 @@ using MSjogren.Samples.ShellLink;
 using Tobi.Common;
 using Tobi.Common.UI;
 using Tobi.Plugin.AudioPane;
+using Tobi.Plugin.Descriptions;
 using Tobi.Plugin.DocumentPane;
 using Tobi.Plugin.MenuBar;
 using Tobi.Plugin.MetadataPane;
@@ -403,6 +404,7 @@ namespace Tobi
 #if SILVERLIGHT
                 regionAdapterMappings.RegisterMapping(typeof(TabControl), this.Container.Resolve<TabControlRegionAdapter>());
 #endif
+                regionAdapterMappings.RegisterMapping(typeof(LazyKeepAliveTabControl), this.Container.Resolve<PreferredPositionSelectorRegionAdapter>());
                 regionAdapterMappings.RegisterMapping(typeof(Selector), this.Container.Resolve<SelectorRegionAdapter>());
                 regionAdapterMappings.RegisterMapping(typeof(ItemsControl), this.Container.Resolve<PreferredPositionItemsControlRegionAdapter>());
                 regionAdapterMappings.RegisterMapping(typeof(ContentControl), this.Container.Resolve<ContentControlRegionAdapter>());
@@ -589,13 +591,25 @@ namespace Tobi
             {
                 ExceptionHandler.Handle(ex, false, shell);
             }
+            try
+            {
+                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(DescriptionsPlugin))));
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, shell);
+            }
+
+
             //MessageBox.Show(@"Urakawa session should now be resolved (window title changed)");
 
             var tobiModules = MefContainer.GetExportedValues<ITobiPlugin>();
             foreach (var tobiModule in tobiModules)
             {
                 Debug.Assert(!string.IsNullOrEmpty(tobiModule.Name) && !string.IsNullOrEmpty(tobiModule.Description));
-                LoggerFacade.Log(@"Loaded plugin: [[" + tobiModule.Name + @"]] [[" + tobiModule.Version + @"]] [[" + tobiModule.Description + @"]]", Category.Debug, Priority.Low);
+                LoggerFacade.Log(
+                    @"Loaded plugin: [[" + tobiModule.Name + @"]] [[" + tobiModule.Version + @"]] [[" +
+                    tobiModule.Description + @"]]", Category.Debug, Priority.Low);
             }
 
             //MessageBox.Show(@"Urakawa module is loaded but it 'waits' for a toolbar to push its commands: press ok to get the toolbar view to load (but not to display yet)");
@@ -634,7 +648,7 @@ namespace Tobi
             foreach (var tobiModuleAFTER in tobiModulesAFTER)
             {
                 Debug.Assert(!string.IsNullOrEmpty(tobiModuleAFTER.Name) && !string.IsNullOrEmpty(tobiModuleAFTER.Description));
-                LoggerFacade.Log(@"Loaded plugin FATER: [[" + tobiModuleAFTER.Name + @"]] [[" + tobiModuleAFTER.Description + @"]]", Category.Debug, Priority.Low);
+                LoggerFacade.Log(@"Loaded plugin AFTER: [[" + tobiModuleAFTER.Name + @"]] [[" + tobiModuleAFTER.Description + @"]]", Category.Debug, Priority.Low);
             }
 
             // In ClickOnce application manifest:

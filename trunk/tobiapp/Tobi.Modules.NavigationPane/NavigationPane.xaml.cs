@@ -28,10 +28,10 @@ namespace Tobi.Plugin.NavigationPane
             IRegionManager regionManager,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
-            [Import(typeof(PagePanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            PagePanelView pagesView,
             [Import(typeof(HeadingPanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             HeadingPanelView tocView,
+            [Import(typeof(PagePanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            PagePanelView pagesView,
             [Import(typeof(MarkersPanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             MarkersPanelView markersView)
         {
