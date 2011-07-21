@@ -117,76 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CmdSwitchNarratorView_ShortDesc" xml:space="preserve">
-    <value>_Switch narrator window</value>
+  <data name="CmdEditDescriptions_LongDesc" xml:space="preserve">
+    <value>Modify the description(s) of the selected document item</value>
   </data>
-  <data name="CmdSwitchNarratorView_LongDesc" xml:space="preserve">
-    <value>Alternate between the normal document view and the narrator window</value>
+  <data name="CmdEditDescriptions_ShortDesc" xml:space="preserve">
+    <value>Edit description(s)</value>
   </data>
-  <data name="CmdTextOnlyViewToggle_ShortDesc" xml:space="preserve">
-    <value>_Toggle text view</value>
+  <data name="DescriptionsPlugin_Description" xml:space="preserve">
+    <value>A user-interface to edit image descriptions.</value>
   </data>
-  <data name="CmdTextOnlyViewToggle_LongDesc" xml:space="preserve">
-    <value>Alternate between the text styles: full or simple document view</value>
-  </data>
-  <data name="CmdStructureDown_ShortDesc" xml:space="preserve">
-    <value>_Narrow selection</value>
-  </data>
-  <data name="CmdStructureDown_LongDesc" xml:space="preserve">
-    <value>Contract the selection down one level in the document structure</value>
-  </data>
-  <data name="CmdStructureUp_ShortDesc" xml:space="preserve">
-    <value>_Expand selection</value>
-  </data>
-  <data name="CmdStructureUp_LongDesc" xml:space="preserve">
-    <value>Grow the selection up one level in the document structure</value>
-  </data>
-  <data name="NarratorView" xml:space="preserve">
-    <value>Narrator view</value>
-  </data>
-  <data name="TextOnly" xml:space="preserve">
-    <value>Simple view</value>
-  </data>
-  <data name="CmdEditText_ShortDesc" xml:space="preserve">
-    <value>Edit text</value>
-  </data>
-  <data name="CmdEditText_LongDesc" xml:space="preserve">
-    <value>Modify the text of the selected document phrase</value>
-  </data>
-  <data name="DocumentPanePlugin_Name" xml:space="preserve">
-    <value>Document pane.</value>
-  </data>
-  <data name="CmdEventSwitchNext_ShortDesc" xml:space="preserve">
-    <value>Select _next phrase</value>
-  </data>
-  <data name="CmdEventSwitchNext_LongDesc" xml:space="preserve">
-    <value>Select the next text fragment in the document</value>
-  </data>
-  <data name="CmdEventSwitchPrevious_ShortDesc" xml:space="preserve">
-    <value>Select _previous phrase</value>
-  </data>
-  <data name="CmdEventSwitchPrevious_LongDesc" xml:space="preserve">
-    <value>Select the previous text fragment in the document</value>
-  </data>
-  <data name="Feature_Not_Available" xml:space="preserve">
-    <value>This feature is not available.</value>
-  </data>
-  <data name="LOG_FILE_PATH" xml:space="preserve">
-    <value>[0]</value>
-  </data>
-  <data name="No_Document" xml:space="preserve">
-    <value>No document.</value>
-  </data>
-  <data name="DocumentPanePlugin_Description" xml:space="preserve">
-    <value>The publication document viewer</value>
-  </data>
-  <data name="CreatingFlowDocument" xml:space="preserve">
-    <value>Rendering the document ...</value>
-  </data>
-  <data name="ConvertingXukToFlowDocument" xml:space="preserve">
-    <value>Converting XUK markup ...</value>
-  </data>
-  <data name="CmdTxtFocus_ShortDesc" xml:space="preserve">
-    <value>Text viewer focus</value>
+  <data name="DescriptionsPlugin_Name" xml:space="preserve">
+    <value>Descriptions editor.</value>
   </data>
 </root>

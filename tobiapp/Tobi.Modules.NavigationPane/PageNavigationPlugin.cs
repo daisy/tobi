@@ -31,7 +31,8 @@ namespace Tobi.Plugin.NavigationPane
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
             [Import(typeof(PagePanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            PagePanelView pane) //PagesPaneViewModel
+            PagePanelView pane
+            )
         {
             m_Logger = logger;
             m_RegionManager = regionManager;
@@ -44,7 +45,12 @@ namespace Tobi.Plugin.NavigationPane
             // generates an exception, because the region does not exist yet (see "parent" plugin constructor, RegionManager.SetRegionManager(), etc.)            
 
             m_RegionManager.RegisterNamedViewWithRegion(RegionNames.NavigationPaneTabs,
-                new PreferredPositionNamedView { m_viewInstance = m_PagesPane, m_viewName = @"ViewOf_" + RegionNames.NavigationPaneTabs + @"_Pages"});
+                new PreferredPositionNamedView
+                    {
+                        m_viewInstance = m_PagesPane,
+                        m_viewName = @"ViewOf_" + RegionNames.NavigationPaneTabs + @"_Pages",
+                        m_viewPreferredPosition = PreferredPosition.Any
+                    });
 
             //m_RegionManager.RegisterViewWithRegion(RegionNames.NavigationPaneTabs, typeof(IPagePaneView));
 

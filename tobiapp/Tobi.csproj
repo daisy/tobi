@@ -249,6 +249,10 @@
       <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
       <Name>Tobi.Plugin.AudioPane</Name>
     </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Descriptions\Tobi.Plugin.Descriptions.csproj">
+      <Project>{F21BA164-A132-45B8-B058-90D0E948BD88}</Project>
+      <Name>Tobi.Plugin.Descriptions</Name>
+    </ProjectReference>
     <ProjectReference Include="Tobi.Modules.DocumentPane\Tobi.Plugin.DocumentPane.csproj">
       <Project>{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}</Project>
       <Name>Tobi.Plugin.DocumentPane</Name>

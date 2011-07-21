@@ -35,7 +35,8 @@ namespace Tobi.Plugin.NavigationPane
             [Import(typeof(MarkersPanelView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             MarkersPanelView pane,
             [Import(typeof(MarkersPaneViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            MarkersPaneViewModel viewModel)
+            MarkersPaneViewModel viewModel
+            )
         {
             m_Logger = logger;
             m_RegionManager = regionManager;
@@ -49,7 +50,12 @@ namespace Tobi.Plugin.NavigationPane
             // generates an exception, because the region does not exist yet (see "parent" plugin constructor, RegionManager.SetRegionManager(), etc.)            
 
             m_RegionManager.RegisterNamedViewWithRegion(RegionNames.NavigationPaneTabs,
-                new PreferredPositionNamedView { m_viewInstance = m_MarkersPane, m_viewName = @"ViewOf_" + RegionNames.NavigationPaneTabs + @"_Markers"});
+                new PreferredPositionNamedView
+                    {
+                        m_viewInstance = m_MarkersPane,
+                        m_viewName = @"ViewOf_" + RegionNames.NavigationPaneTabs + @"_Markers",
+                        m_viewPreferredPosition = PreferredPosition.Last
+                    });
 
             //m_RegionManager.RegisterViewWithRegion(RegionNames.NavigationPaneTabs, typeof(IMarkersPaneView));
 

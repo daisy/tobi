@@ -93,6 +93,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Unity2", "ExternalLibs\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.ServiceLocation", "ExternalLibs\ServiceLocation\Lib.ServiceLocation.csproj", "{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi.Plugin.Descriptions", "Tobi.Modules.Descriptions\Tobi.Plugin.Descriptions.csproj", "{F21BA164-A132-45B8-B058-90D0E948BD88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -419,6 +421,16 @@ Global
 		{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}.test|Any CPU.Build.0 = Release|Any CPU
+		{F21BA164-A132-45B8-B058-90D0E948BD88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F21BA164-A132-45B8-B058-90D0E948BD88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F21BA164-A132-45B8-B058-90D0E948BD88}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F21BA164-A132-45B8-B058-90D0E948BD88}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F21BA164-A132-45B8-B058-90D0E948BD88}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{F21BA164-A132-45B8-B058-90D0E948BD88}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
+		{F21BA164-A132-45B8-B058-90D0E948BD88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F21BA164-A132-45B8-B058-90D0E948BD88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F21BA164-A132-45B8-B058-90D0E948BD88}.test|Any CPU.ActiveCfg = Release|Any CPU
+		{F21BA164-A132-45B8-B058-90D0E948BD88}.test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

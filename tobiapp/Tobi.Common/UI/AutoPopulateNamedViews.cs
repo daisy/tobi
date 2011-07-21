@@ -252,6 +252,19 @@ namespace Tobi.Common.UI
             return new PreferredPositionAllActiveRegion();
         }
     }
+
+    public class PreferredPositionSelectorRegionAdapter : SelectorRegionAdapter
+    {
+        public PreferredPositionSelectorRegionAdapter(IRegionBehaviorFactory regionBehaviorFactory)
+            : base(regionBehaviorFactory)
+        {
+        }
+
+        protected override IRegion CreateRegion()
+        {
+            return new PreferredPositionRegion();
+        }
+    }
     public class PreferredPositionRegion : Region
     {
 #if true || DEBUG
