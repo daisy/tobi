@@ -95,11 +95,11 @@ namespace Tobi.Plugin.Descriptions
 
             AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
 
-            string oldTxt = null;
-            if (altProp != null && altProp.ShortDescription != null)
-            {
-                oldTxt = altProp.ShortDescription.Text.Text;
-            }
+            //string oldTxt = null;
+            //if (altProp != null && altProp.ShortDescription != null)
+            //{
+            //    oldTxt = altProp.ShortDescription.Text.Text;
+            //}
 
             //string txt = showDialogTextEdit(oldTxt);
 

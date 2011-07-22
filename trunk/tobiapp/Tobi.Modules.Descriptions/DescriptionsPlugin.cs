@@ -73,12 +73,11 @@ namespace Tobi.Plugin.Descriptions
     
         private readonly RichDelegateCommand CommandShowDescriptions;
 
-        private int m_ToolBarId_1;
+        //private int m_ToolBarId_1;
         protected override void OnToolBarReady()
         {
-            m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowDescriptions }, PreferredPosition.Last);
-
-            m_Logger.Log(@"DescriptionsPlugin commands pushed to toolbar", Category.Debug, Priority.Medium);
+            //m_ToolBarId_1 = m_ToolBarsView.AddToolBarGroup(new[] { CommandShowDescriptions }, PreferredPosition.Last);
+            //m_Logger.Log(@"DescriptionsPlugin commands pushed to toolbar", Category.Debug, Priority.Medium);
         }
 
         private int m_MenuBarId_1;
@@ -96,9 +95,8 @@ namespace Tobi.Plugin.Descriptions
         {
             if (m_ToolBarsView != null)
             {
-                m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
-
-                m_Logger.Log(@"DescriptionsPlugin commands removed from toolbar", Category.Debug, Priority.Medium);
+                //m_ToolBarsView.RemoveToolBarGroup(m_ToolBarId_1);
+                //m_Logger.Log(@"DescriptionsPlugin commands removed from toolbar", Category.Debug, Priority.Medium);
             }
 
             if (m_MenuBarView != null)
