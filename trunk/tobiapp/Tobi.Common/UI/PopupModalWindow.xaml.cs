@@ -187,7 +187,14 @@ namespace Tobi.Common.UI
             }
             else
             {
-                ShowDialog();
+                try
+                {
+                    ShowDialog();
+                }
+                catch (Exception ex)
+                {
+                    // oops !
+                }
             }
         }
 
