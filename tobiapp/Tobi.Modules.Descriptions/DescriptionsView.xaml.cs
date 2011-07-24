@@ -94,6 +94,9 @@ namespace Tobi.Plugin.Descriptions
             if (win is PopupModalWindow)
                 OwnerWindow = (PopupModalWindow)win;
 
+            FocusHelper.Focus(ButtonAdd);
+
+            m_ViewModel.OnPanelLoaded();
         }
 
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
@@ -104,6 +107,20 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
+        private void OnKeyDown_ListItem(object sender, KeyEventArgs e)
+        {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            // We capture only the RETURN KeyUp bubbling-up from UI descendants
+            if (key != Key.Return) // || !(sender is ListViewItem))
+            {
+                return;
+            }
+
+            // We void the effect of the RETURN key
+            // (which would normally close the parent dialog window by activating the default button: CANCEL)
+            e.Handled = true;
+        }
         ~DescriptionsView()
         {
 #if DEBUG
@@ -133,6 +150,11 @@ namespace Tobi.Plugin.Descriptions
         private void OnOwnerWindowIsActiveChanged(object sender, EventArgs e)
         {
             CommandManager.InvalidateRequerySuggested();
+        }
+
+        private void OnSelectionChanged_MetadataList(object sender, SelectionChangedEventArgs e)
+        {
+            m_ViewModel.SetSelectedMetadata(MetadatasListBox.SelectedIndex);
         }
     }
 }
