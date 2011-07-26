@@ -16,6 +16,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa.core;
+using urakawa.metadata;
 using urakawa.property.alt;
 
 namespace Tobi.Plugin.Descriptions
@@ -94,7 +95,7 @@ namespace Tobi.Plugin.Descriptions
             if (win is PopupModalWindow)
                 OwnerWindow = (PopupModalWindow)win;
 
-            FocusHelper.Focus(ButtonAdd);
+            FocusHelper.Focus(ButtonAddMetadata);
 
             m_ViewModel.OnPanelLoaded();
         }
@@ -107,7 +108,114 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
-        private void OnKeyDown_ListItem(object sender, KeyEventArgs e)
+        private bool showMetadataAttributeEditorPopupDialog(MetadataAttribute metadataAttr, out string newName, out string newValue)
+        {
+            m_Logger.Log("Descriptions.MetadataAttributeEditor", Category.Debug, Priority.Medium);
+
+            var label_Name = new TextBlock
+            {
+                Text = "Name: ",
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var label_Value = new TextBlock
+            {
+                Text = "Value: ",
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var editBox_Name = new TextBox
+            {
+                Text = metadataAttr.Name,
+                TextWrapping = TextWrapping.WrapWithOverflow
+            };
+
+            var editBox_Value = new TextBox
+            {
+                Text = metadataAttr.Value,
+                TextWrapping = TextWrapping.WrapWithOverflow
+            };
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            var panelName = new DockPanel
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                LastChildFill = true
+            };
+            panelName.Margin = new Thickness(0, 0, 0, 8);
+            label_Name.SetValue(DockPanel.DockProperty, Dock.Left);
+            panelName.Children.Add(label_Name);
+            panelName.Children.Add(editBox_Name);
+
+            var panelValue = new DockPanel
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            label_Value.SetValue(DockPanel.DockProperty, Dock.Left);
+            panelValue.Children.Add(label_Value);
+            panelValue.Children.Add(editBox_Value);
+
+            panel.Children.Add(panelName);
+            panel.Children.Add(panelValue);
+
+
+
+            //var details = new TextBoxReadOnlyCaretVisible
+            //                  {
+            //    TextReadOnly = Tobi_Lang.ExitConfirm
+            //};
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   UserInterfaceStrings.EscapeMnemonic("Edit attribute"),
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 300, 160, null, 40);
+
+            editBox_Name.Loaded += new RoutedEventHandler((sender, ev) =>
+            {
+                editBox_Name.SelectAll();
+                FocusHelper.FocusBeginInvoke(editBox_Name);
+            });
+            editBox_Value.Loaded += new RoutedEventHandler((sender, ev) =>
+            {
+                editBox_Name.SelectAll();
+                //FocusHelper.FocusBeginInvoke(editBox_Name);
+            });
+
+            windowPopup.ShowModal();
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                newName = editBox_Name.Text;
+                newValue = editBox_Value.Text;
+
+                return true;
+            }
+
+            newName = null;
+            newValue = null;
+
+            return false;
+        }
+
+        private void OnKeyDown_ListItemMetadata(object sender, KeyEventArgs e)
         {
             var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
 
@@ -117,10 +225,69 @@ namespace Tobi.Plugin.Descriptions
                 return;
             }
 
+            OnMouseDoubleClick_ListItemMetadata(null, null);
+
             // We void the effect of the RETURN key
             // (which would normally close the parent dialog window by activating the default button: CANCEL)
             e.Handled = true;
         }
+
+        private void OnKeyDown_ListItemMetadataAttr(object sender, KeyEventArgs e)
+        {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            // We capture only the RETURN KeyUp bubbling-up from UI descendants
+            if (key != Key.Return) // || !(sender is ListViewItem))
+            {
+                return;
+            }
+
+            OnMouseDoubleClick_ListItemMetadataAttr(null, null);
+
+            // We void the effect of the RETURN key
+            // (which would normally close the parent dialog window by activating the default button: CANCEL)
+            e.Handled = true;
+        }
+
+        private void OnClick_ButtonEditMetadata(object sender, RoutedEventArgs e)
+        {
+            if (MetadatasListView.SelectedIndex >= 0)
+                OnMouseDoubleClick_ListItemMetadata(null, null);
+        }
+        private void OnClick_ButtonEditMetadataAttr(object sender, RoutedEventArgs e)
+        {
+            if (MetadataAttributesListView.SelectedIndex >= 0)
+                OnMouseDoubleClick_ListItemMetadataAttr(null, null);
+        }
+
+        private void OnMouseDoubleClick_ListItemMetadata(object sender, MouseButtonEventArgs e)
+        {
+            Metadata md = (Metadata)MetadatasListView.SelectedItem;
+            string newName, newValue;
+            bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue);
+            if (ok)
+            {
+                m_ViewModel.SetMetadataAttribute(md, md.NameContentAttribute, newName, newValue);
+
+                MetadatasListView.Items.Refresh();
+            }
+        }
+
+        private void OnMouseDoubleClick_ListItemMetadataAttr(object sender, MouseButtonEventArgs e)
+        {
+            Metadata md = (Metadata)MetadatasListView.SelectedItem;
+            MetadataAttribute mdAttr = (MetadataAttribute)MetadataAttributesListView.SelectedItem;
+            string newName, newValue;
+            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
+            if (ok)
+            {
+                m_ViewModel.SetMetadataAttribute(md, mdAttr, newName, newValue);
+
+                MetadatasListView.SelectedItem = null;
+                MetadatasListView.SelectedItem = md;
+            }
+        }
+
         ~DescriptionsView()
         {
 #if DEBUG
@@ -154,7 +321,7 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnSelectionChanged_MetadataList(object sender, SelectionChangedEventArgs e)
         {
-            m_ViewModel.SetSelectedMetadata(MetadatasListBox.SelectedIndex);
+            //m_ViewModel.SetSelectedMetadata(MetadatasListBox.SelectedIndex);
         }
     }
 }

@@ -1,0 +1,125 @@
+﻿<DockPanel x:Class="Tobi.Plugin.Descriptions.DescriptionsNavigationView"
+           
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:pres="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Tobi.Plugin.Descriptions"
+                    xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
+           xmlns:NavigationPane="clr-namespace:Tobi.Plugin.Descriptions"
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+           xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+           xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
+           LastChildFill="True" >
+
+  <!--DataContext="{Binding Path=ViewModel, RelativeSource={x:Static RelativeSource.Self}}"-->
+
+  <!--<DockPanel.Resources>
+    <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
+  </DockPanel.Resources>-->
+
+  <Border
+           DockPanel.Dock="Top"
+             
+           BorderThickness="2"
+           BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+           
+             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}"
+             Visibility="{Binding Path=IsSearchVisible, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+             LostFocus="OnSearchLostFocus"
+             >
+
+    <DockPanel LastChildFill="True"
+             
+             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+
+      <UI:ButtonRichCommand
+        Control.TabIndex="4"
+        DockPanel.Dock="Right"
+         HorizontalAlignment="Right" VerticalAlignment="Center"
+        UseSmallerIcon="True"
+        RichCommand="{Binding CmdFindNextGlobal}"/>
+
+      <UI:ButtonRichCommand
+        Control.TabIndex="3"
+        DockPanel.Dock="Right"
+         HorizontalAlignment="Right" VerticalAlignment="Center"
+        UseSmallerIcon="True"
+        RichCommand="{Binding CmdFindPreviousGlobal}"/>
+
+      <TextBlock
+        Text="{x:Static Common:Tobi_Common_Lang.Find}"
+        DockPanel.Dock="Left"
+                   HorizontalAlignment="Left" VerticalAlignment="Center"
+                   Margin="2,0,2,0"/>
+
+      <UI:WatermarkTextBox
+        KeyUp="OnSearchBoxKeyUp"
+        Control.TabIndex="2"
+        x:Name="SearchBox"
+                                       TextChanged="SearchBox_TextChanged"
+                                       Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+                                      HorizontalAlignment="Stretch"
+                              VerticalAlignment="Center"/>
+
+    </DockPanel>
+  </Border>
+
+  <pres:ScrollViewer
+      VerticalScrollBarVisibility="Visible"
+      HorizontalScrollBarVisibility="Auto"
+      CanContentScroll="True"
+      IsDeferredScrollingEnabled="False"
+      Focusable="False">
+    <pres:ListView
+        x:Name="ListView"
+        ItemsSource="{Binding DescriptionsNavigator_DescribedTreeNodes}"
+        VirtualizingStackPanel.IsVirtualizing="False"
+        VirtualizingStackPanel.VirtualizationMode="Recycling"
+        SelectionMode="Single"
+        
+        IsTabStop="True"
+        Focusable="True"
+        AutomationProperties.Name="Descriptions"
+        search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <TextBlock Text="{Binding Description}"/>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+      <ListView.ItemContainerStyle>
+
+        <Style TargetType="{x:Type ListViewItem}">
+
+          <Setter Property="ToolTip" Value="{Binding Description}" />
+
+          <Setter Property="AutomationProperties.Name" Value="{Binding Description}"/>
+          <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+          <!-- Setter Property="FontSize" Value="15" / -->
+          <Setter Property="FontWeight" Value="Normal" />
+          <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
+          <Setter Property="UI:ListViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
+          <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItem" />
+          <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
+          <!-- <EventSetter Event="Selected" Handler="OnSelected_ListItem" /> -->
+          <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="FontWeight" Value="Bold" />
+            </Trigger>
+            <Trigger Property="search:SearchOperations.IsMatch" Value="True">
+              <Setter Property="Background">
+                <Setter.Value>
+                  <SolidColorBrush Color="{Binding Source={x:Static Common:Settings.Default}, Path=SearchHits_Color, Mode=OneWay}"/>
+                  <!-- LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="White" Offset="0"/>
+                                        <GradientStop Color="#FF78C4FF" Offset="1"/>
+                                    </LinearGradientBrush -->
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </ListView.ItemContainerStyle>
+
+    </pres:ListView>
+  </pres:ScrollViewer>
+</DockPanel>

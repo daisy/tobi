@@ -2185,6 +2185,11 @@ namespace Tobi.Plugin.DocumentPane
                 EventAggregator.GetEvent<MarkedTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
             }
 
+            if (node.HasAlternateContentProperty)
+            {
+                EventAggregator.GetEvent<DescribedTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
+            }
+
             TextElement parentNext = parent;
 
             QualifiedName qname = node.GetXmlElementQName();

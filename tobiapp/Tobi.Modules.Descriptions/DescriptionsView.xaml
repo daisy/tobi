@@ -26,34 +26,45 @@
       
       <Grid Height="Auto" Width="Auto">
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="200"/>
+          <ColumnDefinition Width="300"/>
           <ColumnDefinition Width="Auto"/>
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
           <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
         <DockPanel LastChildFill="True"
                     Grid.Column="0" Grid.Row="0">
+          
           <StackPanel Orientation="Horizontal"
-                      DockPanel.Dock="Bottom">
+                      DockPanel.Dock="Bottom"
+              HorizontalAlignment="Stretch">
             <Button
-              x:Name="ButtonAdd"
+              x:Name="ButtonAddMetadata"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
-                    Margin="0,4,0,0"
+                    Margin="4,4,0,0"
                     Content="Add"
                     ToolTip="Add"/>
             <Button
-              
+              x:Name="ButtonEditMetadata"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
-                    Margin="0,4,0,0"
+                    Margin="4,4,0,0"
+                    Content="Edit"
+                    ToolTip="Edit"
+              Click="OnClick_ButtonEditMetadata"/>
+            <Button
+              x:Name="ButtonRemoveMetadata"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="4,4,0,0"
                     Content="Remove"
                     ToolTip="Remove"/>
           </StackPanel>
 
-          <ListBox
+          <!-- ListBox
                    ItemsSource="{Binding Metadatas}"
                    x:Name="MetadatasListBox"
                    Margin="0,0,0,0"
@@ -68,7 +79,7 @@
             <ListBox.ItemContainerStyle>
               <Style TargetType="{x:Type ListBoxItem}">
 
-                <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItem" />
+                <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItemMetadata" />
                 
                 <Setter Property="AutomationProperties.Name">
                   <Setter.Value>
@@ -114,22 +125,107 @@
                     </MultiBinding>
                   </TextBlock.Text>
 
-                  <!-- TextBlock.ToolTip>
-                    <ToolTip ContentStringFormat="Metadata property = {0}, content = {1}">
-                      <ToolTip.Content>
-                        <MultiBinding Mode="OneWay">
-                          <Binding Path="NameContentAttribute.Name"   Mode="OneWay" />
-                          <Binding Path="NameContentAttribute.Value"   Mode="OneWay"/>
-                        </MultiBinding>
-                      </ToolTip.Content>
-                    </ToolTip>
-                  </TextBlock.ToolTip -->
                 </TextBlock>
               </DataTemplate>
             </ListBox.ItemTemplate>
 
 
-          </ListBox>
+          </ListBox -->
+
+
+          <UI:SortableListView2
+
+                   ItemsSource="{Binding Metadatas}"
+                   x:Name="MetadatasListView"
+                   
+    ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+    ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+    ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
+           ScrollViewer.CanContentScroll="True"
+             VirtualizingStackPanel.IsVirtualizing="False"
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+
+              SelectionMode="Single"
+
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+  AlternationCount="2"
+    >
+            <ListView.View>
+              <GridView AllowsColumnReorder="false">
+
+                <UI:SortableGridViewColumn Header="Property"
+                                SortPropertyName="NameContentAttribute.Name"
+                                DisplayMemberBinding="{Binding NameContentAttribute.Name, Mode=OneWay}"
+                                             Width="150"/>
+
+                <UI:SortableGridViewColumn Header="Content"
+                                SortPropertyName="NameContentAttribute.Value"
+                                DisplayMemberBinding="{Binding NameContentAttribute.Value, Mode=OneWay}"
+                                             Width="150"/>
+
+              </GridView>
+            </ListView.View>
+
+            <ListView.Resources>
+
+              <ToolTip x:Key="toolTip_MetadataListItem"
+                 DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+
+                <TextBlock>
+                  <TextBlock.Text>
+                    <MultiBinding StringFormat="Metadata property = {0}, content = {1}"  Mode="OneWay">
+                      <Binding Path="DataContext.NameContentAttribute.Name"   Mode="OneWay" />
+                      <Binding Path="DataContext.NameContentAttribute.Value"   Mode="OneWay"/>
+                    </MultiBinding>
+                  </TextBlock.Text>
+                </TextBlock>
+              </ToolTip>
+
+            </ListView.Resources>
+            <ListView.ItemContainerStyle>
+
+              <Style TargetType="{x:Type ListViewItem}">
+
+                <Style.Setters>
+                  <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItemMetadata" />
+                  <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItemMetadata" />
+
+                  <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+                  <Setter Property="AutomationProperties.Name">
+                    <Setter.Value>
+                      <MultiBinding StringFormat="Metadata property = {0}, content = {1}"  Mode="OneWay">
+                        <Binding Path="NameContentAttribute.Name"   Mode="OneWay" />
+                        <Binding Path="NameContentAttribute.Value"   Mode="OneWay"/>
+                      </MultiBinding>
+                    </Setter.Value>
+                  </Setter>
+
+                  <Setter Property="ToolTipService.ToolTip" Value="{StaticResource toolTip_MetadataListItem}"/>
+                  
+                </Style.Setters>
+
+                <Style.Triggers>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+                      <Condition Property="IsSelected" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                  </MultiTrigger>
+                </Style.Triggers>
+              </Style>
+
+            </ListView.ItemContainerStyle>
+          </UI:SortableListView2>
 
         </DockPanel>
         <GridSplitter
@@ -156,11 +252,45 @@
 
 
 
+        <!--  ItemsSource="{Binding MetadataAttributes, Mode=OneWay}" -->
 
-        <UI:SortableListView2
-
+        <DockPanel
             Grid.Column="2" Grid.Row="0"
-  x:Name="AttributesList"
+          LastChildFill="True">
+          <TextBlock HorizontalAlignment="Left" Margin="4" DockPanel.Dock="Top">Additional attributes:</TextBlock>
+
+          <StackPanel Orientation="Horizontal"
+                      DockPanel.Dock="Bottom"
+              HorizontalAlignment="Stretch">
+            <Button
+              x:Name="ButtonAddMetadataAttr"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="4,4,0,0"
+                    Content="Add"
+                    ToolTip="Add"/>
+            <Button
+              x:Name="ButtonEditMetadataAttr"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="4,4,0,0"
+                    Content="Edit"
+                    ToolTip="Edit"
+              Click="OnClick_ButtonEditMetadataAttr"/>
+            <Button
+              x:Name="ButtonRemoveMetadataAttr"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="4,4,0,0"
+                    Content="Remove"
+                    ToolTip="Remove"/>
+          </StackPanel>
+
+          <UI:SortableListView2
+
+  x:Name="MetadataAttributesListView"
+  ItemsSource="{Binding ElementName=MetadatasListView, Path=SelectedItem.OtherAttributes.ContentsAs_Enumerable, Mode=OneWay}"
+           
   ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
   ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
   ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
@@ -173,8 +303,6 @@
           HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"
 
-  ItemsSource="{Binding MetadataAttributes, Mode=OneWay}"
-           
             SelectionMode="Single"
 
           ScrollViewer.HorizontalScrollBarVisibility="Visible"
@@ -197,32 +325,62 @@ AlternationCount="2"
             </GridView>
           </ListView.View>
 
+            <ListView.Resources>
+
+              <ToolTip x:Key="toolTip_MetadataListItem"
+                 DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+
+                <TextBlock>
+                  <TextBlock.Text>
+                    <MultiBinding StringFormat="Metadata property = {0}, content = {1}"  Mode="OneWay">
+                      <Binding Path="DataContext.NameContentAttribute.Name"   Mode="OneWay" />
+                      <Binding Path="DataContext.NameContentAttribute.Value"   Mode="OneWay"/>
+                    </MultiBinding>
+                  </TextBlock.Text>
+                </TextBlock>
+              </ToolTip>
+
+              <ToolTip x:Key="toolTip_MetadataAttrListItem"
+                 DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+
+                <TextBlock>
+                  <TextBlock.Text>
+                    <MultiBinding StringFormat="Metadata attribute name = {0}, value = {1}"  Mode="OneWay">
+                      <Binding Path="DataContext.Name"   Mode="OneWay" />
+                      <Binding Path="DataContext.Value"   Mode="OneWay"/>
+                    </MultiBinding>
+                  </TextBlock.Text>
+                </TextBlock>
+              </ToolTip>
+
+            </ListView.Resources>
+            
           <ListView.ItemContainerStyle>
 
             <Style TargetType="{x:Type ListViewItem}">
 
               <Style.Setters>
-                <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItem" />
+                <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItemMetadataAttr" />
+
+                <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItemMetadataAttr" />
 
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
 
-                <!-- Setter Property="AutomationProperties.Name">
+                <Setter Property="AutomationProperties.Name">
                   <Setter.Value>
-                    <MultiBinding StringFormat="Attribute name = {0}, value = {1}"  Mode="OneWay">
+                    <MultiBinding StringFormat="Metadata attribute name = {0}, value = {1}"  Mode="OneWay">
                       <Binding Path="Name"   Mode="OneWay" />
                       <Binding Path="Value"   Mode="OneWay"/>
                     </MultiBinding>
                   </Setter.Value>
                 </Setter>
 
-                <Setter Property="ToolTip">
-                  <Setter.Value>
-                    <MultiBinding StringFormat="Attribute name = {0}, value = {1}"  Mode="OneWay">
-                      <Binding Path="Name"   Mode="OneWay" />
-                      <Binding Path="Value"   Mode="OneWay"/>
-                    </MultiBinding>
-                  </Setter.Value>
-                </Setter -->
+                <Setter Property="ToolTipService.ToolTip" Value="{StaticResource toolTip_MetadataAttrListItem}"/>
+
               </Style.Setters>
 
               <Style.Triggers>
@@ -239,7 +397,7 @@ AlternationCount="2"
           </ListView.ItemContainerStyle>
         </UI:SortableListView2>
 
-
+        </DockPanel>
 
       </Grid>
 
