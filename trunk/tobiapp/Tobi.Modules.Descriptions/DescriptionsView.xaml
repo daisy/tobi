@@ -201,9 +201,9 @@ AlternationCount="2"
 
             <Style TargetType="{x:Type ListViewItem}">
 
-              <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItem" />
-
               <Style.Setters>
+                <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItem" />
+
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
 
                 <!-- Setter Property="AutomationProperties.Name">

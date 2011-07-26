@@ -68,6 +68,9 @@ namespace Tobi.Plugin.AudioPane
                 m_typeFace,
                 30,
                 m_textBrush //m_textPen.Brush
+#if NET40
+                , null, TextFormattingMode.Display
+#endif //NET40
                 );
 
             const double margin = 20;

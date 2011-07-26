@@ -852,17 +852,28 @@ namespace Tobi.Plugin.AudioPane
                     //                ? m_ShellView.MagnificationLevel
                     //                : (Double)FindResource("MagnificationLevel"));
 
-                    if (WaveFormImage.CacheMode == null
-                        || ((BitmapCache)WaveFormImage.CacheMode).RenderAtScale != zoom)
+                    if (
+                        WaveFormImage.CacheMode == null
+                        || ((BitmapCache)WaveFormImage.CacheMode).RenderAtScale != zoom
+                        )
                     {
-                        WaveFormImage.UseLayoutRounding = true;
+                        WaveFormImage.SetValue(RenderOptions.ClearTypeHintProperty, ClearTypeHint.Auto);
+                        WaveFormImage.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);
+                        WaveFormImage.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.Fant);
+                        WaveFormImage.SetValue(RenderOptions.CachingHintProperty, CachingHint.Cache);
+
+                        WaveFormImage.SnapsToDevicePixels = false;
+
+                        System.Diagnostics.Debug.Print("CACHE WAVEFORM WIDTH = " + WaveFormImage.Width + " // " + WaveFormImage.ActualWidth);
+
+                        //WaveFormImage.UseLayoutRounding = true;
                         WaveFormImage.CacheMode = new BitmapCache
                         {
                             RenderAtScale = zoom,
-                            EnableClearType = true,
-                            SnapsToDevicePixels = true
+                            EnableClearType = false,
+                            SnapsToDevicePixels = false
                         };
-#if DEBUG
+#if false && DEBUG
                         var bitmapCacheBrush = new BitmapCacheBrush
                         {
                             AutoLayoutContent = false,

@@ -75,7 +75,7 @@ namespace Tobi
             int renderingTier = (RenderCapability.Tier >> 16);
 
             Console.WriteLine(@"Shell RenderCapability.Tier => " + renderingTier);
-#endif
+#endif //NET40
             //TODO: See Mono.Options for managing command line parameters.
 
             // Ignore 0 index:

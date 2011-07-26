@@ -453,7 +453,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                Canvas.Top="0"
                RenderOptions.EdgeMode="Unspecified"
                SnapsToDevicePixels="True"
-               RenderOptions.BitmapScalingMode="LowQuality"/>
+               RenderOptions.BitmapScalingMode="Fant"/>
 
         <Path x:Name="WaveFormTimeRangePath"
               Canvas.ZIndex="1"
