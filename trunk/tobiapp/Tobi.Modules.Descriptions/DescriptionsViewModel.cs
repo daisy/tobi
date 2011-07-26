@@ -109,9 +109,39 @@ namespace Tobi.Plugin.Descriptions
                 node.Presentation.UndoRedoManager.Execute(cmd2);
             }
 
-            m_SelectedMedatadata = -1;
+            //m_SelectedMedatadata = -1;
             RaisePropertyChanged(() => Metadatas);
-            RaisePropertyChanged(() => MetadataAttributes);
+            //RaisePropertyChanged(() => MetadataAttributes);
+        }
+
+
+        public void SetMetadataAttribute(Metadata md, MetadataAttribute mdAttr, string newName, string newValue)
+        {
+             if (string.IsNullOrEmpty(newName) || string.IsNullOrEmpty(newValue)) return;
+
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
+            if (mdAttr.Name != newName)
+            {
+                AlternateContentMetadataSetNameCommand cmd1 =
+                    node.Presentation.CommandFactory.CreateAlternateContentMetadataSetNameCommand(altProp, null, md,
+                                                                                                  newName);
+                node.Presentation.UndoRedoManager.Execute(cmd1);
+            }
+            if (mdAttr.Value != newValue)
+            {
+                AlternateContentMetadataSetContentCommand cmd2 =
+                    node.Presentation.CommandFactory.CreateAlternateContentMetadataSetContentCommand(altProp, null, md,
+                                                                                                  newValue);
+                node.Presentation.UndoRedoManager.Execute(cmd2);
+            }
+
+            RaisePropertyChanged(() => Metadatas);
         }
 
         private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
@@ -123,9 +153,9 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
             if (node == null) return;
 
-            m_SelectedMedatadata = -1;
+            //m_SelectedMedatadata = -1;
             RaisePropertyChanged(() => Metadatas);
-            RaisePropertyChanged(() => MetadataAttributes);
+            //RaisePropertyChanged(() => MetadataAttributes);
         }
 
 
@@ -160,9 +190,9 @@ namespace Tobi.Plugin.Descriptions
             m_Logger.Log("DescriptionsViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""),
                 Category.Debug, Priority.Medium);
 
-            m_SelectedMedatadata = -1;
+            //m_SelectedMedatadata = -1;
             RaisePropertyChanged(() => Metadatas);
-            RaisePropertyChanged(() => MetadataAttributes);
+            //RaisePropertyChanged(() => MetadataAttributes);
 
             if (project == null) return;
 
@@ -209,31 +239,31 @@ namespace Tobi.Plugin.Descriptions
             RaisePropertyChanged(() => Metadatas);
         }
 
-        public IEnumerable<MetadataAttribute> MetadataAttributes
-        {
-            get
-            {
-                if (m_SelectedMedatadata == -1) return null;
+        //private int m_SelectedMedatadata = -1;
+        //public void SetSelectedMetadata(int selectedIndex)
+        //{
+        //    m_SelectedMedatadata = selectedIndex;
+        //    RaisePropertyChanged(() => MetadataAttributes);
+        //}
+        //public IEnumerable<MetadataAttribute> MetadataAttributes
+        //{
+        //    get
+        //    {
+        //        if (m_SelectedMedatadata == -1) return null;
 
-                if (m_UrakawaSession.DocumentProject == null) return null;
+        //        if (m_UrakawaSession.DocumentProject == null) return null;
 
-                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                TreeNode node = selection.Item2 ?? selection.Item1;
-                if (node == null) return null;
+        //        Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+        //        TreeNode node = selection.Item2 ?? selection.Item1;
+        //        if (node == null) return null;
 
-                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
-                if (altProp == null) return null;
+        //        AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+        //        if (altProp == null) return null;
 
-                return altProp.Metadatas.Get(m_SelectedMedatadata).OtherAttributes.ContentsAs_Enumerable;
-            }
-        }
+        //        return altProp.Metadatas.Get(m_SelectedMedatadata).OtherAttributes.ContentsAs_Enumerable;
+        //    }
+        //}
 
-        private int m_SelectedMedatadata = -1;
-        public void SetSelectedMetadata(int selectedIndex)
-        {
-            m_SelectedMedatadata = selectedIndex;
-            RaisePropertyChanged(() => MetadataAttributes);
-        }
         public IEnumerable<Metadata> Metadatas
         {
             get

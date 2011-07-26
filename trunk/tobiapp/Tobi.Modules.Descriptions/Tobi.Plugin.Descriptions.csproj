@@ -60,6 +60,13 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="DescribedTreeNode.cs" />
+    <Compile Include="DescriptionsNavigationPlugin.cs" />
+    <Compile Include="DescriptionsNavigationView.xaml.cs">
+      <DependentUpon>DescriptionsNavigationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DescriptionsNavigationViewModel.cs" />
+    <Compile Include="DescriptionsNavigator.cs" />
     <Compile Include="DescriptionsViewModel.cs" />
     <Compile Include="IDescriptionsView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -155,6 +162,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="DescriptionsNavigationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="DescriptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

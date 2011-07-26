@@ -117,6 +117,7 @@
   <ItemGroup>
     <Compile Include="AudioCues.cs" />
     <Compile Include="Colors.cs" />
+    <Compile Include="DescribedTreeNodeFoundByFlowDocumentParserEvent.cs" />
     <Compile Include="EscapeEvent.cs" />
     <Compile Include="IAudioViewModel.cs" />
     <Compile Include="IFileDialogService.cs" />

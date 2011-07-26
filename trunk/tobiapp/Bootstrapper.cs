@@ -593,6 +593,7 @@ namespace Tobi
             }
             try
             {
+                //new AssemblyCatalog(Assembly.GetAssembly(typeof(DescriptionsNavigationPlugin))), // in the same assembly as the main Navigation Plugin, so not needed
                 Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(DescriptionsPlugin))));
             }
             catch (Exception ex)
