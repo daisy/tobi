@@ -454,6 +454,12 @@ namespace Tobi.Common.UI
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+#if NET40
+            this.SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
+            this.SetValue(TextOptions.TextRenderingModeProperty, TextRenderingMode.Auto);
+            this.SetValue(TextOptions.TextHintingModeProperty, TextHintingMode.Fixed);
+#endif //NET40
+
             Console.WriteLine(@"Popup WpfSoftwareRender => " + Tobi.Common.Settings.Default.WpfSoftwareRender);
 
             if (Tobi.Common.Settings.Default.WpfSoftwareRender)

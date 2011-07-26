@@ -89,7 +89,7 @@ namespace Tobi.Common.UI
                 image.CacheMode = new BitmapCache
                 {
                     RenderAtScale = IconDrawScale,
-                    EnableClearType = true,
+                    EnableClearType = false,
                     SnapsToDevicePixels = true
                 };
 

@@ -547,6 +547,12 @@ namespace Tobi
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+#if NET40
+            this.SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
+            this.SetValue(TextOptions.TextRenderingModeProperty, TextRenderingMode.Auto);
+            this.SetValue(TextOptions.TextHintingModeProperty, TextHintingMode.Fixed);
+#endif //NET40
+
             AddHandler(DropEvent,
                 new RoutedEventHandler(OnWindowDrop_),
                 true);

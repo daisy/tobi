@@ -218,6 +218,9 @@ namespace Tobi.Plugin.AudioPane
                         m_typeFace,
                         12,
                         m_timeTextBrush
+#if NET40
+, null, TextFormattingMode.Display
+#endif //NET40
                         );
 
                     double posX = currentTickX - formattedText.Width / 2;
@@ -277,6 +280,9 @@ namespace Tobi.Plugin.AudioPane
                     m_typeFace,
                     12,
                     m_timeTextBrush
+#if NET40
+, null, TextFormattingMode.Display
+#endif //NET40
                     );
 
                 m_point1.X = m_MousePosX;
@@ -352,6 +358,9 @@ namespace Tobi.Plugin.AudioPane
                                                                   m_typeFace,
                                                                   12,
                                                                   m_phraseBrush
+#if NET40
+, null, TextFormattingMode.Display
+#endif //NET40
                                 );
                             m_standardTextHeight = txt.Height;
                         }
@@ -364,6 +373,9 @@ namespace Tobi.Plugin.AudioPane
                                                               m_typeFace,
                                                               12 * zoom,
                                                               m_timeTextBrush
+#if NET40
+, null, TextFormattingMode.Display
+#endif //NET40
                             );
 
                         formattedTextDuration.Trimming = TextTrimming.CharacterEllipsis;
@@ -458,6 +470,9 @@ namespace Tobi.Plugin.AudioPane
                                                                   m_typeFace,
                                                                   12 * zoom,
                                                                   m_phraseBrush
+#if NET40
+, null, TextFormattingMode.Display
+#endif //NET40
                                 );
 
                             formattedText.Trimming = TextTrimming.CharacterEllipsis;
