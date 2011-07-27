@@ -74,6 +74,9 @@ namespace Tobi.Plugin.NavigationPane
                                                 ui = m_MarkersPaneView.ViewFocusStart;
                                                 break;
                                             }
+
+                                            ui = FocusHelper.GetLeafFocusableChild((UIElement)view);
+
                                             //TODO: what about extensions ??
                                             // ViewFocusStart should be a common denominator implemented by every single tab content
                                         }

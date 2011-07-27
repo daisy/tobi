@@ -174,8 +174,6 @@ namespace Tobi.Plugin.Descriptions
             panel.Children.Add(panelName);
             panel.Children.Add(panelValue);
 
-
-
             //var details = new TextBoxReadOnlyCaretVisible
             //                  {
             //    TextReadOnly = Tobi_Lang.ExitConfirm
@@ -195,7 +193,7 @@ namespace Tobi.Plugin.Descriptions
             });
             editBox_Value.Loaded += new RoutedEventHandler((sender, ev) =>
             {
-                editBox_Name.SelectAll();
+                editBox_Value.SelectAll();
                 //FocusHelper.FocusBeginInvoke(editBox_Name);
             });
 
@@ -262,6 +260,7 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnMouseDoubleClick_ListItemMetadata(object sender, MouseButtonEventArgs e)
         {
+            if (MetadatasListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
             string newName, newValue;
             bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue);
@@ -275,6 +274,7 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnMouseDoubleClick_ListItemMetadataAttr(object sender, MouseButtonEventArgs e)
         {
+            if (MetadatasListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
             MetadataAttribute mdAttr = (MetadataAttribute)MetadataAttributesListView.SelectedItem;
             string newName, newValue;
@@ -283,11 +283,60 @@ namespace Tobi.Plugin.Descriptions
             {
                 m_ViewModel.SetMetadataAttribute(md, mdAttr, newName, newValue);
 
-                MetadatasListView.SelectedItem = null;
-                MetadatasListView.SelectedItem = md;
+                MetadataAttributesListView.Items.Refresh();
             }
         }
 
+
+        private void OnClick_ButtonRemoveMetadata(object sender, RoutedEventArgs e)
+        {
+            if (MetadatasListView.SelectedIndex<0) return;
+            m_ViewModel.RemoveMetadata((Metadata) MetadatasListView.SelectedItem);
+            MetadatasListView.Items.Refresh();
+            MetadatasListView.SelectedIndex = 0;
+        }
+
+        private void OnClick_ButtonAddMetadata(object sender, RoutedEventArgs e)
+        {
+            var mdAttr = new MetadataAttribute();
+            mdAttr.Name = "[edit text]";
+            mdAttr.Value = "[edit text]";
+            string newName, newValue;
+            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
+            if (ok)
+            {
+                m_ViewModel.AddMetadata(newName, newValue);
+                MetadatasListView.Items.Refresh();
+                MetadatasListView.SelectedIndex = MetadatasListView.Items.Count - 1;
+            }
+        }
+
+        private void OnClick_ButtonRemoveMetadataAttr(object sender, RoutedEventArgs e)
+        {
+            if (MetadatasListView.SelectedIndex < 0) return;
+            Metadata md = (Metadata)MetadatasListView.SelectedItem;
+            if (MetadataAttributesListView.SelectedIndex < 0) return;
+            m_ViewModel.RemoveMetadataAttr(md, (MetadataAttribute)MetadataAttributesListView.SelectedItem);
+            MetadataAttributesListView.Items.Refresh();
+            MetadataAttributesListView.SelectedIndex = 0;
+        }
+
+        private void OnClick_ButtonAddMetadataAttr(object sender, RoutedEventArgs e)
+        {
+            if (MetadatasListView.SelectedIndex < 0) return;
+            Metadata md = (Metadata)MetadatasListView.SelectedItem;
+            var mdAttr = new MetadataAttribute();
+            mdAttr.Name = "[edit text]";
+            mdAttr.Value = "[edit text]";
+            string newName, newValue;
+            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
+            if (ok)
+            {
+                m_ViewModel.AddMetadataAttr(md, newName, newValue);
+                MetadataAttributesListView.Items.Refresh();
+                MetadataAttributesListView.SelectedIndex = MetadataAttributesListView.Items.Count - 1;
+            }
+        }
         ~DescriptionsView()
         {
 #if DEBUG
