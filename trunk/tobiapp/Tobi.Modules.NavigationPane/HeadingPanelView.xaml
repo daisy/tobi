@@ -7,7 +7,8 @@
                     xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
            xmlns:NavigationPane="clr-namespace:Tobi.Plugin.NavigationPane"
            xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
-           xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common">
+           xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+           xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common">
 
   <Border
            DockPanel.Dock="Top"

@@ -115,9 +115,83 @@ namespace Tobi.Plugin.Descriptions
         }
 
 
+        public void RemoveMetadata(Metadata md)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
+            //altProp.Metadatas.Remove(md);
+
+            AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(altProp, null, md);
+            node.Presentation.UndoRedoManager.Execute(cmd);
+
+            //RaisePropertyChanged(() => Metadatas);
+        }
+
+        public void AddMetadata(string newName, string newValue)
+        {
+            if (string.IsNullOrEmpty(newName) || string.IsNullOrEmpty(newValue)) return;
+
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetOrCreateAlternateContentProperty();
+
+            Metadata meta = node.Presentation.MetadataFactory.CreateMetadata();
+            meta.NameContentAttribute = new MetadataAttribute();
+            meta.NameContentAttribute.Name = newName;
+            //meta.NameContentAttribute.NamespaceUri = "dummy namespace";
+            meta.NameContentAttribute.Value = newValue;
+            AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta);
+            node.Presentation.UndoRedoManager.Execute(cmd);
+
+            //RaisePropertyChanged(() => Metadatas);
+        }
+
+        public void RemoveMetadataAttr(Metadata md, MetadataAttribute mdAttr)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
+            //altProp.Metadatas.Remove(md);
+
+            //AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(altProp, null, md);
+            //node.Presentation.UndoRedoManager.Execute(cmd);
+
+            //RaisePropertyChanged(() => Metadatas);
+        }
+
+        public void AddMetadataAttr(Metadata md, string newName, string newValue)
+        {
+            if (string.IsNullOrEmpty(newName) || string.IsNullOrEmpty(newValue)) return;
+
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
+            int index = altProp.Metadatas.IndexOf(md);
+            if (index < 0) return;
+
+            //AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta);
+            //node.Presentation.UndoRedoManager.Execute(cmd);
+
+            //RaisePropertyChanged(() => Metadatas);
+        }
         public void SetMetadataAttribute(Metadata md, MetadataAttribute mdAttr, string newName, string newValue)
         {
-             if (string.IsNullOrEmpty(newName) || string.IsNullOrEmpty(newValue)) return;
+            if (string.IsNullOrEmpty(newName) || string.IsNullOrEmpty(newValue)) return;
 
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
             TreeNode node = selection.Item2 ?? selection.Item1;
@@ -141,7 +215,7 @@ namespace Tobi.Plugin.Descriptions
                 node.Presentation.UndoRedoManager.Execute(cmd2);
             }
 
-            RaisePropertyChanged(() => Metadatas);
+            //RaisePropertyChanged(() => Metadatas);
         }
 
         private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
@@ -154,7 +228,7 @@ namespace Tobi.Plugin.Descriptions
             if (node == null) return;
 
             //m_SelectedMedatadata = -1;
-            RaisePropertyChanged(() => Metadatas);
+            //RaisePropertyChanged(() => Metadatas);
             //RaisePropertyChanged(() => MetadataAttributes);
         }
 
@@ -191,7 +265,7 @@ namespace Tobi.Plugin.Descriptions
                 Category.Debug, Priority.Medium);
 
             //m_SelectedMedatadata = -1;
-            RaisePropertyChanged(() => Metadatas);
+            //RaisePropertyChanged(() => Metadatas);
             //RaisePropertyChanged(() => MetadataAttributes);
 
             if (project == null) return;
@@ -236,7 +310,7 @@ namespace Tobi.Plugin.Descriptions
 
             Command cmd = eventt.Command;
 
-            RaisePropertyChanged(() => Metadatas);
+            //RaisePropertyChanged(() => Metadatas);
         }
 
         //private int m_SelectedMedatadata = -1;
@@ -264,7 +338,7 @@ namespace Tobi.Plugin.Descriptions
         //    }
         //}
 
-        public IEnumerable<Metadata> Metadatas
+        public IEnumerable<Metadata> Metadatas //ObservableCollection
         {
             get
             {
@@ -277,6 +351,7 @@ namespace Tobi.Plugin.Descriptions
                 AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
                 if (altProp == null) return null;
 
+                //return new ObservableCollection<Metadata>(altProp.Metadatas.ContentsAs_Enumerable);
                 return altProp.Metadatas.ContentsAs_Enumerable;
             }
         }

@@ -46,7 +46,8 @@
               HorizontalAlignment="Stretch"
                     Margin="4,4,0,0"
                     Content="Add"
-                    ToolTip="Add"/>
+                    ToolTip="Add"
+              Click="OnClick_ButtonAddMetadata"/>
             <Button
               x:Name="ButtonEditMetadata"
               VerticalAlignment="Center"
@@ -61,7 +62,8 @@
               HorizontalAlignment="Stretch"
                     Margin="4,4,0,0"
                     Content="Remove"
-                    ToolTip="Remove"/>
+                    ToolTip="Remove"
+              Click="OnClick_ButtonRemoveMetadata"/>
           </StackPanel>
 
           <!-- ListBox
@@ -268,7 +270,8 @@
               HorizontalAlignment="Stretch"
                     Margin="4,4,0,0"
                     Content="Add"
-                    ToolTip="Add"/>
+                    ToolTip="Add"
+              Click="OnClick_ButtonAddMetadataAttr"/>
             <Button
               x:Name="ButtonEditMetadataAttr"
               VerticalAlignment="Center"
@@ -283,7 +286,8 @@
               HorizontalAlignment="Stretch"
                     Margin="4,4,0,0"
                     Content="Remove"
-                    ToolTip="Remove"/>
+                    ToolTip="Remove"
+              Click="OnClick_ButtonRemoveMetadataAttr"/>
           </StackPanel>
 
           <UI:SortableListView2
