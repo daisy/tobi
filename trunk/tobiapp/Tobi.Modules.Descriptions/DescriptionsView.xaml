@@ -20,7 +20,12 @@
   BorderThickness="1"
               VerticalAlignment="Stretch"
               HorizontalAlignment="Stretch"
-              x:Name="Tabs">
+              >
+    <TabControl.Resources>
+      <Style TargetType="{x:Type Button}">
+        <Setter Property="Padding" Value="4,2,4,2"/>
+      </Style>
+    </TabControl.Resources>
     
     <TabItem Header="Metadata">
       
@@ -41,102 +46,36 @@
                       DockPanel.Dock="Bottom"
               HorizontalAlignment="Stretch">
             <Button
+                   TabIndex="2"
               x:Name="ButtonAddMetadata"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
-                    Margin="4,4,0,0"
+                    Margin="0,4,0,0"
                     Content="Add"
-                    ToolTip="Add"
+
               Click="OnClick_ButtonAddMetadata"/>
             <Button
+                   TabIndex="3"
               x:Name="ButtonEditMetadata"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
-                    Margin="4,4,0,0"
+                    Margin="4,4,4,0"
                     Content="Edit"
-                    ToolTip="Edit"
+
               Click="OnClick_ButtonEditMetadata"/>
             <Button
+                   TabIndex="4"
               x:Name="ButtonRemoveMetadata"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
-                    Margin="4,4,0,0"
+                    Margin="0,4,0,0"
                     Content="Remove"
-                    ToolTip="Remove"
+
               Click="OnClick_ButtonRemoveMetadata"/>
           </StackPanel>
 
-          <!-- ListBox
-                   ItemsSource="{Binding Metadatas}"
-                   x:Name="MetadatasListBox"
-                   Margin="0,0,0,0"
-                   HorizontalContentAlignment="Stretch"
-                 
-                   SelectionChanged="OnSelectionChanged_MetadataList"
-                  SelectionMode="Single"
-                  ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                  ScrollViewer.VerticalScrollBarVisibility="Visible"
-                  AlternationCount="2"
-                 >
-            <ListBox.ItemContainerStyle>
-              <Style TargetType="{x:Type ListBoxItem}">
-
-                <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItemMetadata" />
-                
-                <Setter Property="AutomationProperties.Name">
-                  <Setter.Value>
-                    <MultiBinding StringFormat="{}Metadata property = {0}, content = {1}"  Mode="OneWay">
-                      <Binding Path="NameContentAttribute.Name"   Mode="OneWay" />
-                      <Binding Path="NameContentAttribute.Value"   Mode="OneWay"/>
-                    </MultiBinding>
-                  </Setter.Value>
-                </Setter>
-
-                <Setter Property="ToolTip">
-                  <Setter.Value>
-                    <TextBlock>
-                      <TextBlock.Text>
-                        <MultiBinding StringFormat="Metadata property = {0}, content = {1}"  Mode="OneWay">
-                          <Binding Path="NameContentAttribute.Name"   Mode="OneWay" />
-                          <Binding Path="NameContentAttribute.Value"   Mode="OneWay"/>
-                        </MultiBinding>
-                      </TextBlock.Text>
-                    </TextBlock>
-                  </Setter.Value>
-                </Setter>
-
-                <Style.Triggers>
-                  <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                      <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
-                      <Condition Property="IsSelected" Value="False"/>
-                    </MultiTrigger.Conditions>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                  </MultiTrigger>
-                </Style.Triggers>
-              </Style>
-            </ListBox.ItemContainerStyle>
-
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Padding="4">
-                  <TextBlock.Text>
-                    <MultiBinding StringFormat="{}{0} = {1}"  Mode="OneWay">
-                      <Binding Path="NameContentAttribute.Name"   Mode="OneWay" />
-                      <Binding Path="NameContentAttribute.Value"   Mode="OneWay"/>
-                    </MultiBinding>
-                  </TextBlock.Text>
-
-                </TextBlock>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-
-
-          </ListBox -->
-
-
           <UI:SortableListView2
-
+                   TabIndex="1"
                    ItemsSource="{Binding Metadatas}"
                    x:Name="MetadatasListView"
                    
@@ -154,8 +93,8 @@
 
               SelectionMode="Single"
 
-            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
   AlternationCount="2"
     >
             <ListView.View>
@@ -180,7 +119,6 @@
                  DataContext="{Binding Path=PlacementTarget,
            RelativeSource={x:Static RelativeSource.Self}}"
                >
-
                 <TextBlock>
                   <TextBlock.Text>
                     <MultiBinding StringFormat="Metadata property = {0}, content = {1}"  Mode="OneWay">
@@ -236,62 +174,49 @@
              HorizontalAlignment="Center" VerticalAlignment="Stretch">
         </GridSplitter>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <!--  ItemsSource="{Binding MetadataAttributes, Mode=OneWay}" -->
-
         <DockPanel
             Grid.Column="2" Grid.Row="0"
           LastChildFill="True">
-          <TextBlock HorizontalAlignment="Left" Margin="4" DockPanel.Dock="Top">Additional attributes:</TextBlock>
+          <TextBlock
+            Focusable="False"
+                   HorizontalAlignment="Left" Margin="4"
+                   DockPanel.Dock="Top">Additional metadata attributes:</TextBlock>
 
           <StackPanel Orientation="Horizontal"
                       DockPanel.Dock="Bottom"
               HorizontalAlignment="Stretch">
             <Button
+                   TabIndex="13"
               x:Name="ButtonAddMetadataAttr"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
-                    Margin="4,4,0,0"
+                    Margin="0,4,0,0"
                     Content="Add"
-                    ToolTip="Add"
+                    
               Click="OnClick_ButtonAddMetadataAttr"/>
             <Button
+                   TabIndex="14"
               x:Name="ButtonEditMetadataAttr"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
-                    Margin="4,4,0,0"
+                    Margin="4,4,4,0"
                     Content="Edit"
-                    ToolTip="Edit"
+                    
               Click="OnClick_ButtonEditMetadataAttr"/>
             <Button
+                   TabIndex="15"
               x:Name="ButtonRemoveMetadataAttr"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
-                    Margin="4,4,0,0"
+                    Margin="0,4,0,0"
                     Content="Remove"
-                    ToolTip="Remove"
+                    
               Click="OnClick_ButtonRemoveMetadataAttr"/>
           </StackPanel>
 
           <UI:SortableListView2
 
+                   TabIndex="11"
   x:Name="MetadataAttributesListView"
   ItemsSource="{Binding ElementName=MetadatasListView, Path=SelectedItem.OtherAttributes.ContentsAs_Enumerable, Mode=OneWay}"
            
@@ -309,8 +234,8 @@
 
             SelectionMode="Single"
 
-          ScrollViewer.HorizontalScrollBarVisibility="Visible"
-          ScrollViewer.VerticalScrollBarVisibility="Visible"
+          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+          ScrollViewer.VerticalScrollBarVisibility="Auto"
 AlternationCount="2"
     >
           <ListView.View>
@@ -330,21 +255,6 @@ AlternationCount="2"
           </ListView.View>
 
             <ListView.Resources>
-
-              <ToolTip x:Key="toolTip_MetadataListItem"
-                 DataContext="{Binding Path=PlacementTarget,
-           RelativeSource={x:Static RelativeSource.Self}}"
-               >
-
-                <TextBlock>
-                  <TextBlock.Text>
-                    <MultiBinding StringFormat="Metadata property = {0}, content = {1}"  Mode="OneWay">
-                      <Binding Path="DataContext.NameContentAttribute.Name"   Mode="OneWay" />
-                      <Binding Path="DataContext.NameContentAttribute.Value"   Mode="OneWay"/>
-                    </MultiBinding>
-                  </TextBlock.Text>
-                </TextBlock>
-              </ToolTip>
 
               <ToolTip x:Key="toolTip_MetadataAttrListItem"
                  DataContext="{Binding Path=PlacementTarget,
@@ -406,7 +316,379 @@ AlternationCount="2"
       </Grid>
 
     </TabItem>
+    
     <TabItem Header="Descriptions">
+
+      <Grid Height="Auto" Width="Auto">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="150"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel LastChildFill="True"
+                    Grid.Column="0" Grid.Row="0">
+
+          <StackPanel Orientation="Horizontal"
+                      DockPanel.Dock="Bottom"
+              HorizontalAlignment="Stretch">
+            <Button
+                   TabIndex="2"
+              x:Name="ButtonAddDescription"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="0,4,0,0"
+                    Content="Add"
+                    
+              Click="OnClick_ButtonAddDescription"/>
+            <Button
+                   TabIndex="4"
+              x:Name="ButtonRemoveDescription"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="4,4,0,0"
+                    Content="Remove"
+                    
+              Click="OnClick_ButtonRemoveDescription"/>
+          </StackPanel>
+
+          <UI:SortableListView2
+                   TabIndex="1"
+                   ItemsSource="{Binding Descriptions}"
+                   x:Name="DescriptionsListView"
+                   
+    ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+    ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+    ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
+           ScrollViewer.CanContentScroll="True"
+             VirtualizingStackPanel.IsVirtualizing="False"
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+
+              SelectionMode="Single"
+
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+  AlternationCount="2"
+    >
+            <!-- ListView.View>
+              <GridView AllowsColumnReorder="false">
+
+                <UI:SortableGridViewColumn Header="Index"
+                                SortPropertyName="Text.Text"
+                                DisplayMemberBinding="{Binding Text.Text, Mode=OneWay}"
+                                             Width="150"/>
+
+                <UI:SortableGridViewColumn Header="Content"
+                                SortPropertyName="NameContentAttribute.Value"
+                                DisplayMemberBinding="{Binding NameContentAttribute.Value, Mode=OneWay}"
+                                             Width="150"/>
+
+              </GridView>
+            </ListView.View -->
+
+            <ListView.Resources>
+
+              <ToolTip x:Key="toolTip_DescriptionListItem"
+                 DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+                <TextBlock>
+                  <TextBlock.Text>
+                    <MultiBinding StringFormat="Description text:  {0}"  Mode="OneWay">
+                      <Binding Path="DataContext.Text.Text"   Mode="OneWay" />
+                    </MultiBinding>
+                  </TextBlock.Text>
+                </TextBlock>
+              </ToolTip >
+
+            </ListView.Resources>
+
+            <ListView.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Padding="4">
+                  <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}"  Mode="OneWay">
+                      <Binding Path="Text.Text"   Mode="OneWay" />
+                      <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
+                    </MultiBinding>
+                  </TextBlock.Text>
+                </TextBlock>
+              </DataTemplate>
+            </ListView.ItemTemplate>
+
+            <ListView.ItemContainerStyle>
+
+              <Style TargetType="{x:Type ListViewItem}">
+
+                <Style.Setters>
+                  <!-- EventSetter Event="KeyDown" Handler="OnKeyDown_ListItemDescription" />
+                  <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItemDescription" / --> 
+
+                  <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+                  <Setter Property="AutomationProperties.Name">
+                    <Setter.Value>
+                      <MultiBinding StringFormat="Description text: {0}"  Mode="OneWay">
+                        <Binding Path="Text.Text"   Mode="OneWay" />
+                        <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
+                      </MultiBinding>
+                    </Setter.Value>
+                  </Setter>
+                  
+                  <Setter Property="ToolTipService.ToolTip" Value="{StaticResource toolTip_DescriptionListItem}"/>
+                </Style.Setters>
+
+                <Style.Triggers>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+                      <Condition Property="IsSelected" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                  </MultiTrigger>
+                </Style.Triggers>
+              </Style>
+
+            </ListView.ItemContainerStyle>
+          </UI:SortableListView2>
+
+        </DockPanel>
+        <GridSplitter
+            Grid.Column="1" Grid.Row="0"
+             Focusable="False"
+             HorizontalAlignment="Center" VerticalAlignment="Stretch">
+        </GridSplitter>
+
+        <TabControl
+            Grid.Column="2" Grid.Row="0"
+                    BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+        BorderThickness="1"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+              >
+          <TabControl.Resources>
+            <Style TargetType="{x:Type Button}">
+              <Setter Property="Padding" Value="4,2,4,2"/>
+            </Style>
+          </TabControl.Resources>
+
+          <TabItem Header="Text">
+            <DockPanel LastChildFill="True">
+            <StackPanel Orientation="Horizontal"
+                        DockPanel.Dock="Bottom"
+                HorizontalAlignment="Stretch">
+              <Button
+                     TabIndex="2"
+                x:Name="ButtonEditText"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                      Margin="0,4,0,0"
+                      Content="Edit"
+                      
+                Click="OnClick_ButtonEditText"/>
+              <Button
+                     TabIndex="4"
+                x:Name="ButtonClearText"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                      Margin="4,4,0,0"
+                      Content="Clear"
+                      
+                Click="OnClick_ButtonClearText"/>
+            </StackPanel>
+
+              <UI:TextBoxReadOnlyCaretVisible
+                x:Name="DescriptionTextBox"
+                TextReadOnly="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Text.Text, Mode=OneWay}"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                Focusable="True"/>
+            </DockPanel>
+          </TabItem>
+          <TabItem Header="Image">
+            <DockPanel LastChildFill="True">
+              
+              <!-- TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.OriginalRelativePath, Mode=OneWay}"
+                         DockPanel.Dock="Top"
+                         HorizontalAlignment="Center"/>
+              <TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
+                         DockPanel.Dock="Bottom"/ -->
+
+              <StackPanel Orientation="Horizontal"
+                          DockPanel.Dock="Bottom"
+                  HorizontalAlignment="Stretch">
+                <Button
+                       TabIndex="2"
+                  x:Name="ButtonOpenImage"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                        Margin="0,4,0,0"
+                        Content="Open..."
+                        
+                  Click="OnClick_ButtonOpenImage"/>
+                <Button
+                       TabIndex="4"
+                  x:Name="ButtonClearImage"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                        Margin="4,4,0,0"
+                        Content="Clear"
+                        
+                  Click="OnClick_ButtonClearImage"/>
+              </StackPanel>
+              <Image
+                x:Name="DescriptionImage"
+                HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                          Stretch = "Uniform"
+                          StretchDirection="DownOnly"
+                ToolTip="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
+                Source="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
+              />
+            </DockPanel>
+          </TabItem>
+          <TabItem Header="Attributes">
+
+            <DockPanel LastChildFill="True">
+
+              <StackPanel Orientation="Horizontal"
+                          DockPanel.Dock="Bottom"
+                  HorizontalAlignment="Stretch">
+                <Button
+                       TabIndex="2"
+                  x:Name="ButtonAddMetadataAltContent"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                        Margin="0,4,0,0"
+                        Content="Add"
+
+                  Click="OnClick_ButtonAddMetadataAltContent"/>
+                <Button
+                       TabIndex="3"
+                  x:Name="ButtonEditMetadataAltContent"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                        Margin="4,4,4,0"
+                        Content="Edit"
+
+                  Click="OnClick_ButtonEditMetadataAltContent"/>
+                <Button
+                       TabIndex="4"
+                  x:Name="ButtonRemoveMetadataAltContent"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                        Margin="0,4,0,0"
+                        Content="Remove"
+
+                  Click="OnClick_ButtonRemoveMetadataAltContent"/>
+              </StackPanel>
+
+              <UI:SortableListView2
+                       TabIndex="1"
+                       ItemsSource="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Metadatas.ContentsAs_Enumerable, Mode=OneWay}"
+                       x:Name="MetadatasAltContentListView"
+                   
+        ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+        ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+        ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
+               ScrollViewer.CanContentScroll="True"
+                 VirtualizingStackPanel.IsVirtualizing="False"
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+
+                  SelectionMode="Single"
+
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+      AlternationCount="2"
+    >
+                <ListView.View>
+                  <GridView AllowsColumnReorder="false">
+
+                    <UI:SortableGridViewColumn Header="Name"
+                                    SortPropertyName="NameContentAttribute.Name"
+                                    DisplayMemberBinding="{Binding NameContentAttribute.Name, Mode=OneWay}"
+                                                 Width="150"/>
+
+                    <UI:SortableGridViewColumn Header="Value"
+                                    SortPropertyName="NameContentAttribute.Value"
+                                    DisplayMemberBinding="{Binding NameContentAttribute.Value, Mode=OneWay}"
+                                                 Width="150"/>
+
+                  </GridView>
+                </ListView.View>
+
+                <ListView.Resources>
+
+                  <ToolTip x:Key="toolTip_MetadataAltContentListItem"
+                     DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+                    <TextBlock>
+                      <TextBlock.Text>
+                        <MultiBinding StringFormat="Attribute name = {0}, value = {1}"  Mode="OneWay">
+                          <Binding Path="DataContext.NameContentAttribute.Name"   Mode="OneWay" />
+                          <Binding Path="DataContext.NameContentAttribute.Value"   Mode="OneWay"/>
+                        </MultiBinding>
+                      </TextBlock.Text>
+                    </TextBlock>
+                  </ToolTip>
+
+                </ListView.Resources>
+                <ListView.ItemContainerStyle>
+
+                  <Style TargetType="{x:Type ListViewItem}">
+
+                    <Style.Setters>
+                      <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItemMetadataAltContent" />
+                      <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItemMetadataAltContent" />
+
+                      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+                      <Setter Property="AutomationProperties.Name">
+                        <Setter.Value>
+                          <MultiBinding StringFormat="Attribute name = {0}, value = {1}"  Mode="OneWay">
+                            <Binding Path="NameContentAttribute.Name"   Mode="OneWay" />
+                            <Binding Path="NameContentAttribute.Value"   Mode="OneWay"/>
+                          </MultiBinding>
+                        </Setter.Value>
+                      </Setter>
+
+                      <Setter Property="ToolTipService.ToolTip" Value="{StaticResource toolTip_MetadataAltContentListItem}"/>
+
+                    </Style.Setters>
+
+                    <Style.Triggers>
+                      <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                          <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+                          <Condition Property="IsSelected" Value="False"/>
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                      </MultiTrigger>
+                    </Style.Triggers>
+                  </Style>
+
+                </ListView.ItemContainerStyle>
+              </UI:SortableListView2>
+
+            </DockPanel>
+
+          </TabItem>
+        </TabControl>
+      </Grid>
 
     </TabItem>
   </TabControl>

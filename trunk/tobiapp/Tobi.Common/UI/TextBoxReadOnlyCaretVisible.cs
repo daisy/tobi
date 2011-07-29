@@ -87,7 +87,7 @@ namespace Tobi.Common.UI
             DependencyProperty.Register(@"TextReadOnly",
             typeof(string),
             typeof(TextBoxReadOnlyCaretVisible),
-            new PropertyMetadata("empty text",
+            new PropertyMetadata("",
                 OnTextReadOnlyChanged, OnTextReadOnlyCoerce));
 
         public string TextReadOnly

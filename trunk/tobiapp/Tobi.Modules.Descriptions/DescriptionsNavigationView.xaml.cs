@@ -86,19 +86,27 @@ namespace Tobi.Plugin.Descriptions
         }
 
 
+
+        private void OnClick_Button(object sender, RoutedEventArgs e)
+        {
+            handleListCurrentSelection();
+        }
+
         private void handleListCurrentSelection()
         {
-            DescribedTreeNode mnode = ListView.SelectedItem as DescribedTreeNode;
-            if (mnode == null) return;
-            TreeNode treeNode = mnode.TreeNode;
+            if (ListView.SelectedIndex >= 0)
+            {
+                DescribedTreeNode mnode = ListView.SelectedItem as DescribedTreeNode;
+                if (mnode == null) return;
+                TreeNode treeNode = mnode.TreeNode;
 
-            if (treeNode == null) return;
+                if (treeNode == null) return;
 
-            _ignoreTreeNodeSelectedEvent = true;
+                _ignoreTreeNodeSelectedEvent = true;
 
-            m_UrakawaSession.PerformTreeNodeSelection(treeNode);
-            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
-
+                m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+                //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+            }
             m_DescriptionsView.Popup();
         }
 
