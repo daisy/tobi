@@ -324,7 +324,13 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            bool isWav = Path.GetExtension(filePath).ToLower() == ".wav";
+            string ext = Path.GetExtension(filePath);
+            if (string.IsNullOrEmpty(ext))
+            {
+                return;
+            }
+
+            bool isWav = ext.ToLower() == ".wav";
 
             AudioLibPCMFormat wavFormat = (pcmInfo != null ? pcmInfo.Copy().Data : null);
             if (isWav && wavFormat == null)

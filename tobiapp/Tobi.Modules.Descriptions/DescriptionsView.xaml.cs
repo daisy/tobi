@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Configuration;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Win32;
 using Tobi.Common;
-using Tobi.Common.MVVM;
-using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa.core;
 using urakawa.metadata;
@@ -85,6 +78,16 @@ namespace Tobi.Plugin.Descriptions
                 m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
             }
 
+            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp != null && altProp.IsEmpty)
+            {
+                node.RemoveProperty(altProp);
+            }
+
             GC.Collect();
             GC.WaitForFullGCComplete();
         }
@@ -95,13 +98,16 @@ namespace Tobi.Plugin.Descriptions
             if (win is PopupModalWindow)
                 OwnerWindow = (PopupModalWindow)win;
 
-            FocusHelper.Focus(ButtonAddMetadata);
+            FocusHelper.Focus(MetadatasListView);
 
             m_ViewModel.OnPanelLoaded();
         }
 
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
         {
+            BindingExpression be = DescriptionImage.GetBindingExpression(Image.SourceProperty);
+            if (be != null) be.UpdateTarget();
+
             if (m_OwnerWindow != null)
             {
 
@@ -213,6 +219,23 @@ namespace Tobi.Plugin.Descriptions
             return false;
         }
 
+        private void OnKeyDown_ListItemMetadataAltContent(object sender, KeyEventArgs e)
+        {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            // We capture only the RETURN KeyUp bubbling-up from UI descendants
+            if (key != Key.Return) // || !(sender is ListViewItem))
+            {
+                return;
+            }
+
+            OnMouseDoubleClick_ListItemMetadataAltContent(null, null);
+
+            // We void the effect of the RETURN key
+            // (which would normally close the parent dialog window by activating the default button: CANCEL)
+            e.Handled = true;
+        }
+
         private void OnKeyDown_ListItemMetadata(object sender, KeyEventArgs e)
         {
             var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
@@ -247,6 +270,11 @@ namespace Tobi.Plugin.Descriptions
             e.Handled = true;
         }
 
+        private void OnClick_ButtonEditMetadataAltContent(object sender, RoutedEventArgs e)
+        {
+            if (MetadatasListView.SelectedIndex >= 0)
+                OnMouseDoubleClick_ListItemMetadataAltContent(null, null);
+        }
         private void OnClick_ButtonEditMetadata(object sender, RoutedEventArgs e)
         {
             if (MetadatasListView.SelectedIndex >= 0)
@@ -258,15 +286,48 @@ namespace Tobi.Plugin.Descriptions
                 OnMouseDoubleClick_ListItemMetadataAttr(null, null);
         }
 
+        private void OnMouseDoubleClick_ListItemMetadataAltContent(object sender, MouseButtonEventArgs e)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
+            if (DescriptionsListView.SelectedIndex < 0) return;
+            AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+            if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
+
+            if (MetadatasAltContentListView.SelectedIndex < 0) return;
+            Metadata md = (Metadata)MetadatasAltContentListView.SelectedItem;
+            string newName, newValue;
+            bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue);
+            if (ok)
+            {
+                m_ViewModel.SetMetadataAttribute(null, altContent, md, md.NameContentAttribute, newName, newValue);
+
+                MetadatasAltContentListView.Items.Refresh();
+            }
+        }
+
         private void OnMouseDoubleClick_ListItemMetadata(object sender, MouseButtonEventArgs e)
         {
+            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
             if (MetadatasListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
             string newName, newValue;
             bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue);
             if (ok)
             {
-                m_ViewModel.SetMetadataAttribute(md, md.NameContentAttribute, newName, newValue);
+                m_ViewModel.SetMetadataAttribute(altProp, null, md, md.NameContentAttribute, newName, newValue);
 
                 MetadatasListView.Items.Refresh();
             }
@@ -274,6 +335,13 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnMouseDoubleClick_ListItemMetadataAttr(object sender, MouseButtonEventArgs e)
         {
+            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
             if (MetadatasListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
             MetadataAttribute mdAttr = (MetadataAttribute)MetadataAttributesListView.SelectedItem;
@@ -281,23 +349,47 @@ namespace Tobi.Plugin.Descriptions
             bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
             if (ok)
             {
-                m_ViewModel.SetMetadataAttribute(md, mdAttr, newName, newValue);
+                m_ViewModel.SetMetadataAttribute(altProp, null, md, mdAttr, newName, newValue);
 
                 MetadataAttributesListView.Items.Refresh();
             }
         }
 
-
-        private void OnClick_ButtonRemoveMetadata(object sender, RoutedEventArgs e)
+        private void OnClick_ButtonRemoveMetadataAltContent(object sender, RoutedEventArgs e)
         {
-            if (MetadatasListView.SelectedIndex<0) return;
-            m_ViewModel.RemoveMetadata((Metadata) MetadatasListView.SelectedItem);
-            MetadatasListView.Items.Refresh();
-            MetadatasListView.SelectedIndex = 0;
+            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
+            if (DescriptionsListView.SelectedIndex < 0) return;
+            AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+            if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
+
+            if (MetadatasAltContentListView.SelectedIndex < 0) return;
+            m_ViewModel.RemoveMetadata(null, altContent, (Metadata)MetadatasAltContentListView.SelectedItem);
+            MetadatasAltContentListView.Items.Refresh();
+            MetadatasAltContentListView.SelectedIndex = 0;
+            FocusHelper.FocusBeginInvoke(MetadatasAltContentListView);
         }
 
-        private void OnClick_ButtonAddMetadata(object sender, RoutedEventArgs e)
+        private void OnClick_ButtonAddMetadataAltContent(object sender, RoutedEventArgs e)
         {
+            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
+            if (DescriptionsListView.SelectedIndex < 0) return;
+            AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+            if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
+
             var mdAttr = new MetadataAttribute();
             mdAttr.Name = "[edit text]";
             mdAttr.Value = "[edit text]";
@@ -305,9 +397,59 @@ namespace Tobi.Plugin.Descriptions
             bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
             if (ok)
             {
-                m_ViewModel.AddMetadata(newName, newValue);
+                m_ViewModel.AddMetadata(null, altContent, newName, newValue);
+                MetadatasAltContentListView.Items.Refresh();
+                MetadatasAltContentListView.SelectedIndex = MetadatasAltContentListView.Items.Count - 1;
+                FocusHelper.FocusBeginInvoke(MetadatasAltContentListView);
+            }
+        }
+
+        private void OnClick_ButtonRemoveMetadata(object sender, RoutedEventArgs e)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
+            //if (DescriptionsListView.SelectedIndex < 0) return;
+            //AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+            //if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
+
+            if (MetadatasListView.SelectedIndex < 0) return;
+            m_ViewModel.RemoveMetadata(altProp, null, (Metadata)MetadatasListView.SelectedItem);
+            MetadatasListView.Items.Refresh();
+            MetadatasListView.SelectedIndex = 0;
+            FocusHelper.FocusBeginInvoke(MetadatasListView);
+        }
+
+        private void OnClick_ButtonAddMetadata(object sender, RoutedEventArgs e)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetOrCreateAlternateContentProperty();
+            //if (altProp == null) return;
+
+            //if (DescriptionsListView.SelectedIndex < 0) return;
+            //AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+            //if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
+
+            var mdAttr = new MetadataAttribute();
+            mdAttr.Name = "[edit text]";
+            mdAttr.Value = "[edit text]";
+            string newName, newValue;
+            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
+            if (ok)
+            {
+                m_ViewModel.AddMetadata(altProp, null, newName, newValue);
                 MetadatasListView.Items.Refresh();
                 MetadatasListView.SelectedIndex = MetadatasListView.Items.Count - 1;
+                FocusHelper.FocusBeginInvoke(MetadatasListView);
             }
         }
 
@@ -319,6 +461,7 @@ namespace Tobi.Plugin.Descriptions
             m_ViewModel.RemoveMetadataAttr(md, (MetadataAttribute)MetadataAttributesListView.SelectedItem);
             MetadataAttributesListView.Items.Refresh();
             MetadataAttributesListView.SelectedIndex = 0;
+            FocusHelper.FocusBeginInvoke(MetadataAttributesListView);
         }
 
         private void OnClick_ButtonAddMetadataAttr(object sender, RoutedEventArgs e)
@@ -335,8 +478,164 @@ namespace Tobi.Plugin.Descriptions
                 m_ViewModel.AddMetadataAttr(md, newName, newValue);
                 MetadataAttributesListView.Items.Refresh();
                 MetadataAttributesListView.SelectedIndex = MetadataAttributesListView.Items.Count - 1;
+                FocusHelper.FocusBeginInvoke(MetadataAttributesListView);
             }
         }
+
+
+        private void OnClick_ButtonAddDescription(object sender, RoutedEventArgs e)
+        {
+            string txt = showTextEditorPopupDialog("");
+            if (string.IsNullOrEmpty(txt)) txt = null;
+
+            m_ViewModel.AddDescription(txt);
+
+            DescriptionsListView.Items.Refresh();
+            DescriptionsListView.SelectedIndex = DescriptionsListView.Items.Count - 1;
+            FocusHelper.FocusBeginInvoke(DescriptionsListView);
+
+            BindingExpression be = DescriptionTextBox.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
+            if (be != null) be.UpdateTarget();
+        }
+
+        private void OnClick_ButtonRemoveDescription(object sender, RoutedEventArgs e)
+        {
+            if (DescriptionsListView.SelectedIndex < 0) return;
+            AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+            m_ViewModel.RemoveDescription(altContent);
+
+            DescriptionsListView.Items.Refresh();
+            DescriptionsListView.SelectedIndex = 0;
+            FocusHelper.FocusBeginInvoke(DescriptionsListView);
+        }
+
+        private void OnClick_ButtonEditText(object sender, RoutedEventArgs e)
+        {
+            if (DescriptionsListView.SelectedIndex < 0) return;
+            AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+            string oldTxt = altContent.Text != null ? altContent.Text.Text : "";
+            string txt = showTextEditorPopupDialog(oldTxt);
+
+            if (string.IsNullOrEmpty(txt) || txt == oldTxt) return;
+
+            m_ViewModel.SetDescriptionText(altContent, txt);
+
+            DescriptionsListView.Items.Refresh();
+
+            BindingExpression be = DescriptionTextBox.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
+            if (be != null) be.UpdateTarget();
+        }
+
+        private void OnClick_ButtonClearText(object sender, RoutedEventArgs e)
+        {
+            if (DescriptionsListView.SelectedIndex < 0) return;
+            AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+            m_ViewModel.SetDescriptionText(altContent, null);
+
+            DescriptionsListView.Items.Refresh();
+
+            BindingExpression be = DescriptionTextBox.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
+            if (be != null) be.UpdateTarget();
+        }
+
+        private void OnClick_ButtonOpenImage(object sender, RoutedEventArgs e)
+        {
+            string fullPath = "";
+            m_Logger.Log("DescriptionImage.OpenFileDialog", Category.Debug, Priority.Medium);
+
+            var dlg = new OpenFileDialog
+            {
+                FileName = "",
+                DefaultExt = ".jpg",
+                Filter = @"JPEG, PNG, BMP (*.jpeg, *.jpg, *.png, *.bmp)|*.jpeg;*.jpg;*.png;*.bmp",
+                CheckFileExists = false,
+                CheckPathExists = false,
+                AddExtension = true,
+                DereferenceLinks = true,
+                Title = "Tobi: " + "Open image"
+            };
+
+            bool? result = false;
+
+            m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
+            if (result == false)
+            {
+                return;
+            }
+
+            fullPath = dlg.FileName;
+
+            if (string.IsNullOrEmpty(fullPath)) return;
+
+            if (DescriptionsListView.SelectedIndex < 0) return;
+            AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+            m_ViewModel.SetDescriptionImage(altContent, fullPath);
+
+            DescriptionsListView.Items.Refresh();
+
+            BindingExpression be = DescriptionImage.GetBindingExpression(Image.SourceProperty);
+            if (be != null) be.UpdateTarget();
+        }
+
+        private void OnClick_ButtonClearImage(object sender, RoutedEventArgs e)
+        {
+            if (DescriptionsListView.SelectedIndex < 0) return;
+            AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+            m_ViewModel.SetDescriptionImage(altContent, null);
+
+            DescriptionsListView.Items.Refresh();
+
+            BindingExpression be = DescriptionImage.GetBindingExpression(Image.SourceProperty);
+            if (be != null) be.UpdateTarget();
+        }
+
+        private string showTextEditorPopupDialog(string text)
+        {
+            m_Logger.Log("showTextEditorPopupDialog", Category.Debug, Priority.Medium);
+
+            var editBox = new TextBox
+            {
+                Text = text,
+                TextWrapping = TextWrapping.WrapWithOverflow,
+                AcceptsReturn = true
+            };
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   "Description text",
+                                                   new ScrollViewer { Content = editBox },
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 300, 160, null, 40);
+
+            editBox.Loaded += new RoutedEventHandler((sender, ev) =>
+            {
+                editBox.SelectAll();
+                FocusHelper.FocusBeginInvoke(editBox);
+            });
+
+            windowPopup.ShowModal();
+
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                if (string.IsNullOrEmpty(editBox.Text))
+                {
+                    return null;
+                }
+                return editBox.Text;
+            }
+
+            return null;
+        }
+
+
+
         ~DescriptionsView()
         {
 #if DEBUG

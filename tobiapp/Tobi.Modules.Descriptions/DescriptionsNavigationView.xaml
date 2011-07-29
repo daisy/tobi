@@ -63,7 +63,11 @@
 
     </DockPanel>
   </Border>
-
+  <Button 
+           DockPanel.Dock="Bottom"
+           Content="Add / edit"
+           Click="OnClick_Button"
+  />
   <pres:ScrollViewer
       VerticalScrollBarVisibility="Visible"
       HorizontalScrollBarVisibility="Auto"
