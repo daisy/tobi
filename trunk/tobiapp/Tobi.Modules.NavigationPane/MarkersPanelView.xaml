@@ -184,6 +184,7 @@
         SelectionChanged="onMarkersSelected"
         IsTabStop="True"
         Focusable="True"
+        TabIndex="1"
         AutomationProperties.Name="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Marks}"
         search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}">
       <ListView.ItemTemplate>

@@ -400,6 +400,13 @@ namespace Tobi.Plugin.Descriptions
         {
             Tuple<TreeNode, TreeNode> oldTreeNodeSelection = oldAndNewTreeNodeSelection.Item1;
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
+            //Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
+
+            foreach (var describedTreeNode in DescriptionsNavigator_DescribedTreeNodes)
+            {
+                describedTreeNode.IsSelected = describedTreeNode.TreeNode == node;
+            }
 
             RaisePropertyChanged(() => SelectedTreeNode);
         }

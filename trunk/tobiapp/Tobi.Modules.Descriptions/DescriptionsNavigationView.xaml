@@ -67,6 +67,7 @@
            DockPanel.Dock="Bottom"
            Content="Add / edit"
            Click="OnClick_Button"
+           Margin="4,2,4,2"
   />
   <pres:ScrollViewer
       VerticalScrollBarVisibility="Visible"
@@ -83,6 +84,7 @@
         
         IsTabStop="True"
         Focusable="True"
+        TabIndex="1"
         AutomationProperties.Name="Descriptions"
         search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}">
       <ListView.ItemTemplate>

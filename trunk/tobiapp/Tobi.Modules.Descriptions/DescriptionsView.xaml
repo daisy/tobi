@@ -177,16 +177,18 @@
         <DockPanel
             Grid.Column="2" Grid.Row="0"
           LastChildFill="True">
-          <TextBlock
-            Focusable="False"
-                   HorizontalAlignment="Left" Margin="4"
-                   DockPanel.Dock="Top">Additional metadata attributes:</TextBlock>
-
           <StackPanel Orientation="Horizontal"
                       DockPanel.Dock="Bottom"
               HorizontalAlignment="Stretch">
+            <TextBlock
+                   
+              Focusable="True"
+              VerticalAlignment="Center"
+                     HorizontalAlignment="Left"
+              Margin="0,4,4,0"
+                     DockPanel.Dock="Top">Additional metadata attributes:</TextBlock>
             <Button
-                   TabIndex="13"
+                   
               x:Name="ButtonAddMetadataAttr"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
@@ -195,7 +197,7 @@
                     
               Click="OnClick_ButtonAddMetadataAttr"/>
             <Button
-                   TabIndex="14"
+                   
               x:Name="ButtonEditMetadataAttr"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
@@ -204,7 +206,7 @@
                     
               Click="OnClick_ButtonEditMetadataAttr"/>
             <Button
-                   TabIndex="15"
+                   
               x:Name="ButtonRemoveMetadataAttr"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
@@ -495,7 +497,7 @@ AlternationCount="2"
                       
                 Click="OnClick_ButtonEditText"/>
               <Button
-                     TabIndex="4"
+                     TabIndex="3"
                 x:Name="ButtonClearText"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Stretch"
@@ -506,6 +508,7 @@ AlternationCount="2"
             </StackPanel>
 
               <UI:TextBoxReadOnlyCaretVisible
+                       TabIndex="1"
                 x:Name="DescriptionTextBox"
                 TextReadOnly="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Text.Text, Mode=OneWay}"
                        HorizontalAlignment="Stretch"
@@ -535,7 +538,7 @@ AlternationCount="2"
                         
                   Click="OnClick_ButtonOpenImage"/>
                 <Button
-                       TabIndex="4"
+                       TabIndex="3"
                   x:Name="ButtonClearImage"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -545,6 +548,7 @@ AlternationCount="2"
                   Click="OnClick_ButtonClearImage"/>
               </StackPanel>
               <Image
+                Focusable="True"
                 x:Name="DescriptionImage"
                 HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
@@ -552,7 +556,22 @@ AlternationCount="2"
                           StretchDirection="DownOnly"
                 ToolTip="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
                 Source="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
-              />
+              >
+                <Image.Style>
+                  <Style TargetType="{x:Type Image}">
+                    <Style.Setters>
+                    <Setter Property="AutomationProperties.Name">
+                      <Setter.Value>
+                        <MultiBinding StringFormat="Image full path: {0}"  Mode="OneWay">
+                          <Binding ElementName="DescriptionsListView" Path="SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath"   Mode="OneWay" />
+                          <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
+                        </MultiBinding>
+                      </Setter.Value>
+                    </Setter>
+                  </Style.Setters>
+                    </Style>
+                </Image.Style>
+              </Image>
             </DockPanel>
           </TabItem>
           <TabItem Header="Attributes">
