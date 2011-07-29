@@ -187,11 +187,11 @@ namespace Tobi.Plugin.Descriptions
 
 #endif //DEBUG
 
-            //m_SelectedMedatadata = -1;
+            m_SelectedMedatadata = null;
+            m_SelectedAlternateContent = null;
             RaisePropertyChanged(() => Metadatas);
-            //RaisePropertyChanged(() => MetadataAttributes);
             RaisePropertyChanged(() => Descriptions);
-            
+
         }
 
 
@@ -213,6 +213,7 @@ namespace Tobi.Plugin.Descriptions
             node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => HasDescriptionMetadata);
         }
 
         public void AddMetadata(AlternateContentProperty altProp, AlternateContent altContent,
@@ -239,6 +240,7 @@ namespace Tobi.Plugin.Descriptions
             node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => HasDescriptionMetadata);
         }
 
         public void RemoveMetadataAttr(Metadata md, MetadataAttribute mdAttr)
@@ -255,7 +257,7 @@ namespace Tobi.Plugin.Descriptions
             //AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(altProp, null, md);
             //node.Presentation.UndoRedoManager.Execute(cmd);
 
-            //RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => HasMetadataAttrs);
         }
 
         public void AddMetadataAttr(Metadata md, string newName, string newValue)
@@ -275,7 +277,7 @@ namespace Tobi.Plugin.Descriptions
             //AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta);
             //node.Presentation.UndoRedoManager.Execute(cmd);
 
-            //RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => HasMetadataAttrs);
         }
 
         public void AddDescription(string txt)
@@ -349,6 +351,8 @@ namespace Tobi.Plugin.Descriptions
                     node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent, txt2);
                 node.Presentation.UndoRedoManager.Execute(cmd22);
             }
+
+            RaisePropertyChanged(() => HasDescriptionText);
         }
 
         public void SetDescriptionImage(AlternateContent altContent, string fullPath)
@@ -410,6 +414,8 @@ namespace Tobi.Plugin.Descriptions
                     node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent, img1);
                 node.Presentation.UndoRedoManager.Execute(cmd22);
             }
+
+            RaisePropertyChanged(() => HasDescriptionImage);
         }
 
 
@@ -493,9 +499,10 @@ namespace Tobi.Plugin.Descriptions
             m_Logger.Log("DescriptionsViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""),
                 Category.Debug, Priority.Medium);
 
-            //m_SelectedMedatadata = -1;
-            //RaisePropertyChanged(() => Metadatas);
-            //RaisePropertyChanged(() => MetadataAttributes);
+            m_SelectedMedatadata = null;
+            m_SelectedAlternateContent = null;
+            RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => Descriptions);
 
             if (project == null) return;
 
@@ -542,12 +549,6 @@ namespace Tobi.Plugin.Descriptions
             //RaisePropertyChanged(() => Metadatas);
         }
 
-        //private int m_SelectedMedatadata = -1;
-        //public void SetSelectedMetadata(int selectedIndex)
-        //{
-        //    m_SelectedMedatadata = selectedIndex;
-        //    RaisePropertyChanged(() => MetadataAttributes);
-        //}
         //public IEnumerable<MetadataAttribute> MetadataAttributes
         //{
         //    get
@@ -566,6 +567,132 @@ namespace Tobi.Plugin.Descriptions
         //        return altProp.Metadatas.Get(m_SelectedMedatadata).OtherAttributes.ContentsAs_Enumerable;
         //    }
         //}
+        private Metadata m_SelectedMedatadata;
+        public void SetSelectedMetadata(Metadata md)
+        {
+            m_SelectedMedatadata = md;
+            RaisePropertyChanged(() => HasMetadataAttrs);
+        }
+        private AlternateContent m_SelectedAlternateContent;
+        public void SetSelectedAlternateContent(AlternateContent altContent)
+        {
+            m_SelectedAlternateContent = altContent;
+            RaisePropertyChanged(() => HasDescriptionMetadata);
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionMetadata
+        {
+            get
+            {
+                if (m_UrakawaSession.DocumentProject == null) return false;
+
+                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                TreeNode node = selection.Item2 ?? selection.Item1;
+                if (node == null) return false;
+
+                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                if (altProp == null) return false;
+
+                if (altProp.AlternateContents.Count <= 0) return false;
+
+                if (m_SelectedAlternateContent == null) return false;
+
+                if (altProp.AlternateContents.IndexOf(m_SelectedAlternateContent) < 0) return false;
+
+                return m_SelectedAlternateContent.Metadatas.Count > 0;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionImage
+        {
+            get
+            {
+                if (m_UrakawaSession.DocumentProject == null) return false;
+
+                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                TreeNode node = selection.Item2 ?? selection.Item1;
+                if (node == null) return false;
+
+                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                if (altProp == null) return false;
+
+                if (altProp.AlternateContents.Count <= 0) return false;
+
+                if (m_SelectedAlternateContent == null) return false;
+
+                if (altProp.AlternateContents.IndexOf(m_SelectedAlternateContent) < 0) return false;
+
+                return m_SelectedAlternateContent.Image != null;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionText
+        {
+            get
+            {
+                if (m_UrakawaSession.DocumentProject == null) return false;
+
+                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                TreeNode node = selection.Item2 ?? selection.Item1;
+                if (node == null) return false;
+
+                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                if (altProp == null) return false;
+
+                if (altProp.AlternateContents.Count <= 0) return false;
+
+                if (m_SelectedAlternateContent == null) return false;
+
+                if (altProp.AlternateContents.IndexOf(m_SelectedAlternateContent) < 0) return false;
+
+                return m_SelectedAlternateContent.Text != null;
+            }
+        }
+
+        [NotifyDependsOn("Metadatas")]
+        public bool HasMetadataAttrs
+        {
+            get
+            {
+                if (m_UrakawaSession.DocumentProject == null) return false;
+
+                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                TreeNode node = selection.Item2 ?? selection.Item1;
+                if (node == null) return false;
+
+                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                if (altProp == null) return false;
+
+                if (altProp.Metadatas.Count <= 0) return false;
+
+                if (m_SelectedMedatadata == null) return false;
+
+                if (altProp.Metadatas.IndexOf(m_SelectedMedatadata) < 0) return false;
+
+                return m_SelectedMedatadata.OtherAttributes.Count > 0;
+            }
+        }
+
+        [NotifyDependsOn("Metadatas")]
+        public bool HasMetadata
+        {
+            get
+            {
+                if (m_UrakawaSession.DocumentProject == null) return false;
+
+                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                TreeNode node = selection.Item2 ?? selection.Item1;
+                if (node == null) return false;
+
+                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                if (altProp == null) return false;
+
+                return altProp.Metadatas.Count > 0;
+            }
+        }
 
         public IEnumerable<Metadata> Metadatas //ObservableCollection
         {
@@ -582,6 +709,25 @@ namespace Tobi.Plugin.Descriptions
 
                 //return new ObservableCollection<Metadata>(altProp.Metadatas.ContentsAs_Enumerable);
                 return altProp.Metadatas.ContentsAs_Enumerable;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptions
+        {
+            get
+            {
+                if (m_UrakawaSession.DocumentProject == null) return false;
+
+                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                TreeNode node = selection.Item2 ?? selection.Item1;
+                if (node == null) return false;
+
+                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                if (altProp == null) return false;
+
+                //return new ObservableCollection<Metadata>(altProp.Metadatas.ContentsAs_Enumerable);
+                return altProp.AlternateContents.Count > 0;
             }
         }
 
