@@ -669,7 +669,11 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnSelectionChanged_MetadataList(object sender, SelectionChangedEventArgs e)
         {
-            //m_ViewModel.SetSelectedMetadata(MetadatasListBox.SelectedIndex);
+            m_ViewModel.SetSelectedMetadata((Metadata)MetadatasListView.SelectedItem);
+        }
+        private void OnSelectionChanged_DescriptionsList(object sender, SelectionChangedEventArgs e)
+        {
+            m_ViewModel.SetSelectedAlternateContent((AlternateContent)DescriptionsListView.SelectedItem);
         }
     }
 }
