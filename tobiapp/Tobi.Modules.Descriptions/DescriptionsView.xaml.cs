@@ -98,7 +98,11 @@ namespace Tobi.Plugin.Descriptions
             if (win is PopupModalWindow)
                 OwnerWindow = (PopupModalWindow)win;
 
-            FocusHelper.Focus(MetadatasListView);
+            if (MetadatasListView.IsVisible) FocusHelper.Focus(MetadatasListView);
+            OnSelectionChanged_MetadataList(null, null);
+
+            if (DescriptionsListView.IsVisible) FocusHelper.Focus(DescriptionsListView);
+            OnSelectionChanged_DescriptionsList(null, null);
 
             m_ViewModel.OnPanelLoaded();
         }
