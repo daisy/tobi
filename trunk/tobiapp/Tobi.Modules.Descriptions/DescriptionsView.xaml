@@ -207,7 +207,7 @@ IsEnabled="{Binding HasMetadata}"
               HorizontalAlignment="Stretch"
                     Margin="4,4,4,0"
                     Content="Edit"
-                    IsEnabled="{Binding HasMetadataAttr}"
+                    IsEnabled="{Binding HasMetadataAttrs}"
               Click="OnClick_ButtonEditMetadataAttr"/>
             <Button
                    
@@ -216,7 +216,7 @@ IsEnabled="{Binding HasMetadata}"
               HorizontalAlignment="Stretch"
                     Margin="0,4,0,0"
                     Content="Remove"
-                    IsEnabled="{Binding HasMetadataAttr}"
+                    IsEnabled="{Binding HasMetadataAttrs}"
               Click="OnClick_ButtonRemoveMetadataAttr"/>
           </StackPanel>
 

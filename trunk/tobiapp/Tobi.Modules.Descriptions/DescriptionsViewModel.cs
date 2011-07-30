@@ -187,11 +187,10 @@ namespace Tobi.Plugin.Descriptions
 
 #endif //DEBUG
 
-            m_SelectedMedatadata = null;
-            m_SelectedAlternateContent = null;
+            //m_SelectedMedatadata = null;
+            //m_SelectedAlternateContent = null;
             RaisePropertyChanged(() => Metadatas);
             RaisePropertyChanged(() => Descriptions);
-
         }
 
 
@@ -213,7 +212,6 @@ namespace Tobi.Plugin.Descriptions
             node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
-            RaisePropertyChanged(() => HasDescriptionMetadata);
         }
 
         public void AddMetadata(AlternateContentProperty altProp, AlternateContent altContent,
@@ -240,7 +238,6 @@ namespace Tobi.Plugin.Descriptions
             node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
-            RaisePropertyChanged(() => HasDescriptionMetadata);
         }
 
         public void RemoveMetadataAttr(Metadata md, MetadataAttribute mdAttr)
@@ -257,7 +254,7 @@ namespace Tobi.Plugin.Descriptions
             //AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(altProp, null, md);
             //node.Presentation.UndoRedoManager.Execute(cmd);
 
-            RaisePropertyChanged(() => HasMetadataAttrs);
+            RaisePropertyChanged(() => Metadatas);
         }
 
         public void AddMetadataAttr(Metadata md, string newName, string newValue)
@@ -277,7 +274,7 @@ namespace Tobi.Plugin.Descriptions
             //AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta);
             //node.Presentation.UndoRedoManager.Execute(cmd);
 
-            RaisePropertyChanged(() => HasMetadataAttrs);
+            RaisePropertyChanged(() => Metadatas);
         }
 
         public void AddDescription(string txt)
@@ -352,7 +349,7 @@ namespace Tobi.Plugin.Descriptions
                 node.Presentation.UndoRedoManager.Execute(cmd22);
             }
 
-            RaisePropertyChanged(() => HasDescriptionText);
+            RaisePropertyChanged(() => Descriptions);
         }
 
         public void SetDescriptionImage(AlternateContent altContent, string fullPath)
@@ -415,7 +412,7 @@ namespace Tobi.Plugin.Descriptions
                 node.Presentation.UndoRedoManager.Execute(cmd22);
             }
 
-            RaisePropertyChanged(() => HasDescriptionImage);
+            RaisePropertyChanged(() => Descriptions);
         }
 
 
@@ -450,7 +447,7 @@ namespace Tobi.Plugin.Descriptions
                 node.Presentation.UndoRedoManager.Execute(cmd2);
             }
 
-            //RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => Metadatas);
         }
 
         private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
@@ -462,26 +459,9 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
             if (node == null) return;
 
-            //m_SelectedMedatadata = -1;
-            //RaisePropertyChanged(() => Metadatas);
-            //RaisePropertyChanged(() => MetadataAttributes);
+            RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => Descriptions);
         }
-
-
-        //public ObservableCollection<Description> Descriptions { get; set; }
-
-        //private void reset()
-        //{
-        //    Descriptions.Clear();
-
-        //    foreach (var description in thing.Descriptions)
-        //    {
-        //        Descriptions.Add(validationItem);
-        //    }
-
-        //    RaisePropertyChanged(() => Descriptions);
-        //}
-
 
 
         private void OnProjectUnLoaded(Project project)
@@ -499,8 +479,6 @@ namespace Tobi.Plugin.Descriptions
             m_Logger.Log("DescriptionsViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""),
                 Category.Debug, Priority.Medium);
 
-            m_SelectedMedatadata = null;
-            m_SelectedAlternateContent = null;
             RaisePropertyChanged(() => Metadatas);
             RaisePropertyChanged(() => Descriptions);
 
@@ -571,13 +549,13 @@ namespace Tobi.Plugin.Descriptions
         public void SetSelectedMetadata(Metadata md)
         {
             m_SelectedMedatadata = md;
-            RaisePropertyChanged(() => HasMetadataAttrs);
+            RaisePropertyChanged(() => Metadatas);
         }
         private AlternateContent m_SelectedAlternateContent;
         public void SetSelectedAlternateContent(AlternateContent altContent)
         {
             m_SelectedAlternateContent = altContent;
-            RaisePropertyChanged(() => HasDescriptionMetadata);
+            RaisePropertyChanged(() => Descriptions);
         }
 
         [NotifyDependsOn("Descriptions")]
