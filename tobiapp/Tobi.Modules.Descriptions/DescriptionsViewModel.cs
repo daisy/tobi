@@ -208,7 +208,7 @@ namespace Tobi.Plugin.Descriptions
 
             if (altContent != null && altProp_.AlternateContents.IndexOf(altContent) < 0) return;
 
-            AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(altProp, altContent, md);
+            AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(node, altProp, altContent, md);
             node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
@@ -234,7 +234,7 @@ namespace Tobi.Plugin.Descriptions
             meta.NameContentAttribute.Name = newName;
             //meta.NameContentAttribute.NamespaceUri = "dummy namespace";
             meta.NameContentAttribute.Value = newValue;
-            AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, altContent, meta);
+            AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(node, altProp, altContent, meta);
             node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
@@ -334,7 +334,7 @@ namespace Tobi.Plugin.Descriptions
                 if (altContent.Text != null)
                 {
                     AlternateContentRemoveManagedMediaCommand cmd1 =
-                        node.Presentation.CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(altContent,
+                        node.Presentation.CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(node, altContent,
                                                                                                          altContent.Text);
                     node.Presentation.UndoRedoManager.Execute(cmd1);
                 }
@@ -345,7 +345,7 @@ namespace Tobi.Plugin.Descriptions
                 txt2.Text = txt;
 
                 AlternateContentSetManagedMediaCommand cmd22 =
-                    node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent, txt2);
+                    node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(node, altContent, txt2);
                 node.Presentation.UndoRedoManager.Execute(cmd22);
             }
 
@@ -368,7 +368,7 @@ namespace Tobi.Plugin.Descriptions
                 if (altContent.Image != null)
                 {
                     AlternateContentRemoveManagedMediaCommand cmd1 =
-                        node.Presentation.CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(altContent,
+                        node.Presentation.CommandFactory.CreateAlternateContentRemoveManagedMediaCommand(node, altContent,
                                                                                                          altContent.Image);
                     node.Presentation.UndoRedoManager.Execute(cmd1);
                 }
@@ -408,7 +408,7 @@ namespace Tobi.Plugin.Descriptions
                 img1.ImageMediaData = imgData1;
 
                 AlternateContentSetManagedMediaCommand cmd22 =
-                    node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent, img1);
+                    node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(node, altContent, img1);
                 node.Presentation.UndoRedoManager.Execute(cmd22);
             }
 

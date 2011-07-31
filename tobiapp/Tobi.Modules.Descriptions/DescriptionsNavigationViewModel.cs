@@ -305,6 +305,10 @@ namespace Tobi.Plugin.Descriptions
 
             if (!(eventt.Command is AlternateContentAddCommand)
                 && !(eventt.Command is AlternateContentRemoveCommand)
+                && !(eventt.Command is AlternateContentMetadataAddCommand)
+                && !(eventt.Command is AlternateContentMetadataRemoveCommand)
+                && !(eventt.Command is AlternateContentSetManagedMediaCommand)
+                && !(eventt.Command is AlternateContentRemoveManagedMediaCommand)
                 && !(eventt.Command is TreeNodeChangeTextCommand)
                 && !(eventt.Command is CompositeCommand)
                 )
@@ -329,56 +333,102 @@ namespace Tobi.Plugin.Descriptions
 
             RaisePropertyChanged(() => SelectedTreeNode);
 
-            AlternateContentRemoveCommand altRemCmdTrans = null;
-            AlternateContentAddCommand altAddCmdTrans = null;
+            TreeNode treeNode = null;
+
             if (eventt.Command is CompositeCommand)
             {
                 foreach (var childCmd in ((CompositeCommand)eventt.Command).ChildCommands.ContentsAs_Enumerable)
-                 {
-                     if (childCmd is AlternateContentAddCommand)
-                     {
-                         altAddCmdTrans = (AlternateContentAddCommand)childCmd;
-                         break;
-                     }
-                     if (childCmd is AlternateContentRemoveCommand)
-                     {
-                         altRemCmdTrans = (AlternateContentRemoveCommand)childCmd;
-                         break;
-                     }
-                 }
-            }
-
-            if (altRemCmdTrans != null)
-            {
-                if (altRemCmdTrans.TreeNode.HasAlternateContentProperty)
-                    DescriptionsNavigator.AddDescribedTreeNode(altRemCmdTrans.TreeNode);
-                else
-                    DescriptionsNavigator.RemoveDescribedTreeNode(altRemCmdTrans.TreeNode);
-            }
-            else if (altAddCmdTrans != null)
-            {
-                if (altAddCmdTrans.TreeNode.HasAlternateContentProperty)
-                    DescriptionsNavigator.AddDescribedTreeNode(altAddCmdTrans.TreeNode);
-                else
-                    DescriptionsNavigator.RemoveDescribedTreeNode(altAddCmdTrans.TreeNode);
+                {
+                    if (childCmd is AlternateContentAddCommand)
+                    {
+                        treeNode = ((AlternateContentAddCommand)childCmd).TreeNode;
+                        break;
+                    }
+                    if (childCmd is AlternateContentRemoveCommand)
+                    {
+                        treeNode = ((AlternateContentRemoveCommand)childCmd).TreeNode;
+                        break;
+                    }
+                    if (childCmd is AlternateContentMetadataAddCommand)
+                    {
+                        treeNode = ((AlternateContentMetadataAddCommand)childCmd).TreeNode;
+                        break;
+                    }
+                    if (childCmd is AlternateContentMetadataRemoveCommand)
+                    {
+                        treeNode = ((AlternateContentMetadataRemoveCommand)childCmd).TreeNode;
+                        break;
+                    }
+                    if (childCmd is AlternateContentSetManagedMediaCommand)
+                    {
+                        treeNode = ((AlternateContentSetManagedMediaCommand)childCmd).TreeNode;
+                        break;
+                    }
+                    if (childCmd is AlternateContentRemoveManagedMediaCommand)
+                    {
+                        treeNode = ((AlternateContentRemoveManagedMediaCommand)childCmd).TreeNode;
+                        break;
+                    }
+                }
             }
             else if (eventt.Command is AlternateContentAddCommand)
             {
-                var cmd = (AlternateContentAddCommand)eventt.Command;
-
-                if (cmd.TreeNode.HasAlternateContentProperty)
-                    DescriptionsNavigator.AddDescribedTreeNode(cmd.TreeNode);
-                else
-                    DescriptionsNavigator.RemoveDescribedTreeNode(cmd.TreeNode);
+                treeNode = ((AlternateContentAddCommand)eventt.Command).TreeNode;
             }
             else if (eventt.Command is AlternateContentRemoveCommand)
             {
-                var cmd = (AlternateContentRemoveCommand)eventt.Command;
+                treeNode = ((AlternateContentRemoveCommand)eventt.Command).TreeNode;
+            }
+            else if (eventt.Command is AlternateContentMetadataAddCommand)
+            {
+                treeNode = ((AlternateContentMetadataAddCommand)eventt.Command).TreeNode;
+            }
+            else if (eventt.Command is AlternateContentMetadataRemoveCommand)
+            {
+                treeNode = ((AlternateContentMetadataRemoveCommand)eventt.Command).TreeNode;
+            }
+            else if (eventt.Command is AlternateContentSetManagedMediaCommand)
+            {
+                treeNode = ((AlternateContentSetManagedMediaCommand)eventt.Command).TreeNode;
+            }
+            else if (eventt.Command is AlternateContentRemoveManagedMediaCommand)
+            {
+                treeNode = ((AlternateContentRemoveManagedMediaCommand)eventt.Command).TreeNode;
+            }
 
-                if (cmd.TreeNode.HasAlternateContentProperty)
-                    DescriptionsNavigator.AddDescribedTreeNode(cmd.TreeNode);
-                else
-                    DescriptionsNavigator.RemoveDescribedTreeNode(cmd.TreeNode);
+            if (treeNode == null) return;
+
+            if (treeNode.HasAlternateContentProperty && !treeNode.GetAlternateContentProperty().IsEmpty)
+            {
+                bool treeNodeAlreadyRegistered = false;
+                foreach (var describedTreeNode in DescriptionsNavigator.DescribedTreeNodes)
+                {
+                    if (describedTreeNode.TreeNode == treeNode)
+                    {
+                        treeNodeAlreadyRegistered = true;
+                        break;
+                    }
+                }
+                if (!treeNodeAlreadyRegistered)
+                {
+                    DescriptionsNavigator.AddDescribedTreeNode(treeNode);
+                }
+            }
+            else
+            {
+                DescribedTreeNode nodeToRemove = null;
+                foreach (var describedTreeNode in DescriptionsNavigator.DescribedTreeNodes)
+                {
+                    if (describedTreeNode.TreeNode == treeNode)
+                    {
+                        nodeToRemove = describedTreeNode;
+                        break;
+                    }
+                }
+                if (nodeToRemove != null)
+                {
+                    DescriptionsNavigator.RemoveDescribedTreeNode(nodeToRemove.TreeNode);
+                }
             }
         }
 
