@@ -129,22 +129,10 @@ namespace Tobi.Plugin.Descriptions
                                                   true, 800, 500, null, 0);
             //view.OwnerWindow = windowPopup;
 
-            //var altProp = node.GetProperty<AlternateContentProperty>();
-            //if (altProp != null && altProp.IsEmpty)
-            //{
-            //    node.RemoveProperty(altProp);
-            //}
-
             m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
                 (Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc, Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_LongDesc);
 
             windowPopup.ShowModal();
-
-            var altProp = node.GetProperty<AlternateContentProperty>();
-            if (altProp != null && altProp.IsEmpty)
-            {
-                node.RemoveProperty(altProp);
-            }
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
             {
@@ -153,6 +141,12 @@ namespace Tobi.Plugin.Descriptions
             else
             {
                 m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
+            }
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp != null && altProp.IsEmpty)
+            {
+                node.RemoveProperty(altProp);
             }
 
             GC.Collect();
