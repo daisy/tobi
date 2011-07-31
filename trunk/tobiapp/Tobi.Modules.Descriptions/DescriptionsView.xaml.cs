@@ -8,12 +8,73 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.UI;
+using Tobi.Common.UI.XAML;
 using urakawa.core;
+using urakawa.data;
 using urakawa.metadata;
 using urakawa.property.alt;
+using BooleanToVisibilityConverter = System.Windows.Controls.BooleanToVisibilityConverter;
 
 namespace Tobi.Plugin.Descriptions
 {
+    [ValueConversion(typeof(AlternateContent), typeof(string))]
+    public class AlternateContentToImagePathConverter : ValueConverterMarkupExtensionBase<AlternateContentToImagePathConverter>
+    {
+        #region IValueConverter Members
+
+        public override object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(Object) && targetType != typeof(String))
+                throw new InvalidOperationException("The target must be Object or String !");
+
+            var altContent = value as AlternateContent;
+            if (altContent != null && altContent.Image != null)
+            {
+                return ((FileDataProvider)altContent.Image.ImageMediaData.DataProvider).DataFileFullPath;
+            }
+
+            return "[no image]";
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+
+        #endregion
+    }
+
+    [ValueConversion(typeof(AlternateContent), typeof(string))]
+    public class AlternateContentToTextConverter : ValueConverterMarkupExtensionBase<AlternateContentToTextConverter>
+    {
+        #region IValueConverter Members
+
+        public override object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(string))
+                throw new InvalidOperationException("The target must be a string !");
+
+            var altContent = value as AlternateContent;
+            if (altContent != null && altContent.Text != null)
+            {
+                return altContent.Text.Text;
+            }
+
+            return "[no text]";
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+
+        #endregion
+    }
+
     [Export(typeof(IDescriptionsView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class DescriptionsView : IDescriptionsView, IPartImportsSatisfiedNotification
     {
@@ -56,6 +117,10 @@ namespace Tobi.Plugin.Descriptions
 
         public void Popup()
         {
+            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc),
                                                   this,
@@ -64,10 +129,22 @@ namespace Tobi.Plugin.Descriptions
                                                   true, 800, 500, null, 0);
             //view.OwnerWindow = windowPopup;
 
+            //var altProp = node.GetProperty<AlternateContentProperty>();
+            //if (altProp != null && altProp.IsEmpty)
+            //{
+            //    node.RemoveProperty(altProp);
+            //}
+
             m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
                 (Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc, Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_LongDesc);
 
             windowPopup.ShowModal();
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp != null && altProp.IsEmpty)
+            {
+                node.RemoveProperty(altProp);
+            }
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
             {
@@ -76,16 +153,6 @@ namespace Tobi.Plugin.Descriptions
             else
             {
                 m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
-            }
-
-            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
-            TreeNode node = selection.Item2 ?? selection.Item1;
-            if (node == null) return;
-
-            var altProp = node.GetProperty<AlternateContentProperty>();
-            if (altProp != null && altProp.IsEmpty)
-            {
-                node.RemoveProperty(altProp);
             }
 
             GC.Collect();
@@ -97,10 +164,14 @@ namespace Tobi.Plugin.Descriptions
             var win = Window.GetWindow(this);
             if (win is PopupModalWindow)
                 OwnerWindow = (PopupModalWindow)win;
-
+            
+            MetadatasListView.Items.Refresh();
+            MetadataAttributesListView.Items.Refresh();
             if (MetadatasListView.IsVisible) FocusHelper.Focus(MetadatasListView);
             OnSelectionChanged_MetadataList(null, null);
 
+            DescriptionsListView.Items.Refresh();
+            MetadatasAltContentListView.Items.Refresh();
             if (DescriptionsListView.IsVisible) FocusHelper.Focus(DescriptionsListView);
             OnSelectionChanged_DescriptionsList(null, null);
 

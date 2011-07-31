@@ -411,7 +411,7 @@ AlternationCount="2"
                 <TextBlock>
                   <TextBlock.Text>
                     <MultiBinding StringFormat="Description text:  {0}"  Mode="OneWay">
-                      <Binding Path="DataContext.Text.Text"   Mode="OneWay" />
+                      <Binding Path="DataContext"   Mode="OneWay" Converter="{Descriptions:AlternateContentToTextConverter}"/>
                     </MultiBinding>
                   </TextBlock.Text>
                 </TextBlock>
@@ -424,7 +424,7 @@ AlternationCount="2"
                 <TextBlock Padding="4">
                   <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0}"  Mode="OneWay">
-                      <Binding Path="Text.Text"   Mode="OneWay" />
+                      <Binding Path="."   Mode="OneWay" Converter="{Descriptions:AlternateContentToTextConverter}"/>
                       <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
                     </MultiBinding>
                   </TextBlock.Text>
@@ -445,7 +445,7 @@ AlternationCount="2"
                   <Setter Property="AutomationProperties.Name">
                     <Setter.Value>
                       <MultiBinding StringFormat="Description text: {0}"  Mode="OneWay">
-                        <Binding Path="Text.Text"   Mode="OneWay" />
+                        <Binding Path="."   Mode="OneWay" Converter="{Descriptions:AlternateContentToTextConverter}"/>
                         <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
                       </MultiBinding>
                     </Setter.Value>
@@ -517,10 +517,13 @@ AlternationCount="2"
               <UI:TextBoxReadOnlyCaretVisible
                        TabIndex="1"
                 x:Name="DescriptionTextBox"
-                TextReadOnly="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Text.Text, Mode=OneWay}"
+                TextReadOnly="{Binding ElementName=DescriptionsListView, Path=SelectedItem, Mode=OneWay, Converter={Descriptions:AlternateContentToTextConverter}}"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
-                Focusable="True"/>
+                Focusable="True"
+                       
+                      IsEnabled="{Binding HasDescriptionText}"
+                       />
             </DockPanel>
           </TabItem>
           <TabItem Header="Image">
@@ -556,12 +559,13 @@ AlternationCount="2"
               </StackPanel>
               <Image
                 Focusable="True"
+                        IsEnabled="{Binding HasDescriptionImage}"
                 x:Name="DescriptionImage"
                 HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
                           Stretch = "Uniform"
                           StretchDirection="DownOnly"
-                ToolTip="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
+                ToolTip="{Binding ElementName=DescriptionsListView, Path=SelectedItem, Mode=OneWay, Converter={Descriptions:AlternateContentToImagePathConverter}}"
                 Source="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
               >
                 <Image.Style>
@@ -570,7 +574,7 @@ AlternationCount="2"
                     <Setter Property="AutomationProperties.Name">
                       <Setter.Value>
                         <MultiBinding StringFormat="Image full path: {0}"  Mode="OneWay">
-                          <Binding ElementName="DescriptionsListView" Path="SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath"   Mode="OneWay" />
+                          <Binding ElementName="DescriptionsListView" Path="SelectedItem" Mode="OneWay" Converter="{Descriptions:AlternateContentToImagePathConverter}"/>
                           <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
                         </MultiBinding>
                       </Setter.Value>
