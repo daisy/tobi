@@ -54,8 +54,8 @@ namespace Tobi.Plugin.Descriptions
         public override object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            if (targetType != typeof(string))
-                throw new InvalidOperationException("The target must be a string !");
+            if (targetType != typeof(Object) && targetType != typeof(String))
+                throw new InvalidOperationException("The target must be Object or String !");
 
             var altContent = value as AlternateContent;
             if (altContent != null && altContent.Text != null)
