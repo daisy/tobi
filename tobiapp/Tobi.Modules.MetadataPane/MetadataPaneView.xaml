@@ -67,7 +67,7 @@
     <DockPanel  DockPanel.Dock="Bottom" LastChildFill="True">
     <Button DockPanel.Dock="Right"
             Margin="50, 0, 0, 0"
-            Padding="4,0,0,4"
+            Padding="4,4,4,4"
       Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Add_new}"
             HorizontalAlignment="Left" VerticalAlignment="Top"
             Width="Auto"
