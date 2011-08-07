@@ -136,17 +136,28 @@ namespace Tobi.Plugin.Descriptions
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
             {
+                bool empty = m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionEmpty;
+                
                 m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+
+                if (empty)
+                {
+                    var altProp = node.GetProperty<AlternateContentProperty>();
+                    if (altProp != null && altProp.IsEmpty)
+                    {
+                        node.RemoveProperty(altProp);
+                    }
+                }
             }
             else
             {
                 m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
-            }
 
-            var altProp = node.GetProperty<AlternateContentProperty>();
-            if (altProp != null && altProp.IsEmpty)
-            {
-                node.RemoveProperty(altProp);
+                var altProp = node.GetProperty<AlternateContentProperty>();
+                if (altProp != null && altProp.IsEmpty)
+                {
+                    node.RemoveProperty(altProp);
+                }
             }
 
             GC.Collect();
