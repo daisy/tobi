@@ -193,8 +193,8 @@ namespace Tobi.Plugin.Urakawa
 
             var action = new SaveXukAction(DocumentProject, DocumentProject, uri)
             {
-                ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_ShortDesc,                               // TODO LOCALIZE UrakawaSaveAction_ShortDesc
-                LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_LongDesc       // TODO LOCALIZE UrakawaSaveAction_LongDesc 
+                ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_ShortDesc,
+                LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_LongDesc
             };
 
             bool notCancelled = m_ShellView.RunModalCancellableProgressTask(true,
@@ -233,7 +233,7 @@ namespace Tobi.Plugin.Urakawa
                     }
 
 
-                    m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_Urakawa_Lang.Saved);            // TODO LOCALIZE Saved
+                    m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_Urakawa_Lang.Saved); 
 
                     RaisePropertyChanged(() => IsDirty);
                     //IsDirty = false;

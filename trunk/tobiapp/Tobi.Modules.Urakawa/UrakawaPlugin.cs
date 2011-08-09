@@ -185,12 +185,12 @@ namespace Tobi.Plugin.Urakawa
 
         public override string Name
         {
-            get { return Tobi_Plugin_Urakawa_Lang.UrakawaPlugin_Name; }    // TODO LOCALIZE UrakawaPlugin_Name
+            get { return Tobi_Plugin_Urakawa_Lang.UrakawaPlugin_Name; } 
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_Urakawa_Lang.UrakawaPlugin_Description; }    // TODO LOCALIZE UrakawaPlugin_Description
+            get { return Tobi_Plugin_Urakawa_Lang.UrakawaPlugin_Description; } 
         }
     }
 }

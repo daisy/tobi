@@ -81,12 +81,12 @@ namespace Tobi.Plugin.ToolBars
 
         public override string Name
         {
-            get { return Tobi_Plugin_ToolBars_Lang.ToolbarsPlugin_Name; }     // TODO LOCALIZE ToolbarsPlugin_Name
+            get { return Tobi_Plugin_ToolBars_Lang.ToolbarsPlugin_Name; } 
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_ToolBars_Lang.ToolbarsPlugin_Description; }   // TODO LOCALIZE ToolbarsPlugin_Description
+            get { return Tobi_Plugin_ToolBars_Lang.ToolbarsPlugin_Description; }
         }
     }
 }

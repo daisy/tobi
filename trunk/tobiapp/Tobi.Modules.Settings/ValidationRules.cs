@@ -51,13 +51,13 @@ namespace Tobi.Plugin.Settings
             var str = value as string;
             if (String.IsNullOrEmpty(str))
             {
-                return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);        // TODO LOCALIZE ValueNotEmpty
+                return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);
             }
 
             KeyGesture val = KeyGestureStringConverter.Convert(str);
             if (val == null)
             {
-                return NotValid(Tobi_Plugin_Settings_Lang.InvalidKeyboardShortcut);      //  TODO LOCALIZE InvalidKeyboardShortcut
+                return NotValid(Tobi_Plugin_Settings_Lang.InvalidKeyboardShortcut); 
             }
 
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
@@ -99,11 +99,11 @@ namespace Tobi.Plugin.Settings
             var str = value as string;
             if (String.IsNullOrEmpty(str))
             {
-                return NotValid(Tobi_Plugin_Settings_Lang.StringCannotBeEmpty);               // TODO LOCALIZE StringCannotBeEmpty
+                return NotValid(Tobi_Plugin_Settings_Lang.StringCannotBeEmpty);
             }
             if (str.Trim().Length == 0)
             {
-                return NotValid(Tobi_Plugin_Settings_Lang.StringCannotJustBeSeparators);      // TODO LOCALIZE StringCannotJustBeSeparators
+                return NotValid(Tobi_Plugin_Settings_Lang.StringCannotJustBeSeparators);
             }
 
             return Valid();
@@ -116,13 +116,13 @@ namespace Tobi.Plugin.Settings
             var str = value as string;
             if (String.IsNullOrEmpty(str))
             {
-                return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);            // TODO LOCALIZE Key already added ValueNotEmpty
+                return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);
             }
 
             double val;
             if (!Double.TryParse(str, out val))
             {
-                return NotValid(Tobi_Plugin_Settings_Lang.InvalidNumericValue);                 // TODO LOCALIZE InvalidNumericValue
+                return NotValid(Tobi_Plugin_Settings_Lang.InvalidNumericValue);
             }
 
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
@@ -136,14 +136,14 @@ namespace Tobi.Plugin.Settings
             {
                 if (val < 0 || val > 9999)
                 {
-                    return NotValid(Tobi_Plugin_Settings_Lang.NumericValueOutOfRange);      // TODO LOCALIZE NumericValueOutOfRange
+                    return NotValid(Tobi_Plugin_Settings_Lang.NumericValueOutOfRange);
                 }
             }
             else
             {
                 if (val < -9999 || val > 9999)
                 {
-                    return NotValid(Tobi_Plugin_Settings_Lang.NumericValueOutOfRange9999);           // TODO LOCALIZE NumericValueOutOfRange9999
+                    return NotValid(Tobi_Plugin_Settings_Lang.NumericValueOutOfRange9999);
                 }
             }
 
@@ -157,7 +157,7 @@ namespace Tobi.Plugin.Settings
             var str = value as string;
             if (String.IsNullOrEmpty(str))
             {
-                return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);            // TODO LOCALIZE Key already added ValueNotEmpty
+                return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);
             }
 
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
@@ -199,7 +199,7 @@ namespace Tobi.Plugin.Settings
     //        var str = value as string;
     //        if (String.IsNullOrEmpty(str))
     //        {
-    //            return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);            // TODO LOCALIZE Key already added ValueNotEmpty
+    //            return NotValid(Tobi_Plugin_Settings_Lang.ValueNotEmpty);
     //        }
 
     //        TextAlignment val;
@@ -220,7 +220,7 @@ namespace Tobi.Plugin.Settings
     //            }
     //            if (!worked)
     //            {
-    //                return NotValid(Tobi_Plugin_Settings_Lang.InvalidTextAlignment);                 // TODO LOCALIZE InvalidNumericValue
+    //                return NotValid(Tobi_Plugin_Settings_Lang.InvalidTextAlignment);
     //            }
     //        }
 

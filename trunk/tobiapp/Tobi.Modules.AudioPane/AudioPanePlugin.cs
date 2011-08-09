@@ -335,12 +335,12 @@ namespace Tobi.Plugin.AudioPane
 
         public override string Name
         {
-            get { return Tobi_Plugin_AudioPane_Lang.AudioPanePlugin_Name; }              // TODO Localize AudioPanePlugin_Name
+            get { return Tobi_Plugin_AudioPane_Lang.AudioPanePlugin_Name; } 
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_AudioPane_Lang.AudioPanePlugin_Description; }    // TODO Localize AudioPanePlugin_Description
+            get { return Tobi_Plugin_AudioPane_Lang.AudioPanePlugin_Description; } 
         }
     }
 }

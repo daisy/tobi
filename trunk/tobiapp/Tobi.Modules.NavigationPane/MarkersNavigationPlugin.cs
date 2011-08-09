@@ -108,12 +108,12 @@ namespace Tobi.Plugin.NavigationPane
 
         public override string Name
         {
-            get { return Tobi_Plugin_NavigationPane_Lang.MarkersNavigationPlugin_Name; }    // TODO LOCALIZE MarkersNavigationPlugin_Name
+            get { return Tobi_Plugin_NavigationPane_Lang.MarkersNavigationPlugin_Name; } 
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_NavigationPane_Lang.MarkersNavigationPlugin_Description; }     // TODO LOCALIZE MarkersNavigationPlugin_Description
+            get { return Tobi_Plugin_NavigationPane_Lang.MarkersNavigationPlugin_Description; } 
         }
     }
 }

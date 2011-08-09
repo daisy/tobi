@@ -462,7 +462,7 @@ namespace Tobi.Plugin.AudioPane
             layer.Add(m_WaveFormLoadingAdorner);
             m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
 
-            m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document.");
+            m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document.");// TODO Localize 
         }
 
         #endregion Event / Callbacks
