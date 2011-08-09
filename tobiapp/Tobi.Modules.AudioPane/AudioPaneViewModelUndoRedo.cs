@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Threading;
+using Tobi.Common;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
@@ -681,6 +682,7 @@ namespace Tobi.Plugin.AudioPane
                 Debug.Assert(eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs || eventt is TransactionCancelledEventArgs);
             }
 
+            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
 
             if (eventt.Command is TreeNodeChangeTextCommand)
             {

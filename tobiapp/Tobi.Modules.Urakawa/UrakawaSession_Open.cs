@@ -143,7 +143,7 @@ namespace Tobi.Plugin.Urakawa
             }
 
             // Closing is REQUIRED ! 
-            PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.YesNoCancel, Tobi_Plugin_Urakawa_Lang.UrakawaSession_OpenFile);  // TODO LOCALIZE UrakawaSession_OpenFile
+            PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.YesNoCancel, Tobi_Plugin_Urakawa_Lang.UrakawaSession_OpenFile);
             if (PopupModalWindow.IsButtonEscCancel(button))
             {
                 return false;
@@ -177,8 +177,8 @@ namespace Tobi.Plugin.Urakawa
 
                 var action = new OpenXukAction(project, fileUri)
                 {
-                    ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc,                                // TODO LOCALIZE UrakawaOpenAction_ShortDesc
-                    LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_LongDesc                    // TODO LOCALIZE UrakawaOpenAction_LongDesc
+                    ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc,                 
+                    LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_LongDesc                   
                 };
 
                 bool cancelled = false;

@@ -57,7 +57,7 @@ namespace Tobi.Plugin.Validator
 
 
             CommandShowValidator = new RichDelegateCommand(
-                Tobi_Plugin_Validator_Lang.CmdValidationCheck_ShortDesc,                                                // TODO LOCALIZE ValidationCheck
+                Tobi_Plugin_Validator_Lang.CmdValidationCheck_ShortDesc, 
                 Tobi_Plugin_Validator_Lang.CmdValidationCheck_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeGionIcon(@"Gion_application-certificate"),
@@ -111,12 +111,12 @@ namespace Tobi.Plugin.Validator
 
         public override string Name
         {
-            get { return Tobi_Plugin_Validator_Lang.ValidatorPlugin_Name; }    // TODO LOCALIZE ValidatorPlugin_Name
+            get { return Tobi_Plugin_Validator_Lang.ValidatorPlugin_Name; }
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_Lang.ValidatorPlugin_Description; }    // TODO LOCALIZE  ValidatorPlugin_Description
+            get { return Tobi_Plugin_Validator_Lang.ValidatorPlugin_Description; }
         }
 
         private bool m_DialogIsShowing;

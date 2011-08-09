@@ -342,7 +342,7 @@ namespace Tobi.Plugin.Validator.Metadata
         //These hints describe what the data must be formatted as.
         //Complete sentences purposefully left out.
         private string m_DateHint = Tobi_Plugin_Validator_Metadata_Lang.DateHint;             
-        private string m_NumericHint = Tobi_Plugin_Validator_Metadata_Lang.NumericValueHint;                                    // TODO LOCALIZE NumVal
+        private string m_NumericHint = Tobi_Plugin_Validator_Metadata_Lang.NumericValueHint; 
         private readonly IEventAggregator m_EventAggregator;
 
         public MetadataDataTypeValidator(MetadataValidator parentValidator, IEventAggregator eventAggregator)

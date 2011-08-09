@@ -45,8 +45,8 @@ namespace Tobi
 
         private void InitializeCommands()
         {
-            CmdFindFocus = new RichDispatcherCommand(Tobi_Lang.CmdFocus_ShortDesc_Find, //TODO LOCALIZE CmdFocus_ShortDesc_Find
-                Tobi_Lang.CmdFocus_LongDesc_Find,   // TODO LOCALIZE CmdFocus_LongDesc_Find
+            CmdFindFocus = new RichDispatcherCommand(Tobi_Lang.CmdFocus_ShortDesc_Find, 
+                Tobi_Lang.CmdFocus_LongDesc_Find, 
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("edit-find"),
                 Settings_KeyGestures.Default,
@@ -54,8 +54,8 @@ namespace Tobi
 
             m_ShellView.RegisterRichCommand(CmdFindFocus);
 
-            CmdFindNext = new RichDispatcherCommand(Tobi_Lang.Cmd_ShortDesc_FindNext, //TODO LOCALIZE Cmd_ShortDesc_FindNext
-                Tobi_Lang.Cmd_LongDesc_FindNext,   // TODO LOCALIZE Cmd_LongDesc_FindNext
+            CmdFindNext = new RichDispatcherCommand(Tobi_Lang.Cmd_ShortDesc_FindNext,
+                Tobi_Lang.Cmd_LongDesc_FindNext,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-more"),
                 Settings_KeyGestures.Default,
@@ -63,8 +63,8 @@ namespace Tobi
 
             m_ShellView.RegisterRichCommand(CmdFindNext);
 
-            CmdFindPrevious = new RichDispatcherCommand(Tobi_Lang.Cmd_ShortDesc_FindPrevious, //TODO LOCALIZE Cmd_ShortDesc_FindPrevious
-                Tobi_Lang.Cmd_LongDesc_FindPrevious,  // TODO LOCALIZE Cmd_LongDesc_FindPrevious
+            CmdFindPrevious = new RichDispatcherCommand(Tobi_Lang.Cmd_ShortDesc_FindPrevious,
+                Tobi_Lang.Cmd_LongDesc_FindPrevious, 
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("format-indent-less"),
                 Settings_KeyGestures.Default,

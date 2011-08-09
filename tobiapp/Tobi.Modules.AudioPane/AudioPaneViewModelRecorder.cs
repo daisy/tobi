@@ -109,7 +109,7 @@ namespace Tobi.Plugin.AudioPane
                     m_RecordAndContinue = false;
                     m_Recorder.StopRecording();
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped); // TODO Localize RecordingStopped
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped); 
                 },
                 () => !IsWaveFormLoading && IsRecording,
                 Settings_KeyGestures.Default,
@@ -191,7 +191,7 @@ namespace Tobi.Plugin.AudioPane
 
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Recording); // TODO Localize Recording
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Recording);
                 },
                 () =>
                 {
@@ -238,7 +238,7 @@ namespace Tobi.Plugin.AudioPane
 
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Monitoring); // TODO Localize Monitoring
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Monitoring);
 
                 },
                 () => !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring,
@@ -260,7 +260,7 @@ namespace Tobi.Plugin.AudioPane
 
                     //AudioCues.PlayTockTock();
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.MonitoringStopped);// TODO Localize MonitoringStopped
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.MonitoringStopped);
 
                     State.Audio.PcmFormatRecordingMonitoring = null;
 

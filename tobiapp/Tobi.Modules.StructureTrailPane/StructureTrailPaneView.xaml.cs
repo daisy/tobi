@@ -167,7 +167,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
                     BreadcrumbPanel.Children.Add(tb);
 
-                    tb.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_StructureTrailPane_Lang.XMLChildren);                  // TODO LOCALIZE XMLChildren
+                    tb.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_StructureTrailPane_Lang.XMLChildren); 
                 }
 
                 bool selected = n == treeNodeSelection.Item2 || n == treeNodeSelection.Item1;
@@ -179,10 +179,8 @@ namespace Tobi.Plugin.StructureTrailPane
                 butt.SetValue(AutomationProperties.NameProperty,
                     (qname != null ? qname.LocalName : Tobi_Plugin_StructureTrailPane_Lang.NoXMLFound)
                     + (selected ? Tobi_Plugin_StructureTrailPane_Lang.Selected : "")
-                    + (withMedia ? Tobi_Plugin_StructureTrailPane_Lang.Audio : ""));        // TODO LOCALIZE NoXMLFound
-                // TODO LOCALIZE Selected
-                // TODO LOCALIZE Audio
-
+                    + (withMedia ? Tobi_Plugin_StructureTrailPane_Lang.Audio : ""));
+               
                 counter++;
             }
 
