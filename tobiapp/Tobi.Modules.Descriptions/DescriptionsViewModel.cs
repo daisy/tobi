@@ -14,6 +14,7 @@ using urakawa;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.daisy;
 using urakawa.events.undo;
 using urakawa.media;
 using urakawa.media.data.image;
@@ -304,7 +305,7 @@ namespace Tobi.Plugin.Descriptions
 
             if (!string.IsNullOrEmpty(txt))
             {
-                SetDescriptionText(altContent, txt);
+                AddMetadata(null, altContent, DaigramContentModelStrings.XmlId, txt);
             }
         }
 

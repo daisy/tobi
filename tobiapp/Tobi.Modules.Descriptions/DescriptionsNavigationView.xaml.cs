@@ -108,12 +108,12 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnClick_Button(object sender, RoutedEventArgs e)
         {
-            handleListCurrentSelection();
+            //handleListCurrentSelection();
 
             m_DescriptionsView.Popup();
         }
 
-        private void handleListCurrentSelection()
+        public void UpdateTreeNodeSelectionFromListItem()
         {
             if (ListView.SelectedIndex >= 0)
             {
@@ -136,13 +136,13 @@ namespace Tobi.Plugin.Descriptions
         {
             if (e.Key == Key.Enter)
             {
-                handleListCurrentSelection();
+                UpdateTreeNodeSelectionFromListItem();
             }
         }
 
         private void OnMouseDoubleClick_ListItem(object sender, MouseButtonEventArgs e)
         {
-            handleListCurrentSelection();
+            UpdateTreeNodeSelectionFromListItem();
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)

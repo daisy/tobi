@@ -11,6 +11,7 @@ using Tobi.Common;
 using Tobi.Common.UI;
 using Tobi.Common.UI.XAML;
 using urakawa.core;
+using urakawa.daisy;
 using urakawa.data;
 using urakawa.metadata;
 using urakawa.property.alt;
@@ -76,6 +77,48 @@ namespace Tobi.Plugin.Descriptions
         #endregion
     }
 
+    [ValueConversion(typeof(AlternateContent), typeof(string))]
+    public class AlternateContentToSummaryConverter : ValueConverterMarkupExtensionBase<AlternateContentToSummaryConverter>
+    {
+        #region IValueConverter Members
+
+        public override object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(Object) && targetType != typeof(String))
+                throw new InvalidOperationException("The target must be Object or String !");
+
+            var altContent = value as AlternateContent;
+
+            string txt = "[no text]";
+
+            if (altContent != null && altContent.Text != null)
+            {
+                txt = altContent.Text.Text;
+            }
+
+            if (altContent != null && altContent.Metadatas != null && altContent.Metadatas.Count > 0)
+            {
+                foreach (Metadata metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.NameContentAttribute.Name == DaigramContentModelStrings.XmlId)
+                    {
+                        txt = txt + " (ID: " + metadata.NameContentAttribute.Value + ")";
+                    }
+                }
+            }
+
+            return txt;
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+
+        #endregion
+    }
     [Export(typeof(IDescriptionsView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class DescriptionsView : IDescriptionsView, IPartImportsSatisfiedNotification
     {
@@ -121,6 +164,9 @@ namespace Tobi.Plugin.Descriptions
 
         public void Popup()
         {
+            var navView = m_Container.Resolve<DescriptionsNavigationView>();
+            if (navView != null) navView.UpdateTreeNodeSelectionFromListItem();
+
             Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) return;
@@ -505,6 +551,10 @@ namespace Tobi.Plugin.Descriptions
             FocusHelper.FocusBeginInvoke(MetadatasAltContentListView);
         }
 
+        private string PROMPT_MD_NAME = "[enter a name]";
+        private string PROMPT_MD_VALUE = "[enter a value]";
+        private string PROMPT_ID = "[enter a unique identifier]"; 
+
         private void OnClick_ButtonAddMetadataAltContent(object sender, RoutedEventArgs e)
         {
             Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
@@ -520,8 +570,8 @@ namespace Tobi.Plugin.Descriptions
             if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
 
             var mdAttr = new MetadataAttribute();
-            mdAttr.Name = "[edit text]";
-            mdAttr.Value = "[edit text]";
+            mdAttr.Name = PROMPT_MD_NAME;
+            mdAttr.Value = PROMPT_MD_VALUE;
             string newName, newValue;
             bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
             if (ok)
@@ -569,8 +619,8 @@ namespace Tobi.Plugin.Descriptions
             //if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
 
             var mdAttr = new MetadataAttribute();
-            mdAttr.Name = "[edit text]";
-            mdAttr.Value = "[edit text]";
+            mdAttr.Name = PROMPT_MD_NAME;
+            mdAttr.Value = PROMPT_MD_VALUE;
             string newName, newValue;
             bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
             if (ok)
@@ -598,8 +648,8 @@ namespace Tobi.Plugin.Descriptions
             if (MetadatasListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
             var mdAttr = new MetadataAttribute();
-            mdAttr.Name = "[edit text]";
-            mdAttr.Value = "[edit text]";
+            mdAttr.Name = PROMPT_MD_NAME;
+            mdAttr.Value = PROMPT_MD_VALUE;
             string newName, newValue;
             bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
             if (ok)
@@ -614,8 +664,12 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnClick_ButtonAddDescription(object sender, RoutedEventArgs e)
         {
-            string txt = showTextEditorPopupDialog("");
-            if (string.IsNullOrEmpty(txt)) txt = null;
+            string txt = " ";
+
+            while (txt != null && txt.Trim() == "")
+                txt = showLineEditorPopupDialog(PROMPT_ID, "Unique identifier");
+
+            if (txt == null) return;
 
             m_ViewModel.AddDescription(txt);
 
@@ -623,8 +677,12 @@ namespace Tobi.Plugin.Descriptions
             DescriptionsListView.SelectedIndex = DescriptionsListView.Items.Count - 1;
             FocusHelper.FocusBeginInvoke(DescriptionsListView);
 
-            BindingExpression be = DescriptionTextBox.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
-            if (be != null) be.UpdateTarget();
+            MetadatasAltContentListView.Items.Refresh();
+            MetadatasAltContentListView.SelectedIndex = MetadatasAltContentListView.Items.Count - 1;
+            //FocusHelper.FocusBeginInvoke(MetadatasAltContentListView);
+
+            //BindingExpression be = DescriptionTextBox.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
+            //if (be != null) be.UpdateTarget();
         }
 
         private void OnClick_ButtonRemoveDescription(object sender, RoutedEventArgs e)
@@ -645,7 +703,7 @@ namespace Tobi.Plugin.Descriptions
             AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
 
             string oldTxt = altContent.Text != null ? altContent.Text.Text : "";
-            string txt = showTextEditorPopupDialog(oldTxt);
+            string txt = showTextEditorPopupDialog(oldTxt, "Edit description text");
 
             if (string.IsNullOrEmpty(txt) || txt == oldTxt) return;
 
@@ -724,7 +782,7 @@ namespace Tobi.Plugin.Descriptions
             if (be != null) be.UpdateTarget();
         }
 
-        private string showTextEditorPopupDialog(string text)
+        private string showTextEditorPopupDialog(string text, String title)
         {
             m_Logger.Log("showTextEditorPopupDialog", Category.Debug, Priority.Medium);
 
@@ -736,7 +794,7 @@ namespace Tobi.Plugin.Descriptions
             };
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   "Description text",
+                                                   title,
                                                    new ScrollViewer { Content = editBox },
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
@@ -756,6 +814,45 @@ namespace Tobi.Plugin.Descriptions
                 if (string.IsNullOrEmpty(editBox.Text))
                 {
                     return null;
+                }
+                return editBox.Text;
+            }
+
+            return null;
+        }
+
+        private string showLineEditorPopupDialog(string text, String title)
+        {
+            m_Logger.Log("showTextEditorPopupDialog", Category.Debug, Priority.Medium);
+
+            var editBox = new TextBox
+            {
+                Text = text,
+                TextWrapping = TextWrapping.NoWrap,
+                AcceptsReturn = false
+            };
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   title,
+                                                   editBox,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 300, 160, null, 40);
+
+            editBox.Loaded += new RoutedEventHandler((sender, ev) =>
+            {
+                editBox.SelectAll();
+                FocusHelper.FocusBeginInvoke(editBox);
+            });
+
+            windowPopup.ShowModal();
+
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                if (string.IsNullOrEmpty(editBox.Text))
+                {
+                    return "";
                 }
                 return editBox.Text;
             }
