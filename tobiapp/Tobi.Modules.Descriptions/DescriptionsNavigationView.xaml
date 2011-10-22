@@ -77,28 +77,64 @@
       Focusable="False">
     <pres:ListView
         x:Name="ListView"
-        ItemsSource="{Binding DescriptionsNavigator_DescribedTreeNodes}"
+        ItemsSource="{Binding DescriptionsNavigator_DescribableTreeNodes}"
         VirtualizingStackPanel.IsVirtualizing="False"
         VirtualizingStackPanel.VirtualizationMode="Recycling"
         SelectionMode="Single"
         
-        IsTabStop="True"
-        Focusable="True"
+        KeyboardNavigation.TabNavigation="Once"
+        KeyboardNavigation.DirectionalNavigation="Contained"
+        
+        IsTabStop="{Binding HasNotDescribableTreeNodes}"
+        Focusable="{Binding HasNotDescribableTreeNodes}"
+        
         TabIndex="1"
         AutomationProperties.Name="Descriptions"
         search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}">
       <ListView.ItemTemplate>
         <DataTemplate>
-          <TextBlock Text="{Binding Description}"/>
+          <StackPanel Orientation="Vertical"
+                 HorizontalAlignment="Stretch"
+                      Margin="0,7,0,7">
+
+            <Image
+                Focusable="False"
+                x:Name="DescribableImage"
+                Height="100"
+                HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                          Stretch = "Uniform"
+                          StretchDirection="DownOnly"
+                Source="{Binding DescribableImage, Mode=OneWay}"
+                
+                                        Margin="8,0,0,0"
+              />
+
+            <StackPanel Orientation="Horizontal"
+                   HorizontalAlignment="Stretch"
+                                        Margin="8,4,8,0"
+                        >
+              <CheckBox IsChecked="{Binding HasDescription, Mode=OneWay}"
+                       IsEnabled="False"
+                        Focusable="False"
+                  HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                        
+                                        Margin="0,0,4,0"/>
+              <TextBlock Text="{Binding Description, Mode=OneWay}"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Stretch"/>
+            </StackPanel>
+          </StackPanel>
         </DataTemplate>
       </ListView.ItemTemplate>
       <ListView.ItemContainerStyle>
 
         <Style TargetType="{x:Type ListViewItem}">
 
-          <Setter Property="ToolTip" Value="{Binding Description}" />
+          <Setter Property="ToolTip" Value="{Binding DescriptionX}" />
 
-          <Setter Property="AutomationProperties.Name" Value="{Binding Description}"/>
+          <Setter Property="AutomationProperties.Name" Value="{Binding DescriptionX}"/>
           <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
           <!-- Setter Property="FontSize" Value="15" / -->
           <Setter Property="FontWeight" Value="Normal" />

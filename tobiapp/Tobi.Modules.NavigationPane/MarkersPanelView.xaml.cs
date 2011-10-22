@@ -16,7 +16,7 @@ namespace Tobi.Plugin.NavigationPane
     /// Interaction logic for MarkersPanelView.xaml
     /// </summary>
     [Export(typeof(MarkersPanelView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class MarkersPanelView // : IMarkersPaneView, IActiveAware
+    public partial class MarkersPanelView : ITobiViewFocusable // : IMarkersPaneView, IActiveAware
     {
         //private bool _ignoreMarkersSelected = false;
         private bool _ignoreTreeNodeSelectedEvent = false;
@@ -104,14 +104,34 @@ namespace Tobi.Plugin.NavigationPane
                 ViewModel.IsSearchVisible = false;
             }
         }
-        public UIElement ViewControl
+        public UIElement FocusableItem
         {
-            get { return this; }
+            get
+            {
+                if (ListView.Focusable) return ListView;
+
+                if (ListView.SelectedIndex != -1)
+                {
+                    return ListView.ItemContainerGenerator.ContainerFromIndex(ListView.SelectedIndex) as ListViewItem;
+                }
+
+                if (ListView.Items.Count > 0)
+                {
+                    return ListView.ItemContainerGenerator.ContainerFromIndex(0) as ListViewItem;
+                }
+
+                return null;
+            }
         }
-        public UIElement ViewFocusStart
-        {
-            get { return ListView; }
-        }
+
+        //public UIElement ViewControl
+        //{
+        //    get { return this; }
+        //}
+        //public UIElement ViewFocusStart
+        //{
+        //    get { return ListView; }
+        //}
 
 
         private void handleListCurrentSelection()
@@ -169,7 +189,7 @@ namespace Tobi.Plugin.NavigationPane
             if (key == Key.Escape)
             {
                 SearchBox.Text = "";
-                FocusHelper.FocusBeginInvoke(ViewFocusStart);
+                FocusHelper.FocusBeginInvoke(FocusableItem);
             }
         }
     }

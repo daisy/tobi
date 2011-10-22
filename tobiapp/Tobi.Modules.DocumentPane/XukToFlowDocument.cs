@@ -2185,14 +2185,22 @@ namespace Tobi.Plugin.DocumentPane
                 EventAggregator.GetEvent<MarkedTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
             }
 
-            if (node.HasAlternateContentProperty)
+            //if (node.HasAlternateContentProperty)
+            //{
+            //    EventAggregator.GetEvent<DescribedTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
+            //}
+
+            QualifiedName qname = node.GetXmlElementQName();
+            string lowerLocalName = qname == null ? null : qname.LocalName.ToLower();
+
+            if (lowerLocalName == "img")
             {
-                EventAggregator.GetEvent<DescribedTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
+                EventAggregator.GetEvent<DescribableTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
             }
+
 
             TextElement parentNext = parent;
 
-            QualifiedName qname = node.GetXmlElementQName();
             AbstractTextMedia textMedia = node.GetTextMedia();
 
             if (node.Children.Count == 0)
@@ -2308,7 +2316,7 @@ namespace Tobi.Plugin.DocumentPane
                     walkBookTreeAndGenerateFlowDocument(node.Children.Get(i), parentNext);
                 }
 
-                if (qname.LocalName == "table")
+                if (lowerLocalName == "table")
                 {
                     int n = ((Table)parentNext).Columns.Count;
                     foreach (TableCell cell in m_cellsToExpand)

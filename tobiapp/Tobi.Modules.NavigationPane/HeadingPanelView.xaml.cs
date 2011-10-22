@@ -15,7 +15,7 @@ namespace Tobi.Plugin.NavigationPane
     /// Interaction logic for HeadingPanelView.xaml
     /// </summary>
     [Export(typeof(HeadingPanelView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class HeadingPanelView // : IActiveAware
+    public partial class HeadingPanelView : ITobiViewFocusable // : IActiveAware
     {
         private TreeViewItem m_SelectedTreeViewItem;
 
@@ -94,13 +94,7 @@ namespace Tobi.Plugin.NavigationPane
             m_SelectedTreeViewItem = null;
             SearchBox.Text = "";
         }
-
-        public UIElement ViewControl
-        {
-            get { return this; }
-        }
-
-        public UIElement ViewFocusStart
+        public UIElement FocusableItem
         {
             get
             {
@@ -108,9 +102,28 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     return m_SelectedTreeViewItem;
                 }
-                return TreeView;
+
+                if (TreeView.Focusable) return TreeView;
+
+                return null;
             }
         }
+        //public UIElement ViewControl
+        //{
+        //    get { return this; }
+        //}
+
+        //public UIElement ViewFocusStart
+        //{
+        //    get
+        //    {
+        //        if (m_SelectedTreeViewItem != null)
+        //        {
+        //            return m_SelectedTreeViewItem;
+        //        }
+        //        return TreeView;
+        //    }
+        //}
 
 
         private void handleTreeViewCurrentSelection()
@@ -183,7 +196,7 @@ namespace Tobi.Plugin.NavigationPane
             if (key == Key.Escape)
             {
                 SearchBox.Text = "";
-                FocusHelper.FocusBeginInvoke(ViewFocusStart);
+                FocusHelper.FocusBeginInvoke(FocusableItem);
             }
         }
 

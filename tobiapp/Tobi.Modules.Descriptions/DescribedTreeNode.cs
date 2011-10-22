@@ -1,12 +1,18 @@
-﻿using Tobi.Common.MVVM;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Media;
+using Tobi.Common.MVVM;
 using urakawa.core;
+using urakawa.property.xml;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.Descriptions
 {
-    public class DescribedTreeNode : PropertyChangedNotifyBase
+    public class DescribableTreeNode : PropertyChangedNotifyBase
     {
-        public DescribedTreeNode(TreeNode node)
+        public DescribableTreeNode(TreeNode node)
         {
             TreeNode = node;
         }
@@ -29,14 +35,50 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
+        public static ImageSource GetDescribableImage(TreeNode treeNode)
+        {
+            var te = treeNode.Tag as TextElement;
+            if (te != null)
+            {
+                Panel panel = null;
+                if (te is InlineUIContainer)
+                {
+                    panel = ((InlineUIContainer)te).Child as Panel;
+                }
+                else if (te is BlockUIContainer)
+                {
+                    panel = ((BlockUIContainer)te).Child as Panel;
+                }
+
+                Image img = null;
+                if (panel != null)
+                {
+                    foreach (UIElement uiElement in panel.Children)
+                    {
+                        if (uiElement is Image)
+                        {
+                            img = (Image)uiElement;
+                            break;
+                        }
+                    }
+                }
+                if (img != null)
+                {
+                    return img.Source;
+                }
+            }
+
+            return null;
+        }
+
         public static string GetDescriptionLabel(TreeNode treeNode)
         {
             string str = "";
             QualifiedName qname = treeNode.GetXmlElementQName();
-            if (qname != null)
-            {
-                str = "[" + qname.LocalName + "] ";
-            }
+            //if (qname != null)
+            //{
+            //    str = "[" + qname.LocalName + "] ";
+            //}
             string text = treeNode.GetTextFlattened(true);
             if (!string.IsNullOrEmpty(text))
             {
@@ -46,6 +88,27 @@ namespace Tobi.Plugin.Descriptions
                 }
                 str = str + text;
             }
+
+            if (qname != null && qname.LocalName.ToLower() == "img")
+            {
+                XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("src");
+                if (xmlAttr != null && !String.IsNullOrEmpty(xmlAttr.Value))
+                {
+                    str = str + " [";
+                    string strAttr = xmlAttr.Value.TrimEnd('/');
+                    int index = strAttr.LastIndexOf('/');
+                    if (index >= 0)
+                    {
+                        str = str + strAttr.Substring(index);
+                    }
+                    else
+                    {
+                        str = str + strAttr;
+                    }
+                    str = str + "] ";
+                }
+            }
+
             return str;
         }
 
@@ -53,6 +116,29 @@ namespace Tobi.Plugin.Descriptions
         public void RaiseDescriptionChanged()
         {
             RaisePropertyChanged(() => Description);
+            RaisePropertyChanged(() => DescriptionX);
+        }
+
+        public void RaiseHasDescriptionChanged()
+        {
+            RaisePropertyChanged(() => HasDescription);
+        }
+
+        public bool HasDescription
+        {
+            get
+            {
+                return TreeNode.HasAlternateContentProperty;
+            }
+        }
+
+
+        public ImageSource DescribableImage
+        {
+            get
+            {
+                return GetDescribableImage(TreeNode);
+            }
         }
 
         public string Description
@@ -60,6 +146,14 @@ namespace Tobi.Plugin.Descriptions
             get
             {
                 return GetDescriptionLabel(TreeNode);
+            }
+        }
+
+        public string DescriptionX
+        {
+            get
+            {
+                return (HasDescription ? "(described) " : "(no description) ") + Description;
             }
         }
 

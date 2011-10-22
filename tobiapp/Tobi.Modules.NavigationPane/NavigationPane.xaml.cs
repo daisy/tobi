@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows;
 using Microsoft.Practices.Composite.Presentation.Regions;
 using Microsoft.Practices.Composite.Regions;
@@ -54,34 +55,46 @@ namespace Tobi.Plugin.NavigationPane
                                     () =>
                                     {
                                         IRegion tabRegion = m_RegionManager.Regions[RegionNames.NavigationPaneTabs];
-                                        
+
                                         UIElement ui = null;
-                                        
-                                        foreach (var view in tabRegion.ActiveViews)
+
+                                        foreach (var view in tabRegion.ActiveViews) // should be just only one
                                         {
-                                            if (view == m_PagePaneView.ViewControl)
+                                            if (view is ITobiViewFocusable)
                                             {
-                                                ui = m_PagePaneView.ViewFocusStart;
+                                                ui = ((ITobiViewFocusable)view).FocusableItem;
                                                 break;
                                             }
-                                            if (view == m_HeadingPaneView.ViewControl)
+                                            else
                                             {
-                                                ui = m_HeadingPaneView.ViewFocusStart;
-                                                break;
-                                            }
-                                            if (view == m_MarkersPaneView.ViewControl)
-                                            {
-                                                ui = m_MarkersPaneView.ViewFocusStart;
-                                                break;
-                                            }
+                                                //if (view == m_PagePaneView.ViewControl)
+                                                //{
+                                                //    ui = m_PagePaneView.ViewFocusStart;
+                                                //    if (ui.Focusable)
+                                                //        break;
+                                                //}
+                                                //if (view == m_HeadingPaneView.ViewControl)
+                                                //{
+                                                //    ui = m_HeadingPaneView.ViewFocusStart;
+                                                //    if (ui.Focusable)
+                                                //        break;
+                                                //}
+                                                //if (view == m_MarkersPaneView.ViewControl)
+                                                //{
+                                                //    ui = m_MarkersPaneView.ViewFocusStart;
+                                                //    if (ui.Focusable)
+                                                //        break;
+                                                //}
 
-                                            ui = FocusHelper.GetLeafFocusableChild((UIElement)view);
+#if DEBUG
+                                                Debugger.Break();
+#endif
 
-                                            //TODO: what about extensions ??
-                                            // ViewFocusStart should be a common denominator implemented by every single tab content
+                                                ui = FocusHelper.GetLeafFocusableChild((UIElement) view);
+                                            }
                                         }
 
-                                        if (ui != null)
+                                        if (ui != null && ui.Focusable)
                                         {
                                             FocusHelper.FocusBeginInvoke(ui);
                                         }

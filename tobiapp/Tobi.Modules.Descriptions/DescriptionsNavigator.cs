@@ -9,7 +9,7 @@ namespace Tobi.Plugin.Descriptions
 {
     public class DescriptionsNavigator
     {
-        private ObservableCollection<DescribedTreeNode> _mDescribedTreeNodes = new ObservableCollection<DescribedTreeNode>();
+        private ObservableCollection<DescribableTreeNode> _mDescribableTreeNodes = new ObservableCollection<DescribableTreeNode>();
         private string m_searchString = string.Empty;
 
         private readonly DescriptionsNavigationView m_view;
@@ -19,30 +19,30 @@ namespace Tobi.Plugin.Descriptions
             m_view = view;
         }
 
-        public void AddDescribedTreeNode(TreeNode node)
+        public void AddDescribableTreeNode(TreeNode node)
         {
-            RemoveDescribedTreeNode(node); // ensure no duplicate
-            DescribedTreeNodes.Add(new DescribedTreeNode(node));
+            RemoveDescribableTreeNode(node); // ensure no duplicate
+            DescribableTreeNodes.Add(new DescribableTreeNode(node));
         }
 
-        public void RemoveDescribedTreeNode(TreeNode node)
+        public void RemoveDescribableTreeNode(TreeNode node)
         {
-            DescribedTreeNode toRemove = null;
-            foreach (var describedTreeNode in DescribedTreeNodes)
+            DescribableTreeNode toRemove = null;
+            foreach (var describableTreeNode in DescribableTreeNodes)
             {
-                if (describedTreeNode.TreeNode == node)
+                if (describableTreeNode.TreeNode == node)
                 {
-                    toRemove = describedTreeNode;
+                    toRemove = describableTreeNode;
                     break;
                 }
             }
             if (toRemove != null)
-                DescribedTreeNodes.Remove(toRemove);
+                DescribableTreeNodes.Remove(toRemove);
         }
 
-        public ObservableCollection<DescribedTreeNode> DescribedTreeNodes
+        public ObservableCollection<DescribableTreeNode> DescribableTreeNodes
         {
-            get { return _mDescribedTreeNodes; }
+            get { return _mDescribableTreeNodes; }
         }
 
         public string SearchTerm
@@ -60,14 +60,14 @@ namespace Tobi.Plugin.Descriptions
         {
             if (string.IsNullOrEmpty(SearchTerm))
             {
-                foreach (DescribedTreeNode mnode in DescribedTreeNodes)
+                foreach (DescribableTreeNode mnode in DescribableTreeNodes)
                 {
                     mnode.SearchMatch = false;
                 }
                 return;
             }
             bool atLeastOneFound = false;
-            foreach (DescribedTreeNode mnode in DescribedTreeNodes)
+            foreach (DescribableTreeNode mnode in DescribableTreeNodes)
             {
                 bool found = !string.IsNullOrEmpty(mnode.Description) &&
                                    mnode.Description.ToLower().Contains(SearchTerm.ToLower());
@@ -80,7 +80,7 @@ namespace Tobi.Plugin.Descriptions
 
             if (atLeastOneFound)
             {
-                DescribedTreeNode sw = FindNext(false);
+                DescribableTreeNode sw = FindNext(false);
                 if (sw == null)
                 {
                     sw = FindPrevious(false);
@@ -88,9 +88,9 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
-        public DescribedTreeNode FindNext(bool select)
+        public DescribableTreeNode FindNext(bool select)
         {
-            DescribedTreeNode nextMatch = FindNextDescription(_mDescribedTreeNodes);
+            DescribableTreeNode nextMatch = FindNextDescription(_mDescribableTreeNodes);
             if (nextMatch != null)
             {
                 var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
@@ -122,9 +122,9 @@ namespace Tobi.Plugin.Descriptions
             }
             return nextMatch;
         }
-        public DescribedTreeNode FindPrevious(bool select)
+        public DescribableTreeNode FindPrevious(bool select)
         {
-            DescribedTreeNode previousMatch = FindPrevDescription(_mDescribedTreeNodes);
+            DescribableTreeNode previousMatch = FindPrevDescription(_mDescribableTreeNodes);
             if (previousMatch != null)
             {
                 var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
@@ -156,9 +156,9 @@ namespace Tobi.Plugin.Descriptions
             }
             return previousMatch;
         }
-        private static DescribedTreeNode FindNextDescription(ObservableCollection<DescribedTreeNode> pages)
+        private static DescribableTreeNode FindNextDescription(ObservableCollection<DescribableTreeNode> pages)
         {
-            DescribedTreeNode pResult = null;
+            DescribableTreeNode pResult = null;
             int iStarting = -1;
             for (int i = 0; i < pages.Count; i++)
             {
@@ -181,9 +181,9 @@ namespace Tobi.Plugin.Descriptions
             }
             return pResult;
         }
-        private static DescribedTreeNode FindPrevDescription(ObservableCollection<DescribedTreeNode> pages)
+        private static DescribableTreeNode FindPrevDescription(ObservableCollection<DescribableTreeNode> pages)
         {
-            DescribedTreeNode pResult = null;
+            DescribableTreeNode pResult = null;
             int iStarting = -1;
             for (int i = pages.Count - 1; i >= 0; i--)
             {

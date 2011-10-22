@@ -1,9 +1,15 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Windows;
 using Microsoft.Practices.Composite.Logging;
 
 namespace Tobi.Common
 {
+    public interface ITobiViewFocusable
+    {
+        UIElement FocusableItem { get; }
+    }
+
     /// <summary>
     /// Acts as an intermediate between a plugin and the host application,
     /// by wiring things together, such as establishing region mapping in the user-interface.

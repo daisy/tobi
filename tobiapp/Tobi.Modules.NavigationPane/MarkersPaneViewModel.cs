@@ -355,6 +355,17 @@ namespace Tobi.Plugin.NavigationPane
                 MarkersNavigator.AddMarkedTreeNode(cmd.TreeNode);
             else
                 MarkersNavigator.RemoveMarkedTreeNode(cmd.TreeNode);
+
+            RaisePropertyChanged(() => HasNotMarkers);
+        }
+
+        [NotifyDependsOn("MarkersNavigator")]
+        public bool HasNotMarkers
+        {
+            get
+            {
+                return MarkersNavigator == null ? true : MarkersNavigator.MarkedTreeNodes.Count == 0;
+            }
         }
 
         private void onMarkedTreeNodeFoundByFlowDocumentParser(TreeNode data)
@@ -367,7 +378,10 @@ namespace Tobi.Plugin.NavigationPane
                 TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<TreeNode>)onMarkedTreeNodeFoundByFlowDocumentParser, data);
                 return;
             }
+
             MarkersNavigator.AddMarkedTreeNode(data);
+
+            RaisePropertyChanged(() => HasNotMarkers);
         }
 
 

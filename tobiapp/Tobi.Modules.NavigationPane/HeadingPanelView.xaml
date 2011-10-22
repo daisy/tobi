@@ -70,8 +70,10 @@
       DockPanel.Dock="Top"
       VirtualizingStackPanel.IsVirtualizing="False"
       VirtualizingStackPanel.VirtualizationMode="Recycling"
+      
       Focusable="True"
       IsTabStop="True"
+      
       AutomationProperties.Name="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Headings}">
 
       <TreeView.ItemContainerStyle>

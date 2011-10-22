@@ -17,7 +17,7 @@ namespace Tobi.Plugin.NavigationPane
     /// Interaction logic for PagePanelView.xaml
     /// </summary>
     [Export(typeof(PagePanelView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class PagePanelView // : IPagePaneView, IActiveAware
+    public partial class PagePanelView : ITobiViewFocusable // : IPagePaneView, IActiveAware
     {
         //private bool _ignorePageSelected = false;
         private bool _ignoreTreeNodeSelectedEvent = false;
@@ -110,14 +110,33 @@ namespace Tobi.Plugin.NavigationPane
             SearchBox.Text = "";
         }
 
-        public UIElement ViewControl
+        public UIElement FocusableItem
         {
-            get { return this; }
+            get
+            {
+                if (ListView.Focusable) return ListView;
+
+                if (ListView.SelectedIndex != -1)
+                {
+                    return ListView.ItemContainerGenerator.ContainerFromIndex(ListView.SelectedIndex) as ListViewItem;
+                }
+
+                if (ListView.Items.Count > 0)
+                {
+                    return ListView.ItemContainerGenerator.ContainerFromIndex(0) as ListViewItem;
+                }
+
+                return null;
+            }
         }
-        public UIElement ViewFocusStart
-        {
-            get { return ListView; }
-        }
+        //public UIElement ViewControl
+        //{
+        //    get { return this; }
+        //}
+        //public UIElement ViewFocusStart
+        //{
+        //    get { return ListView; }
+        //}
 
 
         private void handleListCurrentSelection()
@@ -188,7 +207,7 @@ namespace Tobi.Plugin.NavigationPane
             if (key == Key.Escape)
             {
                 SearchBox.Text = "";
-                FocusHelper.FocusBeginInvoke(ViewFocusStart);
+                FocusHelper.FocusBeginInvoke(FocusableItem);
             }
         }
     }

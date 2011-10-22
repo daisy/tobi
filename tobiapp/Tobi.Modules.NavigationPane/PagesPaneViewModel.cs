@@ -278,6 +278,15 @@ namespace Tobi.Plugin.NavigationPane
             View.UnloadProject();
         }
 
+        [NotifyDependsOn("PagesNavigator")]
+        public bool HasNotPages
+        {
+            get
+            {
+                return PagesNavigator == null ? true : PagesNavigator.Pages.Count == 0;
+            }
+        }
+
         private void onPageFoundByFlowDocumentParser(TreeNode treeNode)
         {
             if (!TheDispatcher.CheckAccess())
@@ -289,6 +298,8 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
             PagesNavigator.AddPage(treeNode);
+
+            RaisePropertyChanged(() => HasNotPages);
         }
 
         private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)

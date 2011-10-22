@@ -96,7 +96,7 @@ namespace Tobi.Plugin.Descriptions
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(onProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(onProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
 
-            m_EventAggregator.GetEvent<DescribedTreeNodeFoundByFlowDocumentParserEvent>().Subscribe(onDescribedTreeNodeFoundByFlowDocumentParser, DescribedTreeNodeFoundByFlowDocumentParserEvent.THREAD_OPTION);
+            m_EventAggregator.GetEvent<DescribableTreeNodeFoundByFlowDocumentParserEvent>().Subscribe(onDescribableTreeNodeFoundByFlowDocumentParser, DescribableTreeNodeFoundByFlowDocumentParserEvent.THREAD_OPTION);
 
             m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
         }
@@ -155,11 +155,11 @@ namespace Tobi.Plugin.Descriptions
         }
 
         [NotifyDependsOn("DescriptionsNavigator")]
-        public ObservableCollection<DescribedTreeNode> DescriptionsNavigator_DescribedTreeNodes
+        public ObservableCollection<DescribableTreeNode> DescriptionsNavigator_DescribableTreeNodes
         {
             get
             {
-                return DescriptionsNavigator == null ? null : DescriptionsNavigator.DescribedTreeNodes;
+                return DescriptionsNavigator == null ? null : DescriptionsNavigator.DescribableTreeNodes;
             }
         }
 
@@ -209,7 +209,7 @@ namespace Tobi.Plugin.Descriptions
             get
             {
                 if (SelectedTreeNode == null) return "";
-                return DescribedTreeNode.GetDescriptionLabel(SelectedTreeNode);
+                return DescribableTreeNode.GetDescriptionLabel(SelectedTreeNode);
             }
         }
 
@@ -320,12 +320,12 @@ namespace Tobi.Plugin.Descriptions
             {
                 var node = ((TreeNodeChangeTextCommand)eventt.Command).TreeNode;
 
-                foreach (var describedTreeNode in DescriptionsNavigator_DescribedTreeNodes)
+                foreach (var describableTreeNode in DescriptionsNavigator_DescribableTreeNodes)
                 {
-                    if (node == describedTreeNode.TreeNode
-                        || node.IsDescendantOf(describedTreeNode.TreeNode))
+                    if (node == describableTreeNode.TreeNode
+                        || node.IsDescendantOf(describableTreeNode.TreeNode))
                     {
-                        describedTreeNode.RaiseDescriptionChanged();
+                        describableTreeNode.RaiseDescriptionChanged();
                     }
                 }
                 return;
@@ -397,52 +397,71 @@ namespace Tobi.Plugin.Descriptions
             }
 
             if (treeNode == null) return;
-
-            if (treeNode.HasAlternateContentProperty && !treeNode.GetAlternateContentProperty().IsEmpty)
+            foreach (var describableTreeNode in DescriptionsNavigator_DescribableTreeNodes)
             {
-                bool treeNodeAlreadyRegistered = false;
-                foreach (var describedTreeNode in DescriptionsNavigator.DescribedTreeNodes)
+                if (treeNode == describableTreeNode.TreeNode
+                    || treeNode.IsDescendantOf(describableTreeNode.TreeNode))
                 {
-                    if (describedTreeNode.TreeNode == treeNode)
-                    {
-                        treeNodeAlreadyRegistered = true;
-                        break;
-                    }
-                }
-                if (!treeNodeAlreadyRegistered)
-                {
-                    DescriptionsNavigator.AddDescribedTreeNode(treeNode);
+                    describableTreeNode.RaiseHasDescriptionChanged();
                 }
             }
-            else
+
+            //if (treeNode.HasAlternateContentProperty && !treeNode.GetAlternateContentProperty().IsEmpty)
+            //{
+            //    bool treeNodeAlreadyRegistered = false;
+            //    foreach (var describableTreeNode in DescriptionsNavigator.DescribableTreeNodes)
+            //    {
+            //        if (describableTreeNode.TreeNode == treeNode)
+            //        {
+            //            treeNodeAlreadyRegistered = true;
+            //            break;
+            //        }
+            //    }
+            //    if (!treeNodeAlreadyRegistered)
+            //    {
+            //        DescriptionsNavigator.AddDescribableTreeNode(treeNode);
+            //    }
+            //}
+            //else
+            //{
+            //    DescribableTreeNode nodeToRemove = null;
+            //    foreach (var describableTreeNode in DescriptionsNavigator.DescribableTreeNodes)
+            //    {
+            //        if (describableTreeNode.TreeNode == treeNode)
+            //        {
+            //            nodeToRemove = describableTreeNode;
+            //            break;
+            //        }
+            //    }
+            //    if (nodeToRemove != null)
+            //    {
+            //        DescriptionsNavigator.RemoveDescribableTreeNode(nodeToRemove.TreeNode);
+            //    }
+            //}
+        }
+
+        [NotifyDependsOn("DescriptionsNavigator")]
+        public bool HasNotDescribableTreeNodes
+        {
+            get
             {
-                DescribedTreeNode nodeToRemove = null;
-                foreach (var describedTreeNode in DescriptionsNavigator.DescribedTreeNodes)
-                {
-                    if (describedTreeNode.TreeNode == treeNode)
-                    {
-                        nodeToRemove = describedTreeNode;
-                        break;
-                    }
-                }
-                if (nodeToRemove != null)
-                {
-                    DescriptionsNavigator.RemoveDescribedTreeNode(nodeToRemove.TreeNode);
-                }
+                return DescriptionsNavigator == null ? true : DescriptionsNavigator.DescribableTreeNodes.Count == 0;
             }
         }
 
-        private void onDescribedTreeNodeFoundByFlowDocumentParser(TreeNode data)
+        private void onDescribableTreeNodeFoundByFlowDocumentParser(TreeNode data)
         {
             if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<TreeNode>)onDescribedTreeNodeFoundByFlowDocumentParser, data);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<TreeNode>)onDescribableTreeNodeFoundByFlowDocumentParser, data);
                 return;
             }
-            DescriptionsNavigator.AddDescribedTreeNode(data);
+            DescriptionsNavigator.AddDescribableTreeNode(data);
+
+            RaisePropertyChanged(() => HasNotDescribableTreeNodes);
         }
 
 
@@ -453,9 +472,9 @@ namespace Tobi.Plugin.Descriptions
             //Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
             TreeNode node = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
 
-            foreach (var describedTreeNode in DescriptionsNavigator_DescribedTreeNodes)
+            foreach (var describableTreeNode in DescriptionsNavigator_DescribableTreeNodes)
             {
-                describedTreeNode.IsSelected = describedTreeNode.TreeNode == node;
+                describableTreeNode.IsSelected = describableTreeNode.TreeNode == node;
             }
 
             RaisePropertyChanged(() => SelectedTreeNode);
