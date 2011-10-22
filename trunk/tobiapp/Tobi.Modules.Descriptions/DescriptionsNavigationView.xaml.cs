@@ -16,7 +16,7 @@ namespace Tobi.Plugin.Descriptions
     /// Interaction logic for DescriptionsNavigationView.xaml
     /// </summary>
     [Export(typeof(DescriptionsNavigationView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class DescriptionsNavigationView // : IActiveAware
+    public partial class DescriptionsNavigationView : ITobiViewFocusable // : IActiveAware
     {
         private bool _ignoreTreeNodeSelectedEvent = false;
 
@@ -76,27 +76,48 @@ namespace Tobi.Plugin.Descriptions
                 ViewModel.IsSearchVisible = false;
             }
         }
-        public UIElement ViewControl
+        public UIElement FocusableItem
         {
-            get { return this; }
+            get
+            {
+                if (ListView.Focusable) return ListView;
+
+                if (ListView.SelectedIndex != -1)
+                {
+                    return ListView.ItemContainerGenerator.ContainerFromIndex(ListView.SelectedIndex) as ListViewItem;
+                }
+
+                if (ListView.Items.Count > 0)
+                {
+                    return ListView.ItemContainerGenerator.ContainerFromIndex(0) as ListViewItem;
+                }
+
+                return null;
+            }
         }
-        public UIElement ViewFocusStart
-        {
-            get { return ListView; }
-        }
+        //public UIElement ViewControl
+        //{
+        //    get { return this; }
+        //}
+        //public UIElement ViewFocusStart
+        //{
+        //    get { return ListView; }
+        //}
 
 
 
         private void OnClick_Button(object sender, RoutedEventArgs e)
         {
             handleListCurrentSelection();
+
+            m_DescriptionsView.Popup();
         }
 
         private void handleListCurrentSelection()
         {
             if (ListView.SelectedIndex >= 0)
             {
-                DescribedTreeNode mnode = ListView.SelectedItem as DescribedTreeNode;
+                DescribableTreeNode mnode = ListView.SelectedItem as DescribableTreeNode;
                 if (mnode == null) return;
                 TreeNode treeNode = mnode.TreeNode;
 
@@ -107,7 +128,8 @@ namespace Tobi.Plugin.Descriptions
                 m_UrakawaSession.PerformTreeNodeSelection(treeNode);
                 //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
             }
-            m_DescriptionsView.Popup();
+
+            //m_DescriptionsView.Popup();
         }
 
         private void OnKeyUp_ListItem(object sender, KeyEventArgs e)
@@ -149,7 +171,7 @@ namespace Tobi.Plugin.Descriptions
             if (key == Key.Escape)
             {
                 SearchBox.Text = "";
-                FocusHelper.FocusBeginInvoke(ViewFocusStart);
+                FocusHelper.FocusBeginInvoke(FocusableItem);
             }
         }
     }
