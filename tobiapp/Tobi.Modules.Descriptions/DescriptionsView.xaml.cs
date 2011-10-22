@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.UI;
@@ -92,10 +93,12 @@ namespace Tobi.Plugin.Descriptions
         private readonly ILoggerFacade m_Logger;
         private readonly IShellView m_ShellView;
         private readonly IUrakawaSession m_Session;
+        private readonly IUnityContainer m_Container;
 
         [ImportingConstructor]
         public DescriptionsView(
             ILoggerFacade logger,
+            IUnityContainer container,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
@@ -104,6 +107,7 @@ namespace Tobi.Plugin.Descriptions
             DescriptionsViewModel viewModel)
         {
             m_Logger = logger;
+            m_Container = container;
             m_ShellView = shellView;
             m_Session = session;
 
@@ -121,6 +125,51 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) return;
 
+            var navModel = m_Container.Resolve<DescriptionsNavigationViewModel>();
+            if (navModel.DescriptionsNavigator == null) return;
+
+            bool found = false;
+            foreach (DescribableTreeNode dnode in navModel.DescriptionsNavigator.DescribableTreeNodes)
+            {
+                found = dnode.TreeNode == node;
+                if (found) break;
+            }
+            if (!found)
+            {
+                var label = new TextBlock
+                {
+                    Text = "Please select an image to describe.",
+                    Margin = new Thickness(8, 0, 8, 0),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Focusable = true,
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
+
+                var panel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                };
+                panel.Children.Add(iconProvider.IconLarge);
+                panel.Children.Add(label);
+                //panel.Margin = new Thickness(8, 8, 8, 0);
+
+                var popup = new PopupModalWindow(m_ShellView,
+                                                     UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc),
+                                                     panel,
+                                                     PopupModalWindow.DialogButtonsSet.Ok,
+                                                     PopupModalWindow.DialogButton.Ok,
+                                                     true, 300, 160, null, 0);
+                //view.OwnerWindow = windowPopup;
+
+                popup.ShowModal();
+                return;
+            }
+
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc),
                                                   this,
@@ -137,7 +186,7 @@ namespace Tobi.Plugin.Descriptions
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
             {
                 bool empty = m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionEmpty;
-                
+
                 m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
 
                 if (empty)
@@ -169,7 +218,7 @@ namespace Tobi.Plugin.Descriptions
             var win = Window.GetWindow(this);
             if (win is PopupModalWindow)
                 OwnerWindow = (PopupModalWindow)win;
-            
+
             MetadatasListView.Items.Refresh();
             MetadataAttributesListView.Items.Refresh();
             if (MetadatasListView.IsVisible) FocusHelper.Focus(MetadatasListView);
