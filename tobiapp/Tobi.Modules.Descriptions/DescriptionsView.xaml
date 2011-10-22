@@ -14,7 +14,30 @@
            Loaded="OnLoaded_Panel">
   <!-- 
            DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
+
+  <StackPanel
+    DockPanel.Dock="Top"
+    Orientation="Horizontal"
+                 HorizontalAlignment="Stretch"
+                      Margin="7,7,7,7">
+    <Image
+        Focusable="False"
+        Height="100"
+        HorizontalAlignment="Left"
+               VerticalAlignment="Top"
+                  Stretch = "Uniform"
+                  StretchDirection="DownOnly"
+        Source="{Binding DescribableImage, Mode=OneWay}"
+                
+                                Margin="0,0,8,0"
+              />
+
+      <TextBlock Text="{Binding DescribableImageInfo, Mode=OneWay}"
+                 VerticalAlignment="Center"
+                 HorizontalAlignment="Left"/>
+    </StackPanel>
   
+
   <TabControl
               BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
   BorderThickness="1"
