@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Practices.Unity;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using urakawa;
@@ -41,16 +43,19 @@ namespace Tobi.Plugin.Descriptions
         private readonly ILoggerFacade m_Logger;
 
         private readonly IUrakawaSession m_UrakawaSession;
+        private readonly IUnityContainer m_Container;
 
         [ImportingConstructor]
         public DescriptionsViewModel(
             IEventAggregator eventAggregator,
+            IUnityContainer container,
             ILoggerFacade logger,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IUrakawaSession session
             )
         {
             m_EventAggregator = eventAggregator;
+            m_Container = container;
             m_Logger = logger;
 
             m_UrakawaSession = session;
@@ -191,6 +196,9 @@ namespace Tobi.Plugin.Descriptions
             //m_SelectedAlternateContent = null;
             RaisePropertyChanged(() => Metadatas);
             RaisePropertyChanged(() => Descriptions);
+
+            RaisePropertyChanged(() => DescribableImage);
+            RaisePropertyChanged(() => DescribableImageInfo);
         }
 
 
@@ -725,6 +733,50 @@ namespace Tobi.Plugin.Descriptions
                 //return new ObservableCollection<Metadata>(altProp.Metadatas.ContentsAs_Enumerable);
                 return altProp.AlternateContents.ContentsAs_Enumerable;
             }
+        }
+
+        public ImageSource DescribableImage
+        {
+            get
+            {
+                TreeNode checkedNode = getCheckTreeNode();
+                if (checkedNode == null) return null;
+
+                return DescribableTreeNode.GetDescribableImage(checkedNode);
+            }
+        }
+
+        public string DescribableImageInfo
+        {
+            get
+            {
+                TreeNode checkedNode = getCheckTreeNode();
+                if (checkedNode == null) return null;
+
+                return DescribableTreeNode.GetDescriptionLabel(checkedNode);
+            }
+        }
+
+        private TreeNode getCheckTreeNode()
+        {
+            if (m_UrakawaSession.DocumentProject == null) return null;
+
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return null;
+
+            var navModel = m_Container.Resolve<DescriptionsNavigationViewModel>();
+            if (navModel.DescriptionsNavigator == null) return null;
+
+            bool found = false;
+            foreach (DescribableTreeNode dnode in navModel.DescriptionsNavigator.DescribableTreeNodes)
+            {
+                found = dnode.TreeNode == node;
+                if (found) break;
+            }
+            if (!found) return null;
+
+            return node;
         }
     }
 }
