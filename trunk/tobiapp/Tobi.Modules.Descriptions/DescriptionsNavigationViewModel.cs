@@ -194,14 +194,14 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
-        [NotifyDependsOn("SelectedTreeNode")]
-        public bool CurrentTreeNodeIsDescribed
-        {
-            get
-            {
-                return SelectedTreeNode != null && SelectedTreeNode.HasAlternateContentProperty;
-            }
-        }
+        //[NotifyDependsOn("SelectedTreeNode")]
+        //public bool CurrentTreeNodeIsDescribed
+        //{
+        //    get
+        //    {
+        //        return SelectedTreeNode != null && SelectedTreeNode.HasAlternateContentProperty;
+        //    }
+        //}
 
         [NotifyDependsOn("SelectedTreeNode")]
         public string CurrentTreeNodeLabel
@@ -397,14 +397,17 @@ namespace Tobi.Plugin.Descriptions
             }
 
             if (treeNode == null) return;
+
             foreach (var describableTreeNode in DescriptionsNavigator_DescribableTreeNodes)
             {
                 if (treeNode == describableTreeNode.TreeNode
                     || treeNode.IsDescendantOf(describableTreeNode.TreeNode))
                 {
                     describableTreeNode.RaiseHasDescriptionChanged();
+                    describableTreeNode.RaiseDescriptionChanged();
                 }
             }
+
 
             //if (treeNode.HasAlternateContentProperty && !treeNode.GetAlternateContentProperty().IsEmpty)
             //{

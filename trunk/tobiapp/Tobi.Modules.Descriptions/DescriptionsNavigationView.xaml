@@ -37,14 +37,14 @@
         DockPanel.Dock="Right"
          HorizontalAlignment="Right" VerticalAlignment="Center"
         UseSmallerIcon="True"
-        RichCommand="{Binding CmdFindNextGlobal}"/>
+        RichCommand="{Binding CmdFindNextGlobal, Mode=OneWay}"/>
 
       <UI:ButtonRichCommand
         Control.TabIndex="3"
         DockPanel.Dock="Right"
          HorizontalAlignment="Right" VerticalAlignment="Center"
         UseSmallerIcon="True"
-        RichCommand="{Binding CmdFindPreviousGlobal}"/>
+        RichCommand="{Binding CmdFindPreviousGlobal, Mode=OneWay}"/>
 
       <TextBlock
         Text="{x:Static Common:Tobi_Common_Lang.Find}"
@@ -77,7 +77,7 @@
       Focusable="False">
     <pres:ListView
         x:Name="ListView"
-        ItemsSource="{Binding DescriptionsNavigator_DescribableTreeNodes}"
+        ItemsSource="{Binding DescriptionsNavigator_DescribableTreeNodes, Mode=OneWay}"
         VirtualizingStackPanel.IsVirtualizing="False"
         VirtualizingStackPanel.VirtualizationMode="Recycling"
         SelectionMode="Single"
@@ -85,8 +85,8 @@
         KeyboardNavigation.TabNavigation="Once"
         KeyboardNavigation.DirectionalNavigation="Contained"
         
-        IsTabStop="{Binding HasNotDescribableTreeNodes}"
-        Focusable="{Binding HasNotDescribableTreeNodes}"
+        IsTabStop="{Binding HasNotDescribableTreeNodes, Mode=OneWay}"
+        Focusable="{Binding HasNotDescribableTreeNodes, Mode=OneWay}"
         
         TabIndex="1"
         AutomationProperties.Name="Descriptions"
@@ -119,8 +119,8 @@
                         Focusable="False"
                   HorizontalAlignment="Left"
                          VerticalAlignment="Center"
-                        
                                         Margin="0,0,4,0"/>
+              
               <TextBlock Text="{Binding Description, Mode=OneWay}"
                          VerticalAlignment="Center"
                          HorizontalAlignment="Stretch"/>
@@ -132,13 +132,13 @@
 
         <Style TargetType="{x:Type ListViewItem}">
 
-          <Setter Property="ToolTip" Value="{Binding DescriptionX}" />
-
-          <Setter Property="AutomationProperties.Name" Value="{Binding DescriptionX}"/>
+          <Setter Property="ToolTip" Value="{Binding DescriptionX, Mode=OneWay}" />
+          <Setter Property="AutomationProperties.Name" Value="{Binding DescriptionX, Mode=OneWay}"/>
+          
           <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
           <!-- Setter Property="FontSize" Value="15" / -->
           <Setter Property="FontWeight" Value="Normal" />
-          <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
+          <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch, Mode=OneWay}"/>
           <Setter Property="UI:ListViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
           <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItem" />
           <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />

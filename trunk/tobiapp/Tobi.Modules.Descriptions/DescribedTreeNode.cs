@@ -5,6 +5,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using Tobi.Common.MVVM;
 using urakawa.core;
+using urakawa.property.alt;
 using urakawa.property.xml;
 using urakawa.xuk;
 
@@ -128,7 +129,10 @@ namespace Tobi.Plugin.Descriptions
         {
             get
             {
-                return TreeNode.HasAlternateContentProperty;
+                var altProp = TreeNode.GetProperty<AlternateContentProperty>();
+                return altProp != null && !altProp.IsEmpty;
+
+                //return TreeNode.HasAlternateContentProperty;
             }
         }
 
