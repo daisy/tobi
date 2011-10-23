@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
@@ -14,6 +16,7 @@ using urakawa.core;
 using urakawa.daisy;
 using urakawa.data;
 using urakawa.metadata;
+using urakawa.metadata.daisy;
 using urakawa.property.alt;
 using BooleanToVisibilityConverter = System.Windows.Controls.BooleanToVisibilityConverter;
 
@@ -313,11 +316,38 @@ namespace Tobi.Plugin.Descriptions
                 TextWrapping = TextWrapping.Wrap
             };
 
-            var editBox_Name = new TextBox
+            //var editBox_Name = new TextBox
+            //{
+            //    Text = metadataAttr.Name,
+            //    TextWrapping = TextWrapping.WrapWithOverflow
+            //};
+
+            var editBoxCombo_Name = new ComboBox //WithAutomationPeer
             {
                 Text = metadataAttr.Name,
-                TextWrapping = TextWrapping.WrapWithOverflow
+                IsEditable = true,
+                IsTextSearchEnabled = true,
+                IsTextSearchCaseSensitive = false
             };
+
+            var list = new List<String>();
+            list.AddRange(DaigramContentModelStrings.MetadataNames);
+            foreach (var def in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
+            {
+                list.Add(def.Name.ToLower());
+                if (def.Synonyms != null)
+                {
+                    foreach (var syn in def.Synonyms)
+                    {
+                        list.Add(syn.ToLower());
+                    }
+                }
+            }
+            
+            editBoxCombo_Name.ItemsSource = list;
+
+            //    col = new ObservableCollection<string> { "Eric", "Phillip" };
+            //combo.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = col });
 
             var editBox_Value = new TextBox
             {
@@ -341,7 +371,7 @@ namespace Tobi.Plugin.Descriptions
             panelName.Margin = new Thickness(0, 0, 0, 8);
             label_Name.SetValue(DockPanel.DockProperty, Dock.Left);
             panelName.Children.Add(label_Name);
-            panelName.Children.Add(editBox_Name);
+            panelName.Children.Add(editBoxCombo_Name);
 
             var panelValue = new DockPanel
             {
@@ -367,10 +397,13 @@ namespace Tobi.Plugin.Descriptions
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 300, 160, null, 40);
 
-            editBox_Name.Loaded += new RoutedEventHandler((sender, ev) =>
+            editBoxCombo_Name.Loaded += new RoutedEventHandler((sender, ev) =>
             {
-                editBox_Name.SelectAll();
-                FocusHelper.FocusBeginInvoke(editBox_Name);
+                var textBox = FindChild(editBoxCombo_Name, "PART_EditableTextBox", typeof(TextBox)) as TextBox;
+                if (textBox != null)
+                    textBox.SelectAll();
+
+                FocusHelper.FocusBeginInvoke(editBoxCombo_Name);
             });
             editBox_Value.Loaded += new RoutedEventHandler((sender, ev) =>
             {
@@ -382,7 +415,7 @@ namespace Tobi.Plugin.Descriptions
 
             if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
             {
-                newName = editBox_Name.Text;
+                newName = editBoxCombo_Name.Text;
                 newValue = editBox_Value.Text;
 
                 return true;
@@ -394,6 +427,42 @@ namespace Tobi.Plugin.Descriptions
             return false;
         }
 
+        public static DependencyObject FindChild(DependencyObject reference, string childName, Type childType)
+        {
+            DependencyObject foundChild = null;
+            if (reference != null)
+            {
+                int childrenCount = VisualTreeHelper.GetChildrenCount(reference);
+                for (int i = 0; i < childrenCount; i++)
+                {
+                    var child = VisualTreeHelper.GetChild(reference, i);
+                    // If the child is not of the request child type child
+                    if (child.GetType() != childType)
+                    {
+                        // recursively drill down the tree
+                        foundChild = FindChild(child, childName, childType);
+                    }
+                    else if (!string.IsNullOrEmpty(childName))
+                    {
+                        var frameworkElement = child as FrameworkElement;
+                        // If the child's name is set for search
+                        if (frameworkElement != null && frameworkElement.Name == childName)
+                        {
+                            // if the child's name is of the request name
+                            foundChild = child;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // child element found.
+                        foundChild = child;
+                        break;
+                    }
+                }
+            }
+            return foundChild;
+        }
         private void OnKeyDown_ListItemMetadataAltContent(object sender, KeyEventArgs e)
         {
             var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
@@ -553,7 +622,7 @@ namespace Tobi.Plugin.Descriptions
 
         private string PROMPT_MD_NAME = "[enter a name]";
         private string PROMPT_MD_VALUE = "[enter a value]";
-        private string PROMPT_ID = "[enter a unique identifier]"; 
+        private string PROMPT_ID = "[enter a unique identifier]";
 
         private void OnClick_ButtonAddMetadataAltContent(object sender, RoutedEventArgs e)
         {
