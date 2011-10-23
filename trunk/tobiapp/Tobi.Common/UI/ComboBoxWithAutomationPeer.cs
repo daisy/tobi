@@ -27,13 +27,16 @@ namespace Tobi.Common.UI
         public void SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(string str)
         {
             SetValue(AutomationProperties.NameProperty, str);
+            NotifyScreenReaderAutomationIfKeyboardFocused();
+        }
 
+        public void NotifyScreenReaderAutomationIfKeyboardFocused()
+        {
             if (IsKeyboardFocused)
             {
                 NotifyScreenReaderAutomation();
             }
         }
-
 
         public static readonly DependencyProperty AutomationPropertiesNameProperty =
             DependencyProperty.Register(@"AutomationPropertiesName",

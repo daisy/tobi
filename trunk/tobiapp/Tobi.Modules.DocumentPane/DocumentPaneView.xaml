@@ -494,6 +494,13 @@ Background="{Binding
 
         <!--SelectionChanged="OnFontSelectionChanged"-->
 
+        <ComboBox.Style>
+          <Style TargetType="{x:Type ComboBox}">
+            <Setter Property="AutomationProperties.Name"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}"/>
+            <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+          </Style>
+        </ComboBox.Style>
         <ComboBox.ItemsPanel>
           <ItemsPanelTemplate>
             <VirtualizingStackPanel />

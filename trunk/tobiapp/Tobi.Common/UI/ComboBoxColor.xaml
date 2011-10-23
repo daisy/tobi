@@ -24,9 +24,18 @@
       </StackPanel>
     </DataTemplate>
   </UserControl.Resources>
-  <UI:ComboBoxWithAutomationPeer x:Name="ColorList1"
+  <ComboBox x:Name="ColorList1"
             SelectedValue="{Binding ElementName=ThisColorPicker, Path=SelectedColor}"
+                                 SelectedValuePath="Name"
             SnapsToDevicePixels="True">
+
+    <ComboBox.Style>
+      <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem.Name}"/>
+        <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+      </Style>
+    </ComboBox.Style>
 
     <ComboBox.ItemContainerStyle>
       <Style TargetType="{x:Type ComboBoxItem}">
@@ -36,5 +45,5 @@
     </ComboBox.ItemContainerStyle>
 
   
-</UI:ComboBoxWithAutomationPeer>
+</ComboBox>
 </UserControl>

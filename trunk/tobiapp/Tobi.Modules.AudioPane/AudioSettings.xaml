@@ -3,8 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
             xmlns:AudioPane="clr-namespace:Tobi.Plugin.AudioPane"
-             
-                    HorizontalAlignment="Stretch">
+      xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+      xmlns:AudioLib="clr-namespace:AudioLib;assembly=AudioLib" HorizontalAlignment="Stretch">
 
   <Grid.Resources>
 
@@ -37,25 +37,38 @@
             Margin="2"
             VirtualizingStackPanel.IsVirtualizing="False"
             IsEnabled="{Binding CanSwapOutputDevice, Mode=OneWay}"
-            AutomationProperties.LabeledBy="{Binding ElementName=LabelOutputDevices}">
-    <!--DisplayMemberPath="Name"-->
+            AutomationProperties.LabeledBy="{Binding ElementName=LabelOutputDevices}"
+                 >
+    <!--
+    
+                  x:Name="comboOutputDevices"
+                  SelectionChanged="OnSelectionChanged"
+           GotFocus="OnGotFocus"
+           
+    AutomationProperties.Name="{Binding Path=SelectedItem.Name}"
+    DisplayMemberPath="Name"  
+   -->
 
+    <ComboBox.Style>
+      <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem.Name}"/>
+        <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+      </Style>
+    </ComboBox.Style>
+    
     <ComboBox.ItemTemplate>
-      <DataTemplate>
-
-        <TextBlock Text="{Binding Name}"/>
-
+      <DataTemplate  DataType="{x:Type AudioLib:OutputDevice}">
+        <!--<StackPanel Orientation="Horizontal" Margin="10"
+                                  AutomationProperties.Name="{Binding Path=Name}">-->
+          <TextBlock Text="{Binding Name}"/>
       </DataTemplate>
-
     </ComboBox.ItemTemplate>
 
-
     <ComboBox.ItemContainerStyle>
-
       <Style TargetType="{x:Type ComboBoxItem}">
-
         <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
-    
+        <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
       </Style>
     </ComboBox.ItemContainerStyle>
   </ComboBox>
@@ -77,7 +90,15 @@
               AutomationProperties.LabeledBy="{Binding ElementName=LabelInputDevices}">
       <!--DisplayMemberPath="Name"-->
 
-      <ComboBox.ItemTemplate>
+    <ComboBox.Style>
+      <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem.Name}"/>
+        <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+      </Style>
+    </ComboBox.Style>
+
+    <ComboBox.ItemTemplate>
         <DataTemplate>
 
           <TextBlock Text="{Binding Name}"/>
@@ -114,6 +135,14 @@
             AutomationProperties.LabeledBy="{Binding ElementName=LabelTTSVoices}">
     <!--DisplayMemberPath="Name"-->
 
+    <ComboBox.Style>
+      <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="AutomationProperties.Name"
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem.Name}"/>
+        <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+      </Style>
+    </ComboBox.Style>
+    
     <ComboBox.ItemTemplate>
       <DataTemplate>
 
@@ -133,5 +162,7 @@
       </Style>
     </ComboBox.ItemContainerStyle>
   </ComboBox>
+
+
 
 </Grid>

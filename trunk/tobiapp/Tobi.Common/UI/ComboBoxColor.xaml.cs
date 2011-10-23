@@ -64,7 +64,7 @@ namespace Tobi.Common.UI
             ColorViewModel selectedColorViewModel = cp.ColorList1.SelectedValue as ColorViewModel;
             if (selectedColorViewModel != null && selectedColorViewModel.Color.Equals(newColor))
             {
-                cp.ColorList1.AutomationPropertiesName = selectedColorViewModel.Name;
+                //cp.ColorList1.AutomationPropertiesName = selectedColorViewModel.Name;
             }
             
             if (selectedColorViewModel == null || !selectedColorViewModel.Color.Equals(newColor))
@@ -75,7 +75,7 @@ namespace Tobi.Common.UI
                 {
                     cvm = cp.AddColor(newColor, newColor.ToString());
                 }
-                cp.ColorList1.AutomationPropertiesName = cvm.Name;
+                //cp.ColorList1.AutomationPropertiesName = cvm.Name;
             }
 
             // Also update the brush
