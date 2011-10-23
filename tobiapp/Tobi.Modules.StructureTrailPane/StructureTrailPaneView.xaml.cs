@@ -96,10 +96,12 @@ namespace Tobi.Plugin.StructureTrailPane
                     Style = m_ButtonStyle
                 };
 
-                var run = new Run((qname != null ? qname.LocalName : "TEXT"))
+                string str = (qname != null ? qname.LocalName : "TEXT");
+                var run = new Run(str)
                 {
                     TextDecorations = TextDecorations.Underline
                 };
+                //run.SetValue(AutomationProperties.NameProperty, str);
                 butt.Content = run;
 
                 butt.Click += OnBreadCrumbButtonClick;
@@ -232,7 +234,9 @@ namespace Tobi.Plugin.StructureTrailPane
                         if (childIsInPath)
                         {
                             var runMenuItem = new Run(qnameChild.LocalName) {FontWeight = FontWeights.ExtraBold};
-                            menuItem.Header = runMenuItem;
+                            var textBlock = new TextBlock(runMenuItem);
+                            //textBlock.SetValue(AutomationProperties.NameProperty, qnameChild.LocalName);
+                            menuItem.Header = textBlock;
                         }
                         else
                         {
@@ -244,7 +248,9 @@ namespace Tobi.Plugin.StructureTrailPane
                         if (childIsInPath)
                         {
                             var runMenuItem = new Run("TXT") {FontWeight = FontWeights.ExtraBold};
-                            menuItem.Header = runMenuItem;
+                            var textBlock = new TextBlock(runMenuItem);
+                            //textBlock.SetValue(AutomationProperties.NameProperty, "TXT");
+                            menuItem.Header = textBlock;
                         }
                         else
                         {
@@ -502,6 +508,7 @@ namespace Tobi.Plugin.StructureTrailPane
             BreadcrumbPanel.Background = SystemColors.ControlBrush;
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
             var tb = new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document)) { Margin = new Thickness(4, 2, 0, 2) };
+            //tb.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_StructureTrailPane_Lang.No_Document);
             BreadcrumbPanel.Children.Add(tb);
 
             PathToCurrentTreeNode = null;

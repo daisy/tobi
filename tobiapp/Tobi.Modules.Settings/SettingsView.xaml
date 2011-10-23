@@ -382,11 +382,18 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
 
           <ComboBox.Style>
             <Style TargetType="{x:Type ComboBox}">
+              <Setter Property="AutomationProperties.Name"
+                      Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}"/>
+              <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+            </Style>
+          </ComboBox.Style>
+          <!--<ComboBox.Style>
+            <Style TargetType="{x:Type ComboBox}">
               <Style.Setters>
                 <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
               </Style.Setters>
             </Style>
-          </ComboBox.Style>
+          </ComboBox.Style>-->
 
           <ComboBox.ItemsPanel>
             <ItemsPanelTemplate>
@@ -434,11 +441,18 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
 
           <ComboBox.Style>
             <Style TargetType="{x:Type ComboBox}">
+              <Setter Property="AutomationProperties.Name"
+                      Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}"/>
+              <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+            </Style>
+          </ComboBox.Style>
+          <!--<ComboBox.Style>
+            <Style TargetType="{x:Type ComboBox}">
               <Style.Setters>
                 <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
               </Style.Setters>
             </Style>
-          </ComboBox.Style>
+          </ComboBox.Style>-->
 
           <!--<ComboBox.ItemsPanel>
             <ItemsPanelTemplate>
