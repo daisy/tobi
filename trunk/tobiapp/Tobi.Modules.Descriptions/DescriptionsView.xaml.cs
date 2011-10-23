@@ -327,7 +327,9 @@ namespace Tobi.Plugin.Descriptions
                 Text = metadataAttr.Name,
                 IsEditable = true,
                 IsTextSearchEnabled = true,
+#if NET40
                 IsTextSearchCaseSensitive = false
+#endif //NET40
             };
 
             var list = new List<String>();
