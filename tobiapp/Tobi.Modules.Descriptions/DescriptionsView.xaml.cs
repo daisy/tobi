@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -322,7 +323,7 @@ namespace Tobi.Plugin.Descriptions
             //    TextWrapping = TextWrapping.WrapWithOverflow
             //};
 
-            var editBoxCombo_Name = new ComboBox //WithAutomationPeer
+            var editBoxCombo_Name = new ComboBoxWithAutomationPeer
             {
                 Text = metadataAttr.Name,
                 IsEditable = true,
@@ -331,6 +332,33 @@ namespace Tobi.Plugin.Descriptions
                 IsTextSearchCaseSensitive = false
 #endif //NET40
             };
+
+            //var binding = new Binding
+            //{
+            //    Mode = BindingMode.OneWay,
+            //    Source = new RelativeSource(RelativeSourceMode.Self),
+            //    Path = new PropertyPath("SelectedItem")
+            //};
+            ////var expr = editBoxCombo_Name.SetBinding(AutomationProperties.NameProperty, binding);
+            //editBoxCombo_Name.SetValue(AutomationProperties.NameProperty, "daniel");
+
+            //editBoxCombo_Name.SelectionChanged += new SelectionChangedEventHandler(
+            //    (object sender, SelectionChangedEventArgs e) =>
+            //    {
+            //        //var expr = editBoxCombo_Name.GetBindingExpression(AutomationProperties.NameProperty);
+            //        //expr.UpdateTarget();
+            //        //editBoxCombo_Name.NotifyScreenReaderAutomationIfKeyboardFocused();
+                    
+            //        //var txt = editBoxCombo_Name.Text;
+            //        //editBoxCombo_Name.Text = "mike";
+            //        //editBoxCombo_Name.Text = txt;
+
+            //        editBoxCombo_Name.NotifyScreenReaderAutomation();
+
+            //        m_Logger.Log("UP TRAGET", Category.Debug, Priority.High);
+
+            //        }
+            //    );
 
             var list = new List<String>();
             list.AddRange(DaigramContentModelStrings.MetadataNames);
