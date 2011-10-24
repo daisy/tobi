@@ -11,8 +11,15 @@
              >
   <UserControl.Resources>
     <DataTemplate DataType="{x:Type UI:ColorViewModel}">
-      <StackPanel Orientation="Horizontal" Margin="0"
-                                  AutomationProperties.Name="{Binding Path=Name}">
+      <StackPanel Orientation="Horizontal" Margin="0">
+
+        <!--AutomationProperties.Name="{Binding Name}"-->
+        <StackPanel.Style>
+          <Style TargetType="{x:Type StackPanel}">
+            <Setter Property="AutomationProperties.Name"
+                    Value="{Binding Name}"/>
+          </Style>
+        </StackPanel.Style>
         <Grid>
           <!-- Draw a checkboard rectangle first, in case the selected color is transparent -->
           <Rectangle Fill="{Binding ElementName=ThisColorPicker, Path=CheckerBrush}" Stroke="Black" SnapsToDevicePixels="True" Width="14" Height="14"/>

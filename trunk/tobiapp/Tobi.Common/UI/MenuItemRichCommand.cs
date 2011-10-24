@@ -200,7 +200,7 @@ namespace Tobi.Common.UI
             menuItem.Header = command.ShortDescription;
             menuItem.ToolTip = command.LongDescription + (command.KeyGesture != null ? " " + command.KeyGestureText + " " : "");
 
-            menuItem.SetValue(AutomationProperties.NameProperty, command.ShortDescription + " / " + menuItem.ToolTip);
+            menuItem.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.EscapeMnemonic(command.ShortDescription) + " / " + menuItem.ToolTip);
             //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
 
             menuItem.InputGestureText = command.KeyGestureText;

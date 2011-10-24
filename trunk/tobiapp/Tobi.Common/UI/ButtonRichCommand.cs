@@ -170,7 +170,7 @@ namespace Tobi.Common.UI
             button.ToolTip = command.LongDescription +
                              (!String.IsNullOrEmpty(command.KeyGestureText) ? " " + command.KeyGestureText + " " : "");
 
-            button.SetValue(AutomationProperties.NameProperty, command.ShortDescription + " / " + button.ToolTip);
+            button.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.EscapeMnemonic(command.ShortDescription) + " / " + button.ToolTip);
             //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
 
             if (command.HasIcon && (!showTextLabel || String.IsNullOrEmpty(command.ShortDescription)))
@@ -225,7 +225,7 @@ namespace Tobi.Common.UI
                     ((ImageAndTextPlaceholder)button.Tag).m_TextHost.Content = command.ShortDescription;
                     button.ToolTip = command.LongDescription;
 
-                    button.SetValue(AutomationProperties.NameProperty, command.ShortDescription + " / " + button.ToolTip);
+                    button.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.EscapeMnemonic(command.ShortDescription) + " / " + button.ToolTip);
                     //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
 
                     ((ImageAndTextPlaceholder)button.Tag).m_Command = command;
@@ -277,7 +277,7 @@ namespace Tobi.Common.UI
 
                     button.ToolTip = command.LongDescription;
 
-                    button.SetValue(AutomationProperties.NameProperty, command.ShortDescription + " / " + button.ToolTip);
+                    button.SetValue(AutomationProperties.NameProperty, UserInterfaceStrings.EscapeMnemonic(command.ShortDescription) + " / " + button.ToolTip);
                     //button.SetValue(AutomationProperties.HelpTextProperty, command.ShortDescription);
 
                     button.Tag = new ImageAndTextPlaceholder(imageHost, tb)

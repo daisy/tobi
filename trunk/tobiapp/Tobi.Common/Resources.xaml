@@ -96,6 +96,7 @@
     <Setter Property="FrameworkElement.Cursor" Value="Hand"/>
     <Setter Property="UIElement.Focusable" Value="True"/>
     <Setter Property="FrameworkElement.ToolTip" Value="{x:Static Common:Tobi_Common_Lang.ToggleVisibility}"/>
+    <Setter Property="AutomationProperties.Name" Value="{x:Static Common:Tobi_Common_Lang.ToggleVisibility}"/>
     <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
   </Style>
 

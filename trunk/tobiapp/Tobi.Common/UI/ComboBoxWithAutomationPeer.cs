@@ -15,12 +15,16 @@ namespace Tobi.Common.UI
             return m_AutomationPeer;
         }
 
-        private void NotifyScreenReaderAutomation()
+        public void NotifyScreenReaderAutomation()
         {
             if (m_AutomationPeer != null
                 && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
             {
                 m_AutomationPeer.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
+                if (this.IsEditable)
+                {
+                    m_AutomationPeer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
+                }
             }
         }
 
