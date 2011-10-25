@@ -942,6 +942,7 @@ namespace Tobi.Plugin.Descriptions
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 300, 160, null, 40);
+            editBox.SetValue(AutomationProperties.NameProperty, title);
 
             editBox.Loaded += new RoutedEventHandler((sender, ev) =>
             {
