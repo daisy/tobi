@@ -286,7 +286,7 @@ namespace Tobi.Plugin.Descriptions
             RaisePropertyChanged(() => Metadatas);
         }
 
-        public void AddDescription(string txt)
+        public void AddDescription(string txt, string descriptionName)
         {
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
             TreeNode node = selection.Item2 ?? selection.Item1;
@@ -306,6 +306,10 @@ namespace Tobi.Plugin.Descriptions
             if (!string.IsNullOrEmpty(txt))
             {
                 AddMetadata(null, altContent, DaigramContentModelStrings.XmlId, txt);
+            }
+            if (!string.IsNullOrEmpty(descriptionName))
+            {
+                AddMetadata(null, altContent, DaigramContentModelStrings.DescriptionName, descriptionName);
             }
         }
 

@@ -653,6 +653,7 @@ namespace Tobi.Plugin.Descriptions
         private string PROMPT_MD_NAME = "[enter a name]";
         private string PROMPT_MD_VALUE = "[enter a value]";
         private string PROMPT_ID = "[enter a unique identifier]";
+        private string PROMPT_DescriptionName = "[enter the description name]";
 
         private void OnClick_ButtonAddMetadataAltContent(object sender, RoutedEventArgs e)
         {
@@ -764,14 +765,18 @@ namespace Tobi.Plugin.Descriptions
         private void OnClick_ButtonAddDescription(object sender, RoutedEventArgs e)
         {
             string txt = " ";
+            string descriptionName = "";
 
             while (txt != null && txt.Trim() == "")
                 txt = showLineEditorPopupDialog(PROMPT_ID, "Unique identifier");
 
-            if (txt == null) return;
+            while (descriptionName != null && descriptionName.Trim() == "")
+            descriptionName = showLineEditorPopupDialog(PROMPT_DescriptionName, "description-name");
 
-            m_ViewModel.AddDescription(txt);
+            if (txt == null || descriptionName == null) return;
 
+            m_ViewModel.AddDescription(txt, descriptionName);
+            
             DescriptionsListView.Items.Refresh();
             DescriptionsListView.SelectedIndex = DescriptionsListView.Items.Count - 1;
             FocusHelper.FocusBeginInvoke(DescriptionsListView);
