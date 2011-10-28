@@ -769,6 +769,7 @@ namespace Tobi.Plugin.Descriptions
 
             while (txt != null && txt.Trim() == "")
                 txt = showLineEditorPopupDialog(PROMPT_ID, "Unique identifier");
+            if (txt == null) return;
 
             while (descriptionName != null && descriptionName.Trim() == "")
             descriptionName = showLineEditorPopupDialog(PROMPT_DescriptionName, "description-name");
