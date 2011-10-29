@@ -676,6 +676,17 @@ namespace Tobi.Plugin.Descriptions
             bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
             if (ok)
             {
+                bool metadataExists = false ;
+                foreach (Metadata m in altContent.Metadatas.ContentsAs_ListAsReadOnly)
+                {
+                    if (m.NameContentAttribute.Name == newName)
+                    {
+                        MessageBox.Show("Duplicate attribute. Please remove the existing attribute with the same name and add again", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error); //to do localize
+                        return;
+                    }
+                }
+
+                
                 m_ViewModel.AddMetadata(null, altContent, newName, newValue);
                 MetadatasAltContentListView.Items.Refresh();
                 MetadatasAltContentListView.SelectedIndex = MetadatasAltContentListView.Items.Count - 1;
