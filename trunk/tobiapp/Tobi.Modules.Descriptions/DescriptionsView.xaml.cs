@@ -361,21 +361,29 @@ namespace Tobi.Plugin.Descriptions
             //    );
 
             var list = new List<String>();
-            list.AddRange(DaigramContentModelStrings.MetadataNames);
-            if (isDescriptionAttributes ) list.Insert(list.Count > 2 ? 2 : list.Count, DaigramContentModelStrings.Tour);
 
-            foreach (var def in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
+            if (isDescriptionAttributes)
             {
-                list.Add(def.Name.ToLower());
-                if (def.Synonyms != null)
+                list.AddRange(DaigramContentModelStrings.XmlAttributesList);
+                list.Insert(list.Count > 2 ? 2 : list.Count, DaigramContentModelStrings.Tour);
+            }
+            else
+            {
+                list.AddRange(DaigramContentModelStrings.MetadataNames);
+
+                foreach (var def in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
                 {
-                    foreach (var syn in def.Synonyms)
+                    list.Add(def.Name.ToLower());
+                    if (def.Synonyms != null)
                     {
-                        list.Add(syn.ToLower());
+                        foreach (var syn in def.Synonyms)
+                        {
+                            list.Add(syn.ToLower());
+                        }
                     }
                 }
+
             }
-            
             editBoxCombo_Name.ItemsSource = list;
 
             //    col = new ObservableCollection<string> { "Eric", "Phillip" };
