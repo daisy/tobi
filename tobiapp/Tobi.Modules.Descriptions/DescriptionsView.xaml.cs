@@ -293,7 +293,7 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
-        private bool showMetadataAttributeEditorPopupDialog(MetadataAttribute metadataAttr, out string newName, out string newValue)
+        private bool showMetadataAttributeEditorPopupDialog(MetadataAttribute metadataAttr, out string newName, out string newValue, bool isDescriptionAttributes)
         {
             m_Logger.Log("Descriptions.MetadataAttributeEditor", Category.Debug, Priority.Medium);
 
@@ -362,6 +362,8 @@ namespace Tobi.Plugin.Descriptions
 
             var list = new List<String>();
             list.AddRange(DaigramContentModelStrings.MetadataNames);
+            if (isDescriptionAttributes ) list.Insert(list.Count > 2 ? 2 : list.Count, DaigramContentModelStrings.Tour);
+
             foreach (var def in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
             {
                 list.Add(def.Name.ToLower());
@@ -577,7 +579,7 @@ namespace Tobi.Plugin.Descriptions
             if (MetadatasAltContentListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasAltContentListView.SelectedItem;
             string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue);
+            bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue,false);
             if (ok)
             {
                 m_ViewModel.SetMetadataAttribute(null, altContent, md, md.NameContentAttribute, newName, newValue);
@@ -598,7 +600,7 @@ namespace Tobi.Plugin.Descriptions
             if (MetadatasListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
             string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue);
+            bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue,false);
             if (ok)
             {
                 m_ViewModel.SetMetadataAttribute(altProp, null, md, md.NameContentAttribute, newName, newValue);
@@ -620,7 +622,7 @@ namespace Tobi.Plugin.Descriptions
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
             MetadataAttribute mdAttr = (MetadataAttribute)MetadataAttributesListView.SelectedItem;
             string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
+            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
             if (ok)
             {
                 m_ViewModel.SetMetadataAttribute(altProp, null, md, mdAttr, newName, newValue);
@@ -673,7 +675,7 @@ namespace Tobi.Plugin.Descriptions
             mdAttr.Name = PROMPT_MD_NAME;
             mdAttr.Value = PROMPT_MD_VALUE;
             string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
+            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, true);
             if (ok)
             {
                 bool metadataExists = false ;
@@ -733,7 +735,7 @@ namespace Tobi.Plugin.Descriptions
             mdAttr.Name = PROMPT_MD_NAME;
             mdAttr.Value = PROMPT_MD_VALUE;
             string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
+            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
             if (ok)
             {
                 m_ViewModel.AddMetadata(altProp, null, newName, newValue);
@@ -762,7 +764,7 @@ namespace Tobi.Plugin.Descriptions
             mdAttr.Name = PROMPT_MD_NAME;
             mdAttr.Value = PROMPT_MD_VALUE;
             string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue);
+            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
             if (ok)
             {
                 m_ViewModel.AddMetadataAttr(md, newName, newValue);
@@ -805,7 +807,7 @@ namespace Tobi.Plugin.Descriptions
         {
             if (DescriptionsListView.SelectedIndex < 0) return;
             AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
-
+            
             m_ViewModel.RemoveDescription(altContent);
 
             DescriptionsListView.Items.Refresh();
