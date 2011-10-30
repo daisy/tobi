@@ -794,12 +794,12 @@ namespace Tobi.Plugin.Descriptions
         {
             string txt = " ";
             string descriptionName = "";
-
-            while (txt != null && txt.Trim() == "")
+            
+            while (txt != null && (txt.Trim() == "" || txt == PROMPT_ID))
                 txt = showLineEditorPopupDialog(PROMPT_ID, "Unique identifier");
             if (txt == null) return;
-
-            while (descriptionName != null && descriptionName.Trim() == "")
+            
+            while (descriptionName != null && (descriptionName.Trim() == "" || descriptionName == PROMPT_DescriptionName))
             descriptionName = showLineEditorPopupDialog(PROMPT_DescriptionName, "description-name");
 
             if (txt == null || descriptionName == null) return;
