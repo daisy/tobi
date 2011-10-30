@@ -222,7 +222,7 @@ IsEnabled="{Binding HasMetadata}"
               HorizontalAlignment="Stretch"
                     Margin="0,4,0,0"
                     Content="Add"
-                   IsEnabled="false" 
+                    
               Click="OnClick_ButtonAddMetadataAttr"/>
             <Button
                    
@@ -240,11 +240,10 @@ IsEnabled="{Binding HasMetadata}"
               HorizontalAlignment="Stretch"
                     Margin="0,4,0,0"
                     Content="Remove"
-                    
-                    IsEnabled="false" 
+                    IsEnabled="{Binding HasMetadataAttrs}"
               Click="OnClick_ButtonRemoveMetadataAttr"/>
           </StackPanel>
-<!-- IsEnabled="{Binding HasMetadataAttrs}" // replaced in above button by disable code because metadata attribute addintion/removal is not implemented-->
+
           <UI:SortableListView2
 
                    TabIndex="11"
