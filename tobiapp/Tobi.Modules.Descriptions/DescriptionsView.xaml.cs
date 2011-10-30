@@ -691,7 +691,14 @@ namespace Tobi.Plugin.Descriptions
                 {
                     if (m.NameContentAttribute.Name == newName)
                     {
-                        MessageBox.Show("Duplicate attribute. Please remove the existing attribute with the same name and add again", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error); //to do localize
+                        var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   "Duplicate attribute. Please remove the existing attribute with the same name and add again",
+                                                   new TextBlock { Text = "Duplicate attribute!", Focusable = true },
+                                                   PopupModalWindow.DialogButtonsSet.Ok,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 300, 160, null, 40);
+                        windowPopup.ShowModal();
+                        //MessageBox.Show("Duplicate attribute. Please remove the existing attribute with the same name and add again", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error); //to do localize
                         return;
                     }
                 }
