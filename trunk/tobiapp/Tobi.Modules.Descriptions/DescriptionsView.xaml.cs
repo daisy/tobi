@@ -684,7 +684,7 @@ namespace Tobi.Plugin.Descriptions
             mdAttr.Value = PROMPT_MD_VALUE;
             string newName, newValue;
             bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, true);
-            if (ok)
+            if (ok && newName != PROMPT_MD_NAME)
             {
                 bool metadataExists = false ;
                 foreach (Metadata m in altContent.Metadatas.ContentsAs_ListAsReadOnly)
@@ -751,7 +751,7 @@ namespace Tobi.Plugin.Descriptions
             mdAttr.Value = PROMPT_MD_VALUE;
             string newName, newValue;
             bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
-            if (ok)
+            if (ok && newName != PROMPT_MD_NAME)
             {
                 m_ViewModel.AddMetadata(altProp, null, newName, newValue);
                 MetadatasListView.Items.Refresh();
