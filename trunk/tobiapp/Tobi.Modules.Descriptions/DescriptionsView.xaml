@@ -558,6 +558,9 @@ AlternationCount="2"
 
             <ListView.Resources>
 
+              <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                            Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                       
               <ToolTip x:Key="toolTip_DescriptionListItem"
                  DataContext="{Binding Path=PlacementTarget,
            RelativeSource={x:Static RelativeSource.Self}}"
@@ -589,11 +592,6 @@ AlternationCount="2"
             <ListView.ItemContainerStyle>
 
               <Style TargetType="{x:Type ListViewItem}">
-                <Style.Resources>
-                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-                </Style.Resources>
-
                 <Style.Setters>
 
                   <!-- Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/ -->

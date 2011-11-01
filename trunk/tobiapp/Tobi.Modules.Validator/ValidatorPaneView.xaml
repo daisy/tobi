@@ -3,7 +3,8 @@
            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-           xmlns:Validator="clr-namespace:Tobi.Plugin.Validator" xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" VerticalAlignment="Stretch"
+           xmlns:Validator="clr-namespace:Tobi.Plugin.Validator"
+      xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" VerticalAlignment="Stretch"
            HorizontalAlignment="Stretch">
 
     <Grid.RowDefinitions>
@@ -64,15 +65,18 @@
                   ScrollViewer.VerticalScrollBarVisibility="Visible"
                   AlternationCount="2"
                  >
+            <ListBox.Resources>
+              <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                            Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+            </ListBox.Resources>
+
             <ListBox.ItemContainerStyle>
               <Style TargetType="{x:Type ListBoxItem}">
-                <Style.Resources>
-                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-                </Style.Resources>
-                <Setter Property="AutomationProperties.Name" Value="{Binding Message}"/>
-                <Setter Property="ToolTip" Value="{Binding Message}"/>
-
+                <Style.Setters>
+                  <Setter Property="AutomationProperties.Name" Value="{Binding Message}"/>
+                  <Setter Property="ToolTip" Value="{Binding Message}"/>
+                </Style.Setters>
+                
                 <Style.Triggers>
                   <Trigger Property="IsSelected" Value="True">
                     <Setter Property="FontWeight" Value="Bold" />
@@ -91,7 +95,6 @@
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <TextBlock Padding="4" Text="{Binding Message}"/>
-
               </DataTemplate>
             </ListBox.ItemTemplate>
 

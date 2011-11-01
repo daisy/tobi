@@ -196,15 +196,17 @@
           <TextBlock Text="{Binding Description}"/>
         </DataTemplate>
       </ListView.ItemTemplate>
+
+      <ListView.Resources>
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                      Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+      </ListView.Resources>
+
+      
       <ListView.ItemContainerStyle>
 
         <Style TargetType="{x:Type ListViewItem}">
 
-          <Style.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                          Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-          </Style.Resources>
-          
           <Setter Property="ToolTip" Value="{Binding Description}" />
           
           <Setter Property="AutomationProperties.Name" Value="{Binding Description}"/>

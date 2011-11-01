@@ -162,14 +162,16 @@
           <TextBlock Text="{Binding Name}"/>
         </DataTemplate>
       </ListView.ItemTemplate>
+
+      <ListView.Resources>
+          <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                          Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"
+                             />
+      </ListView.Resources>
+      
       <ListView.ItemContainerStyle>
 
         <Style TargetType="{x:Type ListViewItem}">
-          <Style.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                          Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-          </Style.Resources>
-
           <Style.Setters>
           <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
           <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>

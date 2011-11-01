@@ -130,14 +130,15 @@
           </StackPanel>
         </DataTemplate>
       </ListView.ItemTemplate>
+      
+      <ListView.Resources>
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                      Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+      </ListView.Resources>
+
       <ListView.ItemContainerStyle>
 
         <Style TargetType="{x:Type ListViewItem}">
-          <Style.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                          Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-          </Style.Resources>
-
           <Setter Property="ToolTip" Value="{Binding DescriptionX, Mode=OneWay}" />
           <Setter Property="AutomationProperties.Name" Value="{Binding DescriptionX, Mode=OneWay}"/>
           

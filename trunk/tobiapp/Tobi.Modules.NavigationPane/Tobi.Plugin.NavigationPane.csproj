@@ -37,7 +37,8 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <DocumentationFile>bin\Debug\Tobi.Plugin.NavigationPane.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -46,7 +47,8 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore">
@@ -70,7 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeadingTreeNodeWrapper.cs" />
-    <Compile Include="ListViewItemBehavior.cs" />
     <Compile Include="MarkedTreeNode.cs" />
     <Compile Include="PagesNavigator.cs" />
     <Compile Include="MarkersNavigator.cs" />
@@ -90,7 +91,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Tobi.Plugin.NavigationPane.Lang.resx</DependentUpon>
     </Compile>
-    <Compile Include="TreeViewItemBehavior.cs" />
     <Compile Include="HeadingPanelView.xaml.cs">
       <DependentUpon>HeadingPanelView.xaml</DependentUpon>
     </Compile>
