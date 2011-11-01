@@ -217,7 +217,7 @@ namespace Tobi.Plugin.Descriptions
 
             if (altContent != null && altProp_.AlternateContents.IndexOf(altContent) < 0) return;
 
-            AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(node, altProp, altContent, md);
+            AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(node, altProp, altContent, md, null);
             node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
@@ -243,7 +243,7 @@ namespace Tobi.Plugin.Descriptions
             meta.NameContentAttribute.Name = newName;
             //meta.NameContentAttribute.NamespaceUri = "dummy namespace";
             meta.NameContentAttribute.Value = newValue;
-            AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(node, altProp, altContent, meta);
+            AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(node, altProp, altContent, meta, null);
             node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
@@ -401,10 +401,14 @@ namespace Tobi.Plugin.Descriptions
             var altProp = node.GetProperty<AlternateContentProperty>();
             if (altProp == null) return;
 
-            //altProp.Metadatas.Remove(md);
+            int index = altProp.Metadatas.IndexOf(md);
+            if (index < 0) return;
 
-            //AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(altProp, null, md);
-            //node.Presentation.UndoRedoManager.Execute(cmd);
+            index = altProp.Metadatas.Get(index).OtherAttributes.IndexOf(mdAttr);
+            if (index < 0) return;
+
+            AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(node, altProp, null, md, mdAttr);
+            node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
         }
@@ -423,8 +427,13 @@ namespace Tobi.Plugin.Descriptions
             int index = altProp.Metadatas.IndexOf(md);
             if (index < 0) return;
 
-            //AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta);
-            //node.Presentation.UndoRedoManager.Execute(cmd);
+            var metaAttr = new MetadataAttribute();
+            metaAttr.Name = newName;
+            //metaAttr.NamespaceUri = "dummy namespace";
+            metaAttr.Value = newValue;
+            
+            AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(node, altProp, null, md, metaAttr);
+            node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
         }

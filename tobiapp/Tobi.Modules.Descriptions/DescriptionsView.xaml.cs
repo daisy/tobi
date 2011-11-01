@@ -849,8 +849,12 @@ namespace Tobi.Plugin.Descriptions
             int selectedIndex = MetadatasListView.SelectedIndex;
             if (selectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
-            if (MetadataAttributesListView.SelectedIndex < 0) return;
+
+            selectedIndex = MetadataAttributesListView.SelectedIndex;
+            if (selectedIndex < 0) return;
+            
             m_ViewModel.RemoveMetadataAttr(md, (MetadataAttribute)MetadataAttributesListView.SelectedItem);
+
             MetadataAttributesListView.Items.Refresh();
             if (MetadataAttributesListView.Items.Count > 0)
             {
@@ -865,6 +869,7 @@ namespace Tobi.Plugin.Descriptions
         {
             if (MetadatasListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
+
             var mdAttr = new MetadataAttribute();
             mdAttr.Name = PROMPT_MD_NAME;
             mdAttr.Value = PROMPT_MD_VALUE;
