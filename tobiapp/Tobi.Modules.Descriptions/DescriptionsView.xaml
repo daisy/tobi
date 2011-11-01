@@ -70,7 +70,7 @@
                       DockPanel.Dock="Bottom"
               HorizontalAlignment="Stretch">
             <Button
-                   TabIndex="2"
+                   Control.TabIndex="2"
               x:Name="ButtonAddMetadata"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
@@ -79,7 +79,7 @@
 
               Click="OnClick_ButtonAddMetadata"/>
             <Button
-                   TabIndex="3"
+                   Control.TabIndex="3"
               x:Name="ButtonEditMetadata"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
@@ -88,7 +88,7 @@
                    IsEnabled="{Binding HasMetadata}"
               Click="OnClick_ButtonEditMetadata"/>
             <Button
-                   TabIndex="4"
+                   Control.TabIndex="4"
               x:Name="ButtonRemoveMetadata"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
@@ -99,7 +99,7 @@ IsEnabled="{Binding HasMetadata}"
           </StackPanel>
 
           <UI:SortableListView2
-                   TabIndex="1"
+                   Control.TabIndex="1"
                    ItemsSource="{Binding Metadatas}"
                    x:Name="MetadatasListView"
                    
@@ -311,7 +311,7 @@ IsEnabled="{Binding HasMetadata}"
 
           <UI:SortableListView2
 
-                   TabIndex="11"
+                   Control.TabIndex="11"
   x:Name="MetadataAttributesListView"
   ItemsSource="{Binding ElementName=MetadatasListView, Path=SelectedItem.OtherAttributes.ContentsAs_Enumerable, Mode=OneWay}"
            
@@ -496,7 +496,7 @@ AlternationCount="2"
                       DockPanel.Dock="Bottom"
               HorizontalAlignment="Stretch">
             <Button
-                   TabIndex="2"
+                   Control.TabIndex="2"
               x:Name="ButtonAddDescription"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
@@ -505,7 +505,7 @@ AlternationCount="2"
                     
               Click="OnClick_ButtonAddDescription"/>
             <Button
-                   TabIndex="4"
+                   Control.TabIndex="4"
               x:Name="ButtonRemoveDescription"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
@@ -516,7 +516,7 @@ AlternationCount="2"
           </StackPanel>
 
           <UI:SortableListView2
-                   TabIndex="1"
+                   Control.TabIndex="1"
                    ItemsSource="{Binding Descriptions}"
                    x:Name="DescriptionsListView"
                    
@@ -658,7 +658,7 @@ AlternationCount="2"
                         DockPanel.Dock="Bottom"
                 HorizontalAlignment="Stretch">
               <Button
-                     TabIndex="2"
+                     Control.TabIndex="2"
                 x:Name="ButtonEditText"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Stretch"
@@ -667,7 +667,7 @@ AlternationCount="2"
                       
                 Click="OnClick_ButtonEditText"/>
               <Button
-                     TabIndex="3"
+                     Control.TabIndex="3"
                 x:Name="ButtonClearText"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Stretch"
@@ -678,7 +678,7 @@ AlternationCount="2"
             </StackPanel>
 
               <UI:TextBoxReadOnlyCaretVisible
-                       TabIndex="1"
+                       Control.TabIndex="1"
                 x:Name="DescriptionTextBox"
                 TextReadOnly="{Binding ElementName=DescriptionsListView, Path=SelectedItem, Mode=OneWay, Converter={Descriptions:AlternateContentToTextConverter}}"
                        HorizontalAlignment="Stretch"
@@ -702,7 +702,7 @@ AlternationCount="2"
                           DockPanel.Dock="Bottom"
                   HorizontalAlignment="Stretch">
                 <Button
-                       TabIndex="2"
+                       Control.TabIndex="2"
                   x:Name="ButtonOpenImage"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -711,7 +711,7 @@ AlternationCount="2"
                         
                   Click="OnClick_ButtonOpenImage"/>
                 <Button
-                       TabIndex="3"
+                       Control.TabIndex="3"
                   x:Name="ButtonClearImage"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -722,6 +722,8 @@ AlternationCount="2"
               </StackPanel>
               <Image
                 Focusable="True"
+                       KeyboardNavigation.TabIndex="1"
+                
                         IsEnabled="{Binding HasDescriptionImage}"
                 x:Name="DescriptionImage"
                 HorizontalAlignment="Stretch"
@@ -756,7 +758,7 @@ AlternationCount="2"
                           DockPanel.Dock="Bottom"
                   HorizontalAlignment="Stretch">
                 <Button
-                       TabIndex="2"
+                       Control.TabIndex="2"
                   x:Name="ButtonAddMetadataAltContent"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -765,7 +767,7 @@ AlternationCount="2"
 
                   Click="OnClick_ButtonAddMetadataAltContent"/>
                 <Button
-                       TabIndex="3"
+                       Control.TabIndex="3"
                   x:Name="ButtonEditMetadataAltContent"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -774,7 +776,7 @@ AlternationCount="2"
 IsEnabled="{Binding HasDescriptionMetadata}"
                   Click="OnClick_ButtonEditMetadataAltContent"/>
                 <Button
-                       TabIndex="4"
+                       Control.TabIndex="4"
                   x:Name="ButtonRemoveMetadataAltContent"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -785,7 +787,7 @@ IsEnabled="{Binding HasDescriptionMetadata}"
               </StackPanel>
 
               <UI:SortableListView2
-                       TabIndex="1"
+                       Control.TabIndex="1"
                        ItemsSource="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Metadatas.ContentsAs_Enumerable, Mode=OneWay}"
                        x:Name="MetadatasAltContentListView"
                    

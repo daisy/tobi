@@ -850,7 +850,8 @@
         </Grid.RowDefinitions>
           <TabPanel IsItemsHost="True"
           x:Name="HeaderPanel"
-                    KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"
+                    Control.TabIndex="1"
+                    Panel.ZIndex="1"
                       Grid.Column="0" Grid.Row="0" Margin="2,2,2,0"
                     />
 
@@ -859,7 +860,7 @@
         BorderBrush="{TemplateBinding Border.BorderBrush}"
         Background="{TemplateBinding Panel.Background}"
         x:Name="ContentPanel"
-        KeyboardNavigation.TabIndex="2"
+        Control.TabIndex="2"
         KeyboardNavigation.TabNavigation="Local"
         KeyboardNavigation.DirectionalNavigation="Contained"
         Grid.Column="0" Grid.Row="1">

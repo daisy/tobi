@@ -381,6 +381,82 @@ namespace Tobi.Plugin.DocumentPane
             SearchTerm = SearchBox.Text;
         }
 
+        private void SearchTermDo()
+        {
+            m_SearchMatches = null;
+            m_SearchCurrentIndex = -1;
+
+
+            if (Settings.Default.Document_EnableInstantSearch)
+            {
+                var textElement = FindPreviousNext(false, false);
+                if (textElement == null)
+                {
+                    m_SearchCurrentIndex = -1;
+                    textElement = FindPreviousNext(true, false);
+                    m_SearchCurrentIndex = -1;
+                }
+
+                if (FlowDocReader.Selection == null)
+                {
+                    return;
+                }
+                var selectionBackup = new TextRange(FlowDocReader.Selection.Start, FlowDocReader.Selection.End);
+
+                AnnotationService service = AnnotationService.GetService(FlowDocReader);
+
+                if (service == null || !service.IsEnabled)
+                {
+                    return;
+                }
+
+                //FlowDocReader.Selection.Select(FlowDocReader.Document.ContentStart,
+                //                               FlowDocReader.Document.ContentEnd);
+                //AnnotationHelper.ClearHighlightsForSelection(service);
+
+                foreach (var annotation in service.Store.GetAnnotations())
+                {
+                    service.Store.DeleteAnnotation(annotation.Id);
+                }
+
+                if (string.IsNullOrEmpty(m_SearchTerm) || m_SearchTerm.Length < 2)
+                {
+                    return;
+                }
+
+                //if (m_FindAndReplaceManager == null)
+                //{
+                //    m_FindAndReplaceManager = new FindAndReplaceManager(new TextRange(TheFlowDocument.ContentStart, TheFlowDocument.ContentEnd));
+                //    m_SearchMatches = null;
+                //}
+                //if (m_SearchMatches == null)
+                //{
+                //    IEnumerable<TextRange> matches = m_FindAndReplaceManager.FindAll(SearchTerm, FindOptions.None);
+                //    m_SearchMatches = new List<TextRange>(matches);
+                //    m_SearchCurrentIndex = -1;
+                //}
+
+                if (m_SearchMatches == null || m_SearchMatches.Count == 0)
+                {
+                    return;
+                }
+
+                var brush = GetCachedBrushForColor(Common.Settings.Default.SearchHits_Color);
+                brush.Opacity = .5;
+                //var brush = new SolidColorBrush(Common.Settings.Default.SearchHits_Color) { Opacity = .5 };
+
+                foreach (var textRange in m_SearchMatches)
+                {
+                    FlowDocReader.Selection.Select(textRange.Start, textRange.End);
+                    AnnotationHelper.CreateHighlightForSelection(service, "Tobi search hits", brush);
+                }
+
+                FlowDocReader.Selection.Select(selectionBackup.Start, selectionBackup.End);
+            }
+        }
+
+        private DispatcherTimer _timer = null;
+
         private string m_SearchTerm;
         public string SearchTerm
         {
@@ -392,75 +468,26 @@ namespace Tobi.Plugin.DocumentPane
 
                 m_PropertyChangeHandler.RaisePropertyChanged(() => SearchTerm);
 
+                if (_timer == null)
+                {
+                    _timer = new DispatcherTimer();
+                    _timer.Tick += (object sender, EventArgs e) =>
+                    {
+                        _timer.Stop();
+                        SearchTermDo();
+                    };
+                    _timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+                }
+                else
+                {
+                    _timer.Stop();
+                    _timer.Start();
+                }
+
                 m_SearchMatches = null;
                 m_SearchCurrentIndex = -1;
 
-                if (Settings.Default.Document_EnableInstantSearch)
-                {
-                    var textElement = FindPreviousNext(false, false);
-                    if (textElement == null)
-                    {
-                        m_SearchCurrentIndex = -1;
-                        textElement = FindPreviousNext(true, false);
-                        m_SearchCurrentIndex = -1;
-                    }
-
-                    if (FlowDocReader.Selection == null)
-                    {
-                        return;
-                    }
-                    var selectionBackup = new TextRange(FlowDocReader.Selection.Start, FlowDocReader.Selection.End);
-
-                    AnnotationService service = AnnotationService.GetService(FlowDocReader);
-
-                    if (service == null || !service.IsEnabled)
-                    {
-                        return;
-                    }
-
-                    //FlowDocReader.Selection.Select(FlowDocReader.Document.ContentStart,
-                    //                               FlowDocReader.Document.ContentEnd);
-                    //AnnotationHelper.ClearHighlightsForSelection(service);
-
-                    foreach (var annotation in service.Store.GetAnnotations())
-                    {
-                        service.Store.DeleteAnnotation(annotation.Id);
-                    }
-
-                    if (string.IsNullOrEmpty(m_SearchTerm) || m_SearchTerm.Length < 2)
-                    {
-                        return;
-                    }
-
-                    //if (m_FindAndReplaceManager == null)
-                    //{
-                    //    m_FindAndReplaceManager = new FindAndReplaceManager(new TextRange(TheFlowDocument.ContentStart, TheFlowDocument.ContentEnd));
-                    //    m_SearchMatches = null;
-                    //}
-                    //if (m_SearchMatches == null)
-                    //{
-                    //    IEnumerable<TextRange> matches = m_FindAndReplaceManager.FindAll(SearchTerm, FindOptions.None);
-                    //    m_SearchMatches = new List<TextRange>(matches);
-                    //    m_SearchCurrentIndex = -1;
-                    //}
-
-                    if (m_SearchMatches == null || m_SearchMatches.Count == 0)
-                    {
-                        return;
-                    }
-
-                    var brush = GetCachedBrushForColor(Common.Settings.Default.SearchHits_Color);
-                    brush.Opacity = .5;
-                    //var brush = new SolidColorBrush(Common.Settings.Default.SearchHits_Color) { Opacity = .5 };
-
-                    foreach (var textRange in m_SearchMatches)
-                    {
-                        FlowDocReader.Selection.Select(textRange.Start, textRange.End);
-                        AnnotationHelper.CreateHighlightForSelection(service, "Tobi search hits", brush);
-                    }
-
-                    FlowDocReader.Selection.Select(selectionBackup.Start, selectionBackup.End);
-                }
+                //SearchTermDo();
             }
         }
 
