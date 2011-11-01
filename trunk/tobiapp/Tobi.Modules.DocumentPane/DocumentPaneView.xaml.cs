@@ -376,7 +376,10 @@ namespace Tobi.Plugin.DocumentPane
         public RichDelegateCommand CmdFindNextGlobal { get; private set; }
         public RichDelegateCommand CmdFindPreviousGlobal { get; private set; }
 
-        private void OnSearchTextChanged(object sender, TextChangedEventArgs e) { SearchTerm = SearchBox.Text; }
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            SearchTerm = SearchBox.Text;
+        }
 
         private string m_SearchTerm;
         public string SearchTerm
@@ -392,16 +395,16 @@ namespace Tobi.Plugin.DocumentPane
                 m_SearchMatches = null;
                 m_SearchCurrentIndex = -1;
 
-                var textElement = FindPreviousNext(false, false);
-                if (textElement == null)
-                {
-                    m_SearchCurrentIndex = -1;
-                    textElement = FindPreviousNext(true, false);
-                    m_SearchCurrentIndex = -1;
-                }
-
                 if (Settings.Default.Document_EnableInstantSearch)
                 {
+                    var textElement = FindPreviousNext(false, false);
+                    if (textElement == null)
+                    {
+                        m_SearchCurrentIndex = -1;
+                        textElement = FindPreviousNext(true, false);
+                        m_SearchCurrentIndex = -1;
+                    }
+
                     if (FlowDocReader.Selection == null)
                     {
                         return;
