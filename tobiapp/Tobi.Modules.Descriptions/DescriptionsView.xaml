@@ -33,6 +33,7 @@
               />
 
       <TextBlock Text="{Binding DescribableImageInfo, Mode=OneWay}"
+                 FontWeight="Bold"
                  TextWrapping="WrapWithOverflow"
                  VerticalAlignment="Center"
                  HorizontalAlignment="Left"/>

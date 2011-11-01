@@ -100,7 +100,7 @@ namespace Tobi.Plugin.Descriptions
             //{
             //    txt = altContent.Text.Text;
             //}
-            
+
             string txt = "";
 
             string uid = null;
@@ -455,8 +455,8 @@ namespace Tobi.Plugin.Descriptions
 
             if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
             {
-                newName = editBoxCombo_Name.Text;
-                newValue = editBox_Value.Text;
+                newName = editBoxCombo_Name.Text.Trim();
+                newValue = editBox_Value.Text.Trim();
 
                 return true;
             }
@@ -586,59 +586,79 @@ namespace Tobi.Plugin.Descriptions
 
             if (MetadatasAltContentListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasAltContentListView.SelectedItem;
-            string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue, true);
-            if (ok &&
-                (newName != md.NameContentAttribute.Name || newValue != md.NameContentAttribute.Value))
+            string newName = null;
+            string newValue = null;
+
+            var mdAttrTEMP = new MetadataAttribute();
+            mdAttrTEMP.Name = md.NameContentAttribute.Name;
+            mdAttrTEMP.Value = md.NameContentAttribute.Value;
+
+            bool ok = true;
+            while (ok &&
+                (
+                string.IsNullOrEmpty(newName)
+                || string.IsNullOrEmpty(newValue)
+                || newName == md.NameContentAttribute.Name && newValue == md.NameContentAttribute.Value
+                )
+            )
             {
-                foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
+                ok = showMetadataAttributeEditorPopupDialog(mdAttrTEMP, out newName, out newValue, true);
+                mdAttrTEMP.Name = newName;
+                mdAttrTEMP.Value = newValue;
+            }
+            if (!ok) return;
+
+            //bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue, true);
+            //if (ok &&
+            //    (newName != md.NameContentAttribute.Name || newValue != md.NameContentAttribute.Value))
+            //{
+            foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
+            {
+                if (md == m)
                 {
-                    if (md == m)
-                    {
-                        continue;
-                    }
-
-                    if (m.NameContentAttribute.Name == newName)
-                    {
-                        var label = new TextBlock
-                        {
-                            Text = "This attribute already exists.",
-                            Margin = new Thickness(8, 0, 8, 0),
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Focusable = true,
-                            TextWrapping = TextWrapping.Wrap
-                        };
-
-                        var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
-
-                        var panel = new StackPanel
-                        {
-                            Orientation = Orientation.Horizontal,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Stretch,
-                        };
-                        panel.Children.Add(iconProvider.IconLarge);
-                        panel.Children.Add(label);
-                        //panel.Margin = new Thickness(8, 8, 8, 0);
-
-                        var windowPopup = new PopupModalWindow(m_ShellView,
-                                                             UserInterfaceStrings.EscapeMnemonic("Duplicate attribute!"),
-                                                             panel,
-                                                             PopupModalWindow.DialogButtonsSet.Ok,
-                                                             PopupModalWindow.DialogButton.Ok,
-                                                             true, 300, 160, null, 0);
-                        //view.OwnerWindow = windowPopup;
-
-                        windowPopup.ShowModal();
-                        return;
-                    }
+                    continue;
                 }
 
-                m_ViewModel.SetMetadataAttr(null, altContent, md, null, newName, newValue);
+                if (m.NameContentAttribute.Name == newName)
+                {
+                    var label = new TextBlock
+                    {
+                        Text = "This attribute already exists.",
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
 
-                MetadatasAltContentListView.Items.Refresh();
+                    var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
+
+                    var panel = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                    };
+                    panel.Children.Add(iconProvider.IconLarge);
+                    panel.Children.Add(label);
+                    //panel.Margin = new Thickness(8, 8, 8, 0);
+
+                    var windowPopup = new PopupModalWindow(m_ShellView,
+                                                         UserInterfaceStrings.EscapeMnemonic("Duplicate attribute!"),
+                                                         panel,
+                                                         PopupModalWindow.DialogButtonsSet.Ok,
+                                                         PopupModalWindow.DialogButton.Ok,
+                                                         true, 300, 160, null, 0);
+                    //view.OwnerWindow = windowPopup;
+
+                    windowPopup.ShowModal();
+                    return;
+                }
             }
+
+            m_ViewModel.SetMetadataAttr(null, altContent, md, null, newName, newValue);
+
+            MetadatasAltContentListView.Items.Refresh();
         }
 
         private void OnMouseDoubleClick_ListItemMetadata(object sender, MouseButtonEventArgs e)
@@ -652,15 +672,35 @@ namespace Tobi.Plugin.Descriptions
 
             if (MetadatasListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
-            string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue, false);
-            if (ok &&
-                (newName != md.NameContentAttribute.Name || newValue != md.NameContentAttribute.Value))
-            {
-                m_ViewModel.SetMetadataAttr(altProp, null, md, null, newName, newValue);
+            string newName = null;
+            string newValue = null;
 
-                MetadatasListView.Items.Refresh();
+            var mdAttrTEMP = new MetadataAttribute();
+            mdAttrTEMP.Name = md.NameContentAttribute.Name;
+            mdAttrTEMP.Value = md.NameContentAttribute.Value;
+
+            bool ok = true;
+            while (ok &&
+                (
+                string.IsNullOrEmpty(newName)
+                || string.IsNullOrEmpty(newValue)
+                || newName == md.NameContentAttribute.Name && newValue == md.NameContentAttribute.Value
+                )
+            )
+            {
+                ok = showMetadataAttributeEditorPopupDialog(mdAttrTEMP, out newName, out newValue, false);
+                mdAttrTEMP.Name = newName;
+                mdAttrTEMP.Value = newValue;
             }
+            if (!ok) return;
+
+            //bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue, false);
+            //if (ok &&
+            //    (newName != md.NameContentAttribute.Name || newValue != md.NameContentAttribute.Value))
+            //{
+            m_ViewModel.SetMetadataAttr(altProp, null, md, null, newName, newValue);
+
+            MetadatasListView.Items.Refresh();
         }
 
         private void OnMouseDoubleClick_ListItemMetadataAttr(object sender, MouseButtonEventArgs e)
@@ -675,15 +715,35 @@ namespace Tobi.Plugin.Descriptions
             if (MetadatasListView.SelectedIndex < 0) return;
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
             MetadataAttribute mdAttr = (MetadataAttribute)MetadataAttributesListView.SelectedItem;
-            string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
-            if (ok &&
-                (newName != mdAttr.Name || newValue != mdAttr.Value))
-            {
-                m_ViewModel.SetMetadataAttr(altProp, null, md, mdAttr, newName, newValue);
+            string newName = null;
+            string newValue = null;
 
-                MetadataAttributesListView.Items.Refresh();
+            var mdAttrTEMP = new MetadataAttribute();
+            mdAttrTEMP.Name = mdAttr.Name;
+            mdAttrTEMP.Value = mdAttr.Value;
+
+            bool ok = true;
+            while (ok &&
+                (
+                string.IsNullOrEmpty(newName)
+                || string.IsNullOrEmpty(newValue)
+                || newName == mdAttr.Name && newValue == mdAttr.Value
+                )
+            )
+            {
+                ok = showMetadataAttributeEditorPopupDialog(mdAttrTEMP, out newName, out newValue, false);
+                mdAttrTEMP.Name = newName;
+                mdAttrTEMP.Value = newValue;
             }
+            if (!ok) return;
+
+            //bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
+            //if (ok &&
+            //    (newName != mdAttr.Name || newValue != mdAttr.Value))
+            //{
+            m_ViewModel.SetMetadataAttr(altProp, null, md, mdAttr, newName, newValue);
+
+            MetadataAttributesListView.Items.Refresh();
         }
 
         private void OnClick_ButtonRemoveMetadataAltContent(object sender, RoutedEventArgs e)
@@ -736,56 +796,73 @@ namespace Tobi.Plugin.Descriptions
             var mdAttr = new MetadataAttribute();
             mdAttr.Name = PROMPT_MD_NAME;
             mdAttr.Value = PROMPT_MD_VALUE;
-            string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, true);
-            if (ok &&
-                newName != mdAttr.Name && newValue != mdAttr.Value)
+            string newName = null;
+            string newValue = null;
+
+            bool ok = true;
+            while (ok &&
+                (
+                string.IsNullOrEmpty(newName)
+                || string.IsNullOrEmpty(newValue)
+                || newName == PROMPT_MD_NAME
+                || newValue == PROMPT_MD_VALUE
+                )
+            )
             {
-                foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
-                {
-                    if (m.NameContentAttribute.Name == newName)
-                    {
-                        var label = new TextBlock
-                        {
-                            Text = "This attribute already exists.",
-                            Margin = new Thickness(8, 0, 8, 0),
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Focusable = true,
-                            TextWrapping = TextWrapping.Wrap
-                        };
-
-                        var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
-
-                        var panel = new StackPanel
-                        {
-                            Orientation = Orientation.Horizontal,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Stretch,
-                        };
-                        panel.Children.Add(iconProvider.IconLarge);
-                        panel.Children.Add(label);
-                        //panel.Margin = new Thickness(8, 8, 8, 0);
-
-                        var windowPopup = new PopupModalWindow(m_ShellView,
-                                                             UserInterfaceStrings.EscapeMnemonic("Duplicate attribute!"),
-                                                             panel,
-                                                             PopupModalWindow.DialogButtonsSet.Ok,
-                                                             PopupModalWindow.DialogButton.Ok,
-                                                             true, 300, 160, null, 0);
-                        //view.OwnerWindow = windowPopup;
-
-                        windowPopup.ShowModal();
-                        return;
-                    }
-                }
-
-
-                m_ViewModel.AddMetadata(null, altContent, newName, newValue);
-                MetadatasAltContentListView.Items.Refresh();
-                MetadatasAltContentListView.SelectedIndex = MetadatasAltContentListView.Items.Count - 1;
-                //FocusHelper.FocusBeginInvoke(MetadatasAltContentListView);
+                ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, true);
+                mdAttr.Name = newName;
+                mdAttr.Value = newValue;
             }
+            if (!ok) return;
+
+            //bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, true);
+            //if (ok &&
+            //    newName != mdAttr.Name && newValue != mdAttr.Value)
+            //{
+            foreach (Metadata m in altContent.Metadatas.ContentsAs_Enumerable)
+            {
+                if (m.NameContentAttribute.Name == newName)
+                {
+                    var label = new TextBlock
+                    {
+                        Text = "This attribute already exists.",
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
+
+                    var panel = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                    };
+                    panel.Children.Add(iconProvider.IconLarge);
+                    panel.Children.Add(label);
+                    //panel.Margin = new Thickness(8, 8, 8, 0);
+
+                    var windowPopup = new PopupModalWindow(m_ShellView,
+                                                         UserInterfaceStrings.EscapeMnemonic("Duplicate attribute!"),
+                                                         panel,
+                                                         PopupModalWindow.DialogButtonsSet.Ok,
+                                                         PopupModalWindow.DialogButton.Ok,
+                                                         true, 300, 160, null, 0);
+                    //view.OwnerWindow = windowPopup;
+
+                    windowPopup.ShowModal();
+                    return;
+                }
+            }
+
+
+            m_ViewModel.AddMetadata(null, altContent, newName, newValue);
+            MetadatasAltContentListView.Items.Refresh();
+            MetadatasAltContentListView.SelectedIndex = MetadatasAltContentListView.Items.Count - 1;
+            //FocusHelper.FocusBeginInvoke(MetadatasAltContentListView);
         }
 
         private void OnClick_ButtonRemoveMetadata(object sender, RoutedEventArgs e)
@@ -832,16 +909,33 @@ namespace Tobi.Plugin.Descriptions
             var mdAttr = new MetadataAttribute();
             mdAttr.Name = PROMPT_MD_NAME;
             mdAttr.Value = PROMPT_MD_VALUE;
-            string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
-            if (ok &&
-                newName != mdAttr.Name && newValue != mdAttr.Value)
+            string newName = null;
+            string newValue = null;
+
+            bool ok = true;
+            while (ok &&
+                (
+                string.IsNullOrEmpty(newName)
+                || string.IsNullOrEmpty(newValue)
+                || newName == PROMPT_MD_NAME
+                || newValue == PROMPT_MD_VALUE
+                )
+            )
             {
-                m_ViewModel.AddMetadata(altProp, null, newName, newValue);
-                MetadatasListView.Items.Refresh();
-                MetadatasListView.SelectedIndex = MetadatasListView.Items.Count - 1;
-                //FocusHelper.FocusBeginInvoke(MetadatasListView);
+                ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
+                mdAttr.Name = newName;
+                mdAttr.Value = newValue;
             }
+            if (!ok) return;
+
+            //bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
+            //if (ok &&
+            //    newName != mdAttr.Name && newValue != mdAttr.Value)
+            //{
+            m_ViewModel.AddMetadata(altProp, null, newName, newValue);
+            MetadatasListView.Items.Refresh();
+            MetadatasListView.SelectedIndex = MetadatasListView.Items.Count - 1;
+            //FocusHelper.FocusBeginInvoke(MetadatasListView);
         }
 
         private void OnClick_ButtonRemoveMetadataAttr(object sender, RoutedEventArgs e)
@@ -852,7 +946,7 @@ namespace Tobi.Plugin.Descriptions
 
             selectedIndex = MetadataAttributesListView.SelectedIndex;
             if (selectedIndex < 0) return;
-            
+
             m_ViewModel.RemoveMetadataAttr(md, (MetadataAttribute)MetadataAttributesListView.SelectedItem);
 
             MetadataAttributesListView.Items.Refresh();
@@ -873,16 +967,33 @@ namespace Tobi.Plugin.Descriptions
             var mdAttr = new MetadataAttribute();
             mdAttr.Name = PROMPT_MD_NAME;
             mdAttr.Value = PROMPT_MD_VALUE;
-            string newName, newValue;
-            bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
-            if (ok &&
-                newName != mdAttr.Name && newValue != mdAttr.Value)
+            string newName = null;
+            string newValue = null;
+
+            bool ok = true;
+            while (ok &&
+                (
+                string.IsNullOrEmpty(newName)
+                || string.IsNullOrEmpty(newValue)
+                || newName == PROMPT_MD_NAME
+                || newValue == PROMPT_MD_VALUE
+                )
+            )
             {
-                m_ViewModel.AddMetadataAttr(md, newName, newValue);
-                MetadataAttributesListView.Items.Refresh();
-                MetadataAttributesListView.SelectedIndex = MetadataAttributesListView.Items.Count - 1;
-                //FocusHelper.FocusBeginInvoke(MetadataAttributesListView);
+                ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
+                mdAttr.Name = newName;
+                mdAttr.Value = newValue;
             }
+            if (!ok) return;
+
+            //bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
+            //if (ok &&
+            //    newName != mdAttr.Name && newValue != mdAttr.Value)
+            //{
+            m_ViewModel.AddMetadataAttr(md, newName, newValue);
+            MetadataAttributesListView.Items.Refresh();
+            MetadataAttributesListView.SelectedIndex = MetadataAttributesListView.Items.Count - 1;
+            //FocusHelper.FocusBeginInvoke(MetadataAttributesListView);
         }
 
         private bool isUniqueIdInvalid(string txt, string promptedTxt)
@@ -896,19 +1007,23 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnClick_ButtonAddDescription(object sender, RoutedEventArgs e)
         {
+            string txt = PROMPT_DescriptionName;
             string descriptionName = "";
             while (descriptionName != null && isDescriptionNameInvalid(descriptionName, PROMPT_DescriptionName))
             {
                 // returns null only when dialog is cancelled, otherwise trimmed string (potentially empty)
-                descriptionName = showLineEditorPopupDialog(PROMPT_DescriptionName, "Description name", DiagramContentModelStrings.MetadataValues_ForDescriptionName);
+                descriptionName = showLineEditorPopupDialog(txt, "Description name", DiagramContentModelStrings.MetadataValues_ForDescriptionName);
+                txt = descriptionName;
             }
             if (descriptionName == null) return;
 
+            txt = PROMPT_ID;
             string uid = "";
             while (uid != null && isUniqueIdInvalid(uid, PROMPT_ID))
             {
                 // returns null only when dialog is cancelled, otherwise trimmed string (potentially empty)
-                uid = showLineEditorPopupDialog(PROMPT_ID, "Unique identifier", null);
+                uid = showLineEditorPopupDialog(txt, "Unique identifier", null);
+                txt = uid;
             }
             if (uid == null) return;
 
