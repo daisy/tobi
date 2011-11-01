@@ -249,43 +249,6 @@ namespace Tobi.Plugin.Descriptions
             RaisePropertyChanged(() => Metadatas);
         }
 
-        public void RemoveMetadataAttr(Metadata md, MetadataAttribute mdAttr)
-        {
-            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-            TreeNode node = selection.Item2 ?? selection.Item1;
-            if (node == null) return;
-
-            var altProp = node.GetProperty<AlternateContentProperty>();
-            if (altProp == null) return;
-
-            //altProp.Metadatas.Remove(md);
-
-            //AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(altProp, null, md);
-            //node.Presentation.UndoRedoManager.Execute(cmd);
-
-            RaisePropertyChanged(() => Metadatas);
-        }
-
-        public void AddMetadataAttr(Metadata md, string newName, string newValue)
-        {
-            if (string.IsNullOrEmpty(newName) || string.IsNullOrEmpty(newValue)) return;
-
-            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-            TreeNode node = selection.Item2 ?? selection.Item1;
-            if (node == null) return;
-
-            var altProp = node.GetProperty<AlternateContentProperty>();
-            if (altProp == null) return;
-
-            int index = altProp.Metadatas.IndexOf(md);
-            if (index < 0) return;
-
-            //AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta);
-            //node.Presentation.UndoRedoManager.Execute(cmd);
-
-            RaisePropertyChanged(() => Metadatas);
-        }
-
         public void AddDescription(string uid, string descriptionName)
         {
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
@@ -429,7 +392,44 @@ namespace Tobi.Plugin.Descriptions
         }
 
 
-        public void SetMetadataAttribute(AlternateContentProperty altProp, AlternateContent altContent,
+        public void RemoveMetadataAttr(Metadata md, MetadataAttribute mdAttr)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
+            //altProp.Metadatas.Remove(md);
+
+            //AlternateContentMetadataRemoveCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataRemoveCommand(altProp, null, md);
+            //node.Presentation.UndoRedoManager.Execute(cmd);
+
+            RaisePropertyChanged(() => Metadatas);
+        }
+
+        public void AddMetadataAttr(Metadata md, string newName, string newValue)
+        {
+            if (string.IsNullOrEmpty(newName) || string.IsNullOrEmpty(newValue)) return;
+
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return;
+
+            int index = altProp.Metadatas.IndexOf(md);
+            if (index < 0) return;
+
+            //AlternateContentMetadataAddCommand cmd = node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta);
+            //node.Presentation.UndoRedoManager.Execute(cmd);
+
+            RaisePropertyChanged(() => Metadatas);
+        }
+
+        public void SetMetadataAttr(AlternateContentProperty altProp, AlternateContent altContent,
             Metadata md, MetadataAttribute mdAttr, string newName, string newValue)
         {
             if (string.IsNullOrEmpty(newName) || string.IsNullOrEmpty(newValue)) return;
@@ -445,20 +445,59 @@ namespace Tobi.Plugin.Descriptions
 
             if (altContent != null && altProp_.AlternateContents.IndexOf(altContent) < 0) return;
 
-            if (mdAttr.Name != newName)
+            if (mdAttr==null)
             {
-                AlternateContentMetadataSetNameCommand cmd1 =
-                    node.Presentation.CommandFactory.CreateAlternateContentMetadataSetNameCommand(altProp, altContent, md,
-                                                                                                  newName);
-                node.Presentation.UndoRedoManager.Execute(cmd1);
+                MetadataAttribute attr = md.NameContentAttribute;
+
+                if (attr.Name != newName)
+                {
+                    AlternateContentMetadataSetNameCommand cmd1 =
+                        node.Presentation.CommandFactory.CreateAlternateContentMetadataSetNameCommand(
+                            altProp,
+                            altContent,
+                            attr,
+                            newName
+                            );
+                    node.Presentation.UndoRedoManager.Execute(cmd1);
+                }
+                if (attr.Value != newValue)
+                {
+                    AlternateContentMetadataSetContentCommand cmd2 =
+                        node.Presentation.CommandFactory.CreateAlternateContentMetadataSetContentCommand(
+                            altProp,
+                            altContent,
+                            attr,
+                            newValue
+                            );
+                    node.Presentation.UndoRedoManager.Execute(cmd2);
+                }
             }
-            if (mdAttr.Value != newValue)
+            else
             {
-                AlternateContentMetadataSetContentCommand cmd2 =
-                    node.Presentation.CommandFactory.CreateAlternateContentMetadataSetContentCommand(altProp, altContent, md,
-                                                                                                  newValue);
-                node.Presentation.UndoRedoManager.Execute(cmd2);
+                if (mdAttr.Name != newName)
+                {
+                    AlternateContentMetadataSetNameCommand cmd1 =
+                        node.Presentation.CommandFactory.CreateAlternateContentMetadataSetNameCommand(
+                            altProp,
+                            altContent,
+                            mdAttr,
+                            newName
+                            );
+                    node.Presentation.UndoRedoManager.Execute(cmd1);
+                }
+                if (mdAttr.Value != newValue)
+                {
+                    AlternateContentMetadataSetContentCommand cmd2 =
+                        node.Presentation.CommandFactory.CreateAlternateContentMetadataSetContentCommand(
+                            altProp,
+                            altContent,
+                            mdAttr,
+                            newValue
+                            );
+                    node.Presentation.UndoRedoManager.Execute(cmd2);
+                }
             }
+
 
             RaisePropertyChanged(() => Metadatas);
         }

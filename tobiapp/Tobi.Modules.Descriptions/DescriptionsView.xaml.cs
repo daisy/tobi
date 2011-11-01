@@ -635,7 +635,7 @@ namespace Tobi.Plugin.Descriptions
                     }
                 }
 
-                m_ViewModel.SetMetadataAttribute(null, altContent, md, md.NameContentAttribute, newName, newValue);
+                m_ViewModel.SetMetadataAttr(null, altContent, md, null, newName, newValue);
 
                 MetadatasAltContentListView.Items.Refresh();
             }
@@ -657,7 +657,7 @@ namespace Tobi.Plugin.Descriptions
             if (ok &&
                 (newName != md.NameContentAttribute.Name || newValue != md.NameContentAttribute.Value))
             {
-                m_ViewModel.SetMetadataAttribute(altProp, null, md, md.NameContentAttribute, newName, newValue);
+                m_ViewModel.SetMetadataAttr(altProp, null, md, null, newName, newValue);
 
                 MetadatasListView.Items.Refresh();
             }
@@ -680,7 +680,7 @@ namespace Tobi.Plugin.Descriptions
             if (ok &&
                 (newName != mdAttr.Name || newValue != mdAttr.Value))
             {
-                m_ViewModel.SetMetadataAttribute(altProp, null, md, mdAttr, newName, newValue);
+                m_ViewModel.SetMetadataAttr(altProp, null, md, mdAttr, newName, newValue);
 
                 MetadataAttributesListView.Items.Refresh();
             }
