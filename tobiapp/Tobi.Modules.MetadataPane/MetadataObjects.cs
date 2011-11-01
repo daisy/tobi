@@ -161,7 +161,7 @@ namespace Tobi.Plugin.MetadataPane
         }
 
 
-        public MetadataCollection(List<Metadata> metadatas, List<MetadataDefinition> definitions)
+        public MetadataCollection(IEnumerable<Metadata> metadatas) //, List<MetadataDefinition> definitions)
         {
             m_Metadatas = new ObservableCollection<NotifyingMetadataItem>();
             foreach (Metadata metadata in metadatas)

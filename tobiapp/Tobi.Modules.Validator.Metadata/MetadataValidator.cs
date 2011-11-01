@@ -161,7 +161,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public override string Description
         {
-            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Description; }  
+            get { return Tobi_Plugin_Validator_Metadata_Lang.MetadataValidator_Description; }
         }
 
         public override bool Validate()
@@ -170,11 +170,8 @@ namespace Tobi.Plugin.Validator.Metadata
 
             if (m_Session.DocumentProject != null)
             {
-                List<urakawa.metadata.Metadata> metadatas =
-                    m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
-
                 resetToValid();
-                isValid = _validate(metadatas);
+                isValid = _validate();
             }
 
             return isValid;
@@ -188,23 +185,23 @@ namespace Tobi.Plugin.Validator.Metadata
         private MetadataOccurrenceValidator m_OccurrenceValidator;
 
 
-        private bool _validate(List<urakawa.metadata.Metadata> metadatas)
+        private bool _validate() //IEnumerable<urakawa.metadata.Metadata> metadatas)
         {
             bool isValid = true;
 
             //validate each item by itself
-            foreach (urakawa.metadata.Metadata metadata in metadatas)
+            foreach (urakawa.metadata.Metadata metadata in m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
             {
                 if (!_validateItem(metadata))
                     isValid = false;
             }
 
-            isValid = isValid & _validateAsSet(metadatas);
+            isValid = isValid & _validateAsSet(); //metadatas);
 
             return isValid;
         }
 
-        
+
         internal void ReportError(ValidationItem error)
         {
             //prevent duplicate errors: check that the items aren't identical
@@ -220,7 +217,7 @@ namespace Tobi.Plugin.Validator.Metadata
                 bool sameItem = false;
                 bool sameDef = sameDef = (e as IMetadataValidationError).Definition == (error as IMetadataValidationError).Definition;
                 bool sameType = e.GetType() == error.GetType();
-                
+
                 if (sameType)
                 {
                     //does this error's target metadata item already have an error
@@ -233,10 +230,10 @@ namespace Tobi.Plugin.Validator.Metadata
                         AbstractMetadataValidationErrorWithTarget errorWithTarget =
                             error as AbstractMetadataValidationErrorWithTarget;
 
-                        if (sameType 
+                        if (sameType
                             &&
                             eWithTarget.Target == errorWithTarget.Target
-                            && 
+                            &&
                             eWithTarget.Target != null)
                         {
                             sameItem = true;
@@ -251,7 +248,7 @@ namespace Tobi.Plugin.Validator.Metadata
                 else if (!(error is AbstractMetadataValidationErrorWithTarget) && sameDef && sameType)
                 {
                     foundDuplicate = true;
-                    break; 
+                    break;
                 }
             }
 
@@ -286,21 +283,30 @@ namespace Tobi.Plugin.Validator.Metadata
             }
         }
 
-        private bool _validateAsSet(List<urakawa.metadata.Metadata> metadatas)
+        private bool _validateAsSet() //IEnumerable<urakawa.metadata.Metadata> metadatas)
         {
             bool isValid = true;
             //make sure all the required items are there
             foreach (MetadataDefinition metadataDefinition in MetadataDefinitions.Definitions)
             {
-                if (!metadataDefinition.IsReadOnly && metadataDefinition.Occurrence == MetadataOccurrence.Required)
+                if (!metadataDefinition.IsReadOnly
+                    && metadataDefinition.Occurrence == MetadataOccurrence.Required)
                 {
-                    urakawa.metadata.Metadata metadata = metadatas.Find(
-                        item => item.NameContentAttribute.Name.ToLower() ==
-                                metadataDefinition.Name.ToLower());
+                    string name = metadataDefinition.Name.ToLower();
 
-                    if (metadata == null)
+                    bool found = false;
+                    foreach (urakawa.metadata.Metadata item in m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                     {
-                        MetadataMissingItemValidationError err = 
+                        if (item.NameContentAttribute.Name.ToLower() == name)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        MetadataMissingItemValidationError err =
                             new MetadataMissingItemValidationError(metadataDefinition, m_EventAggregator);
                         ReportError(err);
                         isValid = false;
@@ -309,16 +315,24 @@ namespace Tobi.Plugin.Validator.Metadata
             }
 
             //make sure repetitions are ok
-            foreach (urakawa.metadata.Metadata metadata in metadatas)
+
+            List<urakawa.metadata.Metadata> list = new List<urakawa.metadata.Metadata>();
+            foreach (urakawa.metadata.Metadata metadata in m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
             {
                 MetadataDefinition metadataDefinition =
                     MetadataDefinitions.GetMetadataDefinition(metadata.NameContentAttribute.Name);
 
                 if (metadataDefinition != null && !metadataDefinition.IsRepeatable)
                 {
-                    List<urakawa.metadata.Metadata> list = metadatas.FindAll(
-                        item => item.NameContentAttribute.Name.ToLower() ==
-                                metadata.NameContentAttribute.Name.ToLower());
+                    string name = metadata.NameContentAttribute.Name.ToLower();
+                    list.Clear();
+                    foreach (urakawa.metadata.Metadata item in m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
+                    {
+                        if (item.NameContentAttribute.Name.ToLower() == name)
+                        {
+                            list.Add(item);
+                        }
+                    }
 
                     if (list.Count > 1)
                     {
@@ -341,8 +355,8 @@ namespace Tobi.Plugin.Validator.Metadata
         private MetadataValidator m_ParentValidator;
         //These hints describe what the data must be formatted as.
         //Complete sentences purposefully left out.
-        private string m_DateHint = Tobi_Plugin_Validator_Metadata_Lang.DateHint;             
-        private string m_NumericHint = Tobi_Plugin_Validator_Metadata_Lang.NumericValueHint; 
+        private string m_DateHint = Tobi_Plugin_Validator_Metadata_Lang.DateHint;
+        private string m_NumericHint = Tobi_Plugin_Validator_Metadata_Lang.NumericValueHint;
         private readonly IEventAggregator m_EventAggregator;
 
         public MetadataDataTypeValidator(MetadataValidator parentValidator, IEventAggregator eventAggregator)
@@ -380,10 +394,10 @@ namespace Tobi.Plugin.Validator.Metadata
         }
         private bool _validateDate(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
-            MetadataFormatValidationError err = 
+            MetadataFormatValidationError err =
                 new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
             err.Hint = m_DateHint;
-            
+
             string date = metadata.NameContentAttribute.Value;
             //Require at least the year field
             //The max length of the entire datestring is 10
@@ -471,10 +485,10 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             catch (Exception)
             {
-                MetadataFormatValidationError err = 
+                MetadataFormatValidationError err =
                     new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
                 err.Hint = m_NumericHint;
-                
+
                 m_ParentValidator.ReportError(err);
                 return false;
             }
@@ -488,10 +502,10 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             catch (Exception)
             {
-                MetadataFormatValidationError err = 
+                MetadataFormatValidationError err =
                     new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
                 err.Hint = m_NumericHint;
-                
+
                 m_ParentValidator.ReportError(err);
                 return false;
             }
@@ -523,7 +537,7 @@ namespace Tobi.Plugin.Validator.Metadata
     public class MetadataOccurrenceValidator
     {
         private MetadataValidator m_ParentValidator;
-        private string m_NonEmptyHint = Tobi_Plugin_Validator_Metadata_Lang.NonEmptyHint;                               
+        private string m_NonEmptyHint = Tobi_Plugin_Validator_Metadata_Lang.NonEmptyHint;
         private readonly IEventAggregator m_EventAggregator;
 
         public MetadataOccurrenceValidator(MetadataValidator parentValidator, IEventAggregator eventAggregator)
@@ -544,10 +558,10 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             else
             {
-                MetadataFormatValidationError err = 
+                MetadataFormatValidationError err =
                     new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
                 err.Hint = m_NonEmptyHint;
-                
+
                 m_ParentValidator.ReportError(err);
                 return false;
             }

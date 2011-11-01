@@ -78,26 +78,56 @@
 
       <TreeView.ItemContainerStyle>
         <Style TargetType="{x:Type TreeViewItem}">
-          
-          <!-- THIS CODE GENERATES 1 EVENT PER DEPTH OR TREE NODE !!!
+          <Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                          Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+          </Style.Resources>
+
+          <Style.Setters>
+            <Setter Property="FocusVisualStyle">
+              <Setter.Value>
+                <Style TargetType="{x:Type IFrameworkInputElement}">
+                  <!--<Style.Resources>
+                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                </Style.Resources>-->
+                  <Setter Property="Control.Template">
+                    <Setter.Value>
+                      <ControlTemplate>
+                        <Rectangle
+                            Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                            StrokeThickness="1"
+                            StrokeDashArray="1 2"
+                            Margin="0"
+                            SnapsToDevicePixels="True" />
+                      </ControlTemplate>
+                    </Setter.Value>
+                  </Setter>
+                </Style>
+              </Setter.Value>
+            </Setter>
+
+            <!-- THIS CODE GENERATES 1 EVENT PER DEPTH OR TREE NODE !!!
           <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_TreeItem" />
           -->
-          
-          <EventSetter Event="KeyDown" Handler="OnKeyDown_TreeViewItem" />
-          
-          <Setter Property="AutomationProperties.Name" Value="{Binding Title}"/>
-          <Setter Property="local:TreeViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
+            <EventSetter Event="KeyDown" Handler="OnKeyDown_TreeViewItem" />
 
-          <Setter Property="HorizontalContentAlignment"
-              Value="{Binding Path=HorizontalContentAlignment,
+            <Setter Property="AutomationProperties.Name" Value="{Binding Title}"/>
+            <Setter Property="UI:TreeViewItemBringIntoViewNoFocusWhenSelectedBehavior.IsBroughtIntoViewNoFocusWhenSelected" Value="True" />
+
+            <Setter Property="HorizontalContentAlignment"
+                Value="{Binding Path=HorizontalContentAlignment,
                 RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-          <Setter Property="VerticalContentAlignment"
-              Value="{Binding Path=VerticalContentAlignment,
+            <Setter Property="VerticalContentAlignment"
+                Value="{Binding Path=VerticalContentAlignment,
                 RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-          <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-          <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-          <Setter Property="FontWeight" Value="Normal" />
-          <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
+          </Style.Setters>
+
+
           <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
               <Setter Property="FontWeight" Value="Bold" />

@@ -177,14 +177,73 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
     <ListView.ItemContainerStyle>
 
       <Style TargetType="{x:Type ListViewItem}">
-
+        <!--<Style.Resources>
+          <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                        Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+        </Style.Resources>-->
+        
         <Style.Setters>
+          <Setter Property="FocusVisualStyle">
+            <Setter.Value>
+              <Style TargetType="{x:Type IFrameworkInputElement}">
+                <!--<Style.Resources>
+                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                </Style.Resources>-->
+                <Setter Property="Control.Template">
+                  <Setter.Value>
+                    <ControlTemplate>
+                      <Rectangle
+                          Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                          StrokeThickness="1"
+                          StrokeDashArray="1 2"
+                          Margin="0"
+                          SnapsToDevicePixels="True" />
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="{x:Type ListViewItem}">
+                <!--<Grid SnapsToDevicePixels="True" Margin="0">-->
+                <Border x:Name="Border"
+                        Background="{TemplateBinding Background}"
+                            BorderThickness="0"
+                        SnapsToDevicePixels="true"
+                         Margin="0"
+                        Padding="0">
+                  <GridViewRowPresenter x:Name="Content"
+                         Margin="0"
+                                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                            Content="{TemplateBinding Content}"
+                                        Columns="{TemplateBinding GridView.ColumnCollection}" />
+                </Border>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsSelected"  Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                  </Trigger>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="IsSelected" Value="true" />
+                      <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />-->
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                  </MultiTrigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+          
           <Setter Property="HorizontalContentAlignment" Value="Stretch" />
 
           <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
           <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
           <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
-          <Setter Property="UI:ListViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
+          <Setter Property="UI:ListViewItemBringIntoViewFocusWhenSelectedBehavior.IsBroughtIntoViewFocusWhenSelected" Value="True" />
           <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItem" />
         </Style.Setters>
 
@@ -194,7 +253,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
               <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
               <Condition Property="IsSelected" Value="False"/>
             </MultiTrigger.Conditions>
-            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
           </MultiTrigger>
           <Trigger Property="IsSelected" Value="True">
             <Setter Property="FontWeight" Value="Bold" />

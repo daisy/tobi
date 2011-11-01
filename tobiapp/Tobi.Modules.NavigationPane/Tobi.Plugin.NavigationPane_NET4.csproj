@@ -68,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HeadingTreeNodeWrapper.cs" />
-    <Compile Include="ListViewItemBehavior.cs" />
     <Compile Include="MarkedTreeNode.cs" />
     <Compile Include="PagesNavigator.cs" />
     <Compile Include="MarkersNavigator.cs" />
@@ -88,7 +87,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Tobi.Plugin.NavigationPane.Lang.resx</DependentUpon>
     </Compile>
-    <Compile Include="TreeViewItemBehavior.cs" />
     <Compile Include="HeadingPanelView.xaml.cs">
       <DependentUpon>HeadingPanelView.xaml</DependentUpon>
     </Compile>

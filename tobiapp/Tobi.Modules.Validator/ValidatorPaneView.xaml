@@ -66,16 +66,23 @@
                  >
             <ListBox.ItemContainerStyle>
               <Style TargetType="{x:Type ListBoxItem}">
+                <Style.Resources>
+                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                </Style.Resources>
                 <Setter Property="AutomationProperties.Name" Value="{Binding Message}"/>
                 <Setter Property="ToolTip" Value="{Binding Message}"/>
 
                 <Style.Triggers>
+                  <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="FontWeight" Value="Bold" />
+                  </Trigger>
                   <MultiTrigger>
                     <MultiTrigger.Conditions>
                       <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
                       <Condition Property="IsSelected" Value="False"/>
                     </MultiTrigger.Conditions>
-                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
                   </MultiTrigger>
                 </Style.Triggers>
               </Style>

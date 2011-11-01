@@ -35,7 +35,7 @@ namespace Tobi.Plugin.MetadataPane
         private readonly ILoggerFacade m_Logger;
 
         private readonly IUrakawaSession m_UrakawaSession;
-        
+
         [ImportingConstructor]
         public MetadataPaneViewModel(
             IEventAggregator eventAggregator,
@@ -55,7 +55,7 @@ namespace Tobi.Plugin.MetadataPane
             m_MetadataCollection = null;
 
             ValidationItems = new ObservableCollection<ValidationItem>();
-            
+
             if (m_Validator != null)
             {
                 m_Validator.ValidatorStateRefreshed += OnValidatorStateRefreshed;
@@ -145,9 +145,8 @@ namespace Tobi.Plugin.MetadataPane
                     {
                         Presentation presentation = m_UrakawaSession.DocumentProject.Presentations.Get(0);
 
-                        m_MetadataCollection = new MetadataCollection
-                            (presentation.Metadatas.ContentsAs_ListCopy,
-                            SupportedMetadata_Z39862005.DefinitionSet.Definitions);
+                        m_MetadataCollection = new MetadataCollection(presentation.Metadatas.ContentsAs_Enumerable);
+                        //SupportedMetadata_Z39862005.DefinitionSet.Definitions
 
                         presentation.Metadatas.ObjectAdded += m_MetadataCollection.OnMetadataAdded;
                         presentation.Metadatas.ObjectRemoved += m_MetadataCollection.OnMetadataDeleted;
@@ -171,8 +170,12 @@ namespace Tobi.Plugin.MetadataPane
             Presentation presentation = m_UrakawaSession.DocumentProject.Presentations.Get(0);
 
             Metadata metadata = presentation.MetadataFactory.CreateMetadata();
-            metadata.NameContentAttribute = new MetadataAttribute { Name = "", NamespaceUri = "",  
-                Value = SupportedMetadata_Z39862005.MagicStringEmpty};
+            metadata.NameContentAttribute = new MetadataAttribute
+            {
+                Name = "",
+                NamespaceUri = "",
+                Value = SupportedMetadata_Z39862005.MagicStringEmpty
+            };
             MetadataAddCommand cmd = presentation.CommandFactory.CreateMetadataAddCommand
                 (metadata);
             presentation.UndoRedoManager.Execute(cmd);
@@ -199,9 +202,7 @@ namespace Tobi.Plugin.MetadataPane
         {
             string data = "";
 
-            List<Metadata> list = m_UrakawaSession.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
-            //iterate through the SDK metadata
-            foreach (Metadata m in list)
+            foreach (Metadata m in m_UrakawaSession.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
             {
                 data += string.Format("{0} = {1}" + Environment.NewLine, m.NameContentAttribute.Name, m.NameContentAttribute.Value);
 
@@ -228,10 +229,33 @@ namespace Tobi.Plugin.MetadataPane
                     return list;
                 }
 
-                List<Metadata> metadatas = m_UrakawaSession.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_ListCopy;
-                List<MetadataDefinition> availableMetadata =
-                    MetadataAvailability.GetAvailableMetadata(metadatas, SupportedMetadata_Z39862005.DefinitionSet.Definitions);
+                List<MetadataDefinition> availableMetadata = new List<MetadataDefinition>();
 
+                foreach (MetadataDefinition definition in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
+                {
+                    string name = definition.Name.ToLower();
+                    bool exists = false;
+                    foreach (Metadata item in m_UrakawaSession.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
+                    {
+                        if (item.NameContentAttribute.Name.ToLower() == name)
+                        {
+                            exists = true;
+                            break;
+                        }
+                    }
+
+                    if (!exists)
+                    {
+                        availableMetadata.Add(definition);
+                    }
+                    else
+                    {
+                        if (definition.IsRepeatable)
+                        {
+                            availableMetadata.Add(definition);
+                        }
+                    }
+                }
 
                 foreach (MetadataDefinition metadata in availableMetadata)
                 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -129,9 +130,13 @@ namespace Tobi.Plugin.Urakawa
                         }
 
                         Directory.Delete(exportDir, true);
+
+                        Thread.Sleep(200);
                     }
 
                     Directory.CreateDirectory(exportDir);
+
+                    Thread.Sleep(200);
 
                     if (!Directory.Exists(exportDir))
                     {
