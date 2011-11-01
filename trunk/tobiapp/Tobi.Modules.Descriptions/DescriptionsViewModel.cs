@@ -286,7 +286,7 @@ namespace Tobi.Plugin.Descriptions
             RaisePropertyChanged(() => Metadatas);
         }
 
-        public void AddDescription(string txt, string descriptionName)
+        public void AddDescription(string uid, string descriptionName)
         {
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
             TreeNode node = selection.Item2 ?? selection.Item1;
@@ -303,13 +303,13 @@ namespace Tobi.Plugin.Descriptions
 
             RaisePropertyChanged(() => Descriptions);
 
-            if (!string.IsNullOrEmpty(txt))
+            if (!string.IsNullOrEmpty(uid))
             {
-                AddMetadata(null, altContent, DaigramContentModelStrings.XmlId, txt);
+                AddMetadata(null, altContent, DiagramContentModelStrings.XmlId, uid);
             }
             if (!string.IsNullOrEmpty(descriptionName))
             {
-                AddMetadata(null, altContent, DaigramContentModelStrings.DescriptionName, descriptionName);
+                AddMetadata(null, altContent, DiagramContentModelStrings.DescriptionName, descriptionName);
             }
         }
 

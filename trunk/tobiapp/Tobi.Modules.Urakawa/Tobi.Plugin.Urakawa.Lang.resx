@@ -273,6 +273,6 @@ any changes will be lost !</value>
     <value>open file</value>
   </data>
   <data name="UrakawaSession_SavePath" xml:space="preserve">
-    <value>Path:{0}</value>
+    <value>File path: {0}</value>
   </data>
 </root>

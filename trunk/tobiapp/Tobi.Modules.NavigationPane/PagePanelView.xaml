@@ -153,7 +153,10 @@
         Focusable="{Binding HasNotPages}"
         
         AutomationProperties.Name="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Pages}"
-        search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}">
+        search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"
+        
+        AlternationCount="2">
+      
       <ListView.ItemTemplate>
         <DataTemplate>
           <TextBlock Text="{Binding Name}"/>
@@ -162,20 +165,34 @@
       <ListView.ItemContainerStyle>
 
         <Style TargetType="{x:Type ListViewItem}">
+          <Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                          Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+          </Style.Resources>
 
+          <Style.Setters>
           <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
           <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
           <!-- Setter Property="FontSize" Value="15" / -->
           <Setter Property="FontWeight" Value="Normal" />
           <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
-          <Setter Property="local:ListViewItemBehavior.IsBroughtIntoViewWhenSelected" Value="True" />
+          <Setter Property="UI:ListViewItemBringIntoViewNoFocusWhenSelectedBehavior.IsBroughtIntoViewNoFocusWhenSelected" Value="True" />
           <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItem" />
           <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
           <!--<EventSetter Event="Selected" Handler="OnSelected_ListItem" /> -->
+          </Style.Setters>
+          
           <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
               <Setter Property="FontWeight" Value="Bold" />
             </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+                <Condition Property="IsSelected" Value="False"/>
+              </MultiTrigger.Conditions>
+              <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+            </MultiTrigger>
             <Trigger Property="search:SearchOperations.IsMatch" Value="True">
               <Setter Property="Background">
                 <Setter.Value>

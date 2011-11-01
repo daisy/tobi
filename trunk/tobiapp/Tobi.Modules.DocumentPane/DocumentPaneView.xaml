@@ -518,7 +518,7 @@ Background="{Binding
 
             <Style.Triggers>
               <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
               </Trigger>
             </Style.Triggers>
           </Style>
@@ -547,7 +547,7 @@ Background="{Binding
 
             <Style.Triggers>
               <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
               </Trigger>
             </Style.Triggers>
           </Style>
