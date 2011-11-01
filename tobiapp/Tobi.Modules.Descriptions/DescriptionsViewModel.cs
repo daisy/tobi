@@ -221,6 +221,7 @@ namespace Tobi.Plugin.Descriptions
             node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => Descriptions);
         }
 
         public void AddMetadata(AlternateContentProperty altProp, AlternateContent altContent,
@@ -247,6 +248,7 @@ namespace Tobi.Plugin.Descriptions
             node.Presentation.UndoRedoManager.Execute(cmd);
 
             RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => Descriptions);
         }
 
         public void AddDescription(string uid, string descriptionName)
@@ -509,6 +511,7 @@ namespace Tobi.Plugin.Descriptions
 
 
             RaisePropertyChanged(() => Metadatas);
+            RaisePropertyChanged(() => Descriptions);
         }
 
         private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)

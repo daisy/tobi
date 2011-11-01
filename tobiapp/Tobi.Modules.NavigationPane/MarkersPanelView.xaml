@@ -45,7 +45,9 @@
            xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
            xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
            xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
-           LastChildFill="True" >
+           LastChildFill="True" 
+  
+           Loaded="OnUILoaded">
   <!--<DockPanel.Resources>
     <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
   </DockPanel.Resources>-->
@@ -66,14 +68,14 @@
              Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
     <UI:ButtonRichCommand
-      Control.TabIndex="4"
+      Control.TabIndex="5"
       DockPanel.Dock="Right"
        HorizontalAlignment="Right" VerticalAlignment="Center"
       UseSmallerIcon="True"
       RichCommand="{Binding CmdFindNextGlobal}"/>
 
     <UI:ButtonRichCommand
-      Control.TabIndex="3"
+      Control.TabIndex="4"
       DockPanel.Dock="Right"
        HorizontalAlignment="Right" VerticalAlignment="Center"
       UseSmallerIcon="True"
@@ -87,7 +89,7 @@
 
     <UI:WatermarkTextBox
       KeyUp="OnSearchBoxKeyUp"
-      Control.TabIndex="2"
+      Control.TabIndex="3"
       x:Name="SearchBox"
                                      TextChanged="SearchBox_TextChanged"
                                      Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
@@ -110,7 +112,9 @@
                 Content="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Marked}"
                ToolTip="{Binding Source={x:Static local:Settings_KeyGestures.Default}, Path=Keyboard_ToggleDocMark, Mode=OneWay}"
                 IsThreeState="False"
-    Margin="4,4,4,4"/>
+    Margin="4,4,4,4"
+               
+        Control.TabIndex="2"/>
 
     <TextBlock 
                Focusable="True"
@@ -119,7 +123,9 @@
                FontWeight="UltraBold"
          Padding="4,4,4,4"
                Text="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"
-               ToolTip="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"/>
+               ToolTip="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"
+               
+        KeyboardNavigation.TabIndex="1"/>
 
   </DockPanel>
 
@@ -186,7 +192,7 @@
         IsTabStop="{Binding HasNotMarkers}"
         Focusable="{Binding HasNotMarkers}"
         
-        Control.TabIndex="1"
+        Control.TabIndex="0"
         AutomationProperties.Name="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Marks}"
         search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"
         

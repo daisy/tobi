@@ -22,7 +22,8 @@ namespace Tobi.Plugin.Descriptions
 
         public DescriptionsNavigationViewModel ViewModel
         {
-            get; private set;
+            get;
+            private set;
         }
         private readonly IEventAggregator m_EventAggregator;
         private readonly ILoggerFacade m_Logger;
@@ -162,7 +163,7 @@ namespace Tobi.Plugin.Descriptions
         private void OnSearchBoxKeyUp(object sender, KeyEventArgs e)
         {
             var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
-            
+
             if (key == Key.Return && ViewModel.CommandFindNextDescription.CanExecute())
             {
                 ViewModel.CommandFindNextDescription.Execute();
@@ -172,6 +173,16 @@ namespace Tobi.Plugin.Descriptions
             {
                 SearchBox.Text = "";
                 FocusHelper.FocusBeginInvoke(FocusableItem);
+            }
+        }
+
+        private void OnUILoaded(object sender, RoutedEventArgs e)
+        {
+            var item = FocusableItem;
+            if (item != null)
+            {
+                Console.WriteLine("Descriptions VISIBLE");
+                FocusHelper.FocusBeginInvoke(item);
             }
         }
     }
