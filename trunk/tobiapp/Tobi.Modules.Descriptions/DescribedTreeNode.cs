@@ -95,7 +95,7 @@ namespace Tobi.Plugin.Descriptions
                 XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("src");
                 if (xmlAttr != null && !String.IsNullOrEmpty(xmlAttr.Value))
                 {
-                    str = str + " [";
+                    str = str + "  --> [";
                     string strAttr = xmlAttr.Value.TrimEnd('/');
                     int index = strAttr.LastIndexOf('/');
                     if (index >= 0)
