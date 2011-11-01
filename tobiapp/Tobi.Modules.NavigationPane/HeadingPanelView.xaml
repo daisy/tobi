@@ -78,10 +78,6 @@
 
       <TreeView.ItemContainerStyle>
         <Style TargetType="{x:Type TreeViewItem}">
-          <Style.Resources>
-            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                          Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-          </Style.Resources>
 
           <Style.Setters>
             <Setter Property="FocusVisualStyle">
@@ -151,6 +147,9 @@
 
       <TreeView.Resources>
 
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                      Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+        
         <HierarchicalDataTemplate DataType="{x:Type local:HeadingTreeNodeWrapper}"
                                   ItemsSource="{Binding Children}">
 

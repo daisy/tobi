@@ -1124,9 +1124,15 @@ namespace Tobi.Plugin.Descriptions
 
                 editBoxCombo_Name.ItemsSource = predefinedCandidates;
 
+                var panel = new StackPanel();
+                panel.SetValue(StackPanel.OrientationProperty, Orientation.Vertical);
+                panel.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
+                editBoxCombo_Name.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
+                panel.Children.Add(editBoxCombo_Name);
+
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        dialogTitle,
-                                                       editBoxCombo_Name,
+                                                       panel,
                                                        PopupModalWindow.DialogButtonsSet.OkCancel,
                                                        PopupModalWindow.DialogButton.Ok,
                                                        true, 300, 160, null, 40);
