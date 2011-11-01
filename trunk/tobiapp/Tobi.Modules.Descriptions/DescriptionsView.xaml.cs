@@ -94,12 +94,14 @@ namespace Tobi.Plugin.Descriptions
 
             var altContent = value as AlternateContent;
 
-            string txt = "[no text]";
+            //string txt = "[no text]";
 
-            if (altContent != null && altContent.Text != null) // && !string.IsNullOrEmpty(altContent.Text.Text))
-            {
-                txt = altContent.Text.Text;
-            }
+            //if (altContent != null && altContent.Text != null) // && !string.IsNullOrEmpty(altContent.Text.Text))
+            //{
+            //    txt = altContent.Text.Text;
+            //}
+            
+            string txt = "";
 
             string uid = null;
             string descriptionName = null;
@@ -1081,9 +1083,15 @@ namespace Tobi.Plugin.Descriptions
                                       AcceptsReturn = false
                                   };
 
+                var panel = new StackPanel();
+                panel.SetValue(StackPanel.OrientationProperty, Orientation.Vertical);
+                panel.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
+                editBox.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
+                panel.Children.Add(editBox);
+
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        dialogTitle,
-                                                       editBox,
+                                                       panel,
                                                        PopupModalWindow.DialogButtonsSet.OkCancel,
                                                        PopupModalWindow.DialogButton.Ok,
                                                        true, 300, 160, null, 40);
