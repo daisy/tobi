@@ -88,7 +88,7 @@
         IsTabStop="{Binding HasNotDescribableTreeNodes, Mode=OneWay}"
         Focusable="{Binding HasNotDescribableTreeNodes, Mode=OneWay}"
         
-        TabIndex="1"
+        Control.TabIndex="1"
         AutomationProperties.Name="Descriptions"
         search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"
         

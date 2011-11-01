@@ -78,7 +78,7 @@
   </Border>
 
   <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left"
-          TabIndex="6"
+          Control.TabIndex="6"
           Margin="0,4,0,0"
           Content="{x:Static Settings:Tobi_Plugin_Settings_Lang.ResetItems_Short}"
           ToolTip="{x:Static Settings:Tobi_Plugin_Settings_Lang.ResetItems_Long}"
@@ -86,7 +86,7 @@
 
   <!--"{Binding Source={StaticResource sortedSettings}}"-->
   <UI:SortableListView2
-    TabIndex="5"
+    Control.TabIndex="5"
     x:Name="SettingsList"
     ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
     ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"

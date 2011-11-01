@@ -56,7 +56,7 @@
   </Border>
 
   <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left"
-          TabIndex="6"
+          Control.TabIndex="6"
           Margin="0,4,0,0"
           Content="{x:Static Urakawa:Tobi_Plugin_Urakawa_Lang.DeleteRecentFile_Short}"
           ToolTip="{x:Static Urakawa:Tobi_Plugin_Urakawa_Lang.DeleteRecentFile_Long}"
@@ -65,7 +65,7 @@
   <!--"{Binding Source={StaticResource sortedSettings}}"-->
   <UI:SortableListView2
     Loaded="OnLoaded_ListView"
-    TabIndex="5"
+    Control.TabIndex="5"
     x:Name="RecentFilesList"
     ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
     ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
