@@ -198,7 +198,6 @@ namespace Tobi.Plugin.NavigationPane
             var item = FocusableItem;
             if (item != null)
             {
-                Console.WriteLine("Markers VISIBLE");
                 FocusHelper.FocusBeginInvoke(item);
             }
         }

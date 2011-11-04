@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
+using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.UI;
 using Tobi.Common.UI.XAML;
+using Tobi.Plugin.AudioPane;
+using Tobi.Plugin.Urakawa;
+using urakawa;
 using urakawa.core;
 using urakawa.daisy;
 using urakawa.data;
@@ -150,10 +157,12 @@ namespace Tobi.Plugin.Descriptions
         private readonly IShellView m_ShellView;
         private readonly IUrakawaSession m_Session;
         private readonly IUnityContainer m_Container;
+        private readonly IEventAggregator m_EventAggregator;
 
         [ImportingConstructor]
         public DescriptionsView(
             ILoggerFacade logger,
+            IEventAggregator eventAggregator,
             IUnityContainer container,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView,
@@ -162,6 +171,7 @@ namespace Tobi.Plugin.Descriptions
             [Import(typeof(DescriptionsViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             DescriptionsViewModel viewModel)
         {
+            m_EventAggregator = eventAggregator;
             m_Logger = logger;
             m_Container = container;
             m_ShellView = shellView;
@@ -237,6 +247,43 @@ namespace Tobi.Plugin.Descriptions
                                                   true, 800, 500, null, 0);
             //view.OwnerWindow = windowPopup;
 
+            windowPopup.IgnoreEscape = true;
+
+            //var bindings = Application.Current.MainWindow.InputBindings;
+            //foreach (var binding in bindings)
+            //{
+            //    if (binding is KeyBinding)
+            //    {
+            //        var keyBinding = (KeyBinding)binding;
+            //        if (keyBinding.Command == m_ShellView.ExitCommand)
+            //        {
+            //            continue;
+            //        }
+            //        windowPopup.InputBindings.Add(keyBinding);
+            //    }
+            //}
+
+            //windowPopup.InputBindings.AddRange(Application.Current.MainWindow.InputBindings);
+
+            windowPopup.KeyUp += (object sender, KeyEventArgs e) =>
+                {
+                    var key = (e.Key == Key.System
+                                    ? e.SystemKey
+                                    : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+                    if (key == Key.Escape)
+                    {
+                        m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+                    }
+                };
+
+            windowPopup.Closed += (sender, ev) => Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                (Action)(() =>
+                {
+                    //
+                }));
+
             m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
                 (Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc, Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_LongDesc);
 
@@ -272,11 +319,85 @@ namespace Tobi.Plugin.Descriptions
             GC.WaitForFullGCComplete();
         }
 
+        private AudioPaneViewModel m_audioViewModel;
+        private UrakawaSession m_audioSession;
+
         private void OnLoaded_Panel(object sender, RoutedEventArgs e)
         {
             var win = Window.GetWindow(this);
             if (win is PopupModalWindow)
                 OwnerWindow = (PopupModalWindow)win;
+
+            if (AudioTabItem.Content == null)
+            {
+                var pres = m_Session.DocumentProject.Presentations.Get(0);
+
+                // a proxy project/presentation/treenode (and UrakawaSession wrapper) to bridge the standard audio recording feature, without altering the main document.
+                var presentation = new Presentation();
+                presentation.RootUri = pres.RootUri;
+                int index = pres.DataProviderManager.DataFileDirectory.IndexOf(DataProviderManager.DefaultDataFileDirectorySeparator + DataProviderManager.DefaultDataFileDirectory);
+                string prefix = pres.DataProviderManager.DataFileDirectory.Substring(0, index);
+                //Debug.Assert(Path.GetFileName(pres.RootUri.LocalPath) == prefix);
+                presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(prefix);
+                presentation.MediaDataManager.DefaultPCMFormat = pres.MediaDataManager.DefaultPCMFormat.Copy();
+                presentation.MediaDataManager.EnforceSinglePCMFormat = true;
+
+                Debug.Assert(presentation.DataProviderManager.DataFileDirectoryFullPath == pres.DataProviderManager.DataFileDirectoryFullPath);
+
+                var audioChannel = presentation.ChannelFactory.CreateAudioChannel();
+                audioChannel.Name = "The DESCRIPTION Audio Channel";
+
+                var project = new Project();
+                presentation.Project = project;
+                project.SetPrettyFormat(true);
+                project.Presentations.Insert(0, presentation);
+
+                var treeNode = presentation.TreeNodeFactory.Create();
+                presentation.RootNode = treeNode;
+
+                m_audioSession = new UrakawaSession(
+                    m_Logger,
+                    m_Container,
+                    m_EventAggregator,
+                    m_ShellView);
+                m_audioSession.DocumentProject = project;
+
+                m_audioViewModel = new AudioPaneViewModel(
+                    m_Logger,
+                    m_EventAggregator,
+                    m_ShellView,
+                    m_audioSession
+                    );
+
+                var audioView = new AudioPaneView(
+                    m_Logger,
+                    m_EventAggregator,
+                    m_audioViewModel,
+                    m_ShellView
+                    );
+
+                AudioTabItem.Content = audioView;
+
+                this.InputBindings.Add(m_audioViewModel.CommandPlay.KeyBinding);
+                this.InputBindings.Add(m_audioViewModel.CommandPause.KeyBinding);
+
+                this.InputBindings.Add(m_audioViewModel.CommandStartMonitor.KeyBinding);
+                this.InputBindings.Add(m_audioViewModel.CommandStopMonitor.KeyBinding);
+
+                this.InputBindings.Add(m_audioViewModel.CommandStartRecord.KeyBinding);
+                this.InputBindings.Add(m_audioViewModel.CommandStopRecord.KeyBinding);
+
+                this.InputBindings.Add(m_audioViewModel.CommandOpenFile.KeyBinding);
+            }
+
+            m_audioViewModel.OnProjectLoaded(m_audioSession.DocumentProject);
+
+            //Tuple<TreeNode, TreeNode> treeNodeSelection = m_Session.GetTreeNodeSelection();
+            var treeNodeSelection = new Tuple<TreeNode, TreeNode>(m_audioSession.DocumentProject.Presentations.Get(0).RootNode, null);
+            var oldTreeNodeSelection = new Tuple<TreeNode, TreeNode>(treeNodeSelection.Item1.Parent, null);
+            var tuple = new Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>(oldTreeNodeSelection, treeNodeSelection);
+            m_audioViewModel.OnTreeNodeSelectionChanged(tuple);
+
 
             MetadatasListView.Items.Refresh();
             MetadataAttributesListView.Items.Refresh();
@@ -302,9 +423,26 @@ namespace Tobi.Plugin.Descriptions
             BindingExpression be = DescriptionImage.GetBindingExpression(Image.SourceProperty);
             if (be != null) be.UpdateTarget();
 
+
+
+            m_audioViewModel.OnProjectUnLoaded(m_audioSession.DocumentProject);
+            //AudioTabItem.Content = null;
+            //m_audioViewModel = null;
+            //this.InputBindings.Remove(m_audioViewModel.CommandPlay.KeyBinding);
+            //this.InputBindings.Remove(m_audioViewModel.CommandPause.KeyBinding);
+
+            //this.InputBindings.Remove(m_audioViewModel.CommandStartMonitor.KeyBinding);
+            //this.InputBindings.Remove(m_audioViewModel.CommandStopMonitor.KeyBinding);
+
+            //this.InputBindings.Remove(m_audioViewModel.CommandStartRecord.KeyBinding);
+            //this.InputBindings.Remove(m_audioViewModel.CommandStopRecord.KeyBinding);
+
+            //this.InputBindings.Remove(m_audioViewModel.CommandOpenFile.KeyBinding);
+
+
+
             if (m_OwnerWindow != null)
             {
-
             }
         }
 

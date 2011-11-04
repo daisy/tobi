@@ -478,6 +478,14 @@ AlternationCount="2"
 
     </TabItem>
     
+    
+    
+    
+    
+    
+    
+    
+    
     <TabItem Header="Descriptions">
 
       <Grid Height="Auto" Width="Auto">
@@ -653,6 +661,17 @@ AlternationCount="2"
             </Style>
           </TabControl.Resources>
 
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
           <TabItem Header="Text">
             <DockPanel LastChildFill="True">
             <StackPanel Orientation="Horizontal"
@@ -690,6 +709,13 @@ AlternationCount="2"
                        />
             </DockPanel>
           </TabItem>
+          
+          
+            
+              
+              
+              
+              
           <TabItem Header="Image">
             <DockPanel LastChildFill="True">
               
@@ -751,6 +777,19 @@ AlternationCount="2"
               </Image>
             </DockPanel>
           </TabItem>
+
+
+
+          <TabItem Header="Audio" x:Name="AudioTabItem">
+            
+          </TabItem>
+
+
+
+
+
+
+
           <TabItem Header="Attributes">
 
             <DockPanel LastChildFill="True">
@@ -948,6 +987,13 @@ IsEnabled="{Binding HasDescriptionMetadata}"
             </DockPanel>
 
           </TabItem>
+          
+          
+          
+          
+          
+          
+          
         </TabControl>
       </Grid>
 

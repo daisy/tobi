@@ -142,6 +142,14 @@
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
       <Name>Tobi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane.csproj">
+      <Project>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</Project>
+      <Name>Tobi.Plugin.AudioPane</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tobi.Modules.Urakawa\Tobi.Plugin.Urakawa.csproj">
+      <Project>{2BA3495E-8895-4D67-866C-C60BCA3C08A6}</Project>
+      <Name>Tobi.Plugin.Urakawa</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

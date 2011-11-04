@@ -808,7 +808,7 @@ namespace Tobi.Plugin.AudioPane
         }
 
         private bool m_UpdatingTreeNodeSelection;
-        private void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
+        public void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
         {
             //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
@@ -1026,7 +1026,7 @@ namespace Tobi.Plugin.AudioPane
         private AudioFormatConvertorSession m_AudioFormatConvertorSession;
         private AudioFormatConvertorSession m_AudioFormatConvertorSession_NoProject;
 
-        private void OnProjectUnLoaded(Project project)
+        public void OnProjectUnLoaded(Project project)
         {
             if (!TheDispatcher.CheckAccess())
             {
@@ -1048,7 +1048,7 @@ namespace Tobi.Plugin.AudioPane
             OnProjectLoaded(null);
         }
 
-        private void OnProjectLoaded(Project project)
+        public void OnProjectLoaded(Project project)
         {
             if (!TheDispatcher.CheckAccess())
             {
