@@ -307,6 +307,8 @@ namespace Tobi.Common
 
     public interface IShellView : INotifyPropertyChangedEx, IInputBindingManager
     {
+        RichDelegateCommand ExitCommand { get; }
+
         void RaiseEscapeEvent();
 
         IActiveAware ActiveAware { get; }

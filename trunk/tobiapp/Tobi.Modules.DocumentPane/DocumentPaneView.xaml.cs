@@ -317,7 +317,21 @@ namespace Tobi.Plugin.DocumentPane
 
                         m_DocumentNarratorWindow.IgnoreEscape = true;
 
-                        m_DocumentNarratorWindow.InputBindings.AddRange(Application.Current.MainWindow.InputBindings);
+                        var bindings = Application.Current.MainWindow.InputBindings;
+                        foreach (var binding in bindings)
+                        {
+                            if (binding is KeyBinding)
+                            {
+                                var keyBinding = (KeyBinding) binding;
+                                if (keyBinding.Command == m_ShellView.ExitCommand)
+                                {
+                                    continue;
+                                }
+                                m_DocumentNarratorWindow.InputBindings.Add(keyBinding);
+                            }
+                        }
+
+                        //m_DocumentNarratorWindow.InputBindings.AddRange(Application.Current.MainWindow.InputBindings);
 
                         m_DocumentNarratorWindow.KeyUp += (object sender, KeyEventArgs e) =>
                             {
@@ -344,7 +358,9 @@ namespace Tobi.Plugin.DocumentPane
                                 }
                             }));
                     }
+                    
                     m_DocumentNarratorWindow.ShowFloating(null);
+                    //m_DocumentNarratorWindow.ShowModal();
                 }
                 else
                 {

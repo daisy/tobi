@@ -181,7 +181,6 @@ namespace Tobi.Plugin.Descriptions
             var item = FocusableItem;
             if (item != null)
             {
-                Console.WriteLine("Descriptions VISIBLE");
                 FocusHelper.FocusBeginInvoke(item);
             }
         }
