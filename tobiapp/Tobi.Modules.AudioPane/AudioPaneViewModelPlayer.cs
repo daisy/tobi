@@ -152,7 +152,10 @@ namespace Tobi.Plugin.AudioPane
 
                     SetPlayHeadTimeBypassAutoPlay(playBytePosition);
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackStopped);
+                    if (EventAggregator != null)
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackStopped);
+                    }
                 },
                 () => !IsWaveFormLoading && State.Audio.HasContent && IsPlaying,
                 Settings_KeyGestures.Default,
@@ -523,13 +526,18 @@ namespace Tobi.Plugin.AudioPane
                 {
                     m_IsWaveFormLoading = value;
 
-                    if (m_IsWaveFormLoading)
+                    if (EventAggregator != null)
                     {
-                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.LoadingWaveform);
-                    }
-                    else
-                    {
-                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.WaveformLoaded);
+                        if (m_IsWaveFormLoading)
+                        {
+                            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(
+                                Tobi_Plugin_AudioPane_Lang.LoadingWaveform);
+                        }
+                        else
+                        {
+                            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(
+                                Tobi_Plugin_AudioPane_Lang.WaveformLoaded);
+                        }
                     }
 
                     RaisePropertyChanged(() => IsWaveFormLoading);
@@ -847,7 +855,10 @@ namespace Tobi.Plugin.AudioPane
                     );
             }
 
-            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Playing); 
+            if (EventAggregator != null)
+            {
+                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Playing);
+            } 
 
             //AudioPlayer_UpdateWaveFormPlayHead(); rounding problems between player.currentTime and playheadtime => let's let the vumeter callback do the refresh.
         }
@@ -1001,7 +1012,10 @@ namespace Tobi.Plugin.AudioPane
         {
             RaisePropertyChanged(() => IsPlaying);
 
-            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackEnded);
+            if (EventAggregator != null)
+            {
+                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackEnded);
+            }
 
             CommandManager.InvalidateRequerySuggested();
 

@@ -218,7 +218,10 @@ namespace Tobi.Plugin.Urakawa
                 {
                     //m_Logger.Log(@"-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug, Priority.Medium);
 
-                    m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
+                    if (m_EventAggregator != null)
+                    {
+                        m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
+                    }
 
                     var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(DocumentProject.Presentations.Get(0).RootNode, null);
                     if (treeNode != null)

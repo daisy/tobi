@@ -813,14 +813,31 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                     HorizontalAlignment="Left"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" -->
 
-
     
-    <!--<UI:TwoStateButtonRichCommand
+    <UI:ButtonRichCommand
+        RichCommand="{Binding UrakawaSession.UndoCommand}"
+        Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+        />
+
+    <UI:ButtonRichCommand
+        RichCommand="{Binding UrakawaSession.RedoCommand}"
+        Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+        />
+
+      
+    <Separator
+      Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+      />
+
+
+    <UI:TwoStateButtonRichCommand
   
       RichCommandOne="{Binding CommandStopMonitor}"
       RichCommandTwo="{Binding CommandStartMonitor}"
       InputBindingManager="{Binding InputBindingManager}"
-            RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"/>-->
+            RichCommandActive="{Binding IsMonitoring, Mode=OneWay}"
+      Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+      />
 
       <UI:TwoStateButtonRichCommand
   
@@ -830,7 +847,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               RichCommandActive="{Binding IsRecording, Mode=OneWay}"/>
 
     <UI:ButtonRichCommand
-        RichCommand="{Binding CommandStopRecordAndContinue}"/>
+        RichCommand="{Binding CommandStopRecordAndContinue}"
+        Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+        />
 
     <Separator/>
 
@@ -838,7 +857,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         RichCommand="{Binding CommandInsertFile}"/>
 
     <UI:ButtonRichCommand
-        RichCommand="{Binding CommandGenTTS}"/>
+        RichCommand="{Binding CommandGenTTS}"
+        Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+        />
 
  
     <UI:ButtonRichCommand
@@ -869,6 +890,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                                  />
 
     <UI:ButtonRichCommand  RichCommand="{Binding CommandStepBack}"
+                           Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
                                   />
 
     <UI:RepeatButtonRichCommand RichCommand="{Binding CommandRewind}"
@@ -878,6 +900,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                                  />
 
     <UI:ButtonRichCommand  RichCommand="{Binding CommandStepForward}"
+                           Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
                                   />
 
     <UI:ButtonRichCommand RichCommand="{Binding CommandGotoEnd}"
@@ -895,8 +918,10 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
 
     <UI:ButtonRichCommand RichCommand="{Binding CommandSelectPreviousChunk}"
+                          Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
                                  />
     <UI:ButtonRichCommand RichCommand="{Binding CommandSelectNextChunk}"
+                          Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
                                  />
 
     <!-- UI:ButtonRichCommand RichCommand="{Binding CommandBeginSelection}" />
@@ -913,10 +938,14 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                 IsThreeState="False"
               ToolTip="{Binding Source={x:Static AudioPane:Settings_KeyGestures.Default}, Path=Keyboard_Audio_AutoPlay, Mode=OneWay}"
               VerticalAlignment="Center"
-    Margin="2,0,2,0"/>
+    Margin="2,0,2,0"
+              Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+              />
 
 
-    <Separator/>
+    <Separator
+      Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+      />
     
     <!-- UI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"/ -->
 
@@ -969,6 +998,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
     
     HorizontalAlignment="Stretch"
+
+    Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
     >
 
     <!-- LastChildFill="True" -->
@@ -995,7 +1026,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
       <TextBlock
                  Focusable="True" VerticalAlignment="Center"
-                 Text="{Binding PlaybackRateString, Mode=OneWay}"/>
+                 Text="{Binding PlaybackRateString, Mode=OneWay}"
+
+                 />
 
       <TextBlock
         

@@ -780,8 +780,91 @@ AlternationCount="2"
 
 
 
-          <TabItem Header="Audio" x:Name="AudioTabItem">
-            
+          <TabItem Header="Audio">
+
+            <DockPanel LastChildFill="True">
+
+              <!-- TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.OriginalRelativePath, Mode=OneWay}"
+                         DockPanel.Dock="Top"
+                         HorizontalAlignment="Center"/>
+              <TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
+                         DockPanel.Dock="Bottom"/ -->
+
+              <StackPanel Orientation="Horizontal"
+                          DockPanel.Dock="Bottom"
+                  HorizontalAlignment="Stretch">
+                <Button
+                       Control.TabIndex="3"
+                  x:Name="ButtonAddEditAudio"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                        Margin="0,4,0,0"
+                        Content="Add/edit..."
+                        
+                  Click="OnClick_ButtonAddEditAudio"/>
+                <Button
+                       Control.TabIndex="4"
+                  x:Name="ButtonClearAudio"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                        Margin="4,4,0,0"
+                        Content="Clear"
+                        IsEnabled="{Binding HasDescriptionAudio}"
+                  Click="OnClick_ButtonClearAudio"/>
+              </StackPanel>
+
+              <MediaElement x:Name="AudioMediaElement"
+                DockPanel.Dock="Top"
+                            Focusable="false"
+                        IsEnabled="{Binding HasDescriptionAudio}"
+                            Volume="1"
+                            LoadedBehavior="Manual"
+                            UnloadedBehavior="Stop"
+    
+                            Stretch="Fill"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+    MediaOpened="AudioElement_MediaOpened" MediaEnded="AudioElement_MediaEnded"/>
+              
+              <DockPanel
+                LastChildFill="True"
+                HorizontalAlignment="Stretch"
+                       VerticalAlignment="Center">
+              <StackPanel
+                DockPanel.Dock="Left"
+                Orientation="Horizontal"          >
+
+                <Button
+                       Control.TabIndex="1"
+                  x:Name="ButtonAudioPlayPause"
+                        
+                        Content="Play/Pause"
+                        IsEnabled="{Binding HasDescriptionAudio}"
+                  Click="OnClick_ButtonAudioPlayPause"
+              Margin="0,0,4,0"/>
+              </StackPanel>
+                <Slider x:Name="AudioTimeSlider"
+                       Control.TabIndex="2"
+                        IsEnabled="{Binding HasDescriptionAudio}"
+                        ValueChanged="OnAudioTimeSliderValueChanged"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal"
+                        Thumb.DragStarted="OnDragStarted_AudioTimeSlider"
+          Thumb.DragCompleted="OnDragCompleted_AudioTimeSlider"
+                        TickPlacement="None"
+              IsMoveToPointEnabled="True"
+                        />
+                <!-- 
+              TickFrequency="25"
+              Delay="500"
+              Interval="15"
+              LargeChange="20"
+              SmallChange="10"
+              -->
+              </DockPanel>
+            </DockPanel>
+
           </TabItem>
 
 

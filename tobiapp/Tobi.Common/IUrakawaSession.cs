@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Tobi.Common.MVVM;
+using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
@@ -12,6 +13,9 @@ namespace Tobi.Common
     ///</summary>
     public interface IUrakawaSession : IPropertyChangedNotifyBase
     {
+        RichDelegateCommand UndoCommand { get; }
+        RichDelegateCommand RedoCommand { get; }
+
         void TryOpenFile(string filename);
 
         Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode clickedNode);
