@@ -1775,18 +1775,30 @@ namespace Tobi.Plugin.Descriptions
 
             if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
 
+
+
             if (AudioMediaElement.Clock != null)
             {
                 AudioMediaElement.Clock.Controller.Stop();
                 AudioMediaElement.Clock.Controller.Remove();
+            
+                AudioMediaElement.Close();
+                AudioMediaElement.Clock = null;
             }
+
+
+            //if (AudioMediaElement.Source != null)
+            //{
+            //    AudioMediaElement.Close();
+            //    AudioMediaElement.Source = null;
+            //}
+
 
             m_SliderValueChangeFromCode = true;
             AudioTimeSlider.Value = 0;
 
             if (altContent.Audio == null)
             {
-                AudioMediaElement.Clock = null;
                 AudioTimeSlider.Maximum = 100;
                 return;
             }
@@ -1802,21 +1814,41 @@ namespace Tobi.Plugin.Descriptions
                 return;
             }
 
-            var MTimeline = new MediaTimeline(new Uri(path));
-            MTimeline.CurrentTimeInvalidated += new EventHandler(MTimeline_CurrentTimeInvalidated);
-            AudioMediaElement.Clock = MTimeline.CreateClock(true) as MediaClock;
+
+            var mediaTimeline = new MediaTimeline(new Uri(path));
+            mediaTimeline.CurrentTimeInvalidated += new EventHandler(mediaTimeline_CurrentTimeInvalidated);
+            AudioMediaElement.Clock = mediaTimeline.CreateClock(true) as MediaClock;
             AudioMediaElement.Clock.Controller.Stop();
 
-            //AudioTimeSlider.Maximum = AudioMediaElement.NaturalDuration.TimeSpan.TotalMilliseconds;
+            //AudioMediaElement.Source = new Uri(path);
+            //AudioMediaElement.Clock.CurrentTimeInvalidated += new EventHandler(mediaTimeline_CurrentTimeInvalidated);
+
+            //if (mediaPlayer == null)
+            //{
+            //    mediaPlayer = new MediaPlayer();
+            //    mediaPlayer.Volume = 1;
+            //    mediaPlayer.MediaOpened += new EventHandler(AudioElement_MediaOpened);
+            //    mediaPlayer.MediaEnded += new EventHandler(AudioElement_MediaEnded);
+            //}
+            //mediaPlayer.Open(new Uri(path));
+            
         }
+
+        //private MediaPlayer mediaPlayer;
 
         private bool m_SliderValueChangeFromCode;
 
-        private void MTimeline_CurrentTimeInvalidated(object sender, EventArgs e)
+        private void mediaTimeline_CurrentTimeInvalidated(object sender, EventArgs e)
         {
             if (m_SliderDragging) return;
 
             if (AudioMediaElement.Clock == null) return;
+
+            if (AudioMediaElement.Clock.CurrentState == ClockState.Filling)
+            {
+                AudioElement_MediaEnded(null, null);
+                return;
+            }
 
             if (AudioMediaElement.Clock.CurrentTime.HasValue)
             {
@@ -1864,6 +1896,12 @@ namespace Tobi.Plugin.Descriptions
 
             if (AudioMediaElement.Clock == null) return;
 
+            if (AudioMediaElement.Clock.CurrentState == ClockState.Filling)
+            {
+                AudioMediaElement.Clock.Controller.Stop();
+                AudioMediaElement.Clock.Controller.Pause();
+            }
+
             int SliderValue = (int)AudioTimeSlider.Value;
 
             TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
@@ -1895,6 +1933,12 @@ namespace Tobi.Plugin.Descriptions
                     AudioMediaElement.Clock.Controller.Pause();
                 }
             }
+            else if (AudioMediaElement.Clock.CurrentState == ClockState.Filling)
+            {
+                AudioMediaElement.Clock.Controller.Stop();
+                AudioMediaElement.Clock.Controller.Pause();
+            }
+
             m_SliderDragging = true;
         }
 
@@ -1940,6 +1984,10 @@ namespace Tobi.Plugin.Descriptions
             else if (AudioMediaElement.Clock.CurrentState == ClockState.Stopped)
             {
                 AudioMediaElement.Clock.Controller.Begin();
+            }
+            else if (AudioMediaElement.Clock.CurrentState == ClockState.Filling)
+            {
+                AudioElement_MediaEnded(null, null);
             }
         }
     }
