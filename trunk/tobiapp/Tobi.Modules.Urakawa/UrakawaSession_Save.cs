@@ -237,7 +237,10 @@ namespace Tobi.Plugin.Urakawa
                     }
 
 
-                    m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_Urakawa_Lang.Saved); 
+                    if (m_EventAggregator != null)
+                    {
+                        m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_Urakawa_Lang.Saved);
+                    } 
 
                     RaisePropertyChanged(() => IsDirty);
                     //IsDirty = false;

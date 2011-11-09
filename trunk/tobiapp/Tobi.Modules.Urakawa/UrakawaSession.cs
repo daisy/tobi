@@ -258,7 +258,7 @@ namespace Tobi.Plugin.Urakawa
                 Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_user-trash-full"),
-                DataCleanup,
+                () => DataCleanup(true),
                 () => DocumentProject != null,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DataCleanup));
@@ -266,17 +266,21 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(DataCleanupCommand);
         }
 
-        public void DataCleanup()
+        public string DataCleanup(bool interactive)
         {
             // Backup before close.
             string docPath = DocumentFilePath;
             Project project = DocumentProject;
 
-            // Closing is REQUIRED ! 
-            PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(PopupModalWindow.DialogButtonsSet.OkCancel, "data cleanup");
-            if (!PopupModalWindow.IsButtonOkYesApply(button))
+            if (interactive)
             {
-                return;
+                // Closing is REQUIRED ! 
+                PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(
+                    PopupModalWindow.DialogButtonsSet.OkCancel, "data cleanup");
+                if (!PopupModalWindow.IsButtonOkYesApply(button))
+                {
+                    return null;
+                }
             }
 
             project.Presentations.Get(0).UndoRedoManager.FlushCommands();
@@ -294,26 +298,43 @@ namespace Tobi.Plugin.Urakawa
 
             bool cancelled = false;
 
-            bool result = m_ShellView.RunModalCancellableProgressTask(true,
-                Tobi_Plugin_Urakawa_Lang.CleaningUpDataFiles,
-                new Cleaner(project.Presentations.Get(0), deletedDataFolderPath), //project.Presentations.Get(0).Cleanup();
-                () =>
-                {
-                    m_Logger.Log(@"CANCELLED", Category.Debug, Priority.Medium);
-                    cancelled = true;
+            if (interactive)
+            {
+                bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                                                                          Tobi_Plugin_Urakawa_Lang.CleaningUpDataFiles,
+                                                                          new Cleaner(project.Presentations.Get(0),
+                                                                                      deletedDataFolderPath),
+                                                                          //project.Presentations.Get(0).Cleanup();
+                                                                          () =>
+                                                                              {
+                                                                                  m_Logger.Log(@"CANCELLED",
+                                                                                               Category.Debug,
+                                                                                               Priority.Medium);
+                                                                                  cancelled = true;
 
-                },
-                () =>
-                {
-                    m_Logger.Log(@"DONE", Category.Debug, Priority.Medium);
-                    cancelled = false;
+                                                                              },
+                                                                          () =>
+                                                                              {
+                                                                                  m_Logger.Log(@"DONE", Category.Debug,
+                                                                                               Priority.Medium);
+                                                                                  cancelled = false;
 
-                });
+                                                                              });
+                if (cancelled)
+                {
+                    Debug.Assert(!result);
+                }
+            }
+            else
+            {
+                var cleaner = new Cleaner(project.Presentations.Get(0),
+                                          deletedDataFolderPath);
+                //cleaner.DoWork();
+                cleaner.Cleanup();
+            }
 
             if (cancelled)
             {
-                Debug.Assert(!result);
-
                 // We restore the old one, not cleaned-up (or partially...).
 
                 DocumentFilePath = null;
@@ -341,11 +362,15 @@ namespace Tobi.Plugin.Urakawa
 
 
                 bool folderIsShowing = false;
-                if (Directory.GetFiles(deletedDataFolderPath).Length != 0)
-                {
-                    folderIsShowing = true;
 
-                    m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+                if (interactive)
+                {
+                    if (Directory.GetFiles(deletedDataFolderPath).Length != 0)
+                    {
+                        folderIsShowing = true;
+
+                        m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+                    }
                 }
 
                 foreach (string filePath in Directory.GetFiles(dataFolderPath))
@@ -362,31 +387,36 @@ namespace Tobi.Plugin.Urakawa
                     }
                 }
 
-                if (!folderIsShowing && Directory.GetFiles(deletedDataFolderPath).Length != 0)
+                if (interactive)
                 {
-                    m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
-                }
-
-                // We must now save the modified cleaned-up doc
-
-                DocumentFilePath = docPath;
-                DocumentProject = project;
-
-                if (save())
-                {
-                    DocumentFilePath = null;
-                    DocumentProject = null;
-
-                    try
+                    if (!folderIsShowing && Directory.GetFiles(deletedDataFolderPath).Length != 0)
                     {
-                        OpenFile(docPath);
+                        m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
                     }
-                    catch (Exception ex)
+
+                    // We must now save the modified cleaned-up doc
+
+                    DocumentFilePath = docPath;
+                    DocumentProject = project;
+
+                    if (save())
                     {
-                        ExceptionHandler.Handle(ex, false, m_ShellView);
+                        DocumentFilePath = null;
+                        DocumentProject = null;
+
+                        try
+                        {
+                            OpenFile(docPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionHandler.Handle(ex, false, m_ShellView);
+                        }
                     }
                 }
             }
+
+            return deletedDataFolderPath;
 
             //if (!Dispatcher.CurrentDispatcher.CheckAccess())
             //{
@@ -527,7 +557,10 @@ namespace Tobi.Plugin.Urakawa
             DocumentFilePath = null;
             DocumentProject = null;
 
-            m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Publish(oldProject);
+            if (m_EventAggregator != null)
+            {
+                m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Publish(oldProject);
+            }
 
             return result;
         }

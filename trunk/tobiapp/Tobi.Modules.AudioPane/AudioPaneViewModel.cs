@@ -76,8 +76,12 @@ namespace Tobi.Plugin.AudioPane
         private readonly IEventAggregator EventAggregator;
 
         private readonly IShellView m_ShellView;
+        
         internal readonly IUrakawaSession m_UrakawaSession;
-
+        public IUrakawaSession UrakawaSession
+        {
+            get { return m_UrakawaSession; }
+        }
 
         ///<summary>
         /// We inject a few dependencies in this constructor.
@@ -232,11 +236,19 @@ namespace Tobi.Plugin.AudioPane
                 return State.Audio.PlayStream;
             };
 
-            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Subscribe(str => StatusBarMessage = str, StatusBarMessageUpdateEvent.THREAD_OPTION);
-            EventAggregator.GetEvent<TotalAudioDurationComputedByFlowDocumentParserEvent>().Subscribe(dur => TotalDocumentAudioDurationInLocalUnits = dur.AsLocalUnits, TotalAudioDurationComputedByFlowDocumentParserEvent.THREAD_OPTION);
+            if (EventAggregator != null)
+            {
+                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Subscribe(str => StatusBarMessage = str,
+                                                                                  StatusBarMessageUpdateEvent.
+                                                                                      THREAD_OPTION);
+                EventAggregator.GetEvent<TotalAudioDurationComputedByFlowDocumentParserEvent>().Subscribe(
+                    dur => TotalDocumentAudioDurationInLocalUnits = dur.AsLocalUnits,
+                    TotalAudioDurationComputedByFlowDocumentParserEvent.THREAD_OPTION);
+            }
 
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
         }
+
 
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -412,6 +424,22 @@ namespace Tobi.Plugin.AudioPane
             get { return m_StatusBarMessage; }
         }
 
+        private bool m_IsSimpleMode;
+        public bool IsSimpleMode
+        {
+            set
+            {
+                if (m_IsSimpleMode == value)
+                {
+                    return;
+                }
+                m_IsSimpleMode = value;
+
+                RaisePropertyChanged(() => IsSimpleMode);
+            }
+            get { return m_IsSimpleMode; }
+        }
+
         public IInputBindingManager InputBindingManager
         {
             get { return m_ShellView; }
@@ -450,18 +478,24 @@ namespace Tobi.Plugin.AudioPane
 
             m_LastSetPlayBytePosition = -1;
             //IsWaveFormLoading = false;
+            if (EventAggregator != null)
+            {
+                //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
 
-            //EventAggregator.GetEvent<UserInterfaceScaledEvent>().Subscribe(OnUserInterfaceScaled, ThreadOption.UIThread);
+                EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded,
+                                                                         ProjectLoadedEvent.THREAD_OPTION);
+                EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded,
+                                                                           ProjectUnLoadedEvent.THREAD_OPTION);
 
-            EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
-            EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
+                //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
+                //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
 
-            //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Subscribe(OnTreeNodeSelected, TreeNodeSelectedEvent.THREAD_OPTION);
-            //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Subscribe(OnSubTreeNodeSelected, SubTreeNodeSelectedEvent.THREAD_OPTION);
+                EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged,
+                                                                                    TreeNodeSelectionChangedEvent.
+                                                                                        THREAD_OPTION);
 
-            EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
-
-            EventAggregator.GetEvent<EscapeEvent>().Subscribe(OnEscape, EscapeEvent.THREAD_OPTION);
+                EventAggregator.GetEvent<EscapeEvent>().Subscribe(OnEscape, EscapeEvent.THREAD_OPTION);
+            }
         }
 
         private void OnEscape(object obj)
@@ -1096,7 +1130,10 @@ namespace Tobi.Plugin.AudioPane
 
                 m_Recorder.RecordingDirectory = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath; //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY
 
-                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
+                if (EventAggregator != null)
+                {
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
+                }
             }
             else
             {
@@ -1104,7 +1141,10 @@ namespace Tobi.Plugin.AudioPane
 
                 m_Recorder.RecordingDirectory = AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY; // Directory.GetCurrentDirectory();
 
-                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("No document."); // TODO Localize 
+                if (EventAggregator != null)
+                {
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("-"); // TODO Localize 
+                }
             }
         }
 

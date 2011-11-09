@@ -70,7 +70,10 @@ namespace Tobi.Plugin.AudioPane
                     m_InterruptRecording = false;
                     m_Recorder.StopRecording();
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped);
+                    if (EventAggregator != null)
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped);
+                    }
                 },
                 () =>
                 {
@@ -109,7 +112,10 @@ namespace Tobi.Plugin.AudioPane
                     m_RecordAndContinue = false;
                     m_Recorder.StopRecording();
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped); 
+                    if (EventAggregator != null)
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped);
+                    } 
                 },
                 () => !IsWaveFormLoading && IsRecording,
                 Settings_KeyGestures.Default,
@@ -191,7 +197,10 @@ namespace Tobi.Plugin.AudioPane
 
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Recording);
+                    if (EventAggregator != null)
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Recording);
+                    }
                 },
                 () =>
                 {
@@ -204,6 +213,35 @@ namespace Tobi.Plugin.AudioPane
             m_ShellView.RegisterRichCommand(CommandStartRecord);
 
             //
+            //
+            CommandStopMonitor = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStopMonitor_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStopMonitor_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("media-playback-stop"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandStopMonitor", Category.Debug, Priority.Medium);
+
+                    m_Recorder.StopRecording();
+
+                    //AudioCues.PlayTockTock();
+
+                    if (EventAggregator != null)
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.MonitoringStopped);
+                    }
+
+                    State.Audio.PcmFormatRecordingMonitoring = null;
+
+                },
+                () => !IsWaveFormLoading && IsMonitoring,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopMonitor));
+
+            m_ShellView.RegisterRichCommand(CommandStopMonitor);
+            //
+
             CommandStartMonitor = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdAudioStartMonitor_ShortDesc,
                 Tobi_Plugin_AudioPane_Lang.CmdAudioStartMonitor_LongDesc,
@@ -238,7 +276,10 @@ namespace Tobi.Plugin.AudioPane
 
                     RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
 
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Monitoring);
+                    if (EventAggregator != null)
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Monitoring);
+                    }
 
                 },
                 () => !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring,
@@ -246,31 +287,6 @@ namespace Tobi.Plugin.AudioPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopMonitor));
 
             m_ShellView.RegisterRichCommand(CommandStartMonitor);
-            //
-            CommandStopMonitor = new RichDelegateCommand(
-                Tobi_Plugin_AudioPane_Lang.CmdAudioStopMonitor_ShortDesc,
-                Tobi_Plugin_AudioPane_Lang.CmdAudioStopMonitor_LongDesc,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("media-playback-stop"),
-                () =>
-                {
-                    Logger.Log("AudioPaneViewModel.CommandStopMonitor", Category.Debug, Priority.Medium);
-
-                    m_Recorder.StopRecording();
-
-                    //AudioCues.PlayTockTock();
-
-                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.MonitoringStopped);
-
-                    State.Audio.PcmFormatRecordingMonitoring = null;
-
-                },
-                () => !IsWaveFormLoading && IsMonitoring,
-                Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopMonitor));
-
-            m_ShellView.RegisterRichCommand(CommandStopMonitor);
-
             //
         }
 

@@ -682,7 +682,10 @@ namespace Tobi.Plugin.AudioPane
                 Debug.Assert(eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs || eventt is TransactionCancelledEventArgs);
             }
 
-            EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
+            if (EventAggregator != null)
+            {
+                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
+            }
 
             if (eventt.Command is TreeNodeChangeTextCommand)
             {

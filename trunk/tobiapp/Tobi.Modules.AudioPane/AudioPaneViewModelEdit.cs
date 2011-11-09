@@ -74,7 +74,10 @@ namespace Tobi.Plugin.AudioPane
                     {
                         ManagedAudioMedia manMedia = treeNodeAndStreamSelection.ExtractManagedAudioMedia();
 
-                        mediaDataClipboard.MergeWith(manMedia.AudioMediaData); // The audio from the parameter gets emptied !
+                        // WARNING: WavAudioMediaData implementation differs from AudioMediaData:
+                        // the latter is naive and performs a stream binary copy, the latter is optimized and re-uses existing WavClips. 
+                        //  WARNING 2: The audio data from the given parameter gets emptied !
+                        mediaDataClipboard.MergeWith(manMedia.AudioMediaData);
 
                         // Another way to do it:
                         //Stream streamToBackup = manMedia.AudioMediaData.OpenPcmInputStream();
@@ -298,7 +301,7 @@ namespace Tobi.Plugin.AudioPane
                 ||
                 m_UrakawaSession.DocumentProject != null
                    && node != null
-                   && node.GetXmlElementQName() != null
+                   && (IsSimpleMode || node.GetXmlElementQName() != null)
                    && node.GetFirstAncestorWithManagedAudio() == null
                    && node.GetFirstDescendantWithManagedAudio() == null
                    //&& node.GetManagedAudioMedia() == null

@@ -291,11 +291,24 @@ namespace Tobi.Plugin.Urakawa
                 var treeNodeSelection = new Tuple<TreeNode, TreeNode>(m_TreeNode, m_SubTreeNode);
 
                 if (oldSelection != treeNodeSelection)
-                    m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Publish(new Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>(oldSelection, treeNodeSelection));
+                {
+                    if (m_EventAggregator != null)
+                    {
+                        m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Publish(
+                            new Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>(oldSelection,
+                                                                                            treeNodeSelection));
+                    }
+                }
 
                 return treeNodeSelection;
             }
         }
+
+        //public void ForceInitTreeNodeSelection(TreeNode treeNode)
+        //{
+        //    m_TreeNode = treeNode;
+        //    m_SubTreeNode = null;
+        //}
 
         public Tuple<TreeNode, TreeNode> GetTreeNodeSelection()
         {

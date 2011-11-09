@@ -91,7 +91,10 @@ namespace Tobi.Plugin.Urakawa
 
                         if (PopupModalWindow.IsButtonEscCancel(windowPopup.ClickedDialogButton))
                         {
-                            m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Publish(null);
+                            if (m_EventAggregator != null)
+                            {
+                                m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Publish(null);
+                            }
                             return;
                         }
                     }
