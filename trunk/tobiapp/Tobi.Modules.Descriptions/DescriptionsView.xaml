@@ -818,13 +818,16 @@ AlternationCount="2"
                             Focusable="false"
                         IsEnabled="{Binding HasDescriptionAudio}"
                             Volume="1"
+                            
                             LoadedBehavior="Manual"
                             UnloadedBehavior="Stop"
     
                             Stretch="Fill"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-    MediaOpened="AudioElement_MediaOpened" MediaEnded="AudioElement_MediaEnded"/>
+                            
+    MediaOpened="AudioElement_MediaOpened"
+              MediaEnded="AudioElement_MediaEnded"/>
               
               <DockPanel
                 LastChildFill="True"
