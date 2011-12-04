@@ -835,44 +835,52 @@ namespace Tobi.Plugin.AudioPane
 
                 Action del = () =>
                 {
+
+                    System.Diagnostics.Debug.Print("CACHE WAVEFORM WIDTH = " +
+                                                   WaveFormImage.Width + " // " +
+                                                   WaveFormImage.ActualWidth);
+
+                                     bool drawNET3 = false;
 #if NET40
-                    if (Settings.Default.AudioWaveForm_UseVectorAtResize)
-                    {
-                        WaveFormImage.Source = m_WaveFormImageSourceDrawingImage;
-                    }
-                    else
-                    {
-                        var drawImg = new DrawingImage(drawGrp);
-                        drawImg.Freeze();
-                        WaveFormImage.Source = drawImg;
-                    }
+                                     if (WaveFormImage.Width <= 2048)
+                                     {
+                                         if (Settings.Default.AudioWaveForm_UseVectorAtResize)
+                                         {
+                                             WaveFormImage.Source = m_WaveFormImageSourceDrawingImage;
+                                         }
+                                         else
+                                         {
+                                             var drawImg = new DrawingImage(drawGrp);
+                                             drawImg.Freeze();
+                                             WaveFormImage.Source = drawImg;
+                                         }
 
 
-                    //var zoom = (m_ShellView != null
-                    //                ? m_ShellView.MagnificationLevel
-                    //                : (Double)FindResource("MagnificationLevel"));
+                                         //var zoom = (m_ShellView != null
+                                         //                ? m_ShellView.MagnificationLevel
+                                         //                : (Double)FindResource("MagnificationLevel"));
 
-                    if (
-                        WaveFormImage.CacheMode == null
-                        || ((BitmapCache)WaveFormImage.CacheMode).RenderAtScale != zoom
-                        )
-                    {
-                        WaveFormImage.SetValue(RenderOptions.ClearTypeHintProperty, ClearTypeHint.Auto);
-                        WaveFormImage.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);
-                        WaveFormImage.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.Fant);
-                        WaveFormImage.SetValue(RenderOptions.CachingHintProperty, CachingHint.Cache);
+                                         if (
+                                             WaveFormImage.CacheMode == null
+                                             || ((BitmapCache)WaveFormImage.CacheMode).RenderAtScale != zoom
+                                             )
+                                         {
+                                             WaveFormImage.SetValue(RenderOptions.ClearTypeHintProperty,
+                                                                    ClearTypeHint.Auto);
+                                             WaveFormImage.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);
+                                             WaveFormImage.SetValue(RenderOptions.BitmapScalingModeProperty,
+                                                                    BitmapScalingMode.Fant);
+                                             WaveFormImage.SetValue(RenderOptions.CachingHintProperty, CachingHint.Cache);
 
-                        WaveFormImage.SnapsToDevicePixels = false;
+                                             WaveFormImage.SnapsToDevicePixels = false;
 
-                        System.Diagnostics.Debug.Print("CACHE WAVEFORM WIDTH = " + WaveFormImage.Width + " // " + WaveFormImage.ActualWidth);
-
-                        //WaveFormImage.UseLayoutRounding = true;
-                        WaveFormImage.CacheMode = new BitmapCache
-                        {
-                            RenderAtScale = zoom,
-                            EnableClearType = false,
-                            SnapsToDevicePixels = false
-                        };
+                                             //WaveFormImage.UseLayoutRounding = true;
+                                             WaveFormImage.CacheMode = new BitmapCache
+                                                                           {
+                                                                               RenderAtScale = zoom,
+                                                                               EnableClearType = false,
+                                                                               SnapsToDevicePixels = false
+                                                                           };
 #if false && DEBUG
                         var bitmapCacheBrush = new BitmapCacheBrush
                         {
@@ -893,76 +901,97 @@ namespace Tobi.Plugin.AudioPane
                         };
                         ZoomSlider.ToolTip = imageTooltip;
 #endif
-                    }
+                                         }
+                                     }
+                                     else
+                                     {
+                                         WaveFormImage.CacheMode = null;
+                                         drawNET3 = true;
+                                     }
 #else
-                    var drawingVisual = new DrawingVisual();
-                    using (DrawingContext drawContext = drawingVisual.RenderOpen())
-                    {
-                        drawContext.DrawDrawing(drawGrp);
-
-                        // To draw any Visual:
-                        //VisualBrush visualBrush = new VisualBrush
-                        //{
-                        //    Visual =  visual,
-                        //    AutoLayoutContent = true
-                        //};
-                        //Rect bounds = VisualTreeHelper.GetContentBounds(visual);
-                        //drawContext.DrawRectangle(visualBrush, null, new Rect(new Point(), bounds.Size));
-
-
-                        //if (false &&
-                        //    m_ViewModel.State.Audio.PlayStreamMarkers != null
-                        //    && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextPreRenderThreshold)
-                        //{
-                        //    m_WaveFormTimeTicksAdorner.drawChunkInfos(drawContext, null, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
-                        //}
-                    }
-
-                    var renderTargetBitmap = new RenderTargetBitmap((int)widthMagnified, (int)heightMagnified, 96, 96, PixelFormats.Pbgra32);
-                    renderTargetBitmap.Render(drawingVisual);
-                    renderTargetBitmap.Freeze();
-
-                    WaveFormRenderMethod renderMethod = Settings.Default.AudioWaveForm_RenderMethod;
-                    if (renderMethod == WaveFormRenderMethod.WriteableBitmap
-                        || renderMethod == WaveFormRenderMethod.BitmapSource)
-                    {
-                        //FormatConvertedBitmap formatConv = new FormatConvertedBitmap();
-                        //formatConv.BeginInit();
-                        //formatConv.Source = myBitmapSource;
-                        //formatConv.DestinationFormat = PixelFormats.Rgb24;
-                        //formatConv.EndInit();  
-
-                        uint[] arrBits = new uint[renderTargetBitmap.PixelWidth * renderTargetBitmap.PixelHeight];
-                        // PixelFormats.Pbgra32 => 4 bytes per pixel, so a full line is:
-                        int stride = 4 * renderTargetBitmap.PixelWidth;
-                        renderTargetBitmap.CopyPixels(arrBits, stride, 0);
-
-                        if (renderMethod == WaveFormRenderMethod.BitmapSource)
-                        {
-                            var bitmapSource = BitmapSource.Create((int)widthMagnified, (int)heightMagnified, 96, 96, PixelFormats.Pbgra32, null, arrBits, stride);
-
-                            WaveFormImage.Source = bitmapSource;
-                        }
-                        else
-                        {
-                            var writeableBitmap = new WriteableBitmap(renderTargetBitmap.PixelWidth, renderTargetBitmap.PixelHeight, 96, 96, PixelFormats.Pbgra32, null);
-                            writeableBitmap.WritePixels(new Int32Rect(0, 0, renderTargetBitmap.PixelWidth, renderTargetBitmap.PixelHeight), arrBits, stride, 0);
-
-                            WaveFormImage.Source = writeableBitmap;
-                        }
-                    }
-                    else
-                    {
-                        // Default
-                        WaveFormImage.Source = renderTargetBitmap;
-                    }
+                                     drawNET3 = true;
 #endif // ELSE NET40
 
-                    m_WaveFormTimeTicksAdorner.InvalidateVisual();
-                    m_WaveFormTimeTicksAdorner.ResetBrushes();
-                    m_WaveFormLoadingAdorner.ResetBrushes();
+                                     if (drawNET3)
+                                     {
+                                         var drawingVisual = new DrawingVisual();
+                                         using (DrawingContext drawContext = drawingVisual.RenderOpen())
+                                         {
+                                             drawContext.DrawDrawing(drawGrp);
 
-                };
+                                             // To draw any Visual:
+                                             //VisualBrush visualBrush = new VisualBrush
+                                             //{
+                                             //    Visual =  visual,
+                                             //    AutoLayoutContent = true
+                                             //};
+                                             //Rect bounds = VisualTreeHelper.GetContentBounds(visual);
+                                             //drawContext.DrawRectangle(visualBrush, null, new Rect(new Point(), bounds.Size));
+
+
+                                             //if (false &&
+                                             //    m_ViewModel.State.Audio.PlayStreamMarkers != null
+                                             //    && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextPreRenderThreshold)
+                                             //{
+                                             //    m_WaveFormTimeTicksAdorner.drawChunkInfos(drawContext, null, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
+                                             //}
+                                         }
+
+                                         var renderTargetBitmap = new RenderTargetBitmap((int)widthMagnified,
+                                                                                         (int)heightMagnified, 96, 96,
+                                                                                         PixelFormats.Pbgra32);
+                                         renderTargetBitmap.Render(drawingVisual);
+                                         renderTargetBitmap.Freeze();
+
+                                         WaveFormRenderMethod renderMethod = Settings.Default.AudioWaveForm_RenderMethod;
+                                         if (renderMethod == WaveFormRenderMethod.WriteableBitmap
+                                             || renderMethod == WaveFormRenderMethod.BitmapSource)
+                                         {
+                                             //FormatConvertedBitmap formatConv = new FormatConvertedBitmap();
+                                             //formatConv.BeginInit();
+                                             //formatConv.Source = myBitmapSource;
+                                             //formatConv.DestinationFormat = PixelFormats.Rgb24;
+                                             //formatConv.EndInit();  
+
+                                             uint[] arrBits =
+                                                 new uint[renderTargetBitmap.PixelWidth * renderTargetBitmap.PixelHeight];
+                                             // PixelFormats.Pbgra32 => 4 bytes per pixel, so a full line is:
+                                             int stride = 4 * renderTargetBitmap.PixelWidth;
+                                             renderTargetBitmap.CopyPixels(arrBits, stride, 0);
+
+                                             if (renderMethod == WaveFormRenderMethod.BitmapSource)
+                                             {
+                                                 var bitmapSource = BitmapSource.Create((int)widthMagnified,
+                                                                                        (int)heightMagnified, 96, 96,
+                                                                                        PixelFormats.Pbgra32, null, arrBits,
+                                                                                        stride);
+
+                                                 WaveFormImage.Source = bitmapSource;
+                                             }
+                                             else
+                                             {
+                                                 var writeableBitmap = new WriteableBitmap(renderTargetBitmap.PixelWidth,
+                                                                                           renderTargetBitmap.PixelHeight,
+                                                                                           96, 96, PixelFormats.Pbgra32,
+                                                                                           null);
+                                                 writeableBitmap.WritePixels(
+                                                     new Int32Rect(0, 0, renderTargetBitmap.PixelWidth,
+                                                                   renderTargetBitmap.PixelHeight), arrBits, stride, 0);
+
+                                                 WaveFormImage.Source = writeableBitmap;
+                                             }
+                                         }
+                                         else
+                                         {
+                                             // Default
+                                             WaveFormImage.Source = renderTargetBitmap;
+                                         }
+                                     }
+
+                                     m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                                     m_WaveFormTimeTicksAdorner.ResetBrushes();
+                                     m_WaveFormLoadingAdorner.ResetBrushes();
+                                 };
 
                 if (!Dispatcher.CheckAccess())
                 {
