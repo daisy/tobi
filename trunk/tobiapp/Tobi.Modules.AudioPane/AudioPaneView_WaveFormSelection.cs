@@ -112,6 +112,24 @@ namespace Tobi.Plugin.AudioPane
         {
             WaveFormTimeSelectionRectBackup.Visibility = Visibility.Hidden;
 
+            if (x == m_TimeSelectionLeftX)
+            {
+                ClearSelection();
+
+                m_ViewModel.CommandClearSelection.Execute();
+                //m_ViewModel.State.Selection.ClearSelection();
+
+                if (!m_ViewModel.State.Audio.HasContent)
+                {
+                    return;
+                }
+
+                long bytes = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize((long)Math.Round(x * BytesPerPixel));
+                m_ViewModel.PlayBytePosition = bytes;
+
+                return;
+            }
+
             if (Math.Abs(m_TimeSelectionLeftX - x) <= MIN_SELECTION_PIXELS)
             {
                 ClearSelection();
