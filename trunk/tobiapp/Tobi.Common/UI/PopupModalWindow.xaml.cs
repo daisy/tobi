@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -100,6 +101,8 @@ namespace Tobi.Common.UI
 
         private PopupModalWindow(IShellView shellView)
         {
+            PreviewKeyDown += new KeyEventHandler(OnThisKeyDown);
+
             ShellView = shellView;
 
             ClickedDialogButton = DialogButton.ESC;
@@ -754,15 +757,142 @@ namespace Tobi.Common.UI
         }
         #endregion ButtonClick
 
-        public bool AddInputBinding(InputBinding inputBinding)
+        public static bool isAltKeyDown()
         {
-            InputBindings.Add(inputBinding);
-            return true;
+            return (Keyboard.Modifiers &
+                    (ModifierKeys.Alt
+                    )
+                    ) != ModifierKeys.None;
+        }
+        public static bool isShiftKeyDown()
+        {
+            return (Keyboard.Modifiers &
+                    (ModifierKeys.Shift
+                    )
+                    ) != ModifierKeys.None;
+        }
+        public static bool isControlKeyDown()
+        {
+            return (Keyboard.Modifiers &
+                    (ModifierKeys.Control
+                //| ModifierKeys.Shift
+                    )
+                    ) != ModifierKeys.None;
+
+            //Keyboard.IsKeyDown(Key.LeftShift)
+            //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
+            // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
+        }
+
+        public static bool modifiersMatch(ModifierKeys modifiers)
+        {
+            bool isControlDown = (modifiers & ModifierKeys.Control) != ModifierKeys.None;
+            bool isShiftDown = (modifiers & ModifierKeys.Shift) != ModifierKeys.None;
+            bool isAltDown = (modifiers & ModifierKeys.Alt) != ModifierKeys.None;
+
+            return modifiers == ModifierKeys.None
+                && Keyboard.Modifiers == ModifierKeys.None ||
+                isControlDown == isControlKeyDown() &&
+                   isShiftDown == isShiftKeyDown() &&
+                   isAltDown == isAltKeyDown();
+        }
+
+        public static void checkSpaceKeyButtonActivation(object sender, KeyEventArgs e, InputBindingCollection InputBindings)
+        {
+            if (e.Key == Key.Space)
+            {
+                if (e.OriginalSource is Button && ((UIElement)e.OriginalSource).IsFocused)
+                {
+                    e.Handled = true;
+
+                    var commandsToExecute = new List<ICommand>(1);
+
+                    foreach (var inputBinding in InputBindings)
+                    {
+                        if (!(inputBinding is KeyBinding)) continue;
+                        if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
+
+                        if (((KeyGesture)((KeyBinding)inputBinding).Gesture).Key == e.Key)
+                        {
+                            var modifiers = ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers;
+
+                            if (modifiersMatch(modifiers))
+                            {
+                                if (((KeyBinding)inputBinding).Command != null && ((KeyBinding)inputBinding).Command.CanExecute(null))
+                                {
+                                    commandsToExecute.Add(((KeyBinding)inputBinding).Command);
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (var command in commandsToExecute)
+                    {
+                        command.Execute(null);
+                    }
+                }
+            }
+        }
+        private void OnThisKeyDown(object sender, KeyEventArgs e)
+        {
+            checkSpaceKeyButtonActivation(sender, e, InputBindings);
+        }
+
+        public bool AddInputBinding(InputBinding inputBindingz)
+        {
+            if (inputBindingz != null)
+            {
+                foreach (var inputBinding in InputBindings)
+                {
+                    if (inputBindingz == inputBinding)
+                    {
+                        // HAPPENS DURING TOGGLE BUTTON RECONFIGURATION
+                        //#if DEBUG
+                        //                        Debugger.Break();
+                        //#endif
+                        return false;
+                    }
+
+                    if (!(inputBinding is KeyBinding)) continue;
+
+                    if (((KeyBinding)inputBindingz).Command == ((KeyBinding)inputBinding).Command)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+
+                    if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
+
+                    if (((KeyGesture)((KeyBinding)inputBindingz).Gesture).Key == ((KeyGesture)((KeyBinding)inputBinding).Gesture).Key
+                        &&
+                        ((KeyGesture)((KeyBinding)inputBindingz).Gesture).Modifiers == ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers)
+                    {
+                        // TOGGLE BUTTON COMMANDS HAVE IDENTICAL SHORTCUTS:
+                        // PLAY/PAUSE
+                        // START/STOP RECORD
+                        // START/STOP MONITORING
+
+                        //#if DEBUG
+                        //                        Debugger.Break();
+                        //#endif
+                    }
+                }
+                //logInputBinding(inputBinding);
+                InputBindings.Add(inputBindingz);
+                return true;
+            }
+
+            return false;
         }
 
         public void RemoveInputBinding(InputBinding inputBinding)
         {
-            InputBindings.Remove(inputBinding);
+            if (inputBinding != null)
+            {
+                //logInputBinding(inputBinding);
+                InputBindings.Remove(inputBinding);
+            }
         }
     }
 

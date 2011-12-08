@@ -5,8 +5,7 @@
     xmlns:cal="http://www.codeplex.com/CompositeWPF"
     xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
     xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
-    xmlns:Tobi="clr-namespace:Tobi"
-    
+    xmlns:Tobi="clr-namespace:Tobi" xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
     ResizeMode="CanResizeWithGrip"
         
     DataContext="{Binding RelativeSource={RelativeSource Self}}"

@@ -199,7 +199,7 @@ namespace Tobi.Plugin.ToolBars
         }
         private void OnToolbarToggleVisibleKeyboard(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return || e.Key == Key.Space)
+            if (e.Key == Key.Return) // || e.Key == Key.Space)
             {
                 Settings.Default.ToolBarVisible = !Settings.Default.ToolBarVisible;
                 FocusHelper.FocusBeginInvoke(Settings.Default.ToolBarVisible ? FocusExpanded : FocusCollapsed);
