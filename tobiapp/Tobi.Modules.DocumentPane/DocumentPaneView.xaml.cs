@@ -3692,7 +3692,7 @@ namespace Tobi.Plugin.DocumentPane
 
         private void OnToolbarToggleVisibleKeyboard(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return || e.Key == Key.Space)
+            if (e.Key == Key.Return) // || e.Key == Key.Space)
             {
                 Settings.Default.Document_ButtonBarVisible = !Settings.Default.Document_ButtonBarVisible;
                 FocusHelper.FocusBeginInvoke(Settings.Default.Document_ButtonBarVisible ? FocusExpanded : FocusCollapsed);

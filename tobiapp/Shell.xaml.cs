@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -165,57 +166,13 @@ namespace Tobi
 
             // First line of defense against FlowDocument viewers and the find feature in particular
             //FlowDocReader.AddHandler(ContentElement.KeyDownEvent, new RoutedEventHandler(OnFlowDocViewerKeyDown), true);
-            //PreviewKeyDown += new KeyEventHandler(OnThisKeyDown);
+
+            PreviewKeyDown += new KeyEventHandler(OnThisKeyDown);
         }
 
-        public static bool isControlKeyDown()
+        private void OnThisKeyDown(object sender, KeyEventArgs e)
         {
-            return (Keyboard.Modifiers &
-                    (ModifierKeys.Control
-                //| ModifierKeys.Shift
-                    )
-                    ) != ModifierKeys.None;
-
-            //Keyboard.IsKeyDown(Key.LeftShift)
-            //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
-            // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
-        }
-
-        private void OnThisKeyDown(object sender, RoutedEventArgs e)
-        {
-            if (!(e.Source is FlowDocumentScrollViewer || e.OriginalSource is FlowDocumentScrollViewer))
-            {
-                return;
-            }
-
-            if (e is KeyEventArgs)
-            {
-                var ev = (KeyEventArgs)e;
-
-                foreach (var inputBinding in InputBindings)
-                {
-                    if (!(inputBinding is KeyBinding)) continue;
-                    if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
-
-                    if (((KeyGesture)((KeyBinding)inputBinding).Gesture).Key == ev.Key)
-                    {
-                        var modifiers = ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers;
-
-                        if (modifiers == ModifierKeys.None
-                            ||
-                            isControlKeyDown()
-                            && (modifiers & ModifierKeys.Control) != ModifierKeys.None)
-                        {
-                            if (((KeyBinding)inputBinding).Command != null && ((KeyBinding)inputBinding).Command.CanExecute(null))
-                            {
-                                e.Handled = true;
-
-                                ((KeyBinding)inputBinding).Command.Execute(null);
-                            }
-                        }
-                    }
-                }
-            }
+            PopupModalWindow.checkSpaceKeyButtonActivation(sender, e, InputBindings);
         }
 
         //private void OnThisKeyDown(object sender, KeyEventArgs e)
@@ -631,7 +588,7 @@ namespace Tobi
 ,
                     (m_UrakawaSession.IsDirty ? @"* " : @""),
                     (m_UrakawaSession.DocumentProject == null ? Tobi_Lang.NoDocument : m_UrakawaSession.DocumentFilePath)
-                    ); 
+                    );
             }
         }
 

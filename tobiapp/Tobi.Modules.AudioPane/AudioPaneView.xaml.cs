@@ -85,7 +85,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnToolbarToggleVisibleKeyboard(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return || e.Key == Key.Space)
+            if (e.Key == Key.Return) // || e.Key == Key.Space)
             {
                 Settings.Default.Audio_ButtonBarVisible = !Settings.Default.Audio_ButtonBarVisible;
                 FocusHelper.FocusBeginInvoke(Settings.Default.Audio_ButtonBarVisible ? FocusExpanded : FocusCollapsed);

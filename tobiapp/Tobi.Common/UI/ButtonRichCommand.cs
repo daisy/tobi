@@ -17,11 +17,31 @@ namespace Tobi.Common.UI
     /// </summary>
     public class ButtonRichCommand : Button
     {
-        //public ButtonRichCommand()
-        //{
-        //    PreviewKeyDown += OnPreviewKeyDownUp_;
-        //    PreviewKeyUp += OnPreviewKeyDownUp_;
-        //}
+        private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue)
+            {
+                if (m_WasFocusedBeforeDisabled)
+                {
+                    m_WasFocusedBeforeDisabled = false;
+                    FocusHelper.Focus((UIElement)sender);
+                }
+            }
+            else
+            {
+                m_WasFocusedBeforeDisabled = ((UIElement) sender).IsKeyboardFocused;
+            }
+        }
+
+        private bool m_WasFocusedBeforeDisabled = false;
+
+        public ButtonRichCommand()
+        {
+            IsEnabledChanged += new DependencyPropertyChangedEventHandler(OnIsEnabledChanged);
+
+            //PreviewKeyDown += OnPreviewKeyDownUp_;
+            //PreviewKeyUp += OnPreviewKeyDownUp_;
+        }
 
         //protected void OnPreviewKeyDownUp_(object sender, KeyEventArgs e)
         //{

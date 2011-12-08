@@ -440,12 +440,48 @@ namespace Tobi
             }
         }
 
-        public bool AddInputBinding(InputBinding inputBinding)
+        public bool AddInputBinding(InputBinding inputBindingz)
         {
-            if (inputBinding != null)
+            if (inputBindingz != null)
             {
+                foreach (var inputBinding in InputBindings)
+                {
+                    if (inputBindingz == inputBinding)
+                    {
+                        // HAPPENS DURING TOGGLE BUTTON RECONFIGURATION
+//#if DEBUG
+//                        Debugger.Break();
+//#endif
+                        return false;
+                    }
+
+                    if (!(inputBinding is KeyBinding)) continue;
+
+                    if (((KeyBinding)inputBindingz).Command == ((KeyBinding)inputBinding).Command)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+
+                    if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
+
+                    if (((KeyGesture)((KeyBinding)inputBindingz).Gesture).Key == ((KeyGesture)((KeyBinding)inputBinding).Gesture).Key
+                        &&
+                        ((KeyGesture)((KeyBinding)inputBindingz).Gesture).Modifiers == ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers)
+                    {
+                        // TOGGLE BUTTON COMMANDS HAVE IDENTICAL SHORTCUTS:
+                        // PLAY/PAUSE
+                        // START/STOP RECORD
+                        // START/STOP MONITORING
+
+//#if DEBUG
+//                        Debugger.Break();
+//#endif
+                    }
+                }
                 //logInputBinding(inputBinding);
-                InputBindings.Add(inputBinding);
+                InputBindings.Add(inputBindingz);
                 return true;
             }
 

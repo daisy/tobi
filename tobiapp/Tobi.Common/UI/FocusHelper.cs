@@ -82,7 +82,7 @@ namespace Tobi.Common.UI
         /// <param name="start"></param>
         /// <param name="eval"></param>
         /// <returns></returns>
-       public static IEnumerable<T> EnumerateVisualTree<T>(T start, Predicate<T> eval) where T : DependencyObject
+        public static IEnumerable<T> EnumerateVisualTree<T>(T start, Predicate<T> eval) where T : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(start); i++)
             {
@@ -93,6 +93,60 @@ namespace Tobi.Common.UI
                     foreach (var childOfChild in EnumerateVisualTree(child, eval))
                         yield return childOfChild;
                 }
+            }
+        }
+    }
+
+    public class KeyboardFocus
+    {
+        public static bool GetReturnFocusAfterEnable(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(ReturnFocusAfterEnableProperty);
+        }
+
+        public static void SetReturnFocusAfterEnable(DependencyObject obj, bool value)
+        {
+            obj.SetValue(ReturnFocusAfterEnableProperty, value);
+        }
+
+        public static readonly DependencyProperty ReturnFocusAfterEnableProperty =
+            DependencyProperty.RegisterAttached("ReturnFocusAfterEnable", typeof(bool), typeof(KeyboardFocus), new UIPropertyMetadata(false, PropertyChangedCallback));
+
+        static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue)
+            {
+                UIElement element = d as UIElement;
+                if (element != null)
+                {
+                    element.IsEnabledChanged += element_IsEnabledChanged;
+                }
+            }
+            else
+            {
+                UIElement element = d as UIElement;
+                if (element != null)
+                {
+                    element.IsEnabledChanged -= element_IsEnabledChanged;
+                }
+            }
+        }
+
+        private static Dictionary<object, IInputElement> values = new Dictionary<object, IInputElement>();
+
+        static void element_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue)
+            {
+                if (values.ContainsKey(sender))
+                {
+                    Keyboard.Focus(values[sender]);
+                    values.Remove(sender);
+                }
+            }
+            else
+            {
+                values[sender] = Keyboard.FocusedElement;
             }
         }
     }
