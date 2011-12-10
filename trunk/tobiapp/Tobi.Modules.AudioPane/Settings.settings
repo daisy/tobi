@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.AudioPane" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Audio_EnableSkipDuringRecord" Type="System.Boolean" Scope="User">
+    <Setting Name="Audio_EnableSkippableDuringRecord" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Audio_EnableDeferredRecord" Type="System.Boolean" Scope="User">

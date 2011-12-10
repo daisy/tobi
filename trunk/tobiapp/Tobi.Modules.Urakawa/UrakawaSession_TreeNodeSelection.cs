@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using AudioLib;
 using Tobi.Common;
 using urakawa.core;
 
@@ -61,7 +62,7 @@ namespace Tobi.Plugin.Urakawa
 
                 if (m_TreeNode == null) // brand new selection
                 {
-                    Debug.Assert(m_SubTreeNode == null);
+                    DebugFix.Assert(m_SubTreeNode == null);
 
                     if (clickedHasDirectAudio) // right on
                     {
@@ -323,7 +324,7 @@ namespace Tobi.Plugin.Urakawa
         {
             if (m_TreeNode == null)
             {
-                Debug.Assert(m_SubTreeNode == null);
+                DebugFix.Assert(m_SubTreeNode == null);
                 return;
             }
 
@@ -331,33 +332,33 @@ namespace Tobi.Plugin.Urakawa
             bool nodeHasDirectAudio = m_TreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
             TreeNode nodeDescendantAudio = m_TreeNode.GetFirstDescendantWithManagedAudio();
 
-            Debug.Assert(nodeAncestorAudio == null);
+            DebugFix.Assert(nodeAncestorAudio == null);
 
             if (nodeHasDirectAudio)
             {
-                Debug.Assert(nodeDescendantAudio == null);
-                Debug.Assert(m_SubTreeNode == null);
+                DebugFix.Assert(nodeDescendantAudio == null);
+                DebugFix.Assert(m_SubTreeNode == null);
             }
 
             if (nodeDescendantAudio != null)
             {
-                Debug.Assert(!nodeHasDirectAudio);
+                DebugFix.Assert(!nodeHasDirectAudio);
             }
 
             if (m_SubTreeNode == null)
             {
-                Debug.Assert(nodeDescendantAudio == null);
+                DebugFix.Assert(nodeDescendantAudio == null);
             }
             else
             {
-                Debug.Assert(m_TreeNode.IsAncestorOf(m_SubTreeNode)); // nodes cannot be equal
+                DebugFix.Assert(m_TreeNode.IsAncestorOf(m_SubTreeNode)); // nodes cannot be equal
 
                 TreeNode subnodeAncestorAudio = m_SubTreeNode.GetFirstAncestorWithManagedAudio();
                 bool subnodeHasDirectAudio = m_SubTreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
                 TreeNode subnodeDescendantAudio = m_SubTreeNode.GetFirstDescendantWithManagedAudio();
 
-                Debug.Assert(subnodeAncestorAudio == null);
-                Debug.Assert(subnodeDescendantAudio == null);
+                DebugFix.Assert(subnodeAncestorAudio == null);
+                DebugFix.Assert(subnodeDescendantAudio == null);
             }
         }
     }

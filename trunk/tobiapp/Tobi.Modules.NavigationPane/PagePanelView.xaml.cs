@@ -191,7 +191,7 @@ namespace Tobi.Plugin.NavigationPane
 
         //private void OnSelected_ListItem(object sender, RoutedEventArgs e)
         //{
-        //    Debug.Assert(sender == e.Source);
+        //    DebugFix.Assert(sender == e.Source);
         //    m_LastListItemSelected = (ListViewItem)sender;
         //}
 

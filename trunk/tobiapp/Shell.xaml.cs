@@ -173,6 +173,7 @@ namespace Tobi
         private void OnThisKeyDown(object sender, KeyEventArgs e)
         {
             PopupModalWindow.checkSpaceKeyButtonActivation(sender, e, InputBindings);
+            PopupModalWindow.checkEnterKeyButtonActivation(sender, e, InputBindings);
         }
 
         //private void OnThisKeyDown(object sender, KeyEventArgs e)

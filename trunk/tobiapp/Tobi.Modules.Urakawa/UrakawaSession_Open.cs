@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
+using AudioLib;
 using Saxon.Api;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
@@ -210,7 +211,7 @@ namespace Tobi.Plugin.Urakawa
 
                 if (!result)
                 {
-                    Debug.Assert(cancelled);
+                    DebugFix.Assert(cancelled);
                     return false;
                 }
 

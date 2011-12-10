@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using AudioLib;
 using Tobi.Common.MVVM;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -89,7 +90,7 @@ namespace Tobi.Plugin.Urakawa
                         DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory = oldDataDir;
 
                         //string datafolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.CopyFileDataProvidersToDataFolderWithPrefix(dirPath, prefix);
-                        //Debug.Assert(datafolderPath == datafolderPathSavedAs);
+                        //DebugFix.Assert(datafolderPath == datafolderPathSavedAs);
 
 
                         bool cancelled = false;
@@ -108,7 +109,7 @@ namespace Tobi.Plugin.Urakawa
                                 cancelled = false;
                             });
 
-                        Debug.Assert(outcome == !cancelled);
+                        DebugFix.Assert(outcome == !cancelled);
 
                         if (askUserOpenSavedAs(dlg.FileName))
                         {

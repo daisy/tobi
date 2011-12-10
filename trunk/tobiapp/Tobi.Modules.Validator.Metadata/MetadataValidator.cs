@@ -111,7 +111,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
             //if (m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             //{
-            //    Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+            //    DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
             //    m_Logger.Log("AudioContentValidator.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
             //    return;
             //}

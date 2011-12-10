@@ -799,43 +799,77 @@ namespace Tobi.Common.UI
 
         public static void checkSpaceKeyButtonActivation(object sender, KeyEventArgs e, InputBindingCollection InputBindings)
         {
-            if (e.Key == Key.Space)
+            if (e.Key != Key.Space) return;
+
+            if (!(e.OriginalSource is Button && ((UIElement)e.OriginalSource).IsFocused))
+                return;
+
+            e.Handled = true;
+
+            var commandsToExecute = new List<ICommand>(1);
+
+            foreach (var inputBinding in InputBindings)
             {
-                if (e.OriginalSource is Button && ((UIElement)e.OriginalSource).IsFocused)
+                if (!(inputBinding is KeyBinding)) continue;
+                if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
+
+                if (((KeyGesture)((KeyBinding)inputBinding).Gesture).Key != e.Key) continue;
+
+                var modifiers = ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers;
+                if (!modifiersMatch(modifiers)) continue;
+
+                if (((KeyBinding)inputBinding).Command != null && ((KeyBinding)inputBinding).Command.CanExecute(null))
                 {
-                    e.Handled = true;
-
-                    var commandsToExecute = new List<ICommand>(1);
-
-                    foreach (var inputBinding in InputBindings)
-                    {
-                        if (!(inputBinding is KeyBinding)) continue;
-                        if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
-
-                        if (((KeyGesture)((KeyBinding)inputBinding).Gesture).Key == e.Key)
-                        {
-                            var modifiers = ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers;
-
-                            if (modifiersMatch(modifiers))
-                            {
-                                if (((KeyBinding)inputBinding).Command != null && ((KeyBinding)inputBinding).Command.CanExecute(null))
-                                {
-                                    commandsToExecute.Add(((KeyBinding)inputBinding).Command);
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (var command in commandsToExecute)
-                    {
-                        command.Execute(null);
-                    }
+                    commandsToExecute.Add(((KeyBinding)inputBinding).Command);
                 }
             }
+
+            foreach (var command in commandsToExecute)
+            {
+                command.Execute(null);
+            }
         }
+
+        public static void checkEnterKeyButtonActivation(object sender, KeyEventArgs e, InputBindingCollection InputBindings)
+        {
+            if (e.Key != Key.Return) return;
+
+            if (!isControlKeyDown() && !isShiftKeyDown() && !isAltKeyDown())
+                return;
+
+            //if (!(e.OriginalSource is Button && ((UIElement)e.OriginalSource).IsFocused))
+            //    return;
+
+            e.Handled = true;
+
+            var commandsToExecute = new List<ICommand>(1);
+
+            foreach (var inputBinding in InputBindings)
+            {
+                if (!(inputBinding is KeyBinding)) continue;
+                if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
+
+                if (((KeyGesture)((KeyBinding)inputBinding).Gesture).Key != e.Key) continue;
+
+                var modifiers = ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers;
+                if (!modifiersMatch(modifiers)) continue;
+
+                if (((KeyBinding)inputBinding).Command != null && ((KeyBinding)inputBinding).Command.CanExecute(null))
+                {
+                    commandsToExecute.Add(((KeyBinding)inputBinding).Command);
+                }
+            }
+
+            foreach (var command in commandsToExecute)
+            {
+                command.Execute(null);
+            }
+        }
+
         private void OnThisKeyDown(object sender, KeyEventArgs e)
         {
             checkSpaceKeyButtonActivation(sender, e, InputBindings);
+            checkEnterKeyButtonActivation(sender, e, InputBindings);
         }
 
         public bool AddInputBinding(InputBinding inputBindingz)

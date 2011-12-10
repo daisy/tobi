@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using AudioLib;
 using Tobi.Common.UI;
 using urakawa.core;
 using urakawa.media.timing;
@@ -292,7 +293,7 @@ namespace Tobi.Plugin.AudioPane
 
             m_LoadThreadIsAlive = false;
 
-            Debug.Assert(m_LoadThread == null);
+            DebugFix.Assert(m_LoadThread == null);
 
             m_LoadThread = new Thread(threadDelegate)
                                {
@@ -526,16 +527,16 @@ namespace Tobi.Plugin.AudioPane
 
                             short sampleDirectFromByteArray = BitConverter.ToInt16(bytes, newI);
                             if (sampleDirectFromByteArray == -1)
-                                Debug.Assert(sample == 0 || sample == -1);
+                                DebugFix.Assert(sample == 0 || sample == -1);
                             else
-                                Debug.Assert(sample == sampleDirectFromByteArray);
+                                DebugFix.Assert(sample == sampleDirectFromByteArray);
 
                             // Little Indian
                             short sampleDirectFromByteArray1 = (short)(byte1 | (byte2 << 8));
                             short sampleDirectFromByteArray2 = (short)(byte1 + byte2 * 256);
-                            Debug.Assert(sampleDirectFromByteArray1 == sampleDirectFromByteArray2);
+                            DebugFix.Assert(sampleDirectFromByteArray1 == sampleDirectFromByteArray2);
                             if (sampleDirectFromByteArray2 == -1)
-                                Debug.Assert(sample == 0 || sample == -1);
+                                DebugFix.Assert(sample == 0 || sample == -1);
                             else
                             {
                                 if (sample != sampleDirectFromByteArray2)
@@ -543,11 +544,11 @@ namespace Tobi.Plugin.AudioPane
                                     // Big Indian
                                     short sampleDirectFromByteArray3 = (short) ((byte1 << 8) | byte2);
                                     short sampleDirectFromByteArray4 = (short) (byte1*256 + byte2);
-                                    Debug.Assert(sampleDirectFromByteArray3 == sampleDirectFromByteArray4);
-                                    Debug.Assert(sample == sampleDirectFromByteArray4);
+                                    DebugFix.Assert(sampleDirectFromByteArray3 == sampleDirectFromByteArray4);
+                                    DebugFix.Assert(sample == sampleDirectFromByteArray4);
 
                                     if (sample == sampleDirectFromByteArray4)
-                                        Debug.Assert(sample == sampleDirectFromByteArray2);
+                                        DebugFix.Assert(sample == sampleDirectFromByteArray2);
                                 }
                             }
 #else //USE_BLOCK_COPY

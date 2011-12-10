@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
@@ -322,7 +323,7 @@ namespace Tobi.Plugin.Urakawa
                                                                               });
                 if (cancelled)
                 {
-                    Debug.Assert(!result);
+                    DebugFix.Assert(!result);
                 }
             }
             else
@@ -379,7 +380,7 @@ namespace Tobi.Plugin.Urakawa
                     if (!listOfDataProviderFiles.Contains(fileName))
                     {
                         var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
-                        Debug.Assert(!File.Exists(filePathDest));
+                        DebugFix.Assert(!File.Exists(filePathDest));
                         if (!File.Exists(filePathDest))
                         {
                             File.Move(filePath, filePathDest);

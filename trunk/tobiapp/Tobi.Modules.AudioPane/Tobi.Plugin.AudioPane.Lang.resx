@@ -180,6 +180,12 @@
   <data name="CmdAudioClearSelection_LongDesc" xml:space="preserve">
     <value>Clear the current audio selection</value>
   </data>
+  <data name="CmdSplit_ShortDesc" xml:space="preserve">
+    <value>_Split audio</value>
+  </data>
+  <data name="CmdSplit_LongDesc" xml:space="preserve">
+    <value>Split the audio at the playback cursor</value>
+  </data>
   <data name="CmdAudioDelete_ShortDesc" xml:space="preserve">
     <value>_Delete selected audio</value>
   </data>
@@ -434,6 +440,12 @@
   </data>
   <data name="TransactionDeleteAudio_LongDesc" xml:space="preserve">
     <value>Delete audio data that potentially spans across several document fragments</value>
+  </data>
+  <data name="TransactionSplitAudio_ShortDesc" xml:space="preserve">
+    <value>Split audio</value>
+  </data>
+  <data name="TransactionSplitAudio_LongDesc" xml:space="preserve">
+    <value>Split audio data at the playback cursor, shifting the remainder to the next available text fragment</value>
   </data>
   <data name="TransactionReplaceAudio_ShortDesc" xml:space="preserve">
     <value>Replace audio data</value>

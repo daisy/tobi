@@ -142,7 +142,8 @@ namespace Tobi.Plugin.AudioPane
                 null, PreferredPosition.Any, true,
                 new[]
                  {
-                     m_AudioPaneViewModel.CommandDeleteAudioSelection
+                     m_AudioPaneViewModel.CommandDeleteAudioSelection,
+                     m_AudioPaneViewModel.CommandSplitShift
                  });
 
             m_MenuBarId_10 = m_MenuBarView.AddMenuBarGroup(

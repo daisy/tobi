@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -691,7 +692,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
             if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             {
-                Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
                 //m_Logger.Log("StructureTrailView.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
                 return;
             }

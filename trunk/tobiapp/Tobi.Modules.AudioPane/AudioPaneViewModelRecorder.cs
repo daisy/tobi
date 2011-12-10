@@ -186,7 +186,7 @@ namespace Tobi.Plugin.AudioPane
                             }
                         }
 
-                        Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+                        DebugFix.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
                         State.Audio.PcmFormatRecordingMonitoring = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
                     }
 
@@ -264,7 +264,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+                        DebugFix.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
                         State.Audio.PcmFormatRecordingMonitoring = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
                     }
 
@@ -543,7 +543,7 @@ namespace Tobi.Plugin.AudioPane
 
                     if (next != null)
                     {
-                        if (Settings.Default.Audio_EnableSkipDuringRecord && isTreeNodeSkippable(next))
+                        if (Settings.Default.Audio_EnableSkippableDuringRecord && isTreeNodeSkippable(next))
                         {
                             treeNode = next;
                             goto tryNext;

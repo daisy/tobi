@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
@@ -545,7 +546,7 @@ namespace Tobi.Plugin.Urakawa
                         if (uri.ToString() == wrapper.Uri.ToString())
                         {
                             int index_ = m_Session.RecentFiles.IndexOf(uri);
-                            Debug.Assert(index == index_);
+                            DebugFix.Assert(index == index_);
                             index = index_;
                             break;
                         }

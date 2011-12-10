@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -290,13 +291,13 @@ namespace Tobi.Plugin.NavigationPane
 
             if (m_session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             {
-                Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
                 //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
                 return;
             }
 
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            Debug.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
+            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
 
             var cmd = eventt.Command as TreeNodeChangeTextCommand;
 
