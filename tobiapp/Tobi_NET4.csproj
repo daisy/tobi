@@ -25,7 +25,7 @@
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <PublishUrl>C:\Users\daniel\Desktop\daisy\tobi\trunk\tobiapp\TobiClickOnceNET4_1.5.1.0\</PublishUrl>
+    <PublishUrl>Z:\Desktop\Sources\_SVN\daisy\tobi\trunk\tobiapp\TobiClickOnceNET4_1.5.1.0\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
