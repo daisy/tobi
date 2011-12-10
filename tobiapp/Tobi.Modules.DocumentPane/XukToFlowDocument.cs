@@ -322,7 +322,7 @@ namespace Tobi.Plugin.DocumentPane
             }
             else if (qName.LocalName == "th" || qName.LocalName == "td")
             {
-                Debug.Assert(data is TableCell);
+                DebugFix.Assert(data is TableCell);
                 if (data is TableCell)
                 {
                     ((TableCell)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
@@ -330,7 +330,7 @@ namespace Tobi.Plugin.DocumentPane
             }
             else if (qName.LocalName == "sidebar")
             {
-                Debug.Assert(data is Section);
+                DebugFix.Assert(data is Section);
                 if (data is Section)
                 {
                     ((Section)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
@@ -347,7 +347,7 @@ namespace Tobi.Plugin.DocumentPane
                  || qName.LocalName == "table"
                 )
             {
-                Debug.Assert(data is Block);
+                DebugFix.Assert(data is Block);
                 if (data is Block)
                 {
                     ((Block)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
@@ -363,13 +363,13 @@ namespace Tobi.Plugin.DocumentPane
             data.FontWeight = FontWeights.Bold;
             data.FontSize = m_FlowDoc.FontSize * 1.2;
 #if DEBUG
-            Debug.Assert(data.Tag != null);
-            Debug.Assert(data.Tag is TreeNode);
-            Debug.Assert(node == data.Tag);
+            DebugFix.Assert(data.Tag != null);
+            DebugFix.Assert(data.Tag is TreeNode);
+            DebugFix.Assert(node == data.Tag);
 
             var qName = node.GetXmlElementQName();
-            Debug.Assert(qName != null);
-            Debug.Assert(qName.LocalName == "pagenum");
+            DebugFix.Assert(qName != null);
+            DebugFix.Assert(qName.LocalName == "pagenum");
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -391,13 +391,13 @@ namespace Tobi.Plugin.DocumentPane
             data.FontWeight = FontWeights.Bold;
             data.FontSize = m_FlowDoc.FontSize * 1.2;
 #if DEBUG
-            Debug.Assert(data.Tag != null);
-            Debug.Assert(data.Tag is TreeNode);
-            Debug.Assert(node == data.Tag);
+            DebugFix.Assert(data.Tag != null);
+            DebugFix.Assert(data.Tag is TreeNode);
+            DebugFix.Assert(node == data.Tag);
 
             var qName = node.GetXmlElementQName();
-            Debug.Assert(qName != null);
-            Debug.Assert(qName.LocalName == "pagenum");
+            DebugFix.Assert(qName != null);
+            DebugFix.Assert(qName.LocalName == "pagenum");
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -530,7 +530,7 @@ namespace Tobi.Plugin.DocumentPane
 
         public static void SetForegroundColorAndCursorBasedOnTreeNodeTag(DocumentPaneView documentPaneView, TextElement data, bool updateTotalDuration)
         {
-            Debug.Assert(data.Tag is TreeNode);
+            DebugFix.Assert(data.Tag is TreeNode);
             var node = (TreeNode)data.Tag;
 
             ManagedAudioMedia media = node.GetManagedAudioMedia();
@@ -590,14 +590,14 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (node.GetTextMedia() != null)
             {
-                Debug.Assert(node.Children.Count == 0);
+                DebugFix.Assert(node.Children.Count == 0);
                 return true;
             }
 
             QualifiedName qname = node.GetXmlElementQName();
             if (qname != null && qname.LocalName.ToLower() == "img")
             {
-                Debug.Assert(node.Children.Count == 0);
+                DebugFix.Assert(node.Children.Count == 0);
                 return true;
             }
 
@@ -606,7 +606,7 @@ namespace Tobi.Plugin.DocumentPane
 
         private void setTag(TextElement data, TreeNode node)
         {
-            Debug.Assert(data.Tag == null);
+            DebugFix.Assert(data.Tag == null);
 
             data.Tag = node;
             node.Tag = data;
@@ -654,13 +654,13 @@ namespace Tobi.Plugin.DocumentPane
 
                 //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
 #if DEBUG
-                Debug.Assert(data.Tag != null);
-                Debug.Assert(data.Tag is TreeNode);
-                Debug.Assert(node == data.Tag);
+                DebugFix.Assert(data.Tag != null);
+                DebugFix.Assert(data.Tag is TreeNode);
+                DebugFix.Assert(node == data.Tag);
 
                 var qName = node.GetXmlElementQName();
-                Debug.Assert(qName != null);
-                Debug.Assert(qName.LocalName == "th" || qName.LocalName == "td");
+                DebugFix.Assert(qName != null);
+                DebugFix.Assert(qName.LocalName == "th" || qName.LocalName == "td");
 #endif
                 SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -878,13 +878,13 @@ namespace Tobi.Plugin.DocumentPane
 
             //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
-            Debug.Assert(data.Tag != null);
-            Debug.Assert(data.Tag is TreeNode);
-            Debug.Assert(node == data.Tag);
+            DebugFix.Assert(data.Tag != null);
+            DebugFix.Assert(data.Tag is TreeNode);
+            DebugFix.Assert(node == data.Tag);
 
             var qName = node.GetXmlElementQName();
-            Debug.Assert(qName != null);
-            Debug.Assert(qName.LocalName == "table");
+            DebugFix.Assert(qName != null);
+            DebugFix.Assert(qName.LocalName == "table");
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -1135,13 +1135,13 @@ namespace Tobi.Plugin.DocumentPane
             var data = new Underline();
             setTag(data, node);
 #if DEBUG
-            Debug.Assert(data.Tag != null);
-            Debug.Assert(data.Tag is TreeNode);
-            Debug.Assert(node == data.Tag);
+            DebugFix.Assert(data.Tag != null);
+            DebugFix.Assert(data.Tag is TreeNode);
+            DebugFix.Assert(node == data.Tag);
 
             var qName = node.GetXmlElementQName();
-            Debug.Assert(qName != null);
-            Debug.Assert(qName.LocalName == "anchor" || qName.LocalName == "a");
+            DebugFix.Assert(qName != null);
+            DebugFix.Assert(qName.LocalName == "anchor" || qName.LocalName == "a");
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -1225,13 +1225,13 @@ namespace Tobi.Plugin.DocumentPane
             data.FontSize = m_FlowDoc.FontSize / 1.2;
             data.FontWeight = FontWeights.Bold;
 #if DEBUG
-            Debug.Assert(data.Tag != null);
-            Debug.Assert(data.Tag is TreeNode);
-            Debug.Assert(node == data.Tag);
+            DebugFix.Assert(data.Tag != null);
+            DebugFix.Assert(data.Tag is TreeNode);
+            DebugFix.Assert(node == data.Tag);
 
             var qName = node.GetXmlElementQName();
-            Debug.Assert(qName != null);
-            Debug.Assert(qName.LocalName == "annoref" || qName.LocalName == "noteref");
+            DebugFix.Assert(qName != null);
+            DebugFix.Assert(qName.LocalName == "annoref" || qName.LocalName == "noteref");
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -1500,7 +1500,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (imgMedia_man != null)
                 {
-                    Debug.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == srcAttr.Value);
+                    DebugFix.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == srcAttr.Value);
                     var fileDataProv = imgMedia_man.ImageMediaData.DataProvider as FileDataProvider;
 
                     if (fileDataProv != null)
@@ -1754,13 +1754,13 @@ namespace Tobi.Plugin.DocumentPane
 
                                     //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
-                                    Debug.Assert(data.Tag != null);
-                                    Debug.Assert(data.Tag is TreeNode);
-                                    Debug.Assert(node == data.Tag);
+                                    DebugFix.Assert(data.Tag != null);
+                                    DebugFix.Assert(data.Tag is TreeNode);
+                                    DebugFix.Assert(node == data.Tag);
 
                                     var qName = node.GetXmlElementQName();
-                                    Debug.Assert(qName != null);
-                                    Debug.Assert(qName.LocalName == "blockquote");
+                                    DebugFix.Assert(qName != null);
+                                    DebugFix.Assert(qName.LocalName == "blockquote");
 #endif
                                     SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -1779,13 +1779,13 @@ namespace Tobi.Plugin.DocumentPane
 
                                     //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
-                                    Debug.Assert(data.Tag != null);
-                                    Debug.Assert(data.Tag is TreeNode);
-                                    Debug.Assert(node == data.Tag);
+                                    DebugFix.Assert(data.Tag != null);
+                                    DebugFix.Assert(data.Tag is TreeNode);
+                                    DebugFix.Assert(node == data.Tag);
 
                                     var qName = node.GetXmlElementQName();
-                                    Debug.Assert(qName != null);
-                                    Debug.Assert(qName.LocalName == "annotation" || qName.LocalName == "note");
+                                    DebugFix.Assert(qName != null);
+                                    DebugFix.Assert(qName.LocalName == "annotation" || qName.LocalName == "note");
 #endif
                                     SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -1827,13 +1827,13 @@ namespace Tobi.Plugin.DocumentPane
 
                                      //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
-                                     Debug.Assert(data.Tag != null);
-                                     Debug.Assert(data.Tag is TreeNode);
-                                     Debug.Assert(node == data.Tag);
+                                     DebugFix.Assert(data.Tag != null);
+                                     DebugFix.Assert(data.Tag is TreeNode);
+                                     DebugFix.Assert(node == data.Tag);
 
                                      var qName = node.GetXmlElementQName();
-                                     Debug.Assert(qName != null);
-                                     Debug.Assert(qName.LocalName == "caption");
+                                     DebugFix.Assert(qName != null);
+                                     DebugFix.Assert(qName.LocalName == "caption");
 #endif
                                      SetBorderAndBackColorBasedOnTreeNodeTag(data);
                                  });
@@ -1889,13 +1889,13 @@ namespace Tobi.Plugin.DocumentPane
 
                                     //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
-                                    Debug.Assert(data.Tag != null);
-                                    Debug.Assert(data.Tag is TreeNode);
-                                    Debug.Assert(node == data.Tag);
+                                    DebugFix.Assert(data.Tag != null);
+                                    DebugFix.Assert(data.Tag is TreeNode);
+                                    DebugFix.Assert(node == data.Tag);
 
                                     var qName = node.GetXmlElementQName();
-                                    Debug.Assert(qName != null);
-                                    Debug.Assert(qName.LocalName == "doctitle" || qName.LocalName == "docauthor" || qName.LocalName == "covertitle");
+                                    DebugFix.Assert(qName != null);
+                                    DebugFix.Assert(qName.LocalName == "doctitle" || qName.LocalName == "docauthor" || qName.LocalName == "covertitle");
 #endif
                                     SetBorderAndBackColorBasedOnTreeNodeTag(data);
                                 });
@@ -1942,13 +1942,13 @@ namespace Tobi.Plugin.DocumentPane
 
                                     //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
-                                    Debug.Assert(data.Tag != null);
-                                    Debug.Assert(data.Tag is TreeNode);
-                                    Debug.Assert(node == data.Tag);
+                                    DebugFix.Assert(data.Tag != null);
+                                    DebugFix.Assert(data.Tag is TreeNode);
+                                    DebugFix.Assert(node == data.Tag);
 
                                     var qName = node.GetXmlElementQName();
-                                    Debug.Assert(qName != null);
-                                    Debug.Assert(qName.LocalName == "imggroup");
+                                    DebugFix.Assert(qName != null);
+                                    DebugFix.Assert(qName.LocalName == "imggroup");
 #endif
                                     SetBorderAndBackColorBasedOnTreeNodeTag(data);
                                 });
@@ -1963,13 +1963,13 @@ namespace Tobi.Plugin.DocumentPane
 
                                     //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
-                                    Debug.Assert(data.Tag != null);
-                                    Debug.Assert(data.Tag is TreeNode);
-                                    Debug.Assert(node == data.Tag);
+                                    DebugFix.Assert(data.Tag != null);
+                                    DebugFix.Assert(data.Tag is TreeNode);
+                                    DebugFix.Assert(node == data.Tag);
 
                                     var qName = node.GetXmlElementQName();
-                                    Debug.Assert(qName != null);
-                                    Debug.Assert(qName.LocalName == "sidebar");
+                                    DebugFix.Assert(qName != null);
+                                    DebugFix.Assert(qName.LocalName == "sidebar");
 #endif
                                     SetBorderAndBackColorBasedOnTreeNodeTag(data);
                                 });

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -105,7 +106,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
             //if (m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             //{
-            //    Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+            //    DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
             //    m_Logger.Log("AudioContentValidator.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
             //    return;
             //}
@@ -136,7 +137,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
                 {
                     var valItem = vItem as MissingAudioValidationError;
 
-                    Debug.Assert(valItem != null);
+                    DebugFix.Assert(valItem != null);
                     if (valItem == null) continue;
 
                     if (valItem.Target == node)
@@ -160,7 +161,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
                         i++;
                         var valItem = vItem as MissingAudioValidationError;
 
-                        Debug.Assert(valItem != null);
+                        DebugFix.Assert(valItem != null);
                         if (valItem == null) continue;
 
                         if (node.IsBefore(valItem.Target))
@@ -184,7 +185,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
                 {
                     var valItem = vItem as MissingAudioValidationError;
 
-                    Debug.Assert(valItem != null);
+                    DebugFix.Assert(valItem != null);
                     if (valItem == null) continue;
 
                     if (valItem.Target == node)
@@ -235,8 +236,8 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
         private void OnNoAudioContentFoundByFlowDocumentParserEvent(TreeNode treeNode)
         {
-            Debug.Assert(bTreeNodeNeedsAudio(treeNode));
-            Debug.Assert(!treeNode.HasOrInheritsAudio());
+            DebugFix.Assert(bTreeNodeNeedsAudio(treeNode));
+            DebugFix.Assert(!treeNode.HasOrInheritsAudio());
 
             var error = new MissingAudioValidationError(m_Session)
             {
@@ -255,14 +256,14 @@ namespace Tobi.Plugin.Validator.MissingAudio
         {
             if (node.GetTextMedia() != null)
             {
-                Debug.Assert(node.Children.Count == 0);
+                DebugFix.Assert(node.Children.Count == 0);
                 return true;
             }
 
             QualifiedName qname = node.GetXmlElementQName();
             if (qname != null && qname.LocalName.ToLower() == "img")
             {
-                Debug.Assert(node.Children.Count == 0);
+                DebugFix.Assert(node.Children.Count == 0);
                 return true;
             }
 

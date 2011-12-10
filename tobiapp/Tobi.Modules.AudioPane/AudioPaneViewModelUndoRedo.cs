@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Threading;
+using AudioLib;
 using Tobi.Common;
 using urakawa.command;
 using urakawa.commands;
@@ -142,7 +143,7 @@ namespace Tobi.Plugin.AudioPane
                     if (prev != null && prev.IsDescendantOf(targetNode1))
                     {
                         ManagedAudioMedia prevAudio = prev.GetManagedAudioMedia();
-                        Debug.Assert(prevAudio != null);
+                        DebugFix.Assert(prevAudio != null);
 
                         byteOffset = getByteOffset(prev, prevAudio);
 
@@ -241,7 +242,7 @@ namespace Tobi.Plugin.AudioPane
         //        {
         //            byteOffset = getByteOffset(prev, managedAudioMediaTarget);
         //            ManagedAudioMedia prevAudio = prev.GetManagedAudioMedia();
-        //            Debug.Assert(prevAudio != null);
+        //            DebugFix.Assert(prevAudio != null);
         //            if (prevAudio != null)
         //            {
         //                byteOffset += prevAudio.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(prevAudio.AudioMediaData.AudioDuration.AsLocalUnits);
@@ -281,7 +282,7 @@ namespace Tobi.Plugin.AudioPane
         //        m_UrakawaSession.PerformTreeNodeSelection(treeNode);
 
         //        Tuple<TreeNode, TreeNode> treeNodeSelectionAfter2 = m_UrakawaSession.GetTreeNodeSelection();
-        //        Debug.Assert(treeNodeSelectionAfter2.Item2 == treeNode);
+        //        DebugFix.Assert(treeNodeSelectionAfter2.Item2 == treeNode);
         //    }
 
         //    CommandRefresh.Execute();
@@ -344,10 +345,10 @@ namespace Tobi.Plugin.AudioPane
         //    ManagedAudioMedia audioMedia = command.SelectionData.m_TreeNode.GetManagedAudioMedia();
         //    if (audioMedia == null) // select ALL + delete ==> audio entirely removed
         //    {
-        //        Debug.Assert(done); // can be the initial execute or the redo
+        //        DebugFix.Assert(done); // can be the initial execute or the redo
 
-        //        Debug.Assert(command.SelectionData.m_LocalStreamLeftMark == 0);
-        //        Debug.Assert(command.SelectionData.m_LocalStreamRightMark == -1
+        //        DebugFix.Assert(command.SelectionData.m_LocalStreamLeftMark == 0);
+        //        DebugFix.Assert(command.SelectionData.m_LocalStreamRightMark == -1
         //                     ||
         //                     command.SelectionData.m_LocalStreamRightMark ==
         //                     command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(command.OriginalManagedAudioMedia.AudioMediaData.AudioDuration.AsLocalUnits));
@@ -360,8 +361,8 @@ namespace Tobi.Plugin.AudioPane
         //    //        View.ResetAll();
         //    //    }
 
-        //    //    //Debug.Assert(command.SelectionData.m_LocalStreamLeftMark == -1);
-        //    //    //Debug.Assert(command.SelectionData.m_LocalStreamRightMark == -1);
+        //    //    //DebugFix.Assert(command.SelectionData.m_LocalStreamLeftMark == -1);
+        //    //    //DebugFix.Assert(command.SelectionData.m_LocalStreamRightMark == -1);
 
         //    //    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
@@ -390,7 +391,7 @@ namespace Tobi.Plugin.AudioPane
 
         //    //    Tuple<TreeNode, TreeNode> treeNodeSelectionAfter = m_UrakawaSession.GetTreeNodeSelection();
 
-        //    //    Debug.Assert(treeNodeSelectionAfter.Item1 == command.CurrentTreeNode);
+        //    //    DebugFix.Assert(treeNodeSelectionAfter.Item1 == command.CurrentTreeNode);
 
 
         //    //    if (command.SelectionData.m_TreeNode.IsDescendantOf(command.CurrentTreeNode)
@@ -401,7 +402,7 @@ namespace Tobi.Plugin.AudioPane
         //    //        m_UrakawaSession.PerformTreeNodeSelection(command.SelectionData.m_TreeNode);
 
         //    //        Tuple<TreeNode, TreeNode> treeNodeSelectionAfter2 = m_UrakawaSession.GetTreeNodeSelection();
-        //    //        Debug.Assert(treeNodeSelectionAfter2.Item2 == command.SelectionData.m_TreeNode);
+        //    //        DebugFix.Assert(treeNodeSelectionAfter2.Item2 == command.SelectionData.m_TreeNode);
         //    //    }
 
         //    //    m_LastSetPlayBytePosition = -1;
@@ -575,11 +576,15 @@ namespace Tobi.Plugin.AudioPane
                 ManagedAudioMedia manMedia = command.SelectionData.m_TreeNode.GetManagedAudioMedia();
                 if (manMedia == null)
                 {
-                    Debug.Assert(done);
+                    DebugFix.Assert(done);
 
-                    Debug.Assert(
-                        command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.
-                            TimesAreEqualWithOneMillisecondTolerance(diff.AsLocalUnits, command.OriginalManagedAudioMedia.Duration.AsLocalUnits));
+                    DebugFix.Assert(diff.IsEqualTo(command.OriginalManagedAudioMedia.Duration));
+
+                    DebugFix.Assert(
+                        //command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.
+                            AudioLibPCMFormat.TimesAreEqualWithMillisecondsTolerance(
+                            diff.AsLocalUnits,
+                            command.OriginalManagedAudioMedia.Duration.AsLocalUnits));
                 }
 
                 long dur = diff.AsLocalUnits;
@@ -668,18 +673,18 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             {
-                Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
                 //Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
                 return;
             }
 
             if (eventt is DoneEventArgs)
             {
-                Debug.Assert(!(eventt.Command is CompositeCommand));
+                DebugFix.Assert(!(eventt.Command is CompositeCommand));
             }
             if (eventt.Command is CompositeCommand)
             {
-                Debug.Assert(eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs || eventt is TransactionCancelledEventArgs);
+                DebugFix.Assert(eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs || eventt is TransactionCancelledEventArgs);
             }
 
             if (EventAggregator != null)
@@ -728,7 +733,7 @@ namespace Tobi.Plugin.AudioPane
 
 
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            Debug.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
+            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
 
 
             updateTotalDuration(eventt.Command, done);
@@ -737,12 +742,12 @@ namespace Tobi.Plugin.AudioPane
             Command cmd = eventt.Command;
             if (cmd is CompositeCommand)
             {
-                Debug.Assert(!(eventt is DoneEventArgs)
+                DebugFix.Assert(!(eventt is DoneEventArgs)
                     && (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs || eventt is TransactionCancelledEventArgs)); // during a transaction every single command is executed.
 
                 var command = (CompositeCommand)cmd;
 
-                //Debug.Assert(command.ChildCommands.Count > 0);
+                //DebugFix.Assert(command.ChildCommands.Count > 0);
                 if (command.ChildCommands.Count == 0) return;
 
                 if (command.ChildCommands.Count == 1)

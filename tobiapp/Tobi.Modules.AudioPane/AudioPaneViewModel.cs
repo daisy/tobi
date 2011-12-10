@@ -149,9 +149,9 @@ namespace Tobi.Plugin.AudioPane
 
                 if (State.Audio.PlayStream == null)
                 {
-                    Debug.Assert(State.Audio.PlayStreamMarkers == null);
+                    DebugFix.Assert(State.Audio.PlayStreamMarkers == null);
 
-                    Debug.Assert(treeNodeSelection.Item1.Presentation.MediaDataManager.EnforceSinglePCMFormat);
+                    DebugFix.Assert(treeNodeSelection.Item1.Presentation.MediaDataManager.EnforceSinglePCMFormat);
                     PCMFormatInfo pcmFormat = treeNodeSelection.Item1.Presentation.MediaDataManager.DefaultPCMFormat;
 
                     Stopwatch stopWatch = Stopwatch.StartNew();
@@ -216,7 +216,7 @@ namespace Tobi.Plugin.AudioPane
                         State.Audio.SetPlayStream_FromTreeNode(sm.GetValueOrDefault().m_Stream);
                         State.Audio.PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
 
-                        Debug.Assert(totalLength == sm.GetValueOrDefault().m_Stream.Length);
+                        DebugFix.Assert(totalLength == sm.GetValueOrDefault().m_Stream.Length);
                     }
 
                     //if (State.Audio.PlayStream == null)

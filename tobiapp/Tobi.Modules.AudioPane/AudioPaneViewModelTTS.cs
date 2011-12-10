@@ -374,7 +374,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (cancelled)
                 {
-                    Debug.Assert(!result);
+                    DebugFix.Assert(!result);
                 }
 
                 if (converter.RequestCancellation) // Exception, not user-triggered
@@ -478,7 +478,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (cancelled)
                 {
-                    Debug.Assert(!result);
+                    DebugFix.Assert(!result);
 
                     if (!string.IsNullOrEmpty(converter.GeneratedAudioFilePath)
                         && File.Exists(converter.GeneratedAudioFilePath))
@@ -596,7 +596,7 @@ namespace Tobi.Plugin.AudioPane
 
             //if (cancelled)
             //{
-            //    Debug.Assert(!result);
+            //    DebugFix.Assert(!result);
 
             //    if (!string.IsNullOrEmpty(converter.GeneratedAudioFilePath)
             //        && File.Exists(converter.GeneratedAudioFilePath))

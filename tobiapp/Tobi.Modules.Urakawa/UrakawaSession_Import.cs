@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common.UI;
 using urakawa.daisy.import;
@@ -58,7 +59,7 @@ namespace Tobi.Plugin.Urakawa
 
             if (result) //NOT cancelled
             {
-                Debug.Assert(!cancelled);
+                DebugFix.Assert(!cancelled);
 
                 if (string.IsNullOrEmpty(converter.XukPath)) return false;
 

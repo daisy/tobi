@@ -50,12 +50,12 @@ namespace Tobi.Plugin.AudioPane
 
                     if (treeNodeSelection.Item1 != null)
                     {
-                        Debug.Assert(treeNodeSelection.Item1.Presentation.MediaDataManager.EnforceSinglePCMFormat);
+                        DebugFix.Assert(treeNodeSelection.Item1.Presentation.MediaDataManager.EnforceSinglePCMFormat);
                         PcmFormat = treeNodeSelection.Item1.Presentation.MediaDataManager.DefaultPCMFormat;
                     }
                     else if (m_viewModel.m_UrakawaSession != null && m_viewModel.m_UrakawaSession.DocumentProject != null)
                     {
-                        Debug.Assert(m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+                        DebugFix.Assert(m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
                         PcmFormat = m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
                     }
                     else
@@ -89,7 +89,7 @@ namespace Tobi.Plugin.AudioPane
 
                     stream = new SubStream(stream, stream.Position, dataLength, filePathOptionalInfo);
 
-                    Debug.Assert(dataLength == stream.Length);
+                    DebugFix.Assert(dataLength == stream.Length);
 
                     DataLength = stream.Length;
                     EndOffsetOfPlayStream = DataLength;

@@ -273,7 +273,7 @@ namespace Tobi.Plugin.AudioPane
 
             State.Audio.EndOffsetOfPlayStream = left ? to : from;
 
-            //Debug.Assert(State.Audio.EndOffsetOfPlayStream == (left ? to : from));
+            //DebugFix.Assert(State.Audio.EndOffsetOfPlayStream == (left ? to : from));
         }
 
         //private long m_StreamRiffHeaderEndPos;

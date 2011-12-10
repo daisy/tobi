@@ -18,6 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -633,7 +634,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (hit != null && !string.IsNullOrEmpty(hit.Text))
             {
-                //Debug.Assert(hit.Text.ToLower() == SearchTerm.ToLower());
+                //DebugFix.Assert(hit.Text.ToLower() == SearchTerm.ToLower());
 
                 if (FlowDocReader.Selection != null)
                 {
@@ -652,7 +653,7 @@ namespace Tobi.Plugin.DocumentPane
                     var textElement = getFirstAncestorWithTreeNodeTag(toScan);
                     if (textElement != null)
                     {
-                        Debug.Assert(textElement.Tag is TreeNode);
+                        DebugFix.Assert(textElement.Tag is TreeNode);
 
                         if (select)
                         {
@@ -944,7 +945,7 @@ namespace Tobi.Plugin.DocumentPane
                     TreeNode node = null;
                     if (m_TextElementForEdit != null)
                     {
-                        Debug.Assert(m_TextElementForEdit.Tag is TreeNode);
+                        DebugFix.Assert(m_TextElementForEdit.Tag is TreeNode);
                         node = (TreeNode)m_TextElementForEdit.Tag;
                         m_TextElementForEdit = null;
                     }
@@ -1445,7 +1446,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 if (textElement == null) return;
 
-                Debug.Assert(textElement.Tag != null);
+                DebugFix.Assert(textElement.Tag != null);
 
                 if (textElement != mouseDownTextElement)
                 {
@@ -1605,7 +1606,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (textElement.Tag is TreeNode)
                 {
-                    Debug.Assert(treeNode == (TreeNode)textElement.Tag);
+                    DebugFix.Assert(treeNode == (TreeNode)textElement.Tag);
                 }
             }
 
@@ -1779,13 +1780,13 @@ namespace Tobi.Plugin.DocumentPane
 
             if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             {
-                Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
                 //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
                 return;
             }
 
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            Debug.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
+            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
 
             Command cmd = eventt.Command;
 
@@ -1823,12 +1824,12 @@ namespace Tobi.Plugin.DocumentPane
             }
             if (text != null)
             {
-                Debug.Assert(node == text.Tag);
+                DebugFix.Assert(node == text.Tag);
                 if (node == text.Tag)
                 {
                     //var media = node.GetTextMedia();
-                    //Debug.Assert(media != null);
-                    //Debug.Assert(!string.IsNullOrEmpty(media.Text));
+                    //DebugFix.Assert(media != null);
+                    //DebugFix.Assert(!string.IsNullOrEmpty(media.Text));
 
                     //Run run = VisualLogicalTreeWalkHelper.FindObjectInLogicalTreeWithMatchingType<Run>(text, null);
                     Run run = null;
@@ -1918,12 +1919,12 @@ namespace Tobi.Plugin.DocumentPane
             }
             if (text != null)
             {
-                Debug.Assert(node == text.Tag);
+                DebugFix.Assert(node == text.Tag);
                 if (node == text.Tag)
                 {
                     XukToFlowDocument.SetForegroundColorAndCursorBasedOnTreeNodeTag(this, text, false);
 
-                    //Debug.Assert(noAudio == !node.HasOrInheritsAudio());
+                    //DebugFix.Assert(noAudio == !node.HasOrInheritsAudio());
 
                     //if (m_lastHighlighted == text)
                     //{
@@ -2190,7 +2191,7 @@ namespace Tobi.Plugin.DocumentPane
             if (textElement2 == null)
             {
                 //m_TextElementForEdit = textElement1;
-                //Debug.Assert(m_TextElementForEdit.Tag != null);
+                //DebugFix.Assert(m_TextElementForEdit.Tag != null);
 
                 doLastHighlightedOnly(textElement1, false);
 
@@ -2199,7 +2200,7 @@ namespace Tobi.Plugin.DocumentPane
             else
             {
                 //m_TextElementForEdit = textElement2;
-                //Debug.Assert(m_TextElementForEdit.Tag != null);
+                //DebugFix.Assert(m_TextElementForEdit.Tag != null);
 
                 doLastHighlightedAndSub(textElement1, textElement2, false);
 
@@ -2255,7 +2256,7 @@ namespace Tobi.Plugin.DocumentPane
 
         private void scrollToView_(TextElement textElement)
         {
-            //Debug.Assert(FlowDocReader.ScrollViewer.ScrollableHeight == FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight);
+            //DebugFix.Assert(FlowDocReader.ScrollViewer.ScrollableHeight == FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight);
             if (FlowDocReader.ScrollViewer.ScrollableHeight !=
                          FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight)
             {
@@ -2343,7 +2344,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 double textTotalHeight_ = rectEnd.Top + rectEnd.Height - rectStart.Top;
                 double textTotalHeight = rectBoundingBox.Height;
-                Debug.Assert(textTotalHeight_ == textTotalHeight);
+                DebugFix.Assert(textTotalHeight_ == textTotalHeight);
             }
 
             //Rect rectDocStart = FlowDocReader.Document.ContentStart.GetCharacterRect(LogicalDirection.Forward);
@@ -2982,7 +2983,7 @@ namespace Tobi.Plugin.DocumentPane
         //    var textElem = (TextElement)sender;
         //    if (m_MouseOverTextElementBackground != null)
         //    {
-        //        Debug.Assert(textElem == m_MouseOverTextElement);
+        //        DebugFix.Assert(textElem == m_MouseOverTextElement);
         //        textElem.Background = m_MouseOverTextElementBackground;
         //    }
         //    m_MouseOverTextElement = null;
@@ -3179,7 +3180,7 @@ namespace Tobi.Plugin.DocumentPane
             TreeNode root = project.Presentations.Get(0).RootNode;
             TreeNode nodeBook = root.GetFirstChildWithXmlElementName("book");
 
-            Debug.Assert(root == nodeBook);
+            DebugFix.Assert(root == nodeBook);
 
             if (nodeBook == null)
             {
@@ -3680,7 +3681,7 @@ namespace Tobi.Plugin.DocumentPane
         //private void OnFontSelectionChanged(object sender, SelectionChangedEventArgs e)
         //{
         //    if (e.AddedItems != null && e.AddedItems.Count > 0)
-        //        Debug.Assert(comboListOfFonts.SelectedItem == e.AddedItems[0]);
+        //        DebugFix.Assert(comboListOfFonts.SelectedItem == e.AddedItems[0]);
         //    //FlowDocReader.FontFamily = (FontFamily)comboListOfFonts.SelectedItem;
         //    if (comboListOfFonts.SelectedItem != null)
         //        TheFlowDocument.FontFamily = (FontFamily)comboListOfFonts.SelectedItem;

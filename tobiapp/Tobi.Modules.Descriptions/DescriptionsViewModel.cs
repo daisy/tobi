@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
@@ -82,7 +83,7 @@ namespace Tobi.Plugin.Descriptions
             if (altProp == null)
             {
                 altProp = node.GetOrCreateAlternateContentProperty();
-                Debug.Assert(altProp != null);
+                DebugFix.Assert(altProp != null);
             }
 #else //DEBUG
             if (altProp == null)
@@ -154,7 +155,7 @@ namespace Tobi.Plugin.Descriptions
                 //altProp = node.Presentation.PropertyFactory.CreateAlternateContentProperty();
                 //altProp = node.GetOrCreateAlternateContentProperty();
                 altProp = node.GetProperty<AlternateContentProperty>();
-                Debug.Assert(altProp != null);
+                DebugFix.Assert(altProp != null);
 
                 {
                     Metadata meta1 = node.Presentation.MetadataFactory.CreateMetadata();
@@ -638,7 +639,7 @@ namespace Tobi.Plugin.Descriptions
 
             //if (m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             //{
-            //    Debug.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+            //    DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
             //    m_Logger.Log("AudioContentValidator.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
             //    return;
             //}

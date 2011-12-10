@@ -96,21 +96,18 @@ namespace Tobi.Plugin.AudioPane
 
         public void InitGraphicalCommandBindings()
         {
-            var mouseGest = new MouseGesture { MouseAction = MouseAction.LeftDoubleClick };
+            //var mouseGest = new MouseGesture { MouseAction = MouseAction.LeftDoubleClick };
+            //var mouseBind = new MouseBinding { Gesture = mouseGest, Command = m_ViewModel.CommandSelectAll };
+            //WaveFormCanvas.InputBindings.Add(mouseBind);
 
-            var mouseBind = new MouseBinding { Gesture = mouseGest, Command = m_ViewModel.CommandSelectAll };
 
-            WaveFormCanvas.InputBindings.Add(mouseBind);
-
-            var mouseGest2 = new MouseGesture
-            {
-                MouseAction = MouseAction.LeftDoubleClick,
-                Modifiers = ModifierKeys.Control
-            };
-
-            var mouseBind2 = new MouseBinding { Gesture = mouseGest2, Command = m_ViewModel.CommandClearSelection };
-
-            WaveFormCanvas.InputBindings.Add(mouseBind2);
+            //var mouseGest2 = new MouseGesture
+            //{
+            //    MouseAction = MouseAction.LeftDoubleClick,
+            //    Modifiers = ModifierKeys.Control
+            //};
+            //var mouseBind2 = new MouseBinding { Gesture = mouseGest2, Command = m_ViewModel.CommandClearSelection };
+            //WaveFormCanvas.InputBindings.Add(mouseBind2);
         }
 
         ~AudioPaneView()

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
+using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.command;
@@ -17,10 +18,14 @@ namespace Tobi.Plugin.AudioPane
 {
     public partial class AudioPaneViewModel
     {
+        // non-public feature, unless you know the keyboard shortcut
         public RichDelegateCommand CommandOpenFile { get; private set; }
+
         public RichDelegateCommand CommandInsertFile { get; private set; }
         public RichDelegateCommand CommandGenTTS { get; private set; }
         public RichDelegateCommand CommandDeleteAudioSelection { get; private set; }
+
+        public RichDelegateCommand CommandSplitShift { get; private set; }
 
         public RichDelegateCommand CopyCommand { get; private set; }
         public RichDelegateCommand CutCommand { get; private set; }
@@ -117,7 +122,7 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () =>
                 {
-                    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                    //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
                     return CommandDeleteAudioSelection.CanExecute();
                 },
@@ -290,6 +295,102 @@ namespace Tobi.Plugin.AudioPane
 
             m_ShellView.RegisterRichCommand(CommandDeleteAudioSelection);
             //
+            CommandSplitShift = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdSplit_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdSplit_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("applications-accessories"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandSplitShift", Category.Debug, Priority.Medium);
+
+                    bool isAutoPlay = IsAutoPlay;
+
+                    OnEscape(null); //  CHANGES IsAutoPlay to FALSE
+                    //CommandPause.Execute();
+
+                    TreeNode next = null;
+                    {
+                        Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                        TreeNode treeNode = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+
+                    tryNext:
+                        next = treeNode.GetNextSiblingWithText(true);
+                        while (next != null && (next.GetXmlElementQName() == null
+                                                || TreeNode.TextOnlyContainsPunctuation(next.GetText(true).Trim())
+                                               ))
+                        {
+                            next = next.GetNextSiblingWithText(true);
+                        }
+                        next =
+                            TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(
+                                m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
+
+                        if (next != null)
+                        {
+                            if (!Settings.Default.Audio_EnableSkippableDuringRecord && isTreeNodeSkippable(next))
+                            {
+                                treeNode = next;
+                                goto tryNext;
+                            }
+                        }
+                    }
+
+                    if (next == null)
+                    {
+                        AudioCues.PlayBeep();
+                        return;
+                    }
+
+                    CommandClearSelection.Execute();
+                    CommandSelectRight.Execute();
+                    CopyCommand.Execute();
+
+                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionSplitAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionSplitAudio_LongDesc);
+
+                    CommandDeleteAudioSelection.Execute();
+                    //CutCommand.Execute();
+                    OnEscape(null);
+
+                    m_UrakawaSession.PerformTreeNodeSelection(next);
+                    OnEscape(null);
+
+                    Tuple<TreeNode, TreeNode> treeNodeSelectionNew = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode treeNodeNew = treeNodeSelectionNew.Item2 ?? treeNodeSelectionNew.Item1;
+
+#if DEBUG
+                    DebugFix.Assert(treeNodeNew == next);
+#endif //DEBUG
+
+                    if (treeNodeNew.GetManagedAudioMedia() != null
+                                || treeNodeNew.GetFirstDescendantWithManagedAudio() != null)
+                    {
+                        //TODO: special treatment for node already containing audio?
+                    }
+
+                    PasteCommand.Execute();
+
+                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+
+                    // pasted audio should be selected at this point, so playback only this audio selection
+                    if (isAutoPlay)
+                    {
+                        OnEscape(null);
+                        IsAutoPlay = true;
+                        CommandPlay.Execute();
+                    }
+                },
+                () =>
+                {
+                    return !IsWaveFormLoading && !IsMonitoring && !IsRecording
+                         && State.Audio.PlayStreamMarkers != null && State.Audio.HasContent;
+                    //IsSelectionSet   !IsPlaying
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Split));
+
+            m_ShellView.RegisterRichCommand(CommandSplitShift);
+            //
         }
 
         private bool canDeleteInsertReplaceAudio()
@@ -304,7 +405,7 @@ namespace Tobi.Plugin.AudioPane
                    && (IsSimpleMode || node.GetXmlElementQName() != null)
                    && node.GetFirstAncestorWithManagedAudio() == null
                    && node.GetFirstDescendantWithManagedAudio() == null
-                   //&& node.GetManagedAudioMedia() == null
+                //&& node.GetManagedAudioMedia() == null
                    ;
         }
 
@@ -358,7 +459,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 string originalFilePath = null;
 
-                Debug.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+                DebugFix.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
 
                 bool wavNeedsConversion = false;
                 if (wavFormat != null)
@@ -400,7 +501,7 @@ namespace Tobi.Plugin.AudioPane
 
                     if (cancelled)
                     {
-                        Debug.Assert(!result);
+                        DebugFix.Assert(!result);
                         return;
                     }
 
@@ -461,7 +562,7 @@ namespace Tobi.Plugin.AudioPane
                     File.Delete(originalFilePath);
                 }
 
-                if (managedAudioMedia.Duration.AsLocalUnits > (500 * AudioLibPCMFormat.TIME_UNIT))
+                if (managedAudioMedia.Duration.AsTimeSpan.TotalMilliseconds > 500)
                     insertAudioAtCursorOrSelectionReplace(managedAudioMedia);
                 else
                     Console.WriteLine(@"audio clip too short to be inserted ! " + managedAudioMedia.Duration.AsLocalUnits / AudioLibPCMFormat.TIME_UNIT + @"ms");
@@ -500,7 +601,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (cancelled)
                 {
-                    Debug.Assert(!result);
+                    DebugFix.Assert(!result);
                     return;
                 }
 
@@ -549,7 +650,7 @@ namespace Tobi.Plugin.AudioPane
                     ensurePlaybackStreamIsDead();
                 }
 
-                //Debug.Assert(State.Audio.PlayStream == null);
+                //DebugFix.Assert(State.Audio.PlayStream == null);
                 var media = treeNode.GetManagedAudioMediaOrSequenceMedia();
                 if (media != null)
                 {
@@ -558,8 +659,8 @@ namespace Tobi.Plugin.AudioPane
 #endif
                     return;
                 }
-                Debug.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
-                Debug.Assert(treeNode.GetFirstAncestorWithManagedAudio() == null);
+                DebugFix.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
+                DebugFix.Assert(treeNode.GetFirstAncestorWithManagedAudio() == null);
 
                 var command_ = treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia, treeNodeSelection.Item1);
                 treeNode.Presentation.UndoRedoManager.Execute(command_);
@@ -658,8 +759,8 @@ namespace Tobi.Plugin.AudioPane
 #endif
                         return;
                     }
-                    Debug.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
-                    Debug.Assert(treeNode.GetFirstAncestorWithManagedAudio() == null);
+                    DebugFix.Assert(treeNode.GetFirstDescendantWithManagedAudio() == null);
+                    DebugFix.Assert(treeNode.GetFirstAncestorWithManagedAudio() == null);
 
                     var command_ = treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode, manMedia, treeNodeSelection.Item1);
                     treeNode.Presentation.UndoRedoManager.Execute(command_);

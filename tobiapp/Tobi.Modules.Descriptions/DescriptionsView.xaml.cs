@@ -1236,12 +1236,12 @@ namespace Tobi.Plugin.Descriptions
             int index = pres.DataProviderManager.DataFileDirectory.IndexOf(DataProviderManager.DefaultDataFileDirectorySeparator + DataProviderManager.DefaultDataFileDirectory);
             string prefix = pres.DataProviderManager.DataFileDirectory.Substring(0, index);
             string suffix = "--IMAGE_DESCRIPTIONS_TEMP_AUDIO";
-            //Debug.Assert(Path.GetFileName(pres.RootUri.LocalPath) == prefix);
+            //DebugFix.Assert(Path.GetFileName(pres.RootUri.LocalPath) == prefix);
             presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(prefix + suffix);
             presentation.MediaDataManager.DefaultPCMFormat = pres.MediaDataManager.DefaultPCMFormat.Copy();
             presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
-            //Debug.Assert(presentation.DataProviderManager.DataFileDirectoryFullPath == pres.DataProviderManager.DataFileDirectoryFullPath + suffix);
+            //DebugFix.Assert(presentation.DataProviderManager.DataFileDirectoryFullPath == pres.DataProviderManager.DataFileDirectoryFullPath + suffix);
 
             var audioChannel = presentation.ChannelFactory.CreateAudioChannel();
             audioChannel.Name = "The DESCRIPTION Audio Channel";

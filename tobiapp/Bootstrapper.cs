@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using AudioLib;
 using MefContrib.Integration.Unity;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Presentation.Regions;
@@ -447,7 +448,7 @@ namespace Tobi
             base.InitializeModules();
 
             var shell = Container.TryResolve<IShellView>();
-            Debug.Assert(shell != null);
+            DebugFix.Assert(shell != null);
 
             // MEF will fetch DLL assemblies adjacent to the Tobi.exe executable
             // We could add support for a special "plugin" folder,
@@ -491,7 +492,7 @@ namespace Tobi
             var tobiModulesExtensions = MefContainer.GetExportedValues<ITobiPlugin>();
             foreach (var tobiModuleEXT in tobiModulesExtensions)
             {
-                Debug.Assert(!string.IsNullOrEmpty(tobiModuleEXT.Name) && !string.IsNullOrEmpty(tobiModuleEXT.Description));
+                DebugFix.Assert(!string.IsNullOrEmpty(tobiModuleEXT.Name) && !string.IsNullOrEmpty(tobiModuleEXT.Description));
                 LoggerFacade.Log(@"Loaded extension plugin: [[" + tobiModuleEXT.Name + @"]] [[" + tobiModuleEXT.Description + @"]]", Category.Debug, Priority.Low);
             }
 
@@ -607,7 +608,7 @@ namespace Tobi
             var tobiModules = MefContainer.GetExportedValues<ITobiPlugin>();
             foreach (var tobiModule in tobiModules)
             {
-                Debug.Assert(!string.IsNullOrEmpty(tobiModule.Name) && !string.IsNullOrEmpty(tobiModule.Description));
+                DebugFix.Assert(!string.IsNullOrEmpty(tobiModule.Name) && !string.IsNullOrEmpty(tobiModule.Description));
                 LoggerFacade.Log(
                     @"Loaded plugin: [[" + tobiModule.Name + @"]] [[" + tobiModule.Version + @"]] [[" +
                     tobiModule.Description + @"]]", Category.Debug, Priority.Low);
@@ -648,7 +649,7 @@ namespace Tobi
             var tobiModulesAFTER = MefContainer.GetExportedValues<ITobiPlugin>();
             foreach (var tobiModuleAFTER in tobiModulesAFTER)
             {
-                Debug.Assert(!string.IsNullOrEmpty(tobiModuleAFTER.Name) && !string.IsNullOrEmpty(tobiModuleAFTER.Description));
+                DebugFix.Assert(!string.IsNullOrEmpty(tobiModuleAFTER.Name) && !string.IsNullOrEmpty(tobiModuleAFTER.Description));
                 LoggerFacade.Log(@"Loaded plugin AFTER: [[" + tobiModuleAFTER.Name + @"]] [[" + tobiModuleAFTER.Description + @"]]", Category.Debug, Priority.Low);
             }
 
