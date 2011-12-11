@@ -5,6 +5,8 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -153,20 +155,51 @@ namespace Tobi.Plugin.AudioPane
         /// </summary>
         public void RefreshUI_LoadWaveForm(bool wasPlaying)
         {
+            BindingExpression b2 = WaveFormImage.GetBindingExpression(FrameworkElement.WidthProperty);
+            if (b2 != null)
+            {
+                b2.UpdateTarget();
+                //b2.UpdateSource();
+            }
+            else
+            {
+                MultiBindingExpression mb2 = BindingOperations.GetMultiBindingExpression(WaveFormImage,
+                                                                                         FrameworkElement.WidthProperty);
+                if (mb2 != null)
+                {
+                    mb2.UpdateTarget();
+                    //mb2.UpdateSource();
+                }
+            }
+
+            BindingExpression b1 = WaveFormCanvas.GetBindingExpression(FrameworkElement.WidthProperty);
+            if (b1 != null)
+            {
+                b1.UpdateTarget();
+                //b1.UpdateSource();
+            }
+            else
+            {
+                MultiBindingExpression mb1 = BindingOperations.GetMultiBindingExpression(WaveFormCanvas,
+                                                                                         FrameworkElement.WidthProperty);
+                if (mb1 != null)
+                {
+                    mb1.UpdateTarget();
+                    //mb1.UpdateSource();
+                }
+            }
+
             ShowHideWaveFormLoadingMessage(true);
 
             ResetPeakLabels();
 
-            double widthReal = WaveFormCanvas.ActualWidth;
-            if (double.IsNaN(widthReal) || widthReal == 0)
-            {
-                widthReal = WaveFormCanvas.Width;
-            }
+            double widthReal = getWaveFormWidth();
+
             double heightReal = WaveFormCanvas.ActualHeight;
-            if (double.IsNaN(heightReal) || heightReal == 0)
-            {
-                heightReal = WaveFormCanvas.Height;
-            }
+            //if (double.IsNaN(heightReal) || (long)Math.Round(heightReal) == 0)
+            //{
+            //    heightReal = WaveFormCanvas.Height;
+            //}
 
             BytesPerPixel = m_ViewModel.State.Audio.DataLength / widthReal;
 
@@ -371,8 +404,8 @@ namespace Tobi.Plugin.AudioPane
             List<Point> listBottomPointsCh1 = null;
             List<Point> listBottomPointsCh2 = null;
 
-            var estimatedCapacity = (int)((onlyLoadVisibleScroll ? visibleWidth  * zoom : widthMagnified) / (bytesPerStep / bytesPerPixel_Magnified)) + 1;
-            
+            var estimatedCapacity = (int)((onlyLoadVisibleScroll ? visibleWidth * zoom : widthMagnified) / (bytesPerStep / bytesPerPixel_Magnified)) + 1;
+
             if (Settings.Default.AudioWaveForm_IsBordered) //m_ViewModel.IsEnvelopeVisible)
             {
                 listTopPointsCh1 = new List<Point>(estimatedCapacity);

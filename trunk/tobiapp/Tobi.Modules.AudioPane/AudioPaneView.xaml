@@ -425,21 +425,38 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                   
             IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}">
 
+      <!--SizeChanged="OnWaveFormCanvasSizeChanged"-->
       <Canvas x:Name="WaveFormCanvas"
+              
               SizeChanged="OnWaveFormCanvasSizeChanged"
+              
                MouseDown="OnWaveFormMouseDown"
                MouseMove="OnWaveFormMouseMove"
                MouseUp="OnWaveFormMouseUp"
                MouseLeave="OnWaveFormMouseLeave"
                MouseEnter="OnWaveFormMouseEnter"
-              Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
+
               Background="{Binding Converter={XAML:ColorToBrushConverter}, Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Left"
               SnapsToDevicePixels="True"
               
-            IsEnabled="{Binding CanManipulateWaveForm, Mode=OneWay}">
+              
+            IsEnabled="{Binding CanManipulateWaveForm, Mode=OneWay}"
+              >
 
+        <!--Width="{Binding ElementName=WaveFormImage, Path=Width, Mode=OneWay}"-->
+        <Canvas.Width>
+          <MultiBinding Converter="{AudioPane:MillisecondsPerPixelToPixelWidthConverter}">
+
+            <Binding ElementName="ZoomSlider" Path="Value" Mode="OneWay"/>
+
+            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type AudioPane:AudioPaneView}}"
+                     Path="DataContext"/>
+
+          </MultiBinding>
+        </Canvas.Width>
+        
         <!--IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}"-->
 
         <Image x:Name="WaveFormImage"
@@ -447,13 +464,25 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                   HorizontalAlignment="Stretch"
                Stretch="Fill"
                Canvas.ZIndex="0"
-               Width="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
                Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}"
                Canvas.Left="0"
                Canvas.Top="0"
                RenderOptions.EdgeMode="Unspecified"
                SnapsToDevicePixels="True"
-               RenderOptions.BitmapScalingMode="Fant"/>
+               RenderOptions.BitmapScalingMode="Fant">
+
+          <Image.Width>
+            <!--UpdateSourceTrigger="PropertyChanged"-->
+            <MultiBinding Converter="{AudioPane:MillisecondsPerPixelToPixelWidthConverter}">
+              
+              <Binding ElementName="ZoomSlider" Path="Value" Mode="OneWay"/>
+              
+              <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type AudioPane:AudioPaneView}}"
+                       Path="DataContext"/>
+            
+            </MultiBinding>
+          </Image.Width>
+        </Image>
 
         <Path x:Name="WaveFormTimeRangePath"
               Canvas.ZIndex="1"
@@ -969,23 +998,41 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <!-- TickPlacement="BottomRight" DockPanel.Dock="Bottom" -->
     <Slider x:Name="ZoomSlider"
               Focusable="False"
+            
             Thumb.DragCompleted="OnZoomSliderDragCompleted"
             Thumb.DragStarted="OnZoomSliderDragStarted"
+            
             IsMoveToPointEnabled="True"
+            
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
+            
             TickPlacement="None"
+            TickFrequency="5"
+            
+            Value="5"
+            Minimum="1"
+            Maximum="30"
+            LargeChange="5"
+            SmallChange="1"
+            
+            Delay="1000"
+            Interval="1000"
+            
+            Margin="3"
+            IsEnabled="{Binding CanManipulateWaveForm, Mode=OneWay}"/>
+<!-- 
             Value="1000"
             Minimum="800"
             Maximum="8000"
+            LargeChange="500"
+            SmallChange="200"
+            
             TickFrequency="500"
             Delay="1000"
             Interval="1000"
-            LargeChange="500"
-            SmallChange="200"
-            Margin="3"
-            IsEnabled="{Binding CanManipulateWaveForm, Mode=OneWay}"/>
-
+            
+-->
   </UI:WrapPanelLastChildFill>
   </Border>
 

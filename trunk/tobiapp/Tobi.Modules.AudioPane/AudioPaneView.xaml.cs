@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -15,11 +16,46 @@ using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.UI;
+using Tobi.Common.UI.XAML;
 using urakawa.core;
 using urakawa.media.data.audio;
 
 namespace Tobi.Plugin.AudioPane
 {
+    [ValueConversion(typeof(Double), typeof(Double))]
+    public class MillisecondsPerPixelToPixelWidthConverter : ValueConverterMarkupExtensionBase<MillisecondsPerPixelToPixelWidthConverter>
+    {
+        public static double defaultWidth = 1000;
+
+        public override object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (values.Length < 2) return defaultWidth;
+            if (values[0] == null || values[1] == null) return defaultWidth;
+            if (!(values[0] is Double) || !(values[1] is AudioPaneViewModel))
+                return defaultWidth;
+
+            var millisecondsPerPixel = (Double)values[0];
+            var viewModel = (AudioPaneViewModel)values[1];
+
+            if (!viewModel.State.Audio.HasContent)
+            {
+                return defaultWidth;
+            }
+
+            long bytesPerPixel = viewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(AudioLibPCMFormat.TIME_UNIT *
+                                                                                (long)Math.Round(millisecondsPerPixel));
+
+            double width = (double)viewModel.State.Audio.DataLength / (double)bytesPerPixel;
+
+            if (double.IsNaN(width) || double.IsInfinity(width) || (long)Math.Round(width) == 0)
+            {
+                return defaultWidth;
+            }
+
+            return width;
+        }
+    }
+
     ///<summary>
     /// Single shared instance (singleton) of the audio view
     ///</summary>
@@ -175,6 +211,37 @@ namespace Tobi.Plugin.AudioPane
             InvalidateWaveFormOverlay();
         }
 
+        private double getWaveFormWidth()
+        {
+            double width1 = WaveFormCanvas.ActualWidth;
+            double width2 = WaveFormCanvas.Width;
+
+            double width3 = WaveFormImage.ActualWidth;
+            double width4 = WaveFormImage.Width;
+
+            if (double.IsNaN(width1) || (long)Math.Round(width1) == 0)
+            {
+                if (double.IsNaN(width2) || (long)Math.Round(width2) == 0)
+                {
+                    if (double.IsNaN(width3) || (long)Math.Round(width3) == 0)
+                    {
+                        if (double.IsNaN(width4) || (long)Math.Round(width4) == 0)
+                        {
+                            //throw new Exception("NO VALID WAVEFORM WIDTH!!");
+//#if DEBUG
+//                            Debugger.Break();
+//#endif //DEBUG
+                            return MillisecondsPerPixelToPixelWidthConverter.defaultWidth;
+                        }
+                        else return width4;
+                    }
+                    else return width3;
+                }
+                else return width2;
+            }
+            else return width1;
+        }
+
         private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
             CancelWaveFormLoad(true);
@@ -184,11 +251,7 @@ namespace Tobi.Plugin.AudioPane
 
             double oldWidth = e.PreviousSize.Width;
 
-            double width = WaveFormCanvas.ActualWidth;
-            if (double.IsNaN(width) || width == 0)
-            {
-                width = WaveFormCanvas.Width;
-            }
+            double width = getWaveFormWidth();
 
             if (m_TimeSelectionLeftX >= 0)
             {
@@ -325,7 +388,7 @@ namespace Tobi.Plugin.AudioPane
             if (!m_ControlKeyWasDownAtLastMouseMove)
             {
                 Point p = e.GetPosition(WaveFormCanvas);
-                double x = Math.Min(p.X, WaveFormCanvas.ActualWidth);
+                double x = Math.Min(p.X, getWaveFormWidth());
                 x = Math.Max(x, 0);
                 selectionFinished(x);
             }
@@ -514,16 +577,12 @@ namespace Tobi.Plugin.AudioPane
             //m_Logger.Log("AudioPaneView.ResetWaveFormEmpty", Category.Debug, Priority.Medium);
 
             double height = WaveFormCanvas.ActualHeight;
-            if (double.IsNaN(height) || height == 0)
-            {
-                height = WaveFormCanvas.Height;
-            }
+            //if (double.IsNaN(height) || height == 0)
+            //{
+            //    height = WaveFormCanvas.Height;
+            //}
 
-            double width = WaveFormCanvas.ActualWidth;
-            if (double.IsNaN(width) || width == 0)
-            {
-                width = WaveFormCanvas.Width;
-            }
+            double width = getWaveFormWidth();
 
             var drawImg = new DrawingImage();
             var geometry = new StreamGeometry();
@@ -672,10 +731,10 @@ namespace Tobi.Plugin.AudioPane
             }
 
             double height = WaveFormCanvas.ActualHeight;
-            if (double.IsNaN(height) || height == 0)
-            {
-                height = WaveFormCanvas.Height;
-            }
+            //if (double.IsNaN(height) || height == 0)
+            //{
+            //    height = WaveFormCanvas.Height;
+            //}
 
             using (StreamGeometryContext sgc = geometry.Open())
             {
@@ -727,10 +786,10 @@ namespace Tobi.Plugin.AudioPane
             //m_Logger.Log("AudioPaneView.RefreshUI_WaveFormChunkMarkers", Category.Debug, Priority.Medium);
 
             double height = WaveFormCanvas.ActualHeight;
-            if (double.IsNaN(height) || height == 0)
-            {
-                height = WaveFormCanvas.Height;
-            }
+            //if (double.IsNaN(height) || height == 0)
+            //{
+            //    height = WaveFormCanvas.Height;
+            //}
 
             double pixelsLeft = bytesLeft / BytesPerPixel;
             double pixelsRight = bytesRight / BytesPerPixel;
@@ -1151,20 +1210,34 @@ namespace Tobi.Plugin.AudioPane
             m_Logger.Log("AudioPaneView.OnZoomFitFull", Category.Debug, Priority.Medium);
 
             double widthToUse = WaveFormScroll.ViewportWidth;
-            if (double.IsNaN(Double.NaN) || widthToUse == 0)
+            if (double.IsNaN(widthToUse) || (long)Math.Round(widthToUse) == 0)
             {
                 widthToUse = WaveFormScroll.ActualWidth;
             }
-            if (widthToUse < ZoomSlider.Minimum)
+
+            if (!m_ViewModel.State.Audio.HasContent)
             {
-                ZoomSlider.Minimum = widthToUse;
-            }
-            if (widthToUse > ZoomSlider.Maximum)
-            {
-                ZoomSlider.Maximum = widthToUse;
+                // resets to MillisecondsPerPixelToPixelWidthConverter.defaultWidth
+                ZoomSlider.Value += 1;
+                return;
             }
 
-            ZoomSlider.Value = widthToUse;
+            long bytesPerPixel = m_ViewModel.State.Audio.DataLength / (long)Math.Round(widthToUse);
+            bytesPerPixel =
+                m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(bytesPerPixel);
+
+            double millisecondsPerPixel = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(bytesPerPixel) / (double)AudioLibPCMFormat.TIME_UNIT;
+
+            if (millisecondsPerPixel < ZoomSlider.Minimum)
+            {
+                ZoomSlider.Minimum = millisecondsPerPixel;
+            }
+            if (millisecondsPerPixel > ZoomSlider.Maximum)
+            {
+                ZoomSlider.Maximum = millisecondsPerPixel;
+            }
+
+            ZoomSlider.Value = millisecondsPerPixel;
         }
 
         #region DispatcherTimers
