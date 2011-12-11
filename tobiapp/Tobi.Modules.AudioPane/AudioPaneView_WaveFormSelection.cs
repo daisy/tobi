@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 
 namespace Tobi.Plugin.AudioPane
@@ -18,7 +20,7 @@ namespace Tobi.Plugin.AudioPane
 
             m_TimeSelectionLeftX = 0;
             WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
-            WaveFormTimeSelectionRect.Width = WaveFormCanvas.ActualWidth;
+            WaveFormTimeSelectionRect.Width = getWaveFormWidth();
             WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
         }
 
@@ -64,20 +66,34 @@ namespace Tobi.Plugin.AudioPane
 
             widthToUse -= 20;
 
-            double newSliderValue = ZoomSlider.Value * (widthToUse / WaveFormTimeSelectionRect.Width);
 
-            if (newSliderValue > 8000)
+            if (!m_ViewModel.State.Audio.HasContent)
             {
-                newSliderValue = 8000; //safeguard...image too large
+                // resets to MillisecondsPerPixelToPixelWidthConverter.defaultWidth
+                ZoomSlider.Value += 1;
+                return;
             }
 
-            if (newSliderValue < ZoomSlider.Minimum)
+            double newWidth = getWaveFormWidth() * (widthToUse / WaveFormTimeSelectionRect.Width);
+
+            //if (newWidth > 8000)
+            //{
+            //    newWidth = 8000; //safeguard...image too large
+            //}
+
+            long bytesPerPixel = m_ViewModel.State.Audio.DataLength / (long)Math.Round(newWidth);
+            bytesPerPixel =
+                m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(bytesPerPixel);
+
+            double millisecondsPerPixel = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(bytesPerPixel) / (double)AudioLibPCMFormat.TIME_UNIT;
+
+            if (millisecondsPerPixel < ZoomSlider.Minimum)
             {
-                ZoomSlider.Minimum = newSliderValue;
+                ZoomSlider.Minimum = millisecondsPerPixel;
             }
-            if (newSliderValue > ZoomSlider.Maximum)
+            if (millisecondsPerPixel > ZoomSlider.Maximum)
             {
-                ZoomSlider.Maximum = newSliderValue;
+                ZoomSlider.Maximum = millisecondsPerPixel;
             }
 
             if (m_ViewModel.State.Audio.HasContent)
@@ -92,7 +108,7 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            ZoomSlider.Value = newSliderValue;
+            ZoomSlider.Value = millisecondsPerPixel;
         }
 
 

@@ -656,6 +656,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (View != null)
             {
+                View.ShowHideWaveFormLoadingMessage(true);
                 View.RefreshUI_LoadWaveForm(wasPlaying);
             }
             else
