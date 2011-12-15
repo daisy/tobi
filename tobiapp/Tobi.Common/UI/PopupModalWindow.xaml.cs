@@ -873,6 +873,10 @@ namespace Tobi.Common.UI
                 !(
                 Keyboard.Modifiers == ModifierKeys.Control
                 && (e.Key == Key.P || e.Key == Key.A || e.Key == Key.C || e.Key == Key.X || e.Key == Key.V)
+                || e.Key == Key.Home || e.Key == Key.End
+                || e.Key == Key.Left || e.Key == Key.Right
+                || e.Key == Key.Up || e.Key == Key.Down
+                 //|| e.Key == Key.Space
                 )
                 )
             {
