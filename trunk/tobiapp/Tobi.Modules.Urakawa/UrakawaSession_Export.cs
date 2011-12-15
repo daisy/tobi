@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using AudioLib;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI;
 using Tobi.Common.Validation;
@@ -12,6 +13,8 @@ using urakawa.daisy.export;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
+using CheckBox = System.Windows.Controls.CheckBox;
+using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.Forms.HorizontalAlignment;
 using Orientation = System.Windows.Forms.Orientation;
 
@@ -145,6 +148,108 @@ namespace Tobi.Plugin.Urakawa
                     {
                         return;
                     }
+
+
+                    var combo = new ComboBox
+                                    {
+                                        Margin = new Thickness(0, 0, 0, 12)
+                                    };
+
+                    ComboBoxItem item1 = new ComboBoxItem();
+                    item1.Content = AudioLib.SampleRate.Hz11025.ToString();
+                    combo.Items.Add(item1);
+
+                    ComboBoxItem item2 = new ComboBoxItem();
+                    item2.Content = AudioLib.SampleRate.Hz22050.ToString();
+                    combo.Items.Add(item2);
+
+                    ComboBoxItem item3 = new ComboBoxItem();
+                    item3.Content = AudioLib.SampleRate.Hz44100.ToString();
+                    combo.Items.Add(item3);
+
+                    switch (Settings.Default.AudioExportSampleRate)
+                    {
+                        case AudioLib.SampleRate.Hz11025:
+                            {
+                                combo.SelectedItem = item1;
+                                combo.Text = item1.Content.ToString();
+                                break;
+                            }
+                        case AudioLib.SampleRate.Hz22050:
+                            {
+                                combo.SelectedItem = item2;
+                                combo.Text = item2.Content.ToString();
+                                break;
+                            }
+                        case AudioLib.SampleRate.Hz44100:
+                            {
+                                combo.SelectedItem = item3;
+                                combo.Text = item3.Content.ToString();
+                                break;
+                            }
+                    }
+
+                    var checkBox = new CheckBox
+                                       {
+                                           IsThreeState = false,
+                                           IsChecked = Settings.Default.AudioExportEncodeToMp3,
+                                           HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                                           VerticalAlignment = VerticalAlignment.Center,
+                                       };
+
+                    var label_ = new TextBlock
+                        {
+                            Text = Tobi_Plugin_Urakawa_Lang.ExportEncodeMp3,
+                            Margin = new Thickness(8, 0, 8, 0),
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Focusable = true,
+                            TextWrapping = TextWrapping.Wrap
+                        };
+
+
+                    var panel__ = new StackPanel
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Horizontal,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+                    panel__.Children.Add(label_);
+                    panel__.Children.Add(checkBox);
+
+                    var panel_ = new StackPanel
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Vertical,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+                    panel_.Children.Add(combo);
+                    panel_.Children.Add(panel__);
+
+                    var windowPopup_ = new PopupModalWindow(m_ShellView,
+                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ExportSettings),
+                                                           panel_,
+                                                           PopupModalWindow.DialogButtonsSet.Ok,
+                                                           PopupModalWindow.DialogButton.Ok,
+                                                           false, 300, 180, null, 40);
+
+                    windowPopup_.ShowModal();
+
+                    Settings.Default.AudioExportEncodeToMp3 = checkBox.IsChecked.Value;
+
+                    if (combo.SelectedItem == item1)
+                    {
+                        Settings.Default.AudioExportSampleRate = SampleRate.Hz11025;
+                    }
+                    else if (combo.SelectedItem == item2)
+                    {
+                        Settings.Default.AudioExportSampleRate = SampleRate.Hz22050;
+                    }
+                    else if (combo.SelectedItem == item3)
+                    {
+                        Settings.Default.AudioExportSampleRate = SampleRate.Hz44100;
+                    }
+
 
                     doExport(exportDir);
                 },

@@ -178,8 +178,8 @@ namespace Tobi.Plugin.Urakawa
 
                 var action = new OpenXukAction(project, fileUri)
                 {
-                    ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc,                 
-                    LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_LongDesc                   
+                    ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc,
+                    LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_LongDesc
                 };
 
                 bool cancelled = false;
@@ -384,6 +384,74 @@ namespace Tobi.Plugin.Urakawa
 
                 if (!File.Exists(DocumentFilePath))
                     throw new InvalidUriException("The import URI must point to an existing file! " + Environment.NewLine + fileUri.ToString());
+
+
+                var combo = new ComboBox();
+
+                ComboBoxItem item1 = new ComboBoxItem();
+                item1.Content = AudioLib.SampleRate.Hz11025.ToString();
+                combo.Items.Add(item1);
+
+                ComboBoxItem item2 = new ComboBoxItem();
+                item2.Content = AudioLib.SampleRate.Hz22050.ToString();
+                combo.Items.Add(item2);
+
+                ComboBoxItem item3 = new ComboBoxItem();
+                item3.Content = AudioLib.SampleRate.Hz44100.ToString();
+                combo.Items.Add(item3);
+
+                switch (Settings.Default.AudioProjectSampleRate)
+                {
+                    case AudioLib.SampleRate.Hz11025:
+                        {
+                            combo.SelectedItem = item1;
+                            combo.Text = item1.Content.ToString();
+                            break;
+                        }
+                    case AudioLib.SampleRate.Hz22050:
+                        {
+                            combo.SelectedItem = item2;
+                            combo.Text = item2.Content.ToString();
+                            break;
+                        }
+                    case AudioLib.SampleRate.Hz44100:
+                        {
+                            combo.SelectedItem = item3;
+                            combo.Text = item3.Content.ToString();
+                            break;
+                        }
+                }
+
+                var panel = new StackPanel
+                {
+                    Orientation = Orientation.Vertical,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center,
+                };
+                panel.Children.Add(combo);
+
+                var windowPopup = new PopupModalWindow(m_ShellView,
+                                                       UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ProjectSampleRate),
+                                                       panel,
+                                                       PopupModalWindow.DialogButtonsSet.Ok,
+                                                       PopupModalWindow.DialogButton.Ok,
+                                                       false, 300, 135, null, 40);
+
+                windowPopup.ShowModal();
+
+                if (combo.SelectedItem == item1)
+                {
+                    Settings.Default.AudioProjectSampleRate = SampleRate.Hz11025;
+                }
+                else if (combo.SelectedItem == item2)
+                {
+                    Settings.Default.AudioProjectSampleRate = SampleRate.Hz22050;
+                }
+                else if (combo.SelectedItem == item3)
+                {
+                    Settings.Default.AudioProjectSampleRate = SampleRate.Hz44100;
+                }
+
 
                 if (!doImport())
                 {
