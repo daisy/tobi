@@ -323,7 +323,7 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             if (binding is KeyBinding)
                             {
-                                var keyBinding = (KeyBinding) binding;
+                                var keyBinding = (KeyBinding)binding;
                                 if (keyBinding.Command == m_ShellView.ExitCommand)
                                 {
                                     continue;
@@ -359,7 +359,7 @@ namespace Tobi.Plugin.DocumentPane
                                 }
                             }));
                     }
-                    
+
                     m_DocumentNarratorWindow.ShowFloating(null);
                     //m_DocumentNarratorWindow.ShowModal();
                 }
@@ -3721,5 +3721,19 @@ namespace Tobi.Plugin.DocumentPane
         {
             scrollToView((Hyperlink)sender);
         }
+
+        //private void BuiltinCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        //{
+        //    //e.Handled = true;
+        //}
+
+        //private void OnPreviewKeyDown_DocViewer(object sender, KeyEventArgs e)
+        //{
+        //    if (Keyboard.Modifiers == ModifierKeys.Control
+        //        && (e.Key == Key.P || e.Key == Key.A || e.Key == Key.C || e.Key == Key.X || e.Key == Key.V))
+        //    {
+        //        e.Handled = true;
+        //    }
+        //}
     }
 }

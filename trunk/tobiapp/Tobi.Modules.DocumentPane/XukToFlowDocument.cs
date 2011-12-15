@@ -1220,7 +1220,8 @@ namespace Tobi.Plugin.DocumentPane
             var data = new Hyperlink();
             setTag(data, node);
 
-            //data.Focusable = false;
+            data.Focusable = false;
+            //data.PreviewGotKeyboardFocus += new KeyboardFocusChangedEventHandler((o, e) => e.Handled = true);
 
             data.FontSize = m_FlowDoc.FontSize / 1.2;
             data.FontWeight = FontWeights.Bold;
