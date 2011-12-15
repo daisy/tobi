@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -801,7 +802,7 @@ namespace Tobi.Common.UI
         {
             if (e.Key != Key.Space) return;
 
-            if (!(e.OriginalSource is Button && ((UIElement)e.OriginalSource).IsFocused))
+            if (!(e.OriginalSource is ButtonBase && ((UIElement)e.OriginalSource).IsFocused))
                 return;
 
             e.Handled = true;
@@ -866,8 +867,54 @@ namespace Tobi.Common.UI
             }
         }
 
+        public static void checkFlowDocumentCommands(object sender, KeyEventArgs e, InputBindingCollection InputBindings)
+        {
+            if (
+                !(
+                Keyboard.Modifiers == ModifierKeys.Control
+                && (e.Key == Key.P || e.Key == Key.A || e.Key == Key.C || e.Key == Key.X || e.Key == Key.V)
+                )
+                )
+            {
+                return;
+            }
+
+            if (
+                !(
+                e.OriginalSource is FlowDocumentScrollViewer && ((UIElement)e.OriginalSource).IsFocused
+                )
+                )
+                return;
+
+            e.Handled = true;
+
+            var commandsToExecute = new List<ICommand>(1);
+
+            foreach (var inputBinding in InputBindings)
+            {
+                if (!(inputBinding is KeyBinding)) continue;
+                if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
+
+                if (((KeyGesture)((KeyBinding)inputBinding).Gesture).Key != e.Key) continue;
+
+                var modifiers = ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers;
+                if (!modifiersMatch(modifiers)) continue;
+
+                if (((KeyBinding)inputBinding).Command != null && ((KeyBinding)inputBinding).Command.CanExecute(null))
+                {
+                    commandsToExecute.Add(((KeyBinding)inputBinding).Command);
+                }
+            }
+
+            foreach (var command in commandsToExecute)
+            {
+                command.Execute(null);
+            }
+        }
+
         private void OnThisKeyDown(object sender, KeyEventArgs e)
         {
+            checkFlowDocumentCommands(sender, e, InputBindings);
             checkSpaceKeyButtonActivation(sender, e, InputBindings);
             checkEnterKeyButtonActivation(sender, e, InputBindings);
         }

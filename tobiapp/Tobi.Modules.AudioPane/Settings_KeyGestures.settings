@@ -104,10 +104,10 @@
       <Value Profile="(Default)">[ SHIFT CTRL ALT ] Right</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_SelectLeft" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT ALT ] Left</Value>
+      <Value Profile="(Default)">[ SHIFT ] Home</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_SelectRight" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT ALT ] Right</Value>
+      <Value Profile="(Default)">[ SHIFT ] End</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_BeginSelection" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] Oem4 ([)</Value>

@@ -115,8 +115,9 @@
     
     <!--Template="{StaticResource FlowDocViewerTemplate}"-->
     <DocumentPane:FlowDocumentScrollViewerEx
-    
-    AllowDrop="True" x:Name="FlowDocReader"
+     x:Name="FlowDocReader"
+     
+    AllowDrop="True"
     HorizontalScrollBarVisibility="Disabled"
                                           KeyboardNavigation.TabNavigation="Continue"     
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
@@ -133,14 +134,28 @@
                       
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
 
-                        Focusable="True"
-    
                     IsTabStop="False"
-    IsSelectionEnabled="True"
                     IsEnabled = "True"
     IsToolBarVisible="false"
 Background="Transparent"
+    
+    
+    
+    IsSelectionEnabled="True"
+                        Focusable="True"
+    
                       >
+      <!-- 
+     PreviewKeyDown="OnPreviewKeyDown_DocViewer" -->
+      
+      <!-- FlowDocumentScrollViewer.CommandBindings>
+        <CommandBinding Command="Copy" Executed="BuiltinCommandExecuted"/>
+        <CommandBinding Command="Cut" Executed="BuiltinCommandExecuted"/>
+        <CommandBinding Command="Paste" Executed="BuiltinCommandExecuted"/>
+        <CommandBinding Command="Print" Executed="BuiltinCommandExecuted"/>
+        <CommandBinding Command="SelectAll" Executed="BuiltinCommandExecuted"/>
+      </FlowDocumentScrollViewer.CommandBindings -->
+      
       <!--
 
 Background="{Binding
@@ -163,7 +178,9 @@ Background="{Binding
       <FlowDocument
       
                     IsEnabled = "True"
-                    Focusable="True"
+                    
+                    Focusable="False"
+                    
                     DragOver="OnFlowDocDragOver"
                     AllowDrop="True"
                     x:Name="TheFlowDocument"
@@ -235,14 +252,14 @@ Background="Transparent"
                       
                             Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
                                            
-                                           
-                        Focusable="True"
-    
                     IsTabStop="False"
-    IsSelectionEnabled="True"
                     IsEnabled = "True"
     IsToolBarVisible="false"
     Background="Transparent"
+    
+                                           
+    IsSelectionEnabled="True"
+                        Focusable="True"
                       >
     <!--Background="{Binding
     Converter={XAML:ColorToBrushConverter},
@@ -263,8 +280,9 @@ Background="Transparent"
 
     <FlowDocument
       
+                  Focusable="False"
+                  
                   IsEnabled = "True"
-                  Focusable="True"
                   DragOver="OnFlowDocDragOver"
                   AllowDrop="True" x:Name="TheFlowDocumentSimple"
                     
