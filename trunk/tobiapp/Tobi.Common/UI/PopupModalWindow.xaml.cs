@@ -802,7 +802,12 @@ namespace Tobi.Common.UI
         {
             if (e.Key != Key.Space) return;
 
-            if (!(e.OriginalSource is ButtonBase && ((UIElement)e.OriginalSource).IsFocused))
+            if (
+                !(
+                (e.OriginalSource is Button || e.OriginalSource is RepeatButton)
+                && ((UIElement)e.OriginalSource).IsFocused
+                )
+                )
                 return;
 
             e.Handled = true;
@@ -876,7 +881,7 @@ namespace Tobi.Common.UI
                 || e.Key == Key.Home || e.Key == Key.End
                 || e.Key == Key.Left || e.Key == Key.Right
                 || e.Key == Key.Up || e.Key == Key.Down
-                 //|| e.Key == Key.Space
+                //|| e.Key == Key.Space
                 )
                 )
             {

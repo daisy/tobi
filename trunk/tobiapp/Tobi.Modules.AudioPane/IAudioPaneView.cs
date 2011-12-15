@@ -41,5 +41,6 @@
 
         void SetSelectionBytes(long begin, long end);
         void CancelWaveFormLoad(bool interruptDrawingToo);
+        //void RefreshCanvasWidth();
     }
 }
