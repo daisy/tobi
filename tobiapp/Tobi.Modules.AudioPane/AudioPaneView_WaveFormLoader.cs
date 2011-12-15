@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using AudioLib;
+using Microsoft.Practices.Composite.Logging;
 using Tobi.Common.UI;
 using urakawa.core;
 using urakawa.media.timing;
@@ -149,12 +150,15 @@ namespace Tobi.Plugin.AudioPane
 
         private DrawingImage m_WaveFormImageSourceDrawingImage;
 
+        private bool m_ForceCanvasWidthUpdate = false;
 
-        /// <summary>
-        /// (DOES NOT ensures invoke on UI Dispatcher thread)
-        /// </summary>
-        public void RefreshUI_LoadWaveForm(bool wasPlaying)
+        public void RefreshCanvasWidth()
         {
+            m_ForceCanvasWidthUpdate = true;
+#if DEBUG
+            m_Logger.Log("refreshCanvasWidth (before canvas width change)", Category.Debug, Priority.Medium);
+#endif
+
             BindingExpression b2 = WaveFormImage.GetBindingExpression(FrameworkElement.WidthProperty);
             if (b2 != null)
             {
@@ -189,11 +193,27 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
+#if DEBUG
+            m_Logger.Log("refreshCanvasWidth (after canvas width change)", Category.Debug, Priority.Medium);
+#endif
+
+        }
+
+        /// <summary>
+        /// (DOES NOT ensures invoke on UI Dispatcher thread)
+        /// </summary>
+        public void RefreshUI_LoadWaveForm(bool wasPlaying)
+        {
+            RefreshCanvasWidth();
+            double widthReal = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+//#if DEBUG
+//            double width_ = getWaveFormWidth();
+//            DebugFix.Assert((long)Math.Round(width_ * 100) == (long)Math.Round(widthReal * 100));
+//#endif //DEBUG
+
             ShowHideWaveFormLoadingMessage(true);
 
             ResetPeakLabels();
-
-            double widthReal = getWaveFormWidth();
 
             double heightReal = WaveFormCanvas.ActualHeight;
             //if (double.IsNaN(heightReal) || (long)Math.Round(heightReal) == 0)
@@ -205,6 +225,11 @@ namespace Tobi.Plugin.AudioPane
 
             if (Settings.Default.AudioWaveForm_SkipDrawing)
             {
+
+#if DEBUG
+                m_Logger.Log("RefreshUI_LoadWaveForm (skip waveform drawing)", Category.Debug, Priority.Medium);
+#endif
+
                 m_ViewModel.IsWaveFormLoading = false;
                 //m_BackgroundLoader = null;
 
