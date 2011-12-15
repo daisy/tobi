@@ -313,11 +313,29 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Encode MP3: .
+        /// </summary>
+        public static string ExportEncodeMp3 {
+            get {
+                return ResourceManager.GetString("ExportEncodeMp3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exporting....
         /// </summary>
         public static string Exporting {
             get {
                 return ResourceManager.GetString("Exporting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export settings.
+        /// </summary>
+        public static string ExportSettings {
+            get {
+                return ResourceManager.GetString("ExportSettings", resourceCulture);
             }
         }
         
@@ -374,6 +392,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string OverwriteConfirm_Folder {
             get {
                 return ResourceManager.GetString("OverwriteConfirm_Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project sample rate.
+        /// </summary>
+        public static string ProjectSampleRate {
+            get {
+                return ResourceManager.GetString("ProjectSampleRate", resourceCulture);
             }
         }
         
