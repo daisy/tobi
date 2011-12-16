@@ -324,8 +324,8 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
-            GC.Collect();
-            GC.WaitForFullGCComplete();
+            //GC.Collect();
+            //GC.WaitForFullGCComplete();
         }
 
         private void OnLoaded_Panel(object sender, RoutedEventArgs e)

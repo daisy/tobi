@@ -276,7 +276,7 @@ namespace Tobi.Plugin.AudioPane
             //WaveFormProgress.SmallChange = 100;
 
             double numberOfVisibleXIncrements = sizeProgress / 20;
-            // progressbar update will be triggered every 35 pixels, which will minimize the Dispatcher access while reading the audio bytes and therefore increase performance.
+            // progressbar update will be triggered every xx pixels, which will minimize the Dispatcher access while reading the audio bytes and therefore increase performance.
             double progressStep = estimatedCapacity / numberOfVisibleXIncrements;
 
             //WaveFormProgress.LargeChange = progressStep;
@@ -454,7 +454,7 @@ namespace Tobi.Plugin.AudioPane
             Stopwatch stopWatch = null;
 
 
-            double x = 0.5;
+            double x = 2.5; // initial pixel offset
             if (onlyLoadVisibleScroll)
                 x += (nBytesScrollOffset / bytesPerPixel_Magnified); //ViewModel.WaveStepX;
 
@@ -915,8 +915,8 @@ namespace Tobi.Plugin.AudioPane
 
                 //Console.WriteLine(@"Drawing waveform...freeze2");
 
-                GC.Collect();
-                GC.WaitForFullGCComplete(1000);
+                //GC.Collect();
+                //GC.WaitForFullGCComplete(1000);
 
                 Action del = () =>
                 {

@@ -26,12 +26,12 @@ namespace Tobi.Plugin.AudioPane {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Audio_EnableSkippableDuringRecord {
+        public bool Audio_EnableSkippableText {
             get {
-                return ((bool)(this["Audio_EnableSkippableDuringRecord"]));
+                return ((bool)(this["Audio_EnableSkippableText"]));
             }
             set {
-                this["Audio_EnableSkippableDuringRecord"] = value;
+                this["Audio_EnableSkippableText"] = value;
             }
         }
         

@@ -378,7 +378,7 @@ namespace Tobi.Common.MVVM
 
         public IEnumerable<PropertyChangedEventArgs> Handle(PropertyChangedEventArgs dependency, Action<PropertyChangedEventArgs> action)
         {
-            if (IsEmpty)
+            if (m_First == null)
             {
                 yield break;
             }
@@ -402,7 +402,7 @@ namespace Tobi.Common.MVVM
 
         public IEnumerable<string> Handle(string dependency, Action<string> action)
         {
-            if (IsEmpty)
+            if (m_First == null)
             {
                 yield break;
             }
@@ -433,6 +433,18 @@ namespace Tobi.Common.MVVM
 
         public void Flush()
         {
+            if (m_First == null) return;
+
+            CacheItem current = m_First;
+            do
+            {
+                current = current.nextItem;
+                if (current != null)
+                {
+                    current.nextItem = null;
+                }
+            } while (current != null);
+
             m_First = null;
         }
 

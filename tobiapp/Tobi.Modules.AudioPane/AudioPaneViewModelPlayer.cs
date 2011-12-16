@@ -651,13 +651,13 @@ namespace Tobi.Plugin.AudioPane
 #if DEBUG
             Logger.Log("AudioPlayer_LoadWaveForm (calling PAUSE)", Category.Debug, Priority.Medium);
 #endif
-            
+
             CommandPause.Execute();
 
 #if DEBUG
             Logger.Log("AudioPlayer_LoadWaveForm (called PAUSE)", Category.Debug, Priority.Medium);
 #endif
-            
+
 
 
             //if (wasPlaying)
@@ -675,7 +675,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
             // else: the stream is now open
-            
+
             if (View != null)
             {
                 //View.RefreshCanvasWidth();
@@ -891,7 +891,7 @@ namespace Tobi.Plugin.AudioPane
             if (EventAggregator != null)
             {
                 EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Playing);
-            } 
+            }
 
             //AudioPlayer_UpdateWaveFormPlayHead(); rounding problems between player.currentTime and playheadtime => let's let the vumeter callback do the refresh.
         }
@@ -1078,8 +1078,16 @@ namespace Tobi.Plugin.AudioPane
                 Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
                 TreeNode nextNode = treeNodeSelection.Item1.GetNextSiblingWithManagedAudio();
+
+            next:
                 if (nextNode != null)
                 {
+                    if (isTreeNodeSkippable(nextNode) && !Settings.Default.Audio_EnableSkippableText)
+                    {
+                        nextNode = nextNode.GetNextSiblingWithManagedAudio();
+                        goto next;
+                    }
+
                     //Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);
 
                     //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);

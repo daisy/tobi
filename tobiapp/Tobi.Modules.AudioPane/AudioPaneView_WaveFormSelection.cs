@@ -21,9 +21,9 @@ namespace Tobi.Plugin.AudioPane
             m_TimeSelectionLeftX = 0;
             WaveFormTimeSelectionRect.Visibility = Visibility.Visible;
 
-            double width = getWaveFormWidth();
+            double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
 #if DEBUG
-            double widthReal = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+            double widthReal = getWaveFormWidth();
             DebugFix.Assert((long)Math.Round(width * 100) == (long)Math.Round(widthReal * 100));
 #endif //DEBUG
 
@@ -83,9 +83,9 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            double width = getWaveFormWidth();
+            double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
 #if DEBUG
-            double widthReal = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+            double widthReal = getWaveFormWidth();
             DebugFix.Assert((long)Math.Round(width * 100) == (long)Math.Round(widthReal * 100));
 #endif //DEBUG
 

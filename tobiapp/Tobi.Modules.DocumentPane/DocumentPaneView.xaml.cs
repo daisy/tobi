@@ -2022,8 +2022,8 @@ namespace Tobi.Plugin.DocumentPane
                 TheFlowDocumentSimple.Blocks.Add(createWelcomeEmptyFlowDoc());
 #endif //DEBUG
 
-                GC.Collect();
-                GC.WaitForFullGCComplete();
+                //GC.Collect();
+                //GC.WaitForFullGCComplete();
                 return;
             }
             else
@@ -3220,9 +3220,9 @@ namespace Tobi.Plugin.DocumentPane
                 action
                 );
 
-            GC.Collect();
-            GC.WaitForFullGCComplete();
-            GC.WaitForPendingFinalizers();
+            //GC.Collect();
+            //GC.WaitForFullGCComplete();
+            //GC.WaitForPendingFinalizers();
         }
 
         //private void selectNode(TreeNode node)
