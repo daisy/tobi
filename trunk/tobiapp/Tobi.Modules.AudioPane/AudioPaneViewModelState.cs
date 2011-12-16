@@ -212,13 +212,15 @@ namespace Tobi.Plugin.AudioPane
 
             public void ResetAll()
             {
-                PlayStream = null; // must be first because NotifyPropertyChange chain-reacts for DataLegth (TimeString data binding) 
+                PlayStream = null; // must be first because NotifyPropertyChange chain-reacts for DataLength (TimeString data binding) 
 
                 EndOffsetOfPlayStream = -1;
                 PcmFormat = null;
                 PcmFormatRecordingMonitoring = null;
                 PlayStreamMarkers = null;
                 DataLength = -1;
+
+                m_notifier.RaisePropertyChanged(() => m_viewModel.CanManipulateWaveForm);
             }
 
             public bool FindInPlayStreamMarkers(TreeNode treeNode, out int index, out long bytesLeft, out long bytesRight)
