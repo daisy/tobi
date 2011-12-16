@@ -201,8 +201,8 @@ namespace Tobi.Plugin.AudioPane
             TreeNode treeNode = treeNodeSelection.Item1;
 
             bool needsRefresh = false;
-            bool skipDrawing = Settings.Default.AudioWaveForm_SkipDrawing;
-            Settings.Default.AudioWaveForm_SkipDrawing = true;
+            bool skipDrawing = Settings.Default.AudioWaveForm_DisableDraw;
+            Settings.Default.AudioWaveForm_DisableDraw = true;
 
             bool initial = true;
             try
@@ -332,7 +332,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 m_viewModel.TheDispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
                 {
-                    Settings.Default.AudioWaveForm_SkipDrawing = skipDrawing;
+                    Settings.Default.AudioWaveForm_DisableDraw = skipDrawing;
 
                     if (needsRefresh)
                     {

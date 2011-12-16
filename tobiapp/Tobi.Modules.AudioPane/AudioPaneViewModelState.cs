@@ -19,7 +19,7 @@ namespace Tobi.Plugin.AudioPane
         {
             get
             {
-                return !IsMonitoring && !IsRecording && !IsWaveFormLoading;
+                return !IsMonitoring && !IsRecording && !IsWaveFormLoading && State.Audio.HasContent;
             }
         }
 

@@ -25,7 +25,7 @@ namespace Tobi.Plugin.AudioPane
     [ValueConversion(typeof(Double), typeof(Double))]
     public class MillisecondsPerPixelToPixelWidthConverter : ValueConverterMarkupExtensionBase<MillisecondsPerPixelToPixelWidthConverter>
     {
-        public static double defaultWidth = 10;
+        public static double defaultWidth = 3;
 
         public static double calc(double millisecondsPerPixel, AudioPaneViewModel viewModel)
         {

@@ -37,25 +37,13 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Audio_EnableDeferredRecord {
-            get {
-                return ((bool)(this["Audio_EnableDeferredRecord"]));
-            }
-            set {
-                this["Audio_EnableDeferredRecord"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AudioWaveForm_SkipDrawing {
+        public bool AudioWaveForm_DisableDraw {
             get {
-                return ((bool)(this["AudioWaveForm_SkipDrawing"]));
+                return ((bool)(this["AudioWaveForm_DisableDraw"]));
             }
             set {
-                this["AudioWaveForm_SkipDrawing"] = value;
+                this["AudioWaveForm_DisableDraw"] = value;
             }
         }
         
@@ -73,7 +61,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("800")]
+        [global::System.Configuration.DefaultSettingValueAttribute("400")]
         public double AudioWaveForm_TimeStep {
             get {
                 return ((double)(this["AudioWaveForm_TimeStep"]));
@@ -85,7 +73,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("BitmapSource")]
+        [global::System.Configuration.DefaultSettingValueAttribute("RenderTargetBitmap")]
         public global::Tobi.Plugin.AudioPane.WaveFormRenderMethod AudioWaveForm_RenderMethod {
             get {
                 return ((global::Tobi.Plugin.AudioPane.WaveFormRenderMethod)(this["AudioWaveForm_RenderMethod"]));
@@ -97,7 +85,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
         public double AudioWaveForm_TextPreRenderThreshold {
             get {
                 return ((double)(this["AudioWaveForm_TextPreRenderThreshold"]));
@@ -181,114 +169,6 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ff7fff00")]
-        public global::System.Windows.Media.Color AudioWaveForm_Color_Border {
-            get {
-                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Border"]));
-            }
-            set {
-                this["AudioWaveForm_Color_Border"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ff32cd32")]
-        public global::System.Windows.Media.Color AudioWaveForm_Color_Fill {
-            get {
-                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Fill"]));
-            }
-            set {
-                this["AudioWaveForm_Color_Fill"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ff000000")]
-        public global::System.Windows.Media.Color AudioWaveForm_Color_Back {
-            get {
-                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Back"]));
-            }
-            set {
-                this["AudioWaveForm_Color_Back"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ff00ff00")]
-        public global::System.Windows.Media.Color AudioWaveForm_Color_Stroke {
-            get {
-                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Stroke"]));
-            }
-            set {
-                this["AudioWaveForm_Color_Stroke"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ffff0000")]
-        public global::System.Windows.Media.Color AudioWaveForm_Color_CursorBorder {
-            get {
-                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_CursorBorder"]));
-            }
-            set {
-                this["AudioWaveForm_Color_CursorBorder"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ffffd700")]
-        public global::System.Windows.Media.Color AudioWaveForm_Color_CursorFill {
-            get {
-                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_CursorFill"]));
-            }
-            set {
-                this["AudioWaveForm_Color_CursorFill"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ff00bfff")]
-        public global::System.Windows.Media.Color AudioWaveForm_Color_Selection {
-            get {
-                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Selection"]));
-            }
-            set {
-                this["AudioWaveForm_Color_Selection"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ff4682b4")]
-        public global::System.Windows.Media.Color AudioWaveForm_Color_Phrases {
-            get {
-                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Phrases"]));
-            }
-            set {
-                this["AudioWaveForm_Color_Phrases"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#ffffffff")]
-        public global::System.Windows.Media.Color AudioWaveForm_Color_TimeText {
-            get {
-                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_TimeText"]));
-            }
-            set {
-                this["AudioWaveForm_Color_TimeText"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("default")]
         public string Audio_OutputDevice {
             get {
@@ -320,6 +200,126 @@ namespace Tobi.Plugin.AudioPane {
             }
             set {
                 this["Audio_TTS_Voice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("pagenum,sidebar,note,footnote,endnote,rearnote,prodnote,annotation,")]
+        public string Skippables {
+            get {
+                return ((string)(this["Skippables"]));
+            }
+            set {
+                this["Skippables"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF7FFF00")]
+        public global::System.Windows.Media.Color AudioWaveForm_Color_Border {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Border"]));
+            }
+            set {
+                this["AudioWaveForm_Color_Border"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF32CD32")]
+        public global::System.Windows.Media.Color AudioWaveForm_Color_Fill {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Fill"]));
+            }
+            set {
+                this["AudioWaveForm_Color_Fill"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF000000")]
+        public global::System.Windows.Media.Color AudioWaveForm_Color_Back {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Back"]));
+            }
+            set {
+                this["AudioWaveForm_Color_Back"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF00")]
+        public global::System.Windows.Media.Color AudioWaveForm_Color_Stroke {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Stroke"]));
+            }
+            set {
+                this["AudioWaveForm_Color_Stroke"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF0000")]
+        public global::System.Windows.Media.Color AudioWaveForm_Color_CursorBorder {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_CursorBorder"]));
+            }
+            set {
+                this["AudioWaveForm_Color_CursorBorder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFD700")]
+        public global::System.Windows.Media.Color AudioWaveForm_Color_CursorFill {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_CursorFill"]));
+            }
+            set {
+                this["AudioWaveForm_Color_CursorFill"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00BFFF")]
+        public global::System.Windows.Media.Color AudioWaveForm_Color_Selection {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Selection"]));
+            }
+            set {
+                this["AudioWaveForm_Color_Selection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF4682B4")]
+        public global::System.Windows.Media.Color AudioWaveForm_Color_Phrases {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Phrases"]));
+            }
+            set {
+                this["AudioWaveForm_Color_Phrases"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        public global::System.Windows.Media.Color AudioWaveForm_Color_TimeText {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_TimeText"]));
+            }
+            set {
+                this["AudioWaveForm_Color_TimeText"] = value;
             }
         }
     }
