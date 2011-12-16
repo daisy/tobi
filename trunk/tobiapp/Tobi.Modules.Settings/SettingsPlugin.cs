@@ -158,8 +158,9 @@ namespace Tobi.Plugin.Settings
                                           view = null;
 
                                           // TODO: view is not collected ! (at least in VS debugger)
-                                          GC.Collect();
-                                          GC.WaitForFullGCComplete();
+                                          // despite PartCreationPolicy(CreationPolicy.NonShared)
+                                          //GC.Collect();
+                                          //GC.WaitForFullGCComplete();
                                       };
 
             m_DialogIsShowing = true;

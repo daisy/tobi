@@ -221,14 +221,14 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandSelectAll", Category.Debug, Priority.Medium);
 
-                    if (!State.Audio.HasContent)
-                    {
-                        if (View != null)
-                        {
-                            View.SelectAll();
-                        }
-                        return;
-                    }
+                    //if (!State.Audio.HasContent)
+                    //{
+                    //    if (View != null)
+                    //    {
+                    //        View.SelectAll();
+                    //    }
+                    //    return;
+                    //}
 
                     State.Selection.SetSelectionBytes(0, State.Audio.DataLength);
 

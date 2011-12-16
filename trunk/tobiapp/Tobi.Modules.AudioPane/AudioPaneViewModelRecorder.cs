@@ -341,23 +341,23 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        // ReSharper disable RedundantDefaultFieldInitializer
-        private bool m_IsAutoRecordNext = false;
-        // ReSharper restore RedundantDefaultFieldInitializer
-        public bool IsAutoRecordNext
-        {
-            get
-            {
-                return m_IsAutoRecordNext;
-            }
-            set
-            {
-                if (m_IsAutoRecordNext == value) return;
-                m_IsAutoRecordNext = value;
+        //// ReSharper disable RedundantDefaultFieldInitializer
+        //private bool m_IsAutoRecordNext = false;
+        //// ReSharper restore RedundantDefaultFieldInitializer
+        //public bool IsAutoRecordNext
+        //{
+        //    get
+        //    {
+        //        return m_IsAutoRecordNext;
+        //    }
+        //    set
+        //    {
+        //        if (m_IsAutoRecordNext == value) return;
+        //        m_IsAutoRecordNext = value;
 
-                RaisePropertyChanged(() => IsAutoRecordNext);
-            }
-        }
+        //        RaisePropertyChanged(() => IsAutoRecordNext);
+        //    }
+        //}
 
         private void OnAudioRecordingFinished(object sender, AudioRecorder.AudioRecordingFinishEventArgs e)
         {
@@ -543,7 +543,7 @@ namespace Tobi.Plugin.AudioPane
 
                     if (next != null)
                     {
-                        if (Settings.Default.Audio_EnableSkippableDuringRecord && isTreeNodeSkippable(next))
+                        if (isTreeNodeSkippable(next) && !Settings.Default.Audio_EnableSkippableText)
                         {
                             treeNode = next;
                             goto tryNext;

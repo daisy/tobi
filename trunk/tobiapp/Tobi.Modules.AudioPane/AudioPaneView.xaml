@@ -419,12 +419,16 @@ Value="{StaticResource DisabledForegroundBrush}"/>
              CanContentScroll="True"
                 IsDeferredScrollingEnabled="False"
                   Focusable="False"
-                  Background="{Binding Converter={XAML:ColorToBrushConverter}, Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}"
+                  
                   VerticalAlignment="Stretch"
                   ScrollChanged="OnWaveFormScrollChanged"
                   
-            IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}">
+            IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}"
+      
+      Background="{StaticResource NormalBrush}"
+      >
 
+      <!-- Background="{Binding Converter={XAML:ColorToBrushConverter}, Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}" -->
       <!--SizeChanged="OnWaveFormCanvasSizeChanged"-->
       <Canvas x:Name="WaveFormCanvas"
               
@@ -439,8 +443,11 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               Background="{Binding Converter={XAML:ColorToBrushConverter}, Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Left"
+              
+              
               SnapsToDevicePixels="True"
               
+              ClipToBounds="True"
               
             IsEnabled="{Binding CanManipulateWaveForm, Mode=OneWay}"
               >
@@ -458,11 +465,12 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         </Canvas.Width>
         
         <!--IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}"-->
-
+       <!--
+        VerticalAlignment="Stretch"
+        HorizontalAlignment="Stretch" -->
         <Image x:Name="WaveFormImage"
-                  VerticalAlignment="Stretch"
-                  HorizontalAlignment="Stretch"
-               Stretch="Fill"
+
+               Stretch="None"
                Canvas.ZIndex="0"
                Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}"
                Canvas.Left="0"

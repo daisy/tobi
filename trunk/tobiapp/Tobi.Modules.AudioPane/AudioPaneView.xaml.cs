@@ -25,7 +25,7 @@ namespace Tobi.Plugin.AudioPane
     [ValueConversion(typeof(Double), typeof(Double))]
     public class MillisecondsPerPixelToPixelWidthConverter : ValueConverterMarkupExtensionBase<MillisecondsPerPixelToPixelWidthConverter>
     {
-        public static double defaultWidth = 1000;
+        public static double defaultWidth = 10;
 
         public static double calc(double millisecondsPerPixel, AudioPaneViewModel viewModel)
         {
@@ -216,6 +216,7 @@ namespace Tobi.Plugin.AudioPane
             InvalidateWaveFormOverlay();
         }
 
+#if DEBUG
         private double getWaveFormWidth()
         {
             double width1 = WaveFormCanvas.ActualWidth;
@@ -233,9 +234,9 @@ namespace Tobi.Plugin.AudioPane
                         if (double.IsNaN(width4) || (long)Math.Round(width4) == 0)
                         {
                             //throw new Exception("NO VALID WAVEFORM WIDTH!!");
-//#if DEBUG
-//                            Debugger.Break();
-//#endif //DEBUG
+                            //#if DEBUG
+                            //                            Debugger.Break();
+                            //#endif //DEBUG
                             return MillisecondsPerPixelToPixelWidthConverter.defaultWidth;
                         }
                         else return width4;
@@ -246,11 +247,34 @@ namespace Tobi.Plugin.AudioPane
             }
             else return width1;
         }
+#endif //DEBUG
 
         private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
         {
             bool force = m_ForceCanvasWidthUpdate;
             m_ForceCanvasWidthUpdate = false;
+
+            double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+
+#if DEBUG
+            double widthReal = getWaveFormWidth();
+            bool match = (long)Math.Round(width * 100) == (long)Math.Round(widthReal * 100);
+
+            //DebugFix.Assert(match);
+
+            if (!match)
+            {
+                m_Logger.Log("OnWaveFormCanvasSizeChanged (WIDTH mismatch): " + widthReal + " != " + width, Category.Debug,
+                         Priority.Medium);
+            }
+#endif //DEBUG
+
+            //if (!match)
+            //{
+            //    return;
+            //}
+
+            //double oldWidth = e.PreviousSize.Width;
 
             if (!force)
             {
@@ -267,32 +291,33 @@ namespace Tobi.Plugin.AudioPane
                 //NET40
             }
 
-            double oldWidth = e.PreviousSize.Width;
+            //if (m_TimeSelectionLeftX >= 0)
+            //{
+            //    double ratio = width / oldWidth;
+            //    m_TimeSelectionLeftX *= ratio;
+            //    WaveFormTimeSelectionRect.Width *= ratio;
+            //    WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+            //}
 
-            double width = getWaveFormWidth();
-#if DEBUG
-            double widthReal = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
-            DebugFix.Assert((long)Math.Round(width * 100) == (long)Math.Round(widthReal * 100));
-#endif //DEBUG
-
-            if (m_TimeSelectionLeftX >= 0)
+            if (m_ViewModel.State.Audio.HasContent)
             {
-                double ratio = width / oldWidth;
-                m_TimeSelectionLeftX *= ratio;
-                WaveFormTimeSelectionRect.Width *= ratio;
-                WaveFormTimeSelectionRect.SetValue(Canvas.LeftProperty, m_TimeSelectionLeftX);
+                BytesPerPixel = m_ViewModel.State.Audio.DataLength / width;
+            }
+            else
+            {
+                BytesPerPixel = -1;
             }
 
-            if (!force)
+            if (m_ViewModel.State.Audio.HasContent)
             {
-                if (m_ViewModel.State.Audio.HasContent)
+                if (m_ViewModel.IsSelectionSet)
                 {
-                    BytesPerPixel = m_ViewModel.State.Audio.DataLength/width;
+                    SetSelectionBytes(m_ViewModel.State.Selection.SelectionBeginBytePosition, m_ViewModel.State.Selection.SelectionEndBytePosition);
                 }
-                else
-                {
-                    BytesPerPixel = -1;
-                }
+            }
+            else
+            {
+                ClearSelection();
             }
 
             m_ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
@@ -321,10 +346,10 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            if (oldWidth == width)
-            {
-                return;
-            }
+            //if ((long)Math.Round(width * 100) == (long)Math.Round(oldWidth * 100))
+            //{
+            //    return;
+            //}
 
             if (!force)
             {
@@ -425,9 +450,9 @@ namespace Tobi.Plugin.AudioPane
             {
                 Point p = e.GetPosition(WaveFormCanvas);
 
-                double width = getWaveFormWidth();
+                double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
 #if DEBUG
-                double widthReal = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+                double widthReal = getWaveFormWidth();
                 DebugFix.Assert((long)Math.Round(width * 100) == (long)Math.Round(widthReal * 100));
 #endif //DEBUG
 
@@ -603,6 +628,47 @@ namespace Tobi.Plugin.AudioPane
             return dlg.FileName;
         }
 
+#if DRAW_EMPTY_IMAGE
+        private DrawingImage m_ResetWaveFormImageDrawing;
+        private DrawingImage getResetWaveFormImageDrawing()
+        {
+            double height = WaveFormCanvas.ActualHeight;
+            double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+
+            if (m_ResetWaveFormImageDrawing == null
+                || (long)Math.Round(m_ResetWaveFormImageDrawing.Width * 100) != (long)Math.Round(width * 100)
+                || (long)Math.Round(m_ResetWaveFormImageDrawing.Height * 100) != (long)Math.Round(height * 100)
+            )
+            {
+                var drawImg = new DrawingImage();
+                var geometry = new StreamGeometry();
+                using (StreamGeometryContext sgc = geometry.Open())
+                {
+                    sgc.BeginFigure(new Point(0, 0), true, true);
+                    sgc.LineTo(new Point(0, height), true, false);
+                    sgc.LineTo(new Point(width, height), true, false);
+                    sgc.LineTo(new Point(width, 0), true, false);
+                    sgc.Close();
+                }
+
+                geometry.Freeze();
+
+                Brush brushColorBack = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back); //m_ViewModel.ColorWaveBackground);
+                var geoDraw = new GeometryDrawing(brushColorBack, new Pen(brushColorBack, 1.0), geometry);
+                geoDraw.Freeze();
+                var drawGrp = new DrawingGroup();
+                drawGrp.Children.Add(geoDraw);
+                drawGrp.Freeze();
+                drawImg.Drawing = drawGrp;
+                drawImg.Freeze();
+
+                m_ResetWaveFormImageDrawing = drawImg;
+            }
+
+            return m_ResetWaveFormImageDrawing;
+        }
+#endif //DRAW_EMPTY_IMAGE
+
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
@@ -619,49 +685,13 @@ namespace Tobi.Plugin.AudioPane
 
             //m_Logger.Log("AudioPaneView.ResetWaveFormEmpty", Category.Debug, Priority.Medium);
 
-            double height = WaveFormCanvas.ActualHeight;
-            //if (double.IsNaN(height) || height == 0)
-            //{
-            //    height = WaveFormCanvas.Height;
-            //}
+#if DRAW_EMPTY_IMAGE
+            WaveFormImage.Source = getResetWaveFormImageDrawing();
+#else
+            WaveFormImage.Source = null;
+#endif //DRAW_EMPTY_IMAGE
 
             RefreshCanvasWidth();
-            double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
-            //#if DEBUG
-            //            double width_ = getWaveFormWidth();
-            //            DebugFix.Assert((long)Math.Round(width_ * 100) == (long)Math.Round(widthReal * 100));
-            //#endif //DEBUG
-
-
-//            double width = getWaveFormWidth();
-//#if DEBUG
-//            double widthReal = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
-//            DebugFix.Assert((long)Math.Round(width * 100) == (long)Math.Round(widthReal * 100));
-//#endif //DEBUG
-
-
-            var drawImg = new DrawingImage();
-            var geometry = new StreamGeometry();
-            using (StreamGeometryContext sgc = geometry.Open())
-            {
-                sgc.BeginFigure(new Point(0, 0), true, true);
-                sgc.LineTo(new Point(0, height), true, false);
-                sgc.LineTo(new Point(width, height), true, false);
-                sgc.LineTo(new Point(width, 0), true, false);
-                sgc.Close();
-            }
-
-            geometry.Freeze();
-
-            Brush brushColorBack = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back); //m_ViewModel.ColorWaveBackground);
-            var geoDraw = new GeometryDrawing(brushColorBack, new Pen(brushColorBack, 1.0), geometry);
-            geoDraw.Freeze();
-            var drawGrp = new DrawingGroup();
-            drawGrp.Children.Add(geoDraw);
-            drawGrp.Freeze();
-            drawImg.Drawing = drawGrp;
-            drawImg.Freeze();
-            WaveFormImage.Source = drawImg;
         }
 
         public void ResetWaveFormChunkMarkers()

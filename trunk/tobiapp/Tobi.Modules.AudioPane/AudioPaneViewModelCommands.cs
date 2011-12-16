@@ -58,6 +58,7 @@ namespace Tobi.Plugin.AudioPane
                     View.ZoomSelection();
                 },
                 () => View != null
+                    && State.Audio.HasContent
                     && CanManipulateWaveForm
                     //&&!IsWaveFormLoading
                     && IsSelectionSet,
@@ -78,6 +79,7 @@ namespace Tobi.Plugin.AudioPane
                     View.ZoomFitFull();
                 },
                 () => View != null
+                    && State.Audio.HasContent
                     && CanManipulateWaveForm,
                 //&& !IsWaveFormLoading,
                 Settings_KeyGestures.Default,

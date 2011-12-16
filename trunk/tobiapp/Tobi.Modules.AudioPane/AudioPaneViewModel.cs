@@ -162,7 +162,7 @@ namespace Tobi.Plugin.AudioPane
                         {
                             totalLength += streamLength;
 
-                            if (stopWatch.ElapsedMilliseconds > 200)
+                            if (stopWatch.ElapsedMilliseconds > 500)
                             {
                                 stopWatch.Stop();
 
