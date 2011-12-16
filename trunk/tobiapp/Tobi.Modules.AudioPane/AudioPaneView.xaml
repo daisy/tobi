@@ -470,7 +470,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         HorizontalAlignment="Stretch" -->
         <Image x:Name="WaveFormImage"
 
-               Stretch="None"
+               Stretch="Fill"
                Canvas.ZIndex="0"
                Height="{Binding ElementName=WaveFormCanvas, Path=ActualHeight, Mode=OneWay}"
                Canvas.Left="0"

@@ -223,7 +223,7 @@ namespace Tobi.Plugin.AudioPane
 
             BytesPerPixel = m_ViewModel.State.Audio.DataLength / widthReal;
 
-            if (Settings.Default.AudioWaveForm_SkipDrawing)
+            if (Settings.Default.AudioWaveForm_DisableDraw)
             {
 
 #if DEBUG
@@ -454,7 +454,7 @@ namespace Tobi.Plugin.AudioPane
             Stopwatch stopWatch = null;
 
 
-            double x = 2.5; // initial pixel offset
+            double x = 1; // initial pixel offset
             if (onlyLoadVisibleScroll)
                 x += (nBytesScrollOffset / bytesPerPixel_Magnified); //ViewModel.WaveStepX;
 

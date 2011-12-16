@@ -115,7 +115,7 @@ namespace Tobi.Plugin.AudioPane
                     if (EventAggregator != null)
                     {
                         EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped);
-                    } 
+                    }
                 },
                 () => !IsWaveFormLoading && IsRecording,
                 Settings_KeyGestures.Default,
@@ -408,8 +408,8 @@ namespace Tobi.Plugin.AudioPane
 
             bool needsRefresh = false;
 
-            bool skipDrawing = Settings.Default.AudioWaveForm_SkipDrawing;
-            Settings.Default.AudioWaveForm_SkipDrawing = true;
+            bool skipDrawing = Settings.Default.AudioWaveForm_DisableDraw;
+            Settings.Default.AudioWaveForm_DisableDraw = true;
 
             foreach (var deferredRecordingDataItem in m_DeferredRecordingDataItems)
             {
@@ -477,7 +477,7 @@ namespace Tobi.Plugin.AudioPane
 
             m_DeferredRecordingDataItems = null;
 
-            Settings.Default.AudioWaveForm_SkipDrawing = skipDrawing;
+            Settings.Default.AudioWaveForm_DisableDraw = skipDrawing;
 
             if (needsRefresh)
             {
@@ -485,10 +485,33 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        private List<string> m_SkippableElements;
+        private bool isElementSkippable(string name)
+        {
+            if (m_SkippableElements == null)
+            {
+                string[] names = Settings.Default.Skippables.Split(new char[] { ',', ' ', ';', '/' });
+
+                //m_SkippableElements = new List<string>(names);
+                m_SkippableElements = new List<string>(names.Length);
+
+                foreach (string n in names)
+                {
+                    string n_ = n.Trim().ToLower();
+                    if (!string.IsNullOrEmpty(n_))
+                    {
+                        m_SkippableElements.Add(n_);
+                    }
+                }
+            }
+
+            return m_SkippableElements.Contains(name.ToLower());
+        }
+
         private bool isTreeNodeSkippable(TreeNode node)
         {
             QualifiedName qname = node.GetXmlElementQName();
-            if (qname != null && qname.LocalName.ToLower() == "pagenum")
+            if (qname != null && isElementSkippable(qname.LocalName))
             {
                 return true;
             }
@@ -512,7 +535,7 @@ namespace Tobi.Plugin.AudioPane
             if (!String.IsNullOrEmpty(e.RecordedFilePath))
             {
                 //m_RecordAndContinue && 
-                if (Settings.Default.Audio_EnableDeferredRecord)
+                if (Settings.Default.Audio_EnableSkippableText)
                 {
                     registerRecordedAudioFileForDeferredAddition(e.RecordedFilePath);
                 }
