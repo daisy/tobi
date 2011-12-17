@@ -38,6 +38,18 @@ namespace Tobi.Plugin.AudioPane {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AudioWaveForm_UseDecibels {
+            get {
+                return ((bool)(this["AudioWaveForm_UseDecibels"]));
+            }
+            set {
+                this["AudioWaveForm_UseDecibels"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool AudioWaveForm_DisableDraw {
             get {
                 return ((bool)(this["AudioWaveForm_DisableDraw"]));
@@ -205,7 +217,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("pagenum,sidebar,note,footnote,endnote,rearnote,prodnote,annotation,noteref,annoref")]
+        [global::System.Configuration.DefaultSettingValueAttribute("pagenum,sidebar,footnote,endnote,rearnote,prodnote,")]
         public string Skippables {
             get {
                 return ((string)(this["Skippables"]));

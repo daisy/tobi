@@ -407,6 +407,12 @@ namespace Tobi.Plugin.AudioPane
 
             int bytesPerStep = samplesPerStep * byteDepth;
 
+
+#if DEBUG
+            m_Logger.Log("loadWaveForm - byte buffer size:" + bytesPerStep, Category.Debug, Priority.Medium);
+#endif
+
+
             var bytes = new byte[bytesPerStep]; // Int 8 unsigned
 #if USE_BLOCK_COPY
             var samples = new short[samplesPerStep]; // Int 16 signed
@@ -568,11 +574,11 @@ namespace Tobi.Plugin.AudioPane
                             limit = Math.Min(limit, samplesPerStep);
                         }
 
-                        double total = 0;
+                        long total = 0;
                         int nSamplesRead = 0;
 
-                        double min = short.MaxValue; // Int 16 signed 32767
-                        double max = short.MinValue; // Int 16 signed -32768
+                        long min_ = short.MaxValue; // Int 16 signed 32767
+                        long max_ = short.MinValue; // Int 16 signed -32768
 
                         for (int i = channel; i < limit; i += m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels)
                         {
@@ -612,7 +618,16 @@ namespace Tobi.Plugin.AudioPane
                             }
 #else //USE_BLOCK_COPY
                             // LITTLE INDIAN !
-                            var sample = (short)(bytes[i << 1] | (bytes[(i << 1) + 1] << 8));
+                            int index = i << 1;
+                            if (index >= bytes.Length)
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif // DEBUG
+                                break;
+                            }
+
+                            var sample = (short)(bytes[index] | (bytes[index + 1] << 8));
 #endif //USE_BLOCK_COPY
 
                             if (sample == short.MinValue)
@@ -624,17 +639,15 @@ namespace Tobi.Plugin.AudioPane
                                 total += Math.Abs(sample);
                             }
 
-                            if (sample < min)
+                            if (sample < min_)
                             {
-                                min = sample;
+                                min_ = sample;
                             }
-                            if (sample > max)
+                            if (sample > max_)
                             {
-                                max = sample;
+                                max_ = sample;
                             }
                         }
-
-                        double avg = total / nSamplesRead;
 
                         double hh = heightMagnified;
                         if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
@@ -650,44 +663,46 @@ namespace Tobi.Plugin.AudioPane
 
                         #region DECIBELS
 
-                        if (m_ViewModel.IsUseDecibels)
+                        if (Settings.Default.AudioWaveForm_UseDecibels)
                         {
+                            double mindB = min_;
+                            double maxdB = max_;
 
                             if (!m_ViewModel.IsUseDecibelsNoAverage)
                             {
-                                min = avg;
-                                max = avg;
+                                mindB = total / (double)nSamplesRead; //AVERAGE
+                                maxdB = mindB;
                             }
 
-                            bool minIsNegative = min < 0;
-                            double minAbs = Math.Abs(min);
+                            bool minIsNegative = mindB < 0;
+                            double minAbs = Math.Abs(mindB);
                             if (minAbs == 0)
                             {
-                                min = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
+                                mindB = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
                             }
                             else
                             {
-                                min = logFactor * Math.Log10(minAbs / reference);
-                                dBMinReached = Math.Min(dBMinReached, min);
+                                mindB = logFactor * Math.Log10(minAbs / reference);
+                                dBMinReached = Math.Min(dBMinReached, mindB);
                                 if (m_ViewModel.IsUseDecibelsNoAverage && !minIsNegative)
                                 {
-                                    min = -min;
+                                    mindB = -mindB;
                                 }
                             }
 
-                            bool maxIsNegative = max < 0;
-                            double maxAbs = Math.Abs(max);
+                            bool maxIsNegative = maxdB < 0;
+                            double maxAbs = Math.Abs(maxdB);
                             if (maxAbs == 0)
                             {
-                                max = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
+                                maxdB = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
                             }
                             else
                             {
-                                max = logFactor * Math.Log10(maxAbs / reference);
-                                dBMaxReached = Math.Max(dBMaxReached, max);
+                                maxdB = logFactor * Math.Log10(maxAbs / reference);
+                                dBMaxReached = Math.Max(dBMaxReached, maxdB);
                                 if (m_ViewModel.IsUseDecibelsNoAverage && !maxIsNegative)
                                 {
-                                    max = -max;
+                                    maxdB = -maxdB;
                                 }
                             }
 
@@ -696,18 +711,18 @@ namespace Tobi.Plugin.AudioPane
 
                             if (m_ViewModel.IsUseDecibelsNoAverage)
                             {
-                                min = dbMinValue - min;
+                                mindB = dbMinValue - mindB;
                             }
-                            y1 = pixPerDbUnit * (min - dbMinValue) + decibelDrawDelta;
+                            y1 = pixPerDbUnit * (mindB - dbMinValue) + decibelDrawDelta;
                             if (!m_ViewModel.IsUseDecibelsNoAverage)
                             {
                                 y1 = hh - y1;
                             }
                             if (m_ViewModel.IsUseDecibelsNoAverage)
                             {
-                                max = dbMaxValue - max;
+                                maxdB = dbMaxValue - maxdB;
                             }
-                            y2 = pixPerDbUnit * (max - dbMinValue) - decibelDrawDelta;
+                            y2 = pixPerDbUnit * (maxdB - dbMinValue) - decibelDrawDelta;
                             if (!m_ViewModel.IsUseDecibelsNoAverage)
                             {
                                 y2 = hh - y2;
@@ -716,19 +731,19 @@ namespace Tobi.Plugin.AudioPane
                         #endregion DECIBELS
                         else
                         {
-                            const double MaxValue = short.MaxValue; // Int 16 signed 32767
-                            const double MinValue = short.MinValue; // Int 16 signed -32768
+                            const short MaxValue = short.MaxValue; // Int 16 signed 32767
+                            const short MinValue = short.MinValue; // Int 16 signed -32768
 
                             double pixPerUnit = hh /
                                                 (MaxValue - MinValue); // == ushort.MaxValue => Int 16 unsigned 65535
 
-                            y1 = pixPerUnit * (min - MinValue);
+                            y1 = pixPerUnit * (min_ - MinValue);
                             y1 = hh - y1;
-                            y2 = pixPerUnit * (max - MinValue);
+                            y2 = pixPerUnit * (max_ - MinValue);
                             y2 = hh - y2;
                         }
 
-                        if (!(m_ViewModel.IsUseDecibels && m_ViewModel.IsUseDecibelsAdjust))
+                        if (!(Settings.Default.AudioWaveForm_UseDecibels && m_ViewModel.IsUseDecibelsAdjust))
                         {
                             if (y1 > hh - tolerance)
                             {
@@ -1193,13 +1208,11 @@ namespace Tobi.Plugin.AudioPane
                 geoDrawMarkers = createGeometry_Markers(heightMagnified, bytesPerPixel_Magnified);
             }
             //
-            GeometryDrawing geoDrawBack = createGeometry_Back(heightMagnified, widthMagnified);
-            //
-            //
             var drawGrp = new DrawingGroup();
 
             if (m_ViewModel.IsBackgroundVisible)
             {
+                GeometryDrawing geoDrawBack = createGeometry_Back(heightMagnified, widthMagnified);
                 drawGrp.Children.Add(geoDrawBack);
             }
             if (Settings.Default.AudioWaveForm_IsBordered) //m_ViewModel.IsEnvelopeVisible)
@@ -1533,7 +1546,7 @@ namespace Tobi.Plugin.AudioPane
             int bottomIndexStartCh1 = listTopPointsCh1.Count;
             int bottomIndexStartCh2 = listTopPointsCh2.Count;
 
-            //if (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage)
+            //if (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage)
             //{
             //    listBottomPointsCh1.Reverse();
             //    listTopPointsCh1.AddRange(listBottomPointsCh1);
@@ -1547,7 +1560,7 @@ namespace Tobi.Plugin.AudioPane
             //    }
             //}
 
-            if (m_ViewModel.IsUseDecibels && m_ViewModel.IsUseDecibelsAdjust &&
+            if (Settings.Default.AudioWaveForm_UseDecibels && m_ViewModel.IsUseDecibelsAdjust &&
                 (dBMinHardCoded != dBMinReached ||
                 (m_ViewModel.IsUseDecibelsNoAverage && (-dBMinHardCoded) != dBMaxReached)))
             {
@@ -1674,7 +1687,7 @@ namespace Tobi.Plugin.AudioPane
             var pp = new Point();
 
 
-            if (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage)
+            if (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage)
             {
                 foreach (Point p in listTopPointsCh1)
                 {
@@ -1702,7 +1715,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         sgcCh1_envelope.BeginFigure(pp,
                             Settings.Default.AudioWaveForm_IsFilled //m_ViewModel.IsEnvelopeFilled
-                            && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                            && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                     }
                     else
                     {
@@ -1737,7 +1750,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         sgcCh1_envelope.BeginFigure(pp,
                             Settings.Default.AudioWaveForm_IsFilled //m_ViewModel.IsEnvelopeFilled
-                            && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                            && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                     }
                     else
                     {
@@ -1775,7 +1788,7 @@ namespace Tobi.Plugin.AudioPane
                         {
                             sgcCh2_envelope.BeginFigure(pp,
                                 Settings.Default.AudioWaveForm_IsFilled //m_ViewModel.IsEnvelopeFilled
-                                && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                                && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                         }
                         else
                         {
@@ -1810,7 +1823,7 @@ namespace Tobi.Plugin.AudioPane
                         {
                             sgcCh2_envelope.BeginFigure(pp,
                                 Settings.Default.AudioWaveForm_IsFilled // m_ViewModel.IsEnvelopeFilled
-                                && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                                && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                         }
                         else
                         {
@@ -1848,7 +1861,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         sgcCh1_envelope.BeginFigure(pp,
                             Settings.Default.AudioWaveForm_IsFilled //m_ViewModel.IsEnvelopeFilled
-                            && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                            && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                     }
                     else
                     {
@@ -1886,7 +1899,7 @@ namespace Tobi.Plugin.AudioPane
                         {
                             sgcCh2_envelope.BeginFigure(pp,
                                 Settings.Default.AudioWaveForm_IsFilled //m_ViewModel.IsEnvelopeFilled
-                                && (!m_ViewModel.IsUseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
+                                && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                         }
                         else
                         {

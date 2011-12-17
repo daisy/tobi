@@ -25,6 +25,18 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] F12")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_ExpertOptions {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_ExpertOptions"]));
+            }
+            set {
+                this["Keyboard_Audio_ExpertOptions"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] Return")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Split {
             get {

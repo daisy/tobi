@@ -356,7 +356,9 @@ m_Stream.Length);
             }
             else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsFilled)
                 || e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsBordered)
-                || e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsStroked))
+                || e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsStroked)
+                || e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_UseDecibels)
+                )
             {
                 //resetWaveFormBackground();
                 if (View != null)

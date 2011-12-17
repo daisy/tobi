@@ -14,8 +14,8 @@ namespace Tobi.Plugin.AudioPane
 
         public RichDelegateCommand CommandAudioSettings { get; private set; }
 
-#if false && DEBUG
-        public RichDelegateCommand CommandShowOptionsDialog { get; private set; }
+#if DEBUG
+        public RichDelegateCommand CommandShowAudioOptionsDialog { get; private set; }
 #endif //DEBUG
 
         public RichDelegateCommand CommandFocus { get; private set; }
@@ -112,8 +112,8 @@ namespace Tobi.Plugin.AudioPane
 
             m_ShellView.RegisterRichCommand(CommandAudioSettings);
             //
-#if false && DEBUG
-            CommandShowOptionsDialog = new RichDelegateCommand(
+#if DEBUG
+            CommandShowAudioOptionsDialog = new RichDelegateCommand(
                 @"Show audio options",
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
@@ -136,10 +136,10 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => true,
                 Settings_KeyGestures.Default,
-                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ShowOptions)
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ExpertOptions)
                 );
 
-            m_ShellView.RegisterRichCommand(CommandShowOptionsDialog);
+            m_ShellView.RegisterRichCommand(CommandShowAudioOptionsDialog);
 #endif //DEBUG
             //
             CommandFocus = new RichDelegateCommand(
