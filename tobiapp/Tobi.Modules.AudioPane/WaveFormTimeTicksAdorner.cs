@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AudioLib;
 using urakawa.core;
+using urakawa.data;
 using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
@@ -326,9 +327,19 @@ namespace Tobi.Plugin.AudioPane
                 double pixelsLeft = 0;
                 double pixelsRight = 0;
                 double widthChunk = 0;
+#if USE_NORMAL_LIST
                 foreach (TreeNodeAndStreamDataLength marker in m_AudioPaneViewModel.State.Audio.PlayStreamMarkers)
                 {
-                    if (pixelsLeft > (hoffset + widthAvailable)) break;
+#else
+                LightLinkedList<TreeNodeAndStreamDataLength>.Item current = m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.m_First;
+                while (current != null)
+                {
+                    TreeNodeAndStreamDataLength marker = current.m_data;
+#endif //USE_NORMAL_LIST
+                    if (pixelsLeft > (hoffset + widthAvailable))
+                    {
+                        break;
+                    }
 
                     pixelsRight = (sumData + marker.m_LocalStreamDataLength) / bytesPerPixel;
 
@@ -339,6 +350,10 @@ namespace Tobi.Plugin.AudioPane
                         {
                             sumData += marker.m_LocalStreamDataLength;
                             pixelsLeft = pixelsRight;
+
+#if !USE_NORMAL_LIST
+                            current = current.m_nextItem;
+#endif //USE_NORMAL_LIST
                             continue;
                         }
 
@@ -361,7 +376,7 @@ namespace Tobi.Plugin.AudioPane
 #if NET40
 , null, TextFormattingMode.Display
 #endif //NET40
-                                );
+);
                             m_standardTextHeight = txt.Height;
                         }
                         double standardTextHeight = m_standardTextHeight * zoom;
@@ -376,7 +391,7 @@ namespace Tobi.Plugin.AudioPane
 #if NET40
 , null, TextFormattingMode.Display
 #endif //NET40
-                            );
+);
 
                         formattedTextDuration.Trimming = TextTrimming.CharacterEllipsis;
                         formattedTextDuration.MaxTextWidth = chunkWidthForText;
@@ -440,6 +455,10 @@ namespace Tobi.Plugin.AudioPane
                         {
                             sumData += marker.m_LocalStreamDataLength;
                             pixelsLeft = pixelsRight;
+
+#if !USE_NORMAL_LIST
+                            current = current.m_nextItem;
+#endif //USE_NORMAL_LIST
                             continue;
                         }
 
@@ -473,7 +492,7 @@ namespace Tobi.Plugin.AudioPane
 #if NET40
 , null, TextFormattingMode.Display
 #endif //NET40
-                                );
+);
 
                             formattedText.Trimming = TextTrimming.CharacterEllipsis;
                             formattedText.MaxTextWidth = chunkWidthForText;
@@ -559,8 +578,13 @@ namespace Tobi.Plugin.AudioPane
 
                     sumData += marker.m_LocalStreamDataLength;
                     pixelsLeft = pixelsRight;
-                }
 
+#if USE_NORMAL_LIST
+                }
+#else
+                    current = current.m_nextItem;
+                }
+#endif //USE_NORMAL_LIST
                 //drawingContext.PushOpacity(0.6);
             }
         }
