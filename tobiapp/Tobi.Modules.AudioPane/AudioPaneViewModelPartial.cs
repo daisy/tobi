@@ -76,20 +76,20 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        // ReSharper disable RedundantDefaultFieldInitializer
-        private List<Double> m_WaveStepXs = null;
-        // ReSharper restore RedundantDefaultFieldInitializer
-        public List<Double> WaveStepXs
-        {
-            get
-            {
-                if (m_WaveStepXs == null)
-                {
-                    m_WaveStepXs = new List<double> { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
-                }
-                return m_WaveStepXs;
-            }
-        }
+        //// ReSharper disable RedundantDefaultFieldInitializer
+        //private List<Double> m_WaveStepXs = null;
+        //// ReSharper restore RedundantDefaultFieldInitializer
+        //public List<Double> WaveStepXs
+        //{
+        //    get
+        //    {
+        //        if (m_WaveStepXs == null)
+        //        {
+        //            m_WaveStepXs = new List<double> { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0 };
+        //        }
+        //        return m_WaveStepXs;
+        //    }
+        //}
 
         //private double m_WaveStepX = Settings.Default.AudioWaveForm_Resolution;
         //public double WaveStepX
@@ -132,27 +132,27 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        // ReSharper disable RedundantDefaultFieldInitializer
-        private bool m_IsUseDecibels = false;
-        // ReSharper restore RedundantDefaultFieldInitializer
-        public bool IsUseDecibels
-        {
-            get
-            {
-                return m_IsUseDecibels;
-            }
-            set
-            {
-                if (m_IsUseDecibels == value) return;
-                m_IsUseDecibels = value;
-                //resetWaveFormBackground();
-                if (View != null)
-                {
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => IsUseDecibels);
-            }
-        }
+        //// ReSharper disable RedundantDefaultFieldInitializer
+        //private bool m_IsUseDecibels = false;
+        //// ReSharper restore RedundantDefaultFieldInitializer
+        //public bool IsUseDecibels
+        //{
+        //    get
+        //    {
+        //        return m_IsUseDecibels;
+        //    }
+        //    set
+        //    {
+        //        if (m_IsUseDecibels == value) return;
+        //        m_IsUseDecibels = value;
+        //        //resetWaveFormBackground();
+        //        if (View != null)
+        //        {
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => IsUseDecibels);
+        //    }
+        //}
 
         // ReSharper disable RedundantDefaultFieldInitializer
         private bool m_IsUseDecibelsNoAverage = false;
@@ -194,7 +194,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }*/
 
-        private bool m_IsBackgroundVisible = true;
+        private bool m_IsBackgroundVisible = false;
         public bool IsBackgroundVisible
         {
             get
@@ -292,11 +292,17 @@ namespace Tobi.Plugin.AudioPane
         //    }
         //}
 
+        private SolidColorBrush m_ColorSelectionContourBrush;
         public SolidColorBrush ColorSelectionContourBrush
         {
             get
             {
-                return new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Selection) { Opacity = 0.6 };
+                if (m_ColorSelectionContourBrush==null)
+                {
+                    m_ColorSelectionContourBrush = new SolidColorBrush { Opacity = 0.6 };
+                }
+                m_ColorSelectionContourBrush.Color = Settings.Default.AudioWaveForm_Color_Selection;
+                return m_ColorSelectionContourBrush;
             }
         }
 
