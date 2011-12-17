@@ -549,6 +549,8 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
+#if ENABLE_SEQ_MEDIA
+
             SequenceMedia seqManagedAudioMedia = node.GetManagedAudioSequenceMedia();
             if (seqManagedAudioMedia != null)
             {
@@ -561,6 +563,8 @@ namespace Tobi.Plugin.DocumentPane
 
                 return;
             }
+            
+#endif //ENABLE_SEQ_MEDIA
 
             TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
             if (ancerstor != null)
