@@ -191,8 +191,21 @@ namespace Tobi.Plugin.AudioPane
 
             // The list that defines the sub treenodes with associated chunks of audio data
             // This is never null: the count is 1 when the current main tree node has direct audio (no sub tree nodes)
-            private List<TreeNodeAndStreamDataLength> m_PlayStreamMarkers;
-            public List<TreeNodeAndStreamDataLength> PlayStreamMarkers
+
+            private
+#if USE_NORMAL_LIST
+            List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<TreeNodeAndStreamDataLength> m_PlayStreamMarkers;
+            public
+#if USE_NORMAL_LIST
+            List
+#else
+ LightLinkedList
+#endif //USE_NORMAL_LIST
+<TreeNodeAndStreamDataLength> PlayStreamMarkers
             {
                 get
                 {
@@ -230,8 +243,16 @@ namespace Tobi.Plugin.AudioPane
                 index = -1;
                 if (PlayStreamMarkers == null) return false;
 
+#if USE_NORMAL_LIST
                 foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
                 {
+#else
+                LightLinkedList<TreeNodeAndStreamDataLength>.Item current = PlayStreamMarkers.m_First;
+                while (current != null)
+                {
+                    TreeNodeAndStreamDataLength marker = current.m_data;
+#endif //USE_NORMAL_LIST
+
                     index++;
                     bytesRight += marker.m_LocalStreamDataLength;
                     if (treeNode == marker.m_TreeNode || treeNode.IsDescendantOf(marker.m_TreeNode))
@@ -239,7 +260,14 @@ namespace Tobi.Plugin.AudioPane
                         return true;
                     }
                     bytesLeft = bytesRight;
+
+#if USE_NORMAL_LIST
                 }
+#else
+                    current = current.m_nextItem;
+                }
+#endif //USE_NORMAL_LIST
+
 
                 return false;
             }
@@ -252,8 +280,16 @@ namespace Tobi.Plugin.AudioPane
                 index = -1;
                 if (PlayStreamMarkers == null) return false;
 
+#if USE_NORMAL_LIST
                 foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
                 {
+#else
+                LightLinkedList<TreeNodeAndStreamDataLength>.Item current = PlayStreamMarkers.m_First;
+                while (current != null)
+                {
+                    TreeNodeAndStreamDataLength marker = current.m_data;
+#endif //USE_NORMAL_LIST
+
                     index++;
                     bytesRight += marker.m_LocalStreamDataLength;
                     if (byteOffset < bytesRight
@@ -264,7 +300,13 @@ namespace Tobi.Plugin.AudioPane
                         return true;
                     }
                     bytesLeft = bytesRight;
+
+#if USE_NORMAL_LIST
                 }
+#else
+                    current = current.m_nextItem;
+                }
+#endif //USE_NORMAL_LIST
 
                 return false;
             }
@@ -279,9 +321,17 @@ namespace Tobi.Plugin.AudioPane
                 long bytesRight = 0;
                 long bytesLeft = 0;
                 int index = -1;
-                
+
+#if USE_NORMAL_LIST
                 foreach (TreeNodeAndStreamDataLength marker in PlayStreamMarkers)
                 {
+#else
+                LightLinkedList<TreeNodeAndStreamDataLength>.Item current = PlayStreamMarkers.m_First;
+                while (current != null)
+                {
+                    TreeNodeAndStreamDataLength marker = current.m_data;
+#endif //USE_NORMAL_LIST
+
                     treeNode = marker.m_TreeNode;
 
                     index++;
@@ -290,18 +340,31 @@ namespace Tobi.Plugin.AudioPane
                     || index == (PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
                     {
                         long newMatch = matchFunc(bytesLeft, bytesRight, treeNode, index);
-                        if (newMatch == -1) break;
+                        if (newMatch == -1)
+                        {
+                            break;
+                        }
                         byteOffset = newMatch;
                     }
                     else
                     {
                         long newMatch = nonMatchFunc(byteOffset, bytesLeft, bytesRight, treeNode);
-                        if (newMatch == -1) break;
+                        if (newMatch == -1)
+                        {
+                            break;
+                        }
                         byteOffset = newMatch;
                     }
                     bytesLeft = bytesRight;
+
+#if USE_NORMAL_LIST
                 }
+#else
+                    current = current.m_nextItem;
+                }
+#endif //USE_NORMAL_LIST
             }
+
             //public bool IsTreeNodeShownInAudioWaveForm(TreeNode treeNode)
             //{
             //    if (treeNode == null)
@@ -442,7 +505,7 @@ namespace Tobi.Plugin.AudioPane
                 Selection = new SelectionStateData(m_notifier, vm);
             }
 
-            
+
             //// Main selected node. There are sub tree nodes when no audio is directly
             //// attached to this tree node.
             //// Automatically implies that FilePath is null

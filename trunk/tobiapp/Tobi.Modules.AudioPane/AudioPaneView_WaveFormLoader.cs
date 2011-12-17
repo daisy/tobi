@@ -16,6 +16,7 @@ using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common.UI;
 using urakawa.core;
+using urakawa.data;
 using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
@@ -1440,15 +1441,31 @@ namespace Tobi.Plugin.AudioPane
                 sgcMarkers.LineTo(new Point(0.5, heightMagnified), true, false);
 
                 long bytesLeft = 0;
-                foreach (TreeNodeAndStreamDataLength marker in m_ViewModel.State.Audio.PlayStreamMarkers)
+
+#if USE_NORMAL_LIST
+                foreach (TreeNodeAndStreamDataLength marker in  m_ViewModel.State.Audio.PlayStreamMarkers)
                 {
+#else
+                LightLinkedList<TreeNodeAndStreamDataLength>.Item current = m_ViewModel.State.Audio.PlayStreamMarkers.m_First;
+                while (current != null)
+                {
+                    TreeNodeAndStreamDataLength marker = current.m_data;
+#endif //USE_NORMAL_LIST
+
                     double pixels = (bytesLeft + marker.m_LocalStreamDataLength) / bytesPerPixel_Magnified;
 
                     sgcMarkers.BeginFigure(new Point(pixels, 0), false, false);
                     sgcMarkers.LineTo(new Point(pixels, heightMagnified), true, false);
 
                     bytesLeft += marker.m_LocalStreamDataLength;
+
+#if USE_NORMAL_LIST
                 }
+#else
+                    current = current.m_nextItem;
+                }
+#endif //USE_NORMAL_LIST
+
                 sgcMarkers.Close();
             }
 

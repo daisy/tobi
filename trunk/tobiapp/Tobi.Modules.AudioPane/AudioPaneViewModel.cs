@@ -76,7 +76,7 @@ namespace Tobi.Plugin.AudioPane
         private readonly IEventAggregator EventAggregator;
 
         private readonly IShellView m_ShellView;
-        
+
         internal readonly IUrakawaSession m_UrakawaSession;
         public IUrakawaSession UrakawaSession
         {
@@ -157,7 +157,14 @@ namespace Tobi.Plugin.AudioPane
                     Stopwatch stopWatch = Stopwatch.StartNew();
 
                     long totalLength = 0;
-                    StreamWithMarkers? sm = treeNodeSelection.Item1.OpenPcmInputStreamOfManagedAudioMediaFlattened(
+
+#if USE_NORMAL_LIST
+                StreamWithMarkers? 
+#else
+                    StreamWithMarkers
+#endif //USE_NORMAL_LIST
+ sm = treeNodeSelection.Item1.OpenPcmInputStreamOfManagedAudioMediaFlattened(
+
                         streamLength =>
                         {
                             totalLength += streamLength;
@@ -213,10 +220,23 @@ namespace Tobi.Plugin.AudioPane
                         //}
                         //else
                         //{
-                        State.Audio.SetPlayStream_FromTreeNode(sm.GetValueOrDefault().m_Stream);
-                        State.Audio.PlayStreamMarkers = sm.GetValueOrDefault().m_SubStreamMarkers;
 
-                        DebugFix.Assert(totalLength == sm.GetValueOrDefault().m_Stream.Length);
+                        State.Audio.SetPlayStream_FromTreeNode(sm.
+#if USE_NORMAL_LIST
+            GetValueOrDefault().
+#endif //USE_NORMAL_LIST
+m_Stream);
+                        State.Audio.PlayStreamMarkers = sm.
+#if USE_NORMAL_LIST
+            GetValueOrDefault().
+#endif //USE_NORMAL_LIST
+m_SubStreamMarkers;
+
+                        DebugFix.Assert(totalLength == sm.
+#if USE_NORMAL_LIST
+            GetValueOrDefault().
+#endif //USE_NORMAL_LIST
+m_Stream.Length);
                     }
 
                     //if (State.Audio.PlayStream == null)
