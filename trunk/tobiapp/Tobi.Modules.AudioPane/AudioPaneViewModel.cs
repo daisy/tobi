@@ -126,7 +126,10 @@ namespace Tobi.Plugin.AudioPane
                     }
                     try
                     {
-                        State.Audio.SetPlayStream_FromFile(File.Open(State.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read), State.FilePath);
+                        State.Audio.SetPlayStream_FromFile(
+                            File.Open(State.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read),
+                            File.Open(State.FilePath, FileMode.Open, FileAccess.Read, FileShare.Read),
+                            State.FilePath);
                     }
                     catch (Exception ex)
                     {
@@ -188,6 +191,7 @@ namespace Tobi.Plugin.AudioPane
                                 stopWatch.Start();
                             }
                         }
+                        , true
                         );
 
                     stopWatch.Stop();
@@ -225,7 +229,13 @@ namespace Tobi.Plugin.AudioPane
 #if USE_NORMAL_LIST
             GetValueOrDefault().
 #endif //USE_NORMAL_LIST
-m_Stream);
+m_Stream,
+sm.
+#if USE_NORMAL_LIST
+            GetValueOrDefault().
+#endif //USE_NORMAL_LIST
+m_SecondaryStream
+);
                         State.Audio.PlayStreamMarkers = sm.
 #if USE_NORMAL_LIST
             GetValueOrDefault().
