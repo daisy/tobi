@@ -1207,6 +1207,8 @@ m_Stream.Length);
                 return byteOffset;
             }
 
+#if ENABLE_SEQ_MEDIA
+
             SequenceMedia seqManAudioMedia = treeNode.GetManagedAudioSequenceMedia();
             if (seqManAudioMedia != null)
             {
@@ -1222,6 +1224,8 @@ m_Stream.Length);
                     byteOffset += manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(manMedia.Duration.AsLocalUnits);
                 }
             }
+            
+#endif //ENABLE_SEQ_MEDIA
 
             return byteOffset;
         }
