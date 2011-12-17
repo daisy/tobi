@@ -1260,6 +1260,11 @@ namespace Tobi.Plugin.Descriptions
                 AudioMediaData audioData1 = presentation.MediaDataFactory.CreateAudioMediaData();
                 audio1.AudioMediaData = audioData1;
 
+                // WARNING: WavAudioMediaData implementation differs from AudioMediaData:
+                // the latter is naive and performs a stream binary copy, the latter is optimized and re-uses existing WavClips. 
+                //  WARNING 2: The audio data from the given parameter gets emptied !
+                //audio1.AudioMediaData.MergeWith(manMedia.AudioMediaData);
+
                 if (!audio1.AudioMediaData.PCMFormat.Data.IsCompatibleWith(altContent.Audio.AudioMediaData.PCMFormat.Data))
                 {
                     throw new InvalidDataFormatException(

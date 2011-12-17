@@ -56,7 +56,9 @@ namespace Tobi.Plugin.AudioPane
 
                       PlaybackRate = PLAYBACK_RATE_MIN;
                   },
-                  () => !IsWaveFormLoading,
+                  () => true
+                //&& !IsWaveFormLoading
+                      ,
                    Settings_KeyGestures.Default,
                    PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlaybackRateReset));
 
@@ -79,7 +81,9 @@ namespace Tobi.Plugin.AudioPane
                        Debug.Fail("This should never happen !");
                    }
                },
-               () => !IsWaveFormLoading && (PlaybackRate - PLAYBACK_RATE_STEP) >= PLAYBACK_RATE_MIN,
+               () => (PlaybackRate - PLAYBACK_RATE_STEP) >= PLAYBACK_RATE_MIN
+                //&& !IsWaveFormLoading 
+               ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlaybackRateDown));
 
@@ -102,7 +106,9 @@ namespace Tobi.Plugin.AudioPane
                        Debug.Fail("This should never happen !");
                    }
                },
-               () => !IsWaveFormLoading && (PlaybackRate + PLAYBACK_RATE_STEP) <= PLAYBACK_RATE_MAX,
+               () => (PlaybackRate + PLAYBACK_RATE_STEP) <= PLAYBACK_RATE_MAX
+                //&& !IsWaveFormLoading 
+               ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlaybackRateUp));
 
@@ -128,7 +134,9 @@ namespace Tobi.Plugin.AudioPane
 
                    IsAutoPlay = !IsAutoPlay;
                },
-               () => !IsWaveFormLoading,
+               () => true
+                //&& !IsWaveFormLoading
+                   ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_AutoPlay));
 
@@ -157,7 +165,9 @@ namespace Tobi.Plugin.AudioPane
                         EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackStopped);
                     }
                 },
-                () => !IsWaveFormLoading && State.Audio.HasContent && IsPlaying,
+                () => State.Audio.HasContent && IsPlaying
+                //&& !IsWaveFormLoading 
+                ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPause));
 
@@ -213,7 +223,9 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
                 },
-                () => !IsWaveFormLoading && State.Audio.HasContent && !IsPlaying && !IsMonitoring && !IsRecording,
+                () => State.Audio.HasContent && !IsPlaying && !IsMonitoring && !IsRecording
+                //&& !IsWaveFormLoading 
+                ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPause));
 
@@ -943,6 +955,10 @@ namespace Tobi.Plugin.AudioPane
             {
                 State.Audio.PlayStream.Close();
             }
+            if (State.Audio.SecondaryAudioStream != null)
+            {
+                State.Audio.SecondaryAudioStream.Close();
+            }
             State.Audio.ResetAll();
         }
 
@@ -1013,9 +1029,10 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        public Stream AudioPlayer_GetPlayStream()
+        public Stream AudioPlayer_GetWaveformAudioStream()
         {
-            return m_CurrentAudioStreamProvider(); // m_PlayStream;
+            m_CurrentAudioStreamProvider(); // make sure it's initialized
+            return State.Audio.SecondaryAudioStream ?? State.Audio.PlayStream;
         }
 
         /*
@@ -1086,6 +1103,14 @@ namespace Tobi.Plugin.AudioPane
                     {
                         nextNode = nextNode.GetNextSiblingWithManagedAudio();
                         goto next;
+                    }
+
+                    if (IsWaveFormLoading)
+                    {
+                        if (View != null)
+                        {
+                            View.CancelWaveFormLoad(true);
+                        }
                     }
 
                     //Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnAudioPlaybackFinished", Category.Debug, Priority.Medium);

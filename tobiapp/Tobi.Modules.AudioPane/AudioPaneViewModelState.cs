@@ -39,7 +39,7 @@ namespace Tobi.Plugin.AudioPane
             }
 
 
-            public void SetPlayStream_FromTreeNode(Stream stream)
+            private Stream SetPlayStream_FromTreeNode_OPEN(Stream stream)
             {
                 if (stream != null)
                 {
@@ -68,10 +68,21 @@ namespace Tobi.Plugin.AudioPane
                     EndOffsetOfPlayStream = DataLength;
                 }
 
-                PlayStream = stream;
+                return stream;
             }
 
-            public void SetPlayStream_FromFile(FileStream fileStream, string filePathOptionalInfo)
+            public void SetPlayStream_FromTreeNode(
+                Stream stream,
+                Stream secondaryStream
+                )
+            {
+                PlayStream = SetPlayStream_FromTreeNode_OPEN(stream);
+                m_SecondaryAudioStream = SetPlayStream_FromTreeNode_OPEN(secondaryStream);
+            }
+
+            private Stream SetPlayStream_FromFile_OPEN(
+                FileStream fileStream,
+                string filePathOptionalInfo)
             {
                 Stream stream = fileStream;
 
@@ -95,7 +106,16 @@ namespace Tobi.Plugin.AudioPane
                     EndOffsetOfPlayStream = DataLength;
                 }
 
-                PlayStream = stream;
+                return stream;
+            }
+
+            public void SetPlayStream_FromFile(
+                FileStream fileStream,
+                FileStream secondaryFileStream,
+                string filePathOptionalInfo)
+            {
+                PlayStream = SetPlayStream_FromFile_OPEN(fileStream, filePathOptionalInfo);
+                m_SecondaryAudioStream = SetPlayStream_FromFile_OPEN(secondaryFileStream, filePathOptionalInfo);
             }
 
             // The single stream of contiguous PCM data,
@@ -113,6 +133,12 @@ namespace Tobi.Plugin.AudioPane
                     m_PlayStream = value;
                     m_notifier.RaisePropertyChanged(() => PlayStream);
                 }
+            }
+
+            private Stream m_SecondaryAudioStream;
+            public Stream SecondaryAudioStream
+            {
+                get { return m_SecondaryAudioStream; }
             }
 
             // The total byte length of the stream of audio PCM data.
@@ -225,6 +251,7 @@ namespace Tobi.Plugin.AudioPane
 
             public void ResetAll()
             {
+                m_SecondaryAudioStream = null;
                 PlayStream = null; // must be first because NotifyPropertyChange chain-reacts for DataLength (TimeString data binding) 
 
                 EndOffsetOfPlayStream = -1;

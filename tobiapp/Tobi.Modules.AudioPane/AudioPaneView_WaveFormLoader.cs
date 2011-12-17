@@ -462,7 +462,7 @@ namespace Tobi.Plugin.AudioPane
             const int tolerance = 5;
             try
             {
-                Stream audioStream = m_ViewModel.AudioPlayer_GetPlayStream();
+                Stream audioStream = m_ViewModel.AudioPlayer_GetWaveformAudioStream();
 
                 if (m_CancelRequested) return;
 
@@ -823,7 +823,9 @@ namespace Tobi.Plugin.AudioPane
                     stopWatch.Stop();
                     if (stopWatch.ElapsedMilliseconds >= 1000)
                     {
-                        drawWaveForm(audioStream, false,
+                        drawWaveForm(
+                            //audioStream,
+                            false,
                             sgcCh1, sgcCh2, geometryCh1, geometryCh2,
                             listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
                             heightMagnified, widthMagnified,
@@ -880,7 +882,9 @@ namespace Tobi.Plugin.AudioPane
 
                 if (m_CancelRequested && m_CancelInterruptDrawingToo) return;
 
-                drawWaveForm(audioStream, true,
+                drawWaveForm(
+                    //audioStream,
+                    true,
                     sgcCh1, sgcCh2, geometryCh1, geometryCh2,
                     listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
                     heightMagnified, widthMagnified,
@@ -893,11 +897,15 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private void drawWaveForm(Stream audioStream, bool freeze, StreamGeometryContext sgcCh1, StreamGeometryContext sgcCh2, StreamGeometry geometryCh1, StreamGeometry geometryCh2, List<Point> listBottomPointsCh1, List<Point> listBottomPointsCh2, List<Point> listTopPointsCh1, List<Point> listTopPointsCh2, double heightMagnified, double widthMagnified, double dBMinHardCoded, double dBMinReached, double dBMaxReached, double decibelDrawDelta, int tolerance, double bytesPerPixel_Magnified, double zoom)
+        private void drawWaveForm(
+            //Stream audioStream,
+            bool freeze, StreamGeometryContext sgcCh1, StreamGeometryContext sgcCh2, StreamGeometry geometryCh1, StreamGeometry geometryCh2, List<Point> listBottomPointsCh1, List<Point> listBottomPointsCh2, List<Point> listTopPointsCh1, List<Point> listTopPointsCh2, double heightMagnified, double widthMagnified, double dBMinHardCoded, double dBMinReached, double dBMaxReached, double decibelDrawDelta, int tolerance, double bytesPerPixel_Magnified, double zoom)
         {
             //Console.WriteLine(@"Drawing waveform...1");
 
-            DrawingGroup drawGrp = drawWaveFormUsingCollectedPoints(audioStream, freeze,
+            DrawingGroup drawGrp = drawWaveFormUsingCollectedPoints(
+                //audioStream,
+                freeze,
                 sgcCh1, sgcCh2, geometryCh1, geometryCh2,
                 listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
                 heightMagnified, widthMagnified,
@@ -1112,7 +1120,9 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        private DrawingGroup drawWaveFormUsingCollectedPoints(Stream audioStream, bool freeze,
+        private DrawingGroup drawWaveFormUsingCollectedPoints(
+            //Stream audioStream,
+            bool freeze,
             StreamGeometryContext sgcCh1, StreamGeometryContext sgcCh2,
             StreamGeometry geometryCh1, StreamGeometry geometryCh2,
             List<Point> listBottomPointsCh1, List<Point> listBottomPointsCh2, List<Point> listTopPointsCh1, List<Point> listTopPointsCh2,

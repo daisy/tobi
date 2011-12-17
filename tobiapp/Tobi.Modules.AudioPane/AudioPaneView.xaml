@@ -423,11 +423,14 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                   VerticalAlignment="Stretch"
                   ScrollChanged="OnWaveFormScrollChanged"
                   
-            IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}"
-      
       Background="{StaticResource NormalBrush}"
       >
-
+      <!--
+      
+            IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}"
+      
+      -->
+      
       <!-- Background="{Binding Converter={XAML:ColorToBrushConverter}, Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}" -->
       <!--SizeChanged="OnWaveFormCanvasSizeChanged"-->
       <Canvas x:Name="WaveFormCanvas"
