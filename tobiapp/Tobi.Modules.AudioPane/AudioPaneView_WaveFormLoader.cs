@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common.UI;
+using Tobi.Common.UI.XAML;
 using urakawa.core;
 using urakawa.data;
 using urakawa.media.timing;
@@ -573,7 +574,7 @@ namespace Tobi.Plugin.AudioPane
 
             long totalRead = onlyLoadVisibleScroll ? nBytesScrollOffset : 0;
 
-            double x = 1; // initial pixel offset
+            double x = 0; // initial pixel offset
             x += (totalRead / bytesPerPixel_Magnified); //ViewModel.WaveStepX;
 
             const int tolerance = 5;
@@ -670,8 +671,14 @@ namespace Tobi.Plugin.AudioPane
                 {
                     totalRead += read;
 
+                    double currentRightXLimit = -1;
+                    if (currentImageTile != null)
+                    {
+                        currentRightXLimit = zoom * (currentImageTile.m_data.m_originalX + currentImageTile.m_data.m_originalW);
+                    }
+
                     if (currentImageTile == null
-                        || totalRead > BytesPerPixel * (currentImageTile.m_data.m_originalX + currentImageTile.m_data.m_originalW)
+                        || x >= currentRightXLimit
                          || read == 0)
                     {
                         //draw current
@@ -679,6 +686,38 @@ namespace Tobi.Plugin.AudioPane
                         if (currentImageTile != null)
                         {
                             if (m_CancelRequested && m_CancelInterruptDrawingToo) return;
+
+                            //adjust tile size
+
+                            double overflow = x - currentRightXLimit;
+                            if (overflow > 0)
+                            {
+                                Action deleg = () =>
+                                {
+                                    currentImageTile.m_data.m_originalW += overflow;
+                                    currentImageTile.m_data.m_image.Width += overflow;
+
+                                    if (currentImageTile.m_nextItem != null)
+                                    {
+                                        currentImageTile.m_nextItem.m_data.m_originalW -= overflow;
+                                        currentImageTile.m_nextItem.m_data.m_image.Width -= overflow;
+
+                                        currentImageTile.m_nextItem.m_data.m_originalX += overflow;
+
+                                        double left = (double)currentImageTile.m_nextItem.m_data.m_image.GetValue(Canvas.LeftProperty);
+                                        currentImageTile.m_nextItem.m_data.m_image.SetValue(Canvas.LeftProperty, left + overflow);
+                                    }
+                                };
+
+                                if (!Dispatcher.CheckAccess())
+                                {
+                                    Dispatcher.Invoke(DispatcherPriority.Normal, deleg);
+                                }
+                                else
+                                {
+                                    deleg.Invoke();
+                                }
+                            }
 
                             drawWaveForm(
                                 currentImageTile.m_data,
@@ -961,23 +1000,25 @@ namespace Tobi.Plugin.AudioPane
                             }
                         }
 
+                        double xTile = x - zoom * currentImageTile.m_data.m_originalX;
+
                         if (channel == 0)
                         {
                             if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
                                 && listTopPointsCh1 != null)
                             {
-                                listTopPointsCh1.Add(new Point(x, y1));
+                                listTopPointsCh1.Add(new Point(xTile, y1));
                             }
                             if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
                             {
                                 if (firstY1)
                                 {
-                                    sgcCh1.BeginFigure(new Point(x, y1), false, false);
+                                    sgcCh1.BeginFigure(new Point(xTile, y1), false, false);
                                     firstY1 = false;
                                 }
                                 else
                                 {
-                                    sgcCh1.LineTo(new Point(x, y1), bJoinInterSamples, false);
+                                    sgcCh1.LineTo(new Point(xTile, y1), bJoinInterSamples, false);
                                 }
                             }
                         }
@@ -987,18 +1028,18 @@ namespace Tobi.Plugin.AudioPane
                             if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
                                 && listTopPointsCh2 != null)
                             {
-                                listTopPointsCh2.Add(new Point(x, y1));
+                                listTopPointsCh2.Add(new Point(xTile, y1));
                             }
                             if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
                             {
                                 if (firstY1_)
                                 {
-                                    sgcCh2.BeginFigure(new Point(x, y1), false, false);
+                                    sgcCh2.BeginFigure(new Point(xTile, y1), false, false);
                                     firstY1_ = false;
                                 }
                                 else
                                 {
-                                    sgcCh2.LineTo(new Point(x, y1), bJoinInterSamples, false);
+                                    sgcCh2.LineTo(new Point(xTile, y1), bJoinInterSamples, false);
                                 }
                             }
                         }
@@ -1007,12 +1048,12 @@ namespace Tobi.Plugin.AudioPane
                         {
                             if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
                             {
-                                sgcCh1.LineTo(new Point(x, y2), true, false);
+                                sgcCh1.LineTo(new Point(xTile, y2), true, false);
                             }
                             if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
                                 && listBottomPointsCh1 != null)
                             {
-                                listBottomPointsCh1.Add(new Point(x, y2));
+                                listBottomPointsCh1.Add(new Point(xTile, y2));
                             }
                         }
                         else if (sgcCh2 != null)
@@ -1021,12 +1062,12 @@ namespace Tobi.Plugin.AudioPane
 
                             if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
                             {
-                                sgcCh2.LineTo(new Point(x, y2), true, false);
+                                sgcCh2.LineTo(new Point(xTile, y2), true, false);
                             }
                             if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
                                 && listBottomPointsCh2 != null)
                             {
-                                listBottomPointsCh2.Add(new Point(x, y2));
+                                listBottomPointsCh2.Add(new Point(xTile, y2));
                             }
                         }
                     }
@@ -1076,7 +1117,7 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     x += (read / bytesPerPixel_Magnified); //ViewModel.WaveStepX;
-                    DebugFix.Assert(x <= widthMagnified+3*zoom);
+                    DebugFix.Assert(x <= widthMagnified + 3 * zoom); // 3px tolerance, to avoid false positives due to rounding imprecisions
 
                     if (
                         //x > widthMagnified ||
@@ -1370,8 +1411,8 @@ namespace Tobi.Plugin.AudioPane
             double bytesPerPixel_Magnified, double zoom
             )
         {
-            Brush brushColorBars = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Stroke); //m_ViewModel.ColorWaveBars);
-            brushColorBars.Freeze();
+            Brush brushColorBars = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Stroke); //m_ViewModel.ColorWaveBars);
+            //brushColorBars.Freeze();
 
             GeometryDrawing geoDraw1 = null;
             GeometryDrawing geoDraw2 = null;
@@ -1579,7 +1620,7 @@ namespace Tobi.Plugin.AudioPane
             CultureInfo m_culture = CultureInfo.GetCultureInfo("en-us");
             var m_typeFace = new Typeface("Helvetica");
 
-            var m_timeTextBrush = new SolidColorBrush(m_ViewModel.ColorPlayhead);
+            var m_timeTextBrush = ColorBrushCache.Get(m_ViewModel.ColorPlayhead);
             m_timeTextBrush.Freeze();
 
             var formattedText = new FormattedText(
@@ -1657,7 +1698,7 @@ namespace Tobi.Plugin.AudioPane
 
             geometrySubStreams.Freeze();
 
-            Brush brushColorSubStreams = new SolidColorBrush(m_ViewModel.ColorPlayhead);
+            Brush brushColorSubStreams = ColorBrushCache.Get(m_ViewModel.ColorPlayhead);
             brushColorSubStreams.Freeze();
 
             GeometryGroup geoGroup = new GeometryGroup();
@@ -1678,8 +1719,8 @@ namespace Tobi.Plugin.AudioPane
 #endif
         private GeometryDrawing createGeometry_Markers(double heightMagnified, double bytesPerPixel_Magnified)
         {
-            Brush brushColorMarkers = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Phrases); //m_ViewModel.ColorMarkers);
-            brushColorMarkers.Freeze();
+            Brush brushColorMarkers = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Phrases); //m_ViewModel.ColorMarkers);
+            //brushColorMarkers.Freeze();
 
             var geometryMarkers = new StreamGeometry();
             using (StreamGeometryContext sgcMarkers = geometryMarkers.Open())
@@ -1725,6 +1766,9 @@ namespace Tobi.Plugin.AudioPane
             return geoDrawMarkers;
         }
 
+#if DEBUG
+        private bool m_backHackToggle = true;
+#endif //DEBUG
         private GeometryDrawing createGeometry_Back(double heightMagnified, double widthMagnified)
         {
             var geometryBack = new StreamGeometry();
@@ -1738,8 +1782,24 @@ namespace Tobi.Plugin.AudioPane
             }
             geometryBack.Freeze();
 
-            Brush brushColorBack = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back); //m_ViewModel.ColorWaveBackground);
-            brushColorBack.Freeze();
+
+#if DEBUG
+            m_backHackToggle = !m_backHackToggle;
+#endif //DEBUG
+
+
+            Brush brushColorBack = ColorBrushCache.Get(
+                
+#if DEBUG
+                m_backHackToggle?
+                Settings.Default.AudioWaveForm_Color_Back
+                : Settings.Default.AudioWaveForm_Color_CursorFill
+#else
+                Settings.Default.AudioWaveForm_Color_Back
+#endif //DEBUG
+
+); //m_ViewModel.ColorWaveBackground);
+            //brushColorBack.Freeze();
 
             var geoDrawBack = new GeometryDrawing(brushColorBack, null, geometryBack); //new Pen(brushColorBack, 1.0)
             geoDrawBack.Freeze();
@@ -2142,11 +2202,11 @@ namespace Tobi.Plugin.AudioPane
                 sgcCh2_envelope.Close();
             }
 
-            Brush brushColorEnvelopeOutline = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Border); //m_ViewModel.ColorEnvelopeOutline);
-            brushColorEnvelopeOutline.Freeze();
+            Brush brushColorEnvelopeOutline = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Border); //m_ViewModel.ColorEnvelopeOutline);
+            //brushColorEnvelopeOutline.Freeze();
 
-            Brush brushColorEnvelopeFill = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Fill); //m_ViewModel.ColorEnvelopeFill);
-            brushColorEnvelopeFill.Freeze();
+            Brush brushColorEnvelopeFill = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Fill); //m_ViewModel.ColorEnvelopeFill);
+            //brushColorEnvelopeFill.Freeze();
 
             geometryCh1_envelope.Freeze();
             geoDraw1_envelope = new GeometryDrawing(brushColorEnvelopeFill, new Pen(brushColorEnvelopeOutline, 1.0), geometryCh1_envelope);

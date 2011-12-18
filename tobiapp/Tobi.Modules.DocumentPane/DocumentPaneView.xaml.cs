@@ -134,8 +134,8 @@ namespace Tobi.Plugin.DocumentPane
                     ;// default below
                 }
             }
-            var scb = new SolidColorBrush((Color)value);
-            return scb;
+            //var scb = new SolidColorBrush((Color)value);
+            return ColorBrushCache.Get((Color)value);
         }
 
         #endregion
@@ -458,8 +458,9 @@ namespace Tobi.Plugin.DocumentPane
                     return;
                 }
 
-                var brush = GetCachedBrushForColor(Common.Settings.Default.SearchHits_Color);
+                var brush = ColorBrushCache.Get(Common.Settings.Default.SearchHits_Color).Clone();
                 brush.Opacity = .5;
+                brush.Freeze();
                 //var brush = new SolidColorBrush(Common.Settings.Default.SearchHits_Color) { Opacity = .5 };
 
                 foreach (var textRange in m_SearchMatches)
@@ -1521,7 +1522,7 @@ namespace Tobi.Plugin.DocumentPane
         {
             if (m_TextOnlyViewRun != null)
             {
-                m_TextOnlyViewRun.Foreground = GetCachedBrushForColor(Settings.Default.Document_Color_Font_TextOnly);
+                m_TextOnlyViewRun.Foreground = ColorBrushCache.Get(Settings.Default.Document_Color_Font_TextOnly);
             }
         }
 
@@ -2373,46 +2374,6 @@ namespace Tobi.Plugin.DocumentPane
             Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => FlowDocReader.ScrollViewer.ScrollToVerticalOffset(offset)));
         }
 
-        private Dictionary<String, SolidColorBrush> m_SolidColorBrushCache;
-        public SolidColorBrush GetCachedBrushForColor(Color color)
-        {
-            if (m_SolidColorBrushCache == null)
-            {
-                m_SolidColorBrushCache = new Dictionary<String, SolidColorBrush>();
-            }
-
-            string colorString = color.ToString();
-
-            SolidColorBrush obj;
-            m_SolidColorBrushCache.TryGetValue(colorString, out obj);
-
-            if (obj == null) //!m_SolidColorBrushCache.ContainsKey(colorString))
-            {
-                bool found = false;
-                foreach (PropertyInfo propertyInfo in typeof(Brushes).GetProperties(BindingFlags.Public | BindingFlags.Static))
-                {
-                    if (propertyInfo.PropertyType == typeof(SolidColorBrush))
-                    {
-                        var brush = (SolidColorBrush)propertyInfo.GetValue(null, null);
-                        if (brush.Color.ToString() == colorString)
-                        {
-                            found = true;
-                            obj = brush;
-                            m_SolidColorBrushCache.Add(colorString, obj);
-                            break;
-                        }
-                    }
-                }
-                if (!found)
-                {
-                    obj = new SolidColorBrush(color);
-                    m_SolidColorBrushCache.Add(colorString, obj);
-                }
-            }
-
-            return obj; // m_SolidColorBrushCache[colorString];
-        }
-
         //public static TextPointer AlignTextPointer(TextPointer start, int x)
         //{
         //    var ret = start;
@@ -2514,9 +2475,9 @@ namespace Tobi.Plugin.DocumentPane
 
         private void doLastHighlightedOnly(TextElement textElement, bool onlyUpdateColors)
         {
-            Brush brushFont = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Font);
-            Brush brushBorder = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Border);
-            Brush brushBack2 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back2);
+            Brush brushFont = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_Font);
+            Brush brushBorder = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_Border);
+            Brush brushBack2 = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_Back2);
 
             if (!onlyUpdateColors)
             {
@@ -2609,10 +2570,10 @@ namespace Tobi.Plugin.DocumentPane
 
         private void doLastHighlightedAndSub(TextElement textElement1, TextElement textElement2, bool onlyUpdateColors)
         {
-            Brush brushFont = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Font);
-            Brush brushBorder = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Border);
-            Brush brushBack1 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
-            Brush brushBack2 = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back2);
+            Brush brushFont = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_Font);
+            Brush brushBorder = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_Border);
+            Brush brushBack1 = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_Back1);
+            Brush brushBack2 = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_Back2);
 
             if (!onlyUpdateColors)
             {
@@ -2754,8 +2715,8 @@ namespace Tobi.Plugin.DocumentPane
             string txt1 = textRange.Text;
 #endif //DEBUG
 
-            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio));
-            textRange.ApplyPropertyValue(TextElement.BackgroundProperty, GetCachedBrushForColor(Settings.Default.Document_Back));
+            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio));
+            textRange.ApplyPropertyValue(TextElement.BackgroundProperty, ColorBrushCache.Get(Settings.Default.Document_Back));
 #if DEBUG
             var textRange2 = new TextRange(m_lastHighlighted.ContentStart, m_lastHighlighted.ContentEnd);
             string txt2 = textRange2.Text;
@@ -2958,7 +2919,7 @@ namespace Tobi.Plugin.DocumentPane
             //                 {
             //                     m_MouseOverTextElementBackground = data.Background;
 
-            //                     data.Background = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_Back1);
+            //                     data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_Back1);
             //                 });
 
             setOrRemoveTextDecoration_SelectUnderline(m_MouseOverTextElement, false, true);
@@ -3447,7 +3408,7 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            Brush brush = GetCachedBrushForColor(Settings.Default.Document_Color_Selection_UnderOverLine);
+            Brush brush = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_UnderOverLine);
 
             var decUnder = new TextDecoration(
                 TextDecorationLocation.Underline,

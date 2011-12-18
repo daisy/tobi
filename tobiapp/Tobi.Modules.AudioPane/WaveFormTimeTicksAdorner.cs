@@ -5,6 +5,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using AudioLib;
+using Tobi.Common.UI.XAML;
 using urakawa.core;
 using urakawa.data;
 using urakawa.media.timing;
@@ -46,14 +47,14 @@ namespace Tobi.Plugin.AudioPane
 
         public void ResetBrushes()
         {
-            m_renderBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back); // { Opacity = 0.8 };
-            m_renderBrush.Freeze();
+            m_renderBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Back); // { Opacity = 0.8 };
+            //m_renderBrush.Freeze();
 
-            m_phraseBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Phrases); //m_AudioPaneViewModel.ColorMarkers);
-            m_phraseBrush.Freeze();
+            m_phraseBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Phrases); //m_AudioPaneViewModel.ColorMarkers);
+            //m_phraseBrush.Freeze();
 
-            m_timeTextBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_TimeText);//m_AudioPaneViewModel.ColorTimeInfoText
-            m_timeTextBrush.Freeze();
+            m_timeTextBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_TimeText);//m_AudioPaneViewModel.ColorTimeInfoText
+            //m_timeTextBrush.Freeze();
 
             m_penTick = new Pen(m_timeTextBrush, 1);
             m_penTick.Freeze();
@@ -116,7 +117,7 @@ namespace Tobi.Plugin.AudioPane
             drawMouseOver(drawingContext, hoffset, heightAvailable, widthAvailable);
         }
 
-        /* var brush = new SolidColorBrush(Colors.Red) { Opacity = 0.0 };
+        /* var brush = ColorBrushCache.Get(Colors.Red) { Opacity = 0.0 };
         drawingContext.DrawRectangle(brush, null,
                                          new Rect(new Point(0, 0),
                                                   new Size(widthAvailable,

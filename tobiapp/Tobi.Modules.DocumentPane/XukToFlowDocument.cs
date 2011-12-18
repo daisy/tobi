@@ -15,6 +15,7 @@ using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.UI;
+using Tobi.Common.UI.XAML;
 using urakawa.core;
 using urakawa.data;
 using urakawa.exception;
@@ -298,13 +299,13 @@ namespace Tobi.Plugin.DocumentPane
 
             if (data is Block)
             {
-                ((Block)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Colors.Transparent);
+                ((Block)data).BorderBrush = ColorBrushCache.Get(Colors.Transparent);
                 //((Block)data).BorderBrush = null;
             }
 
             if (data.Tag == null || !(data.Tag is TreeNode))
             {
-                //data.Foreground = null; // m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                //data.Foreground = null; // m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
                 return;
             }
 
@@ -313,19 +314,19 @@ namespace Tobi.Plugin.DocumentPane
             if (qName == null) return;
             if (qName.LocalName == "pagenum")
             {
-                data.Background = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
+                data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_PageNum_Back);
             }
             else if (qName.LocalName == "a" || qName.LocalName == "anchor"
                 || qName.LocalName == "annoref" || qName.LocalName == "noteref")
             {
-                data.Background = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
+                data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_Hyperlink_Back);
             }
             else if (qName.LocalName == "th" || qName.LocalName == "td")
             {
                 DebugFix.Assert(data is TableCell);
                 if (data is TableCell)
                 {
-                    ((TableCell)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                    ((TableCell)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
                 }
             }
             else if (qName.LocalName == "sidebar")
@@ -333,7 +334,7 @@ namespace Tobi.Plugin.DocumentPane
                 DebugFix.Assert(data is Section);
                 if (data is Section)
                 {
-                    ((Section)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                    ((Section)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
                 }
             }
             else if (qName.LocalName == "imggroup"
@@ -350,7 +351,7 @@ namespace Tobi.Plugin.DocumentPane
                 DebugFix.Assert(data is Block);
                 if (data is Block)
                 {
-                    ((Block)data).BorderBrush = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                    ((Block)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
                 }
             }
         }
@@ -374,8 +375,8 @@ namespace Tobi.Plugin.DocumentPane
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
 
-            //Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
-            ////Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
+            //Brush brushBack = m_ColorBrushCache.Get(Settings.Default.Document_Color_PageNum_Back);
+            ////Brush brushFont = m_ColorBrushCache.Get(Settings.Default.Document_Color_PageNum_Font);
 
             //data.Background = brushBack;
             ////data.Foreground = brushFont;
@@ -402,8 +403,8 @@ namespace Tobi.Plugin.DocumentPane
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
 
-            //Brush brushBack = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Back);
-            ////Brush brushFont = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_PageNum_Font);
+            //Brush brushBack = m_ColorBrushCache.Get(Settings.Default.Document_Color_PageNum_Back);
+            ////Brush brushFont = m_ColorBrushCache.Get(Settings.Default.Document_Color_PageNum_Font);
 
             //data.Background = brushBack;
             ////data.Foreground = brushFont;
@@ -541,7 +542,7 @@ namespace Tobi.Plugin.DocumentPane
                     m_totalAudioDuration.Add(media.Duration);
                 }
 
-                Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                Brush brushFontAudio = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
 
                 data.Foreground = brushFontAudio;
                 //data.Cursor = Cursors.Hand;
@@ -556,7 +557,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
 
-                Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                Brush brushFontAudio = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
 
                 data.Foreground = brushFontAudio;
                 data.Cursor = Cursors.Cross;
@@ -569,7 +570,7 @@ namespace Tobi.Plugin.DocumentPane
             TreeNode ancerstor = node.GetFirstAncestorWithManagedAudio();
             if (ancerstor != null)
             {
-                Brush brushFontAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                Brush brushFontAudio = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
 
                 data.Foreground = brushFontAudio;
                 //data.Cursor = Cursors.SizeAll;
@@ -579,7 +580,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (bTreeNodeNeedsAudio(node))
             {
-                Brush brushFontNoAudio = documentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                Brush brushFontNoAudio = ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
 
                 data.Foreground = brushFontNoAudio;
                 //data.Cursor = Cursors.Pen;
@@ -619,7 +620,7 @@ namespace Tobi.Plugin.DocumentPane
             if (data is Block)
             {
                 ((Block)data).BorderThickness = new Thickness(1.0);
-                ((Block)data).BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Colors.Transparent);
+                ((Block)data).BorderBrush = ColorBrushCache.Get(Colors.Transparent);
             }
 
             SetForegroundColorAndCursorBasedOnTreeNodeTag(data, true);
@@ -656,7 +657,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 data.BorderThickness = new Thickness(1.0);
 
-                //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_Audio);
+                //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
 #if DEBUG
                 DebugFix.Assert(data.Tag != null);
                 DebugFix.Assert(data.Tag is TreeNode);
@@ -880,7 +881,7 @@ namespace Tobi.Plugin.DocumentPane
 
             data.BorderThickness = new Thickness(1.0);
 
-            //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+            //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
             DebugFix.Assert(data.Tag != null);
             DebugFix.Assert(data.Tag is TreeNode);
@@ -1149,7 +1150,7 @@ namespace Tobi.Plugin.DocumentPane
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
-            //data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
+            //data.Background = m_ColorBrushCache.Get(Settings.Default.Document_Color_Hyperlink_Back);
             ////data.Foreground = Brushes.Blue;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
@@ -1240,7 +1241,7 @@ namespace Tobi.Plugin.DocumentPane
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
-            //data.Background = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Hyperlink_Back);
+            //data.Background = m_ColorBrushCache.Get(Settings.Default.Document_Color_Hyperlink_Back);
             ////data.Foreground = Brushes.Blue;
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
@@ -1757,7 +1758,7 @@ namespace Tobi.Plugin.DocumentPane
                                     data.Padding = new Thickness(2.0);
                                     data.Margin = new Thickness(4.0);
 
-                                    //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                                    //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
                                     DebugFix.Assert(data.Tag != null);
                                     DebugFix.Assert(data.Tag is TreeNode);
@@ -1782,7 +1783,7 @@ namespace Tobi.Plugin.DocumentPane
                                     data.Padding = new Thickness(2.0);
                                     data.FontSize = m_FlowDoc.FontSize / 1.2;
 
-                                    //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                                    //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
                                     DebugFix.Assert(data.Tag != null);
                                     DebugFix.Assert(data.Tag is TreeNode);
@@ -1830,7 +1831,7 @@ namespace Tobi.Plugin.DocumentPane
                                      data.TextAlignment = TextAlignment.Center;
                                      //data.Foreground = Brushes.DarkGreen;
 
-                                     //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                                     //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
                                      DebugFix.Assert(data.Tag != null);
                                      DebugFix.Assert(data.Tag is TreeNode);
@@ -1892,7 +1893,7 @@ namespace Tobi.Plugin.DocumentPane
                                     data.FontWeight = FontWeights.Heavy;
                                     //data.Foreground = Brushes.Navy;
 
-                                    //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                                    //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
                                     DebugFix.Assert(data.Tag != null);
                                     DebugFix.Assert(data.Tag is TreeNode);
@@ -1945,7 +1946,7 @@ namespace Tobi.Plugin.DocumentPane
                                     data.BorderThickness = new Thickness(0.5);
                                     data.Padding = new Thickness(2.0);
 
-                                    //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                                    //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
                                     DebugFix.Assert(data.Tag != null);
                                     DebugFix.Assert(data.Tag is TreeNode);
@@ -1966,7 +1967,7 @@ namespace Tobi.Plugin.DocumentPane
                                     data.BorderThickness = new Thickness(2.0);
                                     data.Padding = new Thickness(2.0);
 
-                                    //data.BorderBrush = m_DocumentPaneView.GetCachedBrushForColor(Settings.Default.Document_Color_Font_NoAudio);
+                                    //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
 #if DEBUG
                                     DebugFix.Assert(data.Tag != null);
                                     DebugFix.Assert(data.Tag is TreeNode);
