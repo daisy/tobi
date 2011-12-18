@@ -51,7 +51,7 @@
       <Value Profile="(Default)">default</Value>
     </Setting>
     <Setting Name="Skippables" Type="System.String" Scope="User">
-      <Value Profile="(Default)">pagenum,sidebar,footnote,endnote,rearnote,prodnote,</Value>
+      <Value Profile="(Default)">pagenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,noteref,</Value>
     </Setting>
     <Setting Name="AudioWaveForm_Color_Border" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF7FFF00</Value>

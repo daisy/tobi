@@ -23,6 +23,7 @@ namespace Tobi.Plugin.AudioPane
 {
     public enum WaveFormRenderMethod : byte
     {
+        Vector,
         RenderTargetBitmap,
         WriteableBitmap,
         BitmapSource
@@ -207,10 +208,10 @@ namespace Tobi.Plugin.AudioPane
         {
             RefreshCanvasWidth();
             double widthReal = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
-//#if DEBUG
-//            double width_ = getWaveFormWidth();
-//            DebugFix.Assert((long)Math.Round(width_ * 100) == (long)Math.Round(widthReal * 100));
-//#endif //DEBUG
+            //#if DEBUG
+            //            double width_ = getWaveFormWidth();
+            //            DebugFix.Assert((long)Math.Round(width_ * 100) == (long)Math.Round(widthReal * 100));
+            //#endif //DEBUG
 
             ShowHideWaveFormLoadingMessage(true);
 
@@ -431,10 +432,13 @@ namespace Tobi.Plugin.AudioPane
 
             bool onlyLoadVisibleScroll = false;
 
+            // ONLY used for Settings.Default.AudioWaveForm_IsBordered
+            // ---
             List<Point> listTopPointsCh1 = null;
             List<Point> listTopPointsCh2 = null;
             List<Point> listBottomPointsCh1 = null;
             List<Point> listBottomPointsCh2 = null;
+            // ---
 
             var estimatedCapacity = (int)((onlyLoadVisibleScroll ? visibleWidth * zoom : widthMagnified) / (bytesPerStep / bytesPerPixel_Magnified)) + 1;
 
@@ -524,17 +528,20 @@ namespace Tobi.Plugin.AudioPane
                 bool firstY1 = true;
                 bool firstY1_ = true;
 
+                // ONLY used for Settings.Default.AudioWaveForm_IsStroked
+                // --
                 var geometryCh1 = new StreamGeometry();
                 StreamGeometryContext sgcCh1 = geometryCh1.Open();
 
                 StreamGeometry geometryCh2 = null;
                 StreamGeometryContext sgcCh2 = null;
-
                 if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
                 {
                     geometryCh2 = new StreamGeometry();
                     sgcCh2 = geometryCh2.Open();
                 }
+                // --
+
 
                 //bool isLittleEndian = BitConverter.IsLittleEndian;
 
@@ -543,6 +550,9 @@ namespace Tobi.Plugin.AudioPane
                 if (m_CancelRequested) return;
 
                 stopWatch = Stopwatch.StartNew();
+                stopWatch.Start();
+
+                bool drawnOnce = false;
 
                 int read;
 
@@ -835,20 +845,22 @@ namespace Tobi.Plugin.AudioPane
                     }
                     if (m_CancelRequested) break;
 
-                    stopWatch.Stop();
-                    if (stopWatch.ElapsedMilliseconds >= 1000)
+                    if (!drawnOnce && totalRead > (nBytesScrollOffset + nBytesScrollVisibleWidth))
                     {
+                        drawnOnce = true;
+#if DEBUG
+                        m_Logger.Log("loadWavForm TOTAL READ:  " + totalRead + " => [" + nBytesScrollOffset + "," + (nBytesScrollOffset + nBytesScrollVisibleWidth) + "]", Category.Debug, Priority.Medium);
+#endif
+
                         drawWaveForm(
                             //audioStream,
                             false,
                             sgcCh1, sgcCh2, geometryCh1, geometryCh2,
                             listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
                             heightMagnified, widthMagnified,
-                            dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance, bytesPerPixel_Magnified, zoom);
-
-                        stopWatch.Reset();
+                            dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance,
+                            bytesPerPixel_Magnified, zoom);
                     }
-                    stopWatch.Start();
 
                     if (m_CancelRequested) break;
 
@@ -881,7 +893,12 @@ namespace Tobi.Plugin.AudioPane
 
                     if (m_CancelRequested) break;
                 }
-                if (stopWatch != null && stopWatch.IsRunning) stopWatch.Stop();
+
+                if (stopWatch != null && stopWatch.IsRunning)
+                {
+                    stopWatch.Stop();
+                    m_Logger.Log("loadWavForm 1:  " + stopWatch.ElapsedMilliseconds, Category.Debug, Priority.Medium);
+                }
 
                 #endregion LOOP
 
@@ -908,7 +925,11 @@ namespace Tobi.Plugin.AudioPane
             }
             finally
             {
-                if (stopWatch != null && stopWatch.IsRunning) stopWatch.Stop();
+                if (stopWatch != null && stopWatch.IsRunning)
+                {
+                    stopWatch.Stop();
+                    m_Logger.Log("loadWavForm 2:  " + stopWatch.ElapsedMilliseconds, Category.Debug, Priority.Medium);
+                }
             }
         }
 
@@ -1023,77 +1044,94 @@ namespace Tobi.Plugin.AudioPane
 
                     if (drawNET3)
                     {
-                        var drawingVisual = new DrawingVisual();
-                        using (DrawingContext drawContext = drawingVisual.RenderOpen())
-                        {
-                            drawContext.DrawDrawing(drawGrp);
-
-                            // To draw any Visual:
-                            //VisualBrush visualBrush = new VisualBrush
-                            //{
-                            //    Visual =  visual,
-                            //    AutoLayoutContent = true
-                            //};
-                            //Rect bounds = VisualTreeHelper.GetContentBounds(visual);
-                            //drawContext.DrawRectangle(visualBrush, null, new Rect(new Point(), bounds.Size));
-
-
-                            //if (false &&
-                            //    m_ViewModel.State.Audio.PlayStreamMarkers != null
-                            //    && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextPreRenderThreshold)
-                            //{
-                            //    m_WaveFormTimeTicksAdorner.drawChunkInfos(drawContext, null, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
-                            //}
-                        }
-
-                        var renderTargetBitmap = new RenderTargetBitmap((int)widthMagnified,
-                                                                        (int)heightMagnified, 96, 96,
-                                                                        PixelFormats.Pbgra32);
-                        renderTargetBitmap.Render(drawingVisual);
-                        renderTargetBitmap.Freeze();
-
                         WaveFormRenderMethod renderMethod = Settings.Default.AudioWaveForm_RenderMethod;
-                        if (renderMethod == WaveFormRenderMethod.WriteableBitmap
-                            || renderMethod == WaveFormRenderMethod.BitmapSource)
+
+                        if (renderMethod == WaveFormRenderMethod.Vector)
                         {
-                            //FormatConvertedBitmap formatConv = new FormatConvertedBitmap();
-                            //formatConv.BeginInit();
-                            //formatConv.Source = myBitmapSource;
-                            //formatConv.DestinationFormat = PixelFormats.Rgb24;
-                            //formatConv.EndInit();  
-
-                            uint[] arrBits =
-                                new uint[renderTargetBitmap.PixelWidth * renderTargetBitmap.PixelHeight];
-                            // PixelFormats.Pbgra32 => 4 bytes per pixel, so a full line is:
-                            int stride = 4 * renderTargetBitmap.PixelWidth;
-                            renderTargetBitmap.CopyPixels(arrBits, stride, 0);
-
-                            if (renderMethod == WaveFormRenderMethod.BitmapSource)
+                            if (Settings.Default.AudioWaveForm_UseVectorAtResize)
                             {
-                                var bitmapSource = BitmapSource.Create((int)widthMagnified,
-                                                                       (int)heightMagnified, 96, 96,
-                                                                       PixelFormats.Pbgra32, null, arrBits,
-                                                                       stride);
-
-                                WaveFormImage.Source = bitmapSource;
+                                WaveFormImage.Source = m_WaveFormImageSourceDrawingImage;
                             }
                             else
                             {
-                                var writeableBitmap = new WriteableBitmap(renderTargetBitmap.PixelWidth,
-                                                                          renderTargetBitmap.PixelHeight,
-                                                                          96, 96, PixelFormats.Pbgra32,
-                                                                          null);
-                                writeableBitmap.WritePixels(
-                                    new Int32Rect(0, 0, renderTargetBitmap.PixelWidth,
-                                                  renderTargetBitmap.PixelHeight), arrBits, stride, 0);
-
-                                WaveFormImage.Source = writeableBitmap;
+                                var drawImg = new DrawingImage(drawGrp);
+                                drawImg.Freeze();
+                                WaveFormImage.Source = drawImg;
                             }
                         }
                         else
                         {
-                            // Default
-                            WaveFormImage.Source = renderTargetBitmap;
+                            var drawingVisual = new DrawingVisual();
+                            using (DrawingContext drawContext = drawingVisual.RenderOpen())
+                            {
+                                drawContext.DrawDrawing(drawGrp);
+
+                                // To draw any Visual:
+                                //VisualBrush visualBrush = new VisualBrush
+                                //{
+                                //    Visual =  visual,
+                                //    AutoLayoutContent = true
+                                //};
+                                //Rect bounds = VisualTreeHelper.GetContentBounds(visual);
+                                //drawContext.DrawRectangle(visualBrush, null, new Rect(new Point(), bounds.Size));
+
+
+                                //if (false &&
+                                //    m_ViewModel.State.Audio.PlayStreamMarkers != null
+                                //    && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextPreRenderThreshold)
+                                //{
+                                //    m_WaveFormTimeTicksAdorner.drawChunkInfos(drawContext, null, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
+                                //}
+                            }
+
+                            var renderTargetBitmap = new RenderTargetBitmap((int)widthMagnified,
+                                                                            (int)heightMagnified, 96, 96,
+                                                                            PixelFormats.Pbgra32);
+                            renderTargetBitmap.Render(drawingVisual);
+                            renderTargetBitmap.Freeze();
+
+                            if (renderMethod == WaveFormRenderMethod.WriteableBitmap
+                                || renderMethod == WaveFormRenderMethod.BitmapSource)
+                            {
+                                //FormatConvertedBitmap formatConv = new FormatConvertedBitmap();
+                                //formatConv.BeginInit();
+                                //formatConv.Source = myBitmapSource;
+                                //formatConv.DestinationFormat = PixelFormats.Rgb24;
+                                //formatConv.EndInit();  
+
+                                uint[] arrBits =
+                                    new uint[renderTargetBitmap.PixelWidth * renderTargetBitmap.PixelHeight];
+                                // PixelFormats.Pbgra32 => 4 bytes per pixel, so a full line is:
+                                int stride = 4 * renderTargetBitmap.PixelWidth;
+                                renderTargetBitmap.CopyPixels(arrBits, stride, 0);
+
+                                if (renderMethod == WaveFormRenderMethod.BitmapSource)
+                                {
+                                    var bitmapSource = BitmapSource.Create((int)widthMagnified,
+                                                                           (int)heightMagnified, 96, 96,
+                                                                           PixelFormats.Pbgra32, null, arrBits,
+                                                                           stride);
+
+                                    WaveFormImage.Source = bitmapSource;
+                                }
+                                else
+                                {
+                                    var writeableBitmap = new WriteableBitmap(renderTargetBitmap.PixelWidth,
+                                                                              renderTargetBitmap.PixelHeight,
+                                                                              96, 96, PixelFormats.Pbgra32,
+                                                                              null);
+                                    writeableBitmap.WritePixels(
+                                        new Int32Rect(0, 0, renderTargetBitmap.PixelWidth,
+                                                      renderTargetBitmap.PixelHeight), arrBits, stride, 0);
+
+                                    WaveFormImage.Source = writeableBitmap;
+                                }
+                            }
+                            else
+                            {
+                                // Default
+                                WaveFormImage.Source = renderTargetBitmap;
+                            }
                         }
                     }
 

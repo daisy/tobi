@@ -217,7 +217,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("pagenum,sidebar,footnote,endnote,rearnote,prodnote,")]
+        [global::System.Configuration.DefaultSettingValueAttribute("pagenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,noteref,")]
         public string Skippables {
             get {
                 return ((string)(this["Skippables"]));
