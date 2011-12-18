@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using Tobi.Common.UI.XAML;
 using Colors=System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.AudioPane
@@ -37,17 +38,15 @@ namespace Tobi.Plugin.AudioPane
 
         public void ResetBrushes()
         {
-            m_renderBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back)
-            {
-                Opacity = 0.6
-            };
+            m_renderBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Back).Clone();
+            m_renderBrush.Opacity = 0.6;
             m_renderBrush.Freeze();
 
-            m_textPen = new Pen(new SolidColorBrush(Settings.Default.AudioWaveForm_Color_Back), 1);
+            m_textPen = new Pen(ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Back), 1);
             m_textPen.Freeze();
 
-            m_textBrush = new SolidColorBrush(Settings.Default.AudioWaveForm_Color_TimeText);//m_AudioPaneViewModel.ColorTimeInfoText
-            m_textBrush.Freeze();
+            m_textBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_TimeText);//m_AudioPaneViewModel.ColorTimeInfoText
+            //m_textBrush.Freeze();
 
             m_pen = new Pen(m_textBrush, 1);
             m_pen.Freeze();

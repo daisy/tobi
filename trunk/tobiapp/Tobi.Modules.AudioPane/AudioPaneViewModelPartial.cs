@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Media;
+using Tobi.Common.UI.XAML;
 using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.AudioPane
@@ -194,7 +195,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }*/
 
-        private bool m_IsBackgroundVisible = false;
+        private bool m_IsBackgroundVisible = true;
         public bool IsBackgroundVisible
         {
             get
@@ -297,11 +298,17 @@ namespace Tobi.Plugin.AudioPane
         {
             get
             {
-                if (m_ColorSelectionContourBrush==null)
+                if (m_ColorSelectionContourBrush == null)
                 {
-                    m_ColorSelectionContourBrush = new SolidColorBrush { Opacity = 0.6 };
+                    m_ColorSelectionContourBrush =
+                        ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Selection).Clone();
+                    m_ColorSelectionContourBrush.Opacity = 0.6;
+                    // NO! m_ColorSelectionContourBrush.Freeze();
                 }
-                m_ColorSelectionContourBrush.Color = Settings.Default.AudioWaveForm_Color_Selection;
+                else
+                {
+                    m_ColorSelectionContourBrush.Color = Settings.Default.AudioWaveForm_Color_Selection;
+                }
                 return m_ColorSelectionContourBrush;
             }
         }
