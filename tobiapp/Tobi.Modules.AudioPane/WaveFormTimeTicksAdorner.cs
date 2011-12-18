@@ -316,7 +316,8 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        public void drawChunkInfos(DrawingContext drawingContext, DrawingGroup drawingGroup, double hoffset, double heightAvailable, double widthAvailable, double bytesPerPixel, double zoom)
+        public void drawChunkInfos(DrawingContext drawingContext, DrawingGroup drawingGroup,
+            double hoffset, double heightAvailable, double widthAvailable, double bytesPerPixel, double zoom) // ALL ZOOMED ALREADY ! (from waveform loader)
         {
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_AudioPaneViewModel.m_UrakawaSession.GetTreeNodeSelection();
             if (treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)

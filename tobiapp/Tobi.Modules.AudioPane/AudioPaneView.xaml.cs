@@ -18,6 +18,7 @@ using Tobi.Common;
 using Tobi.Common.UI;
 using Tobi.Common.UI.XAML;
 using urakawa.core;
+using urakawa.data;
 using urakawa.media.data.audio;
 
 namespace Tobi.Plugin.AudioPane
@@ -222,26 +223,15 @@ namespace Tobi.Plugin.AudioPane
             double width1 = WaveFormCanvas.ActualWidth;
             double width2 = WaveFormCanvas.Width;
 
-            double width3 = WaveFormImage.ActualWidth;
-            double width4 = WaveFormImage.Width;
-
             if (double.IsNaN(width1) || (long)Math.Round(width1) == 0)
             {
                 if (double.IsNaN(width2) || (long)Math.Round(width2) == 0)
                 {
-                    if (double.IsNaN(width3) || (long)Math.Round(width3) == 0)
-                    {
-                        if (double.IsNaN(width4) || (long)Math.Round(width4) == 0)
-                        {
-                            //throw new Exception("NO VALID WAVEFORM WIDTH!!");
-                            //#if DEBUG
-                            //                            Debugger.Break();
-                            //#endif //DEBUG
-                            return MillisecondsPerPixelToPixelWidthConverter.defaultWidth;
-                        }
-                        else return width4;
-                    }
-                    else return width3;
+                    //throw new Exception("NO VALID WAVEFORM WIDTH!!");
+                    //#if DEBUG
+                    //                            Debugger.Break();
+                    //#endif //DEBUG
+                    return MillisecondsPerPixelToPixelWidthConverter.defaultWidth;
                 }
                 else return width2;
             }
@@ -286,9 +276,16 @@ namespace Tobi.Plugin.AudioPane
                 CancelWaveFormLoad(true);
 
 #if NET40
-                WaveFormImage.CacheMode = null;
-#endif
-                //NET40
+                LightLinkedList<ImageAndDrawing>.Item current = m_WaveformTileImages.m_First;
+                while (current != null)
+                {
+                    ImageAndDrawing imgAndDraw = current.m_data;
+
+                    imgAndDraw.m_image.CacheMode = null;
+                    
+                    current = current.m_nextItem;
+                }
+#endif //NET40
             }
 
             //if (m_TimeSelectionLeftX >= 0)
@@ -330,14 +327,24 @@ namespace Tobi.Plugin.AudioPane
 
             if (!force)
             {
-                if (m_WaveFormImageSourceDrawingImage != null && !(WaveFormImage.Source is DrawingImage))
-                {
-                    m_Logger.Log("AudioPaneView.OnWaveFormCanvasSizeChanged:WaveFormImage.Source switch", Category.Debug,
-                                 Priority.Medium);
+                updateWaveformTileImagesWidthAndPosition();
 
-                    //RenderTargetBitmap source = (RenderTargetBitmap)WaveFormImage.Source;
-                    WaveFormImage.Source = null;
-                    WaveFormImage.Source = m_WaveFormImageSourceDrawingImage;
+                LightLinkedList<ImageAndDrawing>.Item current = m_WaveformTileImages.m_First;
+                while (current != null)
+                {
+                    ImageAndDrawing imgAndDraw = current.m_data;
+
+                    if (imgAndDraw.m_drawingImage != null && !(imgAndDraw.m_image.Source is DrawingImage))
+                    {
+                        m_Logger.Log("AudioPaneView.OnWaveFormCanvasSizeChanged:WaveFormImage.Source switch", Category.Debug,
+                                     Priority.Medium);
+
+                        //RenderTargetBitmap source = (RenderTargetBitmap)WaveFormImage.Source;
+                        imgAndDraw.m_image.Source = null;
+                        imgAndDraw.m_image.Source = imgAndDraw.m_drawingImage;
+                    }
+
+                    current = current.m_nextItem;
                 }
             }
 
@@ -688,7 +695,8 @@ namespace Tobi.Plugin.AudioPane
 #if DRAW_EMPTY_IMAGE
             WaveFormImage.Source = getResetWaveFormImageDrawing();
 #else
-            WaveFormImage.Source = null;
+            //WaveFormImage.Source = null;
+            emptyWaveformTiles();
 #endif //DRAW_EMPTY_IMAGE
 
             RefreshCanvasWidth();
@@ -734,8 +742,6 @@ namespace Tobi.Plugin.AudioPane
             PeakMeterCanvasOpaqueMask.Visibility = Visibility.Visible;
 
             ResetWaveFormEmpty();
-
-            m_WaveFormImageSourceDrawingImage = null;
 
             if (m_WaveFormTimeTicksAdorner != null)
             {

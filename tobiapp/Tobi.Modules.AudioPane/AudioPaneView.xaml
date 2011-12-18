@@ -471,7 +471,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
        <!--
         VerticalAlignment="Stretch"
         HorizontalAlignment="Stretch" -->
-        <Image x:Name="WaveFormImage"
+        <!--UpdateSourceTrigger="PropertyChanged"-->
+        <!--<Image x:Name="WaveFormImage"
 
                Stretch="Fill"
                Canvas.ZIndex="0"
@@ -483,7 +484,6 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                RenderOptions.BitmapScalingMode="Fant">
 
           <Image.Width>
-            <!--UpdateSourceTrigger="PropertyChanged"-->
             <MultiBinding Converter="{AudioPane:MillisecondsPerPixelToPixelWidthConverter}">
               
               <Binding ElementName="ZoomSlider" Path="Value" Mode="OneWay"/>
@@ -493,7 +493,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             
             </MultiBinding>
           </Image.Width>
-        </Image>
+        </Image>-->
 
         <Path x:Name="WaveFormTimeRangePath"
               Canvas.ZIndex="1"
