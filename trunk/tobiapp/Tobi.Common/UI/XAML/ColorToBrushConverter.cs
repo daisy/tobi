@@ -66,10 +66,6 @@ Color
                     m_SolidColorBrushCache.Add(colorKey, obj);
                 }
             }
-            else
-            {
-                int degbu = 1;
-            }
 
             return obj; // m_SolidColorBrushCache[colorString];
         }
