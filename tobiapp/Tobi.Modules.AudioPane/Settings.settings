@@ -20,8 +20,8 @@
     <Setting Name="AudioWaveForm_RenderMethod" Type="Tobi.Plugin.AudioPane.WaveFormRenderMethod" Scope="User">
       <Value Profile="(Default)">RenderTargetBitmap</Value>
     </Setting>
-    <Setting Name="AudioWaveForm_TextPreRenderThreshold" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">20</Value>
+    <Setting Name="AudioWaveForm_TextCacheRenderThreshold" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">9999999</Value>
     </Setting>
     <Setting Name="UseFriendlyTimeFormat" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
