@@ -72,6 +72,7 @@ namespace Tobi.Plugin.AudioPane
         private Point m_point1;
         private Point m_point2;
         private Point m_point3;
+        private Point m_point4;
         private Rect m_rectRect;
 
         public const double m_horizontalMargin = 2;
@@ -109,7 +110,7 @@ namespace Tobi.Plugin.AudioPane
             drawTimeRuler(drawingContext, hoffset, heightAvailable, widthAvailable);
 
             if (m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null
-                && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextPreRenderThreshold)
+                && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextCacheRenderThreshold)
             {
                 drawChunkInfos(null, drawingContext, null, hoffset, heightAvailable, widthAvailable, m_AudioPaneView.BytesPerPixel, 1);
             }
@@ -442,18 +443,28 @@ namespace Tobi.Plugin.AudioPane
                                     )
                                 {
                                     m_rectRect.X -= xZoomed;
+                                    if (m_rectRect.X <0)
+                                    {
+                                        m_rectRect.Width -= -m_rectRect.X;
+                                        m_rectRect.X = 0;
+                                    }
                                     var rectGeo = new RectangleGeometry(m_rectRect);
                                     rectGeo.Freeze();
                                     var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
                                     rectGeoDraw.Freeze();
                                     drawingGroup.Children.Add(rectGeoDraw);
 
-                                    m_point3.X -= xZoomed;
-                                    var textGeo = formattedTextDuration.BuildGeometry(m_point3);
-                                    textGeo.Freeze();
-                                    var textGeoDraw = new GeometryDrawing(m_timeTextBrush, null, textGeo);
-                                    textGeoDraw.Freeze();
-                                    drawingGroup.Children.Add(textGeoDraw);
+                                    m_point4.X = m_point3.X;
+                                    m_point4.Y = m_point3.Y;
+                                    m_point4.X -= xZoomed;
+                                    if (m_point4.X >= 0)
+                                    {
+                                        var textGeo = formattedTextDuration.BuildGeometry(m_point4);
+                                        textGeo.Freeze();
+                                        var textGeoDraw = new GeometryDrawing(m_timeTextBrush, null, textGeo);
+                                        textGeoDraw.Freeze();
+                                        drawingGroup.Children.Add(textGeoDraw);
+                                    }
                                 }
                             }
                             else
@@ -544,6 +555,11 @@ namespace Tobi.Plugin.AudioPane
                                         )
                                     {
                                         m_rectRect.X -= xZoomed;
+                                        if (m_rectRect.X < 0)
+                                        {
+                                            m_rectRect.Width -= -m_rectRect.X;
+                                            m_rectRect.X = 0;
+                                        }
                                         var rectGeo = new RectangleGeometry(m_rectRect);
                                         rectGeo.Freeze();
                                         var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
@@ -551,11 +567,14 @@ namespace Tobi.Plugin.AudioPane
                                         drawingGroup.Children.Add(rectGeoDraw);
 
                                         m_point3.X -= xZoomed;
-                                        var textGeo = formattedText.BuildGeometry(m_point3);
-                                        textGeo.Freeze();
-                                        var textGeoDraw = new GeometryDrawing(m_phraseBrush, null, textGeo);
-                                        textGeoDraw.Freeze();
-                                        drawingGroup.Children.Add(textGeoDraw);
+                                        if (m_point3.X >= 0)
+                                        {
+                                            var textGeo = formattedText.BuildGeometry(m_point3);
+                                            textGeo.Freeze();
+                                            var textGeoDraw = new GeometryDrawing(m_phraseBrush, null, textGeo);
+                                            textGeoDraw.Freeze();
+                                            drawingGroup.Children.Add(textGeoDraw);
+                                        }
                                     }
                                 }
                                 else

@@ -40,14 +40,14 @@ namespace Tobi.Plugin.AudioPane
 
     public partial class AudioPaneView
     {
-        private const double m_WaveformTileWidth = 512;
+        private const double m_WaveformTileWidth = 512 * 2;
         private LightLinkedList<ImageAndDrawing> m_WaveformTileImages = new LightLinkedList<ImageAndDrawing>();
 
         private void emptyWaveformTiles()
         {
-#if DEBUG
-            m_Logger.Log("emptyWaveformTiles", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//            m_Logger.Log("emptyWaveformTiles", Category.Debug, Priority.Medium);
+//#endif
 
             LightLinkedList<ImageAndDrawing>.Item current = m_WaveformTileImages.m_First;
             while (current != null)
@@ -66,9 +66,9 @@ namespace Tobi.Plugin.AudioPane
 
         private Image createWaveformTileImage(double x, double w)
         {
-#if DEBUG
-            m_Logger.Log("createWaveformTileImage: " + x + " / " + w, Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//            m_Logger.Log("createWaveformTileImage: " + x + " / " + w, Category.Debug, Priority.Medium);
+//#endif
             var image = new Image();
 
             image.SetValue(Canvas.LeftProperty, x);
@@ -121,9 +121,9 @@ namespace Tobi.Plugin.AudioPane
 
             double nTiles = canvasWidth / m_WaveformTileWidth;
 
-#if DEBUG
-            m_Logger.Log("createWaveformTileImages: " + nTiles + " => " + canvasWidth + " (" + m_WaveformTileWidth + ")", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//            m_Logger.Log("createWaveformTileImages: " + nTiles + " => " + canvasWidth + " (" + m_WaveformTileWidth + ")", Category.Debug, Priority.Medium);
+//#endif
 
             if (nTiles <= 1.0)
             {
@@ -176,9 +176,9 @@ namespace Tobi.Plugin.AudioPane
                 imgAndDraw.m_image.Width = w;
                 imgAndDraw.m_image.SetValue(Canvas.LeftProperty, x);
 
-#if DEBUG
-                m_Logger.Log("updateWaveformTileImagesWidthAndPosition: " + x + " / " + w, Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//                m_Logger.Log("updateWaveformTileImagesWidthAndPosition: " + x + " / " + w, Category.Debug, Priority.Medium);
+//#endif
                 current = current.m_nextItem;
             }
         }
@@ -307,9 +307,9 @@ namespace Tobi.Plugin.AudioPane
         public void RefreshCanvasWidth()
         {
             m_ForceCanvasWidthUpdate = true;
-#if DEBUG
-            m_Logger.Log("refreshCanvasWidth (before canvas width change)", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//            m_Logger.Log("refreshCanvasWidth (before canvas width change)", Category.Debug, Priority.Medium);
+//#endif
 
             BindingExpression b1 = WaveFormCanvas.GetBindingExpression(FrameworkElement.WidthProperty);
             if (b1 != null)
@@ -328,9 +328,9 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-#if DEBUG
-            m_Logger.Log("refreshCanvasWidth (after canvas width change)", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//            m_Logger.Log("refreshCanvasWidth (after canvas width change)", Category.Debug, Priority.Medium);
+//#endif
 
         }
 
@@ -362,7 +362,6 @@ namespace Tobi.Plugin.AudioPane
 
             if (Settings.Default.AudioWaveForm_DisableDraw)
             {
-
 #if DEBUG
                 m_Logger.Log("RefreshUI_LoadWaveForm (skip waveform drawing)", Category.Debug, Priority.Medium);
 #endif
@@ -545,9 +544,9 @@ namespace Tobi.Plugin.AudioPane
             int bytesPerStep = samplesPerStep * byteDepth;
 
 
-#if DEBUG
-            m_Logger.Log("loadWaveForm - byte buffer size:" + bytesPerStep, Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//            m_Logger.Log("loadWaveForm - byte buffer size:" + bytesPerStep, Category.Debug, Priority.Medium);
+//#endif
 
 
             var bytes = new byte[bytesPerStep]; // Int 8 unsigned
@@ -709,9 +708,9 @@ namespace Tobi.Plugin.AudioPane
                                     currentImageTile.m_nextItem.m_data.m_originalX += overflow;
                                 }
 
-#if DEBUG
-                                m_Logger.Log("loadWaveFor, overflow (1):" + overflow, Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//                                m_Logger.Log("loadWaveFor, overflow (1):" + overflow, Category.Debug, Priority.Medium);
+//#endif
 
                                 Action deleg = () =>
                                 {
@@ -725,9 +724,9 @@ namespace Tobi.Plugin.AudioPane
                                         currentImageTile.m_nextItem.m_data.m_image.SetValue(Canvas.LeftProperty, left + overflow);
                                     }
 
-#if DEBUG
-                                    m_Logger.Log("loadWaveFor, overflow (2):" + overflow, Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//                                    m_Logger.Log("loadWaveFor, overflow (2):" + overflow, Category.Debug, Priority.Medium);
+//#endif
                                 };
 
                                 if (!Dispatcher.CheckAccess())
@@ -1237,9 +1236,9 @@ namespace Tobi.Plugin.AudioPane
         {
             //Console.WriteLine(@"Drawing waveform...1");
 
-#if DEBUG
-            m_Logger.Log("drawWaveForm", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//            m_Logger.Log("drawWaveForm", Category.Debug, Priority.Medium);
+//#endif
 
             DrawingGroup drawGrp = drawWaveFormUsingCollectedPoints(
                 imageAndDraw,
@@ -1254,7 +1253,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (freeze)
             {
-                if (Settings.Default.AudioWaveForm_UseVectorAtResize)
+                if (useVectorResize())
                 {
                     var drawImg = new DrawingImage(drawGrp);
                     drawImg.Freeze();
@@ -1269,17 +1268,17 @@ namespace Tobi.Plugin.AudioPane
                 Action del = () =>
                 {
 
-#if DEBUG
-                    m_Logger.Log("CACHE WAVEFORM WIDTH = " +
-                                                   imageAndDraw.m_image.Width + "-" + imageAndDraw.m_originalW + " // " +
-                                                   imageAndDraw.m_image.ActualWidth + " # " + imageAndDraw.m_originalCanvasW, Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//                    m_Logger.Log("CACHE WAVEFORM WIDTH = " +
+//                                                   imageAndDraw.m_image.Width + "-" + imageAndDraw.m_originalW + " // " +
+//                                                   imageAndDraw.m_image.ActualWidth + " # " + imageAndDraw.m_originalCanvasW, Category.Debug, Priority.Medium);
+//#endif
 
                     bool drawNET3 = false;
 #if NET40
-                    if (imageAndDraw.m_image.Width <= 2048)
+                    if (imageAndDraw.m_image.Width <= 2048) // should always work because waveform tiles are small (e.g. 512px)
                     {
-                        if (Settings.Default.AudioWaveForm_UseVectorAtResize)
+                        if (useVectorResize() && imageAndDraw.m_drawingImage != null)
                         {
                             imageAndDraw.m_image.Source = imageAndDraw.m_drawingImage;
                         }
@@ -1344,7 +1343,7 @@ namespace Tobi.Plugin.AudioPane
 
                         if (renderMethod == WaveFormRenderMethod.Vector)
                         {
-                            if (Settings.Default.AudioWaveForm_UseVectorAtResize)
+                            if (useVectorResize() && imageAndDraw.m_drawingImage != null)
                             {
                                 imageAndDraw.m_image.Source = imageAndDraw.m_drawingImage;
                             }
@@ -1645,7 +1644,7 @@ namespace Tobi.Plugin.AudioPane
 
 
             if (m_ViewModel.State.Audio.PlayStreamMarkers != null
-                && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextPreRenderThreshold)
+                && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextCacheRenderThreshold)
             {
                 //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
 
@@ -1664,7 +1663,7 @@ namespace Tobi.Plugin.AudioPane
                 //var drawGroup = new DrawingGroup();
                 //drawGroup.Children.Add(imageDrawing);
 
-                m_WaveFormTimeTicksAdorner.drawChunkInfos(imageAndDraw, null, drawGrp, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
+                m_WaveFormTimeTicksAdorner.drawChunkInfos(imageAndDraw, null, drawGrp, 0, heightMagnified, imageAndDraw.m_originalCanvasW * zoom, bytesPerPixel_Magnified, zoom);
                 //dc.Close();
 
                 //drawGrp.Children.Add(imageDrawing);
@@ -1881,9 +1880,9 @@ namespace Tobi.Plugin.AudioPane
 
             Brush brushColorBack = ColorBrushCache.Get(
 
-#if DEBUG
+#if false && DEBUG
 m_backHackToggle ?
-                Settings.Default.AudioWaveForm_Color_Back
+                Settings.Default.AudioWaveForm_Color_CursorFill
                 : Settings.Default.AudioWaveForm_Color_CursorBorder
 #else
                 Settings.Default.AudioWaveForm_Color_Back

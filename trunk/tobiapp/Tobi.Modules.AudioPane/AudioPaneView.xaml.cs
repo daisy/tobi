@@ -282,7 +282,7 @@ namespace Tobi.Plugin.AudioPane
                     ImageAndDrawing imgAndDraw = current.m_data;
 
                     imgAndDraw.m_image.CacheMode = null;
-                    
+
                     current = current.m_nextItem;
                 }
 #endif //NET40
@@ -334,7 +334,8 @@ namespace Tobi.Plugin.AudioPane
                 {
                     ImageAndDrawing imgAndDraw = current.m_data;
 
-                    if (imgAndDraw.m_drawingImage != null && !(imgAndDraw.m_image.Source is DrawingImage))
+                    if (useVectorResize() &&
+                        imgAndDraw.m_drawingImage != null && !(imgAndDraw.m_image.Source is DrawingImage))
                     {
                         m_Logger.Log("AudioPaneView.OnWaveFormCanvasSizeChanged:WaveFormImage.Source switch", Category.Debug,
                                      Priority.Medium);
@@ -366,6 +367,22 @@ namespace Tobi.Plugin.AudioPane
 
                 m_ViewModel.CommandRefresh.Execute();
             }
+        }
+
+        private bool useVectorResize()
+        {
+            if (Settings.Default.AudioWaveForm_UseVectorAtResize)
+            {
+                //double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+
+                LightLinkedList<ImageAndDrawing>.Item current = m_WaveformTileImages.m_First;
+                if (current != null)
+                {
+                    ImageAndDrawing imgAndDraw = current.m_data;
+                    return imgAndDraw.m_originalCanvasW <= 2048;
+                }
+            }
+            return false;
         }
 
         private void OnWaveFormMouseMove(object sender, MouseEventArgs e)

@@ -702,7 +702,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         if (State.Audio.HasContent && State.Audio.PlayStreamMarkers != null)
                         {
-                            if (State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextPreRenderThreshold)
+                            if (State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextCacheRenderThreshold)
                             {
                                 if (View != null)
                                 {
