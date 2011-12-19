@@ -183,9 +183,9 @@ namespace Tobi.Plugin.AudioPane
                     Logger.Log("AudioPaneViewModel.CommandPlay", Category.Debug, Priority.Medium);
                     CommandPause.Execute();
 
-#if DEBUG
-                    Logger.Log("AudioPaneViewModel.CommandPlay (called PAUSE)", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//                    Logger.Log("AudioPaneViewModel.CommandPlay (called PAUSE)", Category.Debug, Priority.Medium);
+//#endif
 
 
                     if (PlayBytePosition < 0) m_LastSetPlayBytePosition = 0;
@@ -466,10 +466,10 @@ namespace Tobi.Plugin.AudioPane
 
             //StartWaveFormLoadTimer(0, IsAutoPlay);
 
-#if DEBUG
-            Logger.Log("CALLING AudioPlayer_LoadWaveForm (loadAndPlay)", Category.Debug, Priority.Medium);
-#endif
-            AudioPlayer_LoadWaveForm();
+//#if DEBUG
+//            Logger.Log("CALLING AudioPlayer_LoadWaveForm (loadAndPlay)", Category.Debug, Priority.Medium);
+//#endif
+            AudioPlayer_LoadWaveForm(false);
         }
 
         public void RefreshWaveFormChunkMarkers()
@@ -587,10 +587,10 @@ namespace Tobi.Plugin.AudioPane
                 }
                 if (delayMilliseconds == 0)
                 {
-#if DEBUG
-                    Logger.Log("CALLING AudioPlayer_LoadWaveForm (StartWaveFormLoadTimer)", Category.Debug, Priority.Medium);
-#endif
-                    AudioPlayer_LoadWaveForm();
+//#if DEBUG
+//                    Logger.Log("CALLING AudioPlayer_LoadWaveForm (StartWaveFormLoadTimer)", Category.Debug, Priority.Medium);
+//#endif
+                    AudioPlayer_LoadWaveForm(false);
                     return;
                 }
                 if (m_WaveFormLoadTimer == null)
@@ -639,13 +639,13 @@ namespace Tobi.Plugin.AudioPane
             {
                 return;
             }
-#if DEBUG
-            Logger.Log("CALLING AudioPlayer_LoadWaveForm (OnWaveFormLoadTimerTick)", Category.Debug, Priority.Medium);
-#endif
-            AudioPlayer_LoadWaveForm();
+//#if DEBUG
+//            Logger.Log("CALLING AudioPlayer_LoadWaveForm (OnWaveFormLoadTimerTick)", Category.Debug, Priority.Medium);
+//#endif
+            AudioPlayer_LoadWaveForm(false);
         }
 
-        public void AudioPlayer_LoadWaveForm()
+        public void AudioPlayer_LoadWaveForm(bool onlyUpdateTiles)
         {
             //Logger.Log("AudioPaneViewModel.AudioPlayer_LoadWaveForm", Category.Debug, Priority.Medium);
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
@@ -660,15 +660,18 @@ namespace Tobi.Plugin.AudioPane
 
             bool wasPlaying = IsPlaying;
 
-#if DEBUG
-            Logger.Log("AudioPlayer_LoadWaveForm (calling PAUSE)", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//            Logger.Log("AudioPlayer_LoadWaveForm (calling PAUSE)", Category.Debug, Priority.Medium);
+//#endif
 
-            CommandPause.Execute();
+            if (!onlyUpdateTiles)
+            {
+                CommandPause.Execute();
+            }
 
-#if DEBUG
-            Logger.Log("AudioPlayer_LoadWaveForm (called PAUSE)", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//            Logger.Log("AudioPlayer_LoadWaveForm (called PAUSE)", Category.Debug, Priority.Medium);
+//#endif
 
 
 
@@ -692,8 +695,11 @@ namespace Tobi.Plugin.AudioPane
             {
                 //View.RefreshCanvasWidth();
 
-                View.ShowHideWaveFormLoadingMessage(true);
-                View.RefreshUI_LoadWaveForm(wasPlaying);
+                if (!onlyUpdateTiles)
+                {
+                    View.ShowHideWaveFormLoadingMessage(true);
+                }
+                View.RefreshUI_LoadWaveForm(wasPlaying, onlyUpdateTiles);
             }
             else
             {
@@ -759,9 +765,9 @@ namespace Tobi.Plugin.AudioPane
             if (wasPlaying)
             {
 
-#if DEBUG
-                Logger.Log("AudioPlayer_PlayAfterWaveFormLoaded (wasPlaying)", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//                Logger.Log("AudioPlayer_PlayAfterWaveFormLoaded (wasPlaying)", Category.Debug, Priority.Medium);
+//#endif
 
                 //m_Player.Resume();
                 CommandPlay.Execute();
@@ -779,9 +785,9 @@ namespace Tobi.Plugin.AudioPane
 
             if (IsAutoPlay)
             {
-#if DEBUG
-                Logger.Log("AudioPlayer_PlayAfterWaveFormLoaded (IsAutoPlay)", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//                Logger.Log("AudioPlayer_PlayAfterWaveFormLoaded (IsAutoPlay)", Category.Debug, Priority.Medium);
+//#endif
                 CommandPlay.Execute();
                 //OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_OutputDevice)));
                 //m_Player.PlayBytes(m_CurrentAudioStreamProvider,
