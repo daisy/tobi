@@ -378,7 +378,7 @@ namespace Tobi.Plugin.AudioPane
                 //m_BackgroundLoader = null;
 
                 CommandManager.InvalidateRequerySuggested();
-                
+
                 if (false && !onlyUpdateTiles)
                 {
                     ShowHideWaveFormLoadingMessage(false);
@@ -387,7 +387,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying);
                 }
-                
+
                 return;
             }
 
@@ -479,45 +479,119 @@ namespace Tobi.Plugin.AudioPane
 #if DEBUG
                                             Debugger.Break();
 #endif
-                                            Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
-                                                ExceptionHandler.Handle(ex, false, m_ShellView)));
+                                            if (!Dispatcher.CheckAccess())
+                                            {
+                                                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                                                    ExceptionHandler.Handle(ex, false, m_ShellView)));
+                                            }
+                                            else
+                                            {
+                                                ExceptionHandler.Handle(ex, false, m_ShellView);
+                                            }
                                         }
                                         finally
                                         {
                                             //Console.WriteLine(@">>>> SEND BEFORE 1");
 
-                                            Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(() =>
+                                            if (!Dispatcher.CheckAccess())
                                             {
-                                                //Console.WriteLine(@">>>> SEND IsWaveFormLoading");
+                                                Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(() =>
+                                                {
+                                                    //Console.WriteLine(@">>>> SEND IsWaveFormLoading");
+                                                    m_ViewModel.IsWaveFormLoading = false;
+                                                    m_LoadThreadIsAlive = false;
+                                                }));
+                                            }
+                                            else
+                                            {
                                                 m_ViewModel.IsWaveFormLoading = false;
                                                 m_LoadThreadIsAlive = false;
-                                            }));
+                                            }
                                             //Console.WriteLine(@">>>> SEND BEFORE 2");
 
                                             if (!onlyUpdateTiles || m_scrollRefreshNoTimer)
                                             {
-                                                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                                                                       (Action)
-                                                                       (() =>
-                                                                        m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(
-                                                                            wasPlaying)));
+                                                if (!Dispatcher.CheckAccess())
+                                                {
+                                                    Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                                                                           (Action)
+                                                                           (() =>
+                                                                            m_ViewModel.
+                                                                                AudioPlayer_PlayAfterWaveFormLoaded(
+                                                                                    wasPlaying)));
+                                                }
+                                                else
+                                                {
+                                                    m_ViewModel.
+                                                        AudioPlayer_PlayAfterWaveFormLoaded(
+                                                            wasPlaying);
+                                                }
                                             }
                                             //Console.WriteLine(@">>>> SEND BEFORE 3");
                                             if (false && !onlyUpdateTiles)
                                             {
-                                                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
-                                            {
-                                                WaveFormProgress.IsIndeterminate = true;
-                                                TimeMessageHide();
-                                                ShowHideWaveFormLoadingMessage(false);
-                                                m_ViewModel.m_TimeStringOther = String.Empty;
-                                            }));
+
+                                                if (!Dispatcher.CheckAccess())
+                                                {
+                                                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                                                                                                                    {
+                                                                                                                        WaveFormProgress
+                                                                                                                            .
+                                                                                                                            IsIndeterminate
+                                                                                                                            =
+                                                                                                                            true;
+                                                                                                                        TimeMessageHide
+                                                                                                                            ();
+                                                                                                                        ShowHideWaveFormLoadingMessage
+                                                                                                                            (false);
+                                                                                                                        m_ViewModel
+                                                                                                                            .
+                                                                                                                            m_TimeStringOther
+                                                                                                                            =
+                                                                                                                            String
+                                                                                                                                .
+                                                                                                                                Empty;
+                                                                                                                    }));
+                                                }
+                                                else
+                                                {
+                                                    WaveFormProgress
+                                                                                                                               .
+                                                                                                                               IsIndeterminate
+                                                                                                                               =
+                                                                                                                               true;
+                                                    TimeMessageHide
+                                                        ();
+                                                    ShowHideWaveFormLoadingMessage
+                                                        (false);
+                                                    m_ViewModel
+                                                        .
+                                                        m_TimeStringOther
+                                                        =
+                                                        String
+                                                            .
+                                                            Empty;
+                                                }
                                             }
 
-                                            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                                            if (!Dispatcher.CheckAccess())
                                             {
-                                                CommandManager.InvalidateRequerySuggested();
-                                            }));
+                                                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                                                                                                                {
+                                                                                                                    CommandManager
+                                                                                                                        .
+                                                                                                                        InvalidateRequerySuggested
+                                                                                                                        ();
+                                                                                                                }));
+                                            }
+                                            else
+                                            {
+                                                CommandManager
+                                                                                                                          .
+                                                                                                                          InvalidateRequerySuggested
+                                                                                                                          ();
+                                            }
+
                                             //Console.WriteLine(@">>>> SEND AFTER 3");
                                         }
                                         m_LoadThreadIsAlive = false;
@@ -533,7 +607,7 @@ namespace Tobi.Plugin.AudioPane
 
             DebugFix.Assert(m_LoadThread == null);
 
-            bool bypassThread = true;
+            bool bypassThread = Math.Min(m_ViewModel.State.Audio.DataLength, nBytesScrollVisibleWidth - nBytesScrollOffset) < 1 * 1024 * 1024;//1MB
             if (bypassThread)
             {
                 m_ViewModel.IsWaveFormLoading = true;
@@ -1333,33 +1407,42 @@ namespace Tobi.Plugin.AudioPane
 
                         if (false && !Dispatcher.CheckAccess() && !onlyUpdateTiles)
                         {
-                            DispatcherOperation op = Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                                                                            (Action)(() =>
-                                                                                          {
-                                                                                              long timeInLocalUnits
-                                                                                                  =
-                                                                                                  m_ViewModel.State.
-                                                                                                      Audio.
-                                                                                                      GetCurrentPcmFormat
-                                                                                                      ().Data.
-                                                                                                      ConvertBytesToTime
-                                                                                                      (totalRead);
+                            var deleg = (Action)(() =>
+                                                      {
+                                                          long timeInLocalUnits
+                                                              =
+                                                              m_ViewModel.State.
+                                                                  Audio.
+                                                                  GetCurrentPcmFormat
+                                                                  ().Data.
+                                                                  ConvertBytesToTime
+                                                                  (totalRead);
 
-                                                                                              m_ViewModel.
-                                                                                                  m_TimeStringOther
-                                                                                                  =
-                                                                                                  AudioPaneViewModel
-                                                                                                      .
-                                                                                                      FormatTimeSpan_Units
-                                                                                                      (new Time(
-                                                                                                           timeInLocalUnits));
-                                                                                              TimeMessageShow();
-                                                                                              //TimeMessageRefresh();
+                                                          m_ViewModel.
+                                                              m_TimeStringOther
+                                                              =
+                                                              AudioPaneViewModel
+                                                                  .
+                                                                  FormatTimeSpan_Units
+                                                                  (new Time(
+                                                                       timeInLocalUnits));
+                                                          TimeMessageShow();
+                                                          //TimeMessageRefresh();
 
-                                                                                              WaveFormProgress.Value
-                                                                                                  +=
-                                                                                                  m_ProgressVisibleOffset;
-                                                                                          }));
+                                                          WaveFormProgress.Value
+                                                              +=
+                                                              m_ProgressVisibleOffset;
+                                                      });
+
+                            if (!Dispatcher.CheckAccess())
+                            {
+                                DispatcherOperation op = Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                                                                               deleg);
+                            }
+                            else
+                            {
+                                deleg.Invoke();
+                            }
                         }
                     }
 
@@ -1379,12 +1462,27 @@ namespace Tobi.Plugin.AudioPane
 
                 if (false && !Dispatcher.CheckAccess() && !onlyUpdateTiles)
                 {
-                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                    if (!Dispatcher.CheckAccess())
                     {
-                        WaveFormProgress.IsIndeterminate = true;
-                        m_ViewModel.m_TimeStringOther = String.Empty;
+                        Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                                                                                        {
+                                                                                            WaveFormProgress.
+                                                                                                IsIndeterminate = true;
+                                                                                            m_ViewModel.
+                                                                                                m_TimeStringOther =
+                                                                                                String.Empty;
+                                                                                            TimeMessageHide();
+                                                                                        }));
+                    }
+                    else
+                    {
+                        WaveFormProgress.
+                            IsIndeterminate = true;
+                        m_ViewModel.
+                            m_TimeStringOther =
+                            String.Empty;
                         TimeMessageHide();
-                    }));
+                    }
                 }
             }
             finally
@@ -2065,7 +2163,7 @@ namespace Tobi.Plugin.AudioPane
 
             Brush brushColorBack = ColorBrushCache.Get(
 
-#if true && DEBUG
+#if false && DEBUG
 m_backHackToggle ?
                 Settings.Default.AudioWaveForm_Color_CursorFill
                 : Settings.Default.AudioWaveForm_Color_CursorBorder
