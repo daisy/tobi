@@ -379,7 +379,7 @@ namespace Tobi.Plugin.AudioPane
                 if (current != null)
                 {
                     ImageAndDrawing imgAndDraw = current.m_data;
-                    return imgAndDraw.m_originalCanvasW <= 2048;
+                    return imgAndDraw.m_originalCanvasW <= 1600;
                 }
             }
             return false;
