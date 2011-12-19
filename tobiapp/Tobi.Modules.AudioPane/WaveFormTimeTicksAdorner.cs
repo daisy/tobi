@@ -111,7 +111,7 @@ namespace Tobi.Plugin.AudioPane
             if (m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null
                 && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextPreRenderThreshold)
             {
-                drawChunkInfos(drawingContext, null, hoffset, heightAvailable, widthAvailable, m_AudioPaneView.BytesPerPixel, 1);
+                drawChunkInfos(null, drawingContext, null, hoffset, heightAvailable, widthAvailable, m_AudioPaneView.BytesPerPixel, 1);
             }
 
             drawMouseOver(drawingContext, hoffset, heightAvailable, widthAvailable);
@@ -223,7 +223,7 @@ namespace Tobi.Plugin.AudioPane
 #if NET40
 , null, TextFormattingMode.Display
 #endif //NET40
-                        );
+);
 
                     double posX = currentTickX - formattedText.Width / 2;
 
@@ -285,7 +285,7 @@ namespace Tobi.Plugin.AudioPane
 #if NET40
 , null, TextFormattingMode.Display
 #endif //NET40
-                    );
+);
 
                 m_point1.X = m_MousePosX;
                 m_point1.Y = 0;
@@ -317,9 +317,12 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        public void drawChunkInfos(DrawingContext drawingContext, DrawingGroup drawingGroup,
+        public void drawChunkInfos(ImageAndDrawing imageAndDraw, DrawingContext drawingContext, DrawingGroup drawingGroup,
             double hoffset, double heightAvailable, double widthAvailable, double bytesPerPixel, double zoom) // ALL ZOOMED ALREADY ! (from waveform loader)
         {
+            double xZoomed = imageAndDraw == null ? -1 : imageAndDraw.m_originalX * zoom;
+            double wZoomed = imageAndDraw == null ? -1 : imageAndDraw.m_originalW * zoom;
+
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_AudioPaneViewModel.m_UrakawaSession.GetTreeNodeSelection();
             if (treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
             {
@@ -427,17 +430,31 @@ namespace Tobi.Plugin.AudioPane
 
                             if (drawingGroup != null)
                             {
-                                var rectGeo = new RectangleGeometry(m_rectRect);
-                                rectGeo.Freeze();
-                                var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
-                                rectGeoDraw.Freeze();
-                                drawingGroup.Children.Add(rectGeoDraw);
+                                if (imageAndDraw == null
+                                    ||
+                                    (
+                                    m_rectRect.Left >= xZoomed
+                                    && m_rectRect.Left < xZoomed + wZoomed
+                                    ||
+                                    m_rectRect.Right > xZoomed
+                                    && m_rectRect.Right <= xZoomed + wZoomed
+                                    )
+                                    )
+                                {
+                                    m_rectRect.X -= xZoomed;
+                                    var rectGeo = new RectangleGeometry(m_rectRect);
+                                    rectGeo.Freeze();
+                                    var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
+                                    rectGeoDraw.Freeze();
+                                    drawingGroup.Children.Add(rectGeoDraw);
 
-                                var textGeo = formattedTextDuration.BuildGeometry(m_point3);
-                                textGeo.Freeze();
-                                var textGeoDraw = new GeometryDrawing(m_timeTextBrush, null, textGeo);
-                                textGeoDraw.Freeze();
-                                drawingGroup.Children.Add(textGeoDraw);
+                                    m_point3.X -= xZoomed;
+                                    var textGeo = formattedTextDuration.BuildGeometry(m_point3);
+                                    textGeo.Freeze();
+                                    var textGeoDraw = new GeometryDrawing(m_timeTextBrush, null, textGeo);
+                                    textGeoDraw.Freeze();
+                                    drawingGroup.Children.Add(textGeoDraw);
+                                }
                             }
                             else
                             {
@@ -515,17 +532,31 @@ namespace Tobi.Plugin.AudioPane
 
                                 if (drawingGroup != null)
                                 {
-                                    var rectGeo = new RectangleGeometry(m_rectRect);
-                                    rectGeo.Freeze();
-                                    var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
-                                    rectGeoDraw.Freeze();
-                                    drawingGroup.Children.Add(rectGeoDraw);
+                                    if (imageAndDraw == null
+                                        ||
+                                        (
+                                        m_rectRect.Left >= xZoomed
+                                        && m_rectRect.Left < xZoomed + wZoomed
+                                        ||
+                                        m_rectRect.Right > xZoomed
+                                        && m_rectRect.Right <= xZoomed + wZoomed
+                                        )
+                                        )
+                                    {
+                                        m_rectRect.X -= xZoomed;
+                                        var rectGeo = new RectangleGeometry(m_rectRect);
+                                        rectGeo.Freeze();
+                                        var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
+                                        rectGeoDraw.Freeze();
+                                        drawingGroup.Children.Add(rectGeoDraw);
 
-                                    var textGeo = formattedText.BuildGeometry(m_point3);
-                                    textGeo.Freeze();
-                                    var textGeoDraw = new GeometryDrawing(m_phraseBrush, null, textGeo);
-                                    textGeoDraw.Freeze();
-                                    drawingGroup.Children.Add(textGeoDraw);
+                                        m_point3.X -= xZoomed;
+                                        var textGeo = formattedText.BuildGeometry(m_point3);
+                                        textGeo.Freeze();
+                                        var textGeoDraw = new GeometryDrawing(m_phraseBrush, null, textGeo);
+                                        textGeoDraw.Freeze();
+                                        drawingGroup.Children.Add(textGeoDraw);
+                                    }
                                 }
                                 else
                                 {
@@ -539,7 +570,6 @@ namespace Tobi.Plugin.AudioPane
                                     {
                                         //drawingContext.Pop(); //PushOpacity
                                     }
-
                                     var clipGeo = new RectangleGeometry(m_rectRect);
                                     clipGeo.Freeze();
                                     drawingContext.PushClip(clipGeo);
