@@ -42,7 +42,7 @@ namespace Tobi.Plugin.AudioPane
 
     public partial class AudioPaneView
     {
-        private const double m_WaveformTileWidth = 200;
+        private const double m_WaveformTileWidth = 400;
         private LightLinkedList<ImageAndDrawing> m_WaveformTileImages = new LightLinkedList<ImageAndDrawing>();
 
         private void emptyWaveformTiles()
@@ -378,17 +378,25 @@ namespace Tobi.Plugin.AudioPane
                 //m_BackgroundLoader = null;
 
                 CommandManager.InvalidateRequerySuggested();
-
-                if (!onlyUpdateTiles)
+                
+                if (false && !onlyUpdateTiles)
                 {
                     ShowHideWaveFormLoadingMessage(false);
-
+                }
+                if (!onlyUpdateTiles)
+                {
                     m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying);
                 }
-
+                
                 return;
             }
 
+            // The subsequent scroll event will load the tiles :)
+            if (!onlyUpdateTiles)
+            {
+                m_scrollRefreshNoTimer = true;
+                return;
+            }
 
             var zoom = (m_ShellView != null
                             ? m_ShellView.MagnificationLevel
@@ -441,7 +449,7 @@ namespace Tobi.Plugin.AudioPane
             //WaveFormProgress.LargeChange = progressStep;
             m_ProgressVisibleOffset = Math.Floor(progressStep);
 
-            if (!onlyUpdateTiles)
+            if (false && !onlyUpdateTiles)
             {
                 WaveFormProgress.IsIndeterminate = false;
                 WaveFormProgress.Value = 0;
@@ -486,7 +494,7 @@ namespace Tobi.Plugin.AudioPane
                                             }));
                                             //Console.WriteLine(@">>>> SEND BEFORE 2");
 
-                                            if (!onlyUpdateTiles)
+                                            if (!onlyUpdateTiles || m_scrollRefreshNoTimer)
                                             {
                                                 Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                                                                        (Action)
@@ -495,19 +503,19 @@ namespace Tobi.Plugin.AudioPane
                                                                             wasPlaying)));
                                             }
                                             //Console.WriteLine(@">>>> SEND BEFORE 3");
-                                            if (!onlyUpdateTiles)
+                                            if (false && !onlyUpdateTiles)
                                             {
                                                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                                             {
                                                 WaveFormProgress.IsIndeterminate = true;
                                                 TimeMessageHide();
                                                 ShowHideWaveFormLoadingMessage(false);
+                                                m_ViewModel.m_TimeStringOther = String.Empty;
                                             }));
                                             }
 
                                             Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                                             {
-                                                m_ViewModel.m_TimeStringOther = String.Empty;
                                                 CommandManager.InvalidateRequerySuggested();
                                             }));
                                             //Console.WriteLine(@">>>> SEND AFTER 3");
@@ -524,6 +532,14 @@ namespace Tobi.Plugin.AudioPane
             m_LoadThreadIsAlive = false;
 
             DebugFix.Assert(m_LoadThread == null);
+
+            bool bypassThread = true;
+            if (bypassThread)
+            {
+                m_ViewModel.IsWaveFormLoading = true;
+                threadDelegate.Invoke();
+                return;
+            }
 
             m_LoadThread = new Thread(threadDelegate)
                                {
@@ -627,12 +643,19 @@ namespace Tobi.Plugin.AudioPane
                 while (current != null)
                 {
                     ImageAndDrawing imgAndDraw = current.m_data;
-                    if (!imgAndDraw.m_imageSourceLoaded)
+                    if (!imgAndDraw.m_imageSourceLoaded
+                        &&
+                        imgAndDraw.m_originalX * BytesPerPixel < (nBytesScrollOffset + nBytesScrollVisibleWidth)
+                        )
                     {
                         imageTileFirst = current;
                         break;
                     }
                     current = current.m_nextItem;
+                }
+                if (imageTileFirst.m_data.m_imageSourceLoaded)
+                {
+                    return;
                 }
 
                 bool atLeastOneNeedsLoading = false;
@@ -663,6 +686,10 @@ namespace Tobi.Plugin.AudioPane
                 current = imageTileLast;
                 while (current != null)
                 {
+                    if (imageTileFirst == current)
+                    {
+                        break;
+                    }
                     ImageAndDrawing imgAndDraw = current.m_data;
                     if (!imgAndDraw.m_imageSourceLoaded)
                     {
@@ -671,6 +698,11 @@ namespace Tobi.Plugin.AudioPane
                     current = current.m_previousItem;
                 }
                 imageTileLast = current;
+
+                if (imageTileFirst == imageTileLast)
+                {
+                    imageTileLast = null;
+                }
             }
 
             long totalRead = onlyLoadVisibleScroll ?
@@ -1299,7 +1331,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         sumProgress = 0;
 
-                        if (!Dispatcher.CheckAccess() && !onlyUpdateTiles)
+                        if (false && !Dispatcher.CheckAccess() && !onlyUpdateTiles)
                         {
                             DispatcherOperation op = Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                                                                             (Action)(() =>
@@ -1340,12 +1372,12 @@ namespace Tobi.Plugin.AudioPane
                 if (stopWatch != null && stopWatch.IsRunning)
                 {
                     stopWatch.Stop();
-                    m_Logger.Log("loadWavForm 1:  " + stopWatch.ElapsedMilliseconds, Category.Debug, Priority.Medium);
+                    //m_Logger.Log("loadWavForm 1:  " + stopWatch.ElapsedMilliseconds, Category.Debug, Priority.Medium);
                 }
 
                 #endregion LOOP
 
-                if (!Dispatcher.CheckAccess() && !onlyUpdateTiles)
+                if (false && !Dispatcher.CheckAccess() && !onlyUpdateTiles)
                 {
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                     {
@@ -1360,7 +1392,7 @@ namespace Tobi.Plugin.AudioPane
                 if (stopWatch != null && stopWatch.IsRunning)
                 {
                     stopWatch.Stop();
-                    m_Logger.Log("loadWavForm 2:  " + stopWatch.ElapsedMilliseconds, Category.Debug, Priority.Medium);
+                    //m_Logger.Log("loadWavForm 2:  " + stopWatch.ElapsedMilliseconds, Category.Debug, Priority.Medium);
                 }
             }
         }

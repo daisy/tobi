@@ -567,12 +567,13 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       </Canvas>
     </ScrollViewer>
   </DockPanel>
+
+  <!--Visibility="{Binding Path=IsWaveFormLoading,
+  Converter={XAML:BooleanToVisibilityConverter},
+  Mode=OneWay}"-->
   <DockPanel Grid.Column="0" Grid.Row="0" LastChildFill="true"
-             Visibility="{Binding Path=IsWaveFormLoading,
-                            Converter={XAML:BooleanToVisibilityConverter},
-                            Mode=OneWay}"
              Focusable="False"
-             
+             Visibility="Hidden"
                VerticalAlignment="Bottom">
     <Button Content="Cancel"
             DockPanel.Dock="Right"

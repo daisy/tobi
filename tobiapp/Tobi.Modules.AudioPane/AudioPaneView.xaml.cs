@@ -212,23 +212,29 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        private bool m_scrollRefreshNoTimer = false;
         private DispatcherTimer m_scrollRefreshIntervalTimer = null;
         private void OnWaveFormScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             InvalidateWaveFormOverlay();
 
 
-
+            if (m_scrollRefreshNoTimer)
+            {
+                m_ViewModel.AudioPlayer_LoadWaveForm(true);
+                m_scrollRefreshNoTimer = false;
+                return;
+            }
 
             if (m_scrollRefreshIntervalTimer == null)
             {
                 m_scrollRefreshIntervalTimer = new DispatcherTimer(DispatcherPriority.Normal);
-                m_scrollRefreshIntervalTimer.Interval = TimeSpan.FromMilliseconds(1000);
+                m_scrollRefreshIntervalTimer.Interval = TimeSpan.FromMilliseconds(500);
                 m_scrollRefreshIntervalTimer.Tick += (oo, ee) =>
                                                          {
                                                              m_scrollRefreshIntervalTimer.Stop();
                                                              //m_scrollRefreshIntervalTimer = null;
-                                                             if (!m_ZoomSliderDrag)
+                                                             if (!m_ZoomSliderDrag && !m_ViewModel.IsWaveFormLoading)
                                                              {
                                                                  m_ViewModel.AudioPlayer_LoadWaveForm(true);
                                                              }
@@ -298,10 +304,10 @@ namespace Tobi.Plugin.AudioPane
 
             if (!force)
             {
-#if DEBUG
-                m_Logger.Log("OnWaveFormCanvasSizeChanged (calling CANCEL Waveform load)", Category.Debug,
-                             Priority.Medium);
-#endif
+//#if DEBUG
+//                m_Logger.Log("OnWaveFormCanvasSizeChanged (calling CANCEL Waveform load)", Category.Debug,
+//                             Priority.Medium);
+//#endif
 
                 CancelWaveFormLoad(true);
 
@@ -391,9 +397,9 @@ namespace Tobi.Plugin.AudioPane
 
             if (!force)
             {
-#if DEBUG
-                m_Logger.Log("OnWaveFormCanvasSizeChanged (calling CommandRefresh)", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//                m_Logger.Log("OnWaveFormCanvasSizeChanged (calling CommandRefresh)", Category.Debug, Priority.Medium);
+//#endif
 
                 m_ViewModel.CommandRefresh.Execute();
             }
