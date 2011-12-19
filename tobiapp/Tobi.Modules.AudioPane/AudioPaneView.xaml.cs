@@ -190,7 +190,7 @@ namespace Tobi.Plugin.AudioPane
         {
             if (m_ViewModel.IsWaveFormLoading) return;
 
-            m_Logger.Log("AudioPaneView.OnZoomSliderDragStarted", Category.Debug, Priority.Medium);
+            //m_Logger.Log("AudioPaneView.OnZoomSliderDragStarted", Category.Debug, Priority.Medium);
             m_ZoomSliderDrag = true;
         }
 
@@ -198,7 +198,7 @@ namespace Tobi.Plugin.AudioPane
         {
             if (m_ViewModel.IsWaveFormLoading) return;
 
-            m_Logger.Log("AudioPaneView.OnZoomSliderDragCompleted", Category.Debug, Priority.Medium);
+            //m_Logger.Log("AudioPaneView.OnZoomSliderDragCompleted", Category.Debug, Priority.Medium);
             m_ZoomSliderDrag = false;
 
             m_ViewModel.CommandRefresh.Execute();
@@ -355,6 +355,16 @@ namespace Tobi.Plugin.AudioPane
 
             m_ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
             m_ViewModel.RefreshWaveFormChunkMarkers();
+
+            LightLinkedList<ImageAndDrawing>.Item current_ = m_WaveformTileImages.m_First;
+            while (current_ != null)
+            {
+                ImageAndDrawing imgAndDraw = current_.m_data;
+
+                imgAndDraw.m_image.Height = WaveFormCanvas.ActualHeight;
+
+                current_ = current_.m_nextItem;
+            }
 
             if (!m_ViewModel.State.Audio.HasContent)
             {

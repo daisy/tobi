@@ -248,7 +248,7 @@ namespace Tobi.Plugin.AudioPane
                 m_ShellView.LoadTangoIcon("edit-clear"),
                 () =>
                 {
-                    Logger.Log("AudioPaneViewModel.CommandClearSelection", Category.Debug, Priority.Medium);
+                    //Logger.Log("AudioPaneViewModel.CommandClearSelection", Category.Debug, Priority.Medium);
 
                     State.Selection.ClearSelection();
                 },

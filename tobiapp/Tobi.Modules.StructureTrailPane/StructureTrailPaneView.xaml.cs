@@ -650,7 +650,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 str = qName1_ + " >> " + qName2_ + " // " + text2 + " *** " + audioInfo2;
             }
 
-            Console.WriteLine(@"}}}}}" + str);
+            //Console.WriteLine(@"}}}}}" + str);
 
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
             m_FocusStartElement.ToolTip = str;
