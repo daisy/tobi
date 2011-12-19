@@ -88,16 +88,16 @@ namespace Tobi.Plugin.AudioPane
             image.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);
             //RenderOptions.SetEdgeMode(image, EdgeMode.Unspecified);
 
+#if NET40
             image.SetValue(RenderOptions.ClearTypeHintProperty, ClearTypeHint.Auto);
             //RenderOptions.SetClearTypeHint(image, ClearTypeHint.Auto);
+#endif //NET40
 
             image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.LowQuality);
             //RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.LowQuality);
 
             image.SetValue(RenderOptions.CachingHintProperty, CachingHint.Cache);
             //RenderOptions.SetCachingHint(image, CachingHint.Cache);
-#if NET40
-#endif //NET40
 
             image.SnapsToDevicePixels = false;
             //image.SetValue(UIElement.SnapsToDevicePixelsProperty, false);
