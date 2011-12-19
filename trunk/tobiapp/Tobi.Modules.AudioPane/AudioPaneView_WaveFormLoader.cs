@@ -105,13 +105,16 @@ namespace Tobi.Plugin.AudioPane
             image.SnapsToDevicePixels = false;
             //image.SetValue(UIElement.SnapsToDevicePixelsProperty, false);
 
-            var binding = new Binding();
-            binding.Mode = BindingMode.OneWay;
-            binding.ElementName = WaveFormCanvas.Name;
-            string pathName = FrameworkElement.ActualHeightProperty.ToString();
-            binding.Path = new PropertyPath(pathName); //"ActualHeight"
-            //PropertyChangedNotifyBase.GetMemberName(()=>)
-            image.SetBinding(FrameworkElement.HeightProperty, binding);
+
+            image.Height = WaveFormCanvas.ActualHeight;
+            //var binding = new Binding();
+            //binding.Mode = BindingMode.OneWay;
+            //binding.ElementName = WaveFormCanvas.Name;
+            //string pathName = FrameworkElement.ActualHeightProperty.ToString();
+            //binding.Path = new PropertyPath(pathName); //"ActualHeight"
+            ////PropertyChangedNotifyBase.GetMemberName(()=>)
+            //image.SetBinding(FrameworkElement.HeightProperty, binding);
+
 
             return image;
         }
@@ -607,7 +610,7 @@ namespace Tobi.Plugin.AudioPane
 
             DebugFix.Assert(m_LoadThread == null);
 
-            bool bypassThread = Math.Min(m_ViewModel.State.Audio.DataLength, nBytesScrollVisibleWidth - nBytesScrollOffset) < 1 * 1024 * 1024;//1MB
+            bool bypassThread = Math.Min(m_ViewModel.State.Audio.DataLength, nBytesScrollVisibleWidth - nBytesScrollOffset) < 5 * 1024 * 1024; //5MB
             if (bypassThread)
             {
                 m_ViewModel.IsWaveFormLoading = true;

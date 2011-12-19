@@ -33,7 +33,7 @@ namespace Tobi.Plugin.AudioPane
 
         public void SetSelectionBytes(long begin, long end)
         {
-            m_Logger.Log("AudioPaneView.SetSelectionBytes", Category.Debug, Priority.Medium);
+            //m_Logger.Log("AudioPaneView.SetSelectionBytes", Category.Debug, Priority.Medium);
 
             m_TimeSelectionLeftX = begin / BytesPerPixel;
             WaveFormTimeSelectionRect.Visibility = Visibility.Visible;

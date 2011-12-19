@@ -691,6 +691,11 @@ namespace Tobi.Plugin.AudioPane
             }
             // else: the stream is now open
 
+            if (!onlyUpdateTiles)
+            {
+                State.Selection.ClearSelection();
+            }
+
             if (View != null)
             {
                 //View.RefreshCanvasWidth();
