@@ -581,7 +581,7 @@ namespace Tobi.Plugin.AudioPane
 
             lock (LOCK)
             {
-                if (View != null)
+                if (false && View != null)
                 {
                     View.ShowHideWaveFormLoadingMessage(true);
                 }
@@ -695,7 +695,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 //View.RefreshCanvasWidth();
 
-                if (!onlyUpdateTiles)
+                if (false && !onlyUpdateTiles)
                 {
                     View.ShowHideWaveFormLoadingMessage(true);
                 }
