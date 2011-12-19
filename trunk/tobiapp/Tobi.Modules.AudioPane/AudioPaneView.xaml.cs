@@ -212,9 +212,39 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        private DispatcherTimer m_scrollRefreshIntervalTimer = null;
         private void OnWaveFormScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             InvalidateWaveFormOverlay();
+
+
+
+
+            if (m_scrollRefreshIntervalTimer == null)
+            {
+                m_scrollRefreshIntervalTimer = new DispatcherTimer(DispatcherPriority.Normal);
+                m_scrollRefreshIntervalTimer.Interval = TimeSpan.FromMilliseconds(1000);
+                m_scrollRefreshIntervalTimer.Tick += (oo, ee) =>
+                                                         {
+                                                             m_scrollRefreshIntervalTimer.Stop();
+                                                             //m_scrollRefreshIntervalTimer = null;
+                                                             if (!m_ZoomSliderDrag)
+                                                             {
+                                                                 m_ViewModel.AudioPlayer_LoadWaveForm(true);
+                                                             }
+                                                         };
+                m_scrollRefreshIntervalTimer.Start();
+            }
+            else if (m_scrollRefreshIntervalTimer.IsEnabled)
+            {
+                //restart
+                m_scrollRefreshIntervalTimer.Stop();
+                m_scrollRefreshIntervalTimer.Start();
+            }
+            else
+            {
+                m_scrollRefreshIntervalTimer.Start();
+            }
         }
 
 #if DEBUG

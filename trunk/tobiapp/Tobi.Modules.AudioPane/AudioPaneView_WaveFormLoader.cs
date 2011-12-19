@@ -36,6 +36,8 @@ namespace Tobi.Plugin.AudioPane
         public double m_originalX;
         public double m_originalW;
         public double m_originalCanvasW;
+
+        public bool m_imageSourceLoaded;
     }
 
     public partial class AudioPaneView
@@ -54,6 +56,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 ImageAndDrawing imgAndDraw = current.m_data;
                 imgAndDraw.m_image.Source = null;
+                imgAndDraw.m_imageSourceLoaded = false;
                 WaveFormCanvas.Children.Remove(imgAndDraw.m_image);
                 imgAndDraw.m_image = null;
                 imgAndDraw.m_drawingImage = null;
@@ -337,20 +340,25 @@ namespace Tobi.Plugin.AudioPane
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
-        public void RefreshUI_LoadWaveForm(bool wasPlaying)
+        public void RefreshUI_LoadWaveForm(bool wasPlaying, bool onlyUpdateTiles)
         {
-            RefreshCanvasWidth();
+            if (!onlyUpdateTiles)
+            {
+                RefreshCanvasWidth();
+            }
             double widthReal = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
             //#if DEBUG
             //            double width_ = getWaveFormWidth();
             //            DebugFix.Assert((long)Math.Round(width_ * 100) == (long)Math.Round(widthReal * 100));
             //#endif //DEBUG
 
-            createWaveformTileImages();
+            if (!onlyUpdateTiles)
+            {
+                createWaveformTileImages();
 
-            ShowHideWaveFormLoadingMessage(true);
+                ResetPeakLabels();
+            }
 
-            ResetPeakLabels();
 
             double heightReal = WaveFormCanvas.ActualHeight;
             //if (double.IsNaN(heightReal) || (long)Math.Round(heightReal) == 0)
@@ -371,9 +379,12 @@ namespace Tobi.Plugin.AudioPane
 
                 CommandManager.InvalidateRequerySuggested();
 
-                ShowHideWaveFormLoadingMessage(false);
+                if (!onlyUpdateTiles)
+                {
+                    ShowHideWaveFormLoadingMessage(false);
 
-                m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying);
+                    m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying);
+                }
 
                 return;
             }
@@ -398,7 +409,18 @@ namespace Tobi.Plugin.AudioPane
 
             int bytesPerStep = samplesPerStep * byteDepth;
 
-            var estimatedCapacity = (int)(widthMagnified / (bytesPerStep / bytesPerPixel_Magnified)) + 1;
+
+            double visibleWidth = WaveFormScroll.ViewportWidth * zoom;
+            int nStepsScrollVisibleWidth = (int)Math.Floor((visibleWidth * bytesPerPixel_Magnified) / bytesPerStep);
+            long nBytesScrollVisibleWidth = Math.Max(0, nStepsScrollVisibleWidth * bytesPerStep);
+
+            double hoffset = WaveFormScroll.HorizontalOffset * zoom;
+            int nStepsScrollOffset = (int)Math.Floor((hoffset * bytesPerPixel_Magnified) / bytesPerStep);
+            long nBytesScrollOffset = Math.Max(0, nStepsScrollOffset * bytesPerStep);
+
+            const bool onlyLoadVisibleScroll = true;
+
+            var estimatedCapacity = (int)((onlyLoadVisibleScroll ? visibleWidth : widthMagnified) / (bytesPerStep / bytesPerPixel_Magnified)) + 1;
 
             //estimatedCapacity * m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 101) //501
             //if (true)
@@ -419,10 +441,13 @@ namespace Tobi.Plugin.AudioPane
             //WaveFormProgress.LargeChange = progressStep;
             m_ProgressVisibleOffset = Math.Floor(progressStep);
 
-            WaveFormProgress.IsIndeterminate = false;
-            WaveFormProgress.Value = 0;
-            WaveFormProgress.Minimum = 0;
-            WaveFormProgress.Maximum = estimatedCapacity;
+            if (!onlyUpdateTiles)
+            {
+                WaveFormProgress.IsIndeterminate = false;
+                WaveFormProgress.Value = 0;
+                WaveFormProgress.Minimum = 0;
+                WaveFormProgress.Maximum = estimatedCapacity;
+            }
 
             ThreadStart threadDelegate = delegate()
                                     {
@@ -431,7 +456,7 @@ namespace Tobi.Plugin.AudioPane
                                         {
                                             //Console.WriteLine(@"BEFORE loadWaveForm");
 
-                                            loadWaveForm(widthMagnified, heightMagnified, wasPlaying, bytesPerPixel_Magnified, zoom);
+                                            loadWaveForm(widthMagnified, heightMagnified, wasPlaying, bytesPerPixel_Magnified, zoom, onlyLoadVisibleScroll, nBytesScrollOffset, nBytesScrollVisibleWidth, onlyUpdateTiles);
 
                                             //Console.WriteLine(@"AFTER loadWaveForm");
                                         }
@@ -461,18 +486,28 @@ namespace Tobi.Plugin.AudioPane
                                             }));
                                             //Console.WriteLine(@">>>> SEND BEFORE 2");
 
-                                            Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                                                (Action)(() => m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(wasPlaying)));
-
+                                            if (!onlyUpdateTiles)
+                                            {
+                                                Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                                                                       (Action)
+                                                                       (() =>
+                                                                        m_ViewModel.AudioPlayer_PlayAfterWaveFormLoaded(
+                                                                            wasPlaying)));
+                                            }
                                             //Console.WriteLine(@">>>> SEND BEFORE 3");
-
-                                            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                                            if (!onlyUpdateTiles)
+                                            {
+                                                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                                             {
                                                 WaveFormProgress.IsIndeterminate = true;
                                                 TimeMessageHide();
-                                                m_ViewModel.m_TimeStringOther = String.Empty;
                                                 ShowHideWaveFormLoadingMessage(false);
+                                            }));
+                                            }
 
+                                            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                                            {
+                                                m_ViewModel.m_TimeStringOther = String.Empty;
                                                 CommandManager.InvalidateRequerySuggested();
                                             }));
                                             //Console.WriteLine(@">>>> SEND AFTER 3");
@@ -528,7 +563,8 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        private void loadWaveForm(double widthMagnified, double heightMagnified, bool wasPlaying, double bytesPerPixel_Magnified, double zoom)
+        private void loadWaveForm(double widthMagnified, double heightMagnified, bool wasPlaying, double bytesPerPixel_Magnified, double zoom,
+            bool onlyLoadVisibleScroll, long nBytesScrollOffset, long nBytesScrollVisibleWidth, bool onlyUpdateTiles)
         {
             //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
 
@@ -555,19 +591,6 @@ namespace Tobi.Plugin.AudioPane
 #endif //USE_BLOCK_COPY
 
 
-            double visibleWidth = WaveFormScroll.ViewportWidth * zoom;
-
-            int nStepsScrollVisibleWidth = (int)Math.Floor((visibleWidth * bytesPerPixel_Magnified) / bytesPerStep);
-            long nBytesScrollVisibleWidth = Math.Max(0, nStepsScrollVisibleWidth * bytesPerStep);
-
-            double hoffset = WaveFormScroll.HorizontalOffset * zoom;
-
-            int nStepsScrollOffset = (int)Math.Floor((hoffset * bytesPerPixel_Magnified) / bytesPerStep);
-            long nBytesScrollOffset = Math.Max(0, nStepsScrollOffset * bytesPerStep);
-
-            const bool onlyLoadVisibleScroll = true;
-
-
             const bool bJoinInterSamples = false;
 
             if (m_CancelRequested) return;
@@ -578,14 +601,16 @@ namespace Tobi.Plugin.AudioPane
             LightLinkedList<ImageAndDrawing>.Item imageTileLast = null;
             if (onlyLoadVisibleScroll)
             {
-                LightLinkedList<ImageAndDrawing>.Item current = imageTileFirst;
+                imageTileFirst = null;
+                LightLinkedList<ImageAndDrawing>.Item current = m_WaveformTileImages.m_First;
                 while (current != null)
                 {
                     ImageAndDrawing imgAndDraw = current.m_data;
                     if (nBytesScrollOffset >= imgAndDraw.m_originalX * BytesPerPixel
                         &&
                         nBytesScrollOffset <
-                        (imgAndDraw.m_originalX + imgAndDraw.m_originalW) * BytesPerPixel)
+                        (imgAndDraw.m_originalX + imgAndDraw.m_originalW) * BytesPerPixel
+                        )
                     {
                         imageTileFirst = current;
                         break;
@@ -593,10 +618,32 @@ namespace Tobi.Plugin.AudioPane
                     current = current.m_nextItem;
                 }
 
+                if (imageTileFirst == null)
+                {
+                    return;
+                }
+
                 current = imageTileFirst;
                 while (current != null)
                 {
                     ImageAndDrawing imgAndDraw = current.m_data;
+                    if (!imgAndDraw.m_imageSourceLoaded)
+                    {
+                        imageTileFirst = current;
+                        break;
+                    }
+                    current = current.m_nextItem;
+                }
+
+                bool atLeastOneNeedsLoading = false;
+                current = imageTileFirst;
+                while (current != null)
+                {
+                    ImageAndDrawing imgAndDraw = current.m_data;
+                    if (!imgAndDraw.m_imageSourceLoaded)
+                    {
+                        atLeastOneNeedsLoading = true;
+                    }
                     if ((nBytesScrollOffset + nBytesScrollVisibleWidth) > imgAndDraw.m_originalX * BytesPerPixel
                         &&
                         (nBytesScrollOffset + nBytesScrollVisibleWidth) <=
@@ -607,6 +654,23 @@ namespace Tobi.Plugin.AudioPane
                     }
                     current = current.m_nextItem;
                 }
+
+                if (!atLeastOneNeedsLoading)
+                {
+                    return;
+                }
+
+                current = imageTileLast;
+                while (current != null)
+                {
+                    ImageAndDrawing imgAndDraw = current.m_data;
+                    if (!imgAndDraw.m_imageSourceLoaded)
+                    {
+                        break;
+                    }
+                    current = current.m_previousItem;
+                }
+                imageTileLast = current;
             }
 
             long totalRead = onlyLoadVisibleScroll ?
@@ -725,11 +789,11 @@ namespace Tobi.Plugin.AudioPane
 
                     if (currentImageTile == null
                         || xNotMagnified >= currentRightXLimit
-                         || read == 0)
+                        || read == 0)
                     {
                         //draw current
 
-                        if (currentImageTile != null)
+                        if (currentImageTile != null && !currentImageTile.m_data.m_imageSourceLoaded)
                         {
                             if (m_CancelRequested && m_CancelInterruptDrawingToo) return;
 
@@ -751,21 +815,25 @@ namespace Tobi.Plugin.AudioPane
                                 //#endif
 
                                 Action deleg = () =>
-                                {
-                                    currentImageTile.m_data.m_image.Width += overflow;
+                                                   {
+                                                       currentImageTile.m_data.m_image.Width += overflow;
 
-                                    if (currentImageTile.m_nextItem != null)
-                                    {
-                                        currentImageTile.m_nextItem.m_data.m_image.Width -= overflow;
+                                                       if (currentImageTile.m_nextItem != null)
+                                                       {
+                                                           currentImageTile.m_nextItem.m_data.m_image.Width -= overflow;
 
-                                        double left = (double)currentImageTile.m_nextItem.m_data.m_image.GetValue(Canvas.LeftProperty);
-                                        currentImageTile.m_nextItem.m_data.m_image.SetValue(Canvas.LeftProperty, left + overflow);
-                                    }
+                                                           double left =
+                                                               (double)
+                                                               currentImageTile.m_nextItem.m_data.m_image.GetValue(
+                                                                   Canvas.LeftProperty);
+                                                           currentImageTile.m_nextItem.m_data.m_image.SetValue(
+                                                               Canvas.LeftProperty, left + overflow);
+                                                       }
 
-                                    //#if DEBUG
-                                    //                                    m_Logger.Log("loadWaveFor, overflow (2):" + overflow, Category.Debug, Priority.Medium);
-                                    //#endif
-                                };
+                                                       //#if DEBUG
+                                                       //                                    m_Logger.Log("loadWaveFor, overflow (2):" + overflow, Category.Debug, Priority.Medium);
+                                                       //#endif
+                                                   };
 
                                 if (!Dispatcher.CheckAccess())
                                 {
@@ -792,7 +860,9 @@ namespace Tobi.Plugin.AudioPane
                             //x > widthMagnified ||
                             (onlyLoadVisibleScroll && imageTileLast != null
                             // && totalRead > (nBytesScrollOffset + nBytesScrollVisibleWidth)
-                            && (totalRead-read) > (imageTileLast.m_data.m_originalX + imageTileLast.m_data.m_originalW) * BytesPerPixel
+                             &&
+                             (totalRead - read) >
+                             (imageTileLast.m_data.m_originalX + imageTileLast.m_data.m_originalW) * BytesPerPixel
                             //m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
                             ))
                         {
@@ -819,7 +889,8 @@ namespace Tobi.Plugin.AudioPane
 
                         //reset points geomertries
 
-                        if (Settings.Default.AudioWaveForm_IsBordered) //m_ViewModel.IsEnvelopeVisible)
+                        if (!currentImageTile.m_data.m_imageSourceLoaded && Settings.Default.AudioWaveForm_IsBordered)
+                        //m_ViewModel.IsEnvelopeVisible)
                         {
                             Point p = default(Point);
 
@@ -848,8 +919,8 @@ namespace Tobi.Plugin.AudioPane
                             var estimatedCapacity = (int)((
                                 //onlyLoadVisibleScroll ?
                                 //visibleWidth * zoom :
-                                currentImageTile.m_data.m_originalW * zoom //widthMagnified
-                                ) / (bytesPerStep / bytesPerPixel_Magnified)) + 2;
+                                                           currentImageTile.m_data.m_originalW * zoom //widthMagnified
+                                                           ) / (bytesPerStep / bytesPerPixel_Magnified)) + 2;
 
                             listTopPointsCh1 = new List<Point>(estimatedCapacity);
                             listBottomPointsCh1 = new List<Point>(estimatedCapacity);
@@ -878,7 +949,7 @@ namespace Tobi.Plugin.AudioPane
                             //}
                         }
 
-                        if (Settings.Default.AudioWaveForm_IsStroked)
+                        if (!currentImageTile.m_data.m_imageSourceLoaded && Settings.Default.AudioWaveForm_IsStroked)
                         {
                             firstY1 = true;
                             firstY1_ = true;
@@ -895,35 +966,40 @@ namespace Tobi.Plugin.AudioPane
                     }
 
 #if USE_BLOCK_COPY
-                    // converts Int 8 unsigned to Int 16 signed
+    // converts Int 8 unsigned to Int 16 signed
                     Buffer.BlockCopy(bytes, 0, samples, 0, read);
-#endif //USE_BLOCK_COPY
+#endif
+                    //USE_BLOCK_COPY
 
                     if (m_CancelRequested) break;
 
-                    for (int channel = 0; channel < m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels; channel++)
+                    if (!currentImageTile.m_data.m_imageSourceLoaded)
                     {
-                        int limit = samplesPerStep;
-
-                        if (read < bytesPerStep)
+                        for (int channel = 0; channel < m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels; channel++)
                         {
-                            var nSamples = (int)Math.Floor((double)read / byteDepth);
+                            int limit = samplesPerStep;
 
-                            nSamples = m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels *
-                                       (int)Math.Floor((double)nSamples / m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels);
-                            limit = nSamples;
-                            limit = Math.Min(limit, samplesPerStep);
-                        }
+                            if (read < bytesPerStep)
+                            {
+                                var nSamples = (int)Math.Floor((double)read / byteDepth);
 
-                        long total = 0;
-                        int nSamplesRead = 0;
+                                nSamples = m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels *
+                                           (int)
+                                           Math.Floor((double)nSamples /
+                                                      m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels);
+                                limit = nSamples;
+                                limit = Math.Min(limit, samplesPerStep);
+                            }
 
-                        long min_ = short.MaxValue; // Int 16 signed 32767
-                        long max_ = short.MinValue; // Int 16 signed -32768
+                            long total = 0;
+                            int nSamplesRead = 0;
 
-                        for (int i = channel; i < limit; i += m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels)
-                        {
-                            nSamplesRead++;
+                            long min_ = short.MaxValue; // Int 16 signed 32767
+                            long max_ = short.MinValue; // Int 16 signed -32768
+
+                            for (int i = channel; i < limit; i += m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels)
+                            {
+                                nSamplesRead++;
 #if USE_BLOCK_COPY
                             short sample = samples[i];
 
@@ -957,232 +1033,241 @@ namespace Tobi.Plugin.AudioPane
                                         DebugFix.Assert(sample == sampleDirectFromByteArray2);
                                 }
                             }
-#else //USE_BLOCK_COPY
-                            // LITTLE INDIAN !
-                            int index = i << 1;
-                            if (index >= bytes.Length)
-                            {
+#else
+                                //USE_BLOCK_COPY
+                                // LITTLE INDIAN !
+                                int index = i << 1;
+                                if (index >= bytes.Length)
+                                {
 #if DEBUG
-                                Debugger.Break();
-#endif // DEBUG
-                                break;
-                            }
+                                    Debugger.Break();
+#endif
+                                    // DEBUG
+                                    break;
+                                }
 
-                            var sample = (short)(bytes[index] | (bytes[index + 1] << 8));
-#endif //USE_BLOCK_COPY
+                                var sample = (short)(bytes[index] | (bytes[index + 1] << 8));
+#endif
+                                //USE_BLOCK_COPY
 
-                            if (sample == short.MinValue)
-                            {
-                                total += short.MaxValue + 1;
-                            }
-                            else
-                            {
-                                total += Math.Abs(sample);
-                            }
-
-                            if (sample < min_)
-                            {
-                                min_ = sample;
-                            }
-                            if (sample > max_)
-                            {
-                                max_ = sample;
-                            }
-                        }
-
-                        double hh = heightMagnified;
-                        if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
-                        {
-                            hh /= 2;
-                        }
-
-                        // ReSharper disable RedundantAssignment
-                        double y1 = 0.0;
-                        double y2 = 0.0;
-                        // ReSharper restore RedundantAssignment
-
-
-                        #region DECIBELS
-
-                        if (Settings.Default.AudioWaveForm_UseDecibels)
-                        {
-                            double mindB = min_;
-                            double maxdB = max_;
-
-                            if (!m_ViewModel.IsUseDecibelsNoAverage)
-                            {
-                                mindB = total / (double)nSamplesRead; //AVERAGE
-                                maxdB = mindB;
-                            }
-
-                            bool minIsNegative = mindB < 0;
-                            double minAbs = Math.Abs(mindB);
-                            if (minAbs == 0)
-                            {
-                                mindB = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
-                            }
-                            else
-                            {
-                                mindB = logFactor * Math.Log10(minAbs / reference);
-                                dBMinReached = Math.Min(dBMinReached, mindB);
-                                if (m_ViewModel.IsUseDecibelsNoAverage && !minIsNegative)
+                                if (sample == short.MinValue)
                                 {
-                                    mindB = -mindB;
+                                    total += short.MaxValue + 1;
+                                }
+                                else
+                                {
+                                    total += Math.Abs(sample);
+                                }
+
+                                if (sample < min_)
+                                {
+                                    min_ = sample;
+                                }
+                                if (sample > max_)
+                                {
+                                    max_ = sample;
                                 }
                             }
 
-                            bool maxIsNegative = maxdB < 0;
-                            double maxAbs = Math.Abs(maxdB);
-                            if (maxAbs == 0)
+                            double hh = heightMagnified;
+                            if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
                             {
-                                maxdB = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
+                                hh /= 2;
                             }
-                            else
+
+                            // ReSharper disable RedundantAssignment
+                            double y1 = 0.0;
+                            double y2 = 0.0;
+                            // ReSharper restore RedundantAssignment
+
+
+                            #region DECIBELS
+
+                            if (Settings.Default.AudioWaveForm_UseDecibels)
                             {
-                                maxdB = logFactor * Math.Log10(maxAbs / reference);
-                                dBMaxReached = Math.Max(dBMaxReached, maxdB);
-                                if (m_ViewModel.IsUseDecibelsNoAverage && !maxIsNegative)
+                                double mindB = min_;
+                                double maxdB = max_;
+
+                                if (!m_ViewModel.IsUseDecibelsNoAverage)
                                 {
-                                    maxdB = -maxdB;
+                                    mindB = total / (double)nSamplesRead; //AVERAGE
+                                    maxdB = mindB;
+                                }
+
+                                bool minIsNegative = mindB < 0;
+                                double minAbs = Math.Abs(mindB);
+                                if (minAbs == 0)
+                                {
+                                    mindB = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
+                                }
+                                else
+                                {
+                                    mindB = logFactor * Math.Log10(minAbs / reference);
+                                    dBMinReached = Math.Min(dBMinReached, mindB);
+                                    if (m_ViewModel.IsUseDecibelsNoAverage && !minIsNegative)
+                                    {
+                                        mindB = -mindB;
+                                    }
+                                }
+
+                                bool maxIsNegative = maxdB < 0;
+                                double maxAbs = Math.Abs(maxdB);
+                                if (maxAbs == 0)
+                                {
+                                    maxdB = (m_ViewModel.IsUseDecibelsNoAverage ? 0 : double.NegativeInfinity);
+                                }
+                                else
+                                {
+                                    maxdB = logFactor * Math.Log10(maxAbs / reference);
+                                    dBMaxReached = Math.Max(dBMaxReached, maxdB);
+                                    if (m_ViewModel.IsUseDecibelsNoAverage && !maxIsNegative)
+                                    {
+                                        maxdB = -maxdB;
+                                    }
+                                }
+
+                                double totalDbRange = dbMaxValue - dbMinValue;
+                                double pixPerDbUnit = hh / totalDbRange;
+
+                                if (m_ViewModel.IsUseDecibelsNoAverage)
+                                {
+                                    mindB = dbMinValue - mindB;
+                                }
+                                y1 = pixPerDbUnit * (mindB - dbMinValue) + decibelDrawDelta;
+                                if (!m_ViewModel.IsUseDecibelsNoAverage)
+                                {
+                                    y1 = hh - y1;
+                                }
+                                if (m_ViewModel.IsUseDecibelsNoAverage)
+                                {
+                                    maxdB = dbMaxValue - maxdB;
+                                }
+                                y2 = pixPerDbUnit * (maxdB - dbMinValue) - decibelDrawDelta;
+                                if (!m_ViewModel.IsUseDecibelsNoAverage)
+                                {
+                                    y2 = hh - y2;
                                 }
                             }
+                            #endregion DECIBELS
 
-                            double totalDbRange = dbMaxValue - dbMinValue;
-                            double pixPerDbUnit = hh / totalDbRange;
+                            else
+                            {
+                                const short MaxValue = short.MaxValue; // Int 16 signed 32767
+                                const short MinValue = short.MinValue; // Int 16 signed -32768
 
-                            if (m_ViewModel.IsUseDecibelsNoAverage)
-                            {
-                                mindB = dbMinValue - mindB;
-                            }
-                            y1 = pixPerDbUnit * (mindB - dbMinValue) + decibelDrawDelta;
-                            if (!m_ViewModel.IsUseDecibelsNoAverage)
-                            {
+                                double pixPerUnit = hh /
+                                                    (MaxValue - MinValue); // == ushort.MaxValue => Int 16 unsigned 65535
+
+                                y1 = pixPerUnit * (min_ - MinValue);
                                 y1 = hh - y1;
-                            }
-                            if (m_ViewModel.IsUseDecibelsNoAverage)
-                            {
-                                maxdB = dbMaxValue - maxdB;
-                            }
-                            y2 = pixPerDbUnit * (maxdB - dbMinValue) - decibelDrawDelta;
-                            if (!m_ViewModel.IsUseDecibelsNoAverage)
-                            {
+                                y2 = pixPerUnit * (max_ - MinValue);
                                 y2 = hh - y2;
                             }
-                        }
-                        #endregion DECIBELS
-                        else
-                        {
-                            const short MaxValue = short.MaxValue; // Int 16 signed 32767
-                            const short MinValue = short.MinValue; // Int 16 signed -32768
 
-                            double pixPerUnit = hh /
-                                                (MaxValue - MinValue); // == ushort.MaxValue => Int 16 unsigned 65535
-
-                            y1 = pixPerUnit * (min_ - MinValue);
-                            y1 = hh - y1;
-                            y2 = pixPerUnit * (max_ - MinValue);
-                            y2 = hh - y2;
-                        }
-
-                        if (!(Settings.Default.AudioWaveForm_UseDecibels && m_ViewModel.IsUseDecibelsAdjust))
-                        {
-                            if (y1 > hh - tolerance)
+                            if (!(Settings.Default.AudioWaveForm_UseDecibels && m_ViewModel.IsUseDecibelsAdjust))
                             {
-                                y1 = hh - tolerance;
-                            }
-                            if (y1 < 0 + tolerance)
-                            {
-                                y1 = 0 + tolerance;
-                            }
-
-                            if (y2 > hh - tolerance)
-                            {
-                                y2 = hh - tolerance;
-                            }
-                            if (y2 < 0 + tolerance)
-                            {
-                                y2 = 0 + tolerance;
-                            }
-                        }
-
-                        lastXdrawn = x;
-                        double xTile = x - zoom * currentImageTile.m_data.m_originalX;
-
-                        if (channel == 0)
-                        {
-                            var p1 = new Point(xTile, y1);
-
-                            if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
-                                && listTopPointsCh1 != null)
-                            {
-                                listTopPointsCh1.Add(p1);
-                            }
-                            if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
-                            {
-                                if (firstY1)
+                                if (y1 > hh - tolerance)
                                 {
-                                    sgcCh1.BeginFigure(p1, false, false);
-                                    firstY1 = false;
+                                    y1 = hh - tolerance;
                                 }
-                                else
+                                if (y1 < 0 + tolerance)
                                 {
-                                    sgcCh1.LineTo(p1, bJoinInterSamples, false);
+                                    y1 = 0 + tolerance;
+                                }
+
+                                if (y2 > hh - tolerance)
+                                {
+                                    y2 = hh - tolerance;
+                                }
+                                if (y2 < 0 + tolerance)
+                                {
+                                    y2 = 0 + tolerance;
                                 }
                             }
-                        }
-                        else if (sgcCh2 != null)
-                        {
-                            y1 += hh;
-                            var p2 = new Point(xTile, y1);
 
-                            if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
-                                && listTopPointsCh2 != null)
+                            lastXdrawn = x;
+                            double xTile = x - zoom * currentImageTile.m_data.m_originalX;
+
+                            if (channel == 0)
                             {
-                                listTopPointsCh2.Add(p2);
-                            }
-                            if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
-                            {
-                                if (firstY1_)
+                                var p1 = new Point(xTile, y1);
+
+                                if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
+                                    && listTopPointsCh1 != null)
                                 {
-                                    sgcCh2.BeginFigure(p2, false, false);
-                                    firstY1_ = false;
+                                    listTopPointsCh1.Add(p1);
                                 }
-                                else
+                                if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
                                 {
-                                    sgcCh2.LineTo(p2, bJoinInterSamples, false);
+                                    if (firstY1)
+                                    {
+                                        sgcCh1.BeginFigure(p1, false, false);
+                                        firstY1 = false;
+                                    }
+                                    else
+                                    {
+                                        sgcCh1.LineTo(p1, bJoinInterSamples, false);
+                                    }
+                                }
+                            }
+                            else if (sgcCh2 != null)
+                            {
+                                y1 += hh;
+                                var p2 = new Point(xTile, y1);
+
+                                if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
+                                    && listTopPointsCh2 != null)
+                                {
+                                    listTopPointsCh2.Add(p2);
+                                }
+                                if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
+                                {
+                                    if (firstY1_)
+                                    {
+                                        sgcCh2.BeginFigure(p2, false, false);
+                                        firstY1_ = false;
+                                    }
+                                    else
+                                    {
+                                        sgcCh2.LineTo(p2, bJoinInterSamples, false);
+                                    }
+                                }
+                            }
+
+                            if (channel == 0)
+                            {
+                                var p3 = new Point(xTile, y2);
+
+                                if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
+                                {
+                                    sgcCh1.LineTo(p3, true, false);
+                                }
+                                if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
+                                    && listBottomPointsCh1 != null)
+                                {
+                                    listBottomPointsCh1.Add(p3);
+                                }
+                            }
+                            else if (sgcCh2 != null)
+                            {
+                                y2 += hh;
+                                var p4 = new Point(xTile, y2);
+
+                                if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
+                                {
+                                    sgcCh2.LineTo(p4, true, false);
+                                }
+                                if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
+                                    && listBottomPointsCh2 != null)
+                                {
+                                    listBottomPointsCh2.Add(p4);
                                 }
                             }
                         }
-
-                        if (channel == 0)
-                        {
-                            var p3 = new Point(xTile, y2);
-
-                            if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
-                            {
-                                sgcCh1.LineTo(p3, true, false);
-                            }
-                            if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
-                                && listBottomPointsCh1 != null)
-                            {
-                                listBottomPointsCh1.Add(p3);
-                            }
-                        }
-                        else if (sgcCh2 != null)
-                        {
-                            y2 += hh;
-                            var p4 = new Point(xTile, y2);
-
-                            if (Settings.Default.AudioWaveForm_IsStroked) //m_ViewModel.IsWaveFillVisible)
-                            {
-                                sgcCh2.LineTo(p4, true, false);
-                            }
-                            if (Settings.Default.AudioWaveForm_IsBordered //m_ViewModel.IsEnvelopeVisible
-                                && listBottomPointsCh2 != null)
-                            {
-                                listBottomPointsCh2.Add(p4);
-                            }
-                        }
+                    }
+                    else
+                    {
+                        lastXdrawn = 0;
                     }
                     if (m_CancelRequested) break;
 
@@ -1209,23 +1294,40 @@ namespace Tobi.Plugin.AudioPane
 
                     if (m_CancelRequested) break;
 
-                    if (!Dispatcher.CheckAccess())
+                    sumProgress++;
+                    if (sumProgress >= m_ProgressVisibleOffset)
                     {
-                        sumProgress++;
-                        if (sumProgress >= m_ProgressVisibleOffset)
+                        sumProgress = 0;
+
+                        if (!Dispatcher.CheckAccess() && !onlyUpdateTiles)
                         {
-                            sumProgress = 0;
+                            DispatcherOperation op = Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                                                                            (Action)(() =>
+                                                                                          {
+                                                                                              long timeInLocalUnits
+                                                                                                  =
+                                                                                                  m_ViewModel.State.
+                                                                                                      Audio.
+                                                                                                      GetCurrentPcmFormat
+                                                                                                      ().Data.
+                                                                                                      ConvertBytesToTime
+                                                                                                      (totalRead);
 
-                            DispatcherOperation op = Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
-                            {
-                                long timeInLocalUnits = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(totalRead);
+                                                                                              m_ViewModel.
+                                                                                                  m_TimeStringOther
+                                                                                                  =
+                                                                                                  AudioPaneViewModel
+                                                                                                      .
+                                                                                                      FormatTimeSpan_Units
+                                                                                                      (new Time(
+                                                                                                           timeInLocalUnits));
+                                                                                              TimeMessageShow();
+                                                                                              //TimeMessageRefresh();
 
-                                m_ViewModel.m_TimeStringOther = AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits));
-                                TimeMessageShow();
-                                //TimeMessageRefresh();
-
-                                WaveFormProgress.Value += m_ProgressVisibleOffset;
-                            }));
+                                                                                              WaveFormProgress.Value
+                                                                                                  +=
+                                                                                                  m_ProgressVisibleOffset;
+                                                                                          }));
                         }
                     }
 
@@ -1243,7 +1345,7 @@ namespace Tobi.Plugin.AudioPane
 
                 #endregion LOOP
 
-                if (!Dispatcher.CheckAccess())
+                if (!Dispatcher.CheckAccess() && !onlyUpdateTiles)
                 {
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                     {
@@ -1323,12 +1425,14 @@ namespace Tobi.Plugin.AudioPane
                         if (useVectorResize() && imageAndDraw.m_drawingImage != null)
                         {
                             imageAndDraw.m_image.Source = imageAndDraw.m_drawingImage;
+                            imageAndDraw.m_imageSourceLoaded = true;
                         }
                         else
                         {
                             var drawImg = new DrawingImage(drawGrp);
                             drawImg.Freeze();
                             imageAndDraw.m_image.Source = drawImg;
+                            imageAndDraw.m_imageSourceLoaded = true;
                         }
 
 
@@ -1388,12 +1492,14 @@ namespace Tobi.Plugin.AudioPane
                             if (useVectorResize() && imageAndDraw.m_drawingImage != null)
                             {
                                 imageAndDraw.m_image.Source = imageAndDraw.m_drawingImage;
+                                imageAndDraw.m_imageSourceLoaded = true;
                             }
                             else
                             {
                                 var drawImg = new DrawingImage(drawGrp);
                                 drawImg.Freeze();
                                 imageAndDraw.m_image.Source = drawImg;
+                                imageAndDraw.m_imageSourceLoaded = true;
                             }
                         }
                         else
@@ -1450,6 +1556,7 @@ namespace Tobi.Plugin.AudioPane
                                                                            stride);
 
                                     imageAndDraw.m_image.Source = bitmapSource;
+                                    imageAndDraw.m_imageSourceLoaded = true;
                                 }
                                 else
                                 {
@@ -1462,12 +1569,14 @@ namespace Tobi.Plugin.AudioPane
                                                       renderTargetBitmap.PixelHeight), arrBits, stride, 0);
 
                                     imageAndDraw.m_image.Source = writeableBitmap;
+                                    imageAndDraw.m_imageSourceLoaded = true;
                                 }
                             }
                             else
                             {
                                 // Default
                                 imageAndDraw.m_image.Source = renderTargetBitmap;
+                                imageAndDraw.m_imageSourceLoaded = true;
                             }
                         }
                     }
@@ -1500,11 +1609,13 @@ namespace Tobi.Plugin.AudioPane
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
                     {
                         imageAndDraw.m_image.Source = drawImg;
+                        imageAndDraw.m_imageSourceLoaded = true;
                     }));
                 }
                 else
                 {
                     imageAndDraw.m_image.Source = drawImg;
+                    imageAndDraw.m_imageSourceLoaded = true;
                 }
             }
         }
