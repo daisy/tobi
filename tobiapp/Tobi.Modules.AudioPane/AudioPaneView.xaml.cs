@@ -383,8 +383,8 @@ namespace Tobi.Plugin.AudioPane
                     if (useVectorResize() &&
                         imgAndDraw.m_drawingImage != null && !(imgAndDraw.m_image.Source is DrawingImage))
                     {
-                        m_Logger.Log("AudioPaneView.OnWaveFormCanvasSizeChanged:WaveFormImage.Source switch", Category.Debug,
-                                     Priority.Medium);
+                        //m_Logger.Log("AudioPaneView.OnWaveFormCanvasSizeChanged:WaveFormImage.Source switch", Category.Debug,
+                        //             Priority.Medium);
 
                         //RenderTargetBitmap source = (RenderTargetBitmap)WaveFormImage.Source;
                         imgAndDraw.m_image.Source = null;

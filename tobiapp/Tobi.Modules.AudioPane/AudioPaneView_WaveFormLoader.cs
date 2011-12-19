@@ -993,7 +993,10 @@ namespace Tobi.Plugin.AudioPane
                         {
                             currentImageTile = currentImageTile.m_nextItem;
 
-                            DebugFix.Assert(currentImageTile != null);
+                            if (currentImageTile == null)
+                            {
+                                break;
+                            }
                         }
 
                         //reset points geomertries
