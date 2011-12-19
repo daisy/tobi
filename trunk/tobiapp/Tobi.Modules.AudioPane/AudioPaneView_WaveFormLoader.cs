@@ -28,18 +28,18 @@ namespace Tobi.Plugin.AudioPane
         BitmapSource
     }
 
+    public class ImageAndDrawing
+    {
+        public Image m_image;
+        public DrawingImage m_drawingImage;
+
+        public double m_originalX;
+        public double m_originalW;
+        public double m_originalCanvasW;
+    }
+
     public partial class AudioPaneView
     {
-        private class ImageAndDrawing
-        {
-            public Image m_image;
-            public DrawingImage m_drawingImage;
-
-            public double m_originalX;
-            public double m_originalW;
-            public double m_originalCanvasW;
-        }
-
         private const double m_WaveformTileWidth = 512;
         private LightLinkedList<ImageAndDrawing> m_WaveformTileImages = new LightLinkedList<ImageAndDrawing>();
 
@@ -83,7 +83,7 @@ namespace Tobi.Plugin.AudioPane
             //Panel.SetZIndex(image, 0);
 
             //image.SetValue(Image.StretchProperty, Stretch.Fill);
-            image.Stretch = Stretch.Fill;
+            image.Stretch = Stretch.None;
 
             image.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);
             //RenderOptions.SetEdgeMode(image, EdgeMode.Unspecified);
@@ -169,6 +169,10 @@ namespace Tobi.Plugin.AudioPane
 
                 double w = imgAndDraw.m_originalW * ratio;
                 double x = imgAndDraw.m_originalX * ratio;
+
+                //imgAndDraw.m_image.SetValue(Image.StretchProperty, Stretch.Fill);
+                imgAndDraw.m_image.Stretch = Stretch.Fill;
+
                 imgAndDraw.m_image.Width = w;
                 imgAndDraw.m_image.SetValue(Canvas.LeftProperty, x);
 
@@ -583,6 +587,7 @@ namespace Tobi.Plugin.AudioPane
             try
             {
                 Stream audioStream = m_ViewModel.AudioPlayer_GetWaveformAudioStream();
+                //audioStream = m_ViewModel.State.Audio.PlayStream
 
                 if (m_CancelRequested) return;
 
@@ -621,7 +626,7 @@ namespace Tobi.Plugin.AudioPane
                 double dbMinValue = logFactor * Math.Log10(1.0 / reference); //-90.3 dB
                 //double val = reference*Math.Pow(10, MinValue/20); // val == 1.0, just checking
 
-                System.Diagnostics.Debug.Print(dbMinValue + "");
+                //System.Diagnostics.Debug.Print(dbMinValue + "");
 
                 double dBMinHardCoded = dbMinValue;
 
@@ -1264,9 +1269,11 @@ namespace Tobi.Plugin.AudioPane
                 Action del = () =>
                 {
 
-                    System.Diagnostics.Debug.Print("CACHE WAVEFORM WIDTH = " +
+#if DEBUG
+                    m_Logger.Log("CACHE WAVEFORM WIDTH = " +
                                                    imageAndDraw.m_image.Width + "-" + imageAndDraw.m_originalW + " // " +
-                                                   imageAndDraw.m_image.ActualWidth + " # " + imageAndDraw.m_originalCanvasW);
+                                                   imageAndDraw.m_image.ActualWidth + " # " + imageAndDraw.m_originalCanvasW, Category.Debug, Priority.Medium);
+#endif
 
                     bool drawNET3 = false;
 #if NET40
@@ -1534,7 +1541,7 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_ViewModel.State.Audio.PlayStreamMarkers != null && treeNodeSelection.Item1 != null)
             {
-                geoDrawMarkers = createGeometry_Markers(heightMagnified, bytesPerPixel_Magnified);
+                geoDrawMarkers = createGeometry_Markers(imageAndDraw, heightMagnified, bytesPerPixel_Magnified, zoom);
             }
             //
             var drawGrp = new DrawingGroup();
@@ -1657,7 +1664,7 @@ namespace Tobi.Plugin.AudioPane
                 //var drawGroup = new DrawingGroup();
                 //drawGroup.Children.Add(imageDrawing);
 
-                m_WaveFormTimeTicksAdorner.drawChunkInfos(null, drawGrp, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
+                m_WaveFormTimeTicksAdorner.drawChunkInfos(imageAndDraw, null, drawGrp, 0, heightMagnified, widthMagnified, bytesPerPixel_Magnified, zoom);
                 //dc.Close();
 
                 //drawGrp.Children.Add(imageDrawing);
@@ -1781,16 +1788,23 @@ namespace Tobi.Plugin.AudioPane
             return geoDrawSubStreams;
         }
 #endif
-        private GeometryDrawing createGeometry_Markers(double heightMagnified, double bytesPerPixel_Magnified)
+        private GeometryDrawing createGeometry_Markers(ImageAndDrawing imageAndDraw, double heightMagnified, double bytesPerPixel_Magnified, double zoom)
         {
             Brush brushColorMarkers = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Phrases); //m_ViewModel.ColorMarkers);
             //brushColorMarkers.Freeze();
 
+            bool atLeastOneDrawn = false;
+
             var geometryMarkers = new StreamGeometry();
             using (StreamGeometryContext sgcMarkers = geometryMarkers.Open())
             {
-                sgcMarkers.BeginFigure(new Point(0.5, 0), false, false);
-                sgcMarkers.LineTo(new Point(0.5, heightMagnified), true, false);
+                if (imageAndDraw == m_WaveformTileImages.m_First.m_data)
+                {
+                    atLeastOneDrawn = true;
+
+                    sgcMarkers.BeginFigure(new Point(0.5, 0), false, false);
+                    sgcMarkers.LineTo(new Point(0.5, heightMagnified), true, false);
+                }
 
                 long bytesLeft = 0;
 
@@ -1805,9 +1819,17 @@ namespace Tobi.Plugin.AudioPane
 #endif //USE_NORMAL_LIST
 
                     double pixels = (bytesLeft + marker.m_LocalStreamDataLength) / bytesPerPixel_Magnified;
+                    double xZoomed = imageAndDraw.m_originalX * zoom;
+                    if (pixels > xZoomed
+                        && pixels <= xZoomed + imageAndDraw.m_originalW * zoom)
+                    {
+                        atLeastOneDrawn = true;
 
-                    sgcMarkers.BeginFigure(new Point(pixels, 0), false, false);
-                    sgcMarkers.LineTo(new Point(pixels, heightMagnified), true, false);
+                        pixels -= xZoomed;
+
+                        sgcMarkers.BeginFigure(new Point(pixels, 0), false, false);
+                        sgcMarkers.LineTo(new Point(pixels, heightMagnified), true, false);
+                    }
 
                     bytesLeft += marker.m_LocalStreamDataLength;
 
@@ -1821,13 +1843,18 @@ namespace Tobi.Plugin.AudioPane
                 sgcMarkers.Close();
             }
 
-            geometryMarkers.Freeze();
-            var geoDrawMarkers = new GeometryDrawing(brushColorMarkers,
-                                                                 new Pen(brushColorMarkers, 1.0),
-                                                                 geometryMarkers);
-            geoDrawMarkers.Freeze();
+            if (atLeastOneDrawn)
+            {
+                geometryMarkers.Freeze();
+                var geoDrawMarkers = new GeometryDrawing(brushColorMarkers,
+                                                         new Pen(brushColorMarkers, 1.0),
+                                                         geometryMarkers);
+                geoDrawMarkers.Freeze();
 
-            return geoDrawMarkers;
+                return geoDrawMarkers;
+            }
+
+            return null;
         }
 
 #if DEBUG
