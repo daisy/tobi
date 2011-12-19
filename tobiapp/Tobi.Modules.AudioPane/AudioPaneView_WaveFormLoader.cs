@@ -40,14 +40,14 @@ namespace Tobi.Plugin.AudioPane
 
     public partial class AudioPaneView
     {
-        private const double m_WaveformTileWidth = 512 * 2;
+        private const double m_WaveformTileWidth = 200;
         private LightLinkedList<ImageAndDrawing> m_WaveformTileImages = new LightLinkedList<ImageAndDrawing>();
 
         private void emptyWaveformTiles()
         {
-//#if DEBUG
-//            m_Logger.Log("emptyWaveformTiles", Category.Debug, Priority.Medium);
-//#endif
+            //#if DEBUG
+            //            m_Logger.Log("emptyWaveformTiles", Category.Debug, Priority.Medium);
+            //#endif
 
             LightLinkedList<ImageAndDrawing>.Item current = m_WaveformTileImages.m_First;
             while (current != null)
@@ -66,9 +66,9 @@ namespace Tobi.Plugin.AudioPane
 
         private Image createWaveformTileImage(double x, double w)
         {
-//#if DEBUG
-//            m_Logger.Log("createWaveformTileImage: " + x + " / " + w, Category.Debug, Priority.Medium);
-//#endif
+            //#if DEBUG
+            //            m_Logger.Log("createWaveformTileImage: " + x + " / " + w, Category.Debug, Priority.Medium);
+            //#endif
             var image = new Image();
 
             image.SetValue(Canvas.LeftProperty, x);
@@ -121,9 +121,9 @@ namespace Tobi.Plugin.AudioPane
 
             double nTiles = canvasWidth / m_WaveformTileWidth;
 
-//#if DEBUG
-//            m_Logger.Log("createWaveformTileImages: " + nTiles + " => " + canvasWidth + " (" + m_WaveformTileWidth + ")", Category.Debug, Priority.Medium);
-//#endif
+            //#if DEBUG
+            //            m_Logger.Log("createWaveformTileImages: " + nTiles + " => " + canvasWidth + " (" + m_WaveformTileWidth + ")", Category.Debug, Priority.Medium);
+            //#endif
 
             if (nTiles <= 1.0)
             {
@@ -176,9 +176,9 @@ namespace Tobi.Plugin.AudioPane
                 imgAndDraw.m_image.Width = w;
                 imgAndDraw.m_image.SetValue(Canvas.LeftProperty, x);
 
-//#if DEBUG
-//                m_Logger.Log("updateWaveformTileImagesWidthAndPosition: " + x + " / " + w, Category.Debug, Priority.Medium);
-//#endif
+                //#if DEBUG
+                //                m_Logger.Log("updateWaveformTileImagesWidthAndPosition: " + x + " / " + w, Category.Debug, Priority.Medium);
+                //#endif
                 current = current.m_nextItem;
             }
         }
@@ -307,9 +307,9 @@ namespace Tobi.Plugin.AudioPane
         public void RefreshCanvasWidth()
         {
             m_ForceCanvasWidthUpdate = true;
-//#if DEBUG
-//            m_Logger.Log("refreshCanvasWidth (before canvas width change)", Category.Debug, Priority.Medium);
-//#endif
+            //#if DEBUG
+            //            m_Logger.Log("refreshCanvasWidth (before canvas width change)", Category.Debug, Priority.Medium);
+            //#endif
 
             BindingExpression b1 = WaveFormCanvas.GetBindingExpression(FrameworkElement.WidthProperty);
             if (b1 != null)
@@ -328,9 +328,9 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-//#if DEBUG
-//            m_Logger.Log("refreshCanvasWidth (after canvas width change)", Category.Debug, Priority.Medium);
-//#endif
+            //#if DEBUG
+            //            m_Logger.Log("refreshCanvasWidth (after canvas width change)", Category.Debug, Priority.Medium);
+            //#endif
 
         }
 
@@ -544,9 +544,9 @@ namespace Tobi.Plugin.AudioPane
             int bytesPerStep = samplesPerStep * byteDepth;
 
 
-//#if DEBUG
-//            m_Logger.Log("loadWaveForm - byte buffer size:" + bytesPerStep, Category.Debug, Priority.Medium);
-//#endif
+            //#if DEBUG
+            //            m_Logger.Log("loadWaveForm - byte buffer size:" + bytesPerStep, Category.Debug, Priority.Medium);
+            //#endif
 
 
             var bytes = new byte[bytesPerStep]; // Int 8 unsigned
@@ -565,7 +565,7 @@ namespace Tobi.Plugin.AudioPane
             int nStepsScrollOffset = (int)Math.Floor((hoffset * bytesPerPixel_Magnified) / bytesPerStep);
             long nBytesScrollOffset = Math.Max(0, nStepsScrollOffset * bytesPerStep);
 
-            bool onlyLoadVisibleScroll = false;
+            const bool onlyLoadVisibleScroll = true;
 
 
             const bool bJoinInterSamples = false;
@@ -574,8 +574,46 @@ namespace Tobi.Plugin.AudioPane
 
             Stopwatch stopWatch = null;
 
+            LightLinkedList<ImageAndDrawing>.Item imageTileFirst = m_WaveformTileImages.m_First;
+            LightLinkedList<ImageAndDrawing>.Item imageTileLast = null;
+            if (onlyLoadVisibleScroll)
+            {
+                LightLinkedList<ImageAndDrawing>.Item current = imageTileFirst;
+                while (current != null)
+                {
+                    ImageAndDrawing imgAndDraw = current.m_data;
+                    if (nBytesScrollOffset >= imgAndDraw.m_originalX * BytesPerPixel
+                        &&
+                        nBytesScrollOffset <
+                        (imgAndDraw.m_originalX + imgAndDraw.m_originalW) * BytesPerPixel)
+                    {
+                        imageTileFirst = current;
+                        break;
+                    }
+                    current = current.m_nextItem;
+                }
 
-            long totalRead = onlyLoadVisibleScroll ? nBytesScrollOffset : 0;
+                current = imageTileFirst;
+                while (current != null)
+                {
+                    ImageAndDrawing imgAndDraw = current.m_data;
+                    if ((nBytesScrollOffset + nBytesScrollVisibleWidth) > imgAndDraw.m_originalX * BytesPerPixel
+                        &&
+                        (nBytesScrollOffset + nBytesScrollVisibleWidth) <=
+                        (imgAndDraw.m_originalX + imgAndDraw.m_originalW) * BytesPerPixel)
+                    {
+                        imageTileLast = current;
+                        break;
+                    }
+                    current = current.m_nextItem;
+                }
+            }
+
+            long totalRead = onlyLoadVisibleScroll ?
+                m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                (long)Math.Round(imageTileFirst.m_data.m_originalX * BytesPerPixel)
+                )
+                : 0;
 
             double x = 0; // initial pixel offset
             x += (totalRead / bytesPerPixel_Magnified); //ViewModel.WaveStepX;
@@ -708,9 +746,9 @@ namespace Tobi.Plugin.AudioPane
                                     currentImageTile.m_nextItem.m_data.m_originalX += overflow;
                                 }
 
-//#if DEBUG
-//                                m_Logger.Log("loadWaveFor, overflow (1):" + overflow, Category.Debug, Priority.Medium);
-//#endif
+                                //#if DEBUG
+                                //                                m_Logger.Log("loadWaveFor, overflow (1):" + overflow, Category.Debug, Priority.Medium);
+                                //#endif
 
                                 Action deleg = () =>
                                 {
@@ -724,9 +762,9 @@ namespace Tobi.Plugin.AudioPane
                                         currentImageTile.m_nextItem.m_data.m_image.SetValue(Canvas.LeftProperty, left + overflow);
                                     }
 
-//#if DEBUG
-//                                    m_Logger.Log("loadWaveFor, overflow (2):" + overflow, Category.Debug, Priority.Medium);
-//#endif
+                                    //#if DEBUG
+                                    //                                    m_Logger.Log("loadWaveFor, overflow (2):" + overflow, Category.Debug, Priority.Medium);
+                                    //#endif
                                 };
 
                                 if (!Dispatcher.CheckAccess())
@@ -750,6 +788,17 @@ namespace Tobi.Plugin.AudioPane
                                 bytesPerPixel_Magnified, zoom);
                         }
 
+                        if (
+                            //x > widthMagnified ||
+                            (onlyLoadVisibleScroll && imageTileLast != null
+                            // && totalRead > (nBytesScrollOffset + nBytesScrollVisibleWidth)
+                            && (totalRead-read) > (imageTileLast.m_data.m_originalX + imageTileLast.m_data.m_originalW) * BytesPerPixel
+                            //m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
+                            ))
+                        {
+                            break;
+                        }
+
                         if (read == 0)
                         {
                             break;
@@ -759,7 +808,7 @@ namespace Tobi.Plugin.AudioPane
 
                         if (currentImageTile == null)
                         {
-                            currentImageTile = m_WaveformTileImages.m_First;
+                            currentImageTile = imageTileFirst;
                         }
                         else
                         {
@@ -780,7 +829,7 @@ namespace Tobi.Plugin.AudioPane
                             Point listBottomPointsCh2_LAST = p;
                             Point listTopPointsCh2_LAST = p;
 
-                            if (currentImageTile != m_WaveformTileImages.m_First)
+                            if (currentImageTile != imageTileFirst)
                             {
                                 listBottomPointsCh1_LAST = listBottomPointsCh1[listBottomPointsCh1.Count - 1];
                                 listBottomPointsCh1_LAST.X = 0;
@@ -797,15 +846,15 @@ namespace Tobi.Plugin.AudioPane
                             }
 
                             var estimatedCapacity = (int)((
-                                onlyLoadVisibleScroll ?
-                                visibleWidth * zoom :
+                                //onlyLoadVisibleScroll ?
+                                //visibleWidth * zoom :
                                 currentImageTile.m_data.m_originalW * zoom //widthMagnified
                                 ) / (bytesPerStep / bytesPerPixel_Magnified)) + 2;
 
                             listTopPointsCh1 = new List<Point>(estimatedCapacity);
                             listBottomPointsCh1 = new List<Point>(estimatedCapacity);
 
-                            if (currentImageTile != m_WaveformTileImages.m_First)
+                            if (currentImageTile != imageTileFirst)
                             {
                                 listTopPointsCh1.Add(listTopPointsCh1_LAST);
                                 listBottomPointsCh1.Add(listBottomPointsCh1_LAST);
@@ -816,7 +865,7 @@ namespace Tobi.Plugin.AudioPane
                                 listTopPointsCh2 = new List<Point>(estimatedCapacity);
                                 listBottomPointsCh2 = new List<Point>(estimatedCapacity);
 
-                                if (currentImageTile != m_WaveformTileImages.m_First)
+                                if (currentImageTile != imageTileFirst)
                                 {
                                     listTopPointsCh2.Add(listTopPointsCh2_LAST);
                                     listBottomPointsCh2.Add(listBottomPointsCh2_LAST);
@@ -1183,13 +1232,6 @@ namespace Tobi.Plugin.AudioPane
                     x += (read / bytesPerPixel_Magnified); //ViewModel.WaveStepX;
                     DebugFix.Assert(x <= widthMagnified + 3 * zoom); // 3px tolerance, to avoid false positives due to rounding imprecisions
 
-                    if (
-                        //x > widthMagnified ||
-                        (onlyLoadVisibleScroll && totalRead > (nBytesScrollOffset + nBytesScrollVisibleWidth)))
-                    {
-                        break;
-                    }
-
                     if (m_CancelRequested) break;
                 }
 
@@ -1236,9 +1278,9 @@ namespace Tobi.Plugin.AudioPane
         {
             //Console.WriteLine(@"Drawing waveform...1");
 
-//#if DEBUG
-//            m_Logger.Log("drawWaveForm", Category.Debug, Priority.Medium);
-//#endif
+            //#if DEBUG
+            //            m_Logger.Log("drawWaveForm", Category.Debug, Priority.Medium);
+            //#endif
 
             DrawingGroup drawGrp = drawWaveFormUsingCollectedPoints(
                 imageAndDraw,
@@ -1268,11 +1310,11 @@ namespace Tobi.Plugin.AudioPane
                 Action del = () =>
                 {
 
-//#if DEBUG
-//                    m_Logger.Log("CACHE WAVEFORM WIDTH = " +
-//                                                   imageAndDraw.m_image.Width + "-" + imageAndDraw.m_originalW + " // " +
-//                                                   imageAndDraw.m_image.ActualWidth + " # " + imageAndDraw.m_originalCanvasW, Category.Debug, Priority.Medium);
-//#endif
+                    //#if DEBUG
+                    //                    m_Logger.Log("CACHE WAVEFORM WIDTH = " +
+                    //                                                   imageAndDraw.m_image.Width + "-" + imageAndDraw.m_originalW + " // " +
+                    //                                                   imageAndDraw.m_image.ActualWidth + " # " + imageAndDraw.m_originalCanvasW, Category.Debug, Priority.Medium);
+                    //#endif
 
                     bool drawNET3 = false;
 #if NET40
@@ -1880,12 +1922,12 @@ namespace Tobi.Plugin.AudioPane
 
             Brush brushColorBack = ColorBrushCache.Get(
 
-#if false && DEBUG
+#if true && DEBUG
 m_backHackToggle ?
                 Settings.Default.AudioWaveForm_Color_CursorFill
                 : Settings.Default.AudioWaveForm_Color_CursorBorder
 #else
-                Settings.Default.AudioWaveForm_Color_Back
+Settings.Default.AudioWaveForm_Color_Back
 #endif //DEBUG
 
 ); //m_ViewModel.ColorWaveBackground);
