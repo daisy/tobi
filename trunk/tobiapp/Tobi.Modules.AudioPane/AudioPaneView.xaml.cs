@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
@@ -397,16 +398,19 @@ namespace Tobi.Plugin.AudioPane
 
                     if (useVectorResize())
                     {
-                        if (imgAndDraw.m_drawingImage != null && !(imgAndDraw.m_image.Source is DrawingImage))
+                        if (imgAndDraw.m_drawingImage != null
+                            &&
+                            (
+                            !(imgAndDraw.m_image.Source is DrawingImage)
+                            ||
+                            imgAndDraw.m_image.Source != imgAndDraw.m_drawingImage
+                            )
+                            )
                         {
                             //m_Logger.Log("AudioPaneView.OnWaveFormCanvasSizeChanged:WaveFormImage.Source switch", Category.Debug,
                             //             Priority.Medium);
 
-                            //RenderTargetBitmap source = (RenderTargetBitmap)WaveFormImage.Source;
-                            imgAndDraw.m_image.Source = null;
-
-                            //imgAndDraw.m_image.SetValue(Image.StretchProperty, Stretch.Fill);
-                            imgAndDraw.m_image.Stretch = Stretch.Fill;
+                            disposeImageSource(imgAndDraw.m_image);
 
                             imgAndDraw.m_image.Source = imgAndDraw.m_drawingImage;
                         }
@@ -595,7 +599,7 @@ namespace Tobi.Plugin.AudioPane
                     }
                     else
                     {
-                        if (m_TimeSelectionLeftX>=0)
+                        if (m_TimeSelectionLeftX >= 0)
                         {
                             selectionFinished(p.X);
                         }

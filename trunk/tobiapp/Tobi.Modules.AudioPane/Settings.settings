@@ -36,7 +36,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AudioWaveForm_VectorWidthThreshold" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">2048</Value>
+      <Value Profile="(Default)">4000</Value>
     </Setting>
     <Setting Name="AudioWaveForm_UseDecibels" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -63,7 +63,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AudioWaveForm_IsStroked" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AudioWaveForm_Color_Border" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF7FFF00</Value>

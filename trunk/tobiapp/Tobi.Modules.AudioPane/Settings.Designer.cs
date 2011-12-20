@@ -157,7 +157,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2048")]
+        [global::System.Configuration.DefaultSettingValueAttribute("4000")]
         public double AudioWaveForm_VectorWidthThreshold {
             get {
                 return ((double)(this["AudioWaveForm_VectorWidthThreshold"]));
@@ -265,7 +265,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AudioWaveForm_IsStroked {
             get {
                 return ((bool)(this["AudioWaveForm_IsStroked"]));
