@@ -808,6 +808,7 @@ namespace Tobi.Common.UI
                 (e.OriginalSource is Button
                 || e.OriginalSource is RepeatButton
                 || e.OriginalSource is ListViewItem
+                || e.OriginalSource is ListBoxItem
                 || e.OriginalSource is ListItem
                 )
                 && ((UIElement)e.OriginalSource).IsFocused
