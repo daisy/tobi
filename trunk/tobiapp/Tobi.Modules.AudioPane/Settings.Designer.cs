@@ -25,13 +25,145 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Audio_EnableSkippableText {
+        [global::System.Configuration.DefaultSettingValueAttribute("default")]
+        public string Audio_OutputDevice {
             get {
-                return ((bool)(this["Audio_EnableSkippableText"]));
+                return ((string)(this["Audio_OutputDevice"]));
             }
             set {
-                this["Audio_EnableSkippableText"] = value;
+                this["Audio_OutputDevice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("default")]
+        public string Audio_InputDevice {
+            get {
+                return ((string)(this["Audio_InputDevice"]));
+            }
+            set {
+                this["Audio_InputDevice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("default")]
+        public string Audio_TTS_Voice {
+            get {
+                return ((string)(this["Audio_TTS_Voice"]));
+            }
+            set {
+                this["Audio_TTS_Voice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("pagenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,noteref,")]
+        public string Skippables {
+            get {
+                return ((string)(this["Skippables"]));
+            }
+            set {
+                this["Skippables"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Audio_EnableSkippables {
+            get {
+                return ((bool)(this["Audio_EnableSkippables"]));
+            }
+            set {
+                this["Audio_EnableSkippables"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseFriendlyTimeFormat {
+            get {
+                return ((bool)(this["UseFriendlyTimeFormat"]));
+            }
+            set {
+                this["UseFriendlyTimeFormat"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Audio_ButtonBarVisible {
+            get {
+                return ((bool)(this["Audio_ButtonBarVisible"]));
+            }
+            set {
+                this["Audio_ButtonBarVisible"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("350")]
+        public double AudioWaveForm_LoadDelay {
+            get {
+                return ((double)(this["AudioWaveForm_LoadDelay"]));
+            }
+            set {
+                this["AudioWaveForm_LoadDelay"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public double AudioWaveForm_TileWidth {
+            get {
+                return ((double)(this["AudioWaveForm_TileWidth"]));
+            }
+            set {
+                this["AudioWaveForm_TileWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5242880")]
+        public double AudioWaveForm_ThreadBytesThreshold {
+            get {
+                return ((double)(this["AudioWaveForm_ThreadBytesThreshold"]));
+            }
+            set {
+                this["AudioWaveForm_ThreadBytesThreshold"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AudioWaveForm_UseVectorAtResize {
+            get {
+                return ((bool)(this["AudioWaveForm_UseVectorAtResize"]));
+            }
+            set {
+                this["AudioWaveForm_UseVectorAtResize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2048")]
+        public double AudioWaveForm_VectorWidthThreshold {
+            get {
+                return ((double)(this["AudioWaveForm_VectorWidthThreshold"]));
+            }
+            set {
+                this["AudioWaveForm_VectorWidthThreshold"] = value;
             }
         }
         
@@ -56,18 +188,6 @@ namespace Tobi.Plugin.AudioPane {
             }
             set {
                 this["AudioWaveForm_DisableDraw"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AudioWaveForm_UseVectorAtResize {
-            get {
-                return ((bool)(this["AudioWaveForm_UseVectorAtResize"]));
-            }
-            set {
-                this["AudioWaveForm_UseVectorAtResize"] = value;
             }
         }
         
@@ -104,30 +224,6 @@ namespace Tobi.Plugin.AudioPane {
             }
             set {
                 this["AudioWaveForm_TextCacheRenderThreshold"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UseFriendlyTimeFormat {
-            get {
-                return ((bool)(this["UseFriendlyTimeFormat"]));
-            }
-            set {
-                this["UseFriendlyTimeFormat"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Audio_ButtonBarVisible {
-            get {
-                return ((bool)(this["Audio_ButtonBarVisible"]));
-            }
-            set {
-                this["Audio_ButtonBarVisible"] = value;
             }
         }
         
@@ -176,54 +272,6 @@ namespace Tobi.Plugin.AudioPane {
             }
             set {
                 this["AudioWaveForm_IsStroked"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("default")]
-        public string Audio_OutputDevice {
-            get {
-                return ((string)(this["Audio_OutputDevice"]));
-            }
-            set {
-                this["Audio_OutputDevice"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("default")]
-        public string Audio_InputDevice {
-            get {
-                return ((string)(this["Audio_InputDevice"]));
-            }
-            set {
-                this["Audio_InputDevice"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("default")]
-        public string Audio_TTS_Voice {
-            get {
-                return ((string)(this["Audio_TTS_Voice"]));
-            }
-            set {
-                this["Audio_TTS_Voice"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("pagenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,noteref,")]
-        public string Skippables {
-            get {
-                return ((string)(this["Skippables"]));
-            }
-            set {
-                this["Skippables"] = value;
             }
         }
         

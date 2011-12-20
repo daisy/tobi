@@ -944,7 +944,19 @@ m_Stream.Length);
 
                 CommandManager.InvalidateRequerySuggested();
 
-                loadAndPlay();
+                if (View != null)
+                {
+                    View.RefreshUI_PeakMeterBlackout(false);
+                    View.ResetPeakLines();
+                }
+
+                PeakOverloadCountCh1 = 0;
+                PeakOverloadCountCh2 = 0;
+
+                //#if DEBUG
+                //            Logger.Log("CALLING AudioPlayer_LoadWaveForm (loadAndPlay)", Category.Debug, Priority.Medium);
+                //#endif
+                AudioPlayer_LoadWaveForm(false);
             }
             else
             {

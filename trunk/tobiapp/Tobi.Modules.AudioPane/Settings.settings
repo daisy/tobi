@@ -2,17 +2,47 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.AudioPane" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Audio_EnableSkippableText" Type="System.Boolean" Scope="User">
+    <Setting Name="Audio_OutputDevice" Type="System.String" Scope="User">
+      <Value Profile="(Default)">default</Value>
+    </Setting>
+    <Setting Name="Audio_InputDevice" Type="System.String" Scope="User">
+      <Value Profile="(Default)">default</Value>
+    </Setting>
+    <Setting Name="Audio_TTS_Voice" Type="System.String" Scope="User">
+      <Value Profile="(Default)">default</Value>
+    </Setting>
+    <Setting Name="Skippables" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pagenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,noteref,</Value>
+    </Setting>
+    <Setting Name="Audio_EnableSkippables" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="UseFriendlyTimeFormat" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Audio_ButtonBarVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_LoadDelay" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">350</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_TileWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_ThreadBytesThreshold" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">5242880</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_UseVectorAtResize" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_VectorWidthThreshold" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">2048</Value>
     </Setting>
     <Setting Name="AudioWaveForm_UseDecibels" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AudioWaveForm_DisableDraw" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="AudioWaveForm_UseVectorAtResize" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AudioWaveForm_TimeStep" Type="System.Double" Scope="User">
       <Value Profile="(Default)">400</Value>
@@ -22,12 +52,6 @@
     </Setting>
     <Setting Name="AudioWaveForm_TextCacheRenderThreshold" Type="System.Double" Scope="User">
       <Value Profile="(Default)">9999999</Value>
-    </Setting>
-    <Setting Name="UseFriendlyTimeFormat" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="Audio_ButtonBarVisible" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AudioWaveForm_Resolution" Type="System.Double" Scope="User">
       <Value Profile="(Default)">3</Value>
@@ -40,18 +64,6 @@
     </Setting>
     <Setting Name="AudioWaveForm_IsStroked" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="Audio_OutputDevice" Type="System.String" Scope="User">
-      <Value Profile="(Default)">default</Value>
-    </Setting>
-    <Setting Name="Audio_InputDevice" Type="System.String" Scope="User">
-      <Value Profile="(Default)">default</Value>
-    </Setting>
-    <Setting Name="Audio_TTS_Voice" Type="System.String" Scope="User">
-      <Value Profile="(Default)">default</Value>
-    </Setting>
-    <Setting Name="Skippables" Type="System.String" Scope="User">
-      <Value Profile="(Default)">pagenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,noteref,</Value>
     </Setting>
     <Setting Name="AudioWaveForm_Color_Border" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF7FFF00</Value>

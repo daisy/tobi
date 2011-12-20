@@ -23,7 +23,7 @@
                     Margin="2"/>
         </StackPanel>
 
-        <CheckBox IsChecked="{Binding IsBackgroundVisible, Mode=TwoWay}" Margin="2">Waveform framed (sized background)</CheckBox>
+        <!--<CheckBox IsChecked="{Binding IsBackgroundVisible, Mode=TwoWay}" Margin="2">Waveform framed (sized background)</CheckBox>-->
         
         
         <!-- CheckBox IsChecked="{Binding IsWaveFillVisible, Mode=TwoWay}" Margin="2">Waveform Bars</CheckBox>

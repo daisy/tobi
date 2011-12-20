@@ -195,25 +195,25 @@ namespace Tobi.Plugin.AudioPane
             }
         }*/
 
-        private bool m_IsBackgroundVisible = true;
-        public bool IsBackgroundVisible
-        {
-            get
-            {
-                return m_IsBackgroundVisible;
-            }
-            set
-            {
-                if (m_IsBackgroundVisible == value) return;
-                m_IsBackgroundVisible = value;
-                //resetWaveFormBackground();
-                if (View != null)
-                {
-                    CommandRefresh.Execute();
-                }
-                RaisePropertyChanged(() => IsBackgroundVisible);
-            }
-        }
+        //private bool m_IsBackgroundVisible = true;
+        //public bool IsBackgroundVisible
+        //{
+        //    get
+        //    {
+        //        return m_IsBackgroundVisible;
+        //    }
+        //    set
+        //    {
+        //        if (m_IsBackgroundVisible == value) return;
+        //        m_IsBackgroundVisible = value;
+        //        //resetWaveFormBackground();
+        //        if (View != null)
+        //        {
+        //            CommandRefresh.Execute();
+        //        }
+        //        RaisePropertyChanged(() => IsBackgroundVisible);
+        //    }
+        //}
 
         /*
         private bool m_IsAdjustOffsetFix = false;
