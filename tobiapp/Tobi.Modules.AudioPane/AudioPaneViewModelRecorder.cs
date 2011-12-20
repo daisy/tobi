@@ -535,7 +535,7 @@ namespace Tobi.Plugin.AudioPane
             if (!String.IsNullOrEmpty(e.RecordedFilePath))
             {
                 //m_RecordAndContinue && 
-                if (Settings.Default.Audio_EnableSkippableText)
+                if (Settings.Default.Audio_EnableSkippables)
                 {
                     registerRecordedAudioFileForDeferredAddition(e.RecordedFilePath);
                 }
@@ -566,7 +566,7 @@ namespace Tobi.Plugin.AudioPane
 
                     if (next != null)
                     {
-                        if (isTreeNodeSkippable(next) && !Settings.Default.Audio_EnableSkippableText)
+                        if (isTreeNodeSkippable(next) && !Settings.Default.Audio_EnableSkippables)
                         {
                             treeNode = next;
                             goto tryNext;

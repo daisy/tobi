@@ -11,6 +11,7 @@ using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -804,7 +805,11 @@ namespace Tobi.Common.UI
 
             if (
                 !(
-                (e.OriginalSource is Button || e.OriginalSource is RepeatButton)
+                (e.OriginalSource is Button
+                || e.OriginalSource is RepeatButton
+                || e.OriginalSource is ListViewItem
+                || e.OriginalSource is ListItem
+                )
                 && ((UIElement)e.OriginalSource).IsFocused
                 )
                 )

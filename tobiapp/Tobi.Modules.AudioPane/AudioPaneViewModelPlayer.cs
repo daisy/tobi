@@ -451,27 +451,6 @@ namespace Tobi.Plugin.AudioPane
         //    }
         //}
 
-        private void loadAndPlay()
-        {
-            //Logger.Log("AudioPaneViewModel.loadAndPlay", Category.Debug, Priority.Medium);
-
-            if (View != null)
-            {
-                View.RefreshUI_PeakMeterBlackout(false);
-                View.ResetPeakLines();
-            }
-
-            PeakOverloadCountCh1 = 0;
-            PeakOverloadCountCh2 = 0;
-
-            //StartWaveFormLoadTimer(0, IsAutoPlay);
-
-//#if DEBUG
-//            Logger.Log("CALLING AudioPlayer_LoadWaveForm (loadAndPlay)", Category.Debug, Priority.Medium);
-//#endif
-            AudioPlayer_LoadWaveForm(false);
-        }
-
         public void RefreshWaveFormChunkMarkers()
         {
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
@@ -568,82 +547,82 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        private DispatcherTimer m_WaveFormLoadTimer;
+//        private DispatcherTimer m_WaveFormLoadTimer;
 
-        private static readonly Object LOCK = new Object();
+//        private static readonly Object LOCK = new Object();
 
-        private void StartWaveFormLoadTimer(long delayMilliseconds)
-        {
-            if (IsWaveFormLoading)
-            {
-                return;
-            }
+//        private void StartWaveFormLoadTimer(long delayMilliseconds)
+//        {
+//            if (IsWaveFormLoading)
+//            {
+//                return;
+//            }
 
-            lock (LOCK)
-            {
-                if (false && View != null)
-                {
-                    View.ShowHideWaveFormLoadingMessage(true);
-                }
-                if (delayMilliseconds == 0)
-                {
+//            lock (LOCK)
+//            {
+//                if (false && View != null)
+//                {
+//                    View.ShowHideWaveFormLoadingMessage(true);
+//                }
+//                if (delayMilliseconds == 0)
+//                {
+////#if DEBUG
+////                    Logger.Log("CALLING AudioPlayer_LoadWaveForm (StartWaveFormLoadTimer)", Category.Debug, Priority.Medium);
+////#endif
+//                    AudioPlayer_LoadWaveForm(false);
+//                    return;
+//                }
+//                if (m_WaveFormLoadTimer == null)
+//                {
+//                    m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
+//                    m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
+//                    // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
+//                    if (delayMilliseconds == 0)
+//                    // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
+//                    {
+//                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);
+//                        //TODO: does this work ?? (immediate dispatch)
+//                    }
+//                    else
+//                    {
+//                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delayMilliseconds);
+//                    }
+//                }
+//                else if (m_WaveFormLoadTimer.IsEnabled)
+//                {
+//                    //Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
+
+//                    m_WaveFormLoadTimer.Stop();
+//                }
+
+//                //Logger.Log("m_WaveFormLoadTimer.Start()", Category.Debug, Priority.Medium);
+
+//                m_WaveFormLoadTimer.Start();
+//            }
+//        }
+
+//        private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
+//        {
+//            if (!TheDispatcher.CheckAccess())
+//            {
 //#if DEBUG
-//                    Logger.Log("CALLING AudioPlayer_LoadWaveForm (StartWaveFormLoadTimer)", Category.Debug, Priority.Medium);
+//                Debugger.Break();
 //#endif
-                    AudioPlayer_LoadWaveForm(false);
-                    return;
-                }
-                if (m_WaveFormLoadTimer == null)
-                {
-                    m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
-                    m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
-                    // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
-                    if (delayMilliseconds == 0)
-                    // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
-                    {
-                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);
-                        //TODO: does this work ?? (immediate dispatch)
-                    }
-                    else
-                    {
-                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delayMilliseconds);
-                    }
-                }
-                else if (m_WaveFormLoadTimer.IsEnabled)
-                {
-                    //Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
+//                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, EventArgs>)OnWaveFormLoadTimerTick, sender, e);
+//                return;
+//            }
 
-                    m_WaveFormLoadTimer.Stop();
-                }
+//            m_WaveFormLoadTimer.Stop();
 
-                //Logger.Log("m_WaveFormLoadTimer.Start()", Category.Debug, Priority.Medium);
-
-                m_WaveFormLoadTimer.Start();
-            }
-        }
-
-        private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
-        {
-            if (!TheDispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, EventArgs>)OnWaveFormLoadTimerTick, sender, e);
-                return;
-            }
-
-            m_WaveFormLoadTimer.Stop();
-
-            if (IsWaveFormLoading)
-            {
-                return;
-            }
-//#if DEBUG
-//            Logger.Log("CALLING AudioPlayer_LoadWaveForm (OnWaveFormLoadTimerTick)", Category.Debug, Priority.Medium);
-//#endif
-            AudioPlayer_LoadWaveForm(false);
-        }
+//            if (IsWaveFormLoading)
+//            {
+//                return;
+//            }
+////#if DEBUG
+////            Logger.Log("CALLING AudioPlayer_LoadWaveForm (OnWaveFormLoadTimerTick)", Category.Debug, Priority.Medium);
+////#endif
+//            AudioPlayer_LoadWaveForm(false);
+//        }
 
         public void AudioPlayer_LoadWaveForm(bool onlyUpdateTiles)
         {
@@ -672,8 +651,6 @@ namespace Tobi.Plugin.AudioPane
 //#if DEBUG
 //            Logger.Log("AudioPlayer_LoadWaveForm (called PAUSE)", Category.Debug, Priority.Medium);
 //#endif
-
-
 
             //if (wasPlaying)
             //{
@@ -704,6 +681,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     View.ShowHideWaveFormLoadingMessage(true);
                 }
+
                 View.RefreshUI_LoadWaveForm(wasPlaying, onlyUpdateTiles);
             }
             else
@@ -1012,7 +990,19 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            loadAndPlay();
+            if (View != null)
+            {
+                View.RefreshUI_PeakMeterBlackout(false);
+                View.ResetPeakLines();
+            }
+
+            PeakOverloadCountCh1 = 0;
+            PeakOverloadCountCh2 = 0;
+
+            //#if DEBUG
+            //            Logger.Log("CALLING AudioPlayer_LoadWaveForm (loadAndPlay) FILE", Category.Debug, Priority.Medium);
+            //#endif
+            AudioPlayer_LoadWaveForm(false);
         }
 
         //[NotifyDependsOn("IsRecording")]
@@ -1110,7 +1100,7 @@ namespace Tobi.Plugin.AudioPane
             next:
                 if (nextNode != null)
                 {
-                    if (isTreeNodeSkippable(nextNode) && !Settings.Default.Audio_EnableSkippableText)
+                    if (isTreeNodeSkippable(nextNode) && !Settings.Default.Audio_EnableSkippables)
                     {
                         nextNode = nextNode.GetNextSiblingWithManagedAudio();
                         goto next;
