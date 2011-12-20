@@ -20,7 +20,8 @@ namespace Tobi.Plugin.Urakawa
                 Path.Combine(Path.GetDirectoryName(DocumentFilePath),
                 XUK_DIR),
                 IsAcmCodecsDisabled,
-                Settings.Default.AudioProjectSampleRate
+                Settings.Default.AudioProjectSampleRate,
+                Settings.Default.XUK_PrettyFormat
                 ); //Directory.GetParent(bookfile).FullName
 
 

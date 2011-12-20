@@ -189,12 +189,8 @@ namespace Tobi.Plugin.Urakawa
 
             var uri = new Uri(m_SaveAsDocumentFilePath + SAVING_EXT, UriKind.Absolute);
             //DocumentProject.OpenXuk(uri);
-#if (DEBUG)
+
             DocumentProject.SetPrettyFormat(Settings.Default.XUK_PrettyFormat);
-            //DocumentProject.SetPrettyFormat(true);
-#else
-            DocumentProject.SetPrettyFormat(Settings.Default.XUK_PrettyFormat);
-#endif
 
             var action = new SaveXukAction(DocumentProject, DocumentProject, uri)
             {
