@@ -12,7 +12,7 @@
       <Value Profile="(Default)">default</Value>
     </Setting>
     <Setting Name="Skippables" Type="System.String" Scope="User">
-      <Value Profile="(Default)">pagenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,noteref,</Value>
+      <Value Profile="(Default)">pagenum,linenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,note,noteref,</Value>
     </Setting>
     <Setting Name="Audio_EnableSkippables" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
