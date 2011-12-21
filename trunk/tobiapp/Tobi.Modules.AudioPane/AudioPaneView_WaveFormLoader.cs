@@ -2115,7 +2115,7 @@ namespace Tobi.Plugin.AudioPane
                     StreamGeometryContext sgcCh2 = null;
 
                     geometryCh2 = new StreamGeometry();
-                    sgcCh2 = geometryCh1.Open();
+                    sgcCh2 = geometryCh2.Open();
 
                     for (int i = 0; i < listTopPointsCh2.Count; i++)
                     {
