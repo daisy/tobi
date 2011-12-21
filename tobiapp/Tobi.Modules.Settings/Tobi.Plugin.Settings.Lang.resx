@@ -145,10 +145,10 @@
     <value>Invalid numeric value.</value>
   </data>
   <data name="NumericValueOutOfRange" xml:space="preserve">
-    <value>Numeric value is out of range [0, 9999].</value>
+    <value>Numeric value is out of range [0, 999999999].</value>
   </data>
   <data name="NumericValueOutOfRange9999" xml:space="preserve">
-    <value>Numeric value is out of range [-9999, 9999].</value>
+    <value>Numeric value is out of range [-999999999, 999999999].</value>
   </data>
   <data name="Preferences" xml:space="preserve">
     <value>_Preferences</value>

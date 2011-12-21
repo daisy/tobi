@@ -134,14 +134,14 @@ namespace Tobi.Plugin.Settings
 
             if (mustBePositive)
             {
-                if (val < 0 || val > 9999)
+                if (val < 0 || val > 999999999)
                 {
                     return NotValid(Tobi_Plugin_Settings_Lang.NumericValueOutOfRange);
                 }
             }
             else
             {
-                if (val < -9999 || val > 9999)
+                if (val < -999999999 || val > 999999999)
                 {
                     return NotValid(Tobi_Plugin_Settings_Lang.NumericValueOutOfRange9999);
                 }

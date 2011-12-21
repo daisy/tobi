@@ -584,6 +584,10 @@ namespace Tobi.Plugin.AudioPane
                         TreeNode treeNodeNew = treeNodeSelectionNew.Item2 ?? treeNodeSelectionNew.Item1;
                         if (treeNodeNew != null)
                         {
+                            //#if DEBUG
+                            //                    DebugFix.Assert(treeNodeNew == next);
+                            //#endif //DEBUG
+
                             if (treeNodeNew.GetManagedAudioMedia() == null
                                 && treeNodeNew.GetFirstDescendantWithManagedAudio() == null)
                             {

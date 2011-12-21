@@ -56,14 +56,8 @@
     <Setting Name="AudioWaveForm_Resolution" Type="System.Double" Scope="User">
       <Value Profile="(Default)">3</Value>
     </Setting>
-    <Setting Name="AudioWaveForm_IsFilled" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="AudioWaveForm_IsBordered" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="AudioWaveForm_IsStroked" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+    <Setting Name="AudioWaveForm_DrawStyle" Type="Tobi.Plugin.AudioPane.WaveFormDrawStyle" Scope="User">
+      <Value Profile="(Default)">BorderFillBars</Value>
     </Setting>
     <Setting Name="AudioWaveForm_Color_Border" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF7FFF00</Value>
@@ -71,11 +65,11 @@
     <Setting Name="AudioWaveForm_Color_Fill" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF32CD32</Value>
     </Setting>
+    <Setting Name="AudioWaveForm_Color_Bars" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF00FF00</Value>
+    </Setting>
     <Setting Name="AudioWaveForm_Color_Back" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF000000</Value>
-    </Setting>
-    <Setting Name="AudioWaveForm_Color_Stroke" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FF00FF00</Value>
     </Setting>
     <Setting Name="AudioWaveForm_Color_CursorBorder" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FFFF0000</Value>

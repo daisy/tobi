@@ -78,7 +78,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 // resets to MillisecondsPerPixelToPixelWidthConverter.defaultWidth
 
-                m_ForceCanvasWidthUpdate = false;
+                //m_ForceCanvasWidthUpdate = false;
                 ZoomSlider.Value += 1;
                 return;
             }
@@ -123,7 +123,7 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            m_ForceCanvasWidthUpdate = false;
+            //m_ForceCanvasWidthUpdate = false;
             ZoomSlider.Value = millisecondsPerPixel;
         }
 
