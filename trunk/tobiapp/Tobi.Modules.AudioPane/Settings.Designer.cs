@@ -241,37 +241,13 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AudioWaveForm_IsFilled {
+        [global::System.Configuration.DefaultSettingValueAttribute("BorderFillBars")]
+        public global::Tobi.Plugin.AudioPane.WaveFormDrawStyle AudioWaveForm_DrawStyle {
             get {
-                return ((bool)(this["AudioWaveForm_IsFilled"]));
+                return ((global::Tobi.Plugin.AudioPane.WaveFormDrawStyle)(this["AudioWaveForm_DrawStyle"]));
             }
             set {
-                this["AudioWaveForm_IsFilled"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AudioWaveForm_IsBordered {
-            get {
-                return ((bool)(this["AudioWaveForm_IsBordered"]));
-            }
-            set {
-                this["AudioWaveForm_IsBordered"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AudioWaveForm_IsStroked {
-            get {
-                return ((bool)(this["AudioWaveForm_IsStroked"]));
-            }
-            set {
-                this["AudioWaveForm_IsStroked"] = value;
+                this["AudioWaveForm_DrawStyle"] = value;
             }
         }
         
@@ -301,6 +277,18 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF00")]
+        public global::System.Windows.Media.Color AudioWaveForm_Color_Bars {
+            get {
+                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Bars"]));
+            }
+            set {
+                this["AudioWaveForm_Color_Bars"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FF000000")]
         public global::System.Windows.Media.Color AudioWaveForm_Color_Back {
             get {
@@ -308,18 +296,6 @@ namespace Tobi.Plugin.AudioPane {
             }
             set {
                 this["AudioWaveForm_Color_Back"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF00")]
-        public global::System.Windows.Media.Color AudioWaveForm_Color_Stroke {
-            get {
-                return ((global::System.Windows.Media.Color)(this["AudioWaveForm_Color_Stroke"]));
-            }
-            set {
-                this["AudioWaveForm_Color_Stroke"] = value;
             }
         }
         

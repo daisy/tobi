@@ -28,6 +28,15 @@ namespace Tobi.Plugin.AudioPane
         BitmapSource
     }
 
+    public enum WaveFormDrawStyle : byte
+    {
+        Border,
+        BorderFill,
+        BorderFillBars,
+        BorderBars,
+        Bars
+    }
+
     public class ImageAndDrawing
     {
         public Image m_image;
@@ -190,6 +199,44 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        private void updateWaveformTileImagesVectorFill()
+        {
+            LightLinkedList<ImageAndDrawing>.Item current = m_WaveformTileImages.m_First;
+            while (current != null)
+            {
+                ImageAndDrawing imgAndDraw = current.m_data;
+
+                //imgAndDraw.m_image.SetValue(Image.StretchProperty, Stretch.Fill);
+                imgAndDraw.m_image.Stretch = Stretch.Fill;
+
+                if (useVectorResize())
+                {
+#if NET40
+                    //imgAndDraw.m_image.CacheMode = null;
+#endif //NET40
+
+                    if (imgAndDraw.m_drawingImage != null
+                        &&
+                        (
+                        !(imgAndDraw.m_image.Source is DrawingImage)
+                        ||
+                        imgAndDraw.m_image.Source != imgAndDraw.m_drawingImage
+                        )
+                        )
+                    {
+                        //m_Logger.Log("AudioPaneView.OnWaveFormCanvasSizeChanged:WaveFormImage.Source switch", Category.Debug,
+                        //             Priority.Medium);
+
+                        disposeImageSource(imgAndDraw.m_image);
+
+                        imgAndDraw.m_image.Source = imgAndDraw.m_drawingImage;
+                    }
+                }
+
+                current = current.m_nextItem;
+            }
+        }
+
         private void updateWaveformTileImagesWidthAndPosition()
         {
             double canvasWidth = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
@@ -333,50 +380,14 @@ namespace Tobi.Plugin.AudioPane
 
         private double m_ProgressVisibleOffset = 0;
 
-        private bool m_ForceCanvasWidthUpdate = false;
+        //private bool m_ForceCanvasWidthUpdate = false;
 
-        public void RefreshCanvasWidth()
-        {
-            m_ForceCanvasWidthUpdate = true;
-            //#if DEBUG
-            //            m_Logger.Log("refreshCanvasWidth (before canvas width change)", Category.Debug, Priority.Medium);
-            //#endif
-
-            MultiBindingExpression mb1 = BindingOperations.GetMultiBindingExpression(WaveFormCanvas,
-                                                                                     FrameworkElement.WidthProperty);
-            DebugFix.Assert(mb1 != null);
-            if (mb1 != null)
-            {
-                mb1.UpdateTarget();
-                //mb1.UpdateSource();
-            }
-            else
-            {
-                BindingExpression b1 = WaveFormCanvas.GetBindingExpression(FrameworkElement.WidthProperty);
-                if (b1 != null)
-                {
-                    b1.UpdateTarget();
-                    //b1.UpdateSource();
-                }
-            }
-
-            //#if DEBUG
-            //            m_Logger.Log("refreshCanvasWidth (after canvas width change)", Category.Debug, Priority.Medium);
-            //#endif
-
-        }
 
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>
         public void RefreshUI_LoadWaveForm(bool wasPlaying, bool onlyUpdateTiles)
         {
-            if (!onlyUpdateTiles)
-            {
-                m_scrollRefreshSkip = true;
-                RefreshCanvasWidth();
-            }
-
             double widthReal = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
             //#if DEBUG
             //            double width_ = getWaveFormWidth();
@@ -385,6 +396,13 @@ namespace Tobi.Plugin.AudioPane
 
             if (!onlyUpdateTiles)
             {
+                //m_scrollRefreshSkip = true;
+                //RefreshCanvasWidth();
+
+                BytesPerPixel = m_ViewModel.State.Audio.DataLength / widthReal;
+
+                WaveFormCanvas.Width = widthReal;
+
                 createWaveformTileImages();
 
                 ResetPeakLabels();
@@ -397,13 +415,11 @@ namespace Tobi.Plugin.AudioPane
             //    heightReal = WaveFormCanvas.Height;
             //}
 
-            BytesPerPixel = m_ViewModel.State.Audio.DataLength / widthReal;
-
             if (Settings.Default.AudioWaveForm_DisableDraw)
             {
-#if DEBUG
-                m_Logger.Log("RefreshUI_LoadWaveForm (skip waveform drawing)", Category.Debug, Priority.Medium);
-#endif
+//#if DEBUG
+//                m_Logger.Log("RefreshUI_LoadWaveForm (skip waveform drawing)", Category.Debug, Priority.Medium);
+//#endif
 
                 m_ViewModel.IsWaveFormLoading = false;
                 //m_BackgroundLoader = null;
@@ -467,7 +483,7 @@ namespace Tobi.Plugin.AudioPane
             //{
             bool vertical = WaveFormProgress.Orientation == Orientation.Vertical;
             double sizeProgress = (vertical ? WaveFormScroll.Height : WaveFormScroll.Width);
-            if (double.IsNaN(sizeProgress) || sizeProgress == 0)
+            if (double.IsNaN(sizeProgress) || sizeProgress <= 0)
             {
                 sizeProgress = (vertical ? WaveFormScroll.ActualHeight : WaveFormScroll.ActualWidth);
             }
@@ -489,148 +505,6 @@ namespace Tobi.Plugin.AudioPane
                 WaveFormProgress.Maximum = estimatedCapacity;
             }
 
-            ThreadStart threadDelegate = delegate()
-                                    {
-                                        m_LoadThreadIsAlive = true;
-                                        try
-                                        {
-                                            //Console.WriteLine(@"BEFORE loadWaveForm");
-
-                                            loadWaveForm(widthMagnified, heightMagnified, wasPlaying, bytesPerPixel_Magnified, zoom, onlyLoadVisibleScroll, nBytesScrollOffset, nBytesScrollVisibleWidth, onlyUpdateTiles);
-
-                                            //Console.WriteLine(@"AFTER loadWaveForm");
-                                        }
-                                        catch (ThreadAbortException ex)
-                                        {
-                                            // cancelled brutally...let's get out of here !
-                                            //Console.WriteLine("CATCH ThreadAbortException");
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            //Console.WriteLine("CATCH All");
-#if DEBUG
-                                            Debugger.Break();
-#endif
-                                            if (!Dispatcher.CheckAccess())
-                                            {
-                                                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
-                                                    ExceptionHandler.Handle(ex, false, m_ShellView)));
-                                            }
-                                            else
-                                            {
-                                                ExceptionHandler.Handle(ex, false, m_ShellView);
-                                            }
-                                        }
-                                        finally
-                                        {
-                                            //Console.WriteLine(@">>>> SEND BEFORE 1");
-
-                                            if (!Dispatcher.CheckAccess())
-                                            {
-                                                Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(() =>
-                                                {
-                                                    //Console.WriteLine(@">>>> SEND IsWaveFormLoading");
-                                                    m_ViewModel.IsWaveFormLoading = false;
-                                                    m_LoadThreadIsAlive = false;
-                                                }));
-                                            }
-                                            else
-                                            {
-                                                m_ViewModel.IsWaveFormLoading = false;
-                                                m_LoadThreadIsAlive = false;
-                                            }
-                                            //Console.WriteLine(@">>>> SEND BEFORE 2");
-
-                                            if (!onlyUpdateTiles
-                                                //|| m_scrollRefreshNoTimer
-                                                )
-                                            {
-                                                if (!Dispatcher.CheckAccess())
-                                                {
-                                                    Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                                                                           (Action)
-                                                                           (() =>
-                                                                            m_ViewModel.
-                                                                                AudioPlayer_PlayAfterWaveFormLoaded(
-                                                                                    wasPlaying)));
-                                                }
-                                                else
-                                                {
-                                                    m_ViewModel.
-                                                        AudioPlayer_PlayAfterWaveFormLoaded(
-                                                            wasPlaying);
-                                                }
-                                            }
-                                            //Console.WriteLine(@">>>> SEND BEFORE 3");
-                                            if (false && !onlyUpdateTiles)
-                                            {
-
-                                                if (!Dispatcher.CheckAccess())
-                                                {
-                                                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
-                                                                                                                    {
-                                                                                                                        WaveFormProgress
-                                                                                                                            .
-                                                                                                                            IsIndeterminate
-                                                                                                                            =
-                                                                                                                            true;
-                                                                                                                        TimeMessageHide
-                                                                                                                            ();
-                                                                                                                        ShowHideWaveFormLoadingMessage
-                                                                                                                            (false);
-                                                                                                                        m_ViewModel
-                                                                                                                            .
-                                                                                                                            m_TimeStringOther
-                                                                                                                            =
-                                                                                                                            String
-                                                                                                                                .
-                                                                                                                                Empty;
-                                                                                                                    }));
-                                                }
-                                                else
-                                                {
-                                                    WaveFormProgress
-                                                                                                                               .
-                                                                                                                               IsIndeterminate
-                                                                                                                               =
-                                                                                                                               true;
-                                                    TimeMessageHide
-                                                        ();
-                                                    ShowHideWaveFormLoadingMessage
-                                                        (false);
-                                                    m_ViewModel
-                                                        .
-                                                        m_TimeStringOther
-                                                        =
-                                                        String
-                                                            .
-                                                            Empty;
-                                                }
-                                            }
-
-                                            if (!Dispatcher.CheckAccess())
-                                            {
-                                                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
-                                                                                                                {
-                                                                                                                    CommandManager
-                                                                                                                        .
-                                                                                                                        InvalidateRequerySuggested
-                                                                                                                        ();
-                                                                                                                }));
-                                            }
-                                            else
-                                            {
-                                                CommandManager
-                                                                                                                          .
-                                                                                                                          InvalidateRequerySuggested
-                                                                                                                          ();
-                                            }
-
-                                            //Console.WriteLine(@">>>> SEND AFTER 3");
-                                        }
-                                        m_LoadThreadIsAlive = false;
-                                    };
-
             if (m_LoadThread != null)
             {
                 //Console.WriteLine(@"CancelWaveFormLoad !!!!!!!");
@@ -648,9 +522,15 @@ namespace Tobi.Plugin.AudioPane
             if (bypassThread)
             {
                 m_ViewModel.IsWaveFormLoading = true;
-                threadDelegate.Invoke();
+                //threadDelegate.Invoke();
+                loadWaveFormWrapper(widthMagnified, heightMagnified, wasPlaying, bytesPerPixel_Magnified, zoom, onlyLoadVisibleScroll, nBytesScrollOffset, nBytesScrollVisibleWidth, onlyUpdateTiles);
                 return;
             }
+
+            ThreadStart threadDelegate = delegate()
+            {
+                loadWaveFormWrapper(widthMagnified, heightMagnified, wasPlaying, bytesPerPixel_Magnified, zoom, onlyLoadVisibleScroll, nBytesScrollOffset, nBytesScrollVisibleWidth, onlyUpdateTiles);
+            };
 
             m_LoadThread = new Thread(threadDelegate)
                                {
@@ -689,6 +569,147 @@ namespace Tobi.Plugin.AudioPane
             m_ViewModel.IsWaveFormLoading = true;
         }
 
+        private void loadWaveFormWrapper(double widthMagnified, double heightMagnified, bool wasPlaying, double bytesPerPixel_Magnified, double zoom, bool onlyLoadVisibleScroll, long nBytesScrollOffset, long nBytesScrollVisibleWidth, bool onlyUpdateTiles)
+        {
+            m_LoadThreadIsAlive = true;
+            try
+            {
+                //Console.WriteLine(@"BEFORE loadWaveForm");
+
+                loadWaveForm(widthMagnified, heightMagnified, wasPlaying, bytesPerPixel_Magnified, zoom, onlyLoadVisibleScroll, nBytesScrollOffset, nBytesScrollVisibleWidth, onlyUpdateTiles);
+
+                //Console.WriteLine(@"AFTER loadWaveForm");
+            }
+            catch (ThreadAbortException ex)
+            {
+                // cancelled brutally...let's get out of here !
+                //Console.WriteLine("CATCH ThreadAbortException");
+            }
+            catch (Exception ex)
+            {
+                //Console.WriteLine("CATCH All");
+#if DEBUG
+                Debugger.Break();
+#endif
+                if (!Dispatcher.CheckAccess())
+                {
+                    Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+                        ExceptionHandler.Handle(ex, false, m_ShellView)));
+                }
+                else
+                {
+                    ExceptionHandler.Handle(ex, false, m_ShellView);
+                }
+            }
+            finally
+            {
+                //Console.WriteLine(@">>>> SEND BEFORE 1");
+
+                if (!Dispatcher.CheckAccess())
+                {
+                    Dispatcher.BeginInvoke(DispatcherPriority.Send, (Action)(() =>
+                    {
+                        //Console.WriteLine(@">>>> SEND IsWaveFormLoading");
+                        m_ViewModel.IsWaveFormLoading = false;
+                        m_LoadThreadIsAlive = false;
+                    }));
+                }
+                else
+                {
+                    m_ViewModel.IsWaveFormLoading = false;
+                    m_LoadThreadIsAlive = false;
+                }
+                //Console.WriteLine(@">>>> SEND BEFORE 2");
+
+                if (!onlyUpdateTiles
+                    //|| m_scrollRefreshNoTimer
+                    )
+                {
+                    if (!Dispatcher.CheckAccess())
+                    {
+                        Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                                               (Action)
+                                               (() =>
+                                                m_ViewModel.
+                                                    AudioPlayer_PlayAfterWaveFormLoaded(
+                                                        wasPlaying)));
+                    }
+                    else
+                    {
+                        m_ViewModel.
+                            AudioPlayer_PlayAfterWaveFormLoaded(
+                                wasPlaying);
+                    }
+                }
+                //Console.WriteLine(@">>>> SEND BEFORE 3");
+                if (false && !onlyUpdateTiles)
+                {
+
+                    if (!Dispatcher.CheckAccess())
+                    {
+                        Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                        {
+                            WaveFormProgress
+                                .
+                                IsIndeterminate
+                                =
+                                true;
+                            TimeMessageHide
+                                ();
+                            ShowHideWaveFormLoadingMessage
+                                (false);
+                            m_ViewModel
+                                .
+                                m_TimeStringOther
+                                =
+                                String
+                                    .
+                                    Empty;
+                        }));
+                    }
+                    else
+                    {
+                        WaveFormProgress
+                                                                                                   .
+                                                                                                   IsIndeterminate
+                                                                                                   =
+                                                                                                   true;
+                        TimeMessageHide
+                            ();
+                        ShowHideWaveFormLoadingMessage
+                            (false);
+                        m_ViewModel
+                            .
+                            m_TimeStringOther
+                            =
+                            String
+                                .
+                                Empty;
+                    }
+                }
+
+                if (!Dispatcher.CheckAccess())
+                {
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                    {
+                        CommandManager
+                            .
+                            InvalidateRequerySuggested
+                            ();
+                    }));
+                }
+                else
+                {
+                    CommandManager
+                                                                                              .
+                                                                                              InvalidateRequerySuggested
+                                                                                              ();
+                }
+
+                //Console.WriteLine(@">>>> SEND AFTER 3");
+            }
+            m_LoadThreadIsAlive = false;
+        }
 
         private void loadWaveForm(double widthMagnified, double heightMagnified, bool wasPlaying, double bytesPerPixel_Magnified, double zoom,
             bool onlyLoadVisibleScroll, long nBytesScrollOffset, long nBytesScrollVisibleWidth, bool onlyUpdateTiles)
@@ -1038,7 +1059,7 @@ namespace Tobi.Plugin.AudioPane
                         //reset points geomertries
 
                         if (!currentImageTile.m_data.m_imageSourceLoaded
-                            && (Settings.Default.AudioWaveForm_IsBordered || Settings.Default.AudioWaveForm_IsStroked)
+                            //&& (Settings.Default.AudioWaveForm_IsBordered || Settings.Default.AudioWaveForm_IsStroked)
                             )
                         //m_ViewModel.IsEnvelopeVisible)
                         {
@@ -1342,8 +1363,9 @@ namespace Tobi.Plugin.AudioPane
                             {
                                 var p1 = new Point(xTile, y1);
 
-                                if ((Settings.Default.AudioWaveForm_IsBordered || Settings.Default.AudioWaveForm_IsStroked)
-                                    && listTopPointsCh1 != null)
+                                if (
+                                    //(Settings.Default.AudioWaveForm_IsBordered || Settings.Default.AudioWaveForm_IsStroked) &&
+                                     listTopPointsCh1 != null)
                                 {
                                     listTopPointsCh1.Add(p1);
                                 }
@@ -1365,8 +1387,9 @@ namespace Tobi.Plugin.AudioPane
                                 y1 += hh;
                                 var p2 = new Point(xTile, y1);
 
-                                if ((Settings.Default.AudioWaveForm_IsBordered || Settings.Default.AudioWaveForm_IsStroked)
-                                    && listTopPointsCh2 != null)
+                                if (
+                                    //(Settings.Default.AudioWaveForm_IsBordered || Settings.Default.AudioWaveForm_IsStroked) &&
+                                    listTopPointsCh2 != null)
                                 {
                                     listTopPointsCh2.Add(p2);
                                 }
@@ -1392,8 +1415,9 @@ namespace Tobi.Plugin.AudioPane
                                 //{
                                 //    sgcCh1.LineTo(p3, true, false);
                                 //}
-                                if ((Settings.Default.AudioWaveForm_IsBordered || Settings.Default.AudioWaveForm_IsStroked)
-                                    && listBottomPointsCh1 != null)
+                                if (
+                                    //(Settings.Default.AudioWaveForm_IsBordered || Settings.Default.AudioWaveForm_IsStroked) &&
+                                    listBottomPointsCh1 != null)
                                 {
                                     listBottomPointsCh1.Add(p3);
                                 }
@@ -1407,8 +1431,9 @@ namespace Tobi.Plugin.AudioPane
                                 //{
                                 //    sgcCh2.LineTo(p4, true, false);
                                 //}
-                                if ((Settings.Default.AudioWaveForm_IsBordered || Settings.Default.AudioWaveForm_IsStroked)
-                                    && listBottomPointsCh2 != null)
+                                if (
+                                    //(Settings.Default.AudioWaveForm_IsBordered || Settings.Default.AudioWaveForm_IsStroked) &&
+                                    listBottomPointsCh2 != null)
                                 {
                                     listBottomPointsCh2.Add(p4);
                                 }
@@ -1577,23 +1602,38 @@ namespace Tobi.Plugin.AudioPane
                 drawGrp.Children.Add(drawGrpCps.back);
             }
 
-            if (Settings.Default.AudioWaveForm_IsBordered) //m_ViewModel.IsEnvelopeVisible)
+            // HAS BORDER
+            if (Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.Border
+                || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderBars
+                || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill
+                || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
+                )
             {
-                if (Settings.Default.AudioWaveForm_IsFilled) //m_ViewModel.IsEnvelopeFilled)
+                // HAS FILL
+                if (
+                Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill
+                || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
+                    )
                 {
                     if (drawGrpCps.enveloppeCh1 != null)
                     {
                         drawGrp.Children.Add(drawGrpCps.enveloppeCh1);
                     }
-                    if (Settings.Default.AudioWaveForm_IsStroked //m_ViewModel.IsWaveFillVisible
+
+                    // HAS BARS
+                    if (Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
                         && freeze)
                     {
                         drawGrp.Children.Add(drawGrpCps.verticalStrokesCh1);
                     }
                 }
+
+                // HAS NO FILL
                 else
                 {
-                    if (Settings.Default.AudioWaveForm_IsStroked //m_ViewModel.IsWaveFillVisible
+                    // HAS BARS
+                    if (
+                Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderBars
                         && freeze)
                     {
                         drawGrp.Children.Add(drawGrpCps.verticalStrokesCh1);
@@ -1604,30 +1644,51 @@ namespace Tobi.Plugin.AudioPane
                     }
                 }
             }
-            else if (Settings.Default.AudioWaveForm_IsStroked //m_ViewModel.IsWaveFillVisible
+
+                // HAS NO BORDER
+            else if (
+                Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.Bars
                 && freeze)
             {
                 drawGrp.Children.Add(drawGrpCps.verticalStrokesCh1);
             }
+
+
+
             if (m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels > 1)
             {
-                if (Settings.Default.AudioWaveForm_IsBordered) //m_ViewModel.IsEnvelopeVisible)
+                if (
+                    Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.Border
+                || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderBars
+                || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill
+                || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
+                    )
                 {
-                    if (Settings.Default.AudioWaveForm_IsFilled) //m_ViewModel.IsEnvelopeFilled)
+                    // HAS FILL
+                    if (
+                    Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill
+                    || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
+                        )
                     {
                         if (drawGrpCps.enveloppeCh2 != null)
                         {
                             drawGrp.Children.Add(drawGrpCps.enveloppeCh2);
                         }
-                        if (Settings.Default.AudioWaveForm_IsStroked //m_ViewModel.IsWaveFillVisible
+
+                        // HAS BARS
+                        if (Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
                             && drawGrpCps.verticalStrokesCh2 != null && freeze)
                         {
                             drawGrp.Children.Add(drawGrpCps.verticalStrokesCh2);
                         }
                     }
+
+                    // HAS NO FILL
                     else
                     {
-                        if (Settings.Default.AudioWaveForm_IsStroked //m_ViewModel.IsWaveFillVisible
+                        // HAS BARS
+                        if (
+                    Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderBars
                             && drawGrpCps.verticalStrokesCh2 != null && freeze)
                         {
                             drawGrp.Children.Add(drawGrpCps.verticalStrokesCh2);
@@ -1638,12 +1699,16 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
                 }
-                else if (Settings.Default.AudioWaveForm_IsStroked //m_ViewModel.IsWaveFillVisible
+
+                // HAS NO BORDER
+                else if (
+                    Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.Bars
                     && drawGrpCps.verticalStrokesCh2 != null && freeze)
                 {
                     drawGrp.Children.Add(drawGrpCps.verticalStrokesCh2);
                 }
             }
+
             if (treeNodeSelection.Item1 != null && drawGrpCps.markers != null)
             {
                 drawGrp.Children.Add(drawGrpCps.markers);
@@ -2002,13 +2067,16 @@ namespace Tobi.Plugin.AudioPane
             Tuple<TreeNode, TreeNode> treeNodeSelection
             )
         {
-            Brush brushColorBars = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Stroke); //m_ViewModel.ColorWaveBars);
+            Brush brushColorBars = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Bars);
             //brushColorBars.Freeze();
 
             GeometryDrawing geoDraw1 = null;
             GeometryDrawing geoDraw2 = null;
-            if (Settings.Default.AudioWaveForm_IsStroked //m_ViewModel.IsWaveFillVisible
-                && freeze)
+            if (
+                true
+                //Settings.Default.AudioWaveForm_DrawStyle==WaveFormDrawStyle.BorderBars
+                //&& freeze
+            )
             {
                 StreamGeometry geometryCh1 = null;
                 StreamGeometryContext sgcCh1 = null;
@@ -2077,7 +2145,11 @@ namespace Tobi.Plugin.AudioPane
 
             GeometryDrawing geoDraw1_envelope = null;
             GeometryDrawing geoDraw2_envelope = null;
-            if (Settings.Default.AudioWaveForm_IsBordered) //m_ViewModel.IsEnvelopeVisible)
+            if (Settings.Default.AudioWaveForm_DrawStyle==WaveFormDrawStyle.Border
+                || Settings.Default.AudioWaveForm_DrawStyle==WaveFormDrawStyle.BorderBars
+                || Settings.Default.AudioWaveForm_DrawStyle==WaveFormDrawStyle.BorderFill
+                || Settings.Default.AudioWaveForm_DrawStyle==WaveFormDrawStyle.BorderFillBars
+                )
             {
                 try
                 {
@@ -2546,7 +2618,7 @@ Colors.Transparent
                     if (count == 0)
                     {
                         sgcCh1_envelope.BeginFigure(pp,
-                            Settings.Default.AudioWaveForm_IsFilled //m_ViewModel.IsEnvelopeFilled
+                Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
                             && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                     }
                     else
@@ -2581,7 +2653,7 @@ Colors.Transparent
                     if (count == 0)
                     {
                         sgcCh1_envelope.BeginFigure(pp,
-                            Settings.Default.AudioWaveForm_IsFilled //m_ViewModel.IsEnvelopeFilled
+                            Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
                             && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                     }
                     else
@@ -2619,7 +2691,7 @@ Colors.Transparent
                         if (count == 0)
                         {
                             sgcCh2_envelope.BeginFigure(pp,
-                                Settings.Default.AudioWaveForm_IsFilled //m_ViewModel.IsEnvelopeFilled
+                                Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
                                 && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                         }
                         else
@@ -2654,7 +2726,7 @@ Colors.Transparent
                         if (count == 0)
                         {
                             sgcCh2_envelope.BeginFigure(pp,
-                                Settings.Default.AudioWaveForm_IsFilled // m_ViewModel.IsEnvelopeFilled
+                                Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
                                 && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                         }
                         else
@@ -2692,7 +2764,7 @@ Colors.Transparent
                     if (count == 0)
                     {
                         sgcCh1_envelope.BeginFigure(pp,
-                            Settings.Default.AudioWaveForm_IsFilled //m_ViewModel.IsEnvelopeFilled
+                            Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
                             && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                     }
                     else
@@ -2730,7 +2802,7 @@ Colors.Transparent
                         if (count == 0)
                         {
                             sgcCh2_envelope.BeginFigure(pp,
-                                Settings.Default.AudioWaveForm_IsFilled //m_ViewModel.IsEnvelopeFilled
+                                Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
                                 && (!Settings.Default.AudioWaveForm_UseDecibels || m_ViewModel.IsUseDecibelsNoAverage), false);
                         }
                         else

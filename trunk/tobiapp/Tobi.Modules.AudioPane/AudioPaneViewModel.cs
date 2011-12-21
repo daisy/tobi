@@ -354,9 +354,7 @@ m_Stream.Length);
                 }
                 //WaveStepX = Settings.Default.AudioWaveForm_Resolution;
             }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsFilled)
-                || e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsBordered)
-                || e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsStroked)
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_DrawStyle)
                 || e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_UseDecibels)
                 )
             {

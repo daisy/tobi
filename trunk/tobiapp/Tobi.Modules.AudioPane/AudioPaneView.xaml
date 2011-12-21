@@ -456,7 +456,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               >
 
         <!--Width="{Binding ElementName=WaveFormImage, Path=Width, Mode=OneWay}"-->
-        <Canvas.Width>
+        <!-- Canvas.Width>
           <MultiBinding Converter="{AudioPane:MillisecondsPerPixelToPixelWidthConverter}">
 
             <Binding ElementName="ZoomSlider" Path="Value" Mode="OneWay"/>
@@ -465,7 +465,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                      Path="DataContext"/>
 
           </MultiBinding>
-        </Canvas.Width>
+        </Canvas.Width -->
         
         <!--IsEnabled="{Binding IsWaveFormLoading, Converter={XAML:BoolToOppositeBoolConverter}}"-->
        <!--
@@ -1010,7 +1010,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <!-- TickPlacement="BottomRight" DockPanel.Dock="Bottom" -->
     <Slider x:Name="ZoomSlider"
               Focusable="False"
-            
+            ValueChanged="OnZoomSliderValueChanged"
             Thumb.DragCompleted="OnZoomSliderDragCompleted"
             Thumb.DragStarted="OnZoomSliderDragStarted"
             
@@ -1025,11 +1025,11 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             Value="5"
             Minimum="1"
             Maximum="30"
-            LargeChange="5"
+            LargeChange="1"
             SmallChange="1"
             
-            Delay="1000"
-            Interval="1000"
+            Delay="100"
+            Interval="200"
             
             Margin="3"
             IsEnabled="{Binding CanManipulateWaveForm, Mode=OneWay}"/>

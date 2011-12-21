@@ -358,9 +358,9 @@ namespace Tobi.Plugin.AudioPane
                     Tuple<TreeNode, TreeNode> treeNodeSelectionNew = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode treeNodeNew = treeNodeSelectionNew.Item2 ?? treeNodeSelectionNew.Item1;
 
-#if DEBUG
-                    DebugFix.Assert(treeNodeNew == next);
-#endif //DEBUG
+//#if DEBUG
+//                    DebugFix.Assert(treeNodeNew == next);
+//#endif //DEBUG
 
                     if (treeNodeNew.GetManagedAudioMedia() != null
                                 || treeNodeNew.GetFirstDescendantWithManagedAudio() != null)

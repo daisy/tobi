@@ -214,17 +214,17 @@ namespace Tobi.Plugin.AudioPane
         }
 
         //private bool m_scrollRefreshNoTimer = false;
-        private bool m_scrollRefreshSkip = false;
+        //private bool m_scrollRefreshSkip = false;
         private DispatcherTimer m_scrollRefreshIntervalTimer = null;
         private void OnWaveFormScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             InvalidateWaveFormOverlay();
 
-            if (m_scrollRefreshSkip)
-            {
-                m_scrollRefreshSkip = false;
-                return;
-            }
+            //if (m_scrollRefreshSkip)
+            //{
+            //    m_scrollRefreshSkip = false;
+            //    return;
+            //}
 
             //if (m_scrollRefreshNoTimer)
             //{
@@ -282,25 +282,57 @@ namespace Tobi.Plugin.AudioPane
         }
 #endif //DEBUG
 
-        private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
+        private void OnZoomSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            bool forceCanvasWidthUpdate = m_ForceCanvasWidthUpdate;
-            m_ForceCanvasWidthUpdate = false;
+            //m_ForceCanvasWidthUpdate = true;
+            //#if DEBUG
+            //            m_Logger.Log("refreshCanvasWidth (before canvas width change)", Category.Debug, Priority.Medium);
+            //#endif
+            //MultiBindingExpression mb1 = BindingOperations.GetMultiBindingExpression(WaveFormCanvas,
+            //                                                                         FrameworkElement.WidthProperty);
+            //DebugFix.Assert(mb1 != null);
+            //if (mb1 != null)
+            //{
+            //    mb1.UpdateTarget();
+            //    //mb1.UpdateSource();
+            //}
+            //else
+            //{
+            //    BindingExpression b1 = WaveFormCanvas.GetBindingExpression(FrameworkElement.WidthProperty);
+            //    if (b1 != null)
+            //    {
+            //        b1.UpdateTarget();
+            //        //b1.UpdateSource();
+            //    }
+            //}
 
-            double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+            //#if DEBUG
+            //            m_Logger.Log("refreshCanvasWidth (after canvas width change)", Category.Debug, Priority.Medium);
+            //#endif
 
-#if DEBUG
-            double widthReal = getWaveFormWidth();
-            bool match = (long)Math.Round(width * 100) == (long)Math.Round(widthReal * 100);
 
-            //DebugFix.Assert(match);
+            //bool forceCanvasWidthUpdate = m_ForceCanvasWidthUpdate || !m_ZoomSliderDrag; // m_ViewModel.ResizeDrag;
+            //m_ForceCanvasWidthUpdate = false;
 
-            if (!match)
-            {
-                m_Logger.Log("OnWaveFormCanvasSizeChanged (WIDTH mismatch): " + widthReal + " != " + width, Category.Debug,
-                         Priority.Medium);
-            }
-#endif //DEBUG
+            //#if DEBUG
+            //            m_Logger.Log("OnWaveFormCanvasSizeChanged", Category.Debug, Priority.Medium);
+            //#endif
+
+
+            //            double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+
+            //#if DEBUG
+            //            double widthReal = getWaveFormWidth();
+            //            bool match = (long)Math.Round(width * 100) == (long)Math.Round(widthReal * 100);
+
+            //            //DebugFix.Assert(match);
+
+            //            if (!match)
+            //            {
+            //                m_Logger.Log("OnWaveFormCanvasSizeChanged (WIDTH mismatch): " + widthReal + " != " + width, Category.Debug,
+            //                         Priority.Medium);
+            //            }
+            //#endif //DEBUG
 
             //if (!match)
             //{
@@ -309,27 +341,15 @@ namespace Tobi.Plugin.AudioPane
 
             //double oldWidth = e.PreviousSize.Width;
 
-            if (!forceCanvasWidthUpdate)
-            {
-                //#if DEBUG
-                //                m_Logger.Log("OnWaveFormCanvasSizeChanged (calling CANCEL Waveform load)", Category.Debug,
-                //                             Priority.Medium);
-                //#endif
+            double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+            WaveFormCanvas.Width = width;
 
-                CancelWaveFormLoad(true);
+            //#if DEBUG
+            //                m_Logger.Log("OnWaveFormCanvasSizeChanged (calling CANCEL Waveform load)", Category.Debug,
+            //                             Priority.Medium);
+            //#endif
 
-#if NET40
-                LightLinkedList<ImageAndDrawing>.Item current = m_WaveformTileImages.m_First;
-                while (current != null)
-                {
-                    ImageAndDrawing imgAndDraw = current.m_data;
-
-                    imgAndDraw.m_image.CacheMode = null;
-
-                    current = current.m_nextItem;
-                }
-#endif //NET40
-            }
+            CancelWaveFormLoad(true);
 
             //if (m_TimeSelectionLeftX >= 0)
             //{
@@ -368,57 +388,9 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            if (e.HeightChanged)
-            {
-                LightLinkedList<ImageAndDrawing>.Item current_ = m_WaveformTileImages.m_First;
-                while (current_ != null)
-                {
-                    ImageAndDrawing imgAndDraw = current_.m_data;
 
-                    imgAndDraw.m_image.Height = WaveFormCanvas.ActualHeight;
-
-                    current_ = current_.m_nextItem;
-                }
-            }
-
-            if (!forceCanvasWidthUpdate)
-            {
-                if (e.WidthChanged)
-                {
-                    updateWaveformTileImagesWidthAndPosition();
-                }
-
-                LightLinkedList<ImageAndDrawing>.Item current = m_WaveformTileImages.m_First;
-                while (current != null)
-                {
-                    ImageAndDrawing imgAndDraw = current.m_data;
-
-                    //imgAndDraw.m_image.SetValue(Image.StretchProperty, Stretch.Fill);
-                    imgAndDraw.m_image.Stretch = Stretch.Fill;
-
-                    if (useVectorResize())
-                    {
-                        if (imgAndDraw.m_drawingImage != null
-                            &&
-                            (
-                            !(imgAndDraw.m_image.Source is DrawingImage)
-                            ||
-                            imgAndDraw.m_image.Source != imgAndDraw.m_drawingImage
-                            )
-                            )
-                        {
-                            //m_Logger.Log("AudioPaneView.OnWaveFormCanvasSizeChanged:WaveFormImage.Source switch", Category.Debug,
-                            //             Priority.Medium);
-
-                            disposeImageSource(imgAndDraw.m_image);
-
-                            imgAndDraw.m_image.Source = imgAndDraw.m_drawingImage;
-                        }
-                    }
-
-                    current = current.m_nextItem;
-                }
-            }
+            updateWaveformTileImagesWidthAndPosition();
+            updateWaveformTileImagesVectorFill();
 
             if (m_ZoomSliderDrag || m_ViewModel.ResizeDrag)
             {
@@ -430,13 +402,45 @@ namespace Tobi.Plugin.AudioPane
             //    return;
             //}
 
-            if (!forceCanvasWidthUpdate)
-            {
-                //#if DEBUG
-                //                m_Logger.Log("OnWaveFormCanvasSizeChanged (calling CommandRefresh)", Category.Debug, Priority.Medium);
-                //#endif
+            //#if DEBUG
+            //                m_Logger.Log("OnWaveFormCanvasSizeChanged (calling CommandRefresh)", Category.Debug, Priority.Medium);
+            //#endif
 
-                m_ViewModel.CommandRefresh.Execute();
+            m_ViewModel.CommandRefresh.Execute();
+        }
+
+        private void OnWaveFormCanvasSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.HeightChanged)
+            {
+                //if (m_ViewModel.State.Audio.HasContent)
+                //{
+                //    if (m_ViewModel.IsSelectionSet)
+                //    {
+                //        SetSelectionBytes(m_ViewModel.State.Selection.SelectionBeginBytePosition, m_ViewModel.State.Selection.SelectionEndBytePosition);
+                //    }
+                //}
+                //else
+                //{
+                //    ClearSelection();
+                //}
+
+                //m_ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
+                RefreshUI_WaveFormPlayHead();
+
+                m_ViewModel.RefreshWaveFormChunkMarkers();
+
+                updateWaveformTileImagesVectorFill();
+
+                LightLinkedList<ImageAndDrawing>.Item current_ = m_WaveformTileImages.m_First;
+                while (current_ != null)
+                {
+                    ImageAndDrawing imgAndDraw = current_.m_data;
+
+                    imgAndDraw.m_image.Height = WaveFormCanvas.ActualHeight;
+
+                    current_ = current_.m_nextItem;
+                }
             }
         }
 
@@ -790,7 +794,8 @@ namespace Tobi.Plugin.AudioPane
             emptyWaveformTiles();
 #endif //DRAW_EMPTY_IMAGE
 
-            RefreshCanvasWidth();
+            double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+            WaveFormCanvas.Width = width;
         }
 
         public void ResetWaveFormChunkMarkers()
@@ -1402,7 +1407,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 // resets to MillisecondsPerPixelToPixelWidthConverter.defaultWidth
 
-                m_ForceCanvasWidthUpdate = false;
+                //m_ForceCanvasWidthUpdate = false;
                 ZoomSlider.Value += 1;
                 return;
             }
@@ -1422,7 +1427,7 @@ namespace Tobi.Plugin.AudioPane
                 ZoomSlider.Maximum = millisecondsPerPixel;
             }
 
-            m_ForceCanvasWidthUpdate = false;
+            //m_ForceCanvasWidthUpdate = false;
             ZoomSlider.Value = millisecondsPerPixel;
         }
 
