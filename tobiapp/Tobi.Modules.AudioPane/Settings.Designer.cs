@@ -122,7 +122,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("350")]
+        [global::System.Configuration.DefaultSettingValueAttribute("400")]
         public double AudioWaveForm_TileWidth {
             get {
                 return ((double)(this["AudioWaveForm_TileWidth"]));

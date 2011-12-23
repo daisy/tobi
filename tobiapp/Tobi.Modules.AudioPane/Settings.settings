@@ -27,7 +27,7 @@
       <Value Profile="(Default)">350</Value>
     </Setting>
     <Setting Name="AudioWaveForm_TileWidth" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">350</Value>
+      <Value Profile="(Default)">400</Value>
     </Setting>
     <Setting Name="AudioWaveForm_ThreadBytesThreshold" Type="System.Double" Scope="User">
       <Value Profile="(Default)">5242880</Value>
