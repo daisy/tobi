@@ -17,17 +17,19 @@ namespace Tobi.Plugin.AudioPane
         private AudioPaneView m_AudioPaneView;
         private AudioPaneViewModel m_AudioPaneViewModel;
 
-        private double m_standardTextHeight;
+        //private double m_standardTextHeight;
 
         public WaveFormTimeTicksAdorner(FrameworkElement adornedElement, AudioPaneView view, AudioPaneViewModel viewModel)
             : base(adornedElement)
         {
-            m_standardTextHeight = -1;
+            //m_standardTextHeight = -1;
 
             IsHitTestVisible = false;
             ClipToBounds = true;
+
             m_AudioPaneView = view;
             m_AudioPaneViewModel = viewModel;
+
             //MouseMove += OnAdornerMouseMove;
             //MouseLeave += OnAdornerMouseLeave;
 
@@ -56,14 +58,17 @@ namespace Tobi.Plugin.AudioPane
             long zoomNormalized = (long)Math.Round(m_zoom * 1000);
             if (zoomNormalized == 1000)
             {
-               return null;
+                return null;
             }
             else
             {
                 long scaleNormalized = (long)Math.Round(m_cachedScaleTransform.ScaleX * 1000);
-                if (scaleNormalized != zoomNormalized)
+                
+                double inverseZoom = 1 / m_zoom;
+                long inverseZoomNormalized = (long)Math.Round(inverseZoom * 1000);
+                
+                if (scaleNormalized != inverseZoomNormalized)
                 {
-                    double inverseZoom = 1 / m_zoom;
                     m_cachedScaleTransform.ScaleX = inverseZoom;
                     m_cachedScaleTransform.ScaleY = inverseZoom;
                 }
@@ -76,9 +81,6 @@ namespace Tobi.Plugin.AudioPane
             checkTransform();
 
             m_renderBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Back); // { Opacity = 0.8 };
-            
-            //TODO: remove !!!! (only for DEBUG)
-            m_renderBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_CursorBorder);
             //m_renderBrush.Freeze();
 
             m_phraseBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Phrases); //m_AudioPaneViewModel.ColorMarkers);
@@ -100,7 +102,7 @@ namespace Tobi.Plugin.AudioPane
 
         private Pen m_penTick;
         private Pen m_penPhrases;
-        
+
 
         private SolidColorBrush m_renderBrush;
         private SolidColorBrush m_phraseBrush;
@@ -146,12 +148,17 @@ namespace Tobi.Plugin.AudioPane
 
             double hoffset = m_AudioPaneView.WaveFormScroll.HorizontalOffset;
 
-            if (m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null
-                && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextCacheRenderThreshold)
+            //if (m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null
+            //    && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextCacheRenderThreshold)
+            //{
+            //    drawChunkInfos(null, drawingContext, null, hoffset, heightAvailable, widthAvailable, m_AudioPaneView.BytesPerPixel,
+            //        1 //m_zoom
+            //        , trans);
+            //}
+
+            if (m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
             {
-                drawChunkInfos(null, drawingContext, null, hoffset, heightAvailable, widthAvailable, m_AudioPaneView.BytesPerPixel,
-                    1 //m_zoom
-                    );
+                drawChunkInfos(drawingContext, hoffset, heightAvailable, widthAvailable, m_AudioPaneView.BytesPerPixel, trans);
             }
 
             drawTimeRuler(drawingContext, hoffset, heightAvailable, widthAvailable, trans);
@@ -265,7 +272,7 @@ namespace Tobi.Plugin.AudioPane
                         m_culture,
                         FlowDirection.LeftToRight,
                         m_typeFace,
-                        12 * (trans != null?m_zoom:1),
+                        12 * (trans != null ? m_zoom : 1),
                         m_timeTextBrush
 #if NET40
 , null, TextFormattingMode.Display
@@ -312,7 +319,7 @@ namespace Tobi.Plugin.AudioPane
                     var clipGeo = new RectangleGeometry(m_rectRect);
                     clipGeo.Freeze();
                     drawingContext.PushClip(clipGeo);
-                    
+
                     drawingContext.DrawText(formattedText, m_point3);
 
                     drawingContext.Pop();
@@ -417,11 +424,12 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        public void drawChunkInfos(ImageAndDrawing imageAndDraw, DrawingContext drawingContext, DrawingGroup drawingGroup,
-            double hoffset, double heightAvailable, double widthAvailable, double bytesPerPixel, double zoom) // ALL ZOOMED ALREADY ! (from waveform loader)
+        public void drawChunkInfos(DrawingContext drawingContext,
+            double hoffset, double heightAvailable, double widthAvailable, double bytesPerPixel
+            , ScaleTransform trans)
         {
-            double xZoomed = imageAndDraw == null ? -1 : imageAndDraw.m_originalX * zoom;
-            double wZoomed = imageAndDraw == null ? -1 : imageAndDraw.m_originalW * zoom;
+            //double xZoomed = imageAndDraw == null ? -1 : imageAndDraw.m_originalX * zoom;
+            //double wZoomed = imageAndDraw == null ? -1 : imageAndDraw.m_originalW * zoom;
 
             Tuple<TreeNode, TreeNode> treeNodeSelection = m_AudioPaneViewModel.m_UrakawaSession.GetTreeNodeSelection();
             if (treeNodeSelection.Item1 != null && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
@@ -466,10 +474,11 @@ namespace Tobi.Plugin.AudioPane
                         drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
                     }
 
+
                     widthChunk = pixelsRight - pixelsLeft;
                     if (pixelsRight > hoffset && pixelsLeft < (hoffset + widthAvailable))
                     {
-                        if (widthChunk < 20 * zoom)
+                        if (widthChunk < 20)
                         {
                             sumData += marker.m_LocalStreamDataLength;
                             pixelsLeft = pixelsRight;
@@ -477,50 +486,64 @@ namespace Tobi.Plugin.AudioPane
 #if !USE_NORMAL_LIST
                             current = current.m_nextItem;
 #endif //USE_NORMAL_LIST
+
                             continue;
                         }
+
+                        if (trans != null)
+                        {
+                            drawingContext.PushTransform(trans);
+                        }
+
 
                         long timeInLocalUnits = m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
                             m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
                             (long)Math.Round(bytesPerPixel * (pixelsRight - pixelsLeft))));
 
-                        double tickHeight = m_tickHeight * zoom;
+                        double tickHeight = m_tickHeight;
 
                         double chunkWidthForText = widthChunk - tickHeight - tickHeight - 1;
 
-                        if (m_standardTextHeight <= 0)
-                        {
-                            var txt = new FormattedText("Test Height",
-                                                                  m_culture,
-                                                                  FlowDirection.LeftToRight,
-                                                                  m_typeFace,
-                                                                  12,
-                                                                  m_phraseBrush
-#if NET40
-, null, TextFormattingMode.Display
-#endif //NET40
-);
-                            m_standardTextHeight = txt.Height;
-                        }
-                        double standardTextHeight = m_standardTextHeight * zoom;
+                        //                        if (m_standardTextHeight <= 0)
+                        //                        {
+                        //                            var txt = new FormattedText("Test Height",
+                        //                                                                  m_culture,
+                        //                                                                  FlowDirection.LeftToRight,
+                        //                                                                  m_typeFace,
+                        //                                                                  12,
+                        //                                                                  m_phraseBrush
+                        //#if NET40
+                        //, null, TextFormattingMode.Display
+                        //#endif //NET40
+                        //);
+                        //                            m_standardTextHeight = txt.Height;
+                        //                        }
 
                         var formattedTextDuration = new FormattedText(
                                                 AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits)),
                                                               m_culture,
                                                               FlowDirection.LeftToRight,
                                                               m_typeFace,
-                                                              12 * zoom,
+                                                              12 * (trans != null ? m_zoom : 1),
                                                               m_timeTextBrush
 #if NET40
 , null, TextFormattingMode.Display
 #endif //NET40
 );
 
-                        formattedTextDuration.Trimming = TextTrimming.CharacterEllipsis;
-                        formattedTextDuration.MaxTextWidth = chunkWidthForText;
-                        formattedTextDuration.MaxTextHeight = standardTextHeight + tickHeight;
+                        double formattedTextDurationWidth = formattedTextDuration.Width;
+                        double formattedTextDurationHeight = formattedTextDuration.Height;
+                        if (trans != null)
+                        {
+                            formattedTextDurationWidth *= (1 / m_zoom);
+                            formattedTextDurationHeight *= (1 / m_zoom);
+                        }
 
-                        double horizontalMargin = m_horizontalMargin * zoom;
+                        formattedTextDuration.Trimming = TextTrimming.CharacterEllipsis;
+                        formattedTextDuration.MaxTextWidth = chunkWidthForText * (trans != null ? m_zoom : 1);
+                        formattedTextDuration.MaxTextHeight = (formattedTextDurationHeight + tickHeight) * (trans != null ? m_zoom : 1);
+
+                        double horizontalMargin = m_horizontalMargin;
 
                         m_point3.X = pixelsLeft - hoffset + horizontalMargin + tickHeight;
                         if (m_point3.X < tickHeight)
@@ -529,7 +552,7 @@ namespace Tobi.Plugin.AudioPane
                             m_point3.X = tickHeight;
                         }
 
-                        m_point3.Y = heightAvailable - standardTextHeight - standardTextHeight - tickHeight - tickHeight - tickHeight;
+                        m_point3.Y = heightAvailable - (formattedTextDurationHeight * 2) - tickHeight - tickHeight - tickHeight;
 
                         double diff = (pixelsRight - hoffset) - widthAvailable;
                         if (diff > 0)
@@ -537,65 +560,79 @@ namespace Tobi.Plugin.AudioPane
                             widthChunk -= diff;
                         }
 
-                        double minW = Math.Min(formattedTextDuration.Width + horizontalMargin + horizontalMargin,
+                        double minW = Math.Min(formattedTextDurationWidth + horizontalMargin + horizontalMargin,
                                                 widthChunk - tickHeight - tickHeight - 1);
                         if (minW > 0)
                         {
                             m_rectRect.X = m_point3.X - horizontalMargin;
                             m_rectRect.Y = m_point3.Y;
                             m_rectRect.Width = minW;
-                            m_rectRect.Height = standardTextHeight;
+                            m_rectRect.Height = formattedTextDurationHeight;
 
-                            if (drawingGroup != null)
+                            //if (drawingGroup != null)
+                            //{
+                            //    if (imageAndDraw == null
+                            //        ||
+                            //        (
+                            //        m_rectRect.Left >= xZoomed
+                            //        && m_rectRect.Left < xZoomed + wZoomed
+                            //        ||
+                            //        m_rectRect.Right > xZoomed
+                            //        && m_rectRect.Right <= xZoomed + wZoomed
+                            //        )
+                            //        )
+                            //    {
+                            //        m_rectRect.X -= xZoomed;
+                            //        if (m_rectRect.X <0)
+                            //        {
+                            //            m_rectRect.Width -= -m_rectRect.X;
+                            //            m_rectRect.X = 0;
+                            //        }
+                            //        var rectGeo = new RectangleGeometry(m_rectRect);
+                            //        rectGeo.Freeze();
+                            //        var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
+                            //        rectGeoDraw.Freeze();
+                            //        drawingGroup.Children.Add(rectGeoDraw);
+
+                            //        m_point4.X = m_point3.X;
+                            //        m_point4.Y = m_point3.Y;
+                            //        m_point4.X -= xZoomed;
+                            //        if (m_point4.X >= 0)
+                            //        {
+                            //            var textGeo = formattedTextDuration.BuildGeometry(m_point4);
+                            //            textGeo.Freeze();
+                            //            var textGeoDraw = new GeometryDrawing(m_timeTextBrush, null, textGeo);
+                            //            textGeoDraw.Freeze();
+                            //            drawingGroup.Children.Add(textGeoDraw);
+                            //        }
+                            //    }
+                            //}
+                            //else
+                            //{
+
+
+                            if (trans != null)
                             {
-                                if (imageAndDraw == null
-                                    ||
-                                    (
-                                    m_rectRect.Left >= xZoomed
-                                    && m_rectRect.Left < xZoomed + wZoomed
-                                    ||
-                                    m_rectRect.Right > xZoomed
-                                    && m_rectRect.Right <= xZoomed + wZoomed
-                                    )
-                                    )
-                                {
-                                    m_rectRect.X -= xZoomed;
-                                    if (m_rectRect.X <0)
-                                    {
-                                        m_rectRect.Width -= -m_rectRect.X;
-                                        m_rectRect.X = 0;
-                                    }
-                                    var rectGeo = new RectangleGeometry(m_rectRect);
-                                    rectGeo.Freeze();
-                                    var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
-                                    rectGeoDraw.Freeze();
-                                    drawingGroup.Children.Add(rectGeoDraw);
+                                m_point3.X *= m_zoom;
+                                m_point3.Y *= m_zoom;
 
-                                    m_point4.X = m_point3.X;
-                                    m_point4.Y = m_point3.Y;
-                                    m_point4.X -= xZoomed;
-                                    if (m_point4.X >= 0)
-                                    {
-                                        var textGeo = formattedTextDuration.BuildGeometry(m_point4);
-                                        textGeo.Freeze();
-                                        var textGeoDraw = new GeometryDrawing(m_timeTextBrush, null, textGeo);
-                                        textGeoDraw.Freeze();
-                                        drawingGroup.Children.Add(textGeoDraw);
-                                    }
-                                }
+                                m_rectRect.X *= m_zoom;
+                                m_rectRect.Y *= m_zoom;
+                                m_rectRect.Width *= m_zoom;
+                                m_rectRect.Height *= m_zoom;
                             }
-                            else
-                            {
-                                drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
 
-                                var clipGeo = new RectangleGeometry(m_rectRect);
-                                clipGeo.Freeze();
-                                drawingContext.PushClip(clipGeo);
 
-                                drawingContext.DrawText(formattedTextDuration, m_point3);
+                            drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
 
-                                drawingContext.Pop(); //PushClip
-                            }
+                            var clipGeo = new RectangleGeometry(m_rectRect);
+                            clipGeo.Freeze();
+                            drawingContext.PushClip(clipGeo);
+
+                            drawingContext.DrawText(formattedTextDuration, m_point3);
+
+                            drawingContext.Pop(); //PushClip
+                            //}
                         }
 
                         if (chunkWidthForText <= 10)
@@ -606,6 +643,11 @@ namespace Tobi.Plugin.AudioPane
 #if !USE_NORMAL_LIST
                             current = current.m_nextItem;
 #endif //USE_NORMAL_LIST
+
+                            if (trans != null)
+                            {
+                                drawingContext.Pop();
+                            }
                             continue;
                         }
 
@@ -634,7 +676,7 @@ namespace Tobi.Plugin.AudioPane
                                                                   m_culture,
                                                                   FlowDirection.LeftToRight,
                                                                   m_typeFace,
-                                                                  12 * zoom,
+                                                                  12 * (trans != null ? m_zoom : 1),
                                                                   m_phraseBrush
 #if NET40
 , null, TextFormattingMode.Display
@@ -642,105 +684,130 @@ namespace Tobi.Plugin.AudioPane
 );
 
                             formattedText.Trimming = TextTrimming.CharacterEllipsis;
-                            formattedText.MaxTextWidth = chunkWidthForText;
-                            formattedText.MaxTextHeight = standardTextHeight + tickHeight;
+                            formattedText.MaxTextWidth = chunkWidthForText * (trans != null ? m_zoom : 1);
+                            formattedText.MaxTextHeight = (formattedTextDurationHeight + tickHeight) * (trans != null ? m_zoom : 1);
 
+                            double formattedTextWidth = formattedText.Width;
+                            double formattedTextHeight = formattedText.Height;
+                            if (trans != null)
+                            {
+                                formattedTextWidth *= (1 / m_zoom);
+                                formattedTextHeight *= (1 / m_zoom);
+                            }
                             //FormattedText formattedTextDots = null;
 
-                            m_point3.Y = heightAvailable - standardTextHeight - tickHeight - tickHeight;
+                            m_point3.Y = heightAvailable - formattedTextDurationHeight - tickHeight - tickHeight;
 
-                            minW = Math.Min(formattedText.Width + horizontalMargin + horizontalMargin,
+                            minW = Math.Min(formattedTextWidth + horizontalMargin + horizontalMargin,
                                                 widthChunk - tickHeight - tickHeight - 1); //chunkWidthForText
                             if (minW > 0)
                             {
-                                m_rectRect.X = m_point3.X - horizontalMargin;
+                                m_rectRect.X = m_point3.X / m_zoom - horizontalMargin;
                                 m_rectRect.Y = m_point3.Y;
                                 m_rectRect.Width = minW;
-                                m_rectRect.Height = standardTextHeight;
+                                m_rectRect.Height = formattedTextDurationHeight;
 
-                                if (drawingGroup != null)
+                                //if (drawingGroup != null)
+                                //{
+                                //    if (imageAndDraw == null
+                                //        ||
+                                //        (
+                                //        m_rectRect.Left >= xZoomed
+                                //        && m_rectRect.Left < xZoomed + wZoomed
+                                //        ||
+                                //        m_rectRect.Right > xZoomed
+                                //        && m_rectRect.Right <= xZoomed + wZoomed
+                                //        )
+                                //        )
+                                //    {
+                                //        m_rectRect.X -= xZoomed;
+                                //        if (m_rectRect.X < 0)
+                                //        {
+                                //            m_rectRect.Width -= -m_rectRect.X;
+                                //            m_rectRect.X = 0;
+                                //        }
+                                //        var rectGeo = new RectangleGeometry(m_rectRect);
+                                //        rectGeo.Freeze();
+                                //        var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
+                                //        rectGeoDraw.Freeze();
+                                //        drawingGroup.Children.Add(rectGeoDraw);
+
+                                //        m_point3.X -= xZoomed;
+                                //        if (m_point3.X >= 0)
+                                //        {
+                                //            var textGeo = formattedText.BuildGeometry(m_point3);
+                                //            textGeo.Freeze();
+                                //            var textGeoDraw = new GeometryDrawing(m_phraseBrush, null, textGeo);
+                                //            textGeoDraw.Freeze();
+                                //            drawingGroup.Children.Add(textGeoDraw);
+                                //        }
+                                //    }
+                                //}
+                                //else
+                                //{
+                                //drawingContext.PushOpacity(0.6);
+
+
+                                if (trans != null)
                                 {
-                                    if (imageAndDraw == null
-                                        ||
-                                        (
-                                        m_rectRect.Left >= xZoomed
-                                        && m_rectRect.Left < xZoomed + wZoomed
-                                        ||
-                                        m_rectRect.Right > xZoomed
-                                        && m_rectRect.Right <= xZoomed + wZoomed
-                                        )
-                                        )
-                                    {
-                                        m_rectRect.X -= xZoomed;
-                                        if (m_rectRect.X < 0)
-                                        {
-                                            m_rectRect.Width -= -m_rectRect.X;
-                                            m_rectRect.X = 0;
-                                        }
-                                        var rectGeo = new RectangleGeometry(m_rectRect);
-                                        rectGeo.Freeze();
-                                        var rectGeoDraw = new GeometryDrawing(m_renderBrush, null, rectGeo);
-                                        rectGeoDraw.Freeze();
-                                        drawingGroup.Children.Add(rectGeoDraw);
+                                    //m_point3.X *= m_zoom; ==> X is "borrowed" from previous text render, already zoomed
+                                    m_point3.Y *= m_zoom;
 
-                                        m_point3.X -= xZoomed;
-                                        if (m_point3.X >= 0)
-                                        {
-                                            var textGeo = formattedText.BuildGeometry(m_point3);
-                                            textGeo.Freeze();
-                                            var textGeoDraw = new GeometryDrawing(m_phraseBrush, null, textGeo);
-                                            textGeoDraw.Freeze();
-                                            drawingGroup.Children.Add(textGeoDraw);
-                                        }
-                                    }
+                                    m_rectRect.X *= m_zoom;
+                                    m_rectRect.Y *= m_zoom;
+                                    m_rectRect.Width *= m_zoom;
+                                    m_rectRect.Height *= m_zoom;
                                 }
-                                else
-                                {
-                                    //drawingContext.PushOpacity(0.6);
 
-                                    drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
 
-                                    Boolean mouseIn = m_MousePosX >= (pixelsLeft - hoffset) &&
-                                                      m_MousePosX < (pixelsRight - hoffset);
-                                    if (mouseIn)
-                                    {
-                                        //drawingContext.Pop(); //PushOpacity
-                                    }
-                                    var clipGeo = new RectangleGeometry(m_rectRect);
-                                    clipGeo.Freeze();
-                                    drawingContext.PushClip(clipGeo);
+                                drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
 
-                                    drawingContext.DrawText(formattedText, m_point3);
+                                //Boolean mouseIn = m_MousePosX >= (pixelsLeft - hoffset) &&
+                                //                  m_MousePosX < (pixelsRight - hoffset);
+                                //if (mouseIn)
+                                //{
+                                //    //drawingContext.Pop(); //PushOpacity
+                                //}
+                                var clipGeo = new RectangleGeometry(m_rectRect);
+                                clipGeo.Freeze();
+                                drawingContext.PushClip(clipGeo);
 
-                                    drawingContext.Pop(); //PushClip
+                                drawingContext.DrawText(formattedText, m_point3);
 
-                                    if (!mouseIn)
-                                    {
-                                        //drawingContext.Pop(); //PushOpacity
-                                    }
+                                drawingContext.Pop(); //PushClip
 
-                                    //if (false && formattedText.Width >= minW)
-                                    //{
-                                    //    formattedTextDots = new FormattedText(" ...",
-                                    //                                      m_culture,
-                                    //                                      FlowDirection.LeftToRight,
-                                    //                                      m_typeFace,
-                                    //                                      12,
-                                    //                                      m_timeTextBrush
-                                    //    );
-                                    //}
+                                //if (!mouseIn)
+                                //{
+                                //    //drawingContext.Pop(); //PushOpacity
+                                //}
 
-                                    //if (formattedTextDots != null && formattedTextDots.Width < minW)
-                                    //{
-                                    //    m_point3.X = m_rectRect.X + m_rectRect.Width - formattedTextDots.Width;
-                                    //    m_rectRect.X = m_point3.X;
-                                    //    m_rectRect.Width = formattedTextDots.Width;
+                                //if (false && formattedText.Width >= minW)
+                                //{
+                                //    formattedTextDots = new FormattedText(" ...",
+                                //                                      m_culture,
+                                //                                      FlowDirection.LeftToRight,
+                                //                                      m_typeFace,
+                                //                                      12,
+                                //                                      m_timeTextBrush
+                                //    );
+                                //}
 
-                                    //    drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
-                                    //    drawingContext.DrawText(formattedTextDots, m_point3);
-                                    //}
-                                }
+                                //if (formattedTextDots != null && formattedTextDots.Width < minW)
+                                //{
+                                //    m_point3.X = m_rectRect.X + m_rectRect.Width - formattedTextDots.Width;
+                                //    m_rectRect.X = m_point3.X;
+                                //    m_rectRect.Width = formattedTextDots.Width;
+
+                                //    drawingContext.DrawRectangle(m_renderBrush, null, m_rectRect);
+                                //    drawingContext.DrawText(formattedTextDots, m_point3);
+                                //}
+                                //}
                             }
+                        }
+
+                        if (trans != null)
+                        {
+                            drawingContext.Pop();
                         }
                     }
 

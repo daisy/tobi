@@ -50,9 +50,6 @@
     <Setting Name="AudioWaveForm_RenderMethod" Type="Tobi.Plugin.AudioPane.WaveFormRenderMethod" Scope="User">
       <Value Profile="(Default)">RenderTargetBitmap</Value>
     </Setting>
-    <Setting Name="AudioWaveForm_TextCacheRenderThreshold" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">9999999</Value>
-    </Setting>
     <Setting Name="AudioWaveForm_Resolution" Type="System.Double" Scope="User">
       <Value Profile="(Default)">3</Value>
     </Setting>

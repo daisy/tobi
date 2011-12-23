@@ -702,7 +702,7 @@ namespace Tobi.Plugin.AudioPane
             layer.Add(m_WaveFormTimeTicksAdorner);
             m_WaveFormTimeTicksAdorner.Visibility = Visibility.Visible;
 
-            m_WaveFormLoadingAdorner = new WaveFormLoadingAdorner(WaveFormScroll, m_ViewModel);
+            m_WaveFormLoadingAdorner = new WaveFormLoadingAdorner(WaveFormScroll, this, m_ViewModel);
             layer.Add(m_WaveFormLoadingAdorner);
             m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
 
