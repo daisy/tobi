@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Tobi.Common.MVVM;
@@ -43,28 +44,28 @@ namespace Tobi.Common.UI
 #if NET40
                         m_IconSmall.CacheMode = null;
 #endif
-                        updateSource(m_IconSmall);
+                        updateSource(m_IconSmall, 0);
                     }
                     if (m_IconMedium != null)
                     {
 #if NET40
                         m_IconMedium.CacheMode = null;
 #endif
-                        updateSource(m_IconMedium);
+                        updateSource(m_IconMedium, 1);
                     }
                     if (m_IconLarge != null)
                     {
 #if NET40
                         m_IconLarge.CacheMode = null;
 #endif
-                        updateSource(m_IconLarge);
+                        updateSource(m_IconLarge, 2);
                     }
                     if (m_IconXLarge != null)
                     {
 #if NET40
                         m_IconXLarge.CacheMode = null;
 #endif
-                        updateSource(m_IconXLarge);
+                        updateSource(m_IconXLarge, 3);
                     }
 
                     RaisePropertyChanged(() => IconDrawScale);
@@ -77,14 +78,47 @@ namespace Tobi.Common.UI
         public Thickness IconMargin_Large { get; set; }
         public Thickness IconMargin_XLarge { get; set; }
 
-        private void updateSource(AutoGreyableImage image)
+        private void updateSource(AutoGreyableImage image, int size)
         {
+            long zoomNormalized = (long)Math.Round(IconDrawScale * 1000);
+            if (zoomNormalized == 1000)
+            {
+                image.LayoutTransform = null;
+            }
+            else
+            {
+                long scaleNormalized = (long)Math.Round(m_cachedScaleTransform.ScaleX * 1000);
+                if (scaleNormalized != zoomNormalized)
+                {
+                    double inverseZoom = 1 / IconDrawScale;
+                    m_cachedScaleTransform.ScaleX = inverseZoom;
+                    m_cachedScaleTransform.ScaleY = inverseZoom;
+                }
+                image.LayoutTransform = m_cachedScaleTransform;
+            }
+
+            image.Width =
+                (size == 0
+                     ? Sizes.IconWidth_Small
+                     : (size == 1
+                            ? Sizes.IconWidth_Medium
+                            : (size == 2 ? Sizes.IconWidth_Large : Sizes.IconWidth_XLarge)))
+                             * IconDrawScale;
+
+            image.Height =
+                (size == 0
+                     ? Sizes.IconHeight_Small
+                     : (size == 1
+                            ? Sizes.IconHeight_Medium
+                            : (size == 2 ? Sizes.IconHeight_Large : Sizes.IconHeight_XLarge)))
+                             * IconDrawScale;
+
             image.InitializeFromVectorGraphics(
                 IconVisualBrush,
-                image.Width * IconDrawScale, image.Height * IconDrawScale);
+                image.Width, image.Height);
 
 #if NET40
-            if (image.CacheMode == null)
+            if (false && image.CacheMode == null)
             {
                 image.CacheMode = new BitmapCache
                 {
@@ -115,6 +149,8 @@ namespace Tobi.Common.UI
 #endif
         }
 
+        private ScaleTransform m_cachedScaleTransform = new ScaleTransform(1, 1);
+
         private AutoGreyableImage createImage(int size)
         {
             var image = new AutoGreyableImage
@@ -122,8 +158,8 @@ namespace Tobi.Common.UI
                 IsEnabled = true,
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Stretch = Stretch.Uniform,
-                SnapsToDevicePixels = true,
+
+                Stretch = Stretch.None, //Uniform
 
                 Margin =
                     (size == 0
@@ -132,29 +168,33 @@ namespace Tobi.Common.UI
                                 ? IconMargin_Medium
                                 : (size == 2 ? IconMargin_Large : IconMargin_XLarge))),
 
-                Width =
-                    (size == 0
-                         ? Sizes.IconWidth_Small
-                         : (size == 1
-                                ? Sizes.IconWidth_Medium
-                                : (size == 2 ? Sizes.IconWidth_Large : Sizes.IconWidth_XLarge))),
-                Height =
-                    (size == 0
-                         ? Sizes.IconHeight_Small
-                         : (size == 1
-                                ? Sizes.IconHeight_Medium
-                                : (size == 2 ? Sizes.IconHeight_Large : Sizes.IconHeight_XLarge)))
             };
 
-            updateSource(image);
+            updateSource(image, size);
 
             image.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Unspecified);
-            image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.Fant);
-            image.SetValue(RenderOptions.CachingHintProperty, CachingHint.Unspecified);
+            //RenderOptions.SetEdgeMode(image, EdgeMode.Unspecified);
+
+#if NET40
+            image.SetValue(RenderOptions.ClearTypeHintProperty, ClearTypeHint.Auto);
+            //RenderOptions.SetClearTypeHint(image, ClearTypeHint.Auto);
+
+            image.CacheMode = null;
+#endif //NET40
+
+            image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.LowQuality);
+            //RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.LowQuality);
+
+            image.SetValue(RenderOptions.CachingHintProperty, CachingHint.Cache);
+            //RenderOptions.SetCachingHint(image, CachingHint.Cache);
 
             //image.SetValue(RenderOptions.CacheInvalidationThresholdMinimumProperty, 1);
             //image.SetValue(RenderOptions.CacheInvalidationThresholdMaximumProperty, 1);
 
+            image.SnapsToDevicePixels = false;
+            //image.SetValue(UIElement.SnapsToDevicePixelsProperty, false);
+
+            
 
             return image;
 
