@@ -36,14 +36,24 @@ namespace Tobi.Plugin.AudioPane
                 return defaultWidth;
             }
 
-            long bytesPerPixel = viewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(AudioLibPCMFormat.TIME_UNIT *
-                                                                                (long)Math.Round(millisecondsPerPixel));
+            long bytesPerPixel = viewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(
+                                                                                (long)Math.Round(AudioLibPCMFormat.TIME_UNIT * millisecondsPerPixel));
+
+            if (bytesPerPixel <= 0)
+            {
+#if DEBUG
+                DebugFix.Assert(false);
+#endif // DEBUG
+                return defaultWidth;
+            }
 
             double width = (double)viewModel.State.Audio.DataLength / (double)bytesPerPixel;
 
-            if (double.IsNaN(width) || double.IsInfinity(width) || (long)Math.Round(width) == 0)
+            if (double.IsNaN(width) || double.IsInfinity(width) || (long)Math.Ceiling(width) == 0)
             {
-                return defaultWidth;
+#if DEBUG
+                DebugFix.Assert(false);
+#endif // DEBUG
             }
 
             return width;
