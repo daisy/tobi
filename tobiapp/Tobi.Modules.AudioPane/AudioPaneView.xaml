@@ -434,7 +434,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <!-- Background="{Binding Converter={XAML:ColorToBrushConverter}, Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}" -->
       <!--SizeChanged="OnWaveFormCanvasSizeChanged"-->
       <Canvas x:Name="WaveFormCanvas"
-              
+              Loaded="OnWaveFormCanvasLoaded"
               SizeChanged="OnWaveFormCanvasSizeChanged"
               
                MouseDown="OnWaveFormMouseDown"

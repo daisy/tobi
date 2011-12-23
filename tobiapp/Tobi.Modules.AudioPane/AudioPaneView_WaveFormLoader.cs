@@ -53,6 +53,45 @@ namespace Tobi.Plugin.AudioPane
     {
         private LightLinkedList<ImageAndDrawing> m_WaveformTileImages = new LightLinkedList<ImageAndDrawing>();
 
+        private LightLinkedList<Image> m_WaveformImagePool = new LightLinkedList<Image>();
+        private void OnWaveFormCanvasLoaded(object sender, RoutedEventArgs e)
+        {
+            int count = (int)Math.Round(1600 / Settings.Default.AudioWaveForm_TileWidth);
+            int poolSize = Math.Max(1, count);
+            for (int i = 0; i < poolSize; i++)
+            {
+                //Image image = createWaveformTileImage(-100, 10);
+                var image = new Image();
+                resetWaveformPooledImage(image);
+
+                m_WaveformImagePool.Add(image);
+
+                WaveFormCanvas.Children.Add(image);
+            }
+        }
+
+        private void resetWaveformPooledImage(Image image)
+        {
+            initEmptyImageTile(image, -100, 10);
+            image.Visibility = Visibility.Collapsed; // TODO: Hidden  ?
+        }
+
+        private bool waveformImagePoolContains(Image image)
+        {
+            LightLinkedList<Image>.Item current = m_WaveformImagePool.m_First;
+            while (current != null)
+            {
+                Image img = current.m_data;
+                if (img == image)
+                {
+                    return true;
+                }
+                current = current.m_nextItem;
+            }
+
+            return false;
+        }
+
         private void emptyWaveformTiles()
         {
             //#if DEBUG
@@ -67,7 +106,16 @@ namespace Tobi.Plugin.AudioPane
                 disposeImageSource(imgAndDraw.m_image);
 
                 imgAndDraw.m_imageSourceLoaded = false;
-                WaveFormCanvas.Children.Remove(imgAndDraw.m_image);
+
+                if (waveformImagePoolContains(imgAndDraw.m_image))
+                {
+                    resetWaveformPooledImage(imgAndDraw.m_image);
+                }
+                else
+                {
+                    WaveFormCanvas.Children.Remove(imgAndDraw.m_image);
+                }
+
                 imgAndDraw.m_image = null;
                 imgAndDraw.m_drawingImage = null;
 
@@ -99,16 +147,10 @@ namespace Tobi.Plugin.AudioPane
             }
 
             image.Source = null;
-
         }
 
-        private Image createWaveformTileImage(double x, double w)
+        private void initEmptyImageTile(Image image, double x, double w)
         {
-            //#if DEBUG
-            //            m_Logger.Log("createWaveformTileImage: " + x + " / " + w, Category.Debug, Priority.Medium);
-            //#endif
-            var image = new Image();
-
             image.SetValue(Canvas.LeftProperty, x);
 
             //image.SetValue(FrameworkElement.WidthProperty, w);
@@ -129,6 +171,8 @@ namespace Tobi.Plugin.AudioPane
 #if NET40
             image.SetValue(RenderOptions.ClearTypeHintProperty, ClearTypeHint.Auto);
             //RenderOptions.SetClearTypeHint(image, ClearTypeHint.Auto);
+
+            image.CacheMode = null;
 #endif //NET40
 
             image.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.LowQuality);
@@ -137,7 +181,7 @@ namespace Tobi.Plugin.AudioPane
             image.SetValue(RenderOptions.CachingHintProperty, CachingHint.Cache);
             //RenderOptions.SetCachingHint(image, CachingHint.Cache);
 
-            image.SnapsToDevicePixels = false;
+            image.SnapsToDevicePixels = true;
             //image.SetValue(UIElement.SnapsToDevicePixelsProperty, false);
 
 
@@ -150,7 +194,17 @@ namespace Tobi.Plugin.AudioPane
             ////PropertyChangedNotifyBase.GetMemberName(()=>)
             //image.SetBinding(FrameworkElement.HeightProperty, binding);
 
+            image.Visibility = Visibility.Visible;
+        }
 
+        private Image createWaveformTileImage(double x, double w)
+        {
+            //#if DEBUG
+            //            m_Logger.Log("createWaveformTileImage: " + x + " / " + w, Category.Debug, Priority.Medium);
+            //#endif
+
+            var image = new Image();
+            initEmptyImageTile(image, x, w);
             return image;
         }
 
@@ -175,15 +229,21 @@ namespace Tobi.Plugin.AudioPane
                 imgAndDraw.m_originalCanvasW = canvasWidth;
                 imgAndDraw.m_originalW = canvasWidth;
                 imgAndDraw.m_originalX = 0;
-                imgAndDraw.m_image = createWaveformTileImage(imgAndDraw.m_originalX, imgAndDraw.m_originalW);
+
                 m_WaveformTileImages.Add(imgAndDraw);
-                WaveFormCanvas.Children.Add(imgAndDraw.m_image);
+
+                imgAndDraw.m_image = m_WaveformImagePool.m_First.m_data;
+                initEmptyImageTile(imgAndDraw.m_image, imgAndDraw.m_originalX, imgAndDraw.m_originalW);
+
+                //imgAndDraw.m_image = createWaveformTileImage(imgAndDraw.m_originalX, imgAndDraw.m_originalW);
+                //WaveFormCanvas.Children.Add(imgAndDraw.m_image);
 
                 return;
             }
 
             double wRemainder = canvasWidth;
 
+            LightLinkedList<Image>.Item pooledImage = m_WaveformImagePool.m_First;
             while (wRemainder > 0)
             {
                 var imgAndDraw = new ImageAndDrawing();
@@ -191,9 +251,20 @@ namespace Tobi.Plugin.AudioPane
                 imgAndDraw.m_originalCanvasW = canvasWidth;
                 imgAndDraw.m_originalW = Math.Min(waveformTileWidth, wRemainder);
                 imgAndDraw.m_originalX = canvasWidth - wRemainder;
-                imgAndDraw.m_image = createWaveformTileImage(imgAndDraw.m_originalX, imgAndDraw.m_originalW);
+
                 m_WaveformTileImages.Add(imgAndDraw);
-                WaveFormCanvas.Children.Add(imgAndDraw.m_image);
+
+                if (pooledImage != null)
+                {
+                    imgAndDraw.m_image = pooledImage.m_data;
+                    pooledImage = pooledImage.m_nextItem;
+                    initEmptyImageTile(imgAndDraw.m_image, imgAndDraw.m_originalX, imgAndDraw.m_originalW);
+                }
+                else
+                {
+                    imgAndDraw.m_image = createWaveformTileImage(imgAndDraw.m_originalX, imgAndDraw.m_originalW);
+                    WaveFormCanvas.Children.Add(imgAndDraw.m_image);
+                }
 
                 wRemainder -= imgAndDraw.m_originalW;
             }
@@ -417,9 +488,9 @@ namespace Tobi.Plugin.AudioPane
 
             if (Settings.Default.AudioWaveForm_DisableDraw)
             {
-//#if DEBUG
-//                m_Logger.Log("RefreshUI_LoadWaveForm (skip waveform drawing)", Category.Debug, Priority.Medium);
-//#endif
+                //#if DEBUG
+                //                m_Logger.Log("RefreshUI_LoadWaveForm (skip waveform drawing)", Category.Debug, Priority.Medium);
+                //#endif
 
                 m_ViewModel.IsWaveFormLoading = false;
                 //m_BackgroundLoader = null;
@@ -2145,10 +2216,10 @@ namespace Tobi.Plugin.AudioPane
 
             GeometryDrawing geoDraw1_envelope = null;
             GeometryDrawing geoDraw2_envelope = null;
-            if (Settings.Default.AudioWaveForm_DrawStyle==WaveFormDrawStyle.Border
-                || Settings.Default.AudioWaveForm_DrawStyle==WaveFormDrawStyle.BorderBars
-                || Settings.Default.AudioWaveForm_DrawStyle==WaveFormDrawStyle.BorderFill
-                || Settings.Default.AudioWaveForm_DrawStyle==WaveFormDrawStyle.BorderFillBars
+            if (Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.Border
+                || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderBars
+                || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFill
+                || Settings.Default.AudioWaveForm_DrawStyle == WaveFormDrawStyle.BorderFillBars
                 )
             {
                 try
