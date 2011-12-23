@@ -1230,8 +1230,12 @@ namespace Tobi.Plugin.Descriptions
 
             var pres = m_Session.DocumentProject.Presentations.Get(0);
 
+            var project = new Project();
+            project.SetPrettyFormat(true);
+
             // a proxy project/presentation/treenode (and UrakawaSession wrapper) to bridge the standard audio recording feature, without altering the main document.
             var presentation = new Presentation();
+            presentation.Project = project;
             presentation.RootUri = pres.RootUri;
             int index = pres.DataProviderManager.DataFileDirectory.IndexOf(DataProviderManager.DefaultDataFileDirectorySeparator + DataProviderManager.DefaultDataFileDirectory);
             string prefix = pres.DataProviderManager.DataFileDirectory.Substring(0, index);
@@ -1246,9 +1250,6 @@ namespace Tobi.Plugin.Descriptions
             var audioChannel = presentation.ChannelFactory.CreateAudioChannel();
             audioChannel.Name = "The DESCRIPTION Audio Channel";
 
-            var project = new Project();
-            presentation.Project = project;
-            project.SetPrettyFormat(true);
             project.Presentations.Insert(0, presentation);
 
             var treeNode = presentation.TreeNodeFactory.Create();

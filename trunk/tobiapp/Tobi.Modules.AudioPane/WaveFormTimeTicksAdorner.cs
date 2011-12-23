@@ -63,10 +63,10 @@ namespace Tobi.Plugin.AudioPane
             else
             {
                 long scaleNormalized = (long)Math.Round(m_cachedScaleTransform.ScaleX * 1000);
-                
+
                 double inverseZoom = 1 / m_zoom;
                 long inverseZoomNormalized = (long)Math.Round(inverseZoom * 1000);
-                
+
                 if (scaleNormalized != inverseZoomNormalized)
                 {
                     m_cachedScaleTransform.ScaleX = inverseZoom;
@@ -822,56 +822,6 @@ namespace Tobi.Plugin.AudioPane
 #endif //USE_NORMAL_LIST
                 //drawingContext.PushOpacity(0.6);
             }
-        }
-
-        private static void drawGlyph(DrawingContext dc, string text)
-        {
-            Typeface typeface = new Typeface(new FontFamily("Arial"),
-                                FontStyles.Italic,
-                                FontWeights.Normal,
-                                FontStretches.Normal);
-
-            GlyphTypeface glyphTypeface;
-            if (!typeface.TryGetGlyphTypeface(out glyphTypeface))
-                throw new InvalidOperationException("No glyphtypeface found");
-
-            double size = 40;
-
-            ushort[] glyphIndexes = new ushort[text.Length];
-            double[] advanceWidths = new double[text.Length];
-
-            double totalWidth = 0;
-
-            for (int n = 0; n < text.Length; n++)
-            {
-                ushort glyphIndex = glyphTypeface.CharacterToGlyphMap[text[n]];
-                glyphIndexes[n] = glyphIndex;
-
-                double width = glyphTypeface.AdvanceWidths[glyphIndex] * size;
-                advanceWidths[n] = width;
-
-                totalWidth += width;
-            }
-
-            Point origin = new Point(50, 50);
-
-            GlyphRun glyphRun = new GlyphRun(glyphTypeface, 0, false, size,
-                glyphIndexes, origin, advanceWidths, null, null, null, null,
-                null, null);
-
-            dc.DrawGlyphRun(Brushes.Black, glyphRun);
-
-            double y = origin.Y;
-            dc.DrawLine(new Pen(Brushes.Red, 1), new Point(origin.X, y),
-                new Point(origin.X + totalWidth, y));
-
-            y -= (glyphTypeface.Baseline * size);
-            dc.DrawLine(new Pen(Brushes.Green, 1), new Point(origin.X, y),
-                new Point(origin.X + totalWidth, y));
-
-            y += (glyphTypeface.Height * size);
-            dc.DrawLine(new Pen(Brushes.Blue, 1), new Point(origin.X, y),
-                new Point(origin.X + totalWidth, y));
         }
     }
 }

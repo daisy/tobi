@@ -204,6 +204,9 @@ namespace Tobi.Plugin.AudioPane
             image.SetValue(RenderOptions.CachingHintProperty, CachingHint.Cache);
             //RenderOptions.SetCachingHint(image, CachingHint.Cache);
 
+            //image.SetValue(RenderOptions.CacheInvalidationThresholdMinimumProperty, 1);
+            //image.SetValue(RenderOptions.CacheInvalidationThresholdMaximumProperty, 1);
+
             image.SnapsToDevicePixels = true;
             //image.SetValue(UIElement.SnapsToDevicePixelsProperty, false);
 
