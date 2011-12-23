@@ -218,18 +218,6 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("9999999")]
-        public double AudioWaveForm_TextCacheRenderThreshold {
-            get {
-                return ((double)(this["AudioWaveForm_TextCacheRenderThreshold"]));
-            }
-            set {
-                this["AudioWaveForm_TextCacheRenderThreshold"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("3")]
         public double AudioWaveForm_Resolution {
             get {

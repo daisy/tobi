@@ -1837,31 +1837,31 @@ namespace Tobi.Plugin.AudioPane
             }*/
 
 
-            if (m_ViewModel.State.Audio.PlayStreamMarkers != null
-                && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextCacheRenderThreshold)
-            {
-                //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
+            //if (m_ViewModel.State.Audio.PlayStreamMarkers != null
+            //    && m_ViewModel.State.Audio.PlayStreamMarkers.Count > Settings.Default.AudioWaveForm_TextCacheRenderThreshold)
+            //{
+            //    //DrawingGroup dGroup = VisualTreeHelper.GetDrawing(WaveFormCanvas);
 
-                //var zoom = (m_ShellView != null
-                //                ? m_ShellView.MagnificationLevel
-                //                : (Double)FindResource("MagnificationLevel"));
+            //    //var zoom = (m_ShellView != null
+            //    //                ? m_ShellView.MagnificationLevel
+            //    //                : (Double)FindResource("MagnificationLevel"));
 
-                //DrawingContext dc = drawGrp.Open();
+            //    //DrawingContext dc = drawGrp.Open();
 
-                //var imageDrawing = new ImageDrawing();
-                //imageDrawing.Rect = null;
+            //    //var imageDrawing = new ImageDrawing();
+            //    //imageDrawing.Rect = null;
 
-                //var drawingImage = new DrawingImage();
-                //drawingImage.Drawing = imageDrawing;
+            //    //var drawingImage = new DrawingImage();
+            //    //drawingImage.Drawing = imageDrawing;
 
-                //var drawGroup = new DrawingGroup();
-                //drawGroup.Children.Add(imageDrawing);
+            //    //var drawGroup = new DrawingGroup();
+            //    //drawGroup.Children.Add(imageDrawing);
 
-                m_WaveFormTimeTicksAdorner.drawChunkInfos(imageAndDraw, null, drawGrp, 0, heightMagnified, imageAndDraw.m_originalCanvasW * zoom, bytesPerPixel_Magnified, zoom);
-                //dc.Close();
+            //    m_WaveFormTimeTicksAdorner.drawChunkInfos(imageAndDraw, null, drawGrp, 0, heightMagnified, imageAndDraw.m_originalCanvasW * zoom, bytesPerPixel_Magnified, zoom);
+            //    //dc.Close();
 
-                //drawGrp.Children.Add(imageDrawing);
-            }
+            //    //drawGrp.Children.Add(imageDrawing);
+            //}
 
             drawGrp.Freeze();
 

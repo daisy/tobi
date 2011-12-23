@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Documents;
@@ -9,7 +10,9 @@ namespace Tobi.Plugin.AudioPane
 {
     public class WaveFormLoadingAdorner : Adorner
     {
+        private AudioPaneView m_AudioPaneView;
         private AudioPaneViewModel m_AudioPaneViewModel;
+
         private Pen m_pen;
         private SolidColorBrush m_renderBrush;
         private Typeface m_typeFace;
@@ -19,12 +22,14 @@ namespace Tobi.Plugin.AudioPane
         private Rect m_rectRect;
         private SolidColorBrush m_textBrush;
 
-        public WaveFormLoadingAdorner(FrameworkElement adornedElement, AudioPaneViewModel view)
+        public WaveFormLoadingAdorner(FrameworkElement adornedElement, AudioPaneView view, AudioPaneViewModel viewModel)
             : base(adornedElement)
         {
             IsHitTestVisible = false;
             ClipToBounds = true;
-            m_AudioPaneViewModel = view;
+
+            m_AudioPaneView = view;
+            m_AudioPaneViewModel = viewModel;
 
             m_typeFace = new Typeface("Helvetica");
 
@@ -36,8 +41,38 @@ namespace Tobi.Plugin.AudioPane
             ResetBrushes();
         }
 
+        private double m_zoom = 1.0;
+        private ScaleTransform m_cachedScaleTransform = new ScaleTransform(1, 1);
+        private ScaleTransform checkTransform()
+        {
+            m_zoom = (m_AudioPaneView.m_ShellView != null
+                            ? m_AudioPaneView.m_ShellView.MagnificationLevel
+                            : (Double)FindResource("MagnificationLevel"));
+
+            long zoomNormalized = (long)Math.Round(m_zoom * 1000);
+            if (zoomNormalized == 1000)
+            {
+                return null;
+            }
+            else
+            {
+                long scaleNormalized = (long)Math.Round(m_cachedScaleTransform.ScaleX * 1000);
+
+                double inverseZoom = 1 / m_zoom;
+                long inverseZoomNormalized = (long)Math.Round(inverseZoom * 1000);
+
+                if (scaleNormalized != inverseZoomNormalized)
+                {
+                    m_cachedScaleTransform.ScaleX = inverseZoom;
+                    m_cachedScaleTransform.ScaleY = inverseZoom;
+                }
+                return m_cachedScaleTransform;
+            }
+        }
         public void ResetBrushes()
         {
+            checkTransform();
+
             m_renderBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Back).Clone();
             m_renderBrush.Opacity = 0.6;
             m_renderBrush.Freeze();
@@ -59,18 +94,28 @@ namespace Tobi.Plugin.AudioPane
 
         protected override void OnRender(DrawingContext drawingContext)
         {
+            ScaleTransform trans = checkTransform();
+
             var txt = (DisplayRecorderTime ? m_AudioPaneViewModel.TimeStringCurrent : Tobi_Plugin_AudioPane_Lang.Loading);
             var formattedText = new FormattedText(
                 txt,
                 m_culture,
                 FlowDirection.LeftToRight,
                 m_typeFace,
-                30,
+                30 * (trans != null ? m_zoom : 1),
                 m_textBrush //m_textPen.Brush
 #if NET40
                 , null, TextFormattingMode.Display
 #endif //NET40
                 );
+
+            double formattedTextWidth = formattedText.Width;
+            double formattedTextHeight = formattedText.Height;
+            if (trans != null)
+            {
+                formattedTextWidth *= (1 / m_zoom);
+                formattedTextHeight *= (1 / m_zoom);
+            }
 
             const double margin = 20;
 
@@ -82,8 +127,8 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            double leftOffset = (width - formattedText.Width) / 2;
-            double topOffset = (height - formattedText.Height) / 2;
+            double leftOffset = (width - formattedTextWidth) / 2;
+            double topOffset = (height - formattedTextHeight) / 2;
 
             m_rectRect.X = margin;
             m_rectRect.Y = margin;
@@ -99,7 +144,23 @@ namespace Tobi.Plugin.AudioPane
             //Geometry textGeometry = formattedText.BuildGeometry(m_pointText);
             //drawingContext.DrawGeometry(m_textBrush, m_textPen, textGeometry);
 
+            if (trans != null)
+            {
+                m_pointText.X *= m_zoom;
+                m_pointText.Y *= m_zoom;
+            }
+
+            if (trans != null)
+            {
+                drawingContext.PushTransform(trans);
+            }
+
             drawingContext.DrawText(formattedText, m_pointText);
+
+            if (trans != null)
+            {
+                drawingContext.Pop();
+            }
         }
     }
 }
