@@ -46,14 +46,39 @@ namespace Tobi.Plugin.AudioPane
         }
 
         private double m_zoom = 1.0;
-
-        public void ResetBrushes()
+        private ScaleTransform m_cachedScaleTransform = new ScaleTransform(1, 1);
+        private ScaleTransform checkTransform()
         {
-            m_zoom= (m_AudioPaneView.m_ShellView != null
+            m_zoom = (m_AudioPaneView.m_ShellView != null
                             ? m_AudioPaneView.m_ShellView.MagnificationLevel
                             : (Double)FindResource("MagnificationLevel"));
 
+            long zoomNormalized = (long)Math.Round(m_zoom * 1000);
+            if (zoomNormalized == 1000)
+            {
+               return null;
+            }
+            else
+            {
+                long scaleNormalized = (long)Math.Round(m_cachedScaleTransform.ScaleX * 1000);
+                if (scaleNormalized != zoomNormalized)
+                {
+                    double inverseZoom = 1 / m_zoom;
+                    m_cachedScaleTransform.ScaleX = inverseZoom;
+                    m_cachedScaleTransform.ScaleY = inverseZoom;
+                }
+                return m_cachedScaleTransform;
+            }
+        }
+
+        public void ResetBrushes()
+        {
+            checkTransform();
+
             m_renderBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Back); // { Opacity = 0.8 };
+            
+            //TODO: remove !!!! (only for DEBUG)
+            m_renderBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_CursorBorder);
             //m_renderBrush.Freeze();
 
             m_phraseBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Phrases); //m_AudioPaneViewModel.ColorMarkers);
@@ -64,12 +89,18 @@ namespace Tobi.Plugin.AudioPane
 
             m_penTick = new Pen(m_timeTextBrush, 1);
             m_penTick.Freeze();
+
+            m_penPhrases = new Pen(m_phraseBrush, 1);
+            m_penPhrases.Freeze();
         }
 
         private Typeface m_typeFace;
         private CultureInfo m_culture;
         private double m_MousePosX = -1;
+
         private Pen m_penTick;
+        private Pen m_penPhrases;
+        
 
         private SolidColorBrush m_renderBrush;
         private SolidColorBrush m_phraseBrush;
@@ -105,6 +136,8 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
+            ScaleTransform trans = checkTransform();
+
             double heightAvailable = ((FrameworkElement)AdornedElement).ActualHeight;
             double widthAvailable = ((FrameworkElement)AdornedElement).ActualWidth;
 
@@ -113,15 +146,17 @@ namespace Tobi.Plugin.AudioPane
 
             double hoffset = m_AudioPaneView.WaveFormScroll.HorizontalOffset;
 
-            drawTimeRuler(drawingContext, hoffset, heightAvailable, widthAvailable);
-
             if (m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null
                 && m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextCacheRenderThreshold)
             {
-                drawChunkInfos(null, drawingContext, null, hoffset, heightAvailable, widthAvailable, m_AudioPaneView.BytesPerPixel, 1);
+                drawChunkInfos(null, drawingContext, null, hoffset, heightAvailable, widthAvailable, m_AudioPaneView.BytesPerPixel,
+                    1 //m_zoom
+                    );
             }
 
-            drawMouseOver(drawingContext, hoffset, heightAvailable, widthAvailable);
+            drawTimeRuler(drawingContext, hoffset, heightAvailable, widthAvailable, trans);
+
+            drawMouseOver(drawingContext, hoffset, heightAvailable, widthAvailable, trans);
         }
 
         /* var brush = ColorBrushCache.Get(Colors.Red) { Opacity = 0.0 };
@@ -147,7 +182,7 @@ namespace Tobi.Plugin.AudioPane
                                                             m_tickHeight + m_tickHeight + formattedTextTMP.Height)));
          }*/
 
-        private void drawTimeRuler(DrawingContext drawingContext, double hoffset, double heightAvailable, double widthAvailable)
+        private void drawTimeRuler(DrawingContext drawingContext, double hoffset, double heightAvailable, double widthAvailable, ScaleTransform trans)
         {
             double widthAvailableWaveFormOnly =
                 Math.Min(widthAvailable, m_AudioPaneViewModel.State.Audio.DataLength / m_AudioPaneView.BytesPerPixel);
@@ -216,6 +251,11 @@ namespace Tobi.Plugin.AudioPane
 
                     drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
+                    if (trans != null)
+                    {
+                        drawingContext.PushTransform(trans);
+                    }
+
                     long timeInLocalUnits = m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(
                         m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize(
                         (long)Math.Round(m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX))));
@@ -225,22 +265,40 @@ namespace Tobi.Plugin.AudioPane
                         m_culture,
                         FlowDirection.LeftToRight,
                         m_typeFace,
-                        12,
+                        12 * (trans != null?m_zoom:1),
                         m_timeTextBrush
 #if NET40
 , null, TextFormattingMode.Display
 #endif //NET40
 );
+                    double formattedTextWidth = formattedText.Width;
+                    double formattedTextHeight = formattedText.Height;
+                    if (trans != null)
+                    {
+                        formattedTextWidth *= (1 / m_zoom);
+                        formattedTextHeight *= (1 / m_zoom);
+                    }
 
-                    double posX = currentTickX - formattedText.Width / 2;
+                    double posX = currentTickX - formattedTextWidth / 2;
 
                     m_point3.X = posX;
                     m_point3.Y = m_tickHeight * 2;
 
                     m_rectRect.X = m_point3.X - m_horizontalMargin;
                     m_rectRect.Y = m_point3.Y;
-                    m_rectRect.Width = Math.Min(formattedText.Width + m_horizontalMargin * 2, widthAvailableWaveFormOnly - m_rectRect.X);
-                    m_rectRect.Height = formattedText.Height;
+                    m_rectRect.Width = Math.Min(formattedTextWidth + m_horizontalMargin * 2, widthAvailableWaveFormOnly - m_rectRect.X);
+                    m_rectRect.Height = formattedTextHeight;
+
+                    if (trans != null)
+                    {
+                        m_point3.X *= m_zoom;
+                        m_point3.Y *= m_zoom;
+
+                        m_rectRect.X *= m_zoom;
+                        m_rectRect.Y *= m_zoom;
+                        m_rectRect.Width *= m_zoom;
+                        m_rectRect.Height *= m_zoom;
+                    }
 
                     if (m_MousePosX != -1)
                     {
@@ -254,10 +312,15 @@ namespace Tobi.Plugin.AudioPane
                     var clipGeo = new RectangleGeometry(m_rectRect);
                     clipGeo.Freeze();
                     drawingContext.PushClip(clipGeo);
-
+                    
                     drawingContext.DrawText(formattedText, m_point3);
 
                     drawingContext.Pop();
+
+                    if (trans != null)
+                    {
+                        drawingContext.Pop();
+                    }
                 }
                 else
                 {
@@ -274,7 +337,7 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private void drawMouseOver(DrawingContext drawingContext, double hoffset, double heightAvailable, double widthAvailable)
+        private void drawMouseOver(DrawingContext drawingContext, double hoffset, double heightAvailable, double widthAvailable, ScaleTransform trans)
         {
             if (m_MousePosX >= 0)
             {
@@ -287,7 +350,7 @@ namespace Tobi.Plugin.AudioPane
                     m_culture,
                     FlowDirection.LeftToRight,
                     m_typeFace,
-                    12,
+                    12 * (trans != null ? m_zoom : 1),
                     m_timeTextBrush
 #if NET40
 , null, TextFormattingMode.Display
@@ -302,24 +365,54 @@ namespace Tobi.Plugin.AudioPane
 
                 drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
-                double xPos = Math.Max(5, m_MousePosX - formattedText.Width / 2);
-                xPos = Math.Min(xPos, widthAvailable - formattedText.Width - 5);
+                if (trans != null)
+                {
+                    drawingContext.PushTransform(trans);
+                }
+
+                double formattedTextWidth = formattedText.Width;
+                double formattedTextHeight = formattedText.Height;
+                if (trans != null)
+                {
+                    formattedTextWidth *= (1 / m_zoom);
+                    formattedTextHeight *= (1 / m_zoom);
+                }
+
+                double xPos = Math.Max(5, m_MousePosX - formattedTextWidth / 2);
+                xPos = Math.Min(xPos, widthAvailable - formattedTextWidth - 5);
                 xPos = Math.Max(5, xPos);
 
                 //drawingContext.Pop(); //PushOpacity
 
                 m_point3.X = xPos;
                 //m_point3.Y = heightAvailable - formattedText.Height - m_tickHeight;
-                m_point3.Y = formattedText.Height + m_tickHeight + m_tickHeight;
+                m_point3.Y = formattedTextHeight + m_tickHeight + m_tickHeight;
 
 
                 m_rectRect.X = m_point3.X - m_horizontalMargin;
                 m_rectRect.Y = m_point3.Y;
-                m_rectRect.Width = formattedText.Width + m_horizontalMargin * 2;
-                m_rectRect.Height = formattedText.Height;
+                m_rectRect.Width = formattedTextWidth + m_horizontalMargin * 2;
+                m_rectRect.Height = formattedTextHeight;
+
+                if (trans != null)
+                {
+                    m_point3.X *= m_zoom;
+                    m_point3.Y *= m_zoom;
+
+                    m_rectRect.X *= m_zoom;
+                    m_rectRect.Y *= m_zoom;
+                    m_rectRect.Width *= m_zoom;
+                    m_rectRect.Height *= m_zoom;
+                }
+
                 drawingContext.DrawRectangle(m_renderBrush, m_penTick, m_rectRect);
 
                 drawingContext.DrawText(formattedText, m_point3);
+
+                if (trans != null)
+                {
+                    drawingContext.Pop();
+                }
             }
         }
 
@@ -353,7 +446,25 @@ namespace Tobi.Plugin.AudioPane
                         break;
                     }
 
+                    if (pixelsLeft > hoffset)
+                    {
+                        m_point1.X = pixelsLeft - hoffset;
+                        m_point2.X = m_point1.X;
+                        m_point1.Y = 0;
+                        m_point2.Y = heightAvailable;
+                        drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+                    }
+
                     pixelsRight = (sumData + marker.m_LocalStreamDataLength) / bytesPerPixel;
+
+                    if (pixelsRight > hoffset && pixelsRight < (hoffset + widthAvailable))
+                    {
+                        m_point1.X = pixelsRight - hoffset;
+                        m_point2.X = m_point1.X;
+                        m_point1.Y = 0;
+                        m_point2.Y = heightAvailable;
+                        drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+                    }
 
                     widthChunk = pixelsRight - pixelsLeft;
                     if (pixelsRight > hoffset && pixelsLeft < (hoffset + widthAvailable))
