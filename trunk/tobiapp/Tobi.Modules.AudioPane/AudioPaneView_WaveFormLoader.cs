@@ -901,14 +901,22 @@ namespace Tobi.Plugin.AudioPane
                     {
                         atLeastOneNeedsLoading = true;
                     }
-                    if ((nBytesScrollOffset + nBytesScrollVisibleWidth) > imgAndDraw.m_originalX * BytesPerPixel
-                        &&
-                        (nBytesScrollOffset + nBytesScrollVisibleWidth) <=
-                        (imgAndDraw.m_originalX + imgAndDraw.m_originalW) * BytesPerPixel)
+                    long rightByte = nBytesScrollOffset + nBytesScrollVisibleWidth;
+
+                    if (Math.Floor(imgAndDraw.m_originalX * BytesPerPixel) >= rightByte)
+                    {
+                        imageTileLast = current.m_previousItem;
+                        break;
+                    }
+
+                    if (current.m_nextItem == null ||
+                        ((imgAndDraw.m_originalX + imgAndDraw.m_originalW) * BytesPerPixel) >= rightByte
+                        )
                     {
                         imageTileLast = current;
                         break;
                     }
+
                     current = current.m_nextItem;
                 }
 
@@ -920,7 +928,7 @@ namespace Tobi.Plugin.AudioPane
                 current = imageTileLast;
                 while (current != null)
                 {
-                    if (imageTileFirst == current)
+                    if (current == imageTileFirst)
                     {
                         break;
                     }
@@ -932,11 +940,6 @@ namespace Tobi.Plugin.AudioPane
                     current = current.m_previousItem;
                 }
                 imageTileLast = current;
-
-                if (imageTileFirst == imageTileLast)
-                {
-                    imageTileLast = null;
-                }
             }
 
             long totalRead = onlyLoadVisibleScroll ?
@@ -1125,6 +1128,7 @@ namespace Tobi.Plugin.AudioPane
                         }
 
                         if (
+                            //currentImageTile != imageTileLast &&
                             //x > widthMagnified ||
                             (onlyLoadVisibleScroll && imageTileLast != null
                             // && totalRead > (nBytesScrollOffset + nBytesScrollVisibleWidth)
