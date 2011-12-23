@@ -433,6 +433,10 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       
       <!-- Background="{Binding Converter={XAML:ColorToBrushConverter}, Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}" -->
       <!--SizeChanged="OnWaveFormCanvasSizeChanged"-->
+
+
+
+
       <Canvas x:Name="WaveFormCanvas"
               Loaded="OnWaveFormCanvasLoaded"
               SizeChanged="OnWaveFormCanvasSizeChanged"
@@ -454,6 +458,14 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               
             IsEnabled="{Binding CanManipulateWaveForm, Mode=OneWay}"
               >
+<!--<Canvas.Style>
+      <Setter Property="FrameworkElement.LayoutTransform">
+        <Setter.Value>
+          <ScaleTransform ScaleY="1" ScaleX="1">
+          </ScaleTransform>
+        </Setter.Value>
+      </Setter>
+    </Canvas.Style>-->
 
         <!--Width="{Binding ElementName=WaveFormImage, Path=Width, Mode=OneWay}"-->
         <!-- Canvas.Width>

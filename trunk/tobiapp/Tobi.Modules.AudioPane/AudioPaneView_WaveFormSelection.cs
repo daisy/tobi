@@ -66,12 +66,8 @@ namespace Tobi.Plugin.AudioPane
             }
 
             double widthToUse = WaveFormScroll.ViewportWidth;
-            if (double.IsNaN(widthToUse) || widthToUse == 0)
-            {
-                widthToUse = WaveFormScroll.ActualWidth;
-            }
 
-            widthToUse -= 20;
+            //widthToUse -= 20;
 
 
             if (!m_ViewModel.State.Audio.HasContent)

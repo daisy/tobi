@@ -45,8 +45,14 @@ namespace Tobi.Plugin.AudioPane
             m_rectRect = new Rect(1, 1, 1, 1);
         }
 
+        private double m_zoom = 1.0;
+
         public void ResetBrushes()
         {
+            m_zoom= (m_AudioPaneView.m_ShellView != null
+                            ? m_AudioPaneView.m_ShellView.MagnificationLevel
+                            : (Double)FindResource("MagnificationLevel"));
+
             m_renderBrush = ColorBrushCache.Get(Settings.Default.AudioWaveForm_Color_Back); // { Opacity = 0.8 };
             //m_renderBrush.Freeze();
 

@@ -91,7 +91,7 @@ namespace Tobi.Plugin.AudioPane
         private readonly ILoggerFacade m_Logger;
         private readonly IEventAggregator m_EventAggregator;
 
-        private readonly IShellView m_ShellView;
+        public readonly IShellView m_ShellView;
         private readonly AudioPaneViewModel m_ViewModel;
 
         ///<summary>
@@ -442,12 +442,16 @@ namespace Tobi.Plugin.AudioPane
 
                 updateWaveformTileImagesVectorFill();
 
+                var zoom = (m_ShellView != null
+                                ? m_ShellView.MagnificationLevel
+                                : (Double)FindResource("MagnificationLevel"));
+
                 LightLinkedList<ImageAndDrawing>.Item current_ = m_WaveformTileImages.m_First;
                 while (current_ != null)
                 {
                     ImageAndDrawing imgAndDraw = current_.m_data;
 
-                    imgAndDraw.m_image.Height = WaveFormCanvas.ActualHeight;
+                    imgAndDraw.m_image.Height = WaveFormCanvas.ActualHeight * zoom;
 
                     current_ = current_.m_nextItem;
                 }
@@ -797,11 +801,15 @@ namespace Tobi.Plugin.AudioPane
 
             //m_Logger.Log("AudioPaneView.ResetWaveFormEmpty", Category.Debug, Priority.Medium);
 
+            var zoom = (m_ShellView != null
+                            ? m_ShellView.MagnificationLevel
+                            : (Double)FindResource("MagnificationLevel"));
+
 #if DRAW_EMPTY_IMAGE
             WaveFormImage.Source = getResetWaveFormImageDrawing();
 #else
             //WaveFormImage.Source = null;
-            emptyWaveformTiles();
+            emptyWaveformTiles(zoom);
 #endif //DRAW_EMPTY_IMAGE
 
             double width = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
@@ -851,14 +859,14 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_WaveFormTimeTicksAdorner != null)
             {
-                m_WaveFormTimeTicksAdorner.InvalidateVisual();
                 m_WaveFormTimeTicksAdorner.ResetBrushes();
+                m_WaveFormTimeTicksAdorner.InvalidateVisual();
             }
 
             if (m_WaveFormLoadingAdorner != null)
             {
-                m_WaveFormLoadingAdorner.InvalidateVisual();
                 m_WaveFormLoadingAdorner.ResetBrushes();
+                m_WaveFormLoadingAdorner.InvalidateVisual();
             }
         }
 
@@ -1408,10 +1416,6 @@ namespace Tobi.Plugin.AudioPane
             m_Logger.Log("AudioPaneView.OnZoomFitFull", Category.Debug, Priority.Medium);
 
             double widthToUse = WaveFormScroll.ViewportWidth;
-            if (double.IsNaN(widthToUse) || (long)Math.Round(widthToUse) == 0)
-            {
-                widthToUse = WaveFormScroll.ActualWidth;
-            }
 
             if (!m_ViewModel.State.Audio.HasContent)
             {

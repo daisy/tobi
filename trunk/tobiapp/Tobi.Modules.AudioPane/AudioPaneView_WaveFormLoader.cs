@@ -56,13 +56,17 @@ namespace Tobi.Plugin.AudioPane
         private LightLinkedList<Image> m_WaveformImagePool = new LightLinkedList<Image>();
         private void OnWaveFormCanvasLoaded(object sender, RoutedEventArgs e)
         {
+            var zoom = (m_ShellView != null
+                            ? m_ShellView.MagnificationLevel
+                            : (Double)FindResource("MagnificationLevel"));
+
             int count = (int)Math.Round(1600 / Settings.Default.AudioWaveForm_TileWidth);
             int poolSize = Math.Max(1, count);
             for (int i = 0; i < poolSize; i++)
             {
                 //Image image = createWaveformTileImage(-100, 10);
                 var image = new Image();
-                resetWaveformPooledImage(image);
+                resetWaveformPooledImage(image, zoom);
 
                 m_WaveformImagePool.Add(image);
 
@@ -70,9 +74,9 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private void resetWaveformPooledImage(Image image)
+        private void resetWaveformPooledImage(Image image, double zoom)
         {
-            initEmptyImageTile(image, -100, 10);
+            initEmptyImageTile(image, -100, 10, zoom);
             image.Visibility = Visibility.Collapsed; // TODO: Hidden  ?
         }
 
@@ -92,7 +96,7 @@ namespace Tobi.Plugin.AudioPane
             return false;
         }
 
-        private void emptyWaveformTiles()
+        private void emptyWaveformTiles(double zoom)
         {
             //#if DEBUG
             //            m_Logger.Log("emptyWaveformTiles", Category.Debug, Priority.Medium);
@@ -109,7 +113,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (waveformImagePoolContains(imgAndDraw.m_image))
                 {
-                    resetWaveformPooledImage(imgAndDraw.m_image);
+                    resetWaveformPooledImage(imgAndDraw.m_image, zoom);
                 }
                 else
                 {
@@ -149,12 +153,31 @@ namespace Tobi.Plugin.AudioPane
             image.Source = null;
         }
 
-        private void initEmptyImageTile(Image image, double x, double w)
+        private ScaleTransform m_cachedScaleTransform = new ScaleTransform(1, 1);
+
+        private void initEmptyImageTile(Image image, double x, double w, double zoom)
         {
+            long zoomNormalized = (long)Math.Round(zoom * 1000);
+            if (zoomNormalized == 1000)
+            {
+                image.LayoutTransform = null;
+            }
+            else
+            {
+                long scaleNormalized = (long)Math.Round(m_cachedScaleTransform.ScaleX * 1000);
+                if (scaleNormalized != zoomNormalized)
+                {
+                    double inverseZoom = 1 / zoom;
+                    m_cachedScaleTransform.ScaleX = inverseZoom;
+                    m_cachedScaleTransform.ScaleY = inverseZoom;
+                }
+                image.LayoutTransform = m_cachedScaleTransform;
+            }
+
             image.SetValue(Canvas.LeftProperty, x);
 
             //image.SetValue(FrameworkElement.WidthProperty, w);
-            image.Width = w;
+            image.Width = w * zoom;
 
             image.SetValue(Canvas.TopProperty, 0.0);
             //Canvas.SetTop(image, 0);
@@ -185,7 +208,7 @@ namespace Tobi.Plugin.AudioPane
             //image.SetValue(UIElement.SnapsToDevicePixelsProperty, false);
 
 
-            image.Height = WaveFormCanvas.ActualHeight;
+            image.Height = WaveFormCanvas.ActualHeight * zoom;
             //var binding = new Binding();
             //binding.Mode = BindingMode.OneWay;
             //binding.ElementName = WaveFormCanvas.Name;
@@ -197,22 +220,22 @@ namespace Tobi.Plugin.AudioPane
             image.Visibility = Visibility.Visible;
         }
 
-        private Image createWaveformTileImage(double x, double w)
+        private Image createWaveformTileImage(double x, double w, double zoom)
         {
             //#if DEBUG
             //            m_Logger.Log("createWaveformTileImage: " + x + " / " + w, Category.Debug, Priority.Medium);
             //#endif
 
             var image = new Image();
-            initEmptyImageTile(image, x, w);
+            initEmptyImageTile(image, x, w, zoom);
             return image;
         }
 
-        private void createWaveformTileImages()
+        private void createWaveformTileImages(double canvasWidth, double zoom)
         {
-            emptyWaveformTiles();
+            emptyWaveformTiles(zoom);
 
-            double canvasWidth = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
+            //double canvasWidth = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
 
             double waveformTileWidth = Settings.Default.AudioWaveForm_TileWidth;
 
@@ -233,7 +256,7 @@ namespace Tobi.Plugin.AudioPane
                 m_WaveformTileImages.Add(imgAndDraw);
 
                 imgAndDraw.m_image = m_WaveformImagePool.m_First.m_data;
-                initEmptyImageTile(imgAndDraw.m_image, imgAndDraw.m_originalX, imgAndDraw.m_originalW);
+                initEmptyImageTile(imgAndDraw.m_image, imgAndDraw.m_originalX, imgAndDraw.m_originalW, zoom);
 
                 //imgAndDraw.m_image = createWaveformTileImage(imgAndDraw.m_originalX, imgAndDraw.m_originalW);
                 //WaveFormCanvas.Children.Add(imgAndDraw.m_image);
@@ -258,11 +281,11 @@ namespace Tobi.Plugin.AudioPane
                 {
                     imgAndDraw.m_image = pooledImage.m_data;
                     pooledImage = pooledImage.m_nextItem;
-                    initEmptyImageTile(imgAndDraw.m_image, imgAndDraw.m_originalX, imgAndDraw.m_originalW);
+                    initEmptyImageTile(imgAndDraw.m_image, imgAndDraw.m_originalX, imgAndDraw.m_originalW, zoom);
                 }
                 else
                 {
-                    imgAndDraw.m_image = createWaveformTileImage(imgAndDraw.m_originalX, imgAndDraw.m_originalW);
+                    imgAndDraw.m_image = createWaveformTileImage(imgAndDraw.m_originalX, imgAndDraw.m_originalW, zoom);
                     WaveFormCanvas.Children.Add(imgAndDraw.m_image);
                 }
 
@@ -310,6 +333,10 @@ namespace Tobi.Plugin.AudioPane
 
         private void updateWaveformTileImagesWidthAndPosition()
         {
+            var zoom = (m_ShellView != null
+                            ? m_ShellView.MagnificationLevel
+                            : (Double)FindResource("MagnificationLevel"));
+
             double canvasWidth = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
 
             LightLinkedList<ImageAndDrawing>.Item current = m_WaveformTileImages.m_First;
@@ -322,7 +349,7 @@ namespace Tobi.Plugin.AudioPane
                 double w = imgAndDraw.m_originalW * ratio;
                 double x = imgAndDraw.m_originalX * ratio;
 
-                imgAndDraw.m_image.Width = w;
+                imgAndDraw.m_image.Width = w * zoom;
                 imgAndDraw.m_image.SetValue(Canvas.LeftProperty, x);
 
                 //#if DEBUG
@@ -459,6 +486,10 @@ namespace Tobi.Plugin.AudioPane
         /// </summary>
         public void RefreshUI_LoadWaveForm(bool wasPlaying, bool onlyUpdateTiles)
         {
+            var zoom = (m_ShellView != null
+                            ? m_ShellView.MagnificationLevel
+                            : (Double)FindResource("MagnificationLevel"));
+
             double widthReal = MillisecondsPerPixelToPixelWidthConverter.calc(ZoomSlider.Value, m_ViewModel);
             //#if DEBUG
             //            double width_ = getWaveFormWidth();
@@ -474,7 +505,7 @@ namespace Tobi.Plugin.AudioPane
 
                 WaveFormCanvas.Width = widthReal;
 
-                createWaveformTileImages();
+                createWaveformTileImages(widthReal, zoom);
 
                 ResetPeakLabels();
             }
@@ -517,10 +548,7 @@ namespace Tobi.Plugin.AudioPane
             //    return;
             //}
 
-            var zoom = (m_ShellView != null
-                            ? m_ShellView.MagnificationLevel
-                            : (Double)FindResource("MagnificationLevel"));
-
+            //
             double widthMagnified = widthReal * zoom;
             double heightMagnified = heightReal * zoom;
 
@@ -2075,9 +2103,11 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
 
-                    m_WaveFormTimeTicksAdorner.InvalidateVisual();
                     m_WaveFormTimeTicksAdorner.ResetBrushes();
+                    m_WaveFormTimeTicksAdorner.InvalidateVisual();
+
                     m_WaveFormLoadingAdorner.ResetBrushes();
+                    m_WaveFormLoadingAdorner.InvalidateVisual();
                 };
 
                 if (!Dispatcher.CheckAccess())
