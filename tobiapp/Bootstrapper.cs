@@ -87,6 +87,7 @@ namespace Tobi
             TimeZoneInfo.ClearCachedData();
 
             m_Logger.Log(@"[" + DateTime.Now.ToString("yyyy-MM-dd_HH:mm:ss_K") + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[" + DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss_K") + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[" + ApplicationConstants.LOG_FILE_PATH + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[Tobi version: " + ApplicationConstants.APP_VERSION + @"]", Category.Info, Priority.High);
             m_Logger.Log(@"[OS version: " + ApplicationConstants.OS_INFORMATION + @"]", Category.Info, Priority.High);
@@ -175,6 +176,7 @@ namespace Tobi
             url += "?version=" + Uri.EscapeDataString(ApplicationConstants.APP_VERSION);
             url += "&clickonce=" + (ApplicationDeployment.IsNetworkDeployed ? "true" : "false");
             url += "&datetime=" + Uri.EscapeDataString(DateTime.Now.ToString("yyyy-MM-dd_HH:mm:ss_K"));
+            url += "&datetimeutc=" + Uri.EscapeDataString(DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss_K"));
             url += "&os=" + Uri.EscapeDataString(ApplicationConstants.OS_INFORMATION);
             url += "&lang=" + Thread.CurrentThread.CurrentUICulture;
 
