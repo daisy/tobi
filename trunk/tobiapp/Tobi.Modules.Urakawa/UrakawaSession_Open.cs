@@ -151,7 +151,7 @@ namespace Tobi.Plugin.Urakawa
             }
 
             string ext = Path.GetExtension(fileUri.ToString()).ToLower();
-            if (ext == @".xuk")
+            if (ext == @".xuk" || ext == @".xukbundle")
             {
                 //todo: should we implement HTTP open ?
                 if (!fileUri.IsFile)
