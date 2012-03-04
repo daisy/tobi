@@ -4,8 +4,19 @@
     xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
     xmlns:UI="clr-namespace:Tobi.Common.UI">
 
+  <Style x:Key="WatermarkTextBoxStyle" TargetType="{x:Type TextBlock}">
 
-  <!-- x:Key="WatermarkTextBoxStyle"  -->
+    <Setter Property="Opacity"
+            Value="0.345" />
+    <Setter Property="Margin"
+            Value="4,0,0,0" />
+    <Setter Property="TextWrapping"
+            Value="Wrap" />
+    <Setter Property="VerticalAlignment"
+            Value="Center" />
+
+  </Style>
+
   <Style TargetType="{x:Type UI:WatermarkTextBox}">
     <Setter Property="Foreground"
             Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
@@ -37,12 +48,10 @@
             </Microsoft_Windows_Themes:ListBoxChrome>
 
             <TextBlock x:Name="textBlock"
-                       Opacity="0.345"
+                       Style="{StaticResource WatermarkTextBoxStyle}"
+                       
                        Text="{TemplateBinding Watermark}"
-                       Margin="4,0,0,0"
-                       TextWrapping="Wrap"
-                       Visibility="Hidden"
-                       VerticalAlignment="Center"/>
+                       Visibility="Hidden"/>
           </Grid>
           <ControlTemplate.Triggers>
             <MultiTrigger>
