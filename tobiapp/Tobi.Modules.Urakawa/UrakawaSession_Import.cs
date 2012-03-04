@@ -18,7 +18,7 @@ namespace Tobi.Plugin.Urakawa
 
             var converter = new Daisy3_Import(DocumentFilePath,
                 Path.Combine(Path.GetDirectoryName(DocumentFilePath),
-                XUK_DIR),
+                XUK_DIR + Path.DirectorySeparatorChar + Path.GetFileName(DocumentFilePath) + XUK_DIR),
                 IsAcmCodecsDisabled,
                 Settings.Default.AudioProjectSampleRate,
                 Settings.Default.XUK_PrettyFormat
