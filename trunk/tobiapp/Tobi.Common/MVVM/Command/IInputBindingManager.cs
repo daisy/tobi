@@ -6,5 +6,8 @@ namespace Tobi.Common.MVVM.Command
     {
         bool AddInputBinding(InputBinding inputBinding);
         void RemoveInputBinding(InputBinding inputBinding);
+
+        //void RemoveSubInputBindingManager(IInputBindingManager ibm);
+        //void AddSubInputBindingManager(IInputBindingManager ibm);
     }
 }

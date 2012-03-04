@@ -934,11 +934,49 @@ namespace Tobi.Common.UI
             checkEnterKeyButtonActivation(sender, e, InputBindings);
         }
 
+        //private void logInputBinding(InputBinding inputBinding)
+        //{
+        //    if (inputBinding.Gesture is KeyGesture)
+        //    {
+        //        m_Logger.Log(
+        //            "KeyBinding (" +
+        //            KeyGestureString.GetDisplayString(((KeyGesture)(inputBinding.Gesture))) + ")",
+        //            Category.Debug, Priority.Medium);
+        //    }
+        //    else
+        //    {
+        //        m_Logger.Log(
+        //               "InputBinding (" +
+        //               inputBinding.Gesture + ")",
+        //               Category.Debug, Priority.Medium);
+        //    }
+        //}
+
+
+        //private List<IInputBindingManager> m_SubInputBindingManagers = new List<IInputBindingManager>(1);
+        //public void AddSubInputBindingManager(IInputBindingManager ibm)
+        //{
+        //    m_SubInputBindingManagers.Add(ibm);
+        //}
+        //public void RemoveSubInputBindingManager(IInputBindingManager ibm)
+        //{
+        //    m_SubInputBindingManagers.Remove(ibm);
+        //}
+
         public bool AddInputBinding(InputBinding inputBindingz)
+        {
+            //foreach (var ibm in m_SubInputBindingManagers)
+            //{
+            //    ibm.AddInputBinding(inputBindingz);
+            //}
+            return AddInputBinding(this, inputBindingz);
+        }
+
+        public static bool AddInputBinding(UIElement ui, InputBinding inputBindingz)
         {
             if (inputBindingz != null)
             {
-                foreach (var inputBinding in InputBindings)
+                foreach (var inputBinding in ui.InputBindings)
                 {
                     if (inputBindingz == inputBinding)
                     {
@@ -975,19 +1013,29 @@ namespace Tobi.Common.UI
                     }
                 }
                 //logInputBinding(inputBinding);
-                InputBindings.Add(inputBindingz);
+                ui.InputBindings.Add(inputBindingz);
                 return true;
             }
 
             return false;
         }
 
+
         public void RemoveInputBinding(InputBinding inputBinding)
+        {
+            //foreach (var ibm in m_SubInputBindingManagers)
+            //{
+            //    ibm.RemoveInputBinding(inputBinding);
+            //}
+            RemoveInputBinding(this, inputBinding);
+        }
+
+        public static void RemoveInputBinding(UIElement ui, InputBinding inputBinding)
         {
             if (inputBinding != null)
             {
                 //logInputBinding(inputBinding);
-                InputBindings.Remove(inputBinding);
+                ui.InputBindings.Remove(inputBinding);
             }
         }
     }

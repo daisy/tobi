@@ -470,9 +470,11 @@ m_Stream.Length);
             get { return m_IsSimpleMode; }
         }
 
+        private IInputBindingManager m_ForeignInputBindingManager;
         public IInputBindingManager InputBindingManager
         {
-            get { return m_ShellView; }
+            get { return m_ForeignInputBindingManager ?? m_ShellView; }
+            set { m_ForeignInputBindingManager = value; }
         }
 
         ~AudioPaneViewModel()
