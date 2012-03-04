@@ -43,12 +43,16 @@
                    HorizontalAlignment="Left" VerticalAlignment="Center"
                    Margin="2,0,2,0"/>
 
-      <UI:WatermarkTextBox
+      <UI:TextBoxReadOnlyCaretVisible
         KeyUp="OnSearchBoxKeyUp"
         Control.TabIndex="2"
         x:Name="SearchBox"
                                        TextChanged="OnSearchTextChanged"
-                                       Watermark="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+
+UI:WatermarkTextBoxBehavior.EnableWatermark="True"
+UI:WatermarkTextBoxBehavior.Label="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
+                                       
                                       HorizontalAlignment="Stretch"
                               VerticalAlignment="Center"/>
 
