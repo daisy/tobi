@@ -202,6 +202,7 @@
     </Compile>
     <Compile Include="UI\ValidationErrorTreeSearch.cs" />
     <Compile Include="UI\VisualLogicalTreeWalkHelper.cs" />
+    <Compile Include="UI\WatermarkComboBoxBehavior.cs" />
     <Compile Include="UI\WatermarkTextBox.xaml.cs">
       <DependentUpon>WatermarkTextBox.xaml</DependentUpon>
     </Compile>
