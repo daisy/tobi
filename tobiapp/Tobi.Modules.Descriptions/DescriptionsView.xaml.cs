@@ -406,6 +406,7 @@ namespace Tobi.Plugin.Descriptions
 #endif //NET40
             };
 
+
             //var binding = new Binding
             //{
             //    Mode = BindingMode.OneWay,
@@ -447,8 +448,9 @@ namespace Tobi.Plugin.Descriptions
             //    col = new ObservableCollection<string> { "Eric", "Phillip" };
             //combo.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = col });
 
-            var editBox_Value = new TextBox
+            var editBox_Value = new TextBox //WatermarkTextBox
             {
+                //Watermark = TEXTFIELD_WATERMARK,
                 Text = metadataAttr.Value,
                 TextWrapping = TextWrapping.WrapWithOverflow
             };
@@ -497,7 +499,7 @@ namespace Tobi.Plugin.Descriptions
 
             editBoxCombo_Name.Loaded += new RoutedEventHandler((sender, ev) =>
             {
-                var textBox = FindChild(editBoxCombo_Name, "PART_EditableTextBox", typeof(TextBox)) as TextBox;
+                var textBox = editBoxCombo_Name.GetTextBox();
                 if (textBox != null)
                     textBox.SelectAll();
 
@@ -508,6 +510,21 @@ namespace Tobi.Plugin.Descriptions
                 editBox_Value.SelectAll();
                 //FocusHelper.FocusBeginInvoke(editBox_Name);
             });
+
+            WatermarkComboBoxBehavior.SetEnableWatermark(editBoxCombo_Name, true);
+            WatermarkComboBoxBehavior.SetLabel(editBoxCombo_Name, TEXTFIELD_WATERMARK);
+
+            Style style = (Style)Application.Current.Resources[@"WatermarkTextBoxStyle"];
+            WatermarkComboBoxBehavior.SetLabelStyle(editBoxCombo_Name, style);
+
+
+
+            WatermarkTextBoxBehavior.SetEnableWatermark(editBox_Value, true);
+            WatermarkTextBoxBehavior.SetLabel(editBox_Value, TEXTFIELD_WATERMARK);
+
+            //Style style = (Style)Application.Current.Resources[@"WatermarkTextBoxStyle"];
+            WatermarkTextBoxBehavior.SetLabelStyle(editBox_Value, style);
+
 
             windowPopup.ShowModal();
 
@@ -525,42 +542,7 @@ namespace Tobi.Plugin.Descriptions
             return false;
         }
 
-        public static DependencyObject FindChild(DependencyObject reference, string childName, Type childType)
-        {
-            DependencyObject foundChild = null;
-            if (reference != null)
-            {
-                int childrenCount = VisualTreeHelper.GetChildrenCount(reference);
-                for (int i = 0; i < childrenCount; i++)
-                {
-                    var child = VisualTreeHelper.GetChild(reference, i);
-                    // If the child is not of the request child type child
-                    if (child.GetType() != childType)
-                    {
-                        // recursively drill down the tree
-                        foundChild = FindChild(child, childName, childType);
-                    }
-                    else if (!string.IsNullOrEmpty(childName))
-                    {
-                        var frameworkElement = child as FrameworkElement;
-                        // If the child's name is set for search
-                        if (frameworkElement != null && frameworkElement.Name == childName)
-                        {
-                            // if the child's name is of the request name
-                            foundChild = child;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        // child element found.
-                        foundChild = child;
-                        break;
-                    }
-                }
-            }
-            return foundChild;
-        }
+
         private void OnKeyDown_ListItemMetadataAltContent(object sender, KeyEventArgs e)
         {
             var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
@@ -831,11 +813,7 @@ namespace Tobi.Plugin.Descriptions
             //FocusHelper.FocusBeginInvoke(MetadatasAltContentListView);
         }
 
-        private string PROMPT_MD_NAME = "[enter a name]";
-        private string PROMPT_MD_VALUE = "[enter a value]";
-
-        private string PROMPT_ID = "[enter the unique identifier]";
-        private string PROMPT_DescriptionName = "[enter the description name]";
+        private string TEXTFIELD_WATERMARK = "[enter text here]";
 
         private void OnClick_ButtonAddMetadataAltContent(object sender, RoutedEventArgs e)
         {
@@ -852,8 +830,8 @@ namespace Tobi.Plugin.Descriptions
             if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
 
             var mdAttr = new MetadataAttribute();
-            mdAttr.Name = PROMPT_MD_NAME;
-            mdAttr.Value = PROMPT_MD_VALUE;
+            mdAttr.Name = ""; // PROMPT_MD_NAME;
+            mdAttr.Value = ""; // PROMPT_MD_VALUE;
             string newName = null;
             string newValue = null;
 
@@ -862,8 +840,8 @@ namespace Tobi.Plugin.Descriptions
                 (
                 string.IsNullOrEmpty(newName)
                 || string.IsNullOrEmpty(newValue)
-                || newName == PROMPT_MD_NAME
-                || newValue == PROMPT_MD_VALUE
+                //|| newName == PROMPT_MD_NAME
+                //|| newValue == PROMPT_MD_VALUE
                 )
             )
             {
@@ -965,8 +943,8 @@ namespace Tobi.Plugin.Descriptions
             //if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
 
             var mdAttr = new MetadataAttribute();
-            mdAttr.Name = PROMPT_MD_NAME;
-            mdAttr.Value = PROMPT_MD_VALUE;
+            mdAttr.Name = ""; // PROMPT_MD_NAME;
+            mdAttr.Value = ""; // PROMPT_MD_VALUE;
             string newName = null;
             string newValue = null;
 
@@ -975,8 +953,8 @@ namespace Tobi.Plugin.Descriptions
                 (
                 string.IsNullOrEmpty(newName)
                 || string.IsNullOrEmpty(newValue)
-                || newName == PROMPT_MD_NAME
-                || newValue == PROMPT_MD_VALUE
+                //|| newName == PROMPT_MD_NAME
+                //|| newValue == PROMPT_MD_VALUE
                 )
             )
             {
@@ -1023,8 +1001,8 @@ namespace Tobi.Plugin.Descriptions
             Metadata md = (Metadata)MetadatasListView.SelectedItem;
 
             var mdAttr = new MetadataAttribute();
-            mdAttr.Name = PROMPT_MD_NAME;
-            mdAttr.Value = PROMPT_MD_VALUE;
+            mdAttr.Name = ""; // PROMPT_MD_NAME;
+            mdAttr.Value = ""; // PROMPT_MD_VALUE;
             string newName = null;
             string newValue = null;
 
@@ -1033,8 +1011,8 @@ namespace Tobi.Plugin.Descriptions
                 (
                 string.IsNullOrEmpty(newName)
                 || string.IsNullOrEmpty(newValue)
-                || newName == PROMPT_MD_NAME
-                || newValue == PROMPT_MD_VALUE
+                //|| newName == PROMPT_MD_NAME
+                //|| newValue == PROMPT_MD_VALUE
                 )
             )
             {
@@ -1065,9 +1043,9 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnClick_ButtonAddDescription(object sender, RoutedEventArgs e)
         {
-            string txt = PROMPT_DescriptionName;
+            string txt = ""; // PROMPT_DescriptionName;
             string descriptionName = "";
-            while (descriptionName != null && isDescriptionNameInvalid(descriptionName, PROMPT_DescriptionName))
+            while (descriptionName != null && isDescriptionNameInvalid(descriptionName, "")) // PROMPT_DescriptionName))
             {
                 // returns null only when dialog is cancelled, otherwise trimmed string (potentially empty)
                 descriptionName = showLineEditorPopupDialog(txt, "Description name", DiagramContentModelStrings.MetadataValues_ForDescriptionName);
@@ -1075,9 +1053,9 @@ namespace Tobi.Plugin.Descriptions
             }
             if (descriptionName == null) return;
 
-            txt = PROMPT_ID;
+            txt = ""; // PROMPT_ID;
             string uid = "";
-            while (uid != null && isUniqueIdInvalid(uid, PROMPT_ID))
+            while (uid != null && isUniqueIdInvalid(uid, "")) // PROMPT_ID))
             {
                 // returns null only when dialog is cancelled, otherwise trimmed string (potentially empty)
                 uid = showLineEditorPopupDialog(txt, "Unique identifier", null);
@@ -1548,12 +1526,13 @@ namespace Tobi.Plugin.Descriptions
 
             if (predefinedCandidates == null)
             {
-                var editBox = new TextBox
-                                  {
-                                      Text = editedText,
-                                      TextWrapping = TextWrapping.NoWrap,
-                                      AcceptsReturn = false
-                                  };
+                var editBox = new WatermarkTextBox
+                {
+                    Watermark = TEXTFIELD_WATERMARK,
+                    Text = editedText,
+                    TextWrapping = TextWrapping.NoWrap,
+                    AcceptsReturn = false
+                };
 
                 var panel = new StackPanel();
                 panel.SetValue(StackPanel.OrientationProperty, Orientation.Vertical);
@@ -1619,12 +1598,18 @@ namespace Tobi.Plugin.Descriptions
 
                 editBoxCombo_Name.Loaded += new RoutedEventHandler((sender, ev) =>
                 {
-                    var textBox = FindChild(editBoxCombo_Name, "PART_EditableTextBox", typeof(TextBox)) as TextBox;
+                    var textBox = editBoxCombo_Name.GetTextBox();
                     if (textBox != null)
                         textBox.SelectAll();
 
                     FocusHelper.FocusBeginInvoke(editBoxCombo_Name);
                 });
+
+                WatermarkComboBoxBehavior.SetEnableWatermark(editBoxCombo_Name, true);
+                WatermarkComboBoxBehavior.SetLabel(editBoxCombo_Name, TEXTFIELD_WATERMARK);
+
+                Style style = (Style)Application.Current.Resources[@"WatermarkTextBoxStyle"];
+                WatermarkComboBoxBehavior.SetLabelStyle(editBoxCombo_Name, style);
 
                 windowPopup.ShowModal();
 

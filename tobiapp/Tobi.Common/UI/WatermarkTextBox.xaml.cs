@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace Tobi.Common.UI
 {
@@ -13,6 +15,17 @@ namespace Tobi.Common.UI
             DefaultStyleKeyProperty.OverrideMetadata(typeof(WatermarkTextBox),
                                                      new FrameworkPropertyMetadata(typeof(WatermarkTextBox)));
         }
+
+
+        //public override void OnApplyTemplate()
+        //{
+        //    base.OnApplyTemplate();
+
+        //    Style style = (Style)Resources["WatermarkTextBoxStyle"];
+        //    Style = style;
+        //}
+
+
 
         public string Watermark
         {
