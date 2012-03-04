@@ -366,13 +366,13 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
-        private bool showMetadataAttributeEditorPopupDialog(MetadataAttribute metadataAttr, out string newName, out string newValue, bool isAltContentMetadata)
+        private bool showMetadataAttributeEditorPopupDialog(string label1, string label2, MetadataAttribute metadataAttr, out string newName, out string newValue, bool isAltContentMetadata)
         {
             m_Logger.Log("Descriptions.MetadataAttributeEditor", Category.Debug, Priority.Medium);
 
             var label_Name = new TextBlock
             {
-                Text = "Name: ",
+                Text = label1 + ": ",
                 Margin = new Thickness(8, 0, 8, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -382,7 +382,7 @@ namespace Tobi.Plugin.Descriptions
 
             var label_Value = new TextBlock
             {
-                Text = "Value: ",
+                Text = label2 + ": ",
                 Margin = new Thickness(8, 0, 8, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -614,7 +614,7 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnClick_ButtonEditMetadataAltContent(object sender, RoutedEventArgs e)
         {
-            if (MetadatasListView.SelectedIndex >= 0)
+            if (MetadatasAltContentListView.SelectedIndex >= 0)
                 OnMouseDoubleClick_ListItemMetadataAltContent(null, null);
         }
         private void OnClick_ButtonEditMetadata(object sender, RoutedEventArgs e)
@@ -660,7 +660,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog(mdAttrTEMP, out newName, out newValue, true);
+                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttrTEMP, out newName, out newValue, true);
                 mdAttrTEMP.Name = newName;
                 mdAttrTEMP.Value = newValue;
             }
@@ -746,7 +746,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog(mdAttrTEMP, out newName, out newValue, false);
+                ok = showMetadataAttributeEditorPopupDialog("Property", "Content", mdAttrTEMP, out newName, out newValue, false);
                 mdAttrTEMP.Name = newName;
                 mdAttrTEMP.Value = newValue;
             }
@@ -789,7 +789,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog(mdAttrTEMP, out newName, out newValue, false);
+                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttrTEMP, out newName, out newValue, false);
                 mdAttrTEMP.Name = newName;
                 mdAttrTEMP.Value = newValue;
             }
@@ -867,7 +867,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, true);
+                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttr, out newName, out newValue, true);
                 mdAttr.Name = newName;
                 mdAttr.Value = newValue;
             }
@@ -980,7 +980,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
+                ok = showMetadataAttributeEditorPopupDialog("Property", "Content", mdAttr, out newName, out newValue, false);
                 mdAttr.Name = newName;
                 mdAttr.Value = newValue;
             }
@@ -1038,7 +1038,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
+                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttr, out newName, out newValue, false);
                 mdAttr.Name = newName;
                 mdAttr.Value = newValue;
             }
