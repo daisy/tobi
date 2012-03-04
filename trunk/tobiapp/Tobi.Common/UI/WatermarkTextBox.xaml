@@ -4,7 +4,9 @@
     xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
     xmlns:UI="clr-namespace:Tobi.Common.UI">
 
-  <Style x:Key="WatermarkTextBoxStyle" TargetType="{x:Type TextBlock}">
+  <!--
+  
+  <Style x:Key="WatermarkTextBoxStyle2" TargetType="{x:Type TextBlock}">
 
     <Setter Property="Opacity"
             Value="0.345" />
@@ -48,7 +50,7 @@
             </Microsoft_Windows_Themes:ListBoxChrome>
 
             <TextBlock x:Name="textBlock"
-                       Style="{StaticResource WatermarkTextBoxStyle}"
+                       Style="{StaticResource WatermarkTextBoxStyle2}"
                        
                        Text="{TemplateBinding Watermark}"
                        Visibility="Hidden"/>
@@ -70,4 +72,6 @@
       </Setter.Value>
     </Setter>
   </Style>
+  -->
+  
 </ResourceDictionary>

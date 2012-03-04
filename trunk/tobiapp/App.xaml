@@ -10,6 +10,13 @@
       <Tobi:Settings x:Key="Settings"/>
       <!-- XAML:WindowStateFullScreenConverter x:Key="WindowStateFullScreenConverter" / -->
 
+      <Style x:Key="WatermarkTextBoxStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="Opacity"
+                Value="0.345" />
+        <Setter Property="Margin"
+                Value="4,2,0,0" />
+      </Style>
+
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/IconResources.xaml"/>
         <ResourceDictionary Source="pack://application:,,,/Tobi.Common;component/Resources.xaml"/>

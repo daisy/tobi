@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\DebugNET4\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40;_HANDLE_MEM_LEAK</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>

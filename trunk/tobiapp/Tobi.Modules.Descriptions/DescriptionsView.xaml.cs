@@ -448,7 +448,7 @@ namespace Tobi.Plugin.Descriptions
             //    col = new ObservableCollection<string> { "Eric", "Phillip" };
             //combo.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = col });
 
-            var editBox_Value = new TextBox //WatermarkTextBox
+            var editBox_Value = new TextBoxReadOnlyCaretVisible
             {
                 //Watermark = TEXTFIELD_WATERMARK,
                 Text = metadataAttr.Value,
@@ -527,6 +527,8 @@ namespace Tobi.Plugin.Descriptions
 
 
             windowPopup.ShowModal();
+
+            WatermarkComboBoxBehavior.SetEnableWatermark(editBoxCombo_Name, false);
 
             if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
             {
@@ -1526,9 +1528,9 @@ namespace Tobi.Plugin.Descriptions
 
             if (predefinedCandidates == null)
             {
-                var editBox = new WatermarkTextBox
+                var editBox = new TextBoxReadOnlyCaretVisible
                 {
-                    Watermark = TEXTFIELD_WATERMARK,
+                    //Watermark = TEXTFIELD_WATERMARK,
                     Text = editedText,
                     TextWrapping = TextWrapping.NoWrap,
                     AcceptsReturn = false
@@ -1553,6 +1555,12 @@ namespace Tobi.Plugin.Descriptions
                                                                  editBox.SelectAll();
                                                                  FocusHelper.FocusBeginInvoke(editBox);
                                                              });
+
+                WatermarkTextBoxBehavior.SetEnableWatermark(editBox, true);
+                WatermarkTextBoxBehavior.SetLabel(editBox, TEXTFIELD_WATERMARK);
+
+                Style style = (Style)Application.Current.Resources[@"WatermarkTextBoxStyle"];
+                WatermarkTextBoxBehavior.SetLabelStyle(editBox, style);
 
                 windowPopup.ShowModal();
 
@@ -1612,6 +1620,8 @@ namespace Tobi.Plugin.Descriptions
                 WatermarkComboBoxBehavior.SetLabelStyle(editBoxCombo_Name, style);
 
                 windowPopup.ShowModal();
+
+                WatermarkComboBoxBehavior.SetEnableWatermark(editBoxCombo_Name, false);
 
                 if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
                 {
