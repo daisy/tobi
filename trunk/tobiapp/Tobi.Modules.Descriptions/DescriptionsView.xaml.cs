@@ -338,7 +338,15 @@ namespace Tobi.Plugin.Descriptions
 
 
             MetadatasListView.Items.Refresh();
+            if (MetadatasListView.Items.Count > 0)
+            {
+                MetadatasListView.SelectedIndex = 0;
+            }
             MetadataAttributesListView.Items.Refresh();
+            if (MetadataAttributesListView.Items.Count > 0)
+            {
+                MetadataAttributesListView.SelectedIndex = 0;
+            }
             if (MetadatasListView.IsVisible)
             {
                 FocusHelper.Focus(MetadatasListView);
@@ -346,7 +354,15 @@ namespace Tobi.Plugin.Descriptions
             OnSelectionChanged_MetadataList(null, null);
 
             DescriptionsListView.Items.Refresh();
+            if (DescriptionsListView.Items.Count > 0)
+            {
+                DescriptionsListView.SelectedIndex = 0;
+            }
             MetadatasAltContentListView.Items.Refresh();
+            if (MetadatasAltContentListView.Items.Count > 0)
+            {
+                MetadatasAltContentListView.SelectedIndex = 0;
+            }
             if (DescriptionsListView.IsVisible)
             {
                 FocusHelper.Focus(DescriptionsListView);
@@ -529,6 +545,7 @@ namespace Tobi.Plugin.Descriptions
             windowPopup.ShowModal();
 
             WatermarkComboBoxBehavior.SetEnableWatermark(editBoxCombo_Name, false);
+            WatermarkTextBoxBehavior.SetEnableWatermark(editBox_Value, false);
 
             if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
             {
@@ -1564,6 +1581,7 @@ namespace Tobi.Plugin.Descriptions
 
                 windowPopup.ShowModal();
 
+                WatermarkTextBoxBehavior.SetEnableWatermark(editBox, false);
 
                 if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
                 {
