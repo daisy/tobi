@@ -816,8 +816,6 @@ namespace Tobi.Common.UI
                 )
                 return;
 
-            e.Handled = true;
-
             var commandsToExecute = new List<ICommand>(1);
 
             foreach (var inputBinding in InputBindings)
@@ -826,6 +824,8 @@ namespace Tobi.Common.UI
                 if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
 
                 if (((KeyGesture)((KeyBinding)inputBinding).Gesture).Key != e.Key) continue;
+
+                e.Handled = true;
 
                 var modifiers = ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers;
                 if (!modifiersMatch(modifiers)) continue;
