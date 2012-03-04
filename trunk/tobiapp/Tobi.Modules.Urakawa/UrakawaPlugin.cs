@@ -121,9 +121,10 @@ namespace Tobi.Plugin.Urakawa
 
             foreach (var uri in m_UrakawaSession.RecentFiles)
             {
+                string uriStr = uri.IsFile ? uri.LocalPath : uri.ToString();
                 RichDelegateCommand cmd = null;
                 cmd = new RichDelegateCommand(
-                    (uri.IsFile ? uri.LocalPath : uri.ToString()), //uri.Scheme.ToLower() == "file"
+                    uriStr.Replace("_","__"), //uri.Scheme.ToLower() == "file"
                     uri.ToString(),
                     null, null,
                     () =>
