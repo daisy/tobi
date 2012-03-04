@@ -692,6 +692,9 @@ namespace Tobi.Plugin.AudioPane
             AdornerLayer layer = AdornerLayer.GetAdornerLayer(WaveFormScroll);
             if (layer == null)
             {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
                 m_WaveFormLoadingAdorner = null;
                 m_WaveFormTimeTicksAdorner = null;
                 return;

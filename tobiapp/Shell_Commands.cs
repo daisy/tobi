@@ -440,82 +440,35 @@ namespace Tobi
             }
         }
 
+        //private List<IInputBindingManager> m_SubInputBindingManagers = new List<IInputBindingManager>(1);
+        //public void AddSubInputBindingManager(IInputBindingManager ibm)
+        //{
+        //    m_SubInputBindingManagers.Add(ibm);
+        //}
+        //public void RemoveSubInputBindingManager(IInputBindingManager ibm)
+        //{
+        //    m_SubInputBindingManagers.Remove(ibm);
+        //}
+
         public bool AddInputBinding(InputBinding inputBindingz)
         {
-            if (inputBindingz != null)
-            {
-                foreach (var inputBinding in InputBindings)
-                {
-                    if (inputBindingz == inputBinding)
-                    {
-                        // HAPPENS DURING TOGGLE BUTTON RECONFIGURATION
-//#if DEBUG
-//                        Debugger.Break();
-//#endif
-                        return false;
-                    }
-
-                    if (!(inputBinding is KeyBinding)) continue;
-
-                    if (((KeyBinding)inputBindingz).Command == ((KeyBinding)inputBinding).Command)
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif
-                    }
-
-                    if (!(((KeyBinding)inputBinding).Gesture is KeyGesture)) continue;
-
-                    if (((KeyGesture)((KeyBinding)inputBindingz).Gesture).Key == ((KeyGesture)((KeyBinding)inputBinding).Gesture).Key
-                        &&
-                        ((KeyGesture)((KeyBinding)inputBindingz).Gesture).Modifiers == ((KeyGesture)((KeyBinding)inputBinding).Gesture).Modifiers)
-                    {
-                        // TOGGLE BUTTON COMMANDS HAVE IDENTICAL SHORTCUTS:
-                        // PLAY/PAUSE
-                        // START/STOP RECORD
-                        // START/STOP MONITORING
-
-//#if DEBUG
-//                        Debugger.Break();
-//#endif
-                    }
-                }
-                //logInputBinding(inputBinding);
-                InputBindings.Add(inputBindingz);
-                return true;
-            }
-
-            return false;
+            //foreach (var ibm in m_SubInputBindingManagers)
+            //{
+            //    ibm.AddInputBinding(inputBindingz);
+            //}
+            return PopupModalWindow.AddInputBinding(this, inputBindingz);
         }
 
         public void RemoveInputBinding(InputBinding inputBinding)
         {
-            if (inputBinding != null)
-            {
-                //logInputBinding(inputBinding);
-                InputBindings.Remove(inputBinding);
-            }
+            //foreach (var ibm in m_SubInputBindingManagers)
+            //{
+            //    ibm.RemoveInputBinding(inputBinding);
+            //}
+            PopupModalWindow.RemoveInputBinding(this, inputBinding);
         }
 
-        private void logInputBinding(InputBinding inputBinding)
-        {
-            if (inputBinding.Gesture is KeyGesture)
-            {
-                m_Logger.Log(
-                    "KeyBinding (" +
-                    KeyGestureString.GetDisplayString(((KeyGesture)(inputBinding.Gesture))) + ")",
-                    Category.Debug, Priority.Medium);
-            }
-            else
-            {
-                m_Logger.Log(
-                       "InputBinding (" +
-                       inputBinding.Gesture + ")",
-                       Category.Debug, Priority.Medium);
-            }
-        }
-
-        public void updateIconDrawScales(double value)
+        private void updateIconDrawScales(double value)
         {
             /*if (EventAggregator == null)
             {

@@ -2109,12 +2109,17 @@ namespace Tobi.Plugin.AudioPane
                             }
                         }
                     }
+                    if (m_WaveFormTimeTicksAdorner != null)
+                    {
+                        m_WaveFormTimeTicksAdorner.ResetBrushes();
+                        m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                    }
 
-                    m_WaveFormTimeTicksAdorner.ResetBrushes();
-                    m_WaveFormTimeTicksAdorner.InvalidateVisual();
-
-                    m_WaveFormLoadingAdorner.ResetBrushes();
-                    m_WaveFormLoadingAdorner.InvalidateVisual();
+                    if (m_WaveFormLoadingAdorner != null)
+                    {
+                        m_WaveFormLoadingAdorner.ResetBrushes();
+                        m_WaveFormLoadingAdorner.InvalidateVisual();
+                    }
                 };
 
                 if (!Dispatcher.CheckAccess())
