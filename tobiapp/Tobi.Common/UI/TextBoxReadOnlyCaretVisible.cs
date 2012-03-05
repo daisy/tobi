@@ -38,7 +38,7 @@ namespace Tobi.Common.UI
             TextWrapping = TextWrapping.Wrap;
 
             //SetResourceReference(Control.BackgroundProperty, SystemColors.ControlLightLightBrushKey);
-            SetResourceReference(Control.BorderBrushProperty, SystemColors.ControlDarkDarkBrush);
+            SetResourceReference(Control.BorderBrushProperty, SystemColors.ControlDarkBrushKey);
 
             //Background = SystemColors.ControlLightLightBrush;
             //BorderBrush = SystemColors.ControlDarkDarkBrush;

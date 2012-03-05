@@ -546,7 +546,7 @@ namespace Tobi.Plugin.Urakawa
                         if (uri.ToString() == wrapper.Uri.ToString())
                         {
                             int index_ = m_Session.RecentFiles.IndexOf(uri);
-                            DebugFix.Assert(index == index_);
+                            //DebugFix.Assert(index == index_);
                             index = index_;
                             break;
                         }

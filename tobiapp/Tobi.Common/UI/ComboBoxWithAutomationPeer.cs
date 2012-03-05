@@ -24,6 +24,10 @@ namespace Tobi.Common.UI
         //    textBox.Style = style;
         //}
 
+        public ComboBoxWithAutomationPeer()
+        {
+            SetResourceReference(Control.BorderBrushProperty, SystemColors.ControlDarkBrushKey);
+        }
 
         public TextBox GetTextBox()
         {
