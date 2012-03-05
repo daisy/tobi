@@ -24,9 +24,28 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandZoomSelection { get; private set; }
         public RichDelegateCommand CommandZoomFitFull { get; private set; }
         public RichDelegateCommand CommandRefresh { get; private set; }
+        public RichDelegateCommand CommandStopPlayMonitorRecord { get; private set; }
 
         private void initializeCommands_View()
         {
+            CommandStopPlayMonitorRecord = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecord_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecord_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                //null, //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Refresh")),
+                null,
+                () =>
+                {
+                    //Logger.Log("AudioPaneViewModel.CommandRefresh", Category.Debug, Priority.Medium);
+
+                    OnStopPlayMonitorRecord();
+                },
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StopPlayMonitorRecord));
+
+            m_ShellView.RegisterRichCommand(CommandStopPlayMonitorRecord);
+            //
             CommandRefresh = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdAudioReload_ShortDesc,
                 Tobi_Plugin_AudioPane_Lang.CmdAudioReload_LongDesc,

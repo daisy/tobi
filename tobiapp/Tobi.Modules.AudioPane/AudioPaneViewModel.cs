@@ -530,6 +530,44 @@ m_Stream.Length);
             }
         }
 
+        private void OnStopPlayMonitorRecord()
+        {
+            if (!TheDispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action)OnStopPlayMonitorRecord);
+                return;
+            }
+
+            IsAutoPlay = false;
+
+            if (View != null)
+            {
+                View.CancelWaveFormLoad(false);
+            }
+
+
+            if (IsPlaying)
+            {
+                CommandPause.Execute();
+                return;
+            }
+            if (IsMonitoring)
+            {
+                CommandStopMonitor.Execute();
+                return;
+            }
+            if (IsRecording)
+            {
+                m_RecordAndContinue = false;
+                m_InterruptRecording = false;
+                CommandStopRecord.Execute();
+                return;
+            }
+        }
+
         private void OnEscape(object obj)
         {
             if (!TheDispatcher.CheckAccess())

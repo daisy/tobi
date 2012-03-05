@@ -4,6 +4,9 @@
     <Profile Name="(Default)" />
   </Profiles>
   <Settings>
+    <Setting Name="Keyboard_Audio_StopPlayMonitorRecord" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] Space</Value>
+    </Setting>
     <Setting Name="Keyboard_Audio_ExpertOptions" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ALT ] F12</Value>
     </Setting>
@@ -82,11 +85,11 @@
     <Setting Name="Keyboard_Audio_PlayPause" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] Space</Value>
     </Setting>
-    <Setting Name="Keyboard_Audio_PlayPreviewLeft" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] Space</Value>
+    <Setting Name="Keyboard_Audio_PlayLeftPreview" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] P</Value>
     </Setting>
-    <Setting Name="Keyboard_Audio_PlayPreviewRight" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] Space</Value>
+    <Setting Name="Keyboard_Audio_PlayRightPreview" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] P</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_GoForward" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] Right</Value>

@@ -47,7 +47,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecordAndContinue_ShortDesc,
                 Tobi_Plugin_AudioPane_Lang.CmdAudioStopRecordAndContinue_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("weather-clear-night"),//emblem-symbolic-link
+                m_ShellView.LoadTangoIcon("start-here"), //weather-clear-night -- emblem-symbolic-link
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStopRecordAndContinue", Category.Debug, Priority.Medium);
