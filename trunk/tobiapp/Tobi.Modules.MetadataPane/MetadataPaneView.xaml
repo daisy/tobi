@@ -4,8 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Tobi.Plugin.MetadataPane"
     xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" 
-    xmlns:Metadata="clr-namespace:Tobi.Plugin.Validator.Metadata;assembly=Tobi.Plugin.Validator.Metadata" 
-    LastChildFill="True"
+    xmlns:Metadata="clr-namespace:Tobi.Plugin.Validator.Metadata;assembly=Tobi.Plugin.Validator.Metadata"
+    xmlns:System="clr-namespace:System;assembly=mscorlib" LastChildFill="True"
     Loaded="MetadataPaneView_OnLoaded">
   <!-- ALL RESOURCES -->
   <DockPanel.Resources>
@@ -36,7 +36,8 @@
         <ComboBox.Style>
           <Style TargetType="{x:Type ComboBox}">
             <Setter Property="AutomationProperties.Name"
-                    Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}"/>
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem,
+                    TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}"/>
             <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
           </Style>
         </ComboBox.Style>

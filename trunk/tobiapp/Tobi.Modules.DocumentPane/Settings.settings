@@ -41,7 +41,7 @@
       <Value Profile="(Default)">#FF000000</Value>
     </Setting>
     <Setting Name="Document_Color_Font_NoAudio" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FF696969</Value>
+      <Value Profile="(Default)">#FF686868</Value>
     </Setting>
     <Setting Name="Document_Color_Selection_UnderOverLine" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF00FF00</Value>

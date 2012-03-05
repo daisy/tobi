@@ -14,8 +14,8 @@
     <Setting Name="Skippables" Type="System.String" Scope="User">
       <Value Profile="(Default)">pagenum,linenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,note,noteref,</Value>
     </Setting>
-    <Setting Name="Audio_EnableSkippables" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+    <Setting Name="Audio_EnableSkippability" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="UseFriendlyTimeFormat" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
