@@ -102,6 +102,11 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     State.Selection.SetSelectionBytes(begin, end);
+                    
+                    if (IsAutoPlay)
+                    {
+                        CommandPlay.Execute();
+                    }
 
                     //if (IsAutoPlay)
                     //{
@@ -139,7 +144,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.CommandBeginSelection", Category.Debug, Priority.Medium);
 
-                    CommandPause.Execute();
+                    //CommandPause.Execute();
                     CommandClearSelection.Execute();
 
                     m_SelectionBeginTmpBytePosition = PlayBytePosition;
