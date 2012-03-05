@@ -483,7 +483,9 @@ Background="{Binding
                 ToolTip="{Binding Source={x:Static DocumentPane:Settings_KeyGestures.Default}, Path=Keyboard_ToggleTextOnly, Mode=OneWay}"
                 Margin="3"
                  VerticalAlignment="Center"
-   IsChecked="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView, Mode=TwoWay}"/>
+   IsChecked="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView, Mode=TwoWay}"
+        Click="OnMouseClickCheckBox"
+        />
 
       <!--<Separator/>
       <CheckBox Content="Narrator view"

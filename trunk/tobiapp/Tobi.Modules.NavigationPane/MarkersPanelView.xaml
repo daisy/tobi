@@ -117,7 +117,7 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
                ToolTip="{Binding Source={x:Static local:Settings_KeyGestures.Default}, Path=Keyboard_ToggleDocMark, Mode=OneWay}"
                 IsThreeState="False"
     Margin="4,4,4,4"
-               
+               Click="OnMouseClickCheckBox"
         Control.TabIndex="2"/>
 
     <TextBlock 

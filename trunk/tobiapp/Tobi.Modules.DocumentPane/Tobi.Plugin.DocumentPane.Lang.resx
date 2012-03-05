@@ -118,16 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CmdSwitchNarratorView_ShortDesc" xml:space="preserve">
-    <value>_Switch narrator window</value>
+    <value>_Narrator window</value>
   </data>
   <data name="CmdSwitchNarratorView_LongDesc" xml:space="preserve">
-    <value>Alternate between the normal document view and the narrator window</value>
+    <value>Open / close the audio narration popup window</value>
   </data>
   <data name="CmdTextOnlyViewToggle_ShortDesc" xml:space="preserve">
-    <value>_Toggle text view</value>
+    <value>_Single text phrase</value>
   </data>
   <data name="CmdTextOnlyViewToggle_LongDesc" xml:space="preserve">
-    <value>Alternate between the text styles: full or simple document view</value>
+    <value>Toggle the text viewer mode</value>
   </data>
   <data name="CmdStructureDown_ShortDesc" xml:space="preserve">
     <value>_Narrow selection</value>
@@ -145,7 +145,7 @@
     <value>Narrator view</value>
   </data>
   <data name="TextOnly" xml:space="preserve">
-    <value>Simple view</value>
+    <value>Single phrase</value>
   </data>
   <data name="CmdEditText_ShortDesc" xml:space="preserve">
     <value>Edit text</value>

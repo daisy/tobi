@@ -33,7 +33,12 @@ namespace Tobi.Common.UI
             ui.Dispatcher.BeginInvoke(new Action(() => Focus(ui)), DispatcherPriority.Normal);
         }
 
-        public static void FocusThreadAndInvoke(UIElement ui)
+        public static void FocusInvoke(UIElement ui)
+        {
+            ui.Dispatcher.Invoke(new Action(() => Focus(ui)), DispatcherPriority.Normal);
+        }
+
+        public static void FocusInvokeFromThreadPool(UIElement ui)
         {
             ThreadPool.QueueUserWorkItem(delegate(Object foo) // or: (foo) => {} (LAMBDA)
             {

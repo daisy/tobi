@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -104,6 +106,21 @@ namespace Tobi.Plugin.NavigationPane
                 ViewModel.IsSearchVisible = false;
             }
         }
+
+        private void OnMouseClickCheckBox(object sender, RoutedEventArgs e)
+        {
+            ((UIElement)sender).Dispatcher.BeginInvoke(
+                new Action(() =>
+                {
+                    UIElement ui = FocusableItem;
+                    if (ui != null && ui.Focusable)
+                    {
+                        FocusHelper.Focus(FocusableItem);
+                    }
+                }),
+                DispatcherPriority.Background);
+        }
+
         public UIElement FocusableItem
         {
             get
