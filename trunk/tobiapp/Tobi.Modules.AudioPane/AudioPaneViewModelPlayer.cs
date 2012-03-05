@@ -239,7 +239,7 @@ namespace Tobi.Plugin.AudioPane
                 () => PlayPreviewLeftRight(true),
                 () => CommandPlay.CanExecute(),
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPreviewLeft));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayLeftPreview));
 
             m_ShellView.RegisterRichCommand(CommandPlayPreviewLeft);
             //
@@ -251,7 +251,7 @@ namespace Tobi.Plugin.AudioPane
                 () => PlayPreviewLeftRight(false),
                 () => CommandPlay.CanExecute(),
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPreviewRight));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayRightPreview));
 
             m_ShellView.RegisterRichCommand(CommandPlayPreviewRight);
             //
