@@ -1732,5 +1732,11 @@ namespace Tobi.Plugin.AudioPane
         {
             FocusHelper.FocusBeginInvoke(FocusStartStatusBar);
         }
+
+
+        private void OnMouseClickAutoPlayCheckBox(object sender, RoutedEventArgs e)
+        {
+            BringIntoFocus();
+        }
     }
 }
