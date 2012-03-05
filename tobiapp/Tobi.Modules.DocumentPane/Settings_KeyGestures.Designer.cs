@@ -118,17 +118,5 @@ namespace Tobi.Plugin.DocumentPane {
                 this["Keyboard_Focus_Txt"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ NONE ] F6")]
-        public string Keyboard_Focus_Doc {
-            get {
-                return ((string)(this["Keyboard_Focus_Doc"]));
-            }
-            set {
-                this["Keyboard_Focus_Doc"] = value;
-            }
-        }
     }
 }

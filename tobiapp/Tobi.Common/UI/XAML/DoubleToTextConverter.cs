@@ -1,34 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
 namespace Tobi.Common.UI.XAML
 {
-    [ValueConversion(typeof(Type), typeof(IEnumerable<string>))]
-    public class EnumTypeToValuesConverter : ValueConverterMarkupExtensionBase<EnumTypeToValuesConverter>
-    {
-        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value != null
-                && value is Type
-                && typeof(Enum).IsAssignableFrom((Type)value))
-            {
-                var obj = Enum.GetValues((Type)value);
-                return obj;
-            }
-            return String.Empty; // will generate exception
-        }
+//    [ValueConversion(typeof(Object), typeof(String))] //IEnumerable<object>
+//    public class EnumValueToStringConverter : ValueConverterMarkupExtensionBase<EnumValueToStringConverter>
+//    {
+//        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+//        {
+//            if (value != null)
+//            {
+//                return value.ToString();
+//            }
+//            return String.Empty;
+//        }
 
-        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return String.Empty; // will generate exception
-        }
-    }
-    
+//        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+//        {
+//#if DEBUG
+//            Debugger.Break();
+//#endif //DEBUG
+//            return String.Empty;
+//        }
+//    }
+
+
     [ValueConversion(typeof(Enum), typeof(String))]
-    public class EnumToStringConverter : ValueConverterMarkupExtensionBase<EnumToStringConverter>
+    public class EnumValueToStringBiConverter : ValueConverterMarkupExtensionBase<EnumValueToStringBiConverter>
     {
         #region IValueConverter Members
 
@@ -39,6 +41,11 @@ namespace Tobi.Common.UI.XAML
         {
             //if (targetType != typeof(String))
             //    throw new InvalidOperationException("The target must be String !");
+
+            if (value == null)
+            {
+                return String.Empty;
+            }
 
             var typez = value.GetType();
             if (!m_EnumTypes.Contains(typez))
@@ -82,6 +89,43 @@ namespace Tobi.Common.UI.XAML
         }
 
         #endregion
+    }
+
+
+    [ValueConversion(typeof(Type), typeof(Array))] //IEnumerable<object>
+    public class EnumTypeToValuesConverter : ValueConverterMarkupExtensionBase<EnumTypeToValuesConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null
+                && value is Type
+                && typeof(Enum).IsAssignableFrom((Type)value))
+            {
+                Array array = Enum.GetValues((Type)value);
+                return array;
+
+                //string[] strs = new string[array.Length];
+                //int i = 0;
+                //foreach (var val in array)
+                //{
+                //    strs[i] = val.ToString();
+                //    i++;
+                //}
+                //return strs;
+            }
+#if DEBUG
+            Debugger.Break();
+#endif //DEBUG
+            return String.Empty; // will generate exception
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+#if DEBUG
+            Debugger.Break();
+#endif //DEBUG
+            return String.Empty; // will generate exception
+        }
     }
 
     //[ValueConversion(typeof(TextAlignment), typeof(String))]
@@ -136,7 +180,7 @@ namespace Tobi.Common.UI.XAML
             }
             catch
             {
-                return String.Empty; // will generate exception
+                return String.Empty;
             }
         }
     }

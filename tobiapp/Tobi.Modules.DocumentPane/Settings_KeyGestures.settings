@@ -26,8 +26,5 @@
     <Setting Name="Keyboard_Focus_Txt" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F10</Value>
     </Setting>
-    <Setting Name="Keyboard_Focus_Doc" Type="System.String" Scope="User">
-      <Value Profile="(Default)">[ NONE ] F6</Value>
-    </Setting>
   </Settings>
 </SettingsFile>
