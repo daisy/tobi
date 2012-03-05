@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Automation;
@@ -11,33 +12,47 @@ using Tobi.Common.MVVM.Command;
 
 namespace Tobi.Common.UI
 {
-
-    /// <summary>
-    /// //////////////////////////////////////////
-    /// </summary>
     public class ButtonRichCommand : Button
     {
-        private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if ((bool)e.NewValue)
-            {
-                if (m_WasFocusedBeforeDisabled)
-                {
-                    m_WasFocusedBeforeDisabled = false;
-                    FocusHelper.Focus((UIElement)sender);
-                }
-            }
-            else
-            {
-                m_WasFocusedBeforeDisabled = ((UIElement) sender).IsKeyboardFocused;
-            }
-        }
+        //private bool m_WasFocusedBeforeDisabled;
+        //private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        //{
+        //    if ((bool)e.NewValue)
+        //    {
+        //        if (m_WasFocusedBeforeDisabled)
+        //        {
+        //            m_WasFocusedBeforeDisabled = false;
+        //            FocusHelper.Focus((UIElement)sender);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        m_WasFocusedBeforeDisabled = ((UIElement) sender).IsKeyboardFocused;
+        //    }
+        //}
 
-        private bool m_WasFocusedBeforeDisabled = false;
+        //private static Dictionary<object, IInputElement> values = new Dictionary<object, IInputElement>();
+        //private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        //{
+        //    if ((bool)e.NewValue)
+        //    {
+        //        // button becomes enabled, we restore the remembered focused element at the time of becoming disabled.
+        //        if (values.ContainsKey(sender))
+        //        {
+        //            Keyboard.Focus(values[sender]);
+        //            values.Remove(sender);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // button becomes disabled, we remember which element is currently focused
+        //        values[sender] = Keyboard.FocusedElement;
+        //    }
+        //}
 
         public ButtonRichCommand()
         {
-            IsEnabledChanged += new DependencyPropertyChangedEventHandler(OnIsEnabledChanged);
+            //IsEnabledChanged += new DependencyPropertyChangedEventHandler(OnIsEnabledChanged);
 
             //PreviewKeyDown += OnPreviewKeyDownUp_;
             //PreviewKeyUp += OnPreviewKeyDownUp_;
