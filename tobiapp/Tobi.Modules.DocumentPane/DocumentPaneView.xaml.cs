@@ -814,6 +814,23 @@ namespace Tobi.Plugin.DocumentPane
 
         private readonly IShellView m_ShellView;
 
+        public void BringIntoFocus()
+        {
+            if (FocusCollapsed.IsVisible)
+            {
+                FocusHelper.FocusBeginInvoke(FocusCollapsed);
+            }
+            else
+            {
+                FocusHelper.FocusBeginInvoke(FocusExpanded);
+            }
+        }
+
+        private void OnMouseClickCheckBox(object sender, RoutedEventArgs e)
+        {
+            BringIntoFocus();
+        }
+
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
@@ -845,16 +862,9 @@ namespace Tobi.Plugin.DocumentPane
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("edit-select-all"),
                 () =>
-                {
-                    if (FocusCollapsed.IsVisible)
                     {
-                        FocusHelper.FocusBeginInvoke(FocusCollapsed);
-                    }
-                    else
-                    {
-                        FocusHelper.FocusBeginInvoke(FocusExpanded);
-                    }
-                },
+                        BringIntoFocus();
+                    },
                 () => true,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Focus_Txt));

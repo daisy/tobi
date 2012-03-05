@@ -1734,7 +1734,7 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-        private void OnMouseClickAutoPlayCheckBox(object sender, RoutedEventArgs e)
+        private void OnMouseClickCheckBox(object sender, RoutedEventArgs e)
         {
             BringIntoFocus();
         }
