@@ -990,7 +990,7 @@ namespace Tobi.Plugin.DocumentPane
                             || node != null && !string.IsNullOrEmpty(TreeNodeChangeTextCommand.GetText(node));
                 },
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_EditText));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_EditPhraseText));
 
             m_ShellView.RegisterRichCommand(CommandEditText);
 

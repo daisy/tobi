@@ -14,8 +14,8 @@
     <Setting Name="Keyboard_SwitchNarratorView" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] N</Value>
     </Setting>
-    <Setting Name="Keyboard_EditText" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] T</Value>
+    <Setting Name="Keyboard_EditPhraseText" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ NONE ] F2</Value>
     </Setting>
     <Setting Name="Keyboard_StructureSelectUp" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] OemComma (,)</Value>

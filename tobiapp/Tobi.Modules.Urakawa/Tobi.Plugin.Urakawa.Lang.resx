@@ -121,16 +121,16 @@
     <value>A context for opening and saving the data model of a Urakawa SDK project.</value>
   </data>
   <data name="OpenSaveAsQuestion" xml:space="preserve">
-    <value>Do you want to open the saved document ?</value>
+    <value>Do you want to open the saved project ?</value>
   </data>
   <data name="OpenSaveAsQuestion_" xml:space="preserve">
-    <value>Open saved document ?</value>
+    <value>Open saved project ?</value>
   </data>
   <data name="CmdOpenDocumentFolder_ShortDesc" xml:space="preserve">
-    <value>Current document</value>
+    <value>Current project</value>
   </data>
   <data name="CmdOpenDocumentFolder_LongDesc" xml:space="preserve">
-    <value>Open a file browser where the currently-loaded document is located.</value>
+    <value>Open a file browser where the currently-loaded project is located.</value>
   </data>
   <data name="CannotOpenLocalFile" xml:space="preserve">
     <value>Cannot open file.</value>
@@ -158,19 +158,19 @@ Press OK to ignore, or CANCEL to see the issues.</value>
     <value>_Close</value>
   </data>
   <data name="CmdClose_LongDesc" xml:space="preserve">
-    <value>Close the current document</value>
+    <value>Close the current project</value>
   </data>
   <data name="CmdDataCleanup_ShortDesc" xml:space="preserve">
     <value>_Cleanup</value>
   </data>
   <data name="CmdDataCleanup_LongDesc" xml:space="preserve">
-    <value>Remove data files not used by the current document</value>
+    <value>Remove data files not used by the current project</value>
   </data>
   <data name="CmdExport_ShortDesc" xml:space="preserve">
     <value>Export...</value>
   </data>
   <data name="CmdExport_LongDesc" xml:space="preserve">
-    <value>Export the current document  to DAISY...</value>
+    <value>Export the current project...</value>
   </data>
   <data name="CmdMenuClearRecentFiles_ShortDesc" xml:space="preserve">
     <value>_Clear</value>
@@ -191,7 +191,7 @@ Press OK to ignore, or CANCEL to see the issues.</value>
     <value>_Open / import</value>
   </data>
   <data name="CmdOpen_LongDesc" xml:space="preserve">
-    <value>Open or import a document</value>
+    <value>Open or import a document to create a new project</value>
   </data>
   <data name="Overwrite" xml:space="preserve">
     <value>_Overwrite</value>
@@ -232,10 +232,10 @@ Do you want to continue ?</value>
     <value>S_ave as...</value>
   </data>
   <data name="CmdSaveAs_LongDesc" xml:space="preserve">
-    <value>Save the current document as...</value>
+    <value>Save the current project as...</value>
   </data>
   <data name="CmdSave_LongDesc" xml:space="preserve">
-    <value>Save the current document</value>
+    <value>Save the current project</value>
   </data>
   <data name="CmdUndo_ShortDesc" xml:space="preserve">
     <value>_Undo</value>
@@ -248,10 +248,10 @@ Do you want to continue ?</value>
   </data>
   <data name="UnsavedChangesConfirm" xml:space="preserve">
     <value>There are unsaved changes.
-Would you like to save the document now ?</value>
+Would you like to save the project now ?</value>
   </data>
   <data name="UnsavedChangesDetails" xml:space="preserve">
-    <value>If you close the document without saving,
+    <value>If you close the project without saving,
 any changes will be lost !</value>
   </data>
   <data name="UrakawaPlugin_Name" xml:space="preserve">
@@ -276,7 +276,7 @@ any changes will be lost !</value>
     <value>Saving XUK file...</value>
   </data>
   <data name="UrakawaSaveAction_LongDesc" xml:space="preserve">
-    <value>Saving the document as XML into the XUK file...</value>
+    <value>Saving the project as XML (XUK file)...</value>
   </data>
   <data name="UrakawaSession_OpenFile" xml:space="preserve">
     <value>open file</value>

@@ -250,7 +250,7 @@ namespace Tobi.Plugin.Urakawa
                 },
                 () => DocumentProject != null,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Close));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_CloseProject));
 
             m_ShellView.RegisterRichCommand(CloseCommand);
             //
