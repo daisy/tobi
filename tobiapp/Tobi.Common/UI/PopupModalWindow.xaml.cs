@@ -103,6 +103,8 @@ namespace Tobi.Common.UI
 
         private PopupModalWindow(IShellView shellView)
         {
+            EnableEnterKeyDefault = false;
+
             PreviewKeyDown += new KeyEventHandler(OnThisKeyDown);
 
             ShellView = shellView;
@@ -413,6 +415,11 @@ namespace Tobi.Common.UI
             get;
             set;
         }
+        public bool EnableEnterKeyDefault
+        {
+            get;
+            set;
+        }
 
         protected override void OnKeyUp(KeyEventArgs e)
         {
@@ -581,42 +588,42 @@ namespace Tobi.Common.UI
         {
             get
             {
-                return DefaultDialogButton == DialogButton.Close;
+                return EnableEnterKeyDefault && DefaultDialogButton == DialogButton.Close;
             }
         }
         public bool IsButtonDefault_Apply
         {
             get
             {
-                return DefaultDialogButton == DialogButton.Apply;
+                return EnableEnterKeyDefault && DefaultDialogButton == DialogButton.Apply;
             }
         }
         public bool IsButtonDefault_Ok
         {
             get
             {
-                return DefaultDialogButton == DialogButton.Ok;
+                return EnableEnterKeyDefault && DefaultDialogButton == DialogButton.Ok;
             }
         }
         public bool IsButtonDefault_Cancel
         {
             get
             {
-                return DefaultDialogButton == DialogButton.Cancel;
+                return EnableEnterKeyDefault && DefaultDialogButton == DialogButton.Cancel;
             }
         }
         public bool IsButtonDefault_Yes
         {
             get
             {
-                return DefaultDialogButton == DialogButton.Yes;
+                return EnableEnterKeyDefault && DefaultDialogButton == DialogButton.Yes;
             }
         }
         public bool IsButtonDefault_No
         {
             get
             {
-                return DefaultDialogButton == DialogButton.No;
+                return EnableEnterKeyDefault && DefaultDialogButton == DialogButton.No;
             }
         }
 

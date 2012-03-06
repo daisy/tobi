@@ -254,7 +254,7 @@ namespace Tobi.Plugin.Descriptions
                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc),
                                                   this,
                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                  PopupModalWindow.DialogButton.ESC,
+                                                  PopupModalWindow.DialogButton.Cancel,
                                                   true, 800, 500, null, 0);
             //this.OwnerWindow = windowPopup; DONE in ON PANEL LOADED EVENT
 
@@ -1324,7 +1324,7 @@ namespace Tobi.Plugin.Descriptions
                                                   UserInterfaceStrings.EscapeMnemonic("(audio) " + Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc),
                                                   audioView,
                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                  PopupModalWindow.DialogButton.ESC,
+                                                  PopupModalWindow.DialogButton.Cancel,
                                                   true, 850, 320, null, 0);
 
             windowPopup.IgnoreEscape = true;
