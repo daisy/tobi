@@ -17,6 +17,12 @@
     <Setting Name="Keyboard_EditPhraseText" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] F2</Value>
     </Setting>
+    <Setting Name="Keyboard_FollowLink" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] L</Value>
+    </Setting>
+    <Setting Name="Keyboard_UnfollowLink" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] L</Value>
+    </Setting>
     <Setting Name="Keyboard_StructureSelectUp" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] OemComma (,)</Value>
     </Setting>

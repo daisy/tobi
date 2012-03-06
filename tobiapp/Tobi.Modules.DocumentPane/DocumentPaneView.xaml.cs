@@ -802,6 +802,9 @@ namespace Tobi.Plugin.DocumentPane
 
         public RichDelegateCommand CommandEditText { get; private set; }
 
+        public RichDelegateCommand CommandFollowLink { get; private set; }
+        public RichDelegateCommand CommandUnFollowLink { get; private set; }
+
         public RichDelegateCommand CommandStructureUp { get; private set; }
         public RichDelegateCommand CommandStructureDown { get; private set; }
 
@@ -948,6 +951,140 @@ namespace Tobi.Plugin.DocumentPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructureSelectDown));
 
             m_ShellView.RegisterRichCommand(CommandStructureDown);
+
+            //
+            CommandFollowLink = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdFollowLink_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdFollowLink_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadGnomeNeuIcon("Neu_emblem-symbolic-link"),
+                () =>
+                {
+                    TextElement hyperlink = m_lastHighlightedSub ?? m_lastHighlighted;
+                    do
+                    {
+                        if (hyperlink is Hyperlink && ((Hyperlink)hyperlink).NavigateUri != null
+                            && hyperlink.Tag != null && hyperlink.Tag is TreeNode)
+                        {
+                            NavigateUri(((Hyperlink)hyperlink).NavigateUri);
+                            return;
+                        }
+                        hyperlink = hyperlink.Parent as TextElement;
+                    } while (hyperlink != null);
+
+                    AudioCues.PlayAsterisk();
+                },
+                () =>
+                {
+                    TextElement textElement = m_lastHighlightedSub ?? m_lastHighlighted;
+                    return textElement != null;
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_FollowLink));
+
+            m_ShellView.RegisterRichCommand(CommandFollowLink);
+
+            //
+            //
+            CommandUnFollowLink = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdUnfollowLink_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdUnfollowLink_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadGnomeNeuIcon("Neu_edit-undo"),
+                () =>
+                {
+
+                    if (m_UrakawaSession.DocumentProject == null) return;
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode treeNode_ = selection.Item2 ?? selection.Item1;
+                    if (treeNode_ == null)
+                    {
+                        AudioCues.PlayAsterisk(); 
+                        return;
+                    }
+
+                    TreeNode treeNode = ensureTreeNodeIsNoteAnnotation(treeNode_);
+                    if (treeNode == null)
+                    {
+                        AudioCues.PlayAsterisk();
+                        return;
+                    }
+
+                    string uid = treeNode.GetXmlElementId();
+                    if (string.IsNullOrEmpty(uid))
+                    {
+                        AudioCues.PlayAsterisk();
+                        return;
+                    }
+
+                    //string id = XukToFlowDocument.IdToName(uid);
+
+                    TextElement textElement = null;
+
+                    TextElement te;
+                    m_idLinkTargets.TryGetValue(uid, out te);
+
+                    if (te != null) //m_idLinkTargets.ContainsKey(uid))
+                    {
+                        textElement = te; // m_idLinkTargets[uid];
+                    }
+                    //            if (textElement == null)
+                    //            {
+                    //#if DEBUG
+                    //                Debugger.Break();
+                    //#endif //DEBUG
+                    //                textElement = TheFlowDocument.FindName(uid) as TextElement;
+                    //            }
+                    if (textElement != null)
+                    {
+                        if (textElement.Tag is TreeNode)
+                        {
+                            DebugFix.Assert(treeNode == (TreeNode)textElement.Tag);
+                        }
+                    }
+
+                    List<TextElement> lte;
+                    m_idLinkSources.TryGetValue(uid, out lte);
+
+                    if (lte != null) //m_idLinkSources.ContainsKey(uid))
+                    {
+                        var list = lte; // m_idLinkSources[uid];
+#if DEBUG
+                        if (list.Count > 1) Debugger.Break();
+#endif //DEBUG
+                        textElement = list[0];//TODO: popup list of choices when several reference sources
+                    }
+                    if (textElement != null)
+                    {
+                        if (textElement.Tag is TreeNode)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
+                            return;
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif //DEBUG
+                            Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
+
+                        }
+                    }
+
+                    AudioCues.PlayAsterisk();
+                },
+                () =>
+                {
+                    TextElement textElement = m_lastHighlightedSub ?? m_lastHighlighted;
+                    return textElement != null;
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_UnfollowLink));
+
+            m_ShellView.RegisterRichCommand(CommandUnFollowLink);
+
+            //
             //
             CommandEditText = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdEditText_ShortDesc,
@@ -1496,7 +1633,7 @@ namespace Tobi.Plugin.DocumentPane
                     if (mouseDownTextElement == null) return;
 
                     IInputElement el = Mouse.DirectlyOver;
-                    if (el is ContextMenu)
+                    if (el == null || el is ContextMenu)
                     {
                         el = Mouse.Captured;
                     }
@@ -1549,35 +1686,24 @@ namespace Tobi.Plugin.DocumentPane
                             }
                             else if (isControlKeyDown())
                             {
-                                TextElement hyperlink = textElement;
-                                do
-                                {
-                                    if (hyperlink is Hyperlink &&
-                                        ((Hyperlink)hyperlink).NavigateUri != null
-                                        && hyperlink.Tag != null && hyperlink.Tag is TreeNode)
-                                    {
-                                        NavigateUri(((Hyperlink)hyperlink).NavigateUri);
-                                        return;
-                                    }
-                                    hyperlink = hyperlink.Parent as TextElement;
-                                } while (hyperlink != null);
+                                CommandFollowLink.Execute();
 
-                                // Fallback:
-                                Dispatcher.BeginInvoke(DispatcherPriority.Background,
-(Action)(() =>
-{
-    if (
-        FlowDocReader.
-            Selection !=
-        null)
-        FlowDocReader.
-            Selection.Select
-            (textElement.
-                    ContentStart,
-                textElement.
-                    ContentEnd);
-})
-                                    );
+                                //                                // Fallback:
+                                //                                Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                                //(Action)(() =>
+                                //{
+                                //    if (
+                                //        FlowDocReader.
+                                //            Selection !=
+                                //        null)
+                                //        FlowDocReader.
+                                //            Selection.Select
+                                //            (textElement.
+                                //                    ContentStart,
+                                //                textElement.
+                                //                    ContentEnd);
+                                //})
+                                //                                    );
                             }
                             else
                             {
@@ -1663,69 +1789,8 @@ namespace Tobi.Plugin.DocumentPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object>)OnEscape, obj);
                 return;
             }
-            if (m_UrakawaSession.DocumentProject == null) return;
 
-            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-            TreeNode treeNode_ = selection.Item2 ?? selection.Item1;
-            if (treeNode_ == null) return;
-
-            TreeNode treeNode = ensureTreeNodeIsNoteAnnotation(treeNode_);
-            if (treeNode == null) return;
-
-            string uid = treeNode.GetXmlElementId();
-            if (string.IsNullOrEmpty(uid)) return;
-
-            //string id = XukToFlowDocument.IdToName(uid);
-
-            TextElement textElement = null;
-
-            TextElement te;
-            m_idLinkTargets.TryGetValue(uid, out te);
-
-            if (te != null) //m_idLinkTargets.ContainsKey(uid))
-            {
-                textElement = te; // m_idLinkTargets[uid];
-            }
-            //            if (textElement == null)
-            //            {
-            //#if DEBUG
-            //                Debugger.Break();
-            //#endif //DEBUG
-            //                textElement = TheFlowDocument.FindName(uid) as TextElement;
-            //            }
-            if (textElement != null)
-            {
-                if (textElement.Tag is TreeNode)
-                {
-                    DebugFix.Assert(treeNode == (TreeNode)textElement.Tag);
-                }
-            }
-
-            List<TextElement> lte;
-            m_idLinkSources.TryGetValue(uid, out lte);
-
-            if (lte != null) //m_idLinkSources.ContainsKey(uid))
-            {
-                var list = lte; // m_idLinkSources[uid];
-#if DEBUG
-                if (list.Count > 1) Debugger.Break();
-#endif //DEBUG
-                textElement = list[0];//TODO: popup list of choices when several reference sources
-            }
-            if (textElement != null)
-            {
-                if (textElement.Tag is TreeNode)
-                {
-                    m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
-                }
-                else
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif //DEBUG
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
-                }
-            }
+            CommandUnFollowLink.Execute();
         }
 
 

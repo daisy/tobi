@@ -85,6 +85,30 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] L")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_FollowLink {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_FollowLink"]));
+            }
+            set {
+                this["Keyboard_FollowLink"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] L")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_UnfollowLink {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_UnfollowLink"]));
+            }
+            set {
+                this["Keyboard_UnfollowLink"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] OemComma (,)")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_StructureSelectUp {
             get {

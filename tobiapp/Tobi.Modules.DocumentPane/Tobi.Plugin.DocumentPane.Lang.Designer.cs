@@ -115,6 +115,24 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Follow the hyperlink in the document.
+        /// </summary>
+        public static string CmdFollowLink_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdFollowLink_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Follow link.
+        /// </summary>
+        public static string CmdFollowLink_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdFollowLink_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contract the selection down one level in the document structure.
         /// </summary>
         public static string CmdStructureDown_LongDesc {
@@ -192,6 +210,24 @@ namespace Tobi.Plugin.DocumentPane {
         public static string CmdTxtFocus_ShortDesc {
             get {
                 return ResourceManager.GetString("CmdTxtFocus_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jump back to the hyperlink that points to the current location in the document.
+        /// </summary>
+        public static string CmdUnfollowLink_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdUnfollowLink_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go back to link.
+        /// </summary>
+        public static string CmdUnfollowLink_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdUnfollowLink_ShortDesc", resourceCulture);
             }
         }
         
