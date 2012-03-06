@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Reflection;
 using System.Diagnostics;
+using Tobi.Common.UI.XAML;
 
 
 namespace Tobi.Common.UI
@@ -57,6 +60,9 @@ namespace Tobi.Common.UI
             Color newColor = (Color)args.NewValue;
             Color oldColor = (Color)args.OldValue;
 
+
+            //OnColorChanged(oldColor, newColor);
+
             if (newColor == oldColor)
                 return;
 
@@ -66,21 +72,25 @@ namespace Tobi.Common.UI
             {
                 //cp.ColorList1.AutomationPropertiesName = selectedColorViewModel.Name;
             }
-            
+
             if (selectedColorViewModel == null || !selectedColorViewModel.Color.Equals(newColor))
             {
                 // Add the color if not found
                 ColorViewModel cvm = cp.ListContains(newColor);
                 if (cvm == null)
                 {
-                    cvm = cp.AddColor(newColor, newColor.ToString());
+                    cvm = AddColor(newColor, newColor.ToString());
+                    //cp.ColorList1.Items.Add(cvm);
+                    cp.ColorList1.Items.Refresh();
+                    cp.ColorList1.SelectedIndex = cp.ColorList1.Items.Count - 1;
                 }
                 //cp.ColorList1.AutomationPropertiesName = cvm.Name;
             }
 
             // Also update the brush
-            cp.SelectedBrush = new SolidColorBrush(newColor);
-            cp.OnColorChanged(oldColor, newColor);
+            // cp.SelectedBrush = ColorBrushCache.Get(newColor);
+
+            cp.SelectedColor = newColor;
         }
 
         private ColorViewModel ListContains(Color color)
@@ -94,65 +104,60 @@ namespace Tobi.Common.UI
             return null;
         }
 
-        public Brush SelectedBrush
-        {
-            get { return (Brush)GetValue(SelectedBrushProperty); }
-            set { SetValue(SelectedBrushProperty, value); }
-        }
+        //public Brush SelectedBrush
+        //{
+        //    get { return (Brush)GetValue(SelectedBrushProperty); }
+        //    set { SetValue(SelectedBrushProperty, value); }
+        //}
 
-        // Using a DependencyProperty as the backing store for SelectedBrush.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedBrushProperty =
-            DependencyProperty.Register("SelectedBrush", typeof(Brush), typeof(ComboBoxColor),
-                                        new FrameworkPropertyMetadata(OnSelectedBrushChanged));
+        //// Using a DependencyProperty as the backing store for SelectedBrush.  This enables animation, styling, binding, etc...
+        //public static readonly DependencyProperty SelectedBrushProperty =
+        //    DependencyProperty.Register("SelectedBrush", typeof(Brush), typeof(ComboBoxColor),
+        //                                new FrameworkPropertyMetadata(OnSelectedBrushChanged));
 
-        private static void OnSelectedBrushChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
-        {
-            // Debug.WriteLine("OnSelectedBrushChanged");
-            ComboBoxColor cp = (ComboBoxColor)obj;
-            SolidColorBrush newBrush = (SolidColorBrush)args.NewValue;
-            // SolidColorBrush oldBrush = (SolidColorBrush)args.OldValue;
+        //private static void OnSelectedBrushChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+        //{
+        //    // Debug.WriteLine("OnSelectedBrushChanged");
+        //    ComboBoxColor cp = (ComboBoxColor)obj;
+        //    SolidColorBrush newBrush = (SolidColorBrush)args.NewValue;
+        //    // SolidColorBrush oldBrush = (SolidColorBrush)args.OldValue;
 
-            if (cp.SelectedColor != newBrush.Color)
-                cp.SelectedColor = newBrush.Color;
-        }
+        //    if (cp.SelectedColor != newBrush.Color)
+        //        cp.SelectedColor = newBrush.Color;
+        //}
         #endregion
 
-        #region Events
-        public static readonly RoutedEvent ColorChangedEvent =
-            EventManager.RegisterRoutedEvent("ColorChanged", RoutingStrategy.Bubble,
-                                             typeof(RoutedPropertyChangedEventHandler<Color>), typeof(ComboBoxColor));
+        //#region Events
+        //public static readonly RoutedEvent ColorChangedEvent =
+        //    EventManager.RegisterRoutedEvent("ColorChanged", RoutingStrategy.Bubble,
+        //                                     typeof(RoutedPropertyChangedEventHandler<Color>), typeof(ComboBoxColor));
 
-        public event RoutedPropertyChangedEventHandler<Color> ColorChanged
-        {
-            add { AddHandler(ColorChangedEvent, value); }
-            remove { RemoveHandler(ColorChangedEvent, value); }
-        }
+        //public event RoutedPropertyChangedEventHandler<Color> ColorChanged
+        //{
+        //    add { AddHandler(ColorChangedEvent, value); }
+        //    remove { RemoveHandler(ColorChangedEvent, value); }
+        //}
 
-        protected virtual void OnColorChanged(Color oldValue, Color newValue)
-        {
-            RoutedPropertyChangedEventArgs<Color> args = new RoutedPropertyChangedEventArgs<Color>(oldValue, newValue);
-            args.RoutedEvent = ComboBoxColor.ColorChangedEvent;
-            RaiseEvent(args);
-        }
-        #endregion
+        //protected virtual void OnColorChanged(Color oldValue, Color newValue)
+        //{
+        //    RoutedPropertyChangedEventArgs<Color> args = new RoutedPropertyChangedEventArgs<Color>(oldValue, newValue);
+        //    args.RoutedEvent = ComboBoxColor.ColorChangedEvent;
+        //    RaiseEvent(args);
+        //}
+        //#endregion
 
-        static Brush _CheckerBrush = CreateCheckerBrush();
+        private static Brush _CheckerBrush = CreateCheckerBrush();
         public static Brush CheckerBrush { get { return _CheckerBrush; } }
-        // Todo: should this be disposed somewhere?
 
-        public ComboBoxColor()
+        public IEnumerable ColorModels
         {
-            InitializeComponent();
-
-            InitializeColors();
+            get { return m_colors; }
         }
 
-        public void InitializeColors()
+        private static List<ColorViewModel> m_colors = new List<ColorViewModel>();
+        static ComboBoxColor()
         {
-            ColorList1.Items.Clear();
-
             /*
-            ColorList1.Items.Add(new Separator());
 
             // Add some common colors
             AddColor(Colors.Black, "Black");
@@ -183,19 +188,18 @@ namespace Tobi.Common.UI
             Type colorsType = typeof(System.Windows.Media.Colors);
             PropertyInfo[] pis = colorsType.GetProperties();
             foreach (PropertyInfo pi in pis)
+            {
                 AddColor((Color)pi.GetValue(null, null), pi.Name);
+            }
 
-            // todo: does this work?
-            ColorList1.SelectedValuePath = "Color";
         }
 
-
-        private ColorViewModel AddColor(Color color, string name)
+        private static ColorViewModel AddColor(Color color, string name)
         {
             if (!name.StartsWith("#", StringComparison.Ordinal))
                 name = NiceName(name);
-            ColorViewModel cvm = new ColorViewModel() { Color = color, Name = name };
-            ColorList1.Items.Add(cvm);
+            var cvm = new ColorViewModel(color, name);
+            m_colors.Add(cvm);
 
             return cvm;
         }
@@ -212,6 +216,21 @@ namespace Tobi.Common.UI
             return sb.ToString();
         }
 
+        public ComboBoxColor()
+        {
+            InitializeComponent();
+
+            //ColorList1.Items.Clear();
+            //ColorList1.Items.Add(new Separator());
+            //foreach (var color in m_colors)
+            //{
+            //    ColorList1.Items.Add(color);
+            //}
+
+            //            ColorList1.SelectedValuePath = "Color";
+        }
+
+
         public static Brush CreateCheckerBrush()
         {
             // from http://msdn.microsoft.com/en-us/library/aa970904.aspx
@@ -223,12 +242,14 @@ namespace Tobi.Common.UI
                     Brushes.White,
                     null,
                     new RectangleGeometry(new Rect(0, 0, 8, 8)));
+            backgroundSquare.Freeze();
 
             GeometryGroup aGeometryGroup = new GeometryGroup();
             aGeometryGroup.Children.Add(new RectangleGeometry(new Rect(0, 0, 4, 4)));
             aGeometryGroup.Children.Add(new RectangleGeometry(new Rect(4, 4, 4, 4)));
 
             GeometryDrawing checkers = new GeometryDrawing(Brushes.Black, null, aGeometryGroup);
+            checkers.Freeze();
 
             DrawingGroup checkersDrawingGroup = new DrawingGroup();
             checkersDrawingGroup.Children.Add(backgroundSquare);
@@ -238,6 +259,7 @@ namespace Tobi.Common.UI
             checkerBrush.Viewport = new Rect(0, 0, 0.5, 0.5);
             checkerBrush.TileMode = TileMode.Tile;
 
+            checkerBrush.Freeze();
             return checkerBrush;
         }
 
@@ -245,8 +267,15 @@ namespace Tobi.Common.UI
 
     public class ColorViewModel
     {
-        public Color Color { get; set; }
-        public Brush Brush { get { return new SolidColorBrush(Color); } }
-        public string Name { get; set; }
+        public ColorViewModel(Color color, String name)
+        {
+            Color = color;
+            Name = name;
+            Brush = ColorBrushCache.Get(Color);
+        }
+
+        public Color Color { get; private set; }
+        public Brush Brush { get; private set; }
+        public string Name { get; private set; }
     }
 }

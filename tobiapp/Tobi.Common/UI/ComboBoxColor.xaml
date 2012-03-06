@@ -17,31 +17,34 @@
         <StackPanel.Style>
           <Style TargetType="{x:Type StackPanel}">
             <Setter Property="AutomationProperties.Name"
-                    Value="{Binding Name}"/>
+                    Value="{Binding Name, Mode=OneWay}"/>
           </Style>
         </StackPanel.Style>
         <Grid>
           <!-- Draw a checkboard rectangle first, in case the selected color is transparent -->
-          <Rectangle Fill="{Binding ElementName=ThisColorPicker, Path=CheckerBrush}" Stroke="Black" SnapsToDevicePixels="True" Width="14" Height="14"/>
+          <Rectangle Fill="{Binding ElementName=ThisColorPicker, Path=CheckerBrush, Mode=OneWay}" Stroke="Black" SnapsToDevicePixels="True" Width="14" Height="14"/>
           <!-- The actual color -->
-          <Rectangle Fill="{Binding Path=Brush}" Stroke="Black" SnapsToDevicePixels="True" Width="14" Height="14"/>
+          <Rectangle Fill="{Binding Path=Brush, Mode=OneWay}" Stroke="Black" SnapsToDevicePixels="True" Width="14" Height="14"/>
         </Grid>
         <!-- Name of the color -->
-        <TextBlock Text="{Binding Path=Name}" Margin="4 0 4 0" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding Path=Name, Mode=OneWay}" Margin="4 0 4 0" VerticalAlignment="Center"/>
       </StackPanel>
     </DataTemplate>
   </UserControl.Resources>
   <ComboBox x:Name="ColorList1"
-            SelectedValue="{Binding ElementName=ThisColorPicker, Path=SelectedColor}"
-                                 SelectedValuePath="Name"
+            ItemsSource="{Binding ElementName=ThisColorPicker, Path=ColorModels, Mode=OneWay}"
+            
+            SelectedValue="{Binding ElementName=ThisColorPicker, Path=SelectedColor, Mode=TwoWay}"
+     SelectedValuePath="Color"       
             SnapsToDevicePixels="True">
-
+<!-- 
+            -->
     <ComboBox.Style>
       <Style TargetType="{x:Type ComboBox}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
 
         <Setter Property="AutomationProperties.Name"
-                Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem.Name}"/>
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem.Name, Mode=OneWay}"/>
         <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
       </Style>
     </ComboBox.Style>
@@ -50,8 +53,8 @@
       <Style TargetType="{x:Type ComboBoxItem}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
 
-        <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
-        <Setter Property="ToolTip" Value="{Binding Name}"/>
+        <Setter Property="AutomationProperties.Name" Value="{Binding Name, Mode=OneWay}"/>
+        <Setter Property="ToolTip" Value="{Binding Name, Mode=OneWay}"/>
       </Style>
     </ComboBox.ItemContainerStyle>
 
