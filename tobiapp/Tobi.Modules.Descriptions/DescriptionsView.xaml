@@ -908,6 +908,7 @@ AlternationCount="2"
                           DockPanel.Dock="Bottom"
                   HorizontalAlignment="Stretch">
                 <Button
+                       FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                        Control.TabIndex="2"
                   x:Name="ButtonAddMetadataAltContent"
                   VerticalAlignment="Center"
@@ -917,6 +918,7 @@ AlternationCount="2"
 
                   Click="OnClick_ButtonAddMetadataAltContent"/>
                 <Button
+                       FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                        Control.TabIndex="3"
                   x:Name="ButtonEditMetadataAltContent"
                   VerticalAlignment="Center"
@@ -926,6 +928,7 @@ AlternationCount="2"
 IsEnabled="{Binding HasDescriptionMetadata}"
                   Click="OnClick_ButtonEditMetadataAltContent"/>
                 <Button
+                       FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                        Control.TabIndex="4"
                   x:Name="ButtonRemoveMetadataAltContent"
                   VerticalAlignment="Center"

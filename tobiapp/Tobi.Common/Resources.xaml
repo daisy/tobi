@@ -44,9 +44,9 @@
   Path=UIFocus_Color, Mode=OneWay}"-->
   <ControlTemplate x:Key="MyFocusVisualStyleTemplate" >
     <Rectangle
-      Stroke="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
-      Margin="-0"
-               StrokeThickness="2.2"
+      Stroke="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+      Margin="-2"
+               StrokeThickness="2.3"
                   RadiusX="0" RadiusY="0" StrokeDashArray="2,1"
                        SnapsToDevicePixels="true"
                Opacity="0.5">
