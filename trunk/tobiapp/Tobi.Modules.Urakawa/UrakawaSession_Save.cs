@@ -24,6 +24,61 @@ namespace Tobi.Plugin.Urakawa
         public RichDelegateCommand SaveCommand { get; private set; }
         public RichDelegateCommand SaveAsCommand { get; private set; }
 
+        private bool askUserCleanup()
+        {
+            m_Logger.Log("ShellView.askUserCleanup", Category.Debug, Priority.Medium);
+
+            var label = new TextBlock
+            {
+                Text = UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ShortDesc) + @"?",
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var iconProvider = new ScalableGreyableImageProvider(
+                m_ShellView.LoadTangoIcon("help-browser"),
+                m_ShellView.MagnificationLevel);
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            panel.Children.Add(iconProvider.IconLarge);
+            panel.Children.Add(label);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+            var details = new TextBoxReadOnlyCaretVisible
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_LongDesc
+            };
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ShortDesc) + @"?",
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.YesNo,
+                                                   PopupModalWindow.DialogButton.No,
+                                                   true, 320, 160, details, 40);
+
+            windowPopup.ShowModal();
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private void initCommands_Save()
         {
             //
@@ -41,6 +96,12 @@ namespace Tobi.Plugin.Urakawa
                     }
 
                     m_Logger.Log(@"UrakawaSession.saveAs", Category.Debug, Priority.Medium);
+
+                    bool doCleanup = askUserCleanup();
+                    if (doCleanup)
+                    {
+                        DataCleanup(true);
+                    }
 
                     var dlg = new SaveFileDialog
                     {

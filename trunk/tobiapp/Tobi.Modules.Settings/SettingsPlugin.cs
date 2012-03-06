@@ -131,8 +131,10 @@ namespace Tobi.Plugin.Settings
                                                    UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Settings_Lang.Preferences),
                                                    view,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                   PopupModalWindow.DialogButton.Ok,
+                                                   PopupModalWindow.DialogButton.Cancel,
                                                    true, 800, 500, null, 0);
+            windowPopup.IgnoreEscape = true;
+
             //view.OwnerWindow = windowPopup;
 
             m_SettingsAggregator.SaveAll(); // Not strictly necessary..but just to make double-sure we've got the current settings in persistent storage.
