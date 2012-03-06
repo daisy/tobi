@@ -153,7 +153,7 @@
     <!--Template="{StaticResource FlowDocViewerTemplate}"-->
     <DocumentPane:FlowDocumentScrollViewerEx
      x:Name="FlowDocReader"
-     
+     KeyUp="OnDocKeyUp"
     AllowDrop="True"
     HorizontalScrollBarVisibility="Disabled"
                                           KeyboardNavigation.TabNavigation="Continue"
