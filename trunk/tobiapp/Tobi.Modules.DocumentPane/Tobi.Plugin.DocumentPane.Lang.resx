@@ -153,6 +153,18 @@
   <data name="CmdEditText_LongDesc" xml:space="preserve">
     <value>Modify the text of the selected document phrase</value>
   </data>
+  <data name="CmdFollowLink_ShortDesc" xml:space="preserve">
+    <value>Follow link</value>
+  </data>
+  <data name="CmdFollowLink_LongDesc" xml:space="preserve">
+    <value>Follow the hyperlink in the document</value>
+  </data>
+  <data name="CmdUnfollowLink_ShortDesc" xml:space="preserve">
+    <value>Go back to link</value>
+  </data>
+  <data name="CmdUnfollowLink_LongDesc" xml:space="preserve">
+    <value>Jump back to the hyperlink that points to the current location in the document</value>
+  </data>
   <data name="DocumentPanePlugin_Name" xml:space="preserve">
     <value>Document pane.</value>
   </data>

@@ -27,6 +27,9 @@
 
       <UI:MenuItemRichCommand RichCommand="{Binding CommandEditText}"/>
       <Separator/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandFollowLink}"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandUnFollowLink}"/>
+      
 
     </ContextMenu>
     
