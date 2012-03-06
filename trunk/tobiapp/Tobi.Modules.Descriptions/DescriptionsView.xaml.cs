@@ -515,6 +515,8 @@ namespace Tobi.Plugin.Descriptions
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 300, 160, null, 40);
 
+            windowPopup.EnableEnterKeyDefault = true;
+
             editBoxCombo_Name.Loaded += new RoutedEventHandler((sender, ev) =>
             {
                 var textBox = ComboBoxWithAutomationPeer.GetTextBox(editBoxCombo_Name);
@@ -713,6 +715,7 @@ namespace Tobi.Plugin.Descriptions
                                                          PopupModalWindow.DialogButton.Ok,
                                                          true, 300, 160, null, 0);
                     //view.OwnerWindow = windowPopup;
+
 
                     windowPopup.ShowModal();
                     return;
@@ -1523,6 +1526,8 @@ namespace Tobi.Plugin.Descriptions
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 300, 160, null, 40);
 
+            windowPopup.EnableEnterKeyDefault = true;
+
             editBox.Loaded += new RoutedEventHandler((sender, ev) =>
             {
                 editBox.SelectAll();
@@ -1573,6 +1578,9 @@ namespace Tobi.Plugin.Descriptions
                                                        PopupModalWindow.DialogButtonsSet.OkCancel,
                                                        PopupModalWindow.DialogButton.Ok,
                                                        true, 300, 160, null, 40);
+
+                windowPopup.EnableEnterKeyDefault = true;
+
                 editBox.SetValue(AutomationProperties.NameProperty, dialogTitle);
 
                 editBox.Loaded += new RoutedEventHandler((sender, ev) =>
@@ -1631,6 +1639,8 @@ namespace Tobi.Plugin.Descriptions
                                                        PopupModalWindow.DialogButtonsSet.OkCancel,
                                                        PopupModalWindow.DialogButton.Ok,
                                                        true, 300, 160, null, 40);
+
+                windowPopup.EnableEnterKeyDefault = true;
 
                 editBoxCombo_Name.Loaded += new RoutedEventHandler((sender, ev) =>
                 {
