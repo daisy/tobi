@@ -6,16 +6,21 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using ListViewItem = System.Windows.Controls.ListViewItem;
 
 namespace Tobi.Plugin.Urakawa
 {
@@ -37,19 +42,33 @@ namespace Tobi.Plugin.Urakawa
             m_PropertyChangeHandler.InitializeDependentProperties(this);
         }
 
+        public bool CheckFileExists()
+        {
+            m_FileFound = Uri.IsFile && File.Exists(Uri.LocalPath);
+
+            //m_PropertyChangeHandler.RaisePropertyChanged(() => FileFound);
+            //m_PropertyChangeHandler.RaisePropertyChanged(() => FullDescription);
+
+            return m_FileFound.Value;
+        }
+
+        public void UpdateFileExists()
+        {
+            m_PropertyChangeHandler.RaisePropertyChanged(() => FileFound);
+            m_PropertyChangeHandler.RaisePropertyChanged(() => FullDescription);
+        }
+
         //[NotifyDependsOn("Uri")]
         public string FullDescription
         {
             get
             {
+                string str = Uri.IsFile ? Uri.LocalPath : Uri.ToString();
                 if (!FileFound)
                 {
-                    return "[" + Tobi_Common_Lang.NotFound + "] " + (Uri.IsFile ? Uri.LocalPath : Uri.ToString());
+                    str = "[" + Tobi_Common_Lang.NotFound + "] " + str;
                 }
-                else
-                {
-                    return Uri.LocalPath;
-                }
+                return str;
             }
         }
 
@@ -59,11 +78,7 @@ namespace Tobi.Plugin.Urakawa
         {
             get
             {
-                if (m_FileFound == null)
-                {
-                    m_FileFound = Uri.IsFile && File.Exists(Uri.LocalPath);
-                }
-                return m_FileFound.Value;
+                return m_FileFound == null || m_FileFound.Value;
             }
         }
 
@@ -206,13 +221,61 @@ namespace Tobi.Plugin.Urakawa
             var win = Window.GetWindow(this);
             if (win is PopupModalWindow)
                 OwnerWindow = (PopupModalWindow)win;
+
+            m_interruptFileExistCheck = false;
+
+            foreach (var rf in RecentFiles)
+            {
+                if (m_interruptFileExistCheck) break;
+
+                ThreadPool.QueueUserWorkItem(
+                    delegate(Object o) // or: (foo) => {} (LAMBDA)
+                    {
+                        var recentFile = (RecentFileWrapper)o;
+
+                        //m_Logger.Log("... " + recentFile.Uri, Category.Debug, Priority.High);
+
+                        bool exists = recentFile.CheckFileExists(); // Can be time-consuming, because of network timeout.
+
+                        if (m_interruptFileExistCheck) return;
+
+                        //m_Logger.Log("EXISTS: " + exists, Category.Debug, Priority.High);
+
+                        if (!exists)
+                        {
+                            Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
+                                (DispatcherOperationCallback)delegate(object recFile)
+                                {
+                                    if (m_interruptFileExistCheck) return null;
+
+                                    var rec = (RecentFileWrapper)recFile;
+
+                                    //m_Logger.Log("UPDATE: " + rec.Uri.ToString(), Category.Debug, Priority.High);
+
+                                    rec.UpdateFileExists();
+                                    return null;
+                                }, recentFile);
+                            //Dispatcher.BeginInvoke(
+                            //    DispatcherPriority.Background,
+                            //    (MethodInvoker)(() =>
+                            //                        {
+
+                            //                        })
+                            //    ); // new Action(LAMBDA)
+                        }
+                    }, rf);
+            }
         }
 
         public RichDelegateCommand CmdFindNextGlobal { get; private set; }
         public RichDelegateCommand CmdFindPreviousGlobal { get; private set; }
 
+        private bool m_interruptFileExistCheck = false;
+
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
         {
+            m_interruptFileExistCheck = true;
+
             if (m_GlobalSearchCommand != null)
             {
                 m_GlobalSearchCommand.CmdFindFocus.UnregisterCommand(CommandFindFocus);
