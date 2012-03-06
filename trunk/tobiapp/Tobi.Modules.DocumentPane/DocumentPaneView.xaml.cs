@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Annotations;
 using System.Windows.Annotations.Storage;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -864,9 +865,9 @@ namespace Tobi.Plugin.DocumentPane
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon("edit-select-all"),
                 () =>
-                    {
-                        BringIntoFocus();
-                    },
+                {
+                    BringIntoFocus();
+                },
                 () => true,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Focus_Txt));
@@ -1243,7 +1244,8 @@ namespace Tobi.Plugin.DocumentPane
             TheFlowDocument.MouseLeave += (sender, e) => restoreMouseOverHighlight();
 
             ////// tesing with Got/LostCapture only 
-            ////FlowDocReader.AddHandler(ContentElement.MouseUpEvent, new RoutedEventHandler(OnFlowDocViewerMouseUp), true);
+            FlowDocReader.AddHandler(ContentElement.MouseDownEvent, new RoutedEventHandler(OnFlowDocViewerMouseDown), true);
+            FlowDocReader.AddHandler(ContentElement.MouseUpEvent, new RoutedEventHandler(OnFlowDocViewerMouseUp), true);
 
             FlowDocReader.AddHandler(ContentElement.GotMouseCaptureEvent, new RoutedEventHandler(OnFlowDocGotMouseCapture), true);
             FlowDocReader.AddHandler(ContentElement.LostMouseCaptureEvent, new RoutedEventHandler(OnFlowDocLostMouseCapture), true);
@@ -1430,13 +1432,51 @@ namespace Tobi.Plugin.DocumentPane
             return null;
         }
 
+        public void OnFlowDocViewerMouseDown(object sender, RoutedEventArgs e)
+        {
+            if (!(e is MouseButtonEventArgs))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            var ev = e as MouseButtonEventArgs;
+            if (ev.RightButton == MouseButtonState.Pressed
+                //Mouse.RightButton
+                )
+            {
+                OnFlowDocGotMouseCapture(sender, e);
+            }
+        }
+
+        public void OnFlowDocViewerMouseUp(object sender, RoutedEventArgs e)
+        {
+            if (!(e is MouseButtonEventArgs))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
+
+            var ev = e as MouseButtonEventArgs;
+            if (ev.ChangedButton == MouseButton.Right
+                //Mouse.RightButton
+                )
+            {
+                OnFlowDocLostMouseCapture(sender, null);
+            }
+        }
+
         private DependencyObject m_MouseDownTextElement;// TextElement Image, Panel (UIElement)
         private void OnFlowDocGotMouseCapture(object sender, RoutedEventArgs e)
         {
-            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            if (Mouse.LeftButton == MouseButtonState.Pressed
+                || Mouse.RightButton == MouseButtonState.Pressed)
             {
                 var textElement = getFirstAncestorWithTreeNodeTag(Mouse.DirectlyOver);
-
                 if (textElement != null)
                 {
                     m_MouseDownTextElement = textElement;
@@ -1451,82 +1491,120 @@ namespace Tobi.Plugin.DocumentPane
             var mouseDownTextElement = m_MouseDownTextElement;
             m_MouseDownTextElement = null;
 
-            Dispatcher.BeginInvoke(DispatcherPriority.Input, (Action)(() =>
-            {
-                if (mouseDownTextElement == null) return;
-
-                var textElement = getFirstAncestorWithTreeNodeTag(Mouse.DirectlyOver);
-
-                if (textElement == null) return;
-
-                DebugFix.Assert(textElement.Tag != null);
-
-                if (textElement != mouseDownTextElement)
+            var action = (Action)(() =>
                 {
-                    m_TextElementForEdit = null;
-                }
-                else
-                {
-                    var before = (m_lastHighlightedSub ?? m_lastHighlighted);
-                    m_TextElementForEdit = textElement;
-                    if (isAltKeyDown())
+                    if (mouseDownTextElement == null) return;
+
+                    IInputElement el = Mouse.DirectlyOver;
+                    if (el is ContextMenu)
                     {
-                        if (isControlKeyDown())
-                        {
-                            //CommandEditDescription.Execute();
-                        }
-                        else
-                        {
-                            CommandEditText.Execute();
-                        }
+                        el = Mouse.Captured;
+                    }
+
+                    var textElement = getFirstAncestorWithTreeNodeTag(el);
+
+                    if (textElement == null) return;
+
+                    DebugFix.Assert(textElement.Tag != null);
+
+                    if (textElement != mouseDownTextElement)
+                    {
+                        m_TextElementForEdit = null;
                     }
                     else
                     {
-                        CommandManager.InvalidateRequerySuggested();
-                    }
-                    var after = (m_lastHighlightedSub ?? m_lastHighlighted);
-                    if (before != after) return; // selection already performed
-
-                    if (textElement != (m_lastHighlightedSub ?? m_lastHighlighted))
-                    {
-                        m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
-                    }
-
-                    if (m_lastHighlighted != null)
-                    {
-                        textElement = m_lastHighlightedSub ?? m_lastHighlighted;
-
+                        //var before = (m_lastHighlightedSub ?? m_lastHighlighted);
+                        m_TextElementForEdit = textElement;
                         if (isAltKeyDown())
                         {
-                            // See above (we edit before treenode selection, otherwise we may miss innaccessible Runs because of audio higher up in the hierarchy => selection redirection by Urakawa Session)
-                            //CommandEditText.Execute();
-                        }
-                        else if (isControlKeyDown())
-                        {
-                            TextElement hyperlink = textElement;
-                            do
+                            if (isControlKeyDown())
                             {
-                                if (hyperlink is Hyperlink && ((Hyperlink)hyperlink).NavigateUri != null
-                                    && hyperlink.Tag != null && hyperlink.Tag is TreeNode)
-                                {
-                                    NavigateUri(((Hyperlink)hyperlink).NavigateUri);
-                                    return;
-                                }
-                                hyperlink = hyperlink.Parent as TextElement;
-                            } while (hyperlink != null);
+                                //CommandEditDescription.Execute();
+                            }
+                            else
+                            {
+                                CommandEditText.Execute();
+                            }
+                        }
+                        else
+                        {
+                            CommandManager.InvalidateRequerySuggested();
+                        }
+                        //var after = (m_lastHighlightedSub ?? m_lastHighlighted);
+                        //if (before != after) return; // selection already performed
 
-                            // Fallback:
-                            Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                                (Action)(() =>
+                        if (textElement != (m_lastHighlightedSub ?? m_lastHighlighted))
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
+                        }
+
+                        if (m_lastHighlighted != null)
+                        {
+                            textElement = m_lastHighlightedSub ?? m_lastHighlighted;
+
+                            if (isAltKeyDown())
+                            {
+                                // See above (we edit before treenode selection, otherwise we may miss innaccessible Runs because of audio higher up in the hierarchy => selection redirection by Urakawa Session)
+                                //CommandEditText.Execute();
+                            }
+                            else if (isControlKeyDown())
+                            {
+                                TextElement hyperlink = textElement;
+                                do
                                 {
-                                    if (FlowDocReader.Selection != null)
-                                        FlowDocReader.Selection.Select(textElement.ContentStart, textElement.ContentEnd);
-                                })
-                                );
+                                    if (hyperlink is Hyperlink &&
+                                        ((Hyperlink)hyperlink).NavigateUri != null
+                                        && hyperlink.Tag != null && hyperlink.Tag is TreeNode)
+                                    {
+                                        NavigateUri(((Hyperlink)hyperlink).NavigateUri);
+                                        return;
+                                    }
+                                    hyperlink = hyperlink.Parent as TextElement;
+                                } while (hyperlink != null);
+
+                                // Fallback:
+                                Dispatcher.BeginInvoke(DispatcherPriority.Background,
+(Action)(() =>
+{
+    if (
+        FlowDocReader.
+            Selection !=
+        null)
+        FlowDocReader.
+            Selection.Select
+            (textElement.
+                    ContentStart,
+                textElement.
+                    ContentEnd);
+})
+                                    );
+                            }
+                            else
+                            {
+                                //if (Mouse.RightButton == MouseButtonState.Pressed
+                                //    && TheFlowDocument.ContextMenu != null)
+                                //{
+                                //    TheFlowDocument.ContextMenu.PlacementTarget = FlowDocReader;
+                                //    TheFlowDocument.ContextMenu.Placement = PlacementMode.Bottom;
+                                //    var p = Mouse.GetPosition(FlowDocReader);
+                                //    TheFlowDocument.ContextMenu.PlacementRectangle = new Rect(p.X, p.Y, 2, 2);
+                                //    TheFlowDocument.ContextMenu.IsOpen = true;
+                                //}
+                            }
                         }
                     }
-                }
-            }));
+                });
+
+            //action.Invoke();
+
+            if (e == null)
+            {
+                Dispatcher.Invoke(DispatcherPriority.Input, action);
+            }
+            else
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Input, action);
+            }
         }
 
 
@@ -3063,25 +3141,6 @@ namespace Tobi.Plugin.DocumentPane
         //    }
         //}
 
-        //        public void OnFlowDocViewerMouseUp(object sender, RoutedEventArgs e)
-        //        {
-        //            return; // tesing with Got/LostCapture only 
-
-        //            if (!(e is MouseButtonEventArgs))
-        //            {
-        //#if DEBUG
-        //                Debugger.Break();
-        //#endif
-        //                return;
-        //            }
-
-        //            var ev = e as MouseButtonEventArgs;
-        //            var flowDocView = (FlowDocumentScrollViewer)sender;
-        //            if (m_MouseDownTextElement != null)
-        //            {
-        //                OnTextElementMouseUp(m_MouseDownTextElement, ev);
-        //            }
-        //        }
 
         //        public void OnTextElementMouseUp(object sender, RoutedEventArgs e)
         //        {

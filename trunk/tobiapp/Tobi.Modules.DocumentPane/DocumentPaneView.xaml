@@ -8,6 +8,33 @@
           
       >
   <Grid.Resources>
+
+    <ContextMenu x:Key="DocContextMenu">
+      <ContextMenu.Resources>
+        <Style TargetType="{x:Type UI:MenuItemRichCommand}" BasedOn="{StaticResource {x:Type MenuItem}}">
+          <!-- Setter Property="OverridesDefaultStyle" Value="True"/ -->
+          <!-- Setter Property="FontSize" Value="30"/>
+                              <Setter Property="FontWeight" Value="UltraBold"/ -->
+          <Style.Triggers>
+            <!--This trigger is needed, because RelativeSource binding can only succeeds if the current MenuItem is already connected to its visual parent-->
+            <Trigger Property="IsVisible" Value="True">
+              <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+              <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </ContextMenu.Resources>
+
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandEditText}"/>
+      <Separator/>
+
+    </ContextMenu>
+    
+    <!--<Style TargetType="{x:Type Hyperlink}">
+      <Setter Property="ContextMenu" Value="{StaticResource DocContextMenu}">
+      </Setter>
+    </Style>-->
+
     <Style TargetType="{x:Type DocumentPane:FlowDocumentScrollViewerEx}">
       <Style.Resources>
         <ResourceDictionary />
@@ -64,7 +91,7 @@
     Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0"
                             >
 
-    <Border 
+    <Border
              DockPanel.Dock="Top"
              
              BorderThickness="2"
@@ -74,59 +101,59 @@
              Visibility="{Binding Path=IsSearchVisible, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
              LostFocus="OnSearchLostFocus"
              >
-      
-  <DockPanel LastChildFill="True"
-                            VerticalAlignment="Stretch"
-                            HorizontalAlignment="Stretch"
+
+      <DockPanel LastChildFill="True"
+                                VerticalAlignment="Stretch"
+                                HorizontalAlignment="Stretch"
              
-             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                 Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
-    <UI:ButtonRichCommand
-      Control.TabIndex="2"
-      DockPanel.Dock="Right"
-       HorizontalAlignment="Right" VerticalAlignment="Center"
-      UseSmallerIcon="True"
-      RichCommand="{Binding CmdFindNextGlobal}"/>
+        <UI:ButtonRichCommand
+          Control.TabIndex="2"
+          DockPanel.Dock="Right"
+           HorizontalAlignment="Right" VerticalAlignment="Center"
+          UseSmallerIcon="True"
+          RichCommand="{Binding CmdFindNextGlobal}"/>
 
-    <UI:ButtonRichCommand
-      Control.TabIndex="1"
-      DockPanel.Dock="Right"
-       HorizontalAlignment="Right" VerticalAlignment="Center"
-      UseSmallerIcon="True"
-      RichCommand="{Binding CmdFindPreviousGlobal}"/>
+        <UI:ButtonRichCommand
+          Control.TabIndex="1"
+          DockPanel.Dock="Right"
+           HorizontalAlignment="Right" VerticalAlignment="Center"
+          UseSmallerIcon="True"
+          RichCommand="{Binding CmdFindPreviousGlobal}"/>
 
-    <TextBlock
-      Text="{x:Static Common:Tobi_Common_Lang.Find}"
-      DockPanel.Dock="Left"
-                 HorizontalAlignment="Left" VerticalAlignment="Center"
-                 Margin="2,0,2,0"/>
+        <TextBlock
+          Text="{x:Static Common:Tobi_Common_Lang.Find}"
+          DockPanel.Dock="Left"
+                     HorizontalAlignment="Left" VerticalAlignment="Center"
+                     Margin="2,0,2,0"/>
 
-    <UI:TextBoxReadOnlyCaretVisible
+        <UI:TextBoxReadOnlyCaretVisible
       
-        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
         
-      Control.TabIndex="0"
-      x:Name="SearchBox"
-                                     TextChanged="OnSearchTextChanged"
+          Control.TabIndex="0"
+          x:Name="SearchBox"
+                                         TextChanged="OnSearchTextChanged"
 
-UI:WatermarkTextBoxBehavior.EnableWatermark="True"
-UI:WatermarkTextBoxBehavior.Label="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
-UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
+    UI:WatermarkTextBoxBehavior.EnableWatermark="True"
+    UI:WatermarkTextBoxBehavior.Label="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+    UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
                                      
-                                    HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-      KeyUp="OnSearchBoxKeyUp"/>
+                                        HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+          KeyUp="OnSearchBoxKeyUp"/>
 
-  </DockPanel>
+      </DockPanel>
     </Border>
-    
+
     <!--Template="{StaticResource FlowDocViewerTemplate}"-->
     <DocumentPane:FlowDocumentScrollViewerEx
      x:Name="FlowDocReader"
      
     AllowDrop="True"
     HorizontalScrollBarVisibility="Disabled"
-                                          KeyboardNavigation.TabNavigation="Continue"     
+                                          KeyboardNavigation.TabNavigation="Continue"
    Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
               Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
          
@@ -154,7 +181,7 @@ Background="Transparent"
                       >
       <!-- 
      PreviewKeyDown="OnPreviewKeyDown_DocViewer" -->
-      
+
       <!-- FlowDocumentScrollViewer.CommandBindings>
         <CommandBinding Command="Copy" Executed="BuiltinCommandExecuted"/>
         <CommandBinding Command="Cut" Executed="BuiltinCommandExecuted"/>
@@ -162,13 +189,13 @@ Background="Transparent"
         <CommandBinding Command="Print" Executed="BuiltinCommandExecuted"/>
         <CommandBinding Command="SelectAll" Executed="BuiltinCommandExecuted"/>
       </FlowDocumentScrollViewer.CommandBindings -->
-      
+
       <!--
 
 Background="{Binding
       Converter={XAML:ColorToBrushConverter},
       Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"-->
-      
+
 
       <!-- 
 {DynamicResource {x:Static SystemColors.WindowBrushKey}}
@@ -213,11 +240,11 @@ Background="{Binding
 Background="Transparent"
 -->
         <!--ImageSource="pack://application:,,,/Tobi;component/Resources/paper_tile_texture.jpg"-->
-        
-    </FlowDocument>
+
+      </FlowDocument>
 
 
-    <!-- ScrollViewer
+      <!-- ScrollViewer
                 VerticalScrollBarVisibility="Visible"
                 HorizontalScrollBarVisibility="Auto"
                 
@@ -229,7 +256,7 @@ Background="Transparent"
 
 
 
-  </DocumentPane:FlowDocumentScrollViewerEx>
+    </DocumentPane:FlowDocumentScrollViewerEx>
 
   </DockPanel>
 
@@ -311,7 +338,7 @@ Background="{Binding
       Converter={DocumentPane:BackgroundColorToBrushConverter},
       Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
                     >
-      
+
       <!--<FlowDocument.Background>
         <ImageBrush  ImageSource="/paper_tile_texture.jpg"
                      Stretch="Fill" TileMode="tile"/>
@@ -319,7 +346,7 @@ Background="{Binding
 
     </FlowDocument>
 
-                       <!--Converter={XAML:StringToTextAlignmentConverter},-->
+    <!--Converter={XAML:StringToTextAlignmentConverter},-->
 
     <!-- ScrollViewer
                 VerticalScrollBarVisibility="Visible"
