@@ -38,7 +38,13 @@
                     xmlns:local="clr-namespace:Tobi.Plugin.NavigationPane"
                     xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
            xmlns:NavigationPane="clr-namespace:Tobi.Plugin.NavigationPane"
-           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common">
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+           xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+           xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
+           
+           
+           Loaded="OnUILoaded"
+           >
   <!-- DockPanel.Resources>
         <search:SearchTermConverter x:Key="SearchTermConverter" />
     </DockPanel.Resources -->
@@ -78,6 +84,9 @@
                  Margin="2,0,2,0"/>
 
       <UI:TextBoxReadOnlyCaretVisible
+        
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
         KeyUp="OnSearchBoxKeyUp"
       Control.TabIndex="2"
       x:Name="SearchBox"
@@ -177,7 +186,10 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
 
         <Style TargetType="{x:Type ListViewItem}">
           <Style.Setters>
-          <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
+
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
+
+            <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
           <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
           <!-- Setter Property="FontSize" Value="15" / -->
           <Setter Property="FontWeight" Value="Normal" />

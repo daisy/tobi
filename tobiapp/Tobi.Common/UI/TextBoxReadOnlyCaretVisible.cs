@@ -37,6 +37,7 @@ namespace Tobi.Common.UI
             VerticalAlignment = VerticalAlignment.Stretch;
             TextWrapping = TextWrapping.Wrap;
 
+            // EQUIVALENT of DynamicResource in XAML
             //SetResourceReference(Control.BackgroundProperty, SystemColors.ControlLightLightBrushKey);
             SetResourceReference(Control.BorderBrushProperty, SystemColors.ControlDarkBrushKey);
 

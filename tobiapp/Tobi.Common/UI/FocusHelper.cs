@@ -13,6 +13,20 @@ namespace Tobi.Common.UI
 {
     public static class FocusHelper
     {
+        //        this.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
+
+        //        // MoveFocus takes a TraversalRequest as its argument.
+        //TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+
+        //// Gets the element with keyboard focus.
+        //UIElement elementWithFocus = Keyboard.FocusedElement as UIElement; //currentElement = FocusManager.GetFocusedElement(this) as UIElement;
+
+        //// Change keyboard focus.
+        //if (elementWithFocus != null) 
+        //{
+        //    elementWithFocus.MoveFocus(request);
+        //}
+
         public static void Focus(UIElement ui)
         {
             if (ui.Focusable

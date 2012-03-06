@@ -88,6 +88,9 @@
                  Margin="2,0,2,0"/>
 
       <UI:TextBoxReadOnlyCaretVisible
+        
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
         KeyUp="OnSearchBoxKeyUp"
       Control.TabIndex="3"
       x:Name="SearchBox"
@@ -110,7 +113,9 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
                             Converter={XAML:BooleanToVisibilityConverter},
                             Mode=OneWay}">
 
-    <CheckBox  DockPanel.Dock="Right"
+    <CheckBox
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+      DockPanel.Dock="Right"
                VerticalAlignment="Center"
                 IsChecked="{Binding Path=CurrentTreeNodeIsMarked, Mode=TwoWay}"
                 Content="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Marked}"
@@ -121,10 +126,11 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
         Control.TabIndex="2"/>
 
     <TextBlock 
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                Focusable="True"
                VerticalAlignment="Center"
-               TextTrimming="None"
-               FontWeight="UltraBold"
+               TextTrimming="CharacterEllipsis"
+               FontWeight="Bold"
          Padding="4,4,4,4"
                Text="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"
                ToolTip="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"
@@ -217,6 +223,8 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
 
         <Style TargetType="{x:Type ListViewItem}">
 
+          <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
+          
           <Setter Property="ToolTip" Value="{Binding Description}" />
           
           <Setter Property="AutomationProperties.Name" Value="{Binding Description}"/>

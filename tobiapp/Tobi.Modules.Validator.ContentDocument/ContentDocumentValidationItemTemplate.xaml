@@ -8,10 +8,14 @@
     <Setter Property="FontWeight" Value="Bold"/>
     <!-- left, top, right, bottom -->
     <Setter Property="Margin" Value="0,0,0,5"/>
+
+    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
     <Setter Property="TextWrapping" Value="Wrap"/>
   </Style>
 
   <Style TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
+
+    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
     <Setter Property="TextWrapping" Value="Wrap"/>
   </Style>
 
@@ -42,6 +46,7 @@
     <StackPanel Focusable="False">
     <StackPanel Focusable="False" Margin="5">
       <UI:TextBoxReadOnlyCaretVisible Focusable="True"
+          
                                       Style="{StaticResource ContentDocumentHeadingStyle}" 
                                       TextReadOnly="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.MissingDTD}"/>
       <!--
@@ -68,8 +73,11 @@
       <ContentPresenter ContentTemplate="{StaticResource NodeTemplate}"
                           Content="{Binding Target}" />
 
-      <TextBlock>
-        <Hyperlink Click="OnViewLinkClick">
+        <TextBlock
+        >
+        <Hyperlink 
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+          Click="OnViewLinkClick">
           <Run Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ClickToView}"/>
         </Hyperlink>
       </TextBlock>
@@ -119,9 +127,12 @@
                  />
         
       </Border>
-      
-      <TextBlock>
-        <Hyperlink Click="OnViewLinkClick">
+
+        <TextBlock
+        >
+        <Hyperlink 
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+          Click="OnViewLinkClick">
           <Run Text="{x:Static ContentDocument:Tobi_Plugin_Validator_ContentDocument_Lang.ClickToView}"/>
         </Hyperlink>
       </TextBlock>

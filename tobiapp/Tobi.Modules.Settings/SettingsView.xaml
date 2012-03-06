@@ -67,9 +67,13 @@
                    Margin="2,0,2,0"/>
 
       <UI:TextBoxReadOnlyCaretVisible
+        
         KeyUp="OnSearchBoxKeyUp"
       Control.TabIndex="2"
       x:Name="SearchBox"
+        
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
                                      TextChanged="OnSearchTextChanged"
 
 UI:WatermarkTextBoxBehavior.EnableWatermark="True"
@@ -218,6 +222,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 </Trigger>
               </Style.Triggers>
               <Style.Setters>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
                 <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
               </Style.Setters>
             </Style>
@@ -263,6 +269,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 </Trigger>
               </Style.Triggers>
               <Style.Setters>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
                 <Setter Property="AutomationPropertiesName" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
               </Style.Setters>
             </Style>
@@ -314,6 +322,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 </Trigger>
               </Style.Triggers>
               <Style.Setters>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
                 <Setter Property="AutomationPropertiesName" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
               </Style.Setters>
             </Style>
@@ -333,10 +343,18 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
           <CheckBox.Style>
             <Style TargetType="{x:Type CheckBox}">
               <Style.Setters>
+
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
                 <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
               </Style.Setters>
               <Style.Triggers>
                 <DataTrigger Binding="{Binding Value}" Value="True">
+                  <DataTrigger.Setters>
+                    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                    <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+                  </DataTrigger.Setters>
                   <DataTrigger.EnterActions>
                     <BeginStoryboard>
                       <Storyboard>
@@ -387,6 +405,9 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
 
           <ComboBox.Style>
             <Style TargetType="{x:Type ComboBox}">
+
+              <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
               <Setter Property="AutomationProperties.Name"
                       Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem,
                       TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}"/>
@@ -411,6 +432,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
             <Style TargetType="{x:Type ComboBoxItem}">
 
               <Style.Setters>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
                 <!--<Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>-->
@@ -448,6 +471,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
           <ComboBox.Style>
             <Style TargetType="{x:Type ComboBox}">
 
+              <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
               <Setter Property="AutomationProperties.Name"
                       Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem,
                       TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}"/>
@@ -474,6 +499,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
             <Style TargetType="{x:Type ComboBoxItem}">
 
               <Style.Setters>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="VerticalContentAlignment" Value="Center" />
                 <!--<Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>-->
@@ -618,6 +645,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                   IsChecked="{Binding IsChecked, Mode=TwoWay}"
                   IsThreeState="False"
                   Margin="2"
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                    />
             </DataTemplate>
 
@@ -698,13 +726,16 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
         </Style.Resources>-->
 
         <Style.Setters>
-          <Setter Property="FocusVisualStyle">
+
+          <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+          <!--<Setter Property="FocusVisualStyle">
             <Setter.Value>
               <Style TargetType="{x:Type IFrameworkInputElement}">
-                <!--<Style.Resources>
+                --><!--<Style.Resources>
                   <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
                                                 Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-                </Style.Resources>-->
+                </Style.Resources>--><!--
                 <Setter Property="Control.Template">
                   <Setter.Value>
                     <ControlTemplate>
@@ -719,7 +750,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 </Setter>
               </Style>
             </Setter.Value>
-          </Setter>
+          </Setter>-->
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="{x:Type ListViewItem}">

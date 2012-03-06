@@ -71,6 +71,7 @@
                       DockPanel.Dock="Bottom"
               HorizontalAlignment="Stretch">
             <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                    Control.TabIndex="2"
               x:Name="ButtonAddMetadata"
               VerticalAlignment="Center"
@@ -80,6 +81,7 @@
 
               Click="OnClick_ButtonAddMetadata"/>
             <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                    Control.TabIndex="3"
               x:Name="ButtonEditMetadata"
               VerticalAlignment="Center"
@@ -89,6 +91,7 @@
                    IsEnabled="{Binding HasMetadata}"
               Click="OnClick_ButtonEditMetadata"/>
             <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                    Control.TabIndex="4"
               x:Name="ButtonRemoveMetadata"
               VerticalAlignment="Center"
@@ -166,13 +169,16 @@ IsEnabled="{Binding HasMetadata}"
           </Style.Resources>-->
 
                 <Style.Setters>
-<Setter Property="FocusVisualStyle">
+                  
+          <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+          
+<!--<Setter Property="FocusVisualStyle">
             <Setter.Value>
               <Style TargetType="{x:Type IFrameworkInputElement}">
-                <!--<Style.Resources>
+                --><!--<Style.Resources>
                   <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
                                                 Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-                </Style.Resources>-->
+                </Style.Resources>--><!--
                 <Setter Property="Control.Template">
                   <Setter.Value>
                     <ControlTemplate>
@@ -187,7 +193,7 @@ IsEnabled="{Binding HasMetadata}"
                 </Setter>
               </Style>
             </Setter.Value>
-          </Setter>
+          </Setter>-->
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -282,6 +288,7 @@ IsEnabled="{Binding HasMetadata}"
               Margin="0,4,4,0"
                      DockPanel.Dock="Top">Additional metadata attributes:</TextBlock>
             <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                    
               x:Name="ButtonAddMetadataAttr"
               VerticalAlignment="Center"
@@ -291,6 +298,7 @@ IsEnabled="{Binding HasMetadata}"
                     
               Click="OnClick_ButtonAddMetadataAttr"/>
             <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                    
               x:Name="ButtonEditMetadataAttr"
               VerticalAlignment="Center"
@@ -300,6 +308,7 @@ IsEnabled="{Binding HasMetadata}"
                     IsEnabled="{Binding HasMetadataAttrs}"
               Click="OnClick_ButtonEditMetadataAttr"/>
             <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                    
               x:Name="ButtonRemoveMetadataAttr"
               VerticalAlignment="Center"
@@ -378,13 +387,16 @@ AlternationCount="2"
               </Style.Resources>-->
 
               <Style.Setters>
-<Setter Property="FocusVisualStyle">
+
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                <!--<Setter Property="FocusVisualStyle">
             <Setter.Value>
               <Style TargetType="{x:Type IFrameworkInputElement}">
-                <!--<Style.Resources>
+                --><!--<Style.Resources>
                   <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
                                                 Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-                </Style.Resources>-->
+                </Style.Resources>--><!--
                 <Setter Property="Control.Template">
                   <Setter.Value>
                     <ControlTemplate>
@@ -399,7 +411,7 @@ AlternationCount="2"
                 </Setter>
               </Style>
             </Setter.Value>
-          </Setter>
+          </Setter>-->
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -505,6 +517,7 @@ AlternationCount="2"
                       DockPanel.Dock="Bottom"
               HorizontalAlignment="Stretch">
             <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                    Control.TabIndex="2"
               x:Name="ButtonAddDescription"
               VerticalAlignment="Center"
@@ -514,6 +527,7 @@ AlternationCount="2"
                     
               Click="OnClick_ButtonAddDescription"/>
             <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                    Control.TabIndex="4"
               x:Name="ButtonRemoveDescription"
               VerticalAlignment="Center"
@@ -602,7 +616,8 @@ AlternationCount="2"
 
               <Style TargetType="{x:Type ListViewItem}">
                 <Style.Setters>
-
+                  <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
+                  
                   <!-- Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/ -->
                   <Setter Property="UI:ListViewItemBringIntoViewNoFocusWhenSelectedBehavior.IsBroughtIntoViewNoFocusWhenSelected" Value="True" />
 
@@ -678,6 +693,7 @@ AlternationCount="2"
                         DockPanel.Dock="Bottom"
                 HorizontalAlignment="Stretch">
               <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                      Control.TabIndex="2"
                 x:Name="ButtonEditText"
                 VerticalAlignment="Center"
@@ -687,6 +703,7 @@ AlternationCount="2"
                       
                 Click="OnClick_ButtonEditText"/>
               <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                      Control.TabIndex="3"
                 x:Name="ButtonClearText"
                 VerticalAlignment="Center"
@@ -698,6 +715,8 @@ AlternationCount="2"
             </StackPanel>
 
               <UI:TextBoxReadOnlyCaretVisible
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
                        Control.TabIndex="1"
                 x:Name="DescriptionTextBox"
                 TextReadOnly="{Binding ElementName=DescriptionsListView, Path=SelectedItem, Mode=OneWay, Converter={Descriptions:AlternateContentToTextConverter}}"
@@ -729,6 +748,7 @@ AlternationCount="2"
                           DockPanel.Dock="Bottom"
                   HorizontalAlignment="Stretch">
                 <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                        Control.TabIndex="2"
                   x:Name="ButtonOpenImage"
                   VerticalAlignment="Center"
@@ -738,6 +758,7 @@ AlternationCount="2"
                         
                   Click="OnClick_ButtonOpenImage"/>
                 <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                        Control.TabIndex="3"
                   x:Name="ButtonClearImage"
                   VerticalAlignment="Center"
@@ -794,6 +815,7 @@ AlternationCount="2"
                           DockPanel.Dock="Bottom"
                   HorizontalAlignment="Stretch">
                 <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                        Control.TabIndex="3"
                   x:Name="ButtonAddEditAudio"
                   VerticalAlignment="Center"
@@ -803,6 +825,7 @@ AlternationCount="2"
                         
                   Click="OnClick_ButtonAddEditAudio"/>
                 <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                        Control.TabIndex="4"
                   x:Name="ButtonClearAudio"
                   VerticalAlignment="Center"
@@ -838,6 +861,7 @@ AlternationCount="2"
                 Orientation="Horizontal"          >
 
                 <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                        Control.TabIndex="1"
                   x:Name="ButtonAudioPlayPause"
                         
@@ -977,13 +1001,16 @@ IsEnabled="{Binding HasDescriptionMetadata}"
           </Style.Resources>-->
 
                     <Style.Setters>
-<Setter Property="FocusVisualStyle">
+
+                      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                      <!--<Setter Property="FocusVisualStyle">
             <Setter.Value>
               <Style TargetType="{x:Type IFrameworkInputElement}">
-                <!--<Style.Resources>
+                --><!--<Style.Resources>
                   <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
                                                 Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-                </Style.Resources>-->
+                </Style.Resources>--><!--
                 <Setter Property="Control.Template">
                   <Setter.Value>
                     <ControlTemplate>
@@ -998,7 +1025,7 @@ IsEnabled="{Binding HasDescriptionMetadata}"
                 </Setter>
               </Style>
             </Setter.Value>
-          </Setter>
+          </Setter>-->
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="{x:Type ListViewItem}">

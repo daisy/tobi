@@ -26,6 +26,7 @@ namespace Tobi.Common.UI
 
         public ComboBoxWithAutomationPeer()
         {
+            // EQUIVALENT of DynamicResource in XAML
             SetResourceReference(Control.BorderBrushProperty, SystemColors.ControlDarkBrushKey);
         }
 
@@ -35,8 +36,13 @@ namespace Tobi.Common.UI
             return textBox;
         }
 
+        public static TextBox GetTextBox(ComboBox combobox)
+        {
+            var textBox = FindChild(combobox, "PART_EditableTextBox", typeof(TextBox)) as TextBox;
+            return textBox;
+        }
 
-        public static DependencyObject FindChild(DependencyObject reference, string childName, Type childType)
+        private static DependencyObject FindChild(DependencyObject reference, string childName, Type childType)
         {
             DependencyObject foundChild = null;
             if (reference != null)

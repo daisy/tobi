@@ -38,6 +38,8 @@
 
     <ComboBox.Style>
       <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
         <Setter Property="AutomationProperties.Name"
                 Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem.Name}"/>
         <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
@@ -46,6 +48,8 @@
 
     <ComboBox.ItemContainerStyle>
       <Style TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
         <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
         <Setter Property="ToolTip" Value="{Binding Name}"/>
       </Style>

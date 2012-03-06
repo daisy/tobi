@@ -14,6 +14,9 @@
     <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS"/>
 
     <Style TargetType="{x:Type TextBlock}">
+
+      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
       <Setter Property="Focusable" Value="True"/>
     </Style>
     
@@ -35,6 +38,9 @@
 
         <ComboBox.Style>
           <Style TargetType="{x:Type ComboBox}">
+
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
             <Setter Property="AutomationProperties.Name"
                     Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem,
                     TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}"/>
@@ -54,6 +60,9 @@
           <Style TargetType="{x:Type ComboBoxItem}">
 
             <Style.Setters>
+
+              <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
               <Setter Property="HorizontalContentAlignment" Value="Stretch" />
               <Setter Property="VerticalContentAlignment" Value="Center" />
               <!--<Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>-->
@@ -157,6 +166,9 @@
 
     <ListView.Style>
     <Style TargetType="{x:Type ListView}">
+
+      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
       <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
     </Style>
       </ListView.Style>
@@ -169,13 +181,17 @@
         </Style.Resources>-->
 
         <Style.Setters>
-          <Setter Property="FocusVisualStyle">
+
+          <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+          
+          <!--<Setter Property="FocusVisualStyle">
             <Setter.Value>
               <Style TargetType="{x:Type IFrameworkInputElement}">
-                <!--<Style.Resources>
+                --><!--<Style.Resources>
                   <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
                                                 Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-                </Style.Resources>-->
+                </Style.Resources>--><!--
                 <Setter Property="Control.Template">
                   <Setter.Value>
                     <ControlTemplate>
@@ -190,7 +206,7 @@
                 </Setter>
               </Style>
             </Setter.Value>
-          </Setter>
+          </Setter>-->
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -289,6 +305,9 @@
           <GridViewColumn.CellTemplate>
             <DataTemplate>
               <UI:TextBoxReadOnlyCaretVisible x:Name="contentText"
+                                              
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
                        Text="{Binding 
                          Mode=TwoWay, 
                          Path=Content, 
