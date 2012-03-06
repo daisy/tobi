@@ -1790,7 +1790,6 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            CommandUnFollowLink.Execute();
         }
 
 
@@ -3794,6 +3793,16 @@ namespace Tobi.Plugin.DocumentPane
             {
                 Settings.Default.Document_ButtonBarVisible = !Settings.Default.Document_ButtonBarVisible;
                 FocusHelper.FocusBeginInvoke(Settings.Default.Document_ButtonBarVisible ? FocusExpanded : FocusCollapsed);
+            }
+        }
+
+        private void OnDocKeyUp(object sender, KeyEventArgs e)
+        {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            if (key == Key.Escape)
+            {
+                CommandUnFollowLink.Execute();
             }
         }
 
