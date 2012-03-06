@@ -985,7 +985,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <Separator/>
     <!--ToolTip="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.CmdAudioAutoPlay_LongDesc}"-->
-    <CheckBox Control.IsTabStop="true"
+    <CheckBox
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+      Control.IsTabStop="true"
                 IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"
                 Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.AudioAutoPlay}"
                 IsThreeState="False"

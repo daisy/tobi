@@ -50,6 +50,28 @@ namespace Tobi.Common.UI
         //    }
         //}
 
+        static ButtonRichCommand()
+        {
+            //FocusVisualStyleProperty.OverrideMetadata(
+            //    typeof(ButtonRichCommand),
+            //    new FrameworkPropertyMetadata(
+            //        Application.Current.Resources["MyFocusVisualStyle"]));
+
+
+            //FocusVisualStyleProperty.OverrideMetadata(
+            //    typeof(ButtonRichCommand),
+            //    new FrameworkPropertyMetadata(
+            //        null,
+            //        FrameworkPropertyMetadataOptions.None,
+            //        null,
+            //        (DependencyObject d, object baseValue) => null));
+
+            //FocusVisualStyleProperty.OverrideMetadata(
+            //    typeof(ContentControl),
+            //    new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
+
+        }
+
         public ButtonRichCommand()
         {
             //IsEnabledChanged += new DependencyPropertyChangedEventHandler(OnIsEnabledChanged);

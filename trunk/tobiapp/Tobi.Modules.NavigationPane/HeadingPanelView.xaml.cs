@@ -207,5 +207,15 @@ namespace Tobi.Plugin.NavigationPane
                 m_ViewModel.IsSearchVisible = false;
             }
         }
+
+
+        private void OnUILoaded(object sender, RoutedEventArgs e)
+        {
+            var item = FocusableItem;
+            if (item != null)
+            {
+                FocusHelper.FocusBeginInvoke(item);
+            }
+        }
     }
 }

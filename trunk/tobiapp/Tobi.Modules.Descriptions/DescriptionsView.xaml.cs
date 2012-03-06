@@ -412,8 +412,10 @@ namespace Tobi.Plugin.Descriptions
             //    TextWrapping = TextWrapping.WrapWithOverflow
             //};
 
-            var editBoxCombo_Name = new ComboBoxWithAutomationPeer
+            var editBoxCombo_Name = new ComboBox //WithAutomationPeer
             {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+        
                 Text = metadataAttr.Name,
                 IsEditable = true,
                 IsTextSearchEnabled = true,
@@ -515,9 +517,12 @@ namespace Tobi.Plugin.Descriptions
 
             editBoxCombo_Name.Loaded += new RoutedEventHandler((sender, ev) =>
             {
-                var textBox = editBoxCombo_Name.GetTextBox();
+                var textBox = ComboBoxWithAutomationPeer.GetTextBox(editBoxCombo_Name);
                 if (textBox != null)
+                {
+                    textBox.FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"];
                     textBox.SelectAll();
+                }
 
                 FocusHelper.FocusBeginInvoke(editBoxCombo_Name);
             });
@@ -532,7 +537,6 @@ namespace Tobi.Plugin.Descriptions
 
             Style style = (Style)Application.Current.Resources[@"WatermarkTextBoxStyle"];
             WatermarkComboBoxBehavior.SetLabelStyle(editBoxCombo_Name, style);
-
 
 
             WatermarkTextBoxBehavior.SetEnableWatermark(editBox_Value, true);
@@ -1503,8 +1507,10 @@ namespace Tobi.Plugin.Descriptions
         {
             m_Logger.Log("showTextEditorPopupDialog", Category.Debug, Priority.Medium);
 
-            var editBox = new TextBox
+            var editBox = new TextBoxReadOnlyCaretVisible
             {
+            FocusVisualStyle = (Style) Application.Current.Resources["MyFocusVisualStyle"],
+        
                 Text = editedText,
                 TextWrapping = TextWrapping.WrapWithOverflow,
                 AcceptsReturn = true
@@ -1547,6 +1553,8 @@ namespace Tobi.Plugin.Descriptions
             {
                 var editBox = new TextBoxReadOnlyCaretVisible
                 {
+            FocusVisualStyle = (Style) Application.Current.Resources["MyFocusVisualStyle"],
+        
                     //Watermark = TEXTFIELD_WATERMARK,
                     Text = editedText,
                     TextWrapping = TextWrapping.NoWrap,
@@ -1597,8 +1605,10 @@ namespace Tobi.Plugin.Descriptions
             }
             else
             {
-                var editBoxCombo_Name = new ComboBoxWithAutomationPeer
+                var editBoxCombo_Name = new ComboBox //WithAutomationPeer
                 {
+                    FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+        
                     Text = editedText,
                     IsEditable = true,
                     IsTextSearchEnabled = true,
@@ -1624,9 +1634,12 @@ namespace Tobi.Plugin.Descriptions
 
                 editBoxCombo_Name.Loaded += new RoutedEventHandler((sender, ev) =>
                 {
-                    var textBox = editBoxCombo_Name.GetTextBox();
+                    var textBox = ComboBoxWithAutomationPeer.GetTextBox(editBoxCombo_Name);
                     if (textBox != null)
+                    {
+                        textBox.FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"];
                         textBox.SelectAll();
+                    }
 
                     FocusHelper.FocusBeginInvoke(editBoxCombo_Name);
                 });

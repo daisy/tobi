@@ -5,6 +5,7 @@
 
 
   <Style TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
+    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
     <Setter Property="TextWrapping" Value="Wrap"/>
   </Style>
 
@@ -12,6 +13,8 @@
     <Setter Property="FontWeight" Value="Bold"/>
     <!-- left, top, right, bottom -->
     <Setter Property="Margin" Value="0,0,0,5"/>
+
+    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
     <Setter Property="TextWrapping" Value="Wrap"/>
   </Style>
 
@@ -58,8 +61,11 @@
         Margin="0,0,0,5"/>
       <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding}" />
-      <TextBlock>
-        <Hyperlink Click="OnEditLinkClick">
+        <TextBlock
+        >
+        <Hyperlink 
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+          Click="OnEditLinkClick">
           <Run Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToEdit}"/>
         </Hyperlink>
       </TextBlock>
@@ -80,8 +86,11 @@
       </UI:TextBoxReadOnlyCaretVisible>
         <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding}" />
-      <TextBlock>
-        <Hyperlink Click="OnAddLinkClick">
+        <TextBlock
+        >
+        <Hyperlink 
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+          Click="OnAddLinkClick">
           <Run Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToAddAndEdit}"/>
         </Hyperlink>
       </TextBlock>
@@ -108,8 +117,11 @@
       <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding}" />
 
-      <TextBlock>
-        <Hyperlink Click="OnEditLinkClick">
+        <TextBlock
+        >
+        <Hyperlink 
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+          Click="OnEditLinkClick">
           <Run Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToEdit}"/>
         </Hyperlink>
       </TextBlock>

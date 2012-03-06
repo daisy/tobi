@@ -44,6 +44,10 @@
                    Margin="2,0,2,0"/>
 
       <UI:TextBoxReadOnlyCaretVisible
+        
+        
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
         KeyUp="OnSearchBoxKeyUp"
         Control.TabIndex="2"
         x:Name="SearchBox"
@@ -122,6 +126,9 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 <CheckBox.Style>
                   <Style TargetType="{x:Type CheckBox}">
                     <Style.Setters>
+
+                      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
                       <Setter Property="AutomationProperties.Name" Value="{x:Static Common:Tobi_Common_Lang.CheckUnCheckAll}"/>
                     </Style.Setters>
                   </Style>
@@ -187,13 +194,17 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
         </Style.Resources>-->
         
         <Style.Setters>
-          <Setter Property="FocusVisualStyle">
+
+          <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+          
+
+          <!--<Setter Property="FocusVisualStyle">
             <Setter.Value>
               <Style TargetType="{x:Type IFrameworkInputElement}">
-                <!--<Style.Resources>
+                --><!--<Style.Resources>
                   <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
                                                 Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-                </Style.Resources>-->
+                </Style.Resources>--><!--
                 <Setter Property="Control.Template">
                   <Setter.Value>
                     <ControlTemplate>
@@ -208,7 +219,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 </Setter>
               </Style>
             </Setter.Value>
-          </Setter>
+          </Setter>-->
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="{x:Type ListViewItem}">

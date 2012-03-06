@@ -5,6 +5,8 @@
     xmlns:Common="clr-namespace:Tobi.Common.Validation;assembly=Tobi.Common" xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common">
 
   <Style TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
+
+    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
     <Setter Property="TextWrapping" Value="Wrap"/>
     <!--
     binding WORKS, but shouldn't be necessary for UIA...normally TextBlocks "speak" on their own
@@ -16,6 +18,8 @@
     <Setter Property="FontWeight" Value="Bold"/>
     <!-- left, top, right, bottom -->
     <Setter Property="Margin" Value="0,0,0,5"/>
+
+    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
     <Setter Property="TextWrapping" Value="Wrap"/>
   </Style>
   
@@ -52,8 +56,11 @@
           </ContentPresenter.ContentTemplate>
         </ContentPresenter>
 
-        <TextBlock>
-          <Hyperlink Click="OnViewLinkClick">
+        <TextBlock
+          
+        >
+          <Hyperlink Click="OnViewLinkClick"
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}">
             <Run Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.ClickToView}"/>
           </Hyperlink>
         </TextBlock>

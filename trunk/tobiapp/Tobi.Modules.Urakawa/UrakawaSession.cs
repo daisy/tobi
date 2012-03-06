@@ -514,6 +514,9 @@ namespace Tobi.Plugin.Urakawa
 
                 var details = new TextBoxReadOnlyCaretVisible
                     {
+                        
+        FocusVisualStyle=(Style)Application.Current.Resources["MyFocusVisualStyle"],
+        
                         BorderThickness = new Thickness(1),
                         Padding = new Thickness(6),
                         TextReadOnly = Tobi_Plugin_Urakawa_Lang.UnsavedChangesDetails

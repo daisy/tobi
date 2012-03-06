@@ -8,7 +8,10 @@
            xmlns:NavigationPane="clr-namespace:Tobi.Plugin.NavigationPane"
            xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
            xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
-           xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common">
+           xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
+           
+           Loaded="OnUILoaded"
+           >
 
   <Border
            DockPanel.Dock="Top"
@@ -45,8 +48,12 @@
                  HorizontalAlignment="Left" VerticalAlignment="Center"
                  Margin="2,0,2,0"/>
 
-    <UI:TextBoxReadOnlyCaretVisible
-      KeyUp="OnSearchBoxKeyUp"
+      <UI:TextBoxReadOnlyCaretVisible
+      
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+          
+        KeyUp="OnSearchBoxKeyUp"
       Control.TabIndex="2"
       x:Name="SearchBox"
                                      TextChanged="OnSearchTextChanged"
@@ -78,19 +85,21 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
       Focusable="True"
       IsTabStop="True"
       
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+      
       AutomationProperties.Name="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Headings}">
 
       <TreeView.ItemContainerStyle>
         <Style TargetType="{x:Type TreeViewItem}">
 
           <Style.Setters>
-            <Setter Property="FocusVisualStyle">
+            <!--<Setter Property="FocusVisualStyle">
               <Setter.Value>
                 <Style TargetType="{x:Type IFrameworkInputElement}">
-                  <!--<Style.Resources>
+                  --><!--<Style.Resources>
                   <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
                                                 Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
-                </Style.Resources>-->
+                </Style.Resources>--><!--
                   <Setter Property="Control.Template">
                     <Setter.Value>
                       <ControlTemplate>
@@ -105,7 +114,9 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
                   </Setter>
                 </Style>
               </Setter.Value>
-            </Setter>
+            </Setter>-->
+
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
 
             <!-- THIS CODE GENERATES 1 EVENT PER DEPTH OR TREE NODE !!!
           <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_TreeItem" />

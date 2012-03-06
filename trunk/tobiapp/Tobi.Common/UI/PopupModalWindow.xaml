@@ -137,42 +137,48 @@
             
           </StackPanel.Resources>
 
-          <Button x:Name="ButtonOK"
+          <Button FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                  x:Name="ButtonOK"
                 Click="OnOkButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Ok}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Ok}"
                 Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Ok, Converter={XAML:BooleanToVisibilityConverter}}"
                 Content="{x:Static Common:Tobi_Common_Lang.Ok}"/>
         
-        <Button x:Name="ButtonYes"
+        <Button FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                x:Name="ButtonYes"
                 Click="OnYesButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Yes}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Yes}"
                 Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Yes, Converter={XAML:BooleanToVisibilityConverter}}"
                 Content="{x:Static Common:Tobi_Common_Lang.Yes}"/>
         
-        <Button x:Name="ButtonNo"
+        <Button FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                x:Name="ButtonNo"
                 Click="OnNoButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_No}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_No}"
                 Visibility="{Binding Mode=OneWay, Path=IsButtonActive_No, Converter={XAML:BooleanToVisibilityConverter}}"
                 Content="{x:Static Common:Tobi_Common_Lang.No}"/>
         
-        <Button x:Name="ButtonApply"
+        <Button FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                x:Name="ButtonApply"
                 Click="OnApplyButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Apply}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Apply}"
                 Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Apply, Converter={XAML:BooleanToVisibilityConverter}}"
                 Content="{x:Static Common:Tobi_Common_Lang.Apply}"/>
 
-          <Button x:Name="ButtonCancel"
+          <Button FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                  x:Name="ButtonCancel"
                   Click="OnCancelButtonClick"
                   IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Cancel}"
                   IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Cancel}"
                   Visibility="{Binding Mode=OneWay, Path=IsButtonActive_Cancel, Converter={XAML:BooleanToVisibilityConverter}}"
                   Content="{x:Static Common:Tobi_Common_Lang.Cancel}"/>
 
-          <Button x:Name="ButtonClose"
+          <Button FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                  x:Name="ButtonClose"
                 Click="OnCloseButtonClick"
                 IsDefault="{Binding Mode=OneWay, Path=IsButtonDefault_Close}"
                 IsEnabled="{Binding Mode=OneWay, Path=IsButtonActive_Close}"

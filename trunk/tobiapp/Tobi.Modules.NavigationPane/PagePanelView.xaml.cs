@@ -210,5 +210,14 @@ namespace Tobi.Plugin.NavigationPane
                 FocusHelper.FocusBeginInvoke(FocusableItem);
             }
         }
+
+        private void OnUILoaded(object sender, RoutedEventArgs e)
+        {
+            var item = FocusableItem;
+            if (item != null)
+            {
+                FocusHelper.FocusBeginInvoke(item);
+            }
+        }
     }
 }

@@ -102,6 +102,9 @@
                  Margin="2,0,2,0"/>
 
     <UI:TextBoxReadOnlyCaretVisible
+      
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
       Control.TabIndex="0"
       x:Name="SearchBox"
                                      TextChanged="OnSearchTextChanged"
@@ -479,6 +482,7 @@ Background="{Binding
                  />
       <!--ToolTip="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.CmdTextOnlyViewToggle_LongDesc}"-->
       <CheckBox
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
         Content="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.TextOnly}"
                 ToolTip="{Binding Source={x:Static DocumentPane:Settings_KeyGestures.Default}, Path=Keyboard_ToggleTextOnly, Mode=OneWay}"
                 Margin="3"
@@ -502,7 +506,9 @@ Background="{Binding
 
       <Separator/>
 
-      <ComboBox x:Name="comboListOfFonts"
+      <ComboBox
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        x:Name="comboListOfFonts"
                  DataContext="{StaticResource familyCollection}"
                 ItemsSource="{Binding}"
                 IsSynchronizedWithCurrentItem="True"
@@ -535,6 +541,7 @@ Background="{Binding
           <Style TargetType="{x:Type ComboBoxItem}">
 
             <Style.Setters>
+              <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
               <Setter Property="HorizontalContentAlignment" Value="Stretch" />
               <Setter Property="VerticalContentAlignment" Value="Center" />
               <Setter Property="AutomationProperties.Name" Value="{Binding Mode=OneWay}"/>

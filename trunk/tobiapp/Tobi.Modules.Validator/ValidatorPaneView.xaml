@@ -23,12 +23,16 @@
               Loaded="Tabs_OnLoaded">
     <TabControl.Resources>
       <Style TargetType="{x:Type TextBlock}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
+
         <Setter Property="TextWrapping" Value="Wrap"/>
       </Style>
     </TabControl.Resources>
 
     <TabControl.ItemContainerStyle>
       <Style TargetType="{x:Type TabItem}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
+
         <Setter Property="AutomationProperties.Name" Value="{Binding Name}"/>
       </Style>
     </TabControl.ItemContainerStyle>
@@ -73,6 +77,8 @@
             <ListBox.ItemContainerStyle>
               <Style TargetType="{x:Type ListBoxItem}">
                 <Style.Setters>
+                  <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
+
                   <Setter Property="AutomationProperties.Name" Value="{Binding Message}"/>
                   <Setter Property="ToolTip" Value="{Binding Message}"/>
                 </Style.Setters>
@@ -122,7 +128,11 @@
             
 
             <TextBlock Margin="5,0,0,0"
-                       Visibility="{Binding  Mode=OneWay, Converter={Validator:VisibilityConverter}}">
+                       Visibility="{Binding  Mode=OneWay, Converter={Validator:VisibilityConverter}}"
+                       
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                       >
               <Hyperlink Click="OnClipboardLinkClick">
                 <Run Text="{x:Static Validator:Tobi_Plugin_Validator_Lang.CopyLink}"/>
               </Hyperlink>
@@ -134,7 +144,10 @@
     </TabControl.ContentTemplate>
   </TabControl>
   
-  <TextBlock Margin="0,3,0,3" Grid.Row="1">
+  <TextBlock Margin="0,3,0,3" Grid.Row="1"
+             
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        >
     <Hyperlink Click="OnClipboardCopyAllLinkClick">
       <Run Text="{x:Static Validator:Tobi_Plugin_Validator_Lang.CopyAllLink}"/>
     </Hyperlink>

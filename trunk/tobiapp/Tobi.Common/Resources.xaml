@@ -4,6 +4,266 @@
     xmlns:UI="clr-namespace:Tobi.Common.UI"
     xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML" xmlns:Common="clr-namespace:Tobi.Common">
 
+  <!-- XAML:WindowStateFullScreenConverter x:Key="WindowStateFullScreenConverter" / -->
+
+  <Style x:Key="WatermarkTextBoxStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="Opacity"
+            Value="0.345" />
+    <Setter Property="Margin"
+            Value="4,2,0,0" />
+  </Style>
+
+  <!--<Storyboard x:Key="startHighlight"  FillBehavior="Stop">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+            To="16"
+            Duration="0:0:0.5" />
+      </Storyboard>
+      <Storyboard x:Key="reverseHighlight"   FillBehavior="Stop">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+            To="8"
+            Duration="0:0:0.2" />
+      </Storyboard>
+      <Storyboard x:Key="GlowOn" FillBehavior="Stop">
+        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
+              Storyboard.TargetProperty="(UIElement.Effect).Opacity">
+          <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+        </DoubleAnimationUsingKeyFrames>
+      </Storyboard>
+      <Storyboard x:Key="GlowOff" FillBehavior="Stop">
+        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
+              Storyboard.TargetProperty="(UIElement.Effect).Opacity">
+          <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+      </Storyboard>-->
+
+
+  <!--Stroke="{Binding Converter={XAML:ColorToBrushConverter},
+  Source={x:Static Common:Settings.Default},
+  Path=UIFocus_Color, Mode=OneWay}"-->
+  <ControlTemplate x:Key="MyFocusVisualStyleTemplate" >
+    <Rectangle
+      Stroke="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+      Margin="-0"
+               StrokeThickness="2.2"
+                  RadiusX="0" RadiusY="0" StrokeDashArray="2,1"
+                       SnapsToDevicePixels="true"
+               Opacity="0.5">
+      <Rectangle.Triggers>
+        <EventTrigger RoutedEvent="Rectangle.Loaded" >
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation
+             To="3" Duration="0:0:1" RepeatBehavior="Forever"
+                       Storyboard.TargetProperty="StrokeDashOffset" />
+            </Storyboard>
+          </BeginStoryboard>
+        </EventTrigger>
+      </Rectangle.Triggers>
+    </Rectangle>
+  </ControlTemplate>
+
+  <!--<Style x:Key="{x:Static SystemParameters.FocusVisualStyleKey}">
+        <Setter Property="Control.Template" Value="{StaticResource MyFocusVisualStyleTemplate}">
+        </Setter>
+      </Style>-->
+
+  <Style x:Key="MyFocusVisualStyle" TargetType="{x:Type Control}">
+    <Style.Setters>
+      <Setter Property="Template" Value="{StaticResource MyFocusVisualStyleTemplate}"/>
+    </Style.Setters>
+  </Style>
+
+  <Style
+    TargetType="{x:Type FrameworkElement}">
+    <Style.Setters>
+      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}">
+      </Setter>
+
+      <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
+      <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+      <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+      <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+
+    </Style.Setters>
+
+
+    <!--<Style.Triggers>
+          <Trigger Property="IsFocused" Value="True">
+            <Setter Property="Effect">
+              <Setter.Value>
+                <DropShadowEffect Color="Red"
+                                  BlurRadius="8"
+                                  ShadowDepth="0" />
+              </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransform">
+              <Setter.Value>
+                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+              </Setter.Value>
+            </Setter>
+          </Trigger>
+          
+          <MultiTrigger>
+            <MultiTrigger.Conditions>
+              <Condition Property="IsMouseOver" Value="True" />
+              <Condition Property="IsFocused" Value="False" />
+            </MultiTrigger.Conditions>
+            
+            <MultiTrigger.EnterActions>
+              <BeginStoryboard
+                    Storyboard="{StaticResource GlowOn}"/>
+            </MultiTrigger.EnterActions>
+
+            <MultiTrigger.ExitActions>
+              <BeginStoryboard
+                    Storyboard="{StaticResource GlowOff}"/>
+            </MultiTrigger.ExitActions>
+
+          </MultiTrigger>
+
+          <EventTrigger RoutedEvent="UIElement.GotFocus">
+            <BeginStoryboard  Storyboard="{StaticResource startHighlight}">
+            </BeginStoryboard>
+          </EventTrigger>
+          <EventTrigger RoutedEvent="UIElement.LostFocus">
+            <BeginStoryboard Storyboard="{StaticResource reverseHighlight}">
+            </BeginStoryboard>
+          </EventTrigger>
+        </Style.Triggers>-->
+  </Style>
+
+  <!--
+      
+         x:Key="FocusHighlightStyle"
+         -->
+
+
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type Label}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type MenuItem}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         x:Key="MyFocusVisualStyle_TextBlock"
+         TargetType="{x:Type TextBlock}">
+  </Style>
+  <Style BasedOn="{StaticResource MyFocusVisualStyle_TextBlock}"
+         TargetType="{x:Type TextBlock}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type TextBox}">
+  </Style>
+
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         x:Key="MyFocusVisualStyle_ButtonBase"
+         TargetType="{x:Type ButtonBase}">
+  </Style>
+  <Style BasedOn="{StaticResource MyFocusVisualStyle_ButtonBase}"
+         TargetType="{x:Type ButtonBase}">
+  </Style>
+  <Style BasedOn="{StaticResource MyFocusVisualStyle_ButtonBase}"
+         TargetType="{x:Type CheckBox}">
+  </Style>
+  <Style BasedOn="{StaticResource MyFocusVisualStyle_ButtonBase}"
+         TargetType="{x:Type RadioButton}">
+  </Style>
+  <Style BasedOn="{StaticResource MyFocusVisualStyle_ButtonBase}"
+         TargetType="{x:Type Button}">
+  </Style>
+  
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ScrollViewer}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type TabItem}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type TabControl}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ListView}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ListViewItem}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ListBox}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ListBoxItem}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ComboBox}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ComboBoxItem}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type Slider}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type StatusBarItem}">
+  </Style>
+
+
+
+
+
+  <!--<Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:ButtonRichCommand}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:RepeatButtonRichCommand}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:TwoStateButtonRichCommand}">
+  </Style>-->
+  
+  
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:ComboBoxWithAutomationPeer}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:SortableListView2}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:MenuItemRichCommand}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:TwoStateMenuItemRichCommand}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:TextBlockWithAutomationPeer}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:TextBoxWithAutomationPeer}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:ValidationAwareTextBox}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:KeyGestureSinkBox}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:LazyKeepAliveTabControl}">
+  </Style>
+
+
+
+
+
+
+
+
+
+
+
   <!-- SolidColorBrush x:Key="SystemColorsHighlight" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"></SolidColorBrush>
 
   <SolidColorBrush x:Key="SystemColorsControl" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"></SolidColorBrush -->
@@ -92,7 +352,8 @@
     <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text, Mode=OneWay}"/>
   </Style>-->
   
-  <Style x:Key="VisibilityTogglerStyle" TargetType="{x:Type TextBlock}">
+  <Style x:Key="VisibilityTogglerStyle" TargetType="{x:Type TextBlock}"
+         BasedOn="{StaticResource MyFocusVisualStyle_TextBlock}">
     <Setter Property="FrameworkElement.Cursor" Value="Hand"/>
     <Setter Property="UIElement.Focusable" Value="True"/>
     <Setter Property="FrameworkElement.ToolTip" Value="{x:Static Common:Tobi_Common_Lang.ToggleVisibility}"/>
@@ -285,7 +546,7 @@
         </Setter -->
 
 
-  <Style TargetType="{x:Type ListItem}">
+  <!--<Style TargetType="{x:Type ListItem}">
 
     <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
     <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
@@ -301,25 +562,28 @@
     <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
     <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
 
-  </Style>
+  </Style>-->
 
 
-  <Style TargetType="{x:Type ButtonBase}">
-
-    <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
-    <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
-    <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
-    <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
-
-  </Style>
-
-
-  <Style x:Key="ToolBarButtonBaseStyle" TargetType="{x:Type ButtonBase}">
+  <!--<Style TargetType="{x:Type ButtonBase}">
 
     <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
     <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
     <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
     <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+
+  </Style>-->
+
+
+  <Style x:Key="ToolBarButtonBaseStyle"
+         
+         TargetType="{x:Type ButtonBase}"
+         BasedOn="{StaticResource MyFocusVisualStyle_ButtonBase}">
+
+    <!--<Setter Property="ToolTipService.HasDropShadow" Value="False"/>
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>-->
     
     <Setter Property="RepeatButton.Delay" Value="0"/>
     <Setter Property="RepeatButton.Interval" Value="100"/>
@@ -397,8 +661,9 @@
   </Style>
 
   <Style x:Key="{x:Static ToolBar.ButtonStyleKey}"
-         BasedOn="{StaticResource ToolBarButtonBaseStyle}"
-         TargetType="{x:Type Button}"/>
+         
+         TargetType="{x:Type Button}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
 
   <Style TargetType="{x:Type UI:ButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
@@ -406,11 +671,7 @@
   <Style TargetType="{x:Type UI:RepeatButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
   
-  <!--<Style TargetType="{x:Type UI:ToggleButtonRichCommand}"
-         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>-->
-  
   <Style TargetType="{x:Type UI:TwoStateButtonRichCommand}"
          BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
-
 
 </ResourceDictionary>

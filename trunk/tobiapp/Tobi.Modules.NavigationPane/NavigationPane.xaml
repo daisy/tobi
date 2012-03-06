@@ -372,7 +372,7 @@
       <Setter Property="Header"
               Value="{Binding RelativeSource={RelativeSource Self}, Path=Content.ViewName}" />
       
-      <!--<Setter Property="FocusVisualStyle" Value="{StaticResource TabItemFocusVisual}"/>-->
+      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
 
 
       <Setter Property="Template">

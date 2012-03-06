@@ -59,6 +59,9 @@
         KeyUp="OnSearchBoxKeyUp"
         Control.TabIndex="2"
         x:Name="SearchBox"
+        
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
                                        TextChanged="SearchBox_TextChanged"
 UI:WatermarkTextBoxBehavior.EnableWatermark="True"
 UI:WatermarkTextBoxBehavior.Label="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
@@ -145,6 +148,10 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
       <ListView.ItemContainerStyle>
 
         <Style TargetType="{x:Type ListViewItem}">
+
+          <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
+
+          
           <Setter Property="ToolTip" Value="{Binding DescriptionX, Mode=OneWay}" />
           <Setter Property="AutomationProperties.Name" Value="{Binding DescriptionX, Mode=OneWay}"/>
           
