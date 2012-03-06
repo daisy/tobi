@@ -578,6 +578,18 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormMouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                WaveFormCanvas.ContextMenu.PlacementTarget = WaveFormCanvas;
+                WaveFormCanvas.ContextMenu.Placement = PlacementMode.Bottom;
+                var p = e.GetPosition(WaveFormCanvas);
+                WaveFormCanvas.ContextMenu.PlacementRectangle = new Rect(p.X, p.Y, 2, 2);
+                WaveFormCanvas.ContextMenu.IsOpen = true;
+                return;
+            }
+
+            if (e.ChangedButton != MouseButton.Left) return;
+
             if (m_ViewModel.IsWaveFormLoading) return;
 
             WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
@@ -632,6 +644,9 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.LeftButton != MouseButtonState.Pressed
+                || e.ChangedButton != MouseButton.Left) return;
+
             if (m_ViewModel.IsWaveFormLoading) return;
 
             Point p = e.GetPosition(WaveFormCanvas);
