@@ -740,6 +740,7 @@ namespace Tobi.Plugin.AudioPane
 
             updateTotalDuration(eventt.Command, done);
 
+            bool deselect = false;
 
             Command cmd = eventt.Command;
             if (cmd is CompositeCommand)
@@ -788,6 +789,13 @@ namespace Tobi.Plugin.AudioPane
                         }
                         else if (childCmd is TreeNodeAudioStreamDeleteCommand)
                         {
+                            if (command.ChildCommands.Count == 2 &&
+                                (command.ChildCommands.Get(0) is ManagedAudioMediaInsertDataCommand
+                                || command.ChildCommands.Get(0) is TreeNodeSetManagedAudioMediaCommand))
+                            {
+                                // split + shift
+                                deselect = true;
+                            }
                             cmd = childCmd;
                         }
                         else if (childCmd is TreeNodeSetManagedAudioMediaCommand)
@@ -819,6 +827,11 @@ namespace Tobi.Plugin.AudioPane
                 var command = (TreeNodeAudioStreamDeleteCommand)cmd;
 
                 UndoRedoManagerChanged(new List<TreeNodeAudioStreamDeleteCommand>(new[] { command }), done);
+
+                if (deselect)
+                {
+                    CommandClearSelection.Execute();
+                }
                 return;
             }
 

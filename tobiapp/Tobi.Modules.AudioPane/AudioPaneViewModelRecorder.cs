@@ -534,15 +534,18 @@ namespace Tobi.Plugin.AudioPane
 
             if (!String.IsNullOrEmpty(e.RecordedFilePath))
             {
-                //m_RecordAndContinue && 
-                if (Settings.Default.Audio_EnableSkippability)
-                {
-                    registerRecordedAudioFileForDeferredAddition(e.RecordedFilePath);
-                }
-                else
-                {
-                    openFile(e.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
-                }
+                registerRecordedAudioFileForDeferredAddition(e.RecordedFilePath);
+
+                ////m_RecordAndContinue && 
+                ////!Settings.Default.Audio_EnableSkippability
+                //if (m_RecordAndContinue)
+                //{
+                    
+                //}
+                //else
+                //{
+                //    openFile(e.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
+                //}
             }
 
             if (m_RecordAndContinue)
@@ -566,7 +569,7 @@ namespace Tobi.Plugin.AudioPane
 
                     if (next != null)
                     {
-                        if (isTreeNodeSkippable(next) && !Settings.Default.Audio_EnableSkippability)
+                        if (Settings.Default.Audio_EnableSkippability && isTreeNodeSkippable(next))
                         {
                             treeNode = next;
                             goto tryNext;
