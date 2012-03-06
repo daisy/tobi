@@ -790,8 +790,8 @@ namespace Tobi.Plugin.AudioPane
                         else if (childCmd is TreeNodeAudioStreamDeleteCommand)
                         {
                             if (command.ChildCommands.Count == 2 &&
-                                (command.ChildCommands.Get(0) is ManagedAudioMediaInsertDataCommand
-                                || command.ChildCommands.Get(0) is TreeNodeSetManagedAudioMediaCommand))
+                                (command.ChildCommands.Get(1) is ManagedAudioMediaInsertDataCommand
+                                || command.ChildCommands.Get(1) is TreeNodeSetManagedAudioMediaCommand))
                             {
                                 // split + shift
                                 deselect = true;
