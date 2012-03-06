@@ -617,6 +617,11 @@ namespace Tobi.Plugin.DocumentPane
             node.Tag = data;
             //data.Foreground = Brushes.Red; // default is normally overriden
 
+            if (m_FlowDoc.ContextMenu == null)
+            {
+                m_FlowDoc.ContextMenu = (ContextMenu)m_DocumentPaneView.Resources["DocContextMenu"];
+            }
+
             if (data is Block)
             {
                 ((Block)data).BorderThickness = new Thickness(1.0);
