@@ -475,7 +475,17 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                 </Style.Triggers>
               </Style>
             </ContextMenu.Resources>
-            
+
+            <!--<UI:MenuItemRichCommand RichCommand="{Binding UndoCommand}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding RedoCommand}"/>
+            <Separator/>-->
+            <UI:MenuItemRichCommand RichCommand="{Binding CopyCommand}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding CutCommand}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding PasteCommand}"/>
+            <Separator/>
+            <UI:MenuItemRichCommand RichCommand="{Binding CommandInsertFile}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding CommandDeleteAudioSelection}"/>
+            <Separator/>
             <UI:MenuItemRichCommand RichCommand="{Binding CommandGotoBegining}"/>
             <UI:MenuItemRichCommand RichCommand="{Binding CommandGotoEnd}"/>
             <Separator/>
@@ -486,18 +496,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             <UI:MenuItemRichCommand RichCommand="{Binding CommandSelectLeft}"/>
             <UI:MenuItemRichCommand RichCommand="{Binding CommandSelectRight}"/>
             <Separator/>
-            <UI:MenuItemRichCommand RichCommand="{Binding CopyCommand}"/>
-            <UI:MenuItemRichCommand RichCommand="{Binding CutCommand}"/>
-            <UI:MenuItemRichCommand RichCommand="{Binding PasteCommand}"/>
-            <Separator/>
-            <UI:MenuItemRichCommand RichCommand="{Binding CommandInsertFile}"/>
-            <UI:MenuItemRichCommand RichCommand="{Binding CommandDeleteAudioSelection}"/>
-            <Separator/>
             <UI:MenuItemRichCommand RichCommand="{Binding CommandZoomFitFull}"/>
             <UI:MenuItemRichCommand RichCommand="{Binding CommandZoomSelection}"/>
-            <Separator/>
-            <UI:MenuItemRichCommand RichCommand="{Binding CommandUndo}"/>
-            <UI:MenuItemRichCommand RichCommand="{Binding CommandRedo}"/>
+            
             <!--<Separator/>
             <UI:MenuItemRichCommand RichCommand="{Binding CommandRefresh}"/>-->
 
