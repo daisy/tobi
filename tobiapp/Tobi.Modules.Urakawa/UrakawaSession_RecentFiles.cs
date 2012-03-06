@@ -63,7 +63,9 @@ namespace Tobi.Plugin.Urakawa
                                                            PopupModalWindow.DialogButton.Ok,
                                                            true, 800, 500, null, 0);
                     //view.OwnerWindow = windowPopup;
-                    
+
+                    windowPopup.EnableEnterKeyDefault = true;
+
                     windowPopup.ShowModal();
 
                     if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)

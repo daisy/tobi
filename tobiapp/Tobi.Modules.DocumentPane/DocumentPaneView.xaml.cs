@@ -753,6 +753,8 @@ namespace Tobi.Plugin.DocumentPane
                                                    PopupModalWindow.DialogButton.Ok,
                                                    true, 300, 160, null, 40);
 
+            windowPopup.EnableEnterKeyDefault = true;
+
             editBox.Loaded += new RoutedEventHandler((sender, ev) =>
             {
                 editBox.SelectAll();
