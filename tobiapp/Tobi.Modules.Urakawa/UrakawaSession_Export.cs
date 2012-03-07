@@ -230,6 +230,9 @@ namespace Tobi.Plugin.Urakawa
                     string exportFolderName = Path.GetFileName(DocumentFilePath) + "__EXPORT";
                     string exportDir = Path.Combine(dlg.SelectedPath, exportFolderName);
 
+                    const int ATTEMPTS = 5;
+                    int attempt = ATTEMPTS;
+
                     if (Directory.Exists(exportDir))
                     {
                         if (!askUserConfirmOverwriteFileFolder(exportDir, true))
@@ -237,15 +240,37 @@ namespace Tobi.Plugin.Urakawa
                             return;
                         }
 
-                        Directory.Delete(exportDir, true);
-
-                        Thread.Sleep(200);
+                        attempt = ATTEMPTS;
+                        while (attempt-- >= 0)
+                        {
+                            try
+                            {
+                                Directory.Delete(exportDir, true);
+                                break;
+                            }
+                            catch (Exception e)
+                            {
+                                Thread.Sleep(200);
+                            }
+                        }
                     }
 
-                    Directory.CreateDirectory(exportDir);
+                    attempt = ATTEMPTS;
+                    while (attempt-- >= 0)
+                    {
+                        try
+                        {
+                            Directory.CreateDirectory(exportDir);
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                            Thread.Sleep(200);
+                        }
+                    }
+                    
 
                     Thread.Sleep(200);
-
                     if (!Directory.Exists(exportDir))
                     {
                         return;

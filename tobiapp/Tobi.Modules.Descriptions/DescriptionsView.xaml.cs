@@ -127,11 +127,11 @@ namespace Tobi.Plugin.Descriptions
             {
                 foreach (Metadata metadata in altContent.Metadatas.ContentsAs_Enumerable)
                 {
-                    if (metadata.NameContentAttribute.Name == DiagramContentModelStrings.XmlId)
+                    if (metadata.NameContentAttribute.Name == DiagramContentModelHelper.XmlId)
                     {
                         uid = metadata.NameContentAttribute.Value;
                     }
-                    else if (metadata.NameContentAttribute.Name == DiagramContentModelStrings.DescriptionName)
+                    else if (metadata.NameContentAttribute.Name == DiagramContentModelHelper.DiagramElementName)
                     {
                         descriptionName = metadata.NameContentAttribute.Value;
                     }
@@ -382,7 +382,7 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
-        private bool showMetadataAttributeEditorPopupDialog(string label1, string label2, MetadataAttribute metadataAttr, out string newName, out string newValue, bool isAltContentMetadata)
+        private bool showMetadataAttributeEditorPopupDialog(string label1, string label2, MetadataAttribute metadataAttr, out string newName, out string newValue, bool isAltContentMetadata, bool isOptionalAttributes)
         {
             m_Logger.Log("Descriptions.MetadataAttributeEditor", Category.Debug, Priority.Medium);
 
@@ -415,7 +415,7 @@ namespace Tobi.Plugin.Descriptions
             var editBoxCombo_Name = new ComboBox //WithAutomationPeer
             {
                 FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
-        
+
                 Text = metadataAttr.Name,
                 IsEditable = true,
                 IsTextSearchEnabled = true,
@@ -455,11 +455,25 @@ namespace Tobi.Plugin.Descriptions
             var list = new List<String>();
             if (isAltContentMetadata)
             {
-                list.AddRange(DiagramContentModelStrings.MetadataNames_ForAltContentDescriptionInstance);
+
+#if SUPPORT_ANNOTATION_ELEMENT
+                list.Add(DiagramContentModelStrings.Ref);
+                list.Add(DiagramContentModelStrings.Role);
+                list.Add(DiagramContentModelStrings.By);
+#endif //SUPPORT_ANNOTATION_ELEMENT
+
+                list.AddRange(DiagramContentModelHelper.DIAGRAM_ElementAttributes);
             }
             else
             {
-                list.AddRange(DiagramContentModelStrings.MetadataNames_Generic);
+                if (isOptionalAttributes)
+                {
+                    list.AddRange(DiagramContentModelHelper.DIAGRAM_MetadataAdditionalAttributeNames);
+                }
+                else
+                {
+                    list.AddRange(DiagramContentModelHelper.DIAGRAM_MetadataProperties);
+                }
             }
             editBoxCombo_Name.ItemsSource = list;
 
@@ -667,7 +681,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttrTEMP, out newName, out newValue, true);
+                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttrTEMP, out newName, out newValue, true, false);
                 mdAttrTEMP.Name = newName;
                 mdAttrTEMP.Value = newValue;
             }
@@ -754,7 +768,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Property", "Content", mdAttrTEMP, out newName, out newValue, false);
+                ok = showMetadataAttributeEditorPopupDialog("Property", "Content", mdAttrTEMP, out newName, out newValue, false, false);
                 mdAttrTEMP.Name = newName;
                 mdAttrTEMP.Value = newValue;
             }
@@ -797,7 +811,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttrTEMP, out newName, out newValue, false);
+                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttrTEMP, out newName, out newValue, false, true);
                 mdAttrTEMP.Name = newName;
                 mdAttrTEMP.Value = newValue;
             }
@@ -871,7 +885,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttr, out newName, out newValue, true);
+                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttr, out newName, out newValue, true, false);
                 mdAttr.Name = newName;
                 mdAttr.Value = newValue;
             }
@@ -984,7 +998,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Property", "Content", mdAttr, out newName, out newValue, false);
+                ok = showMetadataAttributeEditorPopupDialog("Property", "Content", mdAttr, out newName, out newValue, false, false);
                 mdAttr.Name = newName;
                 mdAttr.Value = newValue;
             }
@@ -1042,7 +1056,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttr, out newName, out newValue, false);
+                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttr, out newName, out newValue, false, true);
                 mdAttr.Name = newName;
                 mdAttr.Value = newValue;
             }
@@ -1074,7 +1088,7 @@ namespace Tobi.Plugin.Descriptions
             while (descriptionName != null && isDescriptionNameInvalid(descriptionName, "")) // PROMPT_DescriptionName))
             {
                 // returns null only when dialog is cancelled, otherwise trimmed string (potentially empty)
-                descriptionName = showLineEditorPopupDialog(txt, "Description name", DiagramContentModelStrings.MetadataValues_ForDescriptionName);
+                descriptionName = showLineEditorPopupDialog(txt, "DIAGRAM element name", DiagramContentModelHelper.DIAGRAM_ElementNames);
                 txt = descriptionName;
             }
             if (descriptionName == null) return;
@@ -1167,6 +1181,7 @@ namespace Tobi.Plugin.Descriptions
             {
                 FileName = "",
                 DefaultExt = ".jpg",
+                //Filter = @"JPEG, PNG, BMP, SVG (*.jpeg, *.jpg, *.png, *.bmp, *.svg)|*.jpeg;*.jpg;*.png;*.bmp;*.svg",
                 Filter = @"JPEG, PNG, BMP (*.jpeg, *.jpg, *.png, *.bmp)|*.jpeg;*.jpg;*.png;*.bmp",
                 CheckFileExists = false,
                 CheckPathExists = false,
@@ -1512,8 +1527,8 @@ namespace Tobi.Plugin.Descriptions
 
             var editBox = new TextBoxReadOnlyCaretVisible
             {
-            FocusVisualStyle = (Style) Application.Current.Resources["MyFocusVisualStyle"],
-        
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
                 Text = editedText,
                 TextWrapping = TextWrapping.WrapWithOverflow,
                 AcceptsReturn = true
@@ -1558,8 +1573,8 @@ namespace Tobi.Plugin.Descriptions
             {
                 var editBox = new TextBoxReadOnlyCaretVisible
                 {
-            FocusVisualStyle = (Style) Application.Current.Resources["MyFocusVisualStyle"],
-        
+                    FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
                     //Watermark = TEXTFIELD_WATERMARK,
                     Text = editedText,
                     TextWrapping = TextWrapping.NoWrap,
@@ -1616,7 +1631,7 @@ namespace Tobi.Plugin.Descriptions
                 var editBoxCombo_Name = new ComboBox //WithAutomationPeer
                 {
                     FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
-        
+
                     Text = editedText,
                     IsEditable = true,
                     IsTextSearchEnabled = true,
