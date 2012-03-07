@@ -274,11 +274,11 @@ namespace Tobi.Plugin.Descriptions
 
             if (!string.IsNullOrEmpty(uid))
             {
-                AddMetadata(null, altContent, DiagramContentModelStrings.XmlId, uid);
+                AddMetadata(null, altContent, DiagramContentModelHelper.XmlId, uid);
             }
             if (!string.IsNullOrEmpty(descriptionName))
             {
-                AddMetadata(null, altContent, DiagramContentModelStrings.DescriptionName, descriptionName);
+                AddMetadata(null, altContent, DiagramContentModelHelper.DiagramElementName, descriptionName);
             }
         }
 
