@@ -342,7 +342,7 @@ namespace Tobi.Plugin.Descriptions
             //GC.WaitForFullGCComplete();
         }
 
-        
+
 
         private void OnClick_ButtonImport(object sender, RoutedEventArgs e)
         {
@@ -1234,10 +1234,10 @@ namespace Tobi.Plugin.Descriptions
 
             var dlg = new OpenFileDialog
             {
+
                 FileName = "",
-                DefaultExt = ".jpg",
-                //Filter = @"JPEG, PNG, BMP, SVG (*.jpeg, *.jpg, *.png, *.bmp, *.svg)|*.jpeg;*.jpg;*.png;*.bmp;*.svg",
-                Filter = @"JPEG, PNG, BMP (*.jpeg, *.jpg, *.png, *.bmp)|*.jpeg;*.jpg;*.png;*.bmp",
+                DefaultExt = DataProviderFactory.IMAGE_JPG_EXTENSION,
+                Filter = @"JPEG, PNG, BMP, SVG (*" + DataProviderFactory.IMAGE_JPEG_EXTENSION + ", *" + DataProviderFactory.IMAGE_JPG_EXTENSION + ", *" + DataProviderFactory.IMAGE_PNG_EXTENSION + ", *" + DataProviderFactory.IMAGE_BMP_EXTENSION + ", *" + DataProviderFactory.IMAGE_SVG_EXTENSION + ", *" + DataProviderFactory.IMAGE_SVGZ_EXTENSION + ")|*" + DataProviderFactory.IMAGE_JPEG_EXTENSION + ";*" + DataProviderFactory.IMAGE_JPG_EXTENSION + ";*" + DataProviderFactory.IMAGE_PNG_EXTENSION + ";*" + DataProviderFactory.IMAGE_BMP_EXTENSION + ";*" + DataProviderFactory.IMAGE_SVG_EXTENSION + ";*" + DataProviderFactory.IMAGE_SVGZ_EXTENSION + "",
                 CheckFileExists = false,
                 CheckPathExists = false,
                 AddExtension = true,

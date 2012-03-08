@@ -787,7 +787,7 @@ AlternationCount="2"
                           Stretch = "Uniform"
                           StretchDirection="DownOnly"
                 ToolTip="{Binding ElementName=DescriptionsListView, Path=SelectedItem, Mode=OneWay, Converter={Descriptions:AlternateContentToImagePathConverter}}"
-                Source="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
+                Source="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay, Converter={UI:PathToImageSourceConverter}}"
               >
                 <Image.Style>
                   <Style TargetType="{x:Type Image}">
