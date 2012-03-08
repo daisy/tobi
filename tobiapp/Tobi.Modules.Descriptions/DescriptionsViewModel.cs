@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Xml;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -25,6 +26,7 @@ using urakawa.media.data.image.codec;
 using urakawa.media.timing;
 using urakawa.metadata;
 using urakawa.property.alt;
+using urakawa.xuk;
 
 namespace Tobi.Plugin.Descriptions
 {/// <summary>
@@ -73,130 +75,6 @@ namespace Tobi.Plugin.Descriptions
 
         public void OnPanelLoaded()
         {
-            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-            TreeNode node = selection.Item2 ?? selection.Item1;
-            if (node == null) return;
-
-            var altProp = node.GetProperty<AlternateContentProperty>();
-
-#if true || !DEBUG
-            if (altProp == null)
-            {
-                altProp = node.GetOrCreateAlternateContentProperty();
-                DebugFix.Assert(altProp != null);
-            }
-#else //DEBUG
-            if (altProp == null)
-            {
-                {
-                    AlternateContent altContent1 = node.Presentation.AlternateContentFactory.CreateAlternateContent();
-                    TextMedia txt1 = node.Presentation.MediaFactory.CreateTextMedia();
-                    txt1.Text = "<p>This is a textual description</p>";
-                    altContent1.Text = txt1;
-
-                    AlternateContentAddCommand cmd11 =
-                        node.Presentation.CommandFactory.CreateAlternateContentAddCommand(node, altContent1);
-                    node.Presentation.UndoRedoManager.Execute(cmd11);
-
-                    {
-                        Metadata altContMeta1 = node.Presentation.MetadataFactory.CreateMetadata();
-                        altContMeta1.NameContentAttribute = new MetadataAttribute();
-                        altContMeta1.NameContentAttribute.Name = "attr1";
-                        altContMeta1.NameContentAttribute.NamespaceUri = "http://purl/dc";
-                        altContMeta1.NameContentAttribute.Value = "val1";
-                        AlternateContentMetadataAddCommand cmd12 =
-                            node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(null,
-                                                                                                      altContent1,
-                                                                                                      altContMeta1);
-                        node.Presentation.UndoRedoManager.Execute(cmd12);
-                    }
-
-                    {
-                        Metadata altContMeta2 = node.Presentation.MetadataFactory.CreateMetadata();
-                        altContMeta2.NameContentAttribute = new MetadataAttribute();
-                        altContMeta2.NameContentAttribute.Name = "attr2";
-                        //altContMeta2.NameContentAttribute.NamespaceUri = "http://purl/dc";
-                        altContMeta2.NameContentAttribute.Value = "val2";
-                        AlternateContentMetadataAddCommand cmd13 =
-                            node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(null, altContent1, altContMeta2);
-                        node.Presentation.UndoRedoManager.Execute(cmd13);
-                    }
-                }
-
-                {
-                    AlternateContent altContent2 = node.Presentation.AlternateContentFactory.CreateAlternateContent();
-
-                    AlternateContentAddCommand cmd21 =
-                        node.Presentation.CommandFactory.CreateAlternateContentAddCommand(node, altContent2);
-                    node.Presentation.UndoRedoManager.Execute(cmd21);
-
-                    TextMedia txt2 = node.Presentation.MediaFactory.CreateTextMedia();
-                    txt2.Text = "<p>This is another textual description</p>";
-
-                    //altContent2.Text = txt2;
-                    AlternateContentSetManagedMediaCommand cmd22 =
-                        node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent2, txt2);
-                    node.Presentation.UndoRedoManager.Execute(cmd22);
-
-
-                    ManagedImageMedia img1 = node.Presentation.MediaFactory.CreateManagedImageMedia();
-                    string img1DirPath = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
-                    string img1FullPath = Path.Combine(img1DirPath, "daisy_01.png");
-                    //ImageMediaData imgData1 = node.Presentation.MediaDataFactory.CreateImageMediaData();
-                    ImageMediaData imgData1 = node.Presentation.MediaDataFactory.Create<PngImageMediaData>();
-                    imgData1.InitializeImage(img1FullPath, Path.GetFileName(img1FullPath));
-                    img1.ImageMediaData = imgData1;
-
-                    AlternateContentSetManagedMediaCommand cmd23 =
-                        node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent2, img1);
-                    node.Presentation.UndoRedoManager.Execute(cmd23);
-                }
-
-                //altProp = node.Presentation.PropertyFactory.CreateAlternateContentProperty();
-                //altProp = node.GetOrCreateAlternateContentProperty();
-                altProp = node.GetProperty<AlternateContentProperty>();
-                DebugFix.Assert(altProp != null);
-
-                {
-                    Metadata meta1 = node.Presentation.MetadataFactory.CreateMetadata();
-                    meta1.NameContentAttribute = new MetadataAttribute();
-                    meta1.NameContentAttribute.Name = "author";
-                    meta1.NameContentAttribute.NamespaceUri = "http://purl/dc";
-                    meta1.NameContentAttribute.Value = "John Doe";
-                    var metaAttr1 = new MetadataAttribute();
-                    metaAttr1.Name = "about";
-                    metaAttr1.Value = "something";
-                    meta1.OtherAttributes.Insert(meta1.OtherAttributes.Count, metaAttr1);
-                    var metaAttr2 = new MetadataAttribute();
-                    metaAttr2.Name = "rel";
-                    metaAttr2.Value = "authorship";
-                    meta1.OtherAttributes.Insert(meta1.OtherAttributes.Count, metaAttr2);
-                    AlternateContentMetadataAddCommand cmd31 =
-                        node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta1);
-                    node.Presentation.UndoRedoManager.Execute(cmd31);
-                }
-                {
-                    Metadata meta2 = node.Presentation.MetadataFactory.CreateMetadata();
-                    meta2.NameContentAttribute = new MetadataAttribute();
-                    meta2.NameContentAttribute.Name = "publisher";
-                    meta2.NameContentAttribute.NamespaceUri = "http://purl/dc";
-                    meta2.NameContentAttribute.Value = "DAISY";
-                    var metaAttr1 = new MetadataAttribute();
-                    metaAttr1.Name = "priority";
-                    metaAttr1.Value = "none";
-                    meta2.OtherAttributes.Insert(meta2.OtherAttributes.Count, metaAttr1);
-                    var metaAttr2 = new MetadataAttribute();
-                    metaAttr2.Name = "rel";
-                    metaAttr2.Value = "business";
-                    meta2.OtherAttributes.Insert(meta2.OtherAttributes.Count, metaAttr2);
-                    AlternateContentMetadataAddCommand cmd32 =
-                        node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta2);
-                    node.Presentation.UndoRedoManager.Execute(cmd32);
-                }
-            }
-
-#endif //DEBUG
-
             //m_SelectedMedatadata = null;
             //m_SelectedAlternateContent = null;
             RaisePropertyChanged(() => Metadatas);
@@ -917,6 +795,291 @@ namespace Tobi.Plugin.Descriptions
             if (!found) return null;
 
             return node;
+        }
+
+
+
+        public void ImportDiagramXML(string xmlFilePath)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode treeNode = selection.Item2 ?? selection.Item1;
+            var altProp = treeNode.GetProperty<AlternateContentProperty>();
+
+
+
+            XmlDocument diagramXML = OpenXukAction.ParseXmlDocument(xmlFilePath, true);
+
+            XmlNode description = XmlDocumentHelper.GetFirstChildElementWithName(diagramXML, false, "description", DiagramContentModelHelper.NS_URL_DIAGRAM);
+            if (description == null)
+            {
+                return;
+            }
+
+            XmlNode head = XmlDocumentHelper.GetFirstChildElementWithName(description, false, "head", DiagramContentModelHelper.NS_URL_DIAGRAM);
+            if (head != null)
+            {
+                foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsWithName(head, true, "meta", DiagramContentModelHelper.NS_URL_ZAI, false))
+                {
+                    if (node.NodeType != XmlNodeType.Element || node.LocalName != "meta")
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif // DEBUG
+                        continue;
+                    }
+
+                    XmlNode childMetadata = XmlDocumentHelper.GetFirstChildElementWithName(node, false, "meta", DiagramContentModelHelper.NS_URL_ZAI);
+                    if (childMetadata != null)
+                    {
+                        continue;
+                    }
+
+                    XmlAttributeCollection mdAttributes = node.Attributes;
+                    if (mdAttributes == null || mdAttributes.Count <= 0)
+                    {
+                        continue;
+                    }
+
+                    XmlNode attrName = mdAttributes.GetNamedItem("name");
+                    XmlNode attrProperty = mdAttributes.GetNamedItem("property");
+
+                    string property = (attrName != null && !String.IsNullOrEmpty(attrName.Value))
+                                          ? attrName.Value
+                                          : (attrProperty != null && !String.IsNullOrEmpty(attrProperty.Value)
+                                                 ? attrProperty.Value
+                                                 : null);
+
+                    XmlNode attrContent = mdAttributes.GetNamedItem("content");
+
+                    string content = (attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
+                                         ? attrContent.Value
+                                         : node.InnerText;
+
+                    if (!(
+                             String.IsNullOrEmpty(property) && String.IsNullOrEmpty(content)
+                             ||
+                             !String.IsNullOrEmpty(property) && !String.IsNullOrEmpty(content)
+                         ))
+                    {
+                        continue;
+                    }
+
+                    Metadata altContMetadata = treeNode.Presentation.MetadataFactory.CreateMetadata();
+                    altContMetadata.NameContentAttribute = new MetadataAttribute();
+                    altContMetadata.NameContentAttribute.Name = String.IsNullOrEmpty(property)
+                                                                    ? DiagramContentModelHelper.NA
+                                                                    : property;
+                    altContMetadata.NameContentAttribute.NamespaceUri =
+                        String.IsNullOrEmpty(property)
+                            ? null
+                            : (
+                                  property.StartsWith("diagram:")
+                                      ? DiagramContentModelHelper.NS_URL_DIAGRAM
+                                      : (property.StartsWith("dc:")
+                                             ? DiagramContentModelHelper.NS_URL_DUBLIN_CORE
+                                             : null)
+                              )
+                        ;
+                    altContMetadata.NameContentAttribute.Value = String.IsNullOrEmpty(content)
+                                                                     ? DiagramContentModelHelper.NA
+                                                                     : content;
+                    AlternateContentMetadataAddCommand cmd_AltPropMetadata =
+                        treeNode.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(
+                            treeNode,
+                            altProp,
+                            null,
+                            altContMetadata,
+                            null
+                            );
+                    treeNode.Presentation.UndoRedoManager.Execute(cmd_AltPropMetadata);
+
+                    bool parentIsMeta = node.ParentNode.LocalName == "meta";
+
+                    var listAttrs = new List<XmlAttribute>(mdAttributes.Count + (parentIsMeta ? node.ParentNode.Attributes.Count : 0));
+
+                    for (int i = 0; i < mdAttributes.Count; i++)
+                    {
+                        XmlAttribute attribute = mdAttributes[i];
+                        listAttrs.Add(attribute);
+                    }
+
+                    if (parentIsMeta)
+                    {
+                        for (int i = 0; i < node.ParentNode.Attributes.Count; i++)
+                        {
+                            XmlAttribute attribute = node.ParentNode.Attributes[i];
+                            if (mdAttributes.GetNamedItem(attribute.LocalName, attribute.NamespaceURI) == null)
+                            {
+                                listAttrs.Add(attribute);
+                            }
+                        }
+                    }
+
+                    foreach (var attribute in listAttrs)
+                    {
+                        if (attribute.LocalName == "name"
+                            || attribute.LocalName == "property"
+                            || attribute.LocalName == "content")
+                        {
+                            continue;
+                        }
+
+
+                        if (attribute.Name.StartsWith("xmlns:"))
+                        {
+                            //
+                        }
+                        else if (attribute.Name == "xmlns")
+                        {
+                            //
+                        }
+                        else
+                        {
+                            MetadataAttribute metadatattribute = new MetadataAttribute();
+                            metadatattribute.Name = attribute.Name;
+                            metadatattribute.NamespaceUri = attribute.Name.Contains(":") ? attribute.NamespaceURI : null;
+                            metadatattribute.Value = attribute.Value;
+                            AlternateContentMetadataAddCommand cmd_AltPropMetadataAttr =
+                                treeNode.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(
+                                    treeNode,
+                                    altProp,
+                                    null,
+                                    altContMetadata,
+                                    metadatattribute
+                                    );
+                            treeNode.Presentation.UndoRedoManager.Execute(cmd_AltPropMetadataAttr);
+                        }
+                    }
+                }
+            }
+
+            XmlNode body = XmlDocumentHelper.GetFirstChildElementWithName(description, false, "body", DiagramContentModelHelper.NS_URL_DIAGRAM);
+            if (body != null)
+            {
+            }
+
+            OnPanelLoaded();
+
+
+
+#if false
+            
+
+            AlternateContent altContent = treeNode.Presentation.AlternateContentFactory.CreateAlternateContent();
+            AlternateContentAddCommand cmd_AltContent =
+                treeNode.Presentation.CommandFactory.CreateAlternateContentAddCommand(treeNode, altContent);
+            treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent);
+
+
+
+                {
+                    AlternateContent altContent1 = node.Presentation.AlternateContentFactory.CreateAlternateContent();
+                    TextMedia txt1 = node.Presentation.MediaFactory.CreateTextMedia();
+                    txt1.Text = "<p>This is a textual description</p>";
+                    altContent1.Text = txt1;
+
+                    AlternateContentAddCommand cmd11 =
+                        node.Presentation.CommandFactory.CreateAlternateContentAddCommand(node, altContent1);
+                    node.Presentation.UndoRedoManager.Execute(cmd11);
+
+                    {
+                        Metadata altContMeta1 = node.Presentation.MetadataFactory.CreateMetadata();
+                        altContMeta1.NameContentAttribute = new MetadataAttribute();
+                        altContMeta1.NameContentAttribute.Name = "attr1";
+                        altContMeta1.NameContentAttribute.NamespaceUri = "http://purl/dc";
+                        altContMeta1.NameContentAttribute.Value = "val1";
+                        AlternateContentMetadataAddCommand cmd12 =
+                            node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(null,
+                                                                                                      altContent1,
+                                                                                                      altContMeta1);
+                        node.Presentation.UndoRedoManager.Execute(cmd12);
+                    }
+
+                    {
+                        Metadata altContMeta2 = node.Presentation.MetadataFactory.CreateMetadata();
+                        altContMeta2.NameContentAttribute = new MetadataAttribute();
+                        altContMeta2.NameContentAttribute.Name = "attr2";
+                        //altContMeta2.NameContentAttribute.NamespaceUri = "http://purl/dc";
+                        altContMeta2.NameContentAttribute.Value = "val2";
+                        AlternateContentMetadataAddCommand cmd13 =
+                            node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(null, altContent1, altContMeta2);
+                        node.Presentation.UndoRedoManager.Execute(cmd13);
+                    }
+                }
+
+                {
+                    AlternateContent altContent2 = node.Presentation.AlternateContentFactory.CreateAlternateContent();
+
+                    AlternateContentAddCommand cmd21 =
+                        node.Presentation.CommandFactory.CreateAlternateContentAddCommand(node, altContent2);
+                    node.Presentation.UndoRedoManager.Execute(cmd21);
+
+                    TextMedia txt2 = node.Presentation.MediaFactory.CreateTextMedia();
+                    txt2.Text = "<p>This is another textual description</p>";
+
+                    //altContent2.Text = txt2;
+                    AlternateContentSetManagedMediaCommand cmd22 =
+                        node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent2, txt2);
+                    node.Presentation.UndoRedoManager.Execute(cmd22);
+
+
+                    ManagedImageMedia img1 = node.Presentation.MediaFactory.CreateManagedImageMedia();
+                    string img1DirPath = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
+                    string img1FullPath = Path.Combine(img1DirPath, "daisy_01.png");
+                    //ImageMediaData imgData1 = node.Presentation.MediaDataFactory.CreateImageMediaData();
+                    ImageMediaData imgData1 = node.Presentation.MediaDataFactory.Create<PngImageMediaData>();
+                    imgData1.InitializeImage(img1FullPath, Path.GetFileName(img1FullPath));
+                    img1.ImageMediaData = imgData1;
+
+                    AlternateContentSetManagedMediaCommand cmd23 =
+                        node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent2, img1);
+                    node.Presentation.UndoRedoManager.Execute(cmd23);
+                }
+
+                //altProp = node.Presentation.PropertyFactory.CreateAlternateContentProperty();
+                //altProp = node.GetOrCreateAlternateContentProperty();
+                altProp = node.GetProperty<AlternateContentProperty>();
+                DebugFix.Assert(altProp != null);
+
+                {
+                    Metadata meta1 = node.Presentation.MetadataFactory.CreateMetadata();
+                    meta1.NameContentAttribute = new MetadataAttribute();
+                    meta1.NameContentAttribute.Name = "author";
+                    meta1.NameContentAttribute.NamespaceUri = "http://purl/dc";
+                    meta1.NameContentAttribute.Value = "John Doe";
+                    var metaAttr1 = new MetadataAttribute();
+                    metaAttr1.Name = "about";
+                    metaAttr1.Value = "something";
+                    meta1.OtherAttributes.Insert(meta1.OtherAttributes.Count, metaAttr1);
+                    var metaAttr2 = new MetadataAttribute();
+                    metaAttr2.Name = "rel";
+                    metaAttr2.Value = "authorship";
+                    meta1.OtherAttributes.Insert(meta1.OtherAttributes.Count, metaAttr2);
+                    AlternateContentMetadataAddCommand cmd31 =
+                        node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta1);
+                    node.Presentation.UndoRedoManager.Execute(cmd31);
+                }
+                {
+                    Metadata meta2 = node.Presentation.MetadataFactory.CreateMetadata();
+                    meta2.NameContentAttribute = new MetadataAttribute();
+                    meta2.NameContentAttribute.Name = "publisher";
+                    meta2.NameContentAttribute.NamespaceUri = "http://purl/dc";
+                    meta2.NameContentAttribute.Value = "DAISY";
+                    var metaAttr1 = new MetadataAttribute();
+                    metaAttr1.Name = "priority";
+                    metaAttr1.Value = "none";
+                    meta2.OtherAttributes.Insert(meta2.OtherAttributes.Count, metaAttr1);
+                    var metaAttr2 = new MetadataAttribute();
+                    metaAttr2.Name = "rel";
+                    metaAttr2.Value = "business";
+                    meta2.OtherAttributes.Insert(meta2.OtherAttributes.Count, metaAttr2);
+                    AlternateContentMetadataAddCommand cmd32 =
+                        node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(altProp, null, meta2);
+                    node.Presentation.UndoRedoManager.Execute(cmd32);
+                }
+#endif
+            //DEBUG
+
         }
     }
 }

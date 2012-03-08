@@ -36,14 +36,14 @@
              Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
       <UI:ButtonRichCommand
-        Control.TabIndex="4"
+        Control.TabIndex="5"
         DockPanel.Dock="Right"
          HorizontalAlignment="Right" VerticalAlignment="Center"
         UseSmallerIcon="True"
         RichCommand="{Binding CmdFindNextGlobal, Mode=OneWay}"/>
 
       <UI:ButtonRichCommand
-        Control.TabIndex="3"
+        Control.TabIndex="4"
         DockPanel.Dock="Right"
          HorizontalAlignment="Right" VerticalAlignment="Center"
         UseSmallerIcon="True"
@@ -57,7 +57,7 @@
 
       <UI:TextBoxReadOnlyCaretVisible
         KeyUp="OnSearchBoxKeyUp"
-        Control.TabIndex="2"
+        Control.TabIndex="3"
         x:Name="SearchBox"
         
         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
@@ -71,12 +71,13 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
 
     </DockPanel>
   </Border>
-  <Button 
+
+  <Button
            DockPanel.Dock="Bottom"
-           Content="Add / edit"
-           Click="OnClick_Button"
+           Content="Add / edit ..."
+           Click="OnClick_ButtonAddEdit"
            Margin="4,2,4,2"
-        Control.TabIndex="1"
+        Control.TabIndex="2"
   />
   <pres:ScrollViewer
       VerticalScrollBarVisibility="Visible"
@@ -125,7 +126,7 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
                    HorizontalAlignment="Stretch"
                                         Margin="8,4,8,0"
                         >
-              <CheckBox IsChecked="{Binding HasDescription, Mode=OneWay}"
+              <RadioButton IsChecked="{Binding HasDescription, Mode=OneWay}"
                        IsEnabled="False"
                         Focusable="False"
                   HorizontalAlignment="Left"
