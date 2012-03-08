@@ -808,7 +808,7 @@ namespace Tobi.Plugin.Descriptions
 
 
 
-            XmlDocument diagramXML = OpenXukAction.ParseXmlDocument(xmlFilePath, true);
+            XmlDocument diagramXML = OpenXukAction.ParseXmlDocument(xmlFilePath, false);
 
             XmlNode description = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(diagramXML, false, "description", DiagramContentModelHelper.NS_URL_DIAGRAM);
             if (description == null)
@@ -1133,7 +1133,7 @@ namespace Tobi.Plugin.Descriptions
                     XmlNode tour =
                         XmlDocumentHelper.GetFirstChildElementOrSelfWithName(diagramElementNode, false,
                                                                              localTourName,
-                                                                             DiagramContentModelHelper.NS_PREFIX_DIAGRAM);
+                                                                             DiagramContentModelHelper.NS_URL_DIAGRAM);
                     textNode = tour;
 
 
@@ -1141,19 +1141,18 @@ namespace Tobi.Plugin.Descriptions
                     XmlNode obj =
                         XmlDocumentHelper.GetFirstChildElementOrSelfWithName(diagramElementNode, false,
                                                                              DiagramContentModelHelper.Object,
-                                                                             DiagramContentModelHelper.NS_PREFIX_ZAI);
+                                                                             DiagramContentModelHelper.NS_URL_ZAI);
 
                     if (obj != null && obj.Attributes != null && obj.Attributes.Count > 0)
                     {
                         XmlAttribute srcAttr = (XmlAttribute)obj.Attributes.GetNamedItem(DiagramContentModelHelper.Src);
                         if (srcAttr != null)
                         {
-
                             XmlAttribute srcType = (XmlAttribute)obj.Attributes.GetNamedItem(DiagramContentModelHelper.SrcType);
 
                             ManagedImageMedia img = treeNode.Presentation.MediaFactory.CreateManagedImageMedia();
 
-                            string imgFullPath = Path.Combine(xmlFilePath, srcAttr.Value);
+                            string imgFullPath = Path.Combine(Path.GetDirectoryName(xmlFilePath), srcAttr.Value);
                             string ext = Path.GetExtension(imgFullPath);
                             ext = ext == null ? null : ext.ToLower();
 
