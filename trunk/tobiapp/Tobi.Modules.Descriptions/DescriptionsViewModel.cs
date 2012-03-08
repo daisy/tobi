@@ -972,6 +972,16 @@ namespace Tobi.Plugin.Descriptions
             XmlNode body = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(description, false, "body", DiagramContentModelHelper.NS_URL_DIAGRAM);
             if (body != null)
             {
+                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.D_Summary);
+                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.D_LondDesc);
+                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.D_SimplifiedLanguageDescription);
+
+#if SUPPORT_ANNOTATION_ELEMENT
+                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.Annotation);
+#endif //SUPPORT_ANNOTATION_ELEMENT
+
+                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.D_Tactile);
+                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.D_SimplifiedImage);
             }
 
             OnPanelLoaded();
@@ -979,66 +989,6 @@ namespace Tobi.Plugin.Descriptions
 
 
 #if false
-            
-
-            AlternateContent altContent = treeNode.Presentation.AlternateContentFactory.CreateAlternateContent();
-            AlternateContentAddCommand cmd_AltContent =
-                treeNode.Presentation.CommandFactory.CreateAlternateContentAddCommand(treeNode, altContent);
-            treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent);
-
-
-
-                {
-                    AlternateContent altContent1 = node.Presentation.AlternateContentFactory.CreateAlternateContent();
-                    TextMedia txt1 = node.Presentation.MediaFactory.CreateTextMedia();
-                    txt1.Text = "<p>This is a textual description</p>";
-                    altContent1.Text = txt1;
-
-                    AlternateContentAddCommand cmd11 =
-                        node.Presentation.CommandFactory.CreateAlternateContentAddCommand(node, altContent1);
-                    node.Presentation.UndoRedoManager.Execute(cmd11);
-
-                    {
-                        Metadata altContMeta1 = node.Presentation.MetadataFactory.CreateMetadata();
-                        altContMeta1.NameContentAttribute = new MetadataAttribute();
-                        altContMeta1.NameContentAttribute.Name = "attr1";
-                        altContMeta1.NameContentAttribute.NamespaceUri = "http://purl/dc";
-                        altContMeta1.NameContentAttribute.Value = "val1";
-                        AlternateContentMetadataAddCommand cmd12 =
-                            node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(null,
-                                                                                                      altContent1,
-                                                                                                      altContMeta1);
-                        node.Presentation.UndoRedoManager.Execute(cmd12);
-                    }
-
-                    {
-                        Metadata altContMeta2 = node.Presentation.MetadataFactory.CreateMetadata();
-                        altContMeta2.NameContentAttribute = new MetadataAttribute();
-                        altContMeta2.NameContentAttribute.Name = "attr2";
-                        //altContMeta2.NameContentAttribute.NamespaceUri = "http://purl/dc";
-                        altContMeta2.NameContentAttribute.Value = "val2";
-                        AlternateContentMetadataAddCommand cmd13 =
-                            node.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(null, altContent1, altContMeta2);
-                        node.Presentation.UndoRedoManager.Execute(cmd13);
-                    }
-                }
-
-                {
-                    AlternateContent altContent2 = node.Presentation.AlternateContentFactory.CreateAlternateContent();
-
-                    AlternateContentAddCommand cmd21 =
-                        node.Presentation.CommandFactory.CreateAlternateContentAddCommand(node, altContent2);
-                    node.Presentation.UndoRedoManager.Execute(cmd21);
-
-                    TextMedia txt2 = node.Presentation.MediaFactory.CreateTextMedia();
-                    txt2.Text = "<p>This is another textual description</p>";
-
-                    //altContent2.Text = txt2;
-                    AlternateContentSetManagedMediaCommand cmd22 =
-                        node.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(altContent2, txt2);
-                    node.Presentation.UndoRedoManager.Execute(cmd22);
-
-
                     ManagedImageMedia img1 = node.Presentation.MediaFactory.CreateManagedImageMedia();
                     string img1DirPath = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
                     string img1FullPath = Path.Combine(img1DirPath, "daisy_01.png");
@@ -1096,6 +1046,85 @@ namespace Tobi.Plugin.Descriptions
 #endif
             //DEBUG
 
+        }
+
+        private void diagramXmlParseBody(TreeNode treeNode, XmlNode body, string diagramElementName)
+        {
+            string localName = DiagramContentModelHelper.StripNSPrefix(diagramElementName);
+            foreach (XmlNode diagramElementNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(body, true, localName, DiagramContentModelHelper.NS_URL_DIAGRAM, false))
+            {
+                if (diagramElementNode.NodeType != XmlNodeType.Element || diagramElementNode.LocalName != localName)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    // DEBUG
+                    continue;
+                }
+
+                AlternateContent altContent = treeNode.Presentation.AlternateContentFactory.CreateAlternateContent();
+                AlternateContentAddCommand cmd_AltContent =
+                    treeNode.Presentation.CommandFactory.CreateAlternateContentAddCommand(treeNode, altContent);
+                treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent);
+
+
+
+                Metadata diagramElementName_Metadata = new Metadata();
+                diagramElementName_Metadata.NameContentAttribute = new MetadataAttribute();
+                diagramElementName_Metadata.NameContentAttribute.Name = DiagramContentModelHelper.DiagramElementName;
+                diagramElementName_Metadata.NameContentAttribute.NamespaceUri = null;
+                diagramElementName_Metadata.NameContentAttribute.Value = diagramElementName;
+                AlternateContentMetadataAddCommand cmd_AltContent_diagramElementName_Metadata =
+                    treeNode.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(
+                        treeNode,
+                        null,
+                        altContent,
+                        diagramElementName_Metadata,
+                        null
+                        );
+                treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_diagramElementName_Metadata);
+
+
+
+                string strText = diagramElementNode.InnerXml;
+                TextMedia txtMedia = treeNode.Presentation.MediaFactory.CreateTextMedia();
+                txtMedia.Text = strText;
+                AlternateContentSetManagedMediaCommand cmd_AltContent_Text =
+                    treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode, altContent, txtMedia);
+                treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Text);
+
+                for (int i = 0; i < diagramElementNode.Attributes.Count; i++)
+                {
+                    XmlAttribute attribute = diagramElementNode.Attributes[i];
+
+
+                    if (attribute.Name.StartsWith("xmlns:"))
+                    {
+                        //
+                    }
+                    else if (attribute.Name == "xmlns")
+                    {
+                        //
+                    }
+                    else
+                    {
+                        Metadata diagramElementAttribute_Metadata = new Metadata();
+                        diagramElementAttribute_Metadata.NameContentAttribute = new MetadataAttribute();
+                        diagramElementAttribute_Metadata.NameContentAttribute.Name = attribute.Name;
+                        diagramElementAttribute_Metadata.NameContentAttribute.NamespaceUri = attribute.NamespaceURI;
+                        diagramElementAttribute_Metadata.NameContentAttribute.Value = attribute.Value;
+                        AlternateContentMetadataAddCommand cmd_AltContent_diagramElementAttribute_Metadata =
+                            treeNode.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(
+                                treeNode,
+                                null,
+                                altContent,
+                                diagramElementAttribute_Metadata,
+                                null
+                                );
+                        treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_diagramElementAttribute_Metadata);
+                    }
+                }
+            }
         }
     }
 }
