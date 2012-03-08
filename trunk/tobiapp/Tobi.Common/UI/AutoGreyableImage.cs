@@ -1,12 +1,44 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using SharpVectors.Converters;
+using Tobi.Common.UI.XAML;
+using urakawa.data;
 
 namespace Tobi.Common.UI
 {
+
+    [ValueConversion(typeof(string), typeof(ImageSource))]
+    public class PathToImageSourceConverter : ValueConverterMarkupExtensionBase<PathToImageSourceConverter>
+    {
+        #region IValueConverter Members
+
+        public override object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(Object) && targetType != typeof(ImageSource))
+                throw new InvalidOperationException("The target must be Object or ImageSource !");
+
+            var path = value as string;
+            ImageSource imageSource = AutoGreyableImage.GetSVGOrBitmapImageSource(path);
+            return imageSource;
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+
+        #endregion
+    }
+
     /// <summary>
     /// Heavily modified from the code by: Thomas LEBRUN (http://blogs.developpeur.org/tom)
     /// </summary>
@@ -62,7 +94,7 @@ namespace Tobi.Common.UI
             CachedOpacityMask = new ImageBrush(renderTargetImage);
             CachedOpacityMask.Opacity = 0.4;
             CachedOpacityMask.Freeze();
-            
+
             SetGrey(!IsEnabled);
         }
 
@@ -152,6 +184,106 @@ namespace Tobi.Common.UI
             //            }
 
             return renderBitmap; //renderBitmap.GetAsFrozen();
+        }
+
+
+        public static ImageSource GetSVGOrBitmapImageSource(string filepath)
+        {
+            string localpath = filepath;
+
+            if (filepath.StartsWith("http://"))
+            {
+                localpath = new Uri(filepath, UriKind.Absolute).LocalPath; //AbsolutePath preserves %20, file:// etc.
+                localpath = Path.Combine(Path.GetTempPath(), Path.GetFileName(localpath));
+                try
+                {
+                    WebClient webClient = new WebClient();
+                    webClient.Proxy = null;
+                    webClient.DownloadFile(filepath, localpath);
+
+                    //byte[] imageContent = webClient.DownloadData(filepath);
+                    //Stream stream = new MemoryStream(imageContent);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+
+            if (!File.Exists(localpath))
+            {
+                return null;
+            }
+
+            ImageSource imageSource = null;
+
+            string ext = Path.GetExtension(localpath);
+            if (string.Equals(ext, DataProviderFactory.IMAGE_SVG_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(ext, DataProviderFactory.IMAGE_SVGZ_EXTENSION, StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    SvgImageExtension svgImageExt = new SvgImageExtension(localpath);
+                    svgImageExt.TextAsGeometry = true;
+                    svgImageExt.OptimizePath = true;
+                    svgImageExt.IncludeRuntime = true;
+
+                    imageSource = (DrawingImage)svgImageExt.ProvideValue(null);
+                }
+                catch (Exception e1)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                try
+                {
+                    //new BitmapImage(new Uri(path, UriKind.Absolute));
+                    var bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(localpath, UriKind.Absolute);
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.CreateOptions = BitmapCreateOptions.None;
+                    bitmap.EndInit();
+
+                    imageSource = bitmap;
+                }
+                catch (Exception e2)
+                {
+                    return null;
+                }
+
+
+
+                /*
+                 * stream = new FileStream(fullImagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                 * 
+                 * 
+                if (fullImagePath.EndsWith(DataProviderFactory.IMAGE_JPG_EXTENSION) || fullImagePath.EndsWith(DataProviderFactory.IMAGE_JPEG_EXTENSION))
+                {
+                    BitmapDecoder dec = new JpegBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                    image.Source = dec.Frames[0];
+                }
+                else if (fullImagePath.EndsWith(DataProviderFactory.IMAGE_PNG_EXTENSION))
+                {
+                    BitmapDecoder dec = new PngBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                    image.Source = dec.Frames[0];
+                }
+                else if (fullImagePath.EndsWith(DataProviderFactory.IMAGE_BMP_EXTENSION))
+                {
+                    BitmapDecoder dec = new BmpBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                    image.Source = dec.Frames[0];
+                }
+                else if (fullImagePath.EndsWith(DataProviderFactory.IMAGE_GIF_EXTENSION))
+                {
+                    BitmapDecoder dec = new GifBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
+                    image.Source = dec.Frames[0];
+                }
+                 */
+            }
+
+            return imageSource;
         }
     }
 }

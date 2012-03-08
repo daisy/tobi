@@ -113,6 +113,14 @@
       <Project>{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}</Project>
       <Name>Lib.ServiceLocation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\SharpVector\SharpVectorConverters\SharpVectors.Converters.csproj">
+      <Project>{E8056611-E49C-4BC3-A682-A629D5CEC11C}</Project>
+      <Name>SharpVectors.Converters</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\SharpVector\SharpVectorRuntime\SharpVectors.Runtime.csproj">
+      <Project>{2CD52982-A1C2-4A14-9D69-D64719357216}</Project>
+      <Name>SharpVectors.Runtime</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioCues.cs" />

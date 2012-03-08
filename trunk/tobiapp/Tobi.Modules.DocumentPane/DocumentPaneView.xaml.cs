@@ -36,6 +36,7 @@ using urakawa;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.data;
 using urakawa.events.undo;
 using urakawa.property.alt;
 using urakawa.xuk;
@@ -1440,35 +1441,23 @@ namespace Tobi.Plugin.DocumentPane
         {
             string dirPath = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
 
-            ImageSource imageSource = null;
-            try
-            {
-                string imgPath = Path.Combine(dirPath, "daisy.svg");
-                SvgImageExtension svgImageExt = new SvgImageExtension(imgPath);
-                svgImageExt.TextAsGeometry = true;
-                svgImageExt.OptimizePath = true;
-                svgImageExt.IncludeRuntime = true;
-
-                imageSource = (DrawingImage)svgImageExt.ProvideValue(null);
-            }
-            catch (Exception e1)
+            string imgPath = Path.Combine(dirPath, "daisy.svg");
+            ImageSource imageSource = AutoGreyableImage.GetSVGOrBitmapImageSource(imgPath);
+            if (imageSource == null)
             {
 #if DEBUG
                 Debugger.Break();
 #endif //DEBUG
-                try
+                imgPath = Path.Combine(dirPath, "daisy_01.png");
+                imageSource = AutoGreyableImage.GetSVGOrBitmapImageSource(imgPath);
+                if (imageSource == null)
                 {
-                    string imgPath = Path.Combine(dirPath, "daisy_01.png");
-                    FileStream imageStream = File.OpenRead(imgPath);
-                    var iconDecoder = new PngBitmapDecoder(imageStream, BitmapCreateOptions.PreservePixelFormat,
-                                                           BitmapCacheOption.Default);
-                    imageSource = iconDecoder.Frames[0];
-                }
-                catch (Exception e2)
-                {
-                    imageSource = null;
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
                 }
             }
+
 
             try
             {

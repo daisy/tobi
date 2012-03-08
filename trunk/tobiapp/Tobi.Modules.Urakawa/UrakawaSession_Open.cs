@@ -152,8 +152,12 @@ namespace Tobi.Plugin.Urakawa
                 return false;
             }
 
-            string ext = Path.GetExtension(fileUri.ToString()).ToLower();
-            if (ext == @".xuk" || ext == @".xukbundle")
+            string ext = Path.GetExtension(fileUri.ToString());
+            if (
+                String.Equals(ext, ".xuk", StringComparison.OrdinalIgnoreCase)
+                ||
+                String.Equals(ext, ".xukbundle", StringComparison.OrdinalIgnoreCase)
+                )
             {
                 //todo: should we implement HTTP open ?
                 if (!fileUri.IsFile)
@@ -347,7 +351,7 @@ namespace Tobi.Plugin.Urakawa
                 //    return false;
                 //}
             }
-            else if (ext == @".obi")
+            else if (String.Equals(ext, ".obi", StringComparison.OrdinalIgnoreCase))
             {
                 string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 string xslFilePath = Path.Combine(workingDirectory, "Obi-to-XUK2.xsl");

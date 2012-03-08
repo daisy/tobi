@@ -243,27 +243,10 @@ namespace Tobi.Plugin.Descriptions
 
                 ManagedImageMedia img1 = node.Presentation.MediaFactory.CreateManagedImageMedia();
 
-                //ImageMediaData imgData1 = node.Presentation.MediaDataFactory.CreateImageMediaData();
-                ImageMediaData imgData1 = null;
-                switch (ext)
+                ImageMediaData imgData1 = node.Presentation.MediaDataFactory.CreateImageMediaData(ext);
+                if (imgData1 == null)
                 {
-                    case ".jpg":
-                        imgData1 = node.Presentation.MediaDataFactory.Create<JpgImageMediaData>();
-                        break;
-
-                    case ".bmp":
-                        imgData1 = node.Presentation.MediaDataFactory.Create<BmpImageMediaData>();
-                        break;
-
-                    case ".png":
-                        imgData1 = node.Presentation.MediaDataFactory.Create<PngImageMediaData>();
-                        break;
-
-                    default:
-                        {
-                            return;
-                            break;
-                        }
+                    return;
                 }
 
                 imgData1.InitializeImage(fullPath, Path.GetFileName(fullPath));
@@ -1141,58 +1124,17 @@ namespace Tobi.Plugin.Descriptions
                         string ext = Path.GetExtension(imgFullPath);
                         ext = ext == null ? null : ext.ToLower();
 
-                        ImageMediaData imgData = null;
-                        if (ext == ".jpg" || ext == ".jpeg")
+                        ImageMediaData imgData = treeNode.Presentation.MediaDataFactory.CreateImageMediaData(ext);
+                        if (imgData != null)
                         {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<JpgImageMediaData>();
-                        }
-                        else if (ext == ".png")
-                        {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<PngImageMediaData>();
-                        }
-                        else if (ext == ".gif")
-                        {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<GifImageMediaData>();
-                        }
-                        else if (ext == ".svg" || ext == ".svgz")
-                        {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<SvgImageMediaData>();
-                        }
-                        else if (ext == ".bmp")
-                        {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<BmpImageMediaData>();
-                        }
-                        else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_JPG_MIME_TYPE)
-                        {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<JpgImageMediaData>();
-                        }
-                        else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_PNG_MIME_TYPE)
-                        {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<PngImageMediaData>();
-                        }
-                        else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_GIF_MIME_TYPE)
-                        {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<GifImageMediaData>();
-                        }
-                        else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE)
-                        {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<SvgImageMediaData>();
-                        }
-                        else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_BMP_MIME_TYPE)
-                        {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<BmpImageMediaData>();
-                        }
-                        else
-                        {
-                            imgData = treeNode.Presentation.MediaDataFactory.Create<BmpImageMediaData>();
-                        }
+                            imgData.InitializeImage(imgFullPath, Path.GetFileName(imgFullPath));
+                            img.ImageMediaData = imgData;
 
-                        imgData.InitializeImage(imgFullPath, Path.GetFileName(imgFullPath));
-                        img.ImageMediaData = imgData;
-
-                        AlternateContentSetManagedMediaCommand cmd_AltContent_Image =
-                            treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode, altContent, img);
-                        treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Image);
+                            AlternateContentSetManagedMediaCommand cmd_AltContent_Image =
+                                treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(
+                                    treeNode, altContent, img);
+                            treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Image);
+                        }
                     }
                 }
             }

@@ -9,6 +9,7 @@ using urakawa.core;
 using System.Speech.AudioFormat;
 using System.Speech.Synthesis;
 using System.Threading;
+using urakawa.data;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -55,7 +56,7 @@ namespace Tobi.Plugin.AudioPane
             tryagain:
                 i++;
 
-                var filePath = Path.Combine(OutputDirectory, "tts_" + m_ttsFileNameCounter + ".wav");
+            var filePath = Path.Combine(OutputDirectory, "tts_" + m_ttsFileNameCounter + DataProviderFactory.AUDIO_WAV_EXTENSION);
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);

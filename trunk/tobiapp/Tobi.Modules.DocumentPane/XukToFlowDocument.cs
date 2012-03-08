@@ -1454,52 +1454,15 @@ namespace Tobi.Plugin.DocumentPane
 
             if (srcAttr == null) return parent;
 
-            Image image = new Image();
+            string imagePath = srcAttr.Value;
 
-            bool useFourZeroFourPlaceholder = false;
-
-            if (srcAttr.Value.StartsWith("http://"))
-            {
-                //image.Source = new BitmapImage(new Uri(srcAttr.Value, UriKind.Absolute));
-
-                string imagePath = new Uri(srcAttr.Value, UriKind.Absolute).LocalPath; //AbsolutePath preserves %20, file:// etc.
-                imagePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(imagePath));
-
-                //string batchFile = Path.ChangeExtension(Path.GetTempFileName(), "bat");
-
-                try
-                {
-                    WebClient webClient = new WebClient();
-                    webClient.Proxy = null;
-                    webClient.DownloadFile(srcAttr.Value, imagePath);
-
-                    var bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.UriSource = new Uri(imagePath, UriKind.Absolute);
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.CreateOptions = BitmapCreateOptions.None;
-                    bitmap.EndInit();
-
-                    //bitmap.Freeze(); COM Exception !!
-                    image.Source = bitmap;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine(@"Problem trying to load: [" + imagePath + "]");
-#if DEBUG
-                    //Debugger.Break();
-#endif
-                    useFourZeroFourPlaceholder = true;
-                    //return parent;
-                }
-            }
-            else
+            if (!imagePath.StartsWith("http://"))
             {
                 //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
 
                 string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
 
-                string fullImagePath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
+                imagePath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
 
                 AbstractImageMedia imgMedia = node.GetImageMedia();
                 var imgMedia_ext = imgMedia as ExternalImageMedia;
@@ -1507,7 +1470,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 if (imgMedia_ext != null)
                 {
-                    fullImagePath = Path.Combine(dirPath, Uri.UnescapeDataString(imgMedia_ext.Src));
+                    imagePath = Path.Combine(dirPath, Uri.UnescapeDataString(imgMedia_ext.Src));
                 }
                 else if (imgMedia_man != null)
                 {
@@ -1515,39 +1478,35 @@ namespace Tobi.Plugin.DocumentPane
                     var fileDataProv = imgMedia_man.ImageMediaData.DataProvider as FileDataProvider;
 
                     if (fileDataProv != null)
-                        fullImagePath = fileDataProv.DataFileFullPath;
-                }
-
-                try
-                {
-                    //BitmapImage bitmap = new BitmapImage(new Uri(fullImagePath, UriKind.Absolute)); // { CacheOption = BitmapCacheOption.OnLoad };
-
-                    var bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.UriSource = new Uri(fullImagePath, UriKind.Absolute);
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.CreateOptions = BitmapCreateOptions.None;
-                    bitmap.EndInit();
-
-                    bitmap.Freeze();
-                    image.Source = bitmap;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine(@"Problem trying to load: [" + fullImagePath + "]");
-#if DEBUG
-                    //Debugger.Break();
-#endif
-                    useFourZeroFourPlaceholder = true;
-                    //return parent;
+                    {
+                        imagePath = fileDataProv.DataFileFullPath;
+                    }
                 }
             }
 
-            if (useFourZeroFourPlaceholder)
+            Image image = new Image();
+
+            ImageSource imageSource = AutoGreyableImage.GetSVGOrBitmapImageSource(imagePath);
+            if (imageSource == null)
             {
+                Console.WriteLine(@"Problem trying to load image: [" + imagePath + @"]");
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+
                 VisualBrush brush = ShellView.LoadGnomeNeuIcon("Neu_emblem-important");
                 RenderTargetBitmap bitmap = AutoGreyableImage.CreateFromVectorGraphics(brush, 100, 100);
+
                 image.Source = bitmap;
+            }
+            else
+            {
+                image.Source = imageSource;
+            }
+
+            if (image.Source.CanFreeze)
+            {
+                image.Source.Freeze();
             }
 
             if (image.Source is BitmapSource)
@@ -1560,6 +1519,7 @@ namespace Tobi.Plugin.DocumentPane
                 //image.Width = pw;
                 //image.Height = ph;
             }
+
             XmlAttribute srcW = xmlProp.GetAttribute("width");
             if (srcW != null)
             {
@@ -1668,38 +1628,6 @@ namespace Tobi.Plugin.DocumentPane
 
 
             return parent;
-
-            /*
-                WebClient webClient = new WebClient();
-                fullImagePath = srcAttr.Value;
-                byte[] imageContent = webClient.DownloadData(srcAttr.Value);
-                Stream stream = new MemoryStream(imageContent);
-                 */
-            /*
-             * stream = new FileStream(fullImagePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-             * 
-             * 
-            if (fullImagePath.EndsWith(".jpg") || fullImagePath.EndsWith(".jpeg"))
-            {
-                BitmapDecoder dec = new JpegBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                image.Source = dec.Frames[0];
-            }
-            else if (fullImagePath.EndsWith(".png"))
-            {
-                BitmapDecoder dec = new PngBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                image.Source = dec.Frames[0];
-            }
-            else if (fullImagePath.EndsWith(".bmp"))
-            {
-                BitmapDecoder dec = new BmpBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                image.Source = dec.Frames[0];
-            }
-            else if (fullImagePath.EndsWith(".gif"))
-            {
-                BitmapDecoder dec = new GifBitmapDecoder(stream, BitmapCreateOptions.IgnoreImageCache, BitmapCacheOption.OnLoad);
-                image.Source = dec.Frames[0];
-            }
-             */
         }
 
         private TextElement walkBookTreeAndGenerateFlowDocument_(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
