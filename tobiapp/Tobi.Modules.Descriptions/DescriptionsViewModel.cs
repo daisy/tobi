@@ -17,6 +17,7 @@ using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.daisy;
+using urakawa.data;
 using urakawa.events.undo;
 using urakawa.exception;
 using urakawa.media;
@@ -911,7 +912,9 @@ namespace Tobi.Plugin.Descriptions
 
                     bool parentIsMeta = metaNode.ParentNode.LocalName == "meta";
 
-                    var listAttrs = new List<XmlAttribute>(mdAttributes.Count + (parentIsMeta ? metaNode.ParentNode.Attributes.Count : 0));
+                    var listAttrs = new List<XmlAttribute>(mdAttributes.Count +
+                        (parentIsMeta && metaNode.ParentNode.Attributes != null ? metaNode.ParentNode.Attributes.Count : 0)
+                        );
 
                     for (int i = 0; i < mdAttributes.Count; i++)
                     {
@@ -919,7 +922,7 @@ namespace Tobi.Plugin.Descriptions
                         listAttrs.Add(attribute);
                     }
 
-                    if (parentIsMeta)
+                    if (parentIsMeta && metaNode.ParentNode.Attributes != null)
                     {
                         for (int i = 0; i < metaNode.ParentNode.Attributes.Count; i++)
                         {
@@ -972,16 +975,16 @@ namespace Tobi.Plugin.Descriptions
             XmlNode body = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(description, false, "body", DiagramContentModelHelper.NS_URL_DIAGRAM);
             if (body != null)
             {
-                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.D_Summary);
-                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.D_LondDesc);
-                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.D_SimplifiedLanguageDescription);
+                diagramXmlParseBody(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_Summary);
+                diagramXmlParseBody(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_LondDesc);
+                diagramXmlParseBody(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_SimplifiedLanguageDescription);
 
 #if SUPPORT_ANNOTATION_ELEMENT
                 diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.Annotation);
 #endif //SUPPORT_ANNOTATION_ELEMENT
 
-                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.D_Tactile);
-                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.D_SimplifiedImage);
+                diagramXmlParseBody(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_Tactile);
+                diagramXmlParseBody(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_SimplifiedImage);
             }
 
             OnPanelLoaded();
@@ -1048,10 +1051,10 @@ namespace Tobi.Plugin.Descriptions
 
         }
 
-        private void diagramXmlParseBody(TreeNode treeNode, XmlNode body, string diagramElementName)
+        private void diagramXmlParseBody(string xmlFilePath, TreeNode treeNode, XmlNode body, string diagramElementName)
         {
             string localName = DiagramContentModelHelper.StripNSPrefix(diagramElementName);
-            foreach (XmlNode diagramElementNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(body, true, localName, DiagramContentModelHelper.NS_URL_DIAGRAM, false))
+            foreach (XmlNode diagramElementNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(body, false, localName, DiagramContentModelHelper.NS_URL_DIAGRAM, false))
             {
                 if (diagramElementNode.NodeType != XmlNodeType.Element || diagramElementNode.LocalName != localName)
                 {
@@ -1085,44 +1088,125 @@ namespace Tobi.Plugin.Descriptions
                 treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_diagramElementName_Metadata);
 
 
-
-                string strText = diagramElementNode.InnerXml;
-                TextMedia txtMedia = treeNode.Presentation.MediaFactory.CreateTextMedia();
-                txtMedia.Text = strText;
-                AlternateContentSetManagedMediaCommand cmd_AltContent_Text =
-                    treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode, altContent, txtMedia);
-                treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Text);
-
-                for (int i = 0; i < diagramElementNode.Attributes.Count; i++)
+                if (diagramElementNode.Attributes != null)
                 {
-                    XmlAttribute attribute = diagramElementNode.Attributes[i];
+                    for (int i = 0; i < diagramElementNode.Attributes.Count; i++)
+                    {
+                        XmlAttribute attribute = diagramElementNode.Attributes[i];
 
 
-                    if (attribute.Name.StartsWith("xmlns:"))
-                    {
-                        //
+                        if (attribute.Name.StartsWith("xmlns:"))
+                        {
+                            //
+                        }
+                        else if (attribute.Name == "xmlns")
+                        {
+                            //
+                        }
+                        else
+                        {
+                            Metadata diagramElementAttribute_Metadata = new Metadata();
+                            diagramElementAttribute_Metadata.NameContentAttribute = new MetadataAttribute();
+                            diagramElementAttribute_Metadata.NameContentAttribute.Name = attribute.Name;
+                            diagramElementAttribute_Metadata.NameContentAttribute.NamespaceUri = attribute.NamespaceURI;
+                            diagramElementAttribute_Metadata.NameContentAttribute.Value = attribute.Value;
+                            AlternateContentMetadataAddCommand cmd_AltContent_diagramElementAttribute_Metadata =
+                                treeNode.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(
+                                    treeNode,
+                                    null,
+                                    altContent,
+                                    diagramElementAttribute_Metadata,
+                                    null
+                                    );
+                            treeNode.Presentation.UndoRedoManager.Execute(
+                                cmd_AltContent_diagramElementAttribute_Metadata);
+                        }
                     }
-                    else if (attribute.Name == "xmlns")
+                }
+
+                XmlNode textNode = diagramElementNode;
+
+                if (diagramElementName == DiagramContentModelHelper.D_SimplifiedImage
+                    || diagramElementName == DiagramContentModelHelper.D_Tactile)
+                {
+                    string localTourName = DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.D_Tour);
+                    XmlNode tour =
+                        XmlDocumentHelper.GetFirstChildElementOrSelfWithName(diagramElementNode, false,
+                                                                             localTourName,
+                                                                             DiagramContentModelHelper.NS_PREFIX_DIAGRAM);
+                    textNode = tour;
+
+
+
+                    XmlNode obj =
+                        XmlDocumentHelper.GetFirstChildElementOrSelfWithName(diagramElementNode, false,
+                                                                             DiagramContentModelHelper.Object,
+                                                                             DiagramContentModelHelper.NS_PREFIX_ZAI);
+
+                    if (obj != null && obj.Attributes != null && obj.Attributes.Count > 0)
                     {
-                        //
+                        XmlAttribute srcAttr = (XmlAttribute)obj.Attributes.GetNamedItem(DiagramContentModelHelper.Src);
+                        if (srcAttr != null)
+                        {
+
+                            XmlAttribute srcType = (XmlAttribute)obj.Attributes.GetNamedItem(DiagramContentModelHelper.SrcType);
+
+                            ManagedImageMedia img = treeNode.Presentation.MediaFactory.CreateManagedImageMedia();
+
+                            string imgFullPath = Path.Combine(xmlFilePath, srcAttr.Value);
+                            string ext = Path.GetExtension(imgFullPath);
+                            ext = ext == null ? null : ext.ToLower();
+
+                            ImageMediaData imgData = null;
+                            if (ext == ".jpg" || ext == ".jpeg")
+                            {
+                                imgData = treeNode.Presentation.MediaDataFactory.Create<JpgImageMediaData>();
+                            }
+                            else if (ext == ".png")
+                            {
+                                imgData = treeNode.Presentation.MediaDataFactory.Create<PngImageMediaData>();
+                            }
+                            else if (ext == ".bmp")
+                            {
+                                imgData = treeNode.Presentation.MediaDataFactory.Create<BmpImageMediaData>();
+                            }
+                            else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_JPG_MIME_TYPE)
+                            {
+                                imgData = treeNode.Presentation.MediaDataFactory.Create<JpgImageMediaData>();
+                            }
+                            else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_PNG_MIME_TYPE)
+                            {
+                                imgData = treeNode.Presentation.MediaDataFactory.Create<PngImageMediaData>();
+                            }
+                            else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_BMP_MIME_TYPE)
+                            {
+                                imgData = treeNode.Presentation.MediaDataFactory.Create<BmpImageMediaData>();
+                            }
+                            else
+                            {
+                                imgData = treeNode.Presentation.MediaDataFactory.Create<BmpImageMediaData>();
+                            }
+
+                            imgData.InitializeImage(imgFullPath, Path.GetFileName(imgFullPath));
+                            img.ImageMediaData = imgData;
+
+                            AlternateContentSetManagedMediaCommand cmd_AltContent_Image =
+                                treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode, altContent, img);
+                            treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Image);
+                        }
                     }
-                    else
-                    {
-                        Metadata diagramElementAttribute_Metadata = new Metadata();
-                        diagramElementAttribute_Metadata.NameContentAttribute = new MetadataAttribute();
-                        diagramElementAttribute_Metadata.NameContentAttribute.Name = attribute.Name;
-                        diagramElementAttribute_Metadata.NameContentAttribute.NamespaceUri = attribute.NamespaceURI;
-                        diagramElementAttribute_Metadata.NameContentAttribute.Value = attribute.Value;
-                        AlternateContentMetadataAddCommand cmd_AltContent_diagramElementAttribute_Metadata =
-                            treeNode.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(
-                                treeNode,
-                                null,
-                                altContent,
-                                diagramElementAttribute_Metadata,
-                                null
-                                );
-                        treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_diagramElementAttribute_Metadata);
-                    }
+                }
+
+                if (textNode != null)
+                {
+                    string strText = textNode.InnerXml;
+                    TextMedia txtMedia = treeNode.Presentation.MediaFactory.CreateTextMedia();
+                    txtMedia.Text = strText;
+                    AlternateContentSetManagedMediaCommand cmd_AltContent_Text =
+                        treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode,
+                                                                                                          altContent,
+                                                                                                          txtMedia);
+                    treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Text);
                 }
             }
         }
