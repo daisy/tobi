@@ -298,6 +298,18 @@ namespace Tobi.Plugin.Descriptions
             m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
                 (Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc, Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_LongDesc);
 
+
+            //Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            //TreeNode node = selection.Item2 ?? selection.Item1;
+            //if (node == null) return;
+
+            var altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null)
+            {
+                altProp = node.GetOrCreateAlternateContentProperty();
+                DebugFix.Assert(altProp != null);
+            }
+
             windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
@@ -308,7 +320,7 @@ namespace Tobi.Plugin.Descriptions
 
                 if (empty)
                 {
-                    var altProp = node.GetProperty<AlternateContentProperty>();
+                    altProp = node.GetProperty<AlternateContentProperty>();
                     if (altProp != null && altProp.IsEmpty)
                     {
                         node.RemoveProperty(altProp);
@@ -319,7 +331,7 @@ namespace Tobi.Plugin.Descriptions
             {
                 m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
 
-                var altProp = node.GetProperty<AlternateContentProperty>();
+                altProp = node.GetProperty<AlternateContentProperty>();
                 if (altProp != null && altProp.IsEmpty)
                 {
                     node.RemoveProperty(altProp);
@@ -330,13 +342,46 @@ namespace Tobi.Plugin.Descriptions
             //GC.WaitForFullGCComplete();
         }
 
-        private void OnLoaded_Panel(object sender, RoutedEventArgs e)
+        
+
+        private void OnClick_ButtonImport(object sender, RoutedEventArgs e)
         {
-            var win = Window.GetWindow(this);
-            if (win is PopupModalWindow)
-                OwnerWindow = (PopupModalWindow)win;
+            m_Logger.Log("DescriptionView.OpenFileDialog (XML)", Category.Debug, Priority.Medium);
+
+            var dlg = new OpenFileDialog
+            {
+                FileName = "",
+                DefaultExt = ".xml",
+                Filter = @"XML (*.xml)|*.xml",
+                CheckFileExists = false,
+                CheckPathExists = false,
+                AddExtension = true,
+                DereferenceLinks = true,
+                Title = "Tobi: " + "Open DIAGRAM XML file"
+            };
+
+            bool? result = false;
+
+            m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
+            if (result == false)
+            {
+                return;
+            }
+
+            string fullPath = "";
+            fullPath = dlg.FileName;
+
+            if (string.IsNullOrEmpty(fullPath)) return;
 
 
+            m_ViewModel.ImportDiagramXML(fullPath);
+
+            forceRefreshDataUI();
+        }
+
+        private void forceRefreshDataUI()
+        {
             MetadatasListView.Items.Refresh();
             if (MetadatasListView.Items.Count > 0)
             {
@@ -368,8 +413,19 @@ namespace Tobi.Plugin.Descriptions
                 FocusHelper.Focus(DescriptionsListView);
             }
             OnSelectionChanged_DescriptionsList(null, null);
+        }
+
+        private void OnLoaded_Panel(object sender, RoutedEventArgs e)
+        {
+            var win = Window.GetWindow(this);
+            if (win is PopupModalWindow)
+                OwnerWindow = (PopupModalWindow)win;
+
+
 
             m_ViewModel.OnPanelLoaded();
+
+            forceRefreshDataUI();
         }
 
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
@@ -1174,7 +1230,6 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnClick_ButtonOpenImage(object sender, RoutedEventArgs e)
         {
-            string fullPath = "";
             m_Logger.Log("DescriptionImage.OpenFileDialog", Category.Debug, Priority.Medium);
 
             var dlg = new OpenFileDialog
@@ -1199,6 +1254,7 @@ namespace Tobi.Plugin.Descriptions
                 return;
             }
 
+            string fullPath = "";
             fullPath = dlg.FileName;
 
             if (string.IsNullOrEmpty(fullPath)) return;

@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
+using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.UI;
 using urakawa.core;
@@ -28,6 +29,7 @@ namespace Tobi.Plugin.Descriptions
         private readonly IEventAggregator m_EventAggregator;
         private readonly ILoggerFacade m_Logger;
         private readonly IUrakawaSession m_UrakawaSession;
+        private readonly IShellView m_ShellView;
 
         private readonly DescriptionsView m_DescriptionsView;
 
@@ -37,6 +39,8 @@ namespace Tobi.Plugin.Descriptions
             ILoggerFacade logger,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IUrakawaSession urakawaSession,
+            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IShellView shellView,
             [Import(typeof(DescriptionsNavigationViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             DescriptionsNavigationViewModel viewModel,
             [Import(typeof(IDescriptionsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
@@ -47,6 +51,7 @@ namespace Tobi.Plugin.Descriptions
             m_EventAggregator = eventAggregator;
             m_Logger = logger;
 
+            m_ShellView = shellView;
             ViewModel = viewModel;
             DataContext = ViewModel;
 
@@ -107,9 +112,9 @@ namespace Tobi.Plugin.Descriptions
 
 
 
-        private void OnClick_Button(object sender, RoutedEventArgs e)
+        private void OnClick_ButtonAddEdit(object sender, RoutedEventArgs e)
         {
-            //handleListCurrentSelection();
+            UpdateTreeNodeSelectionFromListItem();
 
             m_DescriptionsView.Popup();
         }
