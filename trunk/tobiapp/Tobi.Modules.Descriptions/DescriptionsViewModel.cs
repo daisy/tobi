@@ -1150,6 +1150,14 @@ namespace Tobi.Plugin.Descriptions
                         {
                             imgData = treeNode.Presentation.MediaDataFactory.Create<PngImageMediaData>();
                         }
+                        else if (ext == ".gif")
+                        {
+                            imgData = treeNode.Presentation.MediaDataFactory.Create<GifImageMediaData>();
+                        }
+                        else if (ext == ".svg" || ext == ".svgz")
+                        {
+                            imgData = treeNode.Presentation.MediaDataFactory.Create<SvgImageMediaData>();
+                        }
                         else if (ext == ".bmp")
                         {
                             imgData = treeNode.Presentation.MediaDataFactory.Create<BmpImageMediaData>();
@@ -1161,6 +1169,14 @@ namespace Tobi.Plugin.Descriptions
                         else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_PNG_MIME_TYPE)
                         {
                             imgData = treeNode.Presentation.MediaDataFactory.Create<PngImageMediaData>();
+                        }
+                        else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_GIF_MIME_TYPE)
+                        {
+                            imgData = treeNode.Presentation.MediaDataFactory.Create<GifImageMediaData>();
+                        }
+                        else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_SVG_MIME_TYPE)
+                        {
+                            imgData = treeNode.Presentation.MediaDataFactory.Create<SvgImageMediaData>();
                         }
                         else if (srcType != null && srcType.Value == DataProviderFactory.IMAGE_BMP_MIME_TYPE)
                         {
