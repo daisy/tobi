@@ -818,9 +818,9 @@ namespace Tobi.Plugin.Descriptions
             XmlNode head = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(description, false, "head", DiagramContentModelHelper.NS_URL_DIAGRAM);
             if (head != null)
             {
-                foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(head, true, "meta", DiagramContentModelHelper.NS_URL_ZAI, false))
+                foreach (XmlNode metaNode in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(head, true, "meta", DiagramContentModelHelper.NS_URL_ZAI, false))
                 {
-                    if (node.NodeType != XmlNodeType.Element || node.LocalName != "meta")
+                    if (metaNode.NodeType != XmlNodeType.Element || metaNode.LocalName != "meta")
                     {
 #if DEBUG
                         Debugger.Break();
@@ -836,9 +836,9 @@ namespace Tobi.Plugin.Descriptions
                     //    continue;
                     //}
                     bool foundAtLeastOneChildMeta = false;
-                    foreach (XmlNode child in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(node, false, "meta", DiagramContentModelHelper.NS_URL_ZAI, false))
+                    foreach (XmlNode child in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(metaNode, false, "meta", DiagramContentModelHelper.NS_URL_ZAI, false))
                     {
-                        if (child == node) continue;
+                        if (child == metaNode) continue;
 
                         foundAtLeastOneChildMeta = true;
                         break;
@@ -850,7 +850,7 @@ namespace Tobi.Plugin.Descriptions
 
 
 
-                    XmlAttributeCollection mdAttributes = node.Attributes;
+                    XmlAttributeCollection mdAttributes = metaNode.Attributes;
                     if (mdAttributes == null || mdAttributes.Count <= 0)
                     {
                         continue;
@@ -869,7 +869,7 @@ namespace Tobi.Plugin.Descriptions
 
                     string content = (attrContent != null && !String.IsNullOrEmpty(attrContent.Value))
                                          ? attrContent.Value
-                                         : node.InnerText;
+                                         : metaNode.InnerText;
 
                     if (!(
                              String.IsNullOrEmpty(property) && String.IsNullOrEmpty(content)
@@ -909,9 +909,9 @@ namespace Tobi.Plugin.Descriptions
                             );
                     treeNode.Presentation.UndoRedoManager.Execute(cmd_AltPropMetadata);
 
-                    bool parentIsMeta = node.ParentNode.LocalName == "meta";
+                    bool parentIsMeta = metaNode.ParentNode.LocalName == "meta";
 
-                    var listAttrs = new List<XmlAttribute>(mdAttributes.Count + (parentIsMeta ? node.ParentNode.Attributes.Count : 0));
+                    var listAttrs = new List<XmlAttribute>(mdAttributes.Count + (parentIsMeta ? metaNode.ParentNode.Attributes.Count : 0));
 
                     for (int i = 0; i < mdAttributes.Count; i++)
                     {
@@ -921,9 +921,9 @@ namespace Tobi.Plugin.Descriptions
 
                     if (parentIsMeta)
                     {
-                        for (int i = 0; i < node.ParentNode.Attributes.Count; i++)
+                        for (int i = 0; i < metaNode.ParentNode.Attributes.Count; i++)
                         {
-                            XmlAttribute attribute = node.ParentNode.Attributes[i];
+                            XmlAttribute attribute = metaNode.ParentNode.Attributes[i];
                             if (mdAttributes.GetNamedItem(attribute.LocalName, attribute.NamespaceURI) == null)
                             {
                                 listAttrs.Add(attribute);
