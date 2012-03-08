@@ -123,6 +123,14 @@
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
       <Name>Lib.MEF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\SharpVector\SharpVectorConverters\SharpVectors.Converters_NET4.csproj">
+      <Project>{E8056611-E49C-4BC3-A682-A629D5CEC11C}</Project>
+      <Name>SharpVectors.Converters_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\SharpVector\SharpVectorRuntime\SharpVectors.Runtime_NET4.csproj">
+      <Project>{2CD52982-A1C2-4A14-9D69-D64719357216}</Project>
+      <Name>SharpVectors.Runtime_NET4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tobi.Common\Tobi.Common_NET4.csproj">
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
       <Name>Tobi.Common</Name>

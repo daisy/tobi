@@ -24,6 +24,8 @@ using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Composite.Regions;
+using SharpVectors.Converters;
+using SharpVectors.Runtime;
 using Tobi.Common;
 using Tobi.Common._UnusedCode;
 using Tobi.Common.MVVM;
@@ -1000,7 +1002,7 @@ namespace Tobi.Plugin.DocumentPane
                     TreeNode treeNode_ = selection.Item2 ?? selection.Item1;
                     if (treeNode_ == null)
                     {
-                        AudioCues.PlayAsterisk(); 
+                        AudioCues.PlayAsterisk();
                         return;
                     }
 
@@ -1437,21 +1439,52 @@ namespace Tobi.Plugin.DocumentPane
         private Block createWelcomeEmptyFlowDoc()
         {
             string dirPath = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
-            string imgPath = Path.Combine(dirPath, "daisy_01.png");
+
+            ImageSource imageSource = null;
             try
             {
-                FileStream imageStream = File.OpenRead(imgPath);
-                var iconDecoder = new PngBitmapDecoder(imageStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
-                ImageSource imageSource = iconDecoder.Frames[0];
-                var image = new Image
-                    {
-                        Source = imageSource,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Top,
-                        Stretch = Stretch.Uniform,
-                        StretchDirection = StretchDirection.DownOnly
-                    };
-                image.MaxWidth = 240;
+                string imgPath = Path.Combine(dirPath, "daisy.svg");
+                SvgImageExtension svgImageExt = new SvgImageExtension(imgPath);
+                svgImageExt.TextAsGeometry = true;
+                svgImageExt.OptimizePath = true;
+                svgImageExt.IncludeRuntime = true;
+
+                imageSource = (DrawingImage)svgImageExt.ProvideValue(null);
+            }
+            catch (Exception e1)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                try
+                {
+                    string imgPath = Path.Combine(dirPath, "daisy_01.png");
+                    FileStream imageStream = File.OpenRead(imgPath);
+                    var iconDecoder = new PngBitmapDecoder(imageStream, BitmapCreateOptions.PreservePixelFormat,
+                                                           BitmapCacheOption.Default);
+                    imageSource = iconDecoder.Frames[0];
+                }
+                catch (Exception e2)
+                {
+                    imageSource = null;
+                }
+            }
+
+            try
+            {
+                Image image = null;
+                if (imageSource != null)
+                {
+                    image = new Image
+                                {
+                                    Source = imageSource,
+                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                    VerticalAlignment = VerticalAlignment.Top,
+                                    Stretch = Stretch.Uniform,
+                                    StretchDirection = StretchDirection.DownOnly
+                                };
+                    image.MaxWidth = 240;
+                }
 
                 //var block = new BlockUIContainer(image);
 
@@ -1459,9 +1492,9 @@ namespace Tobi.Plugin.DocumentPane
                 block.TextAlignment = TextAlignment.Center;
 
                 var run1 = new Run(@"Tobi v" + ApplicationConstants.APP_VERSION)
-                    {
-                        FontWeight = FontWeights.Heavy
-                    };
+                               {
+                                   FontWeight = FontWeights.Heavy
+                               };
                 run1.FontSize *= 2;
                 block.Inlines.Add(run1);
                 block.Inlines.Add(new LineBreak());
@@ -1470,11 +1503,15 @@ namespace Tobi.Plugin.DocumentPane
                 block.Inlines.Add(run2);
                 block.Inlines.Add(new LineBreak());
 
-                var inline = new InlineUIContainer(image)
-                    {
-                        BaselineAlignment = BaselineAlignment.Top
-                    };
-                block.Inlines.Add(inline);
+                if (image != null)
+                {
+                    var inline = new InlineUIContainer(image)
+                                     {
+                                         BaselineAlignment = BaselineAlignment.Top
+                                     };
+
+                    block.Inlines.Add(inline);
+                }
 
                 return block;
             }
