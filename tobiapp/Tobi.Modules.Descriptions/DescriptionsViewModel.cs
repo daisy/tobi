@@ -809,16 +809,16 @@ namespace Tobi.Plugin.Descriptions
 
             XmlDocument diagramXML = OpenXukAction.ParseXmlDocument(xmlFilePath, true);
 
-            XmlNode description = XmlDocumentHelper.GetFirstChildElementWithName(diagramXML, false, "description", DiagramContentModelHelper.NS_URL_DIAGRAM);
+            XmlNode description = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(diagramXML, false, "description", DiagramContentModelHelper.NS_URL_DIAGRAM);
             if (description == null)
             {
                 return;
             }
 
-            XmlNode head = XmlDocumentHelper.GetFirstChildElementWithName(description, false, "head", DiagramContentModelHelper.NS_URL_DIAGRAM);
+            XmlNode head = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(description, false, "head", DiagramContentModelHelper.NS_URL_DIAGRAM);
             if (head != null)
             {
-                foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsWithName(head, true, "meta", DiagramContentModelHelper.NS_URL_ZAI, false))
+                foreach (XmlNode node in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(head, true, "meta", DiagramContentModelHelper.NS_URL_ZAI, false))
                 {
                     if (node.NodeType != XmlNodeType.Element || node.LocalName != "meta")
                     {
@@ -828,11 +828,27 @@ namespace Tobi.Plugin.Descriptions
                         continue;
                     }
 
-                    XmlNode childMetadata = XmlDocumentHelper.GetFirstChildElementWithName(node, false, "meta", DiagramContentModelHelper.NS_URL_ZAI);
-                    if (childMetadata != null)
+
+
+                    //XmlNode childMetadata = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(node, false, "meta", DiagramContentModelHelper.NS_URL_ZAI);
+                    //if (childMetadata != null)
+                    //{
+                    //    continue;
+                    //}
+                    bool foundAtLeastOneChildMeta = false;
+                    foreach (XmlNode child in XmlDocumentHelper.GetChildrenElementsOrSelfWithName(node, false, "meta", DiagramContentModelHelper.NS_URL_ZAI, false))
+                    {
+                        if (child == node) continue;
+
+                        foundAtLeastOneChildMeta = true;
+                        break;
+                    }
+                    if (foundAtLeastOneChildMeta)
                     {
                         continue;
                     }
+
+
 
                     XmlAttributeCollection mdAttributes = node.Attributes;
                     if (mdAttributes == null || mdAttributes.Count <= 0)
@@ -953,7 +969,7 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
-            XmlNode body = XmlDocumentHelper.GetFirstChildElementWithName(description, false, "body", DiagramContentModelHelper.NS_URL_DIAGRAM);
+            XmlNode body = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(description, false, "body", DiagramContentModelHelper.NS_URL_DIAGRAM);
             if (body != null)
             {
             }
