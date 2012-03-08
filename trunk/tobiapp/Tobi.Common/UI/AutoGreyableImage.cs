@@ -186,31 +186,11 @@ namespace Tobi.Common.UI
             return renderBitmap; //renderBitmap.GetAsFrozen();
         }
 
-
         public static ImageSource GetSVGOrBitmapImageSource(string filepath)
         {
-            string localpath = filepath;
+            string localpath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(filepath);
 
-            if (filepath.StartsWith("http://"))
-            {
-                localpath = new Uri(filepath, UriKind.Absolute).LocalPath; //AbsolutePath preserves %20, file:// etc.
-                localpath = Path.Combine(Path.GetTempPath(), Path.GetFileName(localpath));
-                try
-                {
-                    WebClient webClient = new WebClient();
-                    webClient.Proxy = null;
-                    webClient.DownloadFile(filepath, localpath);
-
-                    //byte[] imageContent = webClient.DownloadData(filepath);
-                    //Stream stream = new MemoryStream(imageContent);
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-
-            if (!File.Exists(localpath))
+            if (localpath == null && !File.Exists(localpath))
             {
                 return null;
             }

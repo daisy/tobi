@@ -123,7 +123,7 @@ namespace Tobi.Plugin.AudioPane
                                                            PopupModalWindow.DialogButtonsSet.Close,
                                                            PopupModalWindow.DialogButton.Close,
                                                            true, 420, 180, null, 0);
-
+                    windowPopup.EnableEnterKeyDefault = true;
                     windowPopup.ShowFloating(null);
                 },
                 () => true,
@@ -153,6 +153,7 @@ namespace Tobi.Plugin.AudioPane
                                                            PopupModalWindow.DialogButtonsSet.Close,
                                                            PopupModalWindow.DialogButton.Close,
                                                            true, 400, 500, null, 0);
+                    windowPopup.EnableEnterKeyDefault = true;
                     windowPopup.Show();
                 },
                 () => true,

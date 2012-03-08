@@ -1029,7 +1029,7 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
-        private void diagramXmlParseBody_(XmlNode diagramElementNode, string xmlFilePath, TreeNode treeNode)
+        private void diagramXmlParseBody_(XmlNode diagramElementNode, string xmlFilePath, TreeNode treeNode, int objectIndex = 0)
         {
             string diagramElementName = diagramElementNode.Name;
 
@@ -1092,6 +1092,8 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
+            int nObjects = -1;
+
             XmlNode textNode = diagramElementNode;
 
             if (diagramElementName == DiagramContentModelHelper.D_SimplifiedImage
@@ -1104,36 +1106,64 @@ namespace Tobi.Plugin.Descriptions
                                                                          DiagramContentModelHelper.NS_URL_DIAGRAM);
                 textNode = tour;
 
-
-
-                XmlNode obj =
-                    XmlDocumentHelper.GetFirstChildElementOrSelfWithName(diagramElementNode, false,
-                                                                         DiagramContentModelHelper.Object,
-                                                                         DiagramContentModelHelper.NS_URL_ZAI);
-
-                if (obj != null && obj.Attributes != null && obj.Attributes.Count > 0)
+                IEnumerable<XmlNode> objects = XmlDocumentHelper.GetChildrenElementsOrSelfWithName(diagramElementNode, false,
+                                                                                          DiagramContentModelHelper.
+                                                                                              Object,
+                                                                                          DiagramContentModelHelper.
+                                                                                              NS_URL_ZAI, false);
+                nObjects = 0;
+                foreach (XmlNode obj in objects)
                 {
+                    nObjects++;
+                }
+
+                int i = -1;
+                foreach (XmlNode obj in objects)
+                {
+                    i++;
+                    if (i != objectIndex)
+                    {
+                        continue;
+                    }
+
+                    if (obj.Attributes == null || obj.Attributes.Count <= 0)
+                    {
+                        break;
+                    }
+
                     XmlAttribute srcAttr = (XmlAttribute)obj.Attributes.GetNamedItem(DiagramContentModelHelper.Src);
                     if (srcAttr != null)
                     {
-                        XmlAttribute srcType = (XmlAttribute)obj.Attributes.GetNamedItem(DiagramContentModelHelper.SrcType);
+                        XmlAttribute srcType =
+                            (XmlAttribute)obj.Attributes.GetNamedItem(DiagramContentModelHelper.SrcType);
 
                         ManagedImageMedia img = treeNode.Presentation.MediaFactory.CreateManagedImageMedia();
 
-                        string imgFullPath = Path.Combine(Path.GetDirectoryName(xmlFilePath), srcAttr.Value);
-                        string ext = Path.GetExtension(imgFullPath);
-                        ext = ext == null ? null : ext.ToLower();
-
-                        ImageMediaData imgData = treeNode.Presentation.MediaDataFactory.CreateImageMediaData(ext);
-                        if (imgData != null)
+                        string imgFullPath = null;
+                        if (FileDataProvider.isHTTPFile(srcAttr.Value))
                         {
-                            imgData.InitializeImage(imgFullPath, Path.GetFileName(imgFullPath));
-                            img.ImageMediaData = imgData;
+                            imgFullPath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(srcAttr.Value);
+                        }
+                        else
+                        {
+                            imgFullPath = Path.Combine(Path.GetDirectoryName(xmlFilePath), srcAttr.Value);
+                        }
+                        if (imgFullPath != null && File.Exists(imgFullPath))
+                        {
+                            string ext = Path.GetExtension(imgFullPath);
+                            ext = ext == null ? null : ext.ToLower();
 
-                            AlternateContentSetManagedMediaCommand cmd_AltContent_Image =
-                                treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(
-                                    treeNode, altContent, img);
-                            treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Image);
+                            ImageMediaData imgData = treeNode.Presentation.MediaDataFactory.CreateImageMediaData(ext);
+                            if (imgData != null)
+                            {
+                                imgData.InitializeImage(imgFullPath, Path.GetFileName(imgFullPath));
+                                img.ImageMediaData = imgData;
+
+                                AlternateContentSetManagedMediaCommand cmd_AltContent_Image =
+                                    treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(
+                                        treeNode, altContent, img);
+                                treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Image);
+                            }
                         }
                     }
                 }
@@ -1149,6 +1179,11 @@ namespace Tobi.Plugin.Descriptions
                                                                                                       altContent,
                                                                                                       txtMedia);
                 treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Text);
+            }
+
+            if (nObjects > 0 && ++objectIndex <= nObjects - 1)
+            {
+                diagramXmlParseBody_(diagramElementNode, xmlFilePath, treeNode, objectIndex);
             }
         }
     }

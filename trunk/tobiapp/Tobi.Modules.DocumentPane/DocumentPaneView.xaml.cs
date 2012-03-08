@@ -1838,6 +1838,8 @@ namespace Tobi.Plugin.DocumentPane
 
         private void annotationsOff()
         {
+            return;
+
             AnnotationService service = AnnotationService.GetService(FlowDocReader);
 
             if (service != null && service.IsEnabled)
@@ -1856,6 +1858,8 @@ namespace Tobi.Plugin.DocumentPane
 
         private void annotationsOn()
         {
+            return;
+
             AnnotationService service = AnnotationService.GetService(FlowDocReader);
             if (service != null && service.IsEnabled)
             {
