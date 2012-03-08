@@ -444,6 +444,7 @@ namespace Tobi.Plugin.Urakawa
                                                        false, 300, 135, null, 40);
 
                 windowPopup.ShowModal();
+                windowPopup.EnableEnterKeyDefault = true;
 
                 if (combo.SelectedItem == item1)
                 {

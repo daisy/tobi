@@ -127,6 +127,8 @@ namespace Tobi.Plugin.Urakawa
 
                     windowPopup_.ShowModal();
 
+                    windowPopup_.EnableEnterKeyDefault = true;
+
                     Settings.Default.AudioExportEncodeToMp3 = checkBox.IsChecked.Value;
 
                     if (combo.SelectedItem == item1)

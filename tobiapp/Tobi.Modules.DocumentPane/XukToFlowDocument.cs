@@ -1456,7 +1456,7 @@ namespace Tobi.Plugin.DocumentPane
 
             string imagePath = srcAttr.Value;
 
-            if (!imagePath.StartsWith("http://"))
+            if (!FileDataProvider.isHTTPFile(imagePath))
             {
                 //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
 
