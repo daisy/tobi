@@ -27,6 +27,7 @@ using urakawa.media.data.image;
 using urakawa.media.data.image.codec;
 using urakawa.media.timing;
 using urakawa.metadata;
+using urakawa.metadata.daisy;
 using urakawa.property.alt;
 using urakawa.xuk;
 
@@ -154,7 +155,7 @@ namespace Tobi.Plugin.Descriptions
 
             if (!string.IsNullOrEmpty(uid))
             {
-                AddMetadata(null, altContent, DiagramContentModelHelper.XmlId, uid);
+                AddMetadata(null, altContent, XmlReaderWriterHelper.XmlId, uid);
             }
             if (!string.IsNullOrEmpty(descriptionName))
             {
@@ -792,12 +793,41 @@ namespace Tobi.Plugin.Descriptions
 
 
 
-            XmlDocument diagramXML = OpenXukAction.ParseXmlDocument(xmlFilePath, false);
+            XmlDocument diagramXML = XmlReaderWriterHelper.ParseXmlDocument(xmlFilePath, false);
 
             XmlNode description = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(diagramXML, false, "description", DiagramContentModelHelper.NS_URL_DIAGRAM);
             if (description == null)
             {
                 return;
+            }
+
+            XmlAttributeCollection descrAttrs = description.Attributes;
+            if (descrAttrs != null)
+            {
+                for (int i = 0; i < descrAttrs.Count; i++)
+                {
+                    XmlAttribute attr = descrAttrs[i];
+
+                    if (!attr.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":"))
+                    {
+                        continue;
+                    }
+
+                    Metadata altContMetadata = treeNode.Presentation.MetadataFactory.CreateMetadata();
+                    altContMetadata.NameContentAttribute = new MetadataAttribute();
+                    altContMetadata.NameContentAttribute.Name = attr.Name;
+                    altContMetadata.NameContentAttribute.NamespaceUri = XmlReaderWriterHelper.NS_URL_XML;
+                    altContMetadata.NameContentAttribute.Value = attr.Value;
+                    AlternateContentMetadataAddCommand cmd_AltPropMetadata_XML =
+                        treeNode.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(
+                            treeNode,
+                            altProp,
+                            null,
+                            altContMetadata,
+                            null
+                            );
+                    treeNode.Presentation.UndoRedoManager.Execute(cmd_AltPropMetadata_XML);
+                }
             }
 
             XmlNode head = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(description, false, "head", DiagramContentModelHelper.NS_URL_DIAGRAM);
@@ -874,10 +904,10 @@ namespace Tobi.Plugin.Descriptions
                         String.IsNullOrEmpty(property)
                             ? null
                             : (
-                                  property.StartsWith("diagram:")
+                                  property.StartsWith(DiagramContentModelHelper.NS_PREFIX_DIAGRAM_METADATA + ":")
                                       ? DiagramContentModelHelper.NS_URL_DIAGRAM
-                                      : (property.StartsWith("dc:")
-                                             ? DiagramContentModelHelper.NS_URL_DUBLIN_CORE
+                                      : (property.StartsWith(SupportedMetadata_Z39862005.NS_PREFIX_DUBLIN_CORE + ":")
+                                             ? SupportedMetadata_Z39862005.NS_URL_DUBLIN_CORE
                                              : null)
                               )
                         ;
@@ -920,9 +950,9 @@ namespace Tobi.Plugin.Descriptions
 
                     foreach (var attribute in listAttrs)
                     {
-                        if (attribute.LocalName == "name"
-                            || attribute.LocalName == "property"
-                            || attribute.LocalName == "content")
+                        if (attribute.LocalName == DiagramContentModelHelper.Name
+                            || attribute.LocalName == DiagramContentModelHelper.Property
+                            || attribute.LocalName == DiagramContentModelHelper.Content)
                         {
                             continue;
                         }
@@ -963,12 +993,12 @@ namespace Tobi.Plugin.Descriptions
                 diagramXmlParseBodySpecific(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_LondDesc);
                 diagramXmlParseBodySpecific(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_SimplifiedLanguageDescription);
 
-#if SUPPORT_ANNOTATION_ELEMENT
-                diagramXmlParseBody(treeNode, body, DiagramContentModelHelper.Annotation);
-#endif //SUPPORT_ANNOTATION_ELEMENT
-
                 diagramXmlParseBodySpecific(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_Tactile);
                 diagramXmlParseBodySpecific(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_SimplifiedImage);
+
+#if true || SUPPORT_ANNOTATION_ELEMENT
+                diagramXmlParseBodySpecific(xmlFilePath, treeNode, body, DiagramContentModelHelper.Annotation);
+#endif //SUPPORT_ANNOTATION_ELEMENT
 
 
 
@@ -999,8 +1029,8 @@ namespace Tobi.Plugin.Descriptions
                     || name == DiagramContentModelHelper.D_SimplifiedLanguageDescription
                     || name == DiagramContentModelHelper.D_Tactile
                     || name == DiagramContentModelHelper.D_SimplifiedImage
-#if SUPPORT_ANNOTATION_ELEMENT
-                    || name == DiagramContentModelHelper.Annotation
+#if true || SUPPORT_ANNOTATION_ELEMENT
+ || name == DiagramContentModelHelper.Annotation
 #endif //SUPPORT_ANNOTATION_ELEMENT
 )
                 {

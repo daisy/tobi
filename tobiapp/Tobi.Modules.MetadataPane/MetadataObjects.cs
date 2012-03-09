@@ -261,14 +261,11 @@ namespace Tobi.Plugin.MetadataPane
         public bool IsCandidateForPrimaryIdentifier(NotifyingMetadataItem item)
         {
             if (item == null) return false;
-            //if this item has a definition (new items have nothing)
+            
             if (item.Definition == null) return false;
 
-            //it should have a dc:identifier definition even if it is actually one of the synonyms
-            if (item.Definition.Name.ToLower() == "dc:identifier")
-                return true;
-            
-            return false;
+            return string.Equals(item.Definition.Name, SupportedMetadata_Z39862005.DC_Identifier,
+                                 StringComparison.OrdinalIgnoreCase);
         }
     }
 }

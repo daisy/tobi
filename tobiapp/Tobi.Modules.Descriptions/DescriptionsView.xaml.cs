@@ -36,6 +36,7 @@ using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.property.alt;
 using urakawa.property.channel;
+using urakawa.xuk;
 using BooleanToVisibilityConverter = System.Windows.Controls.BooleanToVisibilityConverter;
 
 namespace Tobi.Plugin.Descriptions
@@ -127,7 +128,7 @@ namespace Tobi.Plugin.Descriptions
             {
                 foreach (Metadata metadata in altContent.Metadatas.ContentsAs_Enumerable)
                 {
-                    if (metadata.NameContentAttribute.Name == DiagramContentModelHelper.XmlId)
+                    if (metadata.NameContentAttribute.Name == XmlReaderWriterHelper.XmlId)
                     {
                         uid = metadata.NameContentAttribute.Value;
                     }
@@ -511,14 +512,13 @@ namespace Tobi.Plugin.Descriptions
             var list = new List<String>();
             if (isAltContentMetadata)
             {
-
-#if SUPPORT_ANNOTATION_ELEMENT
-                list.Add(DiagramContentModelStrings.Ref);
-                list.Add(DiagramContentModelStrings.Role);
-                list.Add(DiagramContentModelStrings.By);
-#endif //SUPPORT_ANNOTATION_ELEMENT
-
                 list.AddRange(DiagramContentModelHelper.DIAGRAM_ElementAttributes);
+
+#if true || SUPPORT_ANNOTATION_ELEMENT
+                list.Add(DiagramContentModelHelper.Ref);
+                list.Add(DiagramContentModelHelper.Role);
+                list.Add(DiagramContentModelHelper.By);
+#endif //SUPPORT_ANNOTATION_ELEMENT
             }
             else
             {
