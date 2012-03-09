@@ -294,7 +294,7 @@ namespace Tobi.Plugin.Urakawa
             var deletedDataFolderPath = Path.Combine(dataFolderPath, "__DELETED" + Path.DirectorySeparatorChar);
             if (!Directory.Exists(deletedDataFolderPath))
             {
-                Directory.CreateDirectory(deletedDataFolderPath);
+                FileDataProvider.CreateDirectory(deletedDataFolderPath);
             }
 
             bool cancelled = false;

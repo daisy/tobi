@@ -11,6 +11,7 @@ using Tobi.Common.Validation;
 using urakawa;
 using urakawa.core;
 using urakawa.ExternalFiles;
+using urakawa.data;
 
 #if USE_ISOLATED_STORAGE
 using System.IO.IsolatedStorage;
@@ -195,7 +196,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
 #else
                 if (!Directory.Exists(dirpath))
                 {
-                    Directory.CreateDirectory(dirpath);
+                    FileDataProvider.CreateDirectory(dirpath);
                 }
 
                 Stream stream = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None);
