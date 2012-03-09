@@ -1237,7 +1237,7 @@ namespace Tobi.Plugin.Descriptions
 
                 FileName = "",
                 DefaultExt = DataProviderFactory.IMAGE_JPG_EXTENSION,
-                Filter = @"JPEG, PNG, BMP, SVG (*" + DataProviderFactory.IMAGE_JPEG_EXTENSION + ", *" + DataProviderFactory.IMAGE_JPG_EXTENSION + ", *" + DataProviderFactory.IMAGE_PNG_EXTENSION + ", *" + DataProviderFactory.IMAGE_BMP_EXTENSION + ", *" + DataProviderFactory.IMAGE_SVG_EXTENSION + ", *" + DataProviderFactory.IMAGE_SVGZ_EXTENSION + ")|*" + DataProviderFactory.IMAGE_JPEG_EXTENSION + ";*" + DataProviderFactory.IMAGE_JPG_EXTENSION + ";*" + DataProviderFactory.IMAGE_PNG_EXTENSION + ";*" + DataProviderFactory.IMAGE_BMP_EXTENSION + ";*" + DataProviderFactory.IMAGE_SVG_EXTENSION + ";*" + DataProviderFactory.IMAGE_SVGZ_EXTENSION + "",
+                Filter = @"JPEG, PNG, BMP, GIF, SVG (*" + DataProviderFactory.IMAGE_JPEG_EXTENSION + ", *" + DataProviderFactory.IMAGE_JPG_EXTENSION + ", *" + DataProviderFactory.IMAGE_PNG_EXTENSION + ", *" + DataProviderFactory.IMAGE_BMP_EXTENSION + ", *" + DataProviderFactory.IMAGE_GIF_EXTENSION + ", *" + DataProviderFactory.IMAGE_SVG_EXTENSION + ", *" + DataProviderFactory.IMAGE_SVGZ_EXTENSION + ")|*" + DataProviderFactory.IMAGE_JPEG_EXTENSION + ";*" + DataProviderFactory.IMAGE_JPG_EXTENSION + ";*" + DataProviderFactory.IMAGE_PNG_EXTENSION + ";*" + DataProviderFactory.IMAGE_BMP_EXTENSION + ";*" + DataProviderFactory.IMAGE_GIF_EXTENSION + ";*" + DataProviderFactory.IMAGE_SVG_EXTENSION + ";*" + DataProviderFactory.IMAGE_SVGZ_EXTENSION + "",
                 CheckFileExists = false,
                 CheckPathExists = false,
                 AddExtension = true,

@@ -52,7 +52,7 @@ namespace Tobi.Plugin.Urakawa
                         FileName = @"",
                         DefaultExt = @".xml",
 #if DEBUG
-                        Filter = @"DTBook, OPF, OBI, XUK or EPUB (*.xml, *.opf, *.obi, *.xuk, *.epub)|*.xml;*.opf;*.obi;*.xuk;*.epub",
+                        Filter = @"DTBook, OPF, OBI, XUK or EPUB (*.xml, *.opf, *.obi, *.xuk, *.xukbundle, *.epub)|*.xml;*.opf;*.obi;*.xuk;*.xukbundle;*.epub",
 #else
                         Filter = @"DTBook, OPF, OBI or XUK (*.xml, *.opf, *.obi, *.xuk)|*.xml;*.opf;*.obi;*.xuk",
 #endif //DEBUG
