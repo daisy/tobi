@@ -13,6 +13,7 @@ using urakawa.daisy.export;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
+using urakawa.data;
 using CheckBox = System.Windows.Controls.CheckBox;
 using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.Forms.HorizontalAlignment;
@@ -232,9 +233,6 @@ namespace Tobi.Plugin.Urakawa
                     string exportFolderName = Path.GetFileName(DocumentFilePath) + "__EXPORT";
                     string exportDir = Path.Combine(dlg.SelectedPath, exportFolderName);
 
-                    const int ATTEMPTS = 5;
-                    int attempt = ATTEMPTS;
-
                     if (Directory.Exists(exportDir))
                     {
                         if (!askUserConfirmOverwriteFileFolder(exportDir, true))
@@ -242,43 +240,11 @@ namespace Tobi.Plugin.Urakawa
                             return;
                         }
 
-                        attempt = ATTEMPTS;
-                        while (attempt-- >= 0)
-                        {
-                            try
-                            {
-                                Directory.Delete(exportDir, true);
-                                break;
-                            }
-                            catch (Exception e)
-                            {
-                                Thread.Sleep(200);
-                            }
-                        }
-                    }
-
-                    attempt = ATTEMPTS;
-                    while (attempt-- >= 0)
-                    {
-                        try
-                        {
-                            Directory.CreateDirectory(exportDir);
-                            break;
-                        }
-                        catch (Exception e)
-                        {
-                            Thread.Sleep(200);
-                        }
+                        FileDataProvider.DeleteDirectory(exportDir);
                     }
                     
-
-                    Thread.Sleep(200);
-                    if (!Directory.Exists(exportDir))
-                    {
-                        return;
-                    }
-
-
+                    FileDataProvider.CreateDirectory(exportDir);
+                   
                     doExport(exportDir);
                 },
                 () => DocumentProject != null,
