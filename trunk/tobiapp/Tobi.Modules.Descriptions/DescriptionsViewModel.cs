@@ -1037,7 +1037,7 @@ namespace Tobi.Plugin.Descriptions
                     continue;
                 }
 
-                diagramXmlParseBody_(node, xmlFilePath, treeNode);
+                diagramXmlParseBody_(node, xmlFilePath, treeNode, 0);
             }
         }
 
@@ -1055,11 +1055,11 @@ namespace Tobi.Plugin.Descriptions
                     continue;
                 }
 
-                diagramXmlParseBody_(diagramElementNode, xmlFilePath, treeNode);
+                diagramXmlParseBody_(diagramElementNode, xmlFilePath, treeNode, 0);
             }
         }
 
-        private void diagramXmlParseBody_(XmlNode diagramElementNode, string xmlFilePath, TreeNode treeNode, int objectIndex = 0)
+        private void diagramXmlParseBody_(XmlNode diagramElementNode, string xmlFilePath, TreeNode treeNode, int objectIndex)
         {
             string diagramElementName = diagramElementNode.Name;
 
