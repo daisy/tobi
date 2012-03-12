@@ -996,9 +996,9 @@ namespace Tobi.Plugin.Descriptions
                 diagramXmlParseBodySpecific(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_Tactile);
                 diagramXmlParseBodySpecific(xmlFilePath, treeNode, body, DiagramContentModelHelper.D_SimplifiedImage);
 
-#if true || SUPPORT_ANNOTATION_ELEMENT
-                diagramXmlParseBodySpecific(xmlFilePath, treeNode, body, DiagramContentModelHelper.Annotation);
-#endif //SUPPORT_ANNOTATION_ELEMENT
+//#if true || SUPPORT_ANNOTATION_ELEMENT
+//                diagramXmlParseBodySpecific(xmlFilePath, treeNode, body, DiagramContentModelHelper.Annotation);
+//#endif //SUPPORT_ANNOTATION_ELEMENT
 
 
 
@@ -1029,9 +1029,9 @@ namespace Tobi.Plugin.Descriptions
                     || name == DiagramContentModelHelper.D_SimplifiedLanguageDescription
                     || name == DiagramContentModelHelper.D_Tactile
                     || name == DiagramContentModelHelper.D_SimplifiedImage
-#if true || SUPPORT_ANNOTATION_ELEMENT
- || name == DiagramContentModelHelper.Annotation
-#endif //SUPPORT_ANNOTATION_ELEMENT
+//#if true || SUPPORT_ANNOTATION_ELEMENT
+// || name == DiagramContentModelHelper.Annotation
+//#endif //SUPPORT_ANNOTATION_ELEMENT
 )
                 {
                     continue;
@@ -1159,6 +1159,47 @@ namespace Tobi.Plugin.Descriptions
                     if (obj.Attributes == null || obj.Attributes.Count <= 0)
                     {
                         break;
+                    }
+
+                    for (int j = 0; j < obj.Attributes.Count; j++)
+                    {
+                        XmlAttribute attribute = obj.Attributes[j];
+
+
+                        if (attribute.Name.StartsWith("xmlns:"))
+                        {
+                            //
+                        }
+                        else if (attribute.Name == "xmlns")
+                        {
+                            //
+                        }
+                        else if (attribute.Name == DiagramContentModelHelper.Src)
+                        {
+                            //
+                        }
+                        else if (attribute.Name == DiagramContentModelHelper.SrcType)
+                        {
+                            //
+                        }
+                        else
+                        {
+                            Metadata diagramElementAttribute_Metadata = new Metadata();
+                            diagramElementAttribute_Metadata.NameContentAttribute = new MetadataAttribute();
+                            diagramElementAttribute_Metadata.NameContentAttribute.Name = attribute.Name;
+                            diagramElementAttribute_Metadata.NameContentAttribute.NamespaceUri = attribute.NamespaceURI;
+                            diagramElementAttribute_Metadata.NameContentAttribute.Value = attribute.Value;
+                            AlternateContentMetadataAddCommand cmd_AltContent_diagramElementAttribute_Metadata =
+                                treeNode.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(
+                                    treeNode,
+                                    null,
+                                    altContent,
+                                    diagramElementAttribute_Metadata,
+                                    null
+                                    );
+                            treeNode.Presentation.UndoRedoManager.Execute(
+                                cmd_AltContent_diagramElementAttribute_Metadata);
+                        }
                     }
 
                     XmlAttribute srcAttr = (XmlAttribute)obj.Attributes.GetNamedItem(DiagramContentModelHelper.Src);
