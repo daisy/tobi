@@ -238,13 +238,12 @@ namespace Tobi.Plugin.Descriptions
             }
             else if (File.Exists(fullPath))
             {
-                string ext = Path.GetExtension(fullPath);
-                if (string.IsNullOrEmpty(ext)) return;
-                ext = ext.ToLower();
-
+                string extension = Path.GetExtension(fullPath);
+                if (string.IsNullOrEmpty(extension)) return;
+                
                 ManagedImageMedia img1 = node.Presentation.MediaFactory.CreateManagedImageMedia();
 
-                ImageMediaData imgData1 = node.Presentation.MediaDataFactory.CreateImageMediaData(ext);
+                ImageMediaData imgData1 = node.Presentation.MediaDataFactory.CreateImageMediaData(extension);
                 if (imgData1 == null)
                 {
                     return;
@@ -1221,10 +1220,9 @@ namespace Tobi.Plugin.Descriptions
                         }
                         if (imgFullPath != null && File.Exists(imgFullPath))
                         {
-                            string ext = Path.GetExtension(imgFullPath);
-                            ext = ext == null ? null : ext.ToLower();
-
-                            ImageMediaData imgData = treeNode.Presentation.MediaDataFactory.CreateImageMediaData(ext);
+                            string extension = Path.GetExtension(imgFullPath);
+                            
+                            ImageMediaData imgData = treeNode.Presentation.MediaDataFactory.CreateImageMediaData(extension);
                             if (imgData != null)
                             {
                                 imgData.InitializeImage(imgFullPath, Path.GetFileName(imgFullPath));

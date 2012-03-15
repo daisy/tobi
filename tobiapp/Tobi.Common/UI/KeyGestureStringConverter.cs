@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Text;
 using System.Windows.Input;
 
 namespace Tobi.Common.UI
@@ -37,36 +38,36 @@ namespace Tobi.Common.UI
 
         public static string Convert(Key key, ModifierKeys modKeys, bool useFriendlyKeyDisplayString)
         {
-            string str = "[ ";
+            StringBuilder strBuilder = new StringBuilder("[ ");
 
             bool hasModKey = false;
             if ((modKeys & ModifierKeys.Shift) != ModifierKeys.None)
             {
-                str += "SHIFT ";
+                strBuilder.Append("SHIFT ");
                 hasModKey = true;
             }
             if ((modKeys & ModifierKeys.Control) != ModifierKeys.None)
             {
-                str += "CTRL ";
+                strBuilder.Append("CTRL ");
                 hasModKey = true;
             }
             if ((modKeys & ModifierKeys.Alt) != ModifierKeys.None)
             {
-                str += "ALT ";
+                strBuilder.Append("ALT ");
                 hasModKey = true;
             }
             if ((modKeys & ModifierKeys.Windows) != ModifierKeys.None)
             {
-                str += "WIN ";
+                strBuilder.Append("WIN ");
                 hasModKey = true;
             }
             if (!hasModKey)
             {
-                str += "NONE ";
+                strBuilder.Append("NONE ");
             }
 
-            str += "] ";
-            str += key;
+            strBuilder.Append("] ");
+            strBuilder.Append(key);
 
             char ch = '\0';
             if (useFriendlyKeyDisplayString
@@ -75,9 +76,11 @@ namespace Tobi.Common.UI
                 && key != Key.Space
                 && key != Key.Enter
                 && key != Key.Return)
-                str += " (" + ch + ")";
+            {
+                strBuilder.Append(" (" + ch + ")");
+            }
 
-            return str;
+            return strBuilder.ToString();
         }
 
         public static string Convert(KeyGesture keyG)
@@ -103,30 +106,28 @@ namespace Tobi.Common.UI
                 return null;
             }
 
-            string lowStr = str.ToLower();
-
-            int modStart = lowStr.IndexOf('[');
-            if (modStart < 0 || modStart >= lowStr.Length - 3)
+            int modStart = str.IndexOf("[", StringComparison.OrdinalIgnoreCase);
+            if (modStart < 0 || modStart >= str.Length - 3)
             {
                 return null;
             }
 
-            int modEnd = lowStr.IndexOf(']');
-            if (modEnd < 0 || modEnd <= modStart || modEnd >= lowStr.Length - 2)
+            int modEnd = str.IndexOf("]", StringComparison.OrdinalIgnoreCase);
+            if (modEnd < 0 || modEnd <= modStart || modEnd >= str.Length - 2)
             {
                 return null;
             }
 
-            string modStr = lowStr.Substring(modStart, modEnd - modStart);
+            string modStr = str.Substring(modStart, modEnd - modStart);
 
-            bool isModCtrl = modStr.Contains("ctrl");
-            bool isModShift = modStr.Contains("shift");
-            bool isModAlt = modStr.Contains("alt");
-            bool isModWin = modStr.Contains("win");
+            bool isModCtrl = modStr.IndexOf("ctrl", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool isModShift = modStr.IndexOf("shift", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool isModAlt = modStr.IndexOf("alt", StringComparison.OrdinalIgnoreCase) >= 0;
+            bool isModWin = modStr.IndexOf("win", StringComparison.OrdinalIgnoreCase) >= 0;
 
-            string keyStr = lowStr.Substring(modEnd + 1).Trim();
+            string keyStr = str.Substring(modEnd + 1).Trim();
 
-            int spaceIndex = keyStr.IndexOf(' ');
+            int spaceIndex = keyStr.IndexOf(" ", StringComparison.OrdinalIgnoreCase);
             if (spaceIndex >= 0)
             {
                 keyStr = keyStr.Substring(0, spaceIndex);

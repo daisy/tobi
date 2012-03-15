@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -663,16 +664,20 @@ namespace Tobi.Plugin.AudioPane
                         //}
                         //string nodeTxt = !String.IsNullOrEmpty(imgAlt) ? imgAlt : marker.m_TreeNode.GetTextMediaFlattened(false);
 
-                        string nodeTxt = marker.m_TreeNode.GetTextFlattened(true);
+                        
+                        TreeNode.StringChunk strChunkStart = marker.m_TreeNode.GetTextFlattened_(true);
 
-                        if (!String.IsNullOrEmpty(nodeTxt))
+                        if (strChunkStart != null && !String.IsNullOrEmpty(strChunkStart.Str))
                         {
-                            nodeTxt = nodeTxt.Replace("\r\n", "");
-                            nodeTxt = nodeTxt.Replace("\n", "");
-                            nodeTxt = nodeTxt.Replace(Environment.NewLine, "");
-                            nodeTxt = nodeTxt.Trim();
+                            StringBuilder strBuilder = new StringBuilder();
 
-                            var formattedText = new FormattedText(nodeTxt,
+                            TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+
+                            strBuilder.Replace("\r\n", "");
+                            strBuilder.Replace("\n", "");
+                            strBuilder.Replace(Environment.NewLine, "");
+
+                            var formattedText = new FormattedText(strBuilder.ToString().Trim(),
                                                                   m_culture,
                                                                   FlowDirection.LeftToRight,
                                                                   m_typeFace,

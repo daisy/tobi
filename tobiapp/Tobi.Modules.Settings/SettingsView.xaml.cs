@@ -567,7 +567,7 @@ namespace Tobi.Plugin.Settings
             foreach (SettingWrapper wrapper in AggregatedSettings)
             {
                 bool found = !string.IsNullOrEmpty(wrapper.Name)
-                    && wrapper.Name.ToLower().Contains(SearchTerm.ToLower());
+                    && wrapper.Name.IndexOf(SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
                 wrapper.SearchMatch = found;
                 if (found)
                 {

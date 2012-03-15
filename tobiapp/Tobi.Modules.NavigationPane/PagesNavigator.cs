@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Tobi.Common;
@@ -50,7 +51,7 @@ namespace Tobi.Plugin.NavigationPane
             foreach (Page page in m_Pages)
             {
                 bool found = !string.IsNullOrEmpty(page.Name) &&
-                                   page.Name.ToLower().Contains(SearchTerm.ToLower());
+                                   page.Name.IndexOf(SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
                 page.SearchMatch = found;
                 if (found)
                 {

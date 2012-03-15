@@ -22,15 +22,16 @@
     
     <!-- display the name field; do not allow editing -->
     <DataTemplate x:Key="FixedNameTemplate">
-      <TextBlock Text="{Binding Path=Name, Converter={local:LowerCaseConverter}}" Width="Auto"/>
+      <TextBlock Text="{Binding Path=Name}" Width="Auto"/>
     </DataTemplate>
 
     <!-- display the name field and provide a combo box for editing the value -->
     <DataTemplate x:Key="ChooseNameTemplate">
       
+      <!-- , Converter={local:LowerCaseConverter} -->
       <ComboBox Grid.Row="2" Grid.Column="1" MinWidth="100"
       x:Name="namesComboBox"
-      SelectedItem="{Binding Path=Name, Converter={local:LowerCaseConverter}}"
+      SelectedItem="{Binding Path=Name}"
                 
                   Control.IsTabStop="true"
                   AlternationCount="2"

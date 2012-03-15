@@ -76,7 +76,8 @@ namespace Tobi.Common.UI
             }
 
             string strDisplay = keyG.GetDisplayStringForCulture(CultureInfo.CurrentCulture);
-            if (!strDisplay.ToLower().Contains("oem"))
+            if (!string.IsNullOrEmpty(strDisplay)
+                && strDisplay.IndexOf("oem", StringComparison.OrdinalIgnoreCase) < 0)
             {
                 return strDisplay;
             }

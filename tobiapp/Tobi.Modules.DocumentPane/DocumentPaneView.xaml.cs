@@ -1982,7 +1982,7 @@ namespace Tobi.Plugin.DocumentPane
         {
             QualifiedName qname = node.GetXmlElementQName();
             if (node.GetTextMedia() != null
-                || qname != null && qname.LocalName.ToLower() == "img")
+                || qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Text;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.core;
@@ -134,7 +135,7 @@ namespace Tobi.Plugin.NavigationPane
 
                     if (WrappedTreeNode_LevelHeading != null
                         && (WrappedTreeNode_LevelHeading == node
-                            //|| HeadingsNavigator.IsHeading(node.GetXmlElementQName().LocalName)
+                        //|| HeadingsNavigator.IsHeading(node.GetXmlElementQName().LocalName)
                             )
                         )
                     {
@@ -205,8 +206,6 @@ namespace Tobi.Plugin.NavigationPane
         }
         private bool CheckMatches(TreeNode baseNode)
         {
-            string lower = m_navigator.SearchTerm.ToLower();
-
             bool bResult = false;
             int n = m_navigator.GetChildCount(baseNode);
             for (int index = 0; index < n; index++)
@@ -223,7 +222,7 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     continue;
                 }
-                bResult |= sText.ToLower().Contains(lower);
+                bResult |= sText.IndexOf(m_navigator.SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
                 if (!bResult)
                 {
                     bResult |= CheckMatches(node);
@@ -243,10 +242,33 @@ namespace Tobi.Plugin.NavigationPane
                 Debug.Fail("WTF ?");
                 return "!??!";
             }
-            string str = (heading != null
-                ? "[" + heading.GetXmlElementQName().LocalName + "] " + heading.GetTextFlattened(true)
-                : "[" + level.GetXmlElementQName().LocalName + "] " + Tobi_Plugin_NavigationPane_Lang.NoHeading);
-            return str.Trim();
+
+            StringBuilder strBuilder = new StringBuilder();
+
+            if (heading != null)
+            {
+                TreeNode.StringChunk strChunkStart = heading.GetTextFlattened_(true);
+
+                if (strChunkStart == null || string.IsNullOrEmpty(strChunkStart.Str))
+                {
+                    return "";
+                }
+
+                TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+
+                strBuilder.Insert(0, "] ");
+                strBuilder.Insert(0, heading.GetXmlElementQName().LocalName);
+                strBuilder.Insert(0, "[");
+            }
+            else
+            {
+                strBuilder.Append("[");
+                strBuilder.Append(level.GetXmlElementQName().LocalName);
+                strBuilder.Append("] ");
+                strBuilder.Append(Tobi_Plugin_NavigationPane_Lang.NoHeading);
+            }
+
+            return strBuilder.ToString().Trim();
 
             //string sResult = string.Empty;
             //QualifiedName qName = node.GetXmlElementQName();

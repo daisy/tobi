@@ -126,7 +126,7 @@ namespace Tobi.Plugin.Settings
             }
 
             var currentSetting = (SettingWrapper)DataContextSpy.DataContext;
-            string lowName = currentSetting.Name.ToLower();
+            //string lowName = currentSetting.Name.ToLower();
 
 
             //bool mustBePositive = lowName.Contains("width") || lowName.Contains("height");

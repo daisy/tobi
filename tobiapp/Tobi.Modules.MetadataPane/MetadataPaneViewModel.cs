@@ -233,11 +233,11 @@ namespace Tobi.Plugin.MetadataPane
 
                 foreach (MetadataDefinition definition in SupportedMetadata_Z39862005.DefinitionSet.Definitions)
                 {
-                    string name = definition.Name.ToLower();
+                    //string name = definition.Name.ToLower();
                     bool exists = false;
                     foreach (Metadata item in m_UrakawaSession.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                     {
-                        if (item.NameContentAttribute.Name.ToLower() == name)
+                        if (item.NameContentAttribute.Name.Equals(definition.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             exists = true;
                             break;
@@ -260,7 +260,9 @@ namespace Tobi.Plugin.MetadataPane
                 foreach (MetadataDefinition metadata in availableMetadata)
                 {
                     if (!metadata.IsReadOnly)
-                        list.Add(metadata.Name.ToLower());
+                    {
+                        list.Add(metadata.Name);
+                    }
                 }
                 return list;
             }

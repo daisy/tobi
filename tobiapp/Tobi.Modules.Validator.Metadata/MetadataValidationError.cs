@@ -72,7 +72,7 @@ namespace Tobi.Plugin.Validator.Metadata
                     name = Definition.Name;
 
                 return string.Format(Tobi_Plugin_Validator_Metadata_Lang.DefNameMustBeHint,                              
-                                            name.ToLower(), Hint);
+                                            name, Hint);
             }
         }
 
@@ -101,7 +101,7 @@ namespace Tobi.Plugin.Validator.Metadata
         {
             get
             {
-                return string.Format(Tobi_Plugin_Validator_Metadata_Lang.Missing, Definition.Name.ToLower()); 
+                return string.Format(Tobi_Plugin_Validator_Metadata_Lang.Missing, Definition.Name); 
             }
         }
 
@@ -129,7 +129,7 @@ namespace Tobi.Plugin.Validator.Metadata
         {
             get
             {
-                return string.Format(Tobi_Plugin_Validator_Metadata_Lang.DuplicateNotAllowed, Definition.Name.ToLower());
+                return string.Format(Tobi_Plugin_Validator_Metadata_Lang.DuplicateNotAllowed, Definition.Name);
             }
         }
 

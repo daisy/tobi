@@ -159,6 +159,7 @@
     <EmbeddedResource Include="Tobi.Plugin.StructureTrailPane.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.StructureTrailPane.Lang.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
