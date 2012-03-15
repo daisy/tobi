@@ -55,21 +55,21 @@ namespace Tobi.Plugin.MetadataPane
         }
     }
 
-    [ValueConversion(typeof(string), typeof(string))]
-    public class LowerCaseConverter : ValueConverterMarkupExtensionBase<LowerCaseConverter>
-    {
-        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return !(value is string) ? null : ((string) value).ToLower();
-        }
+    //[ValueConversion(typeof(string), typeof(string))]
+    //public class LowerCaseConverter : ValueConverterMarkupExtensionBase<LowerCaseConverter>
+    //{
+    //    public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    //    {
+    //        return !(value is string) ? null : ((string) value).ToLower();
+    //    }
 
-        //this isn't converting back .. it's just making it lower case again
-        public override object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return !(value is string) ? null : ((string) value).ToLower();
+    //    //this isn't converting back .. it's just making it lower case again
+    //    public override object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    //    {
+    //        return !(value is string) ? null : ((string) value).ToLower();
         
-        }
-    }
+    //    }
+    //}
 
 
     [ValueConversion(typeof(object), typeof(IEnumerable))]
@@ -83,13 +83,16 @@ namespace Tobi.Plugin.MetadataPane
             if (!(values[0] is ObservableCollection<string>) || !(values[1] is string))
                 return null;
 
-            ObservableCollection<string> list = (ObservableCollection<string>)values[0];
+            var list = (ObservableCollection<string>)values[0];
             string newItem = (string) values[1];
 
-            bool found = list.Any(s => s.ToLower() == newItem.ToLower());
-            if (!found) list.Insert(0, newItem.ToLower());
+            bool found = list.Any(s => s.Equals(newItem, StringComparison.OrdinalIgnoreCase));
+            if (!found)
+            {
+                list.Insert(0, newItem);
+            }
 
-            return list.OrderBy(s => s.ToLower());
+            return list.OrderBy(s => s);
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Tobi.Common;
@@ -424,7 +425,7 @@ namespace Tobi.Plugin.NavigationPane
             foreach (HeadingTreeNodeWrapper node in nodes)
             {
                 bool found = !string.IsNullOrEmpty(node.Title) &&
-                             node.Title.ToLower().Contains(SearchTerm.ToLower());
+                             node.Title.IndexOf(SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
                 node.SearchMatch = found;
                 if (found)
                 {

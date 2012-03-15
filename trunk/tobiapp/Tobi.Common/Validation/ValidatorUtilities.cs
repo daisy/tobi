@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Data;
@@ -114,18 +115,36 @@ namespace Tobi.Common.Validation
 
         public static string GetTreeNodeTextExcerpt(TreeNode node)
         {
-            string nodeText = node.GetTextFlattened(false);
-            if (nodeText == null) return "";
-            if (nodeText.Length > 100)
+            TreeNode.StringChunk strChunkStart = node.GetTextFlattened_(true);
+            if (strChunkStart == null || string.IsNullOrEmpty(strChunkStart.Str))
             {
-                nodeText = nodeText.Substring(0, 100) + "...";
+                return "";
+            }
+
+            StringBuilder strBuilder = new StringBuilder();
+            TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+            int length = strBuilder.Length;
+            if (length > 100)
+            {
+                //string str = strBuilder.ToString(0, 100);
+                //strBuilder.Clear();
+                //strBuilder.Append(str);
+                //strBuilder.Append("...");
+
+                string addon = "...";
+                strBuilder.Insert(100, addon);
+                length = 100 + addon.Length;
             }
 
             //if this is a mixed content model node with previous sibling(s), add some ellipses before the text too
             if (node.GetXmlElementQName() == null && node.PreviousSibling != null)
-                nodeText = "...\n" + nodeText;
+            {
+                string addon = "...\n";
+                strBuilder.Insert(0, addon);
+                length += addon.Length;
+            }
 
-            return nodeText;
+            return strBuilder.ToString(0, Math.Min(length, strBuilder.Length));
         }
 
     }

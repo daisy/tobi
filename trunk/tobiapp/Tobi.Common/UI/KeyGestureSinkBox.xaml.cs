@@ -57,8 +57,12 @@ namespace Tobi.Common.UI
             // Any other key is captured so it doesn't bubble-up
             e.Handled = true;
 
-            string keyStr = key.ToString().ToLower();
-            if (keyStr.Contains("ctrl") || keyStr.Contains("shift") || keyStr.Contains("alt") || keyStr.Contains("win"))
+            string keyStr = key.ToString();
+            if (keyStr.IndexOf("ctrl", StringComparison.OrdinalIgnoreCase) >= 0
+                || keyStr.IndexOf("shift", StringComparison.OrdinalIgnoreCase) >= 0
+                || keyStr.IndexOf("alt", StringComparison.OrdinalIgnoreCase) >= 0
+                || keyStr.IndexOf("win", StringComparison.OrdinalIgnoreCase) >= 0
+                )
             {
                 key = Key.None;
             }

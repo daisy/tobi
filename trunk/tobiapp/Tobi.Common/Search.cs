@@ -56,7 +56,7 @@ namespace Tobi.Common.Search
 
             return !string.IsNullOrEmpty(searchTerm) &&
                    !string.IsNullOrEmpty(stringValue) &&
-                   stringValue.ToLower().Contains(searchTerm.ToLower());
+                   stringValue.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         #endregion

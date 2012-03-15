@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -58,6 +59,7 @@ namespace Tobi.Plugin.StructureTrailPane
         {
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
+            BreadcrumbPanel.Children.Add(m_FocusStartElement2);
 
             bool firstTime = PathToCurrentTreeNode == null;
 
@@ -401,6 +403,7 @@ namespace Tobi.Plugin.StructureTrailPane
         }
 
         private TextBlockWithAutomationPeer m_FocusStartElement;
+        private TextBlockWithAutomationPeer m_FocusStartElement2;
 
         //public event PropertyChangedEventHandler PropertyChanged;
         //public void RaisePropertyChanged(PropertyChangedEventArgs e)
@@ -480,6 +483,20 @@ namespace Tobi.Plugin.StructureTrailPane
                 Focusable = true,
                 //IsTabStop = true
             };
+            m_FocusStartElement2 = new TextBlockWithAutomationPeer
+            {
+                Text = " ",
+                //Content = arrow,
+                //BorderBrush = null,
+                //BorderThickness = new Thickness(0.0),
+                Background = Brushes.Transparent,
+                //Foreground = Brushes.Black,
+                Cursor = Cursors.Cross,
+                FontWeight = FontWeights.ExtraBold,
+                //Style = m_ButtonStyle,
+                Focusable = true,
+                //IsTabStop = true
+            };
 
             OnProjectUnLoaded(null);
 
@@ -508,6 +525,7 @@ namespace Tobi.Plugin.StructureTrailPane
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Background = SystemColors.ControlBrush;
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
+            BreadcrumbPanel.Children.Add(m_FocusStartElement2);
             var tb = new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document)) { Margin = new Thickness(4, 2, 0, 2) };
             //tb.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_StructureTrailPane_Lang.No_Document);
             BreadcrumbPanel.Children.Add(tb);
@@ -515,6 +533,9 @@ namespace Tobi.Plugin.StructureTrailPane
             PathToCurrentTreeNode = null;
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(Tobi_Plugin_StructureTrailPane_Lang.No_Document);
             m_FocusStartElement.ToolTip = Tobi_Plugin_StructureTrailPane_Lang.No_Document;
+
+            m_FocusStartElement2.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused("_");
+            m_FocusStartElement2.ToolTip = Tobi_Plugin_StructureTrailPane_Lang.No_Document;
 
             if (project == null) return;
 
@@ -539,9 +560,11 @@ namespace Tobi.Plugin.StructureTrailPane
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Background = SystemColors.WindowBrush;
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
+            BreadcrumbPanel.Children.Add(m_FocusStartElement2);
 
             PathToCurrentTreeNode = null;
             m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(". . .");
+            m_FocusStartElement2.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(". . .");
 
             if (project == null) return;
 
@@ -589,71 +612,45 @@ namespace Tobi.Plugin.StructureTrailPane
         {
             if (newTreeNodeSelection.Item1 == null) return;
 
-            //TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
 
-            QualifiedName qName1 = newTreeNodeSelection.Item1.GetXmlElementQName();
-            string qName1_ = (qName1 == null
+            TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
+
+            StringBuilder strBuilder = new StringBuilder();
+            TreeNode.StringChunk strChunkStart = treeNode.GetTextFlattened_(true);
+
+            if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
+            {
+                TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+
+                string strShort = strBuilder.ToString(0, Math.Min(1000, strBuilder.Length));
+
+                m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(strShort);
+                m_FocusStartElement.ToolTip = strShort;
+            }
+
+            strBuilder.Insert(0, " *** ");
+
+            string audioInfo = treeNode.GetAudioMedia() != null ||
+                               treeNode.GetFirstAncestorWithManagedAudio() != null
+                                   ? Tobi_Plugin_StructureTrailPane_Lang.Audio
+                                   : Tobi_Plugin_StructureTrailPane_Lang.NoAudio;
+
+            strBuilder.Insert(0, audioInfo);
+            strBuilder.Insert(0, " ");
+
+            QualifiedName qName = treeNode.GetXmlElementQName();
+            string qNameStr = (qName == null
                                   ? Tobi_Plugin_StructureTrailPane_Lang.NoXML
-                                  : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName1.LocalName)
-                //+ (!string.IsNullOrEmpty(imgAlt) ? " // " + imgAlt : "")
+                                  : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName)
                              );
 
-            string str = null;
-            if (newTreeNodeSelection.Item2 == null) // no sub-treenode
-            {
-                string audioInfo1 = newTreeNodeSelection.Item1.GetAudioMedia() != null ||
-                                   newTreeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() != null
-                                       ? ""
-                                       : Tobi_Plugin_StructureTrailPane_Lang.NoAudio;
+            strBuilder.Insert(0, qNameStr);
 
-                string text1 = newTreeNodeSelection.Item1.GetTextFlattened(true);
-                if (!string.IsNullOrEmpty(text1)
-                     && text1.Length > 100)
-                {
-                    text1 = text1.Substring(0, 100) + ". . .";
-                }
 
-                str = qName1_ + " // " + text1 + " *** " + audioInfo1;
+            string str = strBuilder.ToString(0, Math.Min(500, strBuilder.Length));
+            m_FocusStartElement2.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
+            m_FocusStartElement2.ToolTip = str;
 
-                // IMAGE ALT IS NOW IN THE FLATTENED TREENODE TEXT
-                //string imgAlt = null;
-                //if (qName != null && qName.LocalName.ToLower() == "img")
-                //{
-                //    XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("alt");
-                //    if (xmlAttr != null)
-                //    {
-                //        imgAlt = xmlAttr.Value;
-                //    }
-                //}
-            }
-            else
-            {
-                QualifiedName qName2 = newTreeNodeSelection.Item2.GetXmlElementQName();
-                string qName2_ = (qName2 == null
-                                      ? Tobi_Plugin_StructureTrailPane_Lang.NoXML
-                                      : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName2.LocalName)
-                    //+ (!string.IsNullOrEmpty(imgAlt) ? " // " + imgAlt : "")
-                                 );
-
-                string audioInfo2 = newTreeNodeSelection.Item2.GetAudioMedia() != null ||
-                                   newTreeNodeSelection.Item2.GetFirstAncestorWithManagedAudio() != null
-                                       ? ""
-                                       : Tobi_Plugin_StructureTrailPane_Lang.NoAudio;
-
-                string text2 = newTreeNodeSelection.Item2.GetTextFlattened(true);
-                if (!string.IsNullOrEmpty(text2)
-                     && text2.Length > 100)
-                {
-                    text2 = text2.Substring(0, 100) + ". . .";
-                }
-
-                str = qName1_ + " >> " + qName2_ + " // " + text2 + " *** " + audioInfo2;
-            }
-
-            //Console.WriteLine(@"}}}}}" + str);
-
-            m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
-            m_FocusStartElement.ToolTip = str;
 
             updateBreadcrumbPanel(newTreeNodeSelection);
         }

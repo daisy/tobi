@@ -271,7 +271,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
               <Style.Setters>
                 <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
 
-                <Setter Property="AutomationPropertiesName" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+                <!-- Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/ -->
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
               </Style.Setters>
             </Style>
           </UI:ValidationAwareTextBox.Style>
@@ -324,7 +325,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
               <Style.Setters>
                 <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
 
-                <Setter Property="AutomationPropertiesName" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
               </Style.Setters>
             </Style>
           </UI:ValidationAwareTextBox.Style>

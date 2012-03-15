@@ -1,4 +1,6 @@
-﻿using Tobi.Common.MVVM;
+﻿using System;
+using System.Text;
+using Tobi.Common.MVVM;
 using urakawa.core;
 using urakawa.xuk;
 
@@ -31,22 +33,44 @@ namespace Tobi.Plugin.NavigationPane
 
         public static string GetMarkerDescription(TreeNode treeNode)
         {
-            string str = "";
+            StringBuilder strBuilder = new StringBuilder();
+            int length = 0;
             QualifiedName qname = treeNode.GetXmlElementQName();
             if (qname != null)
             {
-                str = "[" + qname.LocalName + "] ";
+                strBuilder.Append("[");
+                strBuilder.Append(qname.LocalName);
+                strBuilder.Append("] ");
+
+                length = strBuilder.Length;
             }
-            string text = treeNode.GetTextFlattened(true);
-            if (!string.IsNullOrEmpty(text))
+
+            TreeNode.StringChunk strChunkStart = treeNode.GetTextFlattened_(true);
+            if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
             {
-                if (text.Length > 40)
+                int l1 = length;
+                TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+                int l2 = strBuilder.Length;
+
+                int added = l2 - l1;
+                if (added > 40)
                 {
-                    text = text.Substring(0, 40) + "(...)";
+                    //string str = strBuilder.ToString(0, 40);
+                    //strBuilder.Clear();
+                    //strBuilder.Append(str);
+                    //strBuilder.Append("(...)");
+
+                    string addon = "(...)";
+                    strBuilder.Insert(length + 40, addon);
+                    length += 40 + addon.Length;
                 }
-                str = str + text;
+                else
+                {
+                    length += added;
+                }
             }
-            return str;
+
+            return strBuilder.ToString(0, Math.Min(length, strBuilder.Length));
         }
 
 

@@ -504,7 +504,7 @@ namespace Tobi.Plugin.Urakawa
             foreach (RecentFileWrapper wrapper in RecentFiles)
             {
                 bool found = !string.IsNullOrEmpty(wrapper.FullDescription)
-                    && wrapper.FullDescription.ToLower().Contains(SearchTerm.ToLower());
+                    && wrapper.FullDescription.IndexOf(SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
                 wrapper.SearchMatch = found;
                 if (found)
                 {

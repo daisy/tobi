@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -269,10 +270,17 @@ namespace Tobi.Plugin.DocumentPane
             }
             else
             {
-                string innerText = node.GetTextFlattened(true);
-                if (!string.IsNullOrEmpty(innerText))
+                TreeNode.StringChunk strChunkStart = node.GetTextFlattened_(true);
+                if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
                 {
-                    pageID = generatePageId(innerText);
+                    StringBuilder strBuilder = new StringBuilder();
+
+                    TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+
+                    strBuilder.Replace(" ", "_");
+                    strBuilder.Insert(0, "id_tobipage_");
+
+                    pageID = strBuilder.ToString();
                 }
             }
 
@@ -412,10 +420,6 @@ namespace Tobi.Plugin.DocumentPane
             formatPageNumberAndSetId(node, data);
         }
 
-        private string generatePageId(string pageText)
-        {
-            return "id_tobipage_" + pageText.Replace(" ", "_");
-        }
 
         private void addInline(TextElement parent, Inline data)
         {
@@ -600,7 +604,7 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             QualifiedName qname = node.GetXmlElementQName();
-            if (qname != null && qname.LocalName.ToLower() == "img")
+            if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
             {
                 DebugFix.Assert(node.Children.Count == 0);
                 return true;
@@ -2130,9 +2134,10 @@ namespace Tobi.Plugin.DocumentPane
             //}
 
             QualifiedName qname = node.GetXmlElementQName();
-            string lowerLocalName = qname == null ? null : qname.LocalName.ToLower();
+            string localName = qname == null ? null : qname.LocalName;
 
-            if (lowerLocalName == "img")
+            if (!string.IsNullOrEmpty(localName)
+                && localName.Equals("img", StringComparison.OrdinalIgnoreCase))
             {
                 EventAggregator.GetEvent<DescribableTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
             }
@@ -2255,7 +2260,8 @@ namespace Tobi.Plugin.DocumentPane
                     walkBookTreeAndGenerateFlowDocument(node.Children.Get(i), parentNext);
                 }
 
-                if (lowerLocalName == "table")
+                if (!string.IsNullOrEmpty(localName)
+                    && localName.Equals("table", StringComparison.OrdinalIgnoreCase))
                 {
                     int n = ((Table)parentNext).Columns.Count;
                     foreach (TableCell cell in m_cellsToExpand)

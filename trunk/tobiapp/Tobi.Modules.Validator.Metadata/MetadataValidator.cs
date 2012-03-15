@@ -292,12 +292,12 @@ namespace Tobi.Plugin.Validator.Metadata
                 if (!metadataDefinition.IsReadOnly
                     && metadataDefinition.Occurrence == MetadataOccurrence.Required)
                 {
-                    string name = metadataDefinition.Name.ToLower();
+                    //string name = metadataDefinition.Name.ToLower();
 
                     bool found = false;
                     foreach (urakawa.metadata.Metadata item in m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                     {
-                        if (item.NameContentAttribute.Name.ToLower() == name)
+                        if (item.NameContentAttribute.Name.Equals(metadataDefinition.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             found = true;
                             break;
@@ -324,11 +324,11 @@ namespace Tobi.Plugin.Validator.Metadata
 
                 if (metadataDefinition != null && !metadataDefinition.IsRepeatable)
                 {
-                    string name = metadata.NameContentAttribute.Name.ToLower();
+                    //string name = metadata.NameContentAttribute.Name.ToLower();
                     list.Clear();
                     foreach (urakawa.metadata.Metadata item in m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                     {
-                        if (item.NameContentAttribute.Name.ToLower() == name)
+                        if (item.NameContentAttribute.Name.Equals(metadata.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             list.Add(item);
                         }

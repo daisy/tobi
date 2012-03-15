@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
@@ -22,62 +24,122 @@ namespace Tobi.Common.UI
 
         public AutomationPeer m_AutomationPeer;
 
+        private bool m_AutomaticChangeNotificationForAutomationPropertiesName = false;
         protected override AutomationPeer OnCreateAutomationPeer()
         {
             m_AutomationPeer = base.OnCreateAutomationPeer();
+
+            DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(
+                AutomationProperties.NameProperty,
+                typeof(TextBlockWithAutomationPeer));
+
+            if (dpd != null)
+            {
+                m_AutomaticChangeNotificationForAutomationPropertiesName = true;
+                dpd.AddValueChanged(this, delegate
+                {
+                    TextBlockWithAutomationPeer.NotifyScreenReaderAutomationIfKeyboardFocused(m_AutomationPeer, this);
+                });
+            }
+
             return m_AutomationPeer;
         }
 
-        private void NotifyScreenReaderAutomation()
+        private static void NotifyScreenReaderAutomation(AutomationPeer automationPeer)
         {
-            if (m_AutomationPeer != null
-                && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+            if (automationPeer == null)
             {
-                m_AutomationPeer.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
+                return;
+            }
+
+#if DEBUG
+            string name = automationPeer.GetName();
+            Console.WriteLine("AUTOMATION NAME ==> " + name);
+#endif //DEBUG
+
+            if (AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+            {
+                automationPeer.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
+
+#if DEBUG
+                Console.WriteLine("AUTOMATION EVENT ==> AutomationFocusChanged");
+#endif //DEBUG
+            }
+
+            if (AutomationPeer.ListenerExists(AutomationEvents.TextPatternOnTextSelectionChanged))
+            {
+                automationPeer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
+
+#if DEBUG
+                Console.WriteLine("AUTOMATION EVENT ==> TextPatternOnTextSelectionChanged");
+#endif //DEBUG
             }
         }
+
+        public static void NotifyScreenReaderAutomationIfKeyboardFocused(AutomationPeer automationPeer, UIElement uiElement)
+        {
+            if (uiElement.IsKeyboardFocused)
+            {
+                TextBlockWithAutomationPeer.NotifyScreenReaderAutomation(automationPeer);
+            }
+        }
+
+        public static void SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(AutomationPeer automationPeer, UIElement uiElement, string str, bool skipNotify)
+        {
+            uiElement.SetValue(AutomationProperties.NameProperty, str);
+
+            if (!skipNotify)
+            {
+//#if DEBUG
+//                Debugger.Break();
+//#endif //DEBUG
+                TextBlockWithAutomationPeer.NotifyScreenReaderAutomationIfKeyboardFocused(automationPeer, uiElement);
+            }
+        }
+
+
+
+        //public void NotifyScreenReaderAutomationIfKeyboardFocused()
+        //{
+        //    TextBlockWithAutomationPeer.NotifyScreenReaderAutomationIfKeyboardFocused(m_AutomationPeer, this);
+        //}
 
         public void SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(string str)
         {
-            SetValue(AutomationProperties.NameProperty, str);
-
-            if (IsKeyboardFocused)
-            {
-                NotifyScreenReaderAutomation();
-            }
+            TextBlockWithAutomationPeer.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(m_AutomationPeer, this, str, m_AutomaticChangeNotificationForAutomationPropertiesName);
         }
 
-        public static readonly DependencyProperty AutomationPropertiesNameProperty =
-            DependencyProperty.Register(@"AutomationPropertiesName",
-            typeof(string),
-            typeof(TextBlockWithAutomationPeer),
-            new PropertyMetadata("empty accessible name",
-                OnAutomationPropertiesNameChanged, OnAutomationPropertiesNameCoerce));
+        //public static readonly DependencyProperty AutomationPropertiesNameProperty =
+        //    DependencyProperty.Register(@"AutomationPropertiesName",
+        //    typeof(string),
+        //    typeof(TextBlockWithAutomationPeer),
+        //    new PropertyMetadata("empty accessible name",
+        //        OnAutomationPropertiesNameChanged, OnAutomationPropertiesNameCoerce));
 
-        public string AutomationPropertiesName
-        {
-            get
-            {
-                return (string)GetValue(AutomationPropertiesNameProperty);
-            }
-            set
-            {
-                // The value will be coerced after this call !
-                SetValue(AutomationPropertiesNameProperty, value);
-            }
-        }
+        //public string AutomationPropertiesName
+        //{
+        //    get
+        //    {
+        //        return (string)GetValue(AutomationPropertiesNameProperty);
+        //    }
+        //    set
+        //    {
+        //        // The value will be coerced after this call !
+        //        SetValue(AutomationPropertiesNameProperty, value);
+        //    }
+        //}
 
-        private static object OnAutomationPropertiesNameCoerce(DependencyObject d, object basevalue)
-        {
-            return basevalue;
-        }
+        //private static object OnAutomationPropertiesNameCoerce(DependencyObject d, object basevalue)
+        //{
+        //    return basevalue;
+        //}
 
-        private static void OnAutomationPropertiesNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var tb = d as TextBlockWithAutomationPeer;
-            if (tb == null) return;
+        //private static void OnAutomationPropertiesNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    var tb = d as TextBlockWithAutomationPeer;
+        //    if (tb == null) return;
 
-            tb.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused((string)e.NewValue);
-        }
+        //    tb.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused((string)e.NewValue);
+        //}
     }
 }

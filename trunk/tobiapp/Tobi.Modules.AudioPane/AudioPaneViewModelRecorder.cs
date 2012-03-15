@@ -497,7 +497,7 @@ namespace Tobi.Plugin.AudioPane
 
                 foreach (string n in names)
                 {
-                    string n_ = n.Trim().ToLower();
+                    string n_ = n.Trim(); //.ToLower();
                     if (!string.IsNullOrEmpty(n_))
                     {
                         m_SkippableElements.Add(n_);
@@ -505,7 +505,16 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            return m_SkippableElements.Contains(name.ToLower());
+            foreach (var str in m_SkippableElements)
+            {
+                if (str.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+
+            //return m_SkippableElements.Contains(name.ToLower());
         }
 
         private bool isTreeNodeSkippable(TreeNode node)

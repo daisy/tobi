@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Tobi.Common;
@@ -70,7 +71,7 @@ namespace Tobi.Plugin.Descriptions
             foreach (DescribableTreeNode mnode in DescribableTreeNodes)
             {
                 bool found = !string.IsNullOrEmpty(mnode.Description) &&
-                                   mnode.Description.ToLower().Contains(SearchTerm.ToLower());
+                                   mnode.Description.IndexOf(SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
                 mnode.SearchMatch = found;
                 if (found)
                 {

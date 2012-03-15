@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
@@ -91,70 +92,63 @@ namespace Tobi.Common.UI
 
         public AutomationPeer m_AutomationPeer;
 
+        private bool m_AutomaticChangeNotificationForAutomationPropertiesName = false;
         protected override AutomationPeer OnCreateAutomationPeer()
         {
             m_AutomationPeer = base.OnCreateAutomationPeer();
-            return m_AutomationPeer;
-        }
 
-        public void NotifyScreenReaderAutomation()
-        {
-            if (m_AutomationPeer != null
-                && AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+            DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(
+                AutomationProperties.NameProperty,
+                typeof(ComboBoxWithAutomationPeer));
+            if (dpd != null)
             {
-                m_AutomationPeer.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
-                if (this.IsEditable)
+                m_AutomaticChangeNotificationForAutomationPropertiesName = true;
+                dpd.AddValueChanged(this, delegate
                 {
-                    m_AutomationPeer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
-                }
+                    TextBlockWithAutomationPeer.NotifyScreenReaderAutomationIfKeyboardFocused(m_AutomationPeer, this);
+                });
             }
+
+            return m_AutomationPeer;
         }
 
         public void SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(string str)
         {
-            SetValue(AutomationProperties.NameProperty, str);
-            NotifyScreenReaderAutomationIfKeyboardFocused();
+            TextBlockWithAutomationPeer.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(m_AutomationPeer, this, str, m_AutomaticChangeNotificationForAutomationPropertiesName);
         }
 
-        public void NotifyScreenReaderAutomationIfKeyboardFocused()
-        {
-            if (IsKeyboardFocused)
-            {
-                NotifyScreenReaderAutomation();
-            }
-        }
 
-        public static readonly DependencyProperty AutomationPropertiesNameProperty =
-            DependencyProperty.Register(@"AutomationPropertiesName",
-            typeof(string),
-            typeof(ComboBoxWithAutomationPeer),
-            new PropertyMetadata("empty accessible name",
-                OnAutomationPropertiesNameChanged, OnAutomationPropertiesNameCoerce));
+        //public static readonly DependencyProperty AutomationPropertiesNameProperty =
+        //    DependencyProperty.Register(@"AutomationPropertiesName",
+        //    typeof(string),
+        //    typeof(ComboBoxWithAutomationPeer),
+        //    new PropertyMetadata("empty accessible name",
+        //        OnAutomationPropertiesNameChanged, OnAutomationPropertiesNameCoerce));
 
-        public string AutomationPropertiesName
-        {
-            get
-            {
-                return (string)GetValue(AutomationPropertiesNameProperty);
-            }
-            set
-            {
-                // The value will be coerced after this call !
-                SetValue(AutomationPropertiesNameProperty, value);
-            }
-        }
+        //public string AutomationPropertiesName
+        //{
+        //    get
+        //    {
+        //        return (string)GetValue(AutomationPropertiesNameProperty);
+        //    }
+        //    set
+        //    {
+        //        // The value will be coerced after this call !
+        //        SetValue(AutomationPropertiesNameProperty, value);
+        //    }
+        //}
 
-        private static object OnAutomationPropertiesNameCoerce(DependencyObject d, object basevalue)
-        {
-            return basevalue;
-        }
+        //private static object OnAutomationPropertiesNameCoerce(DependencyObject d, object basevalue)
+        //{
+        //    return basevalue;
+        //}
 
-        private static void OnAutomationPropertiesNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var tb = d as ComboBoxWithAutomationPeer;
-            if (tb == null) return;
+        //private static void OnAutomationPropertiesNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    var tb = d as ComboBoxWithAutomationPeer;
+        //    if (tb == null) return;
 
-            tb.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused((string)e.NewValue);
-        }
+        //    tb.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused((string)e.NewValue);
+        //}
     }
 }
