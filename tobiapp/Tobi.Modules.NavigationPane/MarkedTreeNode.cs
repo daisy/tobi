@@ -49,7 +49,7 @@ namespace Tobi.Plugin.NavigationPane
             if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
             {
                 int l1 = length;
-                TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+                TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
                 int l2 = strBuilder.Length;
 
                 int added = l2 - l1;

@@ -42,7 +42,13 @@
         <ContentPresenter Content="{Binding Target}">
           <ContentPresenter.ContentTemplate>
             <DataTemplate>
-              <Border CornerRadius="5" Margin="5"
+
+              <UI:TextBoxReadOnlyCaretVisible Focusable="True"
+          TextReadOnly="{Binding Converter={Common:NodeToXmlConverter}}"/>
+
+
+
+              <!--<Border CornerRadius="5" Margin="5"
                       BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
                       BorderThickness="2">
                 <FlowDocumentScrollViewer
@@ -51,7 +57,8 @@
                                 Focusable="False"
                                 MaxHeight="120"/>
 
-              </Border>
+              </Border>-->
+              
             </DataTemplate>
           </ContentPresenter.ContentTemplate>
         </ContentPresenter>

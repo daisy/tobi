@@ -914,6 +914,8 @@ namespace Tobi.Plugin.AudioPane
             PeakMeterLinePeakDropCh2.Visibility = Visibility.Hidden;
         }
 
+        private double m_PlaybackHeadHeight = 0;
+
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
@@ -944,48 +946,57 @@ namespace Tobi.Plugin.AudioPane
 
             double pixels = m_ViewModel.PlayBytePosition / BytesPerPixel;
 
-            StreamGeometry geometry;
-            if (WaveFormPlayHeadPath.Data == null)
-            {
-                geometry = new StreamGeometry();
-            }
-            else
-            {
-                geometry = (StreamGeometry)WaveFormPlayHeadPath.Data;
-            }
-
             double height = WaveFormCanvas.ActualHeight;
             //if (double.IsNaN(height) || height == 0)
             //{
             //    height = WaveFormCanvas.Height;
             //}
 
-            using (StreamGeometryContext sgc = geometry.Open())
+            if (WaveFormPlayHeadPath.Data == null
+                || (int)Math.Round(10 * m_PlaybackHeadHeight) != (int)Math.Round(10 * height))
             {
-                if (m_ViewModel.PlayBytePosition < 0)
+#if DEBUG
+                m_Logger.Log("=====> WaveFormPlayHeadPath.Data Geometry refresh", Category.Debug, Priority.Medium);
+#endif //DEBUG
+
+                m_PlaybackHeadHeight = height;
+
+                int pixelz = 0;
+
+                StreamGeometry geometry = new StreamGeometry();
+
+                using (StreamGeometryContext sgc = geometry.Open())
                 {
-                    sgc.BeginFigure(new Point(pixels, height), true, false);
-                    sgc.LineTo(new Point(pixels, 0), true, false);
-                }
-                else
-                {
-                    sgc.BeginFigure(new Point(pixels, height - m_ArrowDepth), true, false);
-                    sgc.LineTo(new Point(pixels + m_ArrowDepth, height), true, false);
-                    sgc.LineTo(new Point(pixels - m_ArrowDepth, height), true, false);
-                    sgc.LineTo(new Point(pixels, height - m_ArrowDepth), true, false);
-                    sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
-                    sgc.LineTo(new Point(pixels - m_ArrowDepth, 0), true, false);
-                    sgc.LineTo(new Point(pixels + m_ArrowDepth, 0), true, false);
-                    sgc.LineTo(new Point(pixels, m_ArrowDepth), true, false);
+                    if (m_ViewModel.PlayBytePosition < 0)
+                    {
+                        sgc.BeginFigure(new Point(pixelz, height), true, false);
+                        sgc.LineTo(new Point(pixelz, 0), true, false);
+                    }
+                    else
+                    {
+                        sgc.BeginFigure(new Point(pixelz, height - m_ArrowDepth), true, false);
+                        sgc.LineTo(new Point(pixelz + m_ArrowDepth, height), true, false);
+                        sgc.LineTo(new Point(pixelz - m_ArrowDepth, height), true, false);
+                        sgc.LineTo(new Point(pixelz, height - m_ArrowDepth), true, false);
+                        sgc.LineTo(new Point(pixelz, m_ArrowDepth), true, false);
+                        sgc.LineTo(new Point(pixelz - m_ArrowDepth, 0), true, false);
+                        sgc.LineTo(new Point(pixelz + m_ArrowDepth, 0), true, false);
+                        sgc.LineTo(new Point(pixelz, m_ArrowDepth), true, false);
+                    }
+
+                    sgc.Close();
                 }
 
-                sgc.Close();
-            }
-
-            if (WaveFormPlayHeadPath.Data == null)
-            {
+                geometry.Freeze();
                 WaveFormPlayHeadPath.Data = geometry;
             }
+            else
+            {
+                //geometry = (StreamGeometry)WaveFormPlayHeadPath.Data;
+            }
+
+            Canvas.SetLeft(WaveFormPlayHeadPath, pixels);
+            //WaveFormPlayHeadPath.SetValue(Canvas.LeftProperty, pixels);
 
             WaveFormPlayHeadPath.InvalidateVisual();
 
@@ -1612,7 +1623,8 @@ namespace Tobi.Plugin.AudioPane
             double right = left + WaveFormScroll.ViewportWidth;
             //bool b = WaveFormPlayHeadPath.IsVisible;
 
-            if (m_TimeSelectionLeftX < 0)
+            // DISABLED BECAUSE OF ON-THE-FLY WAVEFORM LOADING (TOO MANY SCROLL REQUESTS => NO REFRESH)
+            if (true || m_TimeSelectionLeftX < 0)
             {
                 if (pixels < left || pixels > right)
                 {

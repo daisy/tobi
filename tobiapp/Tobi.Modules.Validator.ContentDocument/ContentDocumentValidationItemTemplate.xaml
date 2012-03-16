@@ -22,8 +22,15 @@
   
   <!-- template representing the semi-flattened XML (direct children only) for a single node-->
   <DataTemplate x:Key="NodeTemplate">
-    <Border CornerRadius="2" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
+
+
+    <UI:TextBoxReadOnlyCaretVisible Focusable="True"
+TextReadOnly="{Binding Converter={Common:NodeToXmlConverter}}"/>
+    
+    
+    <!--<Border CornerRadius="2" Margin="5" BorderBrush="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" 
             BorderThickness="1">
+      
       <FlowDocumentScrollViewer
                       Document="{Binding Converter={Common:TreeNodeFlowDocumentConverter}}"
                       IsTabStop="False"
@@ -38,7 +45,7 @@
       </FlowDocumentScrollViewer>
       
       
-    </Border>
+    </Border>-->
   </DataTemplate>
 
   <!-- cannot find a dtd error -->

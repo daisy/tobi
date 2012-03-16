@@ -273,9 +273,8 @@ namespace Tobi.Plugin.DocumentPane
                 TreeNode.StringChunk strChunkStart = node.GetTextFlattened_(true);
                 if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
                 {
-                    StringBuilder strBuilder = new StringBuilder();
-
-                    TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+                    StringBuilder strBuilder = new StringBuilder(strChunkStart.GetLength());
+                    TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
 
                     strBuilder.Replace(" ", "_");
                     strBuilder.Insert(0, "id_tobipage_");

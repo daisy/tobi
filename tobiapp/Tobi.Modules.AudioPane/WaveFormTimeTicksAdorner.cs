@@ -669,9 +669,8 @@ namespace Tobi.Plugin.AudioPane
 
                         if (strChunkStart != null && !String.IsNullOrEmpty(strChunkStart.Str))
                         {
-                            StringBuilder strBuilder = new StringBuilder();
-
-                            TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+                            StringBuilder strBuilder = new StringBuilder(strChunkStart.GetLength());
+                            TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
 
                             strBuilder.Replace("\r\n", "");
                             strBuilder.Replace("\n", "");
