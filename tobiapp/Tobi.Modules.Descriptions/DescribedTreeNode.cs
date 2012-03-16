@@ -91,7 +91,11 @@ namespace Tobi.Plugin.Descriptions
                 if (length > 40)
                 {
                     //string str = strBuilder.ToString(0, 40);
-                    //strBuilder.Clear();
+                    //#if NET40
+                    //                    stringBuilder.Clear();
+                    //#else
+                    //                    stringBuilder.Length = 0;
+                    //#endif //NET40
                     //strBuilder.Append(str);
                     //strBuilder.Append("(...)");
 

@@ -127,7 +127,11 @@ namespace Tobi.Common.Validation
             if (length > 100)
             {
                 //string str = strBuilder.ToString(0, 100);
-                //strBuilder.Clear();
+                //#if NET40
+                //                    stringBuilder.Clear();
+                //#else
+                //                stringBuilder.Length = 0;
+                //#endif //NET40
                 //strBuilder.Append(str);
                 //strBuilder.Append("...");
 

@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
@@ -16,7 +15,6 @@ using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
-using urakawa.property.alt;
 
 namespace Tobi.Plugin.Descriptions
 {
