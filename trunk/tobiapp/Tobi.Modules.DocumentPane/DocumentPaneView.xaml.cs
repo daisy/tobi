@@ -2434,7 +2434,7 @@ namespace Tobi.Plugin.DocumentPane
             else
             {
                 Dispatcher.Invoke(DispatcherPriority.Render, (Action)(textElement.BringIntoView));
-                //textElement.BringIntoView();
+                
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action<TextElement>)(scrollToView_), textElement);
             }
         }
