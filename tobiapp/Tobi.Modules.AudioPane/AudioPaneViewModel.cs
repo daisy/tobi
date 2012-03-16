@@ -1630,7 +1630,35 @@ m_Stream.Length);
 
                     //Logger.Log("++++++ PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.LastPlayHeadTime", Category.Debug, Priority.Medium);
 
-                    m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+//#if DEBUG
+//                    Stopwatch stopwatch = new Stopwatch();
+//                    stopwatch.Start();
+//#endif //DEBUG
+                    if (!TheDispatcher.CheckAccess())
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+
+                    if (true || !IsPlaying)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+                    }
+                    else
+                    {
+                        TheDispatcher.BeginInvoke((Action)(() =>
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+                        }),
+                            DispatcherPriority.Background);
+                    }
+                    
+//#if DEBUG
+//                    TimeSpan time = stopwatch.Elapsed;
+//                    Logger.Log("%%%%%%%%%%%%%% PLAYBACK CHUNK SWITCH TREENODE SELECT: " + time, Category.Debug, Priority.Medium);
+//                    stopwatch.Stop();
+//#endif //DEBUG
                 }
                 else
                 {
