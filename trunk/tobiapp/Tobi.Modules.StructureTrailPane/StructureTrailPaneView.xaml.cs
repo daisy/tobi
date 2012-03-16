@@ -172,7 +172,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
                     BreadcrumbPanel.Children.Add(tb);
 
-                    tb.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_StructureTrailPane_Lang.XMLChildren); 
+                    tb.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_StructureTrailPane_Lang.XMLChildren);
                 }
 
                 bool selected = n == treeNodeSelection.Item2 || n == treeNodeSelection.Item1;
@@ -185,7 +185,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     (qname != null ? qname.LocalName : Tobi_Plugin_StructureTrailPane_Lang.NoXMLFound)
                     + (selected ? Tobi_Plugin_StructureTrailPane_Lang.Selected : "")
                     + (withMedia ? Tobi_Plugin_StructureTrailPane_Lang.Audio : ""));
-               
+
                 counter++;
             }
 
@@ -236,7 +236,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     {
                         if (childIsInPath)
                         {
-                            var runMenuItem = new Run(qnameChild.LocalName) {FontWeight = FontWeights.ExtraBold};
+                            var runMenuItem = new Run(qnameChild.LocalName) { FontWeight = FontWeights.ExtraBold };
                             var textBlock = new TextBlock(runMenuItem);
                             //textBlock.SetValue(AutomationProperties.NameProperty, qnameChild.LocalName);
                             menuItem.Header = textBlock;
@@ -250,7 +250,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     {
                         if (childIsInPath)
                         {
-                            var runMenuItem = new Run("TXT") {FontWeight = FontWeights.ExtraBold};
+                            var runMenuItem = new Run("TXT") { FontWeight = FontWeights.ExtraBold };
                             var textBlock = new TextBlock(runMenuItem);
                             //textBlock.SetValue(AutomationProperties.NameProperty, "TXT");
                             menuItem.Header = textBlock;
@@ -615,17 +615,23 @@ namespace Tobi.Plugin.StructureTrailPane
 
             TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
 
-            StringBuilder strBuilder = new StringBuilder();
+            StringBuilder strBuilder = null;
             TreeNode.StringChunk strChunkStart = treeNode.GetTextFlattened_(true);
 
             if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
             {
-                TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+                strBuilder = new StringBuilder(strChunkStart.GetLength());
+                TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
 
                 string strShort = strBuilder.ToString(0, Math.Min(1000, strBuilder.Length));
 
                 m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(strShort);
                 m_FocusStartElement.ToolTip = strShort;
+            }
+
+            if (strBuilder == null)
+            {
+                strBuilder = new StringBuilder();
             }
 
             strBuilder.Insert(0, " *** ");

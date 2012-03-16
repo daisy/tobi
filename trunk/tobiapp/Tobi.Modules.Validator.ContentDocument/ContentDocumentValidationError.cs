@@ -30,7 +30,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.InvalidElementSequenceSummary,
                         ValidatorUtilities.GetTreeNodeName(Target),
-                        ValidatorUtilities.GetNodeXml(Target, true),
+                        ValidatorUtilities.GetNodeXml_Flat(Target),
                         ContentDocumentValidator.GetElementsListFromDtdRegex(AllowedChildNodes));
             }
         }
@@ -99,7 +99,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             get
             {
                 return string.Format(Tobi_Plugin_Validator_ContentDocument_Lang.UndefinedElementSummary,
-                    ValidatorUtilities.GetNodeXml(Target, true));
+                    ValidatorUtilities.GetNodeXml_Flat(Target));
             }
         }
 

@@ -81,12 +81,13 @@ namespace Tobi.Plugin.Descriptions
             //    str = "[" + qname.LocalName + "] ";
             //}
 
-            StringBuilder strBuilder = new StringBuilder();
+            StringBuilder strBuilder = null;
             int length = 0;
             TreeNode.StringChunk strChunkStart = treeNode.GetTextFlattened_(true);
             if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
             {
-                TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+                strBuilder = new StringBuilder(strChunkStart.GetLength());
+                TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
                 length = strBuilder.Length;
                 if (length > 40)
                 {
@@ -110,6 +111,12 @@ namespace Tobi.Plugin.Descriptions
                 XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("src");
                 if (xmlAttr != null && !String.IsNullOrEmpty(xmlAttr.Value))
                 {
+
+                    if (strBuilder == null)
+                    {
+                        strBuilder = new StringBuilder();
+                    }
+
                     int l1 = strBuilder.Length;
 
                     strBuilder.Append("  --> [");
@@ -129,6 +136,11 @@ namespace Tobi.Plugin.Descriptions
                     int added = l2 - l1;
                     length += added;
                 }
+            }
+
+            if (strBuilder == null)
+            {
+                return "";
             }
 
             return strBuilder.ToString(0, Math.Min(length, strBuilder.Length));

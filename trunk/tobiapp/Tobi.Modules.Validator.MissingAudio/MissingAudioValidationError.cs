@@ -16,8 +16,8 @@ namespace Tobi.Plugin.Validator.MissingAudio
             get
             {
                 return string.Format(Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudioSummary, 
-                        ValidatorUtilities.GetTreeNodeName(Target), 
-                        ValidatorUtilities.GetNodeXml(Target, true)
+                        ValidatorUtilities.GetTreeNodeName(Target),
+                        ValidatorUtilities.GetNodeXml_Flat(Target)
                         );
             }
         }

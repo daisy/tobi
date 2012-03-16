@@ -243,7 +243,7 @@ namespace Tobi.Plugin.NavigationPane
                 return "!??!";
             }
 
-            StringBuilder strBuilder = new StringBuilder();
+            StringBuilder strBuilder = null;
 
             if (heading != null)
             {
@@ -254,7 +254,8 @@ namespace Tobi.Plugin.NavigationPane
                     return "";
                 }
 
-                TreeNode.ConcatStringChunks(strChunkStart, strBuilder);
+                strBuilder = new StringBuilder(strChunkStart.GetLength());
+                TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
 
                 strBuilder.Insert(0, "] ");
                 strBuilder.Insert(0, heading.GetXmlElementQName().LocalName);
@@ -262,6 +263,7 @@ namespace Tobi.Plugin.NavigationPane
             }
             else
             {
+                strBuilder = new StringBuilder();
                 strBuilder.Append("[");
                 strBuilder.Append(level.GetXmlElementQName().LocalName);
                 strBuilder.Append("] ");
