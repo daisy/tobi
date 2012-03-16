@@ -858,7 +858,8 @@ namespace Tobi.Plugin.AudioPane
 
             ClearSelection();
 
-            WaveFormPlayHeadPath.Data = null;
+            Canvas.SetLeft(WaveFormPlayHeadPath, -100);
+            //WaveFormPlayHeadPath.Data = null;
             WaveFormPlayHeadPath.InvalidateVisual();
 
             ResetWaveFormChunkMarkers();
@@ -951,6 +952,8 @@ namespace Tobi.Plugin.AudioPane
             //{
             //    height = WaveFormCanvas.Height;
             //}
+
+            //double left = Canvas.GetLeft(WaveFormPlayHeadPath);
 
             if (WaveFormPlayHeadPath.Data == null
                 || (int)Math.Round(10 * m_PlaybackHeadHeight) != (int)Math.Round(10 * height))
