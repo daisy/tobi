@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using AudioLib;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.daisy;
+using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.media;
+using urakawa.media.data.audio;
+using urakawa.media.data.audio.codec;
 using urakawa.media.data.image;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
@@ -335,6 +339,71 @@ namespace Tobi.Plugin.Descriptions
                     else if (attribute.Name == "xmlns")
                     {
                         //
+                    }
+                    else if (attribute.Name == DiagramContentModelHelper.TOBI_Audio)
+                    {
+                        string fullPath = null;
+                        if (FileDataProvider.isHTTPFile(attribute.Value))
+                        {
+                            fullPath = FileDataProvider.EnsureLocalFilePathDownloadTempDirectory(attribute.Value);
+                        }
+                        else
+                        {
+                            fullPath = Path.Combine(Path.GetDirectoryName(xmlFilePath), attribute.Value);
+                        }
+                        if (fullPath != null && File.Exists(fullPath))
+                        {
+                            string extension = Path.GetExtension(fullPath);
+
+                            ManagedAudioMedia manAudioMedia = treeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
+                            AudioMediaData audioMediaData = treeNode.Presentation.MediaDataFactory.CreateAudioMediaData(extension);
+                            manAudioMedia.AudioMediaData = audioMediaData;
+
+                            Stream wavStream = null;
+                            try
+                            {
+                                wavStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                                uint dataLength;
+                                AudioLibPCMFormat pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
+
+                                if (!treeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.IsCompatibleWith(pcmInfo))
+                                {
+                                    wavStream.Close();
+                                    wavStream = null;
+
+                                    AudioFormatConvertorSession audioFormatConvertorSession =
+                                        new AudioFormatConvertorSession(
+                                        //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
+                                        treeNode.Presentation.DataProviderManager.DataFileDirectoryFullPath,
+                                    treeNode.Presentation.MediaDataManager.DefaultPCMFormat, m_UrakawaSession.IsAcmCodecsDisabled);
+
+                                    string newfullWavPath = audioFormatConvertorSession.ConvertAudioFileFormat(fullPath);
+
+                                    FileDataProvider dataProv = (FileDataProvider)treeNode.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                                    dataProv.InitByMovingExistingFile(newfullWavPath);
+                                    audioMediaData.AppendPcmData(dataProv);
+                                }
+                                else // use original wav file by copying it to data directory
+                                {
+                                    FileDataProvider dataProv = (FileDataProvider)treeNode.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                                    dataProv.InitByCopyingExistingFile(fullPath);
+                                    audioMediaData.AppendPcmData(dataProv);
+                                }
+                            }
+                            finally
+                            {
+                                if (wavStream != null) wavStream.Close();
+                            }
+
+
+
+                            AlternateContentSetManagedMediaCommand cmd_AltContent_diagramElement_Audio =
+                                treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode, altContent, manAudioMedia);
+                            treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_diagramElement_Audio);
+
+                            //SetDescriptionAudio(altContent, audio, treeNode);
+                        }
                     }
                     else
                     {
