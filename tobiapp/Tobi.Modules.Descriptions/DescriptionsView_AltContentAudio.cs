@@ -19,6 +19,7 @@ using urakawa;
 using urakawa.core;
 using urakawa.data;
 using urakawa.exception;
+using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.property.alt;
 using urakawa.property.channel;
@@ -72,8 +73,6 @@ namespace Tobi.Plugin.Descriptions
 
             //DebugFix.Assert(presentation.DataProviderManager.DataFileDirectoryFullPath == pres.DataProviderManager.DataFileDirectoryFullPath + suffix);
 
-            var audioChannel = presentation.ChannelFactory.CreateAudioChannel();
-            audioChannel.Name = "The DESCRIPTION Audio Channel";
 
             project.Presentations.Insert(0, presentation);
 
@@ -82,6 +81,9 @@ namespace Tobi.Plugin.Descriptions
 
             if (altContent.Audio != null)
             {
+                var audioChannel = presentation.ChannelFactory.CreateAudioChannel();
+                audioChannel.Name = "The DESCRIPTION Audio Channel";
+
                 ManagedAudioMedia audio1 = presentation.MediaFactory.CreateManagedAudioMedia();
                 AudioMediaData audioData1 = presentation.MediaDataFactory.CreateAudioMediaData();
                 audio1.AudioMediaData = audioData1;
@@ -110,6 +112,19 @@ namespace Tobi.Plugin.Descriptions
                 chProp.SetMedia(audioChannel, audio1);
             }
 
+            if (altContent.Text != null)
+            {
+                var textChannel = presentation.ChannelFactory.CreateTextChannel();
+                textChannel.Name = "The DESCRIPTION Text Channel";
+
+                TextMedia text1 = presentation.MediaFactory.CreateTextMedia();
+                text1.Text = altContent.Text.Text;
+
+                ChannelsProperty chProp = presentation.RootNode.GetOrCreateChannelsProperty();
+                chProp.SetMedia(textChannel, text1);
+            }
+
+            presentation.RootNode.XukInAfter_TextMediaCache();
 
             var audioEventAggregator = new EventAggregator();
 

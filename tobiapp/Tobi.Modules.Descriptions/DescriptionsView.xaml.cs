@@ -126,8 +126,8 @@ namespace Tobi.Plugin.Descriptions
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc),
                                                   this,
-                                                  PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                  PopupModalWindow.DialogButton.Cancel,
+                                                  PopupModalWindow.DialogButtonsSet.OkApplyCancel,
+                                                  PopupModalWindow.DialogButton.Apply,
                                                   true, 800, 500, null, 0);
             //this.OwnerWindow = windowPopup; DONE in ON PANEL LOADED EVENT
 
@@ -185,7 +185,8 @@ namespace Tobi.Plugin.Descriptions
 
             windowPopup.ShowModal();
 
-            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok
+                || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Apply)
             {
                 bool empty = m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionEmpty;
 
@@ -211,8 +212,11 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
-            //GC.Collect();
-            //GC.WaitForFullGCComplete();
+
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Apply)
+            {
+                Popup();
+            }
         }
 
 
@@ -265,10 +269,10 @@ namespace Tobi.Plugin.Descriptions
             {
                 MetadataAttributesListView.SelectedIndex = 0;
             }
-            if (MetadatasListView.IsVisible)
-            {
-                FocusHelper.Focus(MetadatasListView);
-            }
+            //if (MetadatasListView.IsVisible)
+            //{
+            //    FocusHelper.Focus(MetadatasListView);
+            //}
             OnSelectionChanged_MetadataList(null, null);
 
             DescriptionsListView.Items.Refresh();
@@ -281,11 +285,13 @@ namespace Tobi.Plugin.Descriptions
             {
                 MetadatasAltContentListView.SelectedIndex = 0;
             }
-            if (DescriptionsListView.IsVisible)
-            {
-                FocusHelper.Focus(DescriptionsListView);
-            }
+            //if (DescriptionsListView.IsVisible)
+            //{
+            //    FocusHelper.Focus(DescriptionsListView);
+            //}
             OnSelectionChanged_DescriptionsList(null, null);
+
+            FocusHelper.Focus(ButtonImport);
         }
 
         private void OnLoaded_Panel(object sender, RoutedEventArgs e)
