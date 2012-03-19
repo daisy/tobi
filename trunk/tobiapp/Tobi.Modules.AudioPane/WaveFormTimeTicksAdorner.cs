@@ -426,26 +426,33 @@ namespace Tobi.Plugin.AudioPane
 
         public void InvalidateVisualz()
         {
+            if (m_AudioPaneViewModel.State.Audio.PlayStreamMarkers != null)
+            {
+
 #if USE_NORMAL_LIST
                 foreach (TreeNodeAndStreamDataLength marker in m_AudioPaneViewModel.State.Audio.PlayStreamMarkers)
                 {
 #else
-            LightLinkedList<TreeNodeAndStreamDataLength>.Item current = m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.m_First;
-            while (current != null)
-            {
-                TreeNodeAndStreamDataLength marker = current.m_data;
+                LightLinkedList<TreeNodeAndStreamDataLength>.Item current =
+                    m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.m_First;
+                while (current != null)
+                {
+                    TreeNodeAndStreamDataLength marker = current.m_data;
 
-#endif //USE_NORMAL_LIST
+#endif
+                    //USE_NORMAL_LIST
 
-                marker.m_Tag1 = null;
-                marker.m_Tag2 = null;
+                    marker.m_Tag1 = null;
+                    marker.m_Tag2 = null;
 
 #if USE_NORMAL_LIST
                 }
 #else
-                current = current.m_nextItem;
+                    current = current.m_nextItem;
+                }
+#endif
+                //USE_NORMAL_LIST
             }
-#endif //USE_NORMAL_LIST
 
             InvalidateVisual();
         }

@@ -23,6 +23,11 @@ namespace Tobi.Plugin.Descriptions
 
             if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
 
+            SetDescriptionAudio(altContent, manMedia, node);
+        }
+
+        public void SetDescriptionAudio(AlternateContent altContent, ManagedAudioMedia manMedia, TreeNode node)
+        {
             if (manMedia == null
                 || manMedia.HasActualAudioMediaData && !manMedia.Duration.IsGreaterThan(Time.Zero))
             {
