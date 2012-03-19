@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Threading;
@@ -10,7 +11,9 @@ using Tobi.Common.MVVM;
 using urakawa;
 using urakawa.command;
 using urakawa.core;
+using urakawa.daisy;
 using urakawa.events.undo;
+using urakawa.xuk;
 
 namespace Tobi.Plugin.Descriptions
 {/// <summary>
@@ -147,5 +150,140 @@ namespace Tobi.Plugin.Descriptions
         }
 
 
+
+        private int m_XmlIDCounter = -1;
+        public string GetNewXmlID(string prefix)
+        {
+            string id = null;
+            do
+            {
+                id = prefix + '_' + (++m_XmlIDCounter);
+
+            } while (XmlIDAlreadyExists(id, true, true));
+
+            return id;
+        }
+
+        public bool XmlIDAlreadyExists(string xmlid, bool inHeadMetadata, bool inBodyContent)
+        {
+            foreach (var id in GetExistingXmlIDs(inHeadMetadata, inBodyContent))
+            {
+                if (xmlid == id)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public IEnumerable<string> GetExistingXmlIDs(bool inHeadMetadata, bool inBodyContent)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) yield break;
+
+            var altProp = node.GetAlternateContentProperty();
+            if (altProp == null) yield break;
+
+
+            if (inHeadMetadata && altProp.Metadatas != null)
+            {
+                foreach (var metadata in altProp.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.OtherAttributes != null)
+                    {
+                        foreach (var metadataAttr in metadata.OtherAttributes.ContentsAs_Enumerable)
+                        {
+                            if (metadataAttr.Name.Equals(XmlReaderWriterHelper.XmlId))
+                            {
+                                yield return metadataAttr.Value;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (inBodyContent && altProp.AlternateContents != null)
+            {
+                foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+                {
+                    if (altContent.Metadatas != null)
+                    {
+                        foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                        {
+                            if (metadata.NameContentAttribute.Name.Equals(XmlReaderWriterHelper.XmlId))
+                            {
+                                yield return metadata.NameContentAttribute.Value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        public bool XmlIDIsReferredTo(string xmlid, bool inHeadMetadata, bool inBodyContent)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return false;
+
+            var altProp = node.GetAlternateContentProperty();
+            if (altProp == null) return false;
+
+
+            if (inHeadMetadata && altProp.Metadatas != null)
+            {
+                foreach (var metadata in altProp.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.OtherAttributes != null)
+                    {
+                        foreach (var metadataAttr in metadata.OtherAttributes.ContentsAs_Enumerable)
+                        {
+                            if (metadataAttr.Name.Equals(DiagramContentModelHelper.About))
+                            {
+                                string idref = metadataAttr.Value;
+                                if (idref.StartsWith("#") && idref.Length > 1)
+                                {
+                                    idref = idref.Substring(1, idref.Length - 1);
+                                }
+                                if (idref == xmlid)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (inBodyContent && altProp.AlternateContents != null)
+            {
+                foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+                {
+                    if (altContent.Metadatas != null)
+                    {
+                        foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                        {
+                            if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.Ref))
+                            {
+                                string idref = metadata.NameContentAttribute.Value;
+                                if (idref.StartsWith("#") && idref.Length > 1)
+                                {
+                                    idref = idref.Substring(1, idref.Length - 1);
+                                }
+                                if (idref == xmlid)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -577,7 +577,7 @@ namespace Tobi.Common.UI
             Ok,
             OkCancel,
             Cancel,
-            OkApplyClose,
+            OkApplyCancel,
             YesNo,
             YesNoCancel,
             Close,
@@ -633,15 +633,14 @@ namespace Tobi.Common.UI
         {
             get
             {
-                return DialogButtons == DialogButtonsSet.Close
-                    || DialogButtons == DialogButtonsSet.OkApplyClose;
+                return DialogButtons == DialogButtonsSet.Close;
             }
         }
         public bool IsButtonActive_Apply
         {
             get
             {
-                return DialogButtons == DialogButtonsSet.OkApplyClose;
+                return DialogButtons == DialogButtonsSet.OkApplyCancel;
             }
         }
         public bool IsButtonActive_Ok
@@ -649,7 +648,7 @@ namespace Tobi.Common.UI
             get
             {
                 return DialogButtons == DialogButtonsSet.Ok
-                       || DialogButtons == DialogButtonsSet.OkApplyClose
+                       || DialogButtons == DialogButtonsSet.OkApplyCancel
                        || DialogButtons == DialogButtonsSet.OkCancel;
             }
         }
@@ -659,7 +658,8 @@ namespace Tobi.Common.UI
             {
                 return DialogButtons == DialogButtonsSet.Cancel
                        || DialogButtons == DialogButtonsSet.OkCancel
-                       || DialogButtons == DialogButtonsSet.YesNoCancel;
+                       || DialogButtons == DialogButtonsSet.YesNoCancel
+                       || DialogButtons == DialogButtonsSet.OkApplyCancel;
             }
         }
         public bool IsButtonActive_Yes
@@ -763,6 +763,8 @@ namespace Tobi.Common.UI
         private void OnApplyButtonClick(object sender, RoutedEventArgs e)
         {
             ClickedDialogButton = DialogButton.Apply;
+            m_ButtonTriggersClose = true;
+            Close();
         }
         #endregion ButtonClick
 
