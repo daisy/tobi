@@ -567,12 +567,12 @@ namespace Tobi.Plugin.AudioPane
                 {
                 //TreeNode next = electNextRecordableNode(treeNode);
                 tryNext:
-                    TreeNode next = treeNode.GetNextSiblingWithText(true);
+                    TreeNode next = treeNode.GetNextSiblingWithText();
                     while (next != null && (next.GetXmlElementQName() == null
-                            || TreeNode.TextOnlyContainsPunctuation(next.GetText(true).Trim())
+                            || TreeNode.TextOnlyContainsPunctuation(next.GetText())
                             ))
                     {
-                        next = next.GetNextSiblingWithText(true);
+                        next = next.GetNextSiblingWithText();
                     }
                     next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
 

@@ -341,7 +341,7 @@ namespace Tobi.Plugin.NavigationPane
                     if (node == markedTreeNode.TreeNode
                         || node.IsDescendantOf(markedTreeNode.TreeNode))
                     {
-                        markedTreeNode.RaiseDescriptionChanged();
+                        markedTreeNode.InvalidateDescription();
                     }
                 }
                 return;

@@ -45,11 +45,11 @@ namespace Tobi.Plugin.NavigationPane
                 length = strBuilder.Length;
             }
 
-            TreeNode.StringChunk strChunkStart = treeNode.GetTextFlattened_(true);
-            if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
+            TreeNode.StringChunkRange range = treeNode.GetTextFlattened_();
+            if (range != null && range.First != null && !string.IsNullOrEmpty(range.First.Str))
             {
                 int l1 = length;
-                TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
+                TreeNode.ConcatStringChunks(range, -1, strBuilder);
                 int l2 = strBuilder.Length;
 
                 int added = l2 - l1;
@@ -78,16 +78,24 @@ namespace Tobi.Plugin.NavigationPane
         }
 
 
-        public void RaiseDescriptionChanged()
+        public void InvalidateDescription()
         {
+            m_Description = null;
             RaisePropertyChanged(() => Description);
         }
 
+        private string m_Description;
         public string Description
         {
             get
             {
-                return GetMarkerDescription(TreeNode);
+                if (!string.IsNullOrEmpty(m_Description))
+                {
+                    return m_Description;
+                }
+
+                m_Description = GetMarkerDescription(TreeNode);
+                return m_Description;
             }
         }
 

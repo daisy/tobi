@@ -1175,7 +1175,7 @@ namespace Tobi.Plugin.DocumentPane
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
 
-                    TreeNode previousDirect = node.GetPreviousSiblingWithText(true);
+                    TreeNode previousDirect = node.GetPreviousSiblingWithText();
                     if (previousDirect == null)
                     {
                         AudioCues.PlayBeep();
@@ -1184,10 +1184,10 @@ namespace Tobi.Plugin.DocumentPane
                     {
                         TreeNode previous = previousDirect;
                         while (previous != null && (previous.GetXmlElementQName() == null
-                               || TreeNode.TextOnlyContainsPunctuation(previous.GetText(true).Trim())
+                               || TreeNode.TextOnlyContainsPunctuation(previous.GetText())
                                ))
                         {
-                            previous = previous.GetPreviousSiblingWithText(true);
+                            previous = previous.GetPreviousSiblingWithText();
                         }
                         previous = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, previous);
 
@@ -1260,7 +1260,7 @@ namespace Tobi.Plugin.DocumentPane
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
 
-                    TreeNode nextDirect = node.GetNextSiblingWithText(true);
+                    TreeNode nextDirect = node.GetNextSiblingWithText();
                     if (nextDirect == null)
                     {
                         AudioCues.PlayBeep();
@@ -1269,10 +1269,10 @@ namespace Tobi.Plugin.DocumentPane
                     {
                         TreeNode next = nextDirect;
                         while (next != null && (next.GetXmlElementQName() == null
-                               || TreeNode.TextOnlyContainsPunctuation(next.GetText(true).Trim())
+                               || TreeNode.TextOnlyContainsPunctuation(next.GetText())
                                ))
                         {
-                            next = next.GetNextSiblingWithText(true);
+                            next = next.GetNextSiblingWithText();
                         }
                         next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
 
@@ -2415,7 +2415,7 @@ namespace Tobi.Plugin.DocumentPane
                 TheFlowDocumentSimple.Blocks.Add(block);
             }
 
-            string str = treeNode.GetTextFlattened(true);
+            string str = treeNode.GetTextFlattened();
             if (string.IsNullOrEmpty(str))
             {
                 m_TextOnlyViewRun.Text = "";

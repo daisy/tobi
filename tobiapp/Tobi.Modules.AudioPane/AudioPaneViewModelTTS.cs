@@ -226,7 +226,7 @@ namespace Tobi.Plugin.AudioPane
 
                 initial = false;
 
-                var text = adjustedNode.GetTextFlattened(true);
+                var text = adjustedNode.GetTextFlattened();
                 if (string.IsNullOrEmpty(text))
                 {
 #if DEBUG
@@ -306,12 +306,12 @@ namespace Tobi.Plugin.AudioPane
                     return;
                 }
 
-                treeNode = adjustedNode.GetNextSiblingWithText(true);
+                treeNode = adjustedNode.GetNextSiblingWithText();
                 while (treeNode != null && (treeNode.GetXmlElementQName() == null
-                        || TreeNode.TextOnlyContainsPunctuation(treeNode.GetText(true).Trim())
+                        || TreeNode.TextOnlyContainsPunctuation(treeNode.GetText())
                         ))
                 {
-                    treeNode = treeNode.GetNextSiblingWithText(true);
+                    treeNode = treeNode.GetNextSiblingWithText();
                 }
 
                 if (treeNode == null)
@@ -453,7 +453,7 @@ namespace Tobi.Plugin.AudioPane
                 }
                 initial = false;
 
-                var text = adjustedNode.GetTextFlattened(true);
+                var text = adjustedNode.GetTextFlattened();
                 if (string.IsNullOrEmpty(text))
                 {
                     return;
@@ -509,12 +509,12 @@ namespace Tobi.Plugin.AudioPane
                     View.CancelWaveFormLoad(true);
                 }
 
-                treeNode = adjustedNode.GetNextSiblingWithText(true);
+                treeNode = adjustedNode.GetNextSiblingWithText();
                 while (treeNode != null && (treeNode.GetXmlElementQName() == null
-                        || TreeNode.TextOnlyContainsPunctuation(treeNode.GetText(true).Trim())
+                        || TreeNode.TextOnlyContainsPunctuation(treeNode.GetText())
                         ))
                 {
-                    treeNode = treeNode.GetNextSiblingWithText(true);
+                    treeNode = treeNode.GetNextSiblingWithText();
                 }
 
                 if (treeNode == null)

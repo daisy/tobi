@@ -42,19 +42,27 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
-        public void RaiseNameChanged()
+        public void InvalidateName()
         {
+            m_Name = null;
             RaisePropertyChanged(() => Name);
         }
 
+        private string m_Name;
         public string Name
         {
             get
             {
-                string pageTxt = TreeNode.GetTextFlattened(true);
+                if (!string.IsNullOrEmpty(m_Name))
+                {
+                    return m_Name;
+                }
+
+                string pageTxt = TreeNode.GetTextFlattened();
                 if (!string.IsNullOrEmpty(pageTxt))
                 {
-                    return pageTxt;
+                    m_Name = pageTxt;
+                    return m_Name;
                 }
                 //if (TextElement is Paragraph)
                 //{

@@ -270,11 +270,11 @@ namespace Tobi.Plugin.DocumentPane
             }
             else
             {
-                TreeNode.StringChunk strChunkStart = node.GetTextFlattened_(true);
-                if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
+                TreeNode.StringChunkRange range = node.GetTextFlattened_();
+                if (range != null && range.First != null && !string.IsNullOrEmpty(range.First.Str))
                 {
-                    StringBuilder strBuilder = new StringBuilder(strChunkStart.GetLength());
-                    TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
+                    StringBuilder strBuilder = new StringBuilder(range.GetLength());
+                    TreeNode.ConcatStringChunks(range, -1, strBuilder);
 
                     strBuilder.Replace(" ", "_");
                     strBuilder.Insert(0, "id_tobipage_");
@@ -655,7 +655,7 @@ namespace Tobi.Plugin.DocumentPane
         //    return name.Replace("_DaSh_", "-");
         //}
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_th_td(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_th_td(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             if (parent is Table)
             {
@@ -718,18 +718,18 @@ namespace Tobi.Plugin.DocumentPane
 
                 if (node.Children.Count == 0)
                 {
-                    if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                    if (textMedia == null || String.IsNullOrEmpty(textMedia))
                     {
                         // ignore empty list item
                     }
                     else
                     {
-                        data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                        data.Blocks.Add(new Paragraph(new Run(textMedia)));
                     }
 
                     return parent;
                 }
-                //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+                //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
                 else
                 {
                     var section = new Section();
@@ -746,7 +746,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Paragraph(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateParagraphInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Paragraph(TreeNode node, TextElement parent, QualifiedName qname, string textMedia, DelegateParagraphInitializer initializer)
         {
             Paragraph data = new Paragraph();
             setTag(data, node);
@@ -758,19 +758,19 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     data.Inlines.Add(new LineBreak());
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(textMedia));
                 }
 
                 addBlock(parent, data);
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addBlock(parent, data);
@@ -778,26 +778,26 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_underline_u(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_underline_u(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             Underline data = new Underline();
             setTag(data, node);
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     // ignore empty underline
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(textMedia));
                     addInline(parent, data);
                 }
 
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addInline(parent, data);
@@ -805,26 +805,26 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_strong_b(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_strong_b(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             Bold data = new Bold();
             setTag(data, node);
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     // ignore empty bold
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(textMedia));
                     addInline(parent, data);
                 }
 
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addInline(parent, data);
@@ -832,26 +832,26 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_em_i(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_em_i(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             Italic data = new Italic();
             setTag(data, node);
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     // ignore empty italic
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(textMedia));
                     addInline(parent, data);
                 }
 
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addInline(parent, data);
@@ -859,7 +859,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_list_dl(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_list_dl(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             List data = new List();
             setTag(data, node);
@@ -869,7 +869,7 @@ namespace Tobi.Plugin.DocumentPane
                 //ignore empty list
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addBlock(parent, data);
@@ -877,7 +877,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_table(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_table(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             m_cellsToExpand.Clear();
             m_currentTD = 0;
@@ -909,7 +909,7 @@ namespace Tobi.Plugin.DocumentPane
                 //ignore empty table
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addBlock(parent, data);
@@ -917,7 +917,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_li_dd_dt(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_li_dd_dt(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             if (!(parent is List))
             {
@@ -930,14 +930,14 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     setTag(data, node);
                     // ignore empty list item
                 }
                 else
                 {
-                    var para = new Paragraph(new Run(textMedia.Text));
+                    var para = new Paragraph(new Run(textMedia));
                     data.Blocks.Add(para);
                     ((List)parent).ListItems.Add(data);
 
@@ -961,7 +961,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 ((List)parent).ListItems.Add(data);
@@ -991,14 +991,14 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             if (node.Children.Count == 0)
             {
                 if (parent is Table)
                 {
                     if ((qname.LocalName == "pagenum" || qname.LocalName == "caption")
-                        && textMedia != null && !string.IsNullOrEmpty(textMedia.Text))
+                        && textMedia != null && !string.IsNullOrEmpty(textMedia))
                     {
                         m_currentTD = 0;
 
@@ -1009,7 +1009,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         TableRow data = new TableRow();
                         ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(data);
-                        Paragraph para = new Paragraph(new Run(textMedia.Text));
+                        Paragraph para = new Paragraph(new Run(textMedia));
                         TableCell cell = new TableCell(para);
 
                         setTag(para, node);
@@ -1045,7 +1045,7 @@ namespace Tobi.Plugin.DocumentPane
                     throw new Exception("table row not in Table ??");
                 }
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 if (parent is Table)
@@ -1142,7 +1142,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             //Hyperlink data = new Hyperlink();
             var data = new Underline();
@@ -1199,7 +1199,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     if (attr != null && !String.IsNullOrEmpty(attr.Value))
                     {
@@ -1214,13 +1214,13 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia.Text));
+                    data.Inlines.Add(new Run(textMedia));
                     addInline(parent, data);
                 }
 
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addInline(parent, data);
@@ -1228,7 +1228,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_annoref_noteref(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_annoref_noteref(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             var data = new Hyperlink();
             setTag(data, node);
@@ -1278,7 +1278,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     data.Inlines.Add(new Run("..."));
                     addInline(parent, data);
@@ -1286,7 +1286,7 @@ namespace Tobi.Plugin.DocumentPane
                 else
                 {
                     //var span = new Span();
-                    var run = new Run(textMedia.Text);
+                    var run = new Run(textMedia);
                     //span.Inlines.Add(run);
 
                     data.Inlines.Add(run);
@@ -1295,7 +1295,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addInline(parent, data);
@@ -1304,7 +1304,7 @@ namespace Tobi.Plugin.DocumentPane
         }
 
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Span(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateSpanInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Span(TreeNode node, TextElement parent, QualifiedName qname, string textMedia, DelegateSpanInitializer initializer)
         {
             Span data = new Span();
             setTag(data, node);
@@ -1316,14 +1316,14 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     data.Inlines.Add(new Run("..."));
                     addInline(parent, data);
                 }
                 else
                 {
-                    var run = new Run(textMedia.Text);
+                    var run = new Run(textMedia);
                     if (qname.LocalName == "sup")
                     {
                         run.SetValue(Inline.BaselineAlignmentProperty, BaselineAlignment.Superscript);
@@ -1338,7 +1338,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addInline(parent, data);
@@ -1346,7 +1346,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Floater(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateFloaterInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Floater(TreeNode node, TextElement parent, QualifiedName qname, string textMedia, DelegateFloaterInitializer initializer)
         {
             Floater data = new Floater();
             setTag(data, node);
@@ -1358,19 +1358,19 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     data.Blocks.Add(new Paragraph(new LineBreak()));
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                    data.Blocks.Add(new Paragraph(new Run(textMedia)));
                 }
 
                 addInline(parent, data);
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addInline(parent, data);
@@ -1378,7 +1378,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Figure(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateFigureInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Figure(TreeNode node, TextElement parent, QualifiedName qname, string textMedia, DelegateFigureInitializer initializer)
         {
             Figure data = new Figure();
             setTag(data, node);
@@ -1390,19 +1390,19 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     data.Blocks.Add(new Paragraph(new LineBreak()));
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                    data.Blocks.Add(new Paragraph(new Run(textMedia)));
                 }
 
                 addInline(parent, data);
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addInline(parent, data);
@@ -1410,7 +1410,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Section(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia, DelegateSectionInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Section(TreeNode node, TextElement parent, QualifiedName qname, string textMedia, DelegateSectionInitializer initializer)
         {
             Section data = new Section();
             setTag(data, node);
@@ -1422,19 +1422,19 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia.Text))
+                if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
                     data.Blocks.Add(new Paragraph(new LineBreak()));
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(textMedia.Text)));
+                    data.Blocks.Add(new Paragraph(new Run(textMedia)));
                 }
 
                 addBlock(parent, data);
                 return parent;
             }
-            //assumption based on the caller: when node.Children.Count != 0 then textMedia.Text == null
+            //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
                 addBlock(parent, data);
@@ -1442,9 +1442,9 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_img(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_img(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
-            if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia.Text))
+            if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia))
             {
 #if DEBUG
                 Debugger.Break();
@@ -1633,12 +1633,12 @@ namespace Tobi.Plugin.DocumentPane
             return parent;
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_(TreeNode node, TextElement parent, QualifiedName qname, AbstractTextMedia textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             if (qname == null)
             {
                 //assumption based on the caller: node.Children.Count == 0 && textMedia != null
-                if (textMedia.Text.Length == 0)
+                if (textMedia.Length == 0)
                 {
 #if DEBUG
                     Debugger.Break();
@@ -1646,7 +1646,7 @@ namespace Tobi.Plugin.DocumentPane
                     return parent;
                 }
 
-                var data = new Run(textMedia.Text);
+                var data = new Run(textMedia);
                 setTag(data, node);
                 addInline(parent, data);
 
@@ -1657,7 +1657,7 @@ namespace Tobi.Plugin.DocumentPane
                 || qname.NamespaceUri == m_TreeNode.Presentation.PropertyFactory.DefaultXmlNamespaceUri)
             {
                 // node.Children.Count ?
-                // String.IsNullOrEmpty(textMedia.Text) ?
+                // String.IsNullOrEmpty(textMedia) ?
 
                 switch (qname.LocalName)
                 {
@@ -2144,7 +2144,8 @@ namespace Tobi.Plugin.DocumentPane
 
             TextElement parentNext = parent;
 
-            AbstractTextMedia textMedia = node.GetTextMedia();
+            AbstractTextMedia textMedia_ = node.GetTextMedia();
+            string textMedia = textMedia_ == null ? null : textMedia_.Text;
 
             if (node.Children.Count == 0)
             {

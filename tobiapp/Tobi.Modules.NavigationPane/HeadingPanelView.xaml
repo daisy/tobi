@@ -126,12 +126,6 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
             <Setter Property="AutomationProperties.Name" Value="{Binding Title}"/>
             <Setter Property="UI:TreeViewItemBringIntoViewNoFocusWhenSelectedBehavior.IsBroughtIntoViewNoFocusWhenSelected" Value="True" />
 
-            <Setter Property="HorizontalContentAlignment"
-                Value="{Binding Path=HorizontalContentAlignment,
-                RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-            <Setter Property="VerticalContentAlignment"
-                Value="{Binding Path=VerticalContentAlignment,
-                RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
             <Setter Property="FontWeight" Value="Normal" />
@@ -143,6 +137,7 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
             <Trigger Property="IsSelected" Value="True">
               <Setter Property="FontWeight" Value="Bold" />
             </Trigger>
+            
             <Trigger Property="search:SearchOperations.IsMatch" Value="True">
 
               <Setter Property="Background">
@@ -155,6 +150,13 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
                 </Setter.Value>
               </Setter>
             </Trigger>
+
+            <!--This trigger is needed, because RelativeSource binding can only succeeds if the current MenuItem is already connected to its visual parent-->
+            <!--<Trigger Property="IsVisible" Value="True">
+              <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+              <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            </Trigger>-->
+            
           </Style.Triggers>
         </Style>
       </TreeView.ItemContainerStyle>
@@ -186,9 +188,9 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
                     </Style.Triggers>
                   </Style>
                 </ContextMenu.Resources>
-                <UI:MenuItemRichCommand RichCommand="{Binding CommandExpandAll}"/>
+                <UI:MenuItemRichCommand RichCommand="{Binding CommandExpandAll}" x:Name="CommandExpandAll"/>
                 <!-- <UI:MenuItemRichCommand RichCommand="{Binding CommandExpand}" CommandParameter="{Binding Path=.}"/> -->
-                <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}"/>
+                <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}" x:Name="CommandCollapseAll"/>
                 <!-- <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapse}" CommandParameter="{Binding Path=.}"/> -->
                 <!-- UI:MenuItemRichCommand RichCommand="{Binding CommandEditText}" CommandParameter="{Binding Path=.}"/ -->
               </ContextMenu>

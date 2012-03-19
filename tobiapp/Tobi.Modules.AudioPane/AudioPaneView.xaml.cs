@@ -219,7 +219,7 @@ namespace Tobi.Plugin.AudioPane
         {
             if (m_WaveFormTimeTicksAdorner != null)
             {
-                m_WaveFormTimeTicksAdorner.InvalidateVisual();
+                m_WaveFormTimeTicksAdorner.InvalidateVisualz();
             }
         }
 
