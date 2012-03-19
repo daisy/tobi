@@ -616,12 +616,12 @@ namespace Tobi.Plugin.StructureTrailPane
             TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
 
             StringBuilder strBuilder = null;
-            TreeNode.StringChunk strChunkStart = treeNode.GetTextFlattened_(true);
+            TreeNode.StringChunkRange range = treeNode.GetTextFlattened_();
 
-            if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
+            if (range != null && range.First != null && !string.IsNullOrEmpty(range.First.Str))
             {
-                strBuilder = new StringBuilder(strChunkStart.GetLength());
-                TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
+                strBuilder = new StringBuilder(range.GetLength());
+                TreeNode.ConcatStringChunks(range, -1, strBuilder);
 
                 string strShort = strBuilder.ToString(0, Math.Min(1000, strBuilder.Length));
 

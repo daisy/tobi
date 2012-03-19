@@ -424,6 +424,31 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        public void InvalidateVisualz()
+        {
+#if USE_NORMAL_LIST
+                foreach (TreeNodeAndStreamDataLength marker in m_AudioPaneViewModel.State.Audio.PlayStreamMarkers)
+                {
+#else
+            LightLinkedList<TreeNodeAndStreamDataLength>.Item current = m_AudioPaneViewModel.State.Audio.PlayStreamMarkers.m_First;
+            while (current != null)
+            {
+                TreeNodeAndStreamDataLength marker = current.m_data;
+
+#endif //USE_NORMAL_LIST
+
+                marker.m_Tag1 = null;
+                marker.m_Tag2 = null;
+
+#if USE_NORMAL_LIST
+                }
+#else
+                current = current.m_nextItem;
+            }
+#endif //USE_NORMAL_LIST
+
+            InvalidateVisual();
+        }
 
         public void drawChunkInfos(DrawingContext drawingContext,
             double hoffset, double heightAvailable, double widthAvailable, double bytesPerPixel
@@ -520,8 +545,21 @@ namespace Tobi.Plugin.AudioPane
                         //                            m_standardTextHeight = txt.Height;
                         //                        }
 
+
+                        string strTime = null;
+
+                        if (marker.m_Tag1 == null || !(marker.m_Tag1 is string))
+                        {
+                            strTime = AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits));
+                            marker.m_Tag1 = strTime;
+                        }
+                        else
+                        {
+                            strTime = (string)marker.m_Tag1;
+                        }
+
                         var formattedTextDuration = new FormattedText(
-                                                AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits)),
+                                                strTime,
                                                               m_culture,
                                                               FlowDirection.LeftToRight,
                                                               m_typeFace,
@@ -664,24 +702,39 @@ namespace Tobi.Plugin.AudioPane
                         //}
                         //string nodeTxt = !String.IsNullOrEmpty(imgAlt) ? imgAlt : marker.m_TreeNode.GetTextMediaFlattened(false);
 
-                        
-                        TreeNode.StringChunk strChunkStart = marker.m_TreeNode.GetTextFlattened_(true);
+                        string strText = null;
 
-                        if (strChunkStart != null && !String.IsNullOrEmpty(strChunkStart.Str))
+                        if (marker.m_Tag2 == null || !(marker.m_Tag2 is string))
                         {
-                            StringBuilder strBuilder = new StringBuilder(strChunkStart.GetLength());
-                            TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
+                            TreeNode.StringChunkRange range = marker.m_TreeNode.GetTextFlattened_();
 
-                            strBuilder.Replace("\r\n", "");
-                            strBuilder.Replace("\n", "");
-                            strBuilder.Replace(Environment.NewLine, "");
+                            if (range != null && range.First != null && !String.IsNullOrEmpty(range.First.Str))
+                            {
+                                StringBuilder strBuilder = new StringBuilder(range.GetLength());
+                                TreeNode.ConcatStringChunks(range, -1, strBuilder);
 
-                            var formattedText = new FormattedText(strBuilder.ToString().Trim(),
-                                                                  m_culture,
-                                                                  FlowDirection.LeftToRight,
-                                                                  m_typeFace,
-                                                                  12 * (trans != null ? m_zoom : 1),
-                                                                  m_phraseBrush
+                                strBuilder.Replace("\r\n", "");
+                                strBuilder.Replace("\n", "");
+                                strBuilder.Replace(Environment.NewLine, "");
+
+                                strText = strBuilder.ToString().Trim();
+
+                                marker.m_Tag2 = strText;
+                            }
+                        }
+                        else
+                        {
+                            strText = (string)marker.m_Tag2;
+                        }
+
+                        if (!string.IsNullOrEmpty(strText))
+                        {
+                            var formattedText = new FormattedText(strText,
+                                                                      m_culture,
+                                                                      FlowDirection.LeftToRight,
+                                                                      m_typeFace,
+                                                                      12 * (trans != null ? m_zoom : 1),
+                                                                      m_phraseBrush
 #if NET40
 , null, TextFormattingMode.Display
 #endif //NET40

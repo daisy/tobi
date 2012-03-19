@@ -83,11 +83,11 @@ namespace Tobi.Plugin.Descriptions
 
             StringBuilder strBuilder = null;
             int length = 0;
-            TreeNode.StringChunk strChunkStart = treeNode.GetTextFlattened_(true);
-            if (strChunkStart != null && !string.IsNullOrEmpty(strChunkStart.Str))
+            TreeNode.StringChunkRange range = treeNode.GetTextFlattened_();
+            if (range != null && range.First != null && !string.IsNullOrEmpty(range.First.Str))
             {
-                strBuilder = new StringBuilder(strChunkStart.GetLength());
-                TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
+                strBuilder = new StringBuilder(range.GetLength());
+                TreeNode.ConcatStringChunks(range, -1, strBuilder);
                 length = strBuilder.Length;
                 if (length > 40)
                 {
@@ -147,11 +147,6 @@ namespace Tobi.Plugin.Descriptions
         }
 
 
-        public void RaiseDescriptionChanged()
-        {
-            RaisePropertyChanged(() => Description);
-            RaisePropertyChanged(() => DescriptionX);
-        }
 
         public void RaiseHasDescriptionChanged()
         {
@@ -178,19 +173,40 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
+        public void InvalidateDescription()
+        {
+            m_Description = null;
+            m_DescriptionX = null;
+
+            RaisePropertyChanged(() => Description);
+            RaisePropertyChanged(() => DescriptionX);
+        }
+
+        private string m_Description;
         public string Description
         {
             get
             {
-                return GetDescriptionLabel(TreeNode);
+                if (!string.IsNullOrEmpty(m_Description))
+                {
+                    return m_Description;
+                }
+                m_Description = GetDescriptionLabel(TreeNode);
+                return m_Description;
             }
         }
 
+        private string m_DescriptionX;
         public string DescriptionX
         {
             get
             {
-                return (HasDescription ? "(described) " : "(no description) ") + Description;
+                if (!string.IsNullOrEmpty(m_DescriptionX))
+                {
+                    return m_DescriptionX;
+                }
+                m_DescriptionX = (HasDescription ? "(described) " : "(no description) ") + Description;
+                return m_DescriptionX;
             }
         }
 

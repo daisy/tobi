@@ -29,8 +29,8 @@ namespace Tobi.Common.Validation
 
         public static string GetTreeNodeTextExcerpt(TreeNode node)
         {
-            TreeNode.StringChunk strChunkStart = node.GetTextFlattened_(true);
-            if (strChunkStart == null || string.IsNullOrEmpty(strChunkStart.Str))
+            TreeNode.StringChunkRange range = node.GetTextFlattened_();
+            if (range == null || range.First == null || string.IsNullOrEmpty(range.First.Str))
             {
                 return "";
             }
@@ -46,7 +46,7 @@ namespace Tobi.Common.Validation
             //}
 
             int maxLength = 100;
-            int length = strChunkStart.GetLength();
+            int length = range.GetLength();
             strBuilderCapacity += Math.Min(length, maxLength);
             string strBuilder_str2 = length > maxLength ? @"..." : null;
             if (strBuilder_str2 != null)
@@ -55,7 +55,7 @@ namespace Tobi.Common.Validation
             }
 
             StringBuilder strBuilder = new StringBuilder(strBuilderCapacity);
-            TreeNode.ConcatStringChunks(strChunkStart, maxLength, strBuilder);
+            TreeNode.ConcatStringChunks(range, maxLength, strBuilder);
             if (strBuilder_str2 != null)
             {
                 strBuilder.Append(strBuilder_str2);

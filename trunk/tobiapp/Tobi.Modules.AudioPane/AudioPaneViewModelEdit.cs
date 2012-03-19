@@ -315,12 +315,12 @@ namespace Tobi.Plugin.AudioPane
                         TreeNode treeNode = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
 
                     tryNext:
-                        next = treeNode.GetNextSiblingWithText(true);
+                        next = treeNode.GetNextSiblingWithText();
                         while (next != null && (next.GetXmlElementQName() == null
-                                                || TreeNode.TextOnlyContainsPunctuation(next.GetText(true).Trim())
+                                                || TreeNode.TextOnlyContainsPunctuation(next.GetText())
                                                ))
                         {
-                            next = next.GetNextSiblingWithText(true);
+                            next = next.GetNextSiblingWithText();
                         }
                         next =
                             TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(

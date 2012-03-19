@@ -55,6 +55,10 @@ namespace Tobi.Plugin.MenuBar
         }
 
 
+        public class MenuBarSeparator : Separator
+        {
+        }
+
         public int AddMenuBarGroup(string topLevelMenuItemId, PreferredPosition positionInTopLevel, bool addSeparatorTopLevel,
                                     string subMenuItemId, PreferredPosition positionInSubLevel, bool addSeparatorSubLevel,
                                     object[] commands)
@@ -78,13 +82,19 @@ namespace Tobi.Plugin.MenuBar
             }
 
             IRegion targetRegionTop;
-            try
+            if (m_RegionManager.Regions.ContainsRegionWithName(topLevelMenuItemId))
             {
                 targetRegionTop = m_RegionManager.Regions[topLevelMenuItemId];
             }
-            catch
+            else
             {
-                var menuRoot = new MenuItemRichCommand { Header = topLevelMenuItemId };
+                var menuRoot = new MenuItemRichCommand
+                                   {
+                                       Header = topLevelMenuItemId,
+                                       Name = "MENU_ITEM_" + topLevelMenuItemId,
+                                       HorizontalContentAlignment = HorizontalAlignment.Left,
+                                       VerticalContentAlignment = VerticalAlignment.Center
+                                   };
 
                 //RegionManager.SetRegionManager(menuRoot, m_RegionManager);
                 RegionManager.SetRegionName(menuRoot, topLevelMenuItemId);
@@ -105,12 +115,12 @@ namespace Tobi.Plugin.MenuBar
 
             if (!string.IsNullOrEmpty(subRegionName))
             {
-                try
+                if (m_RegionManager.Regions.ContainsRegionWithName(subRegionName))
                 {
                     targetRegionSub = m_RegionManager.Regions[subRegionName];
                     needTopLevelSeparator = false;
                 }
-                catch
+                else
                 {
                     needTopLevelSeparator = true;
                 }
@@ -118,7 +128,7 @@ namespace Tobi.Plugin.MenuBar
 
             if (addSeparatorTopLevel && (needTopLevelSeparator || targetRegionSub == null))
             {
-                object view = new Separator();
+                object view = new MenuBarSeparator();
 #if true || DEBUG
                 if (PreferredPositionRegion.MARK_PREFERRED_POS)
                     view = new MenuItem { Header = positionInTopLevel.ToString("G") + " >> -------" };
@@ -137,7 +147,13 @@ namespace Tobi.Plugin.MenuBar
 
             if (targetRegionSub == null && !string.IsNullOrEmpty(subRegionName))
             {
-                var subMenuRoot = new MenuItemRichCommand { Header = subMenuItemId };
+                var subMenuRoot = new MenuItemRichCommand
+                {
+                    Header = subMenuItemId,
+                    Name = "MENU_ITEM_" + topLevelMenuItemId,
+                    HorizontalContentAlignment = HorizontalAlignment.Left,
+                    VerticalContentAlignment = VerticalAlignment.Center
+                };
 #if true || DEBUG
                 if (PreferredPositionRegion.MARK_PREFERRED_POS)
                     subMenuRoot.Header = positionInTopLevel.ToString("G") + " >> " + subMenuRoot.Header;
@@ -146,7 +162,7 @@ namespace Tobi.Plugin.MenuBar
                 RegionManager.SetRegionName(subMenuRoot, subRegionName);
                 //RegionManager.UpdateRegions();
 
-                string viewname = @"SUB_" + uid + @"_" + count++; 
+                string viewname = @"SUB_" + uid + @"_" + count++;
 
                 m_RegionManager.RegisterNamedViewWithRegion(targetRegionTop.Name,
                     new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = subMenuRoot, m_viewPreferredPosition = positionInTopLevel });
@@ -159,7 +175,7 @@ namespace Tobi.Plugin.MenuBar
 
             if (addSeparatorSubLevel && targetRegionSub != null)
             {
-                object view = new Separator();
+                object view = new MenuBarSeparator();
 #if true || DEBUG
                 if (PreferredPositionRegion.MARK_PREFERRED_POS)
                     view = new MenuItem { Header = positionInSubLevel.ToString("G") + " >> -------" };
@@ -183,8 +199,8 @@ namespace Tobi.Plugin.MenuBar
 #if true || DEBUG
                     if (PreferredPositionRegion.MARK_PREFERRED_POS)
                     {
-                        string str = ((RichDelegateCommand) command).ShortDescription;
-                        ((RichDelegateCommand) command).ShortDescription = actualPosition.ToString("G") + " >> " + str;
+                        string str = ((RichDelegateCommand)command).ShortDescription;
+                        ((RichDelegateCommand)command).ShortDescription = actualPosition.ToString("G") + " >> " + str;
                     }
 #endif
                     string viewname = uid + @"_" + count++;
@@ -201,12 +217,12 @@ namespace Tobi.Plugin.MenuBar
                     if (PreferredPositionRegion.MARK_PREFERRED_POS)
                     {
                         string str =
-                            ((TwoStateMenuItemRichCommand_DataContextWrapper) command).RichCommandOne.ShortDescription;
-                        ((TwoStateMenuItemRichCommand_DataContextWrapper) command).RichCommandOne.ShortDescription =
+                            ((TwoStateMenuItemRichCommand_DataContextWrapper)command).RichCommandOne.ShortDescription;
+                        ((TwoStateMenuItemRichCommand_DataContextWrapper)command).RichCommandOne.ShortDescription =
                             actualPosition.ToString("G") + " >> " + str;
 
-                        str = ((TwoStateMenuItemRichCommand_DataContextWrapper) command).RichCommandTwo.ShortDescription;
-                        ((TwoStateMenuItemRichCommand_DataContextWrapper) command).RichCommandTwo.ShortDescription =
+                        str = ((TwoStateMenuItemRichCommand_DataContextWrapper)command).RichCommandTwo.ShortDescription;
+                        ((TwoStateMenuItemRichCommand_DataContextWrapper)command).RichCommandTwo.ShortDescription =
                             actualPosition.ToString("G") + " >> " + str;
                     }
 #endif
@@ -236,11 +252,11 @@ namespace Tobi.Plugin.MenuBar
             }
 #endif
             IRegion targetRegion;
-            try
+            if (m_RegionManager.Regions.ContainsRegionWithName(region))
             {
                 targetRegion = m_RegionManager.Regions[region];
             }
-            catch
+            else
             {
                 return;
             }

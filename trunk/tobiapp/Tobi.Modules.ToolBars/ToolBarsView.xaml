@@ -14,7 +14,7 @@
   xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
   
   xmlns:prism="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation" xmlns:ToolBars="clr-namespace:Tobi.Plugin.ToolBars"
-   DataContext="{Binding RelativeSource={RelativeSource Self}}"
+   xmlns:System="clr-namespace:System;assembly=mscorlib" DataContext="{Binding RelativeSource={RelativeSource Self}}"
   
   Orientation="Vertical">
 
@@ -67,6 +67,12 @@
     <local:ToolbarTemplateSelector x:Key="ToolbarTemplateSelector" />
     </ItemsControl.Resources -->
 
+    <!--<ItemsControl.Resources>
+      <DataTemplate DataType="{x:Type System:String}">
+        <Separator />
+      </DataTemplate>
+    </ItemsControl.Resources>-->
+    
     <ItemsControl.ItemsPanel>
       <ItemsPanelTemplate>
         <WrapPanel Orientation="Horizontal"
@@ -75,6 +81,7 @@
       </ItemsPanelTemplate>
     </ItemsControl.ItemsPanel>
     <ItemsControl.ItemTemplate>
+
       <DataTemplate DataType="{x:Type Common:MVVM.Command.RichDelegateCommand}">
         <!-- DataTemplate DataType="{x:Type UI:ScalableGreyableImageProvider}" -->
         <UI:ButtonRichCommand RichCommand="{Binding .}" />
@@ -83,6 +90,7 @@
         <!-- ContentControl Content="{Binding Path=.IconProvider.IconXLarge}"/ -->
         <!-- ContentControl Content="{Binding Path=.IconXLarge, Mode=OneWay}"/ -->
       </DataTemplate>
+
     </ItemsControl.ItemTemplate>
   </ItemsControl>
 

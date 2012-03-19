@@ -319,7 +319,7 @@ namespace Tobi.Plugin.NavigationPane
                 (treeNode == parent.WrappedTreeNode_LevelHeading
                    || treeNode.IsDescendantOf(parent.WrappedTreeNode_LevelHeading)))
             {
-                parent.RaiseTitleChanged();
+                parent.InvalidateTitle();
             }
 
             foreach (var child in parent.Children)

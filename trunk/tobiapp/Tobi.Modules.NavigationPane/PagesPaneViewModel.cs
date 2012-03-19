@@ -251,7 +251,7 @@ namespace Tobi.Plugin.NavigationPane
                 if (cmd.TreeNode == page.TreeNode
                     || cmd.TreeNode.IsDescendantOf(page.TreeNode))
                 {
-                    page.RaiseNameChanged();
+                    page.InvalidateName();
                 }
             }
         }

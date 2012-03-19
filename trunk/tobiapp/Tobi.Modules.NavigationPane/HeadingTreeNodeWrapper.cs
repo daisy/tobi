@@ -247,15 +247,15 @@ namespace Tobi.Plugin.NavigationPane
 
             if (heading != null)
             {
-                TreeNode.StringChunk strChunkStart = heading.GetTextFlattened_(true);
+                TreeNode.StringChunkRange range = heading.GetTextFlattened_();
 
-                if (strChunkStart == null || string.IsNullOrEmpty(strChunkStart.Str))
+                if (range == null || range.First == null || string.IsNullOrEmpty(range.First.Str))
                 {
                     return "";
                 }
 
-                strBuilder = new StringBuilder(strChunkStart.GetLength());
-                TreeNode.ConcatStringChunks(strChunkStart, -1, strBuilder);
+                strBuilder = new StringBuilder(range.GetLength());
+                TreeNode.ConcatStringChunks(range, -1, strBuilder);
 
                 strBuilder.Insert(0, "] ");
                 strBuilder.Insert(0, heading.GetXmlElementQName().LocalName);
@@ -440,16 +440,24 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
-        public void RaiseTitleChanged()
+        public void InvalidateTitle()
         {
+            m_Title = null;
             RaisePropertyChanged(() => Title);
         }
 
+        private string m_Title;
         public string Title
         {
             get
             {
-                return ComputeNodeText(WrappedTreeNode_Level, WrappedTreeNode_LevelHeading);
+                if (!string.IsNullOrEmpty(m_Title))
+                {
+                    return m_Title;
+                }
+
+                m_Title = ComputeNodeText(WrappedTreeNode_Level, WrappedTreeNode_LevelHeading);
+                return m_Title;
             }
             //internal set
             //{

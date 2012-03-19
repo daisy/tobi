@@ -140,6 +140,7 @@ namespace Tobi.Plugin.ToolBars
 #endif
             string name = uid + @"_" + count++;
             var sep = new Separator();
+            //var sep = name; // will be picked-up by Data Template (DataType System:String)
             m_RegionManager.RegisterNamedViewWithRegion(RegionNames.MainToolbar,
                 new PreferredPositionNamedView { m_viewName = name, m_viewInstance = sep, m_viewPreferredPosition = position });
             //m_RegionManager.RegisterViewWithRegion(RegionNames.MainToolbar, () => sep);
@@ -148,6 +149,7 @@ namespace Tobi.Plugin.ToolBars
 
             return uid;
         }
+
 
         public void RemoveToolBarGroup(int uid)
         {

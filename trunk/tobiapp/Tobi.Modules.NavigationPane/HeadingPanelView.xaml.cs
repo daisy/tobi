@@ -131,7 +131,7 @@ namespace Tobi.Plugin.NavigationPane
             HeadingTreeNodeWrapper node = TreeView.SelectedItem as HeadingTreeNodeWrapper;
             if (node == null) return;
 
-            TreeNode treeNode = (node.WrappedTreeNode_LevelHeading ?? node.WrappedTreeNode_Level.GetFirstDescendantWithText(true));
+            TreeNode treeNode = (node.WrappedTreeNode_LevelHeading ?? node.WrappedTreeNode_Level.GetFirstDescendantWithText());
             if (treeNode == null) return;
 
             //if (m_ignoreHeadingSelected)

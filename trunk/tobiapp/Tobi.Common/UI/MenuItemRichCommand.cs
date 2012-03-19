@@ -166,6 +166,8 @@ namespace Tobi.Common.UI
 
         public static void ConfigureMenuItemFromCommand(MenuItem menuItem, RichDelegateCommand command)
         {
+            //menuItem.Name = "MENU-ITEM_" + command.ShortDescription;
+
             if (menuItem is MenuItemRichCommand)
             {
                 ((MenuItemRichCommand)menuItem).SetRichCommand(command);
