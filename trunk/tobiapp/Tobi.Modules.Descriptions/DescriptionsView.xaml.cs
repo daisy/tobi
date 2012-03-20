@@ -70,6 +70,44 @@ namespace Tobi.Plugin.Descriptions
             InitializeComponent();
         }
 
+        public bool AskUserRenameXmlID()
+        {
+            var label = new TextBlock
+            {
+                Text = "Automatically rename linked identifiers?\n(recommended)",
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("help-browser"), m_ShellView.MagnificationLevel);
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            panel.Children.Add(iconProvider.IconLarge);
+            panel.Children.Add(label);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+            var popup = new PopupModalWindow(m_ShellView,
+                                                 UserInterfaceStrings.EscapeMnemonic("Refactor identifiers?"),
+                                                 panel,
+                                                 PopupModalWindow.DialogButtonsSet.YesNo,
+                                                 PopupModalWindow.DialogButton.Yes,
+                                                 true, 300, 160, null, 0);
+
+            popup.ShowModal();
+
+            popup.IgnoreEscape = true;
+
+            return (popup.ClickedDialogButton == PopupModalWindow.DialogButton.Yes);
+        }
+
         public void Popup()
         {
             var navView = m_Container.Resolve<DescriptionsNavigationView>();
