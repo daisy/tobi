@@ -103,11 +103,39 @@ namespace Tobi.Common.UI
 
         private PopupModalWindow(IShellView shellView)
         {
+            ShellView = shellView;
+            if (this != Application.Current.MainWindow)
+            {
+                try
+                {
+                    Owner = Application.Current.MainWindow;
+                }
+                catch
+                {
+                    Console.WriteLine(@"Failed to set Owner of popup dialog window !");
+                }
+            }
+
+            //if (this != Application.Current.MainWindow)
+            //{
+            //    Owner = ShellView == null ? Application.Current.MainWindow : ShellView.View.Window;
+            //}
+            //else { Owner = null; }
+
+            //#if NET_3_5
+
+            //#else  // NET_4_0 || BOOTSTRAP_NET_4_0
+
+            //#endif
+
+
+            //DataContext = Owner;
+
             EnableEnterKeyDefault = false;
+
 
             PreviewKeyDown += new KeyEventHandler(OnThisKeyDown);
 
-            ShellView = shellView;
 
             ClickedDialogButton = DialogButton.ESC;
 
@@ -136,6 +164,7 @@ namespace Tobi.Common.UI
             initCommands();
 
             m_IsDetailsExpanded = false;
+
         }
 
         private bool m_IsDetailsExpanded = false;
@@ -178,6 +207,14 @@ namespace Tobi.Common.UI
 
         public void ShowModal()
         {
+            if (Owner != null)
+            {
+                //Owner.ForceCursor = true;
+
+                Owner.Cursor = Cursors.Wait;
+                this.Cursor = Cursors.Wait;
+            }
+
             if (ShellView != null)
             {
                 ShellView.RaiseEscapeEvent();
@@ -207,6 +244,14 @@ namespace Tobi.Common.UI
 
         public void ShowFloating(Action whenDoneAction)
         {
+            if (Owner != null)
+            {
+                //Owner.ForceCursor = true;
+
+                Owner.Cursor = Cursors.Wait;
+                this.Cursor = Cursors.Wait;
+            }
+
             if (ShellView != null)
             {
                 ShellView.RaiseEscapeEvent();
@@ -299,33 +344,6 @@ namespace Tobi.Common.UI
             object details, double detailsHeight)
             : this(shellView)
         {
-            if (this != Application.Current.MainWindow)
-            {
-                try
-                {
-                    Owner = Application.Current.MainWindow;
-                }
-                catch
-                {
-                    Console.WriteLine(@"Failed to set Owner of popup dialog window !");
-                }
-            }
-
-            //if (this != Application.Current.MainWindow)
-            //{
-            //    Owner = ShellView == null ? Application.Current.MainWindow : ShellView.View.Window;
-            //}
-            //else { Owner = null; }
-
-            //#if NET_3_5
-
-            //#else  // NET_4_0 || BOOTSTRAP_NET_4_0
-
-            //#endif
-
-
-            //DataContext = Owner;
-
             var zoom = (ShellView != null ? ShellView.MagnificationLevel : (Double)FindResource("MagnificationLevel"));
 
             Left = -1;
@@ -466,6 +484,14 @@ namespace Tobi.Common.UI
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+            if (Owner != null)
+            {
+                //Owner.ForceCursor = true;
+
+                Owner.Cursor = Cursors.Arrow;
+                this.Cursor = Cursors.Arrow;
+            }
+
 #if NET40
             this.SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
             this.SetValue(TextOptions.TextRenderingModeProperty, TextRenderingMode.Auto);
