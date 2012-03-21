@@ -289,10 +289,15 @@ namespace Tobi.Plugin.Descriptions
 
             if (string.IsNullOrEmpty(fullPath)) return;
 
+            Application.Current.MainWindow.Cursor = Cursors.Wait;
+            this.Cursor = Cursors.Wait; //m_ShellView
 
             m_ViewModel.ImportDiagramXML(fullPath);
 
             forceRefreshDataUI();
+
+            Application.Current.MainWindow.Cursor = Cursors.Arrow;
+            this.Cursor = Cursors.Arrow; //m_ShellView
         }
 
         private void forceRefreshDataUI()

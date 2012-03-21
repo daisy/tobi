@@ -47,6 +47,10 @@ namespace Tobi.Plugin.Descriptions
             if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
 
 
+            Application.Current.MainWindow.Cursor = Cursors.Wait;
+            this.Cursor = Cursors.Wait; //m_ShellView
+
+
             if (AudioMediaElement.Clock != null)
             {
                 AudioMediaElement.Clock.Controller.Stop();
@@ -260,6 +264,9 @@ namespace Tobi.Plugin.Descriptions
 
                 }));
 
+
+            Application.Current.MainWindow.Cursor = Cursors.Arrow;
+            this.Cursor = Cursors.Arrow; //m_ShellView
 
             m_AudioPopupModalWindow = windowPopup;
             windowPopup.ShowModal();
