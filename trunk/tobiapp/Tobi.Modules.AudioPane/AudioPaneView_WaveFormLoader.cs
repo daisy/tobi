@@ -836,9 +836,6 @@ namespace Tobi.Plugin.AudioPane
 
 
             var bytes = new byte[bytesPerStep]; // Int 8 unsigned
-#if USE_BLOCK_COPY
-            var samples = new short[samplesPerStep]; // Int 16 signed
-#endif //USE_BLOCK_COPY
 
 
             const bool bJoinInterSamples = false;
@@ -1242,11 +1239,6 @@ namespace Tobi.Plugin.AudioPane
                         //}
                     }
 
-#if USE_BLOCK_COPY
-    // converts Int 8 unsigned to Int 16 signed
-                    Buffer.BlockCopy(bytes, 0, samples, 0, read);
-#endif
-                    //USE_BLOCK_COPY
 
                     if (m_CancelRequested) break;
 
@@ -1277,42 +1269,8 @@ namespace Tobi.Plugin.AudioPane
                             for (int i = channel; i < limit; i += m_ViewModel.State.Audio.PcmFormat.Data.NumberOfChannels)
                             {
                                 nSamplesRead++;
-#if USE_BLOCK_COPY
-                            short sample = samples[i];
 
-                            int newI = i << 1;
-                            byte byte1 = bytes[newI];
-                            byte byte2 = bytes[newI + 1];
 
-                            short sampleDirectFromByteArray = BitConverter.ToInt16(bytes, newI);
-                            if (sampleDirectFromByteArray == -1)
-                                DebugFix.Assert(sample == 0 || sample == -1);
-                            else
-                                DebugFix.Assert(sample == sampleDirectFromByteArray);
-
-                            // Little Indian
-                            short sampleDirectFromByteArray1 = (short)(byte1 | (byte2 << 8));
-                            short sampleDirectFromByteArray2 = (short)(byte1 + byte2 * 256);
-                            DebugFix.Assert(sampleDirectFromByteArray1 == sampleDirectFromByteArray2);
-                            if (sampleDirectFromByteArray2 == -1)
-                                DebugFix.Assert(sample == 0 || sample == -1);
-                            else
-                            {
-                                if (sample != sampleDirectFromByteArray2)
-                                {
-                                    // Big Indian
-                                    short sampleDirectFromByteArray3 = (short) ((byte1 << 8) | byte2);
-                                    short sampleDirectFromByteArray4 = (short) (byte1*256 + byte2);
-                                    DebugFix.Assert(sampleDirectFromByteArray3 == sampleDirectFromByteArray4);
-                                    DebugFix.Assert(sample == sampleDirectFromByteArray4);
-
-                                    if (sample == sampleDirectFromByteArray4)
-                                        DebugFix.Assert(sample == sampleDirectFromByteArray2);
-                                }
-                            }
-#else
-                                //USE_BLOCK_COPY
-                                // LITTLE INDIAN !
                                 int index = i << 1;
                                 if (index >= bytes.Length)
                                 {
@@ -1323,9 +1281,15 @@ namespace Tobi.Plugin.AudioPane
                                     break;
                                 }
 
-                                var sample = (short)(bytes[index] | (bytes[index + 1] << 8));
-#endif
-                                //USE_BLOCK_COPY
+                                byte byte1 =bytes[index];
+                                byte byte2 =bytes[index + 1];
+                                var sample =
+                                    BitConverter.IsLittleEndian
+                                    ? (short)(byte1 | (byte2 << 8))
+                                    : (short)((byte1 << 8) | byte2);
+
+
+
 
                                 if (sample == short.MinValue)
                                 {

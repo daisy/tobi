@@ -111,6 +111,11 @@ namespace Tobi.Plugin.AudioPane
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IShellView shellView)
         {
+
+#if DEBUG
+            DebugFix.Assert(BitConverter.IsLittleEndian);
+#endif // DEBUG
+
             m_Logger = logger;
             m_EventAggregator = eventAggregator;
 
