@@ -30,7 +30,7 @@ namespace Tobi.Plugin.AudioPane
             //AudioPlayer_UpdateWaveFormPlayHead();
             if (View != null)
             {
-                View.RefreshUI_WaveFormPlayHead();
+                View.RefreshUI_WaveFormPlayHead(true);
             }
 
             //RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);

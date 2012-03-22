@@ -487,7 +487,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 if (View != null)
                 {
-                    View.RefreshUI_WaveFormPlayHead();
+                    View.RefreshUI_WaveFormPlayHead(true);
                 }
                 return;
             }
@@ -727,7 +727,7 @@ namespace Tobi.Plugin.AudioPane
                     //AudioPlayer_UpdateWaveFormPlayHead();
                     if (View != null)
                     {
-                        View.RefreshUI_WaveFormPlayHead();
+                        View.RefreshUI_WaveFormPlayHead(true);
                     }
 
                     //RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
@@ -1071,6 +1071,8 @@ namespace Tobi.Plugin.AudioPane
             CommandManager.InvalidateRequerySuggested();
 
             UpdatePeakMeter();
+
+            View.RefreshUI_WaveFormPlayHead(true);
         }
 
         private void OnAudioPlaybackFinished_(object sender, AudioPlayer.AudioPlaybackFinishEventArgs e)

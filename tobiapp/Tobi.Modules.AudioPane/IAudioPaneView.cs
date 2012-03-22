@@ -14,7 +14,7 @@
         void RefreshUI_LoadWaveForm(bool wasPlaying, bool onlyUpdateTiles);
         void RefreshUI_PeakMeter();
         void RefreshUI_PeakMeterBlackout(bool black);
-        void RefreshUI_WaveFormPlayHead();
+        void RefreshUI_WaveFormPlayHead(bool scrollSelection);
         void RefreshUI_WaveFormChunkMarkers(long bytesLeft, long bytesRight);
         // ReSharper restore InconsistentNaming
 
