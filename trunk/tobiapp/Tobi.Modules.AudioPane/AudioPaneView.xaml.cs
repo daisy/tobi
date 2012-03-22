@@ -398,12 +398,6 @@ namespace Tobi.Plugin.AudioPane
             m_ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
             m_ViewModel.RefreshWaveFormChunkMarkers();
 
-
-            if (m_TimeSelectionLeftX >= 0)
-            {
-                scrollInView(m_TimeSelectionLeftX + 1, true);
-            }
-
             if (!m_ViewModel.State.Audio.HasContent)
             {
                 return;
@@ -447,7 +441,7 @@ namespace Tobi.Plugin.AudioPane
                 //}
 
                 //m_ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
-                RefreshUI_WaveFormPlayHead();
+                RefreshUI_WaveFormPlayHead(true);
 
                 m_ViewModel.RefreshWaveFormChunkMarkers();
 
@@ -931,14 +925,14 @@ namespace Tobi.Plugin.AudioPane
         /// <summary>
         /// (ensures invoke on UI Dispatcher thread)
         /// </summary>
-        public void RefreshUI_WaveFormPlayHead()
+        public void RefreshUI_WaveFormPlayHead(bool scrollSelection)
         {
             if (!Dispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(RefreshUI_WaveFormPlayHead));
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<bool>)(RefreshUI_WaveFormPlayHead), scrollSelection);
                 return;
             }
             if (!m_ViewModel.State.Audio.HasContent)
@@ -1014,7 +1008,7 @@ namespace Tobi.Plugin.AudioPane
 
             WaveFormPlayHeadPath.InvalidateVisual();
 
-            scrollInView(pixels, false);
+            scrollInView(pixels, scrollSelection);
         }
 
         /// <summary>
@@ -1627,7 +1621,6 @@ namespace Tobi.Plugin.AudioPane
                 m_WaveFormLoadingAdorner.Visibility = Visibility.Hidden;
             }
         }
-
 
         // ReSharper restore InconsistentNaming
 

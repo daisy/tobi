@@ -905,7 +905,7 @@ m_Stream.Length);
                     m_LastSetPlayBytePosition = -1;
                     if (View != null)
                     {
-                        View.RefreshUI_WaveFormPlayHead();
+                        View.RefreshUI_WaveFormPlayHead(true);
                     }
                 }
             }
@@ -1546,7 +1546,7 @@ m_Stream.Length);
                 {
                     if (View != null)
                     {
-                        View.RefreshUI_WaveFormPlayHead();
+                        View.RefreshUI_WaveFormPlayHead(false);
                     }
                     RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
                     if (IsAutoPlay)
@@ -1578,7 +1578,7 @@ m_Stream.Length);
 
                 if (View != null)
                 {
-                    View.RefreshUI_WaveFormPlayHead();
+                    View.RefreshUI_WaveFormPlayHead(false);
                 }
 
                 if (!State.Audio.HasContent)
