@@ -398,6 +398,12 @@ namespace Tobi.Plugin.AudioPane
             m_ViewModel.AudioPlayer_UpdateWaveFormPlayHead();
             m_ViewModel.RefreshWaveFormChunkMarkers();
 
+
+            if (m_TimeSelectionLeftX >= 0)
+            {
+                scrollInView(m_TimeSelectionLeftX + 1, true);
+            }
+
             if (!m_ViewModel.State.Audio.HasContent)
             {
                 return;
@@ -939,7 +945,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 if (m_TimeSelectionLeftX >= 0)
                 {
-                    scrollInView(m_TimeSelectionLeftX + 1);
+                    scrollInView(m_TimeSelectionLeftX + 1, true);
                 }
 
                 return;
@@ -1008,7 +1014,7 @@ namespace Tobi.Plugin.AudioPane
 
             WaveFormPlayHeadPath.InvalidateVisual();
 
-            scrollInView(pixels);
+            scrollInView(pixels, false);
         }
 
         /// <summary>
@@ -1625,14 +1631,14 @@ namespace Tobi.Plugin.AudioPane
 
         // ReSharper restore InconsistentNaming
 
-        private void scrollInView(double pixels)
+        private void scrollInView(double pixels, bool allowSelection)
         {
             double left = WaveFormScroll.HorizontalOffset;
             double right = left + WaveFormScroll.ViewportWidth;
             //bool b = WaveFormPlayHeadPath.IsVisible;
 
             // DISABLED BECAUSE OF ON-THE-FLY WAVEFORM LOADING (TOO MANY SCROLL REQUESTS => NO REFRESH)
-            if (true || m_TimeSelectionLeftX < 0)
+            if (m_TimeSelectionLeftX < 0 || !allowSelection)
             {
                 if (pixels < left || pixels > right)
                 {
