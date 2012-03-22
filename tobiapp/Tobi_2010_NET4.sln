@@ -109,6 +109,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpVectors.Converters_NET
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpVectors.Core_NET4", "ExternalLibs\SharpVector\SharpVectorCore\SharpVectors.Core_NET4.csproj", "{D6BB65FC-240E-4241-B2ED-A7FB3F13E978}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundTouch.Net_NET4", "..\..\..\urakawa-sdk\trunk\csharp\audio\SoundTouch.NET\SoundTouch.Net_NET4.csproj", "{EA570592-1FAB-412F-AA0C-159C947608CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -599,6 +601,18 @@ Global
 		{D6BB65FC-240E-4241-B2ED-A7FB3F13E978}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D6BB65FC-240E-4241-B2ED-A7FB3F13E978}.test|Any CPU.ActiveCfg = Documentation|Any CPU
 		{D6BB65FC-240E-4241-B2ED-A7FB3F13E978}.test|Any CPU.Build.0 = Documentation|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.test|Any CPU.ActiveCfg = Release|Any CPU
+		{EA570592-1FAB-412F-AA0C-159C947608CD}.test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

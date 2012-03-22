@@ -748,6 +748,7 @@ m_Stream.Length);
             m_ShellView.DeviceRemoved += new EventHandler(OnDeviceRemoved);
 
             m_Player = new AudioPlayer(AudioPlaybackStreamKeepAlive);
+            m_Player.UseSoundTouch = true;
 
             OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_OutputDevice)));
             //m_Player.SetOutputDevice(GetWindowsFormsHookControl(), Settings.Default.Audio_OutputDevice);
