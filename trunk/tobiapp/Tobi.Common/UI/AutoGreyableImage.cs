@@ -13,6 +13,43 @@ using urakawa.data;
 
 namespace Tobi.Common.UI
 {
+    public static class BitmapSourceGC
+    {
+        private static readonly DependencyProperty GCTrackerProperty =
+            DependencyProperty.RegisterAttached("GCTracker", typeof(GCTracker), typeof(BitmapSourceGC),
+                                                new PropertyMetadata(null));
+
+        public static void Manage(BitmapSource bitmap)
+        {
+            if (bitmap.IsFrozen) return;
+
+            int stride = bitmap.PixelWidth * ((bitmap.Format.BitsPerPixel + 7) / 8);
+            int height = bitmap.PixelHeight;
+
+            bitmap.SetValue(GCTrackerProperty, new GCTracker((long)stride * height));
+        }
+
+        private sealed class GCTracker
+        {
+            private readonly long m_bytes;
+            public GCTracker(long bytes)
+            {
+                m_bytes = bytes;
+                if (m_bytes > 0)
+                {
+                    GC.AddMemoryPressure(m_bytes);
+                }
+                else
+                {
+                    GC.SuppressFinalize(this);
+                }
+            }
+            ~GCTracker()
+            {
+                GC.RemoveMemoryPressure(m_bytes);
+            }
+        }
+    }
 
     [ValueConversion(typeof(string), typeof(ImageSource))]
     public class PathToImageSourceConverter : ValueConverterMarkupExtensionBase<PathToImageSourceConverter>
@@ -161,6 +198,8 @@ namespace Tobi.Common.UI
 
             var renderBitmap = new RenderTargetBitmap((int)width, (int)height, 96, 96, PixelFormats.Pbgra32);
             renderBitmap.Render(visualBrushHost);
+
+            BitmapSourceGC.Manage(renderBitmap);
             renderBitmap.Freeze();
 
             //    Clipboard.SetImage(renderBitmap);

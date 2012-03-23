@@ -6,9 +6,11 @@ using System.Net;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using AudioLib;
@@ -23,6 +25,7 @@ using urakawa.exception;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
+using urakawa.media.data.video;
 using urakawa.media.timing;
 using urakawa.property.xml;
 using urakawa.xuk;
@@ -594,7 +597,7 @@ namespace Tobi.Plugin.DocumentPane
             //#endif
         }
 
-        private static bool bTreeNodeNeedsAudio(TreeNode node)
+        public static bool bTreeNodeNeedsAudio(TreeNode node)
         {
             if (node.GetTextMedia() != null)
             {
@@ -603,7 +606,10 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             QualifiedName qname = node.GetXmlElementQName();
-            if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+            if (qname != null &&
+                (qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                || qname.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                ))
             {
                 DebugFix.Assert(node.Children.Count == 0);
                 return true;
@@ -1580,7 +1586,7 @@ namespace Tobi.Plugin.DocumentPane
             //imagePanel.LastChildFill = true;
             if (!string.IsNullOrEmpty(imgAlt))
             {
-                var tb = new TextBlock(new Run("(" + imgAlt + ")"))
+                var tb = new TextBlock(new Run(imgAlt))
                              {
                                  HorizontalAlignment = HorizontalAlignment.Center,
                                  TextWrapping = TextWrapping.Wrap
@@ -1627,6 +1633,318 @@ namespace Tobi.Plugin.DocumentPane
                 setTag(img, node);
 
                 addInline(parent, img);
+            }
+
+
+            return parent;
+        }
+
+        private TextElement walkBookTreeAndGenerateFlowDocument_video(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        {
+            if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw new Exception("Node has children or text exists when processing video ??");
+            }
+
+            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlAttribute srcAttr = xmlProp.GetAttribute("src");
+
+            if (srcAttr == null) return parent;
+
+            string videoPath = srcAttr.Value;
+
+            if (!FileDataProvider.isHTTPFile(videoPath))
+            {
+                //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
+
+                string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
+
+                videoPath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
+
+                AbstractVideoMedia videoMedia = node.GetVideoMedia();
+                var videoMedia_ext = videoMedia as ExternalVideoMedia;
+                var videoMedia_man = videoMedia as ManagedVideoMedia;
+
+                if (videoMedia_ext != null)
+                {
+                    videoPath = Path.Combine(dirPath, Uri.UnescapeDataString(videoMedia_ext.Src));
+                }
+                else if (videoMedia_man != null)
+                {
+                    DebugFix.Assert(videoMedia_man.VideoMediaData.OriginalRelativePath == srcAttr.Value);
+                    var fileDataProv = videoMedia_man.VideoMediaData.DataProvider as FileDataProvider;
+
+                    if (fileDataProv != null)
+                    {
+                        videoPath = fileDataProv.DataFileFullPath;
+                    }
+                }
+            }
+
+            var medElement = new MediaElement();
+            medElement.ScrubbingEnabled = true;
+            medElement.LoadedBehavior = MediaState.Manual; // Pause;
+            medElement.UnloadedBehavior = MediaState.Stop;
+
+
+            XmlAttribute srcW = xmlProp.GetAttribute("width");
+            if (srcW != null)
+            {
+                double ww = Double.Parse(srcW.Value);
+                medElement.Width = ww;
+            }
+            XmlAttribute srcH = xmlProp.GetAttribute("height");
+            if (srcH != null)
+            {
+                double hh = Double.Parse(srcH.Value);
+                medElement.Height = hh;
+            }
+
+            medElement.HorizontalAlignment = HorizontalAlignment.Center;
+            medElement.VerticalAlignment = VerticalAlignment.Top;
+
+            medElement.Stretch = Stretch.Uniform;
+            medElement.StretchDirection = StretchDirection.DownOnly;
+
+            string videoAlt = null;
+
+            XmlAttribute altAttr = xmlProp.GetAttribute("alt");
+            if (altAttr != null)
+            {
+                videoAlt = altAttr.Value;
+            }
+
+            if (!string.IsNullOrEmpty(videoAlt))
+            {
+                medElement.ToolTip = videoAlt;
+            }
+
+            bool parentHasBlocks = parent is TableCell
+                                   || parent is Section
+                                   || parent is Floater
+                                   || parent is Figure
+                                   || parent is ListItem;
+
+            var videoPanel = new StackPanel();
+            videoPanel.Orientation = Orientation.Vertical;
+            //videoPanel.LastChildFill = true;
+            if (!string.IsNullOrEmpty(videoAlt))
+            {
+                var tb = new TextBlock(new Run(videoAlt))
+                {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap
+                };
+                videoPanel.Children.Add(tb);
+            }
+            videoPanel.Children.Add(medElement);
+
+            var slider = new Slider();
+            slider.TickPlacement = TickPlacement.None;
+            slider.IsMoveToPointEnabled = true;
+            slider.Minimum = 0;
+            slider.Maximum = 100;
+            slider.Visibility = Visibility.Hidden;
+
+            videoPanel.Children.Add(slider);
+
+            videoPanel.HorizontalAlignment = HorizontalAlignment.Center;
+            videoPanel.VerticalAlignment = VerticalAlignment.Top;
+
+            if (parentHasBlocks)
+            {
+                var img = new BlockUIContainer(videoPanel);
+
+                setTag(img, node);
+
+                addBlock(parent, img);
+            }
+            else
+            {
+                var img = new InlineUIContainer(videoPanel);
+
+                setTag(img, node);
+
+                addInline(parent, img);
+            }
+
+
+            medElement.MediaFailed += new EventHandler<ExceptionRoutedEventArgs>(
+                (o, e) =>
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                }
+                );
+
+            medElement.MediaEnded += new RoutedEventHandler(
+                (oo, ee) =>
+                {
+                    if (medElement.Clock != null)
+                    {
+                        medElement.Clock.Controller.Stop();
+                    }
+                    else
+                    {
+                        medElement.Stop();
+                    }
+
+                    slider.Value = 0;
+                }
+                );
+
+            medElement.MediaOpened += new RoutedEventHandler(
+                (oo, ee) =>
+                {
+                    slider.Visibility = Visibility.Visible;
+                    slider.Maximum = medElement.NaturalDuration.TimeSpan.TotalMilliseconds;
+
+
+
+                    // freeze frame (poster)
+                    if (medElement.LoadedBehavior == MediaState.Manual)
+                    {
+                        //double volume = medElement.Volume;
+                        //medElement.Volume = 0;
+                        medElement.IsMuted = true;
+                        medElement.Play();
+                        medElement.Pause();
+                        medElement.IsMuted = false;
+                        //medElement.Volume = volume;
+                    }
+
+
+                    medElement.MouseDown += new MouseButtonEventHandler(
+                            (o, e) =>
+                            {
+                                if (medElement.LoadedBehavior != MediaState.Manual)
+                                {
+                                    return;
+                                }
+
+                                if (e.ChangedButton == MouseButton.Left)
+                                {
+                                    if (medElement.Clock==null)
+                                    {
+                                        return;
+                                    }
+
+                                    //Is Active
+                                    if (medElement.Clock.CurrentState == ClockState.Active)
+                                    {
+                                        //Is Paused
+                                        if (medElement.Clock.CurrentGlobalSpeed == 0.0)
+                                        {
+                                            medElement.Clock.Controller.Resume();
+                                        }
+                                        else //Is Playing
+                                        {
+                                            medElement.Clock.Controller.Pause();
+                                        }
+                                    }
+                                    else if (medElement.Clock.CurrentState == ClockState.Stopped)
+                                    {
+                                        medElement.Clock.Controller.Begin();
+                                    }
+
+                                    //if (medElement.Clock != null && medElement.Clock.IsPaused)
+                                    //{
+                                    //    medElement.Play();
+                                    //}
+                                    //else
+                                    //{
+                                    //    medElement.Pause();
+                                    //}
+                                }
+                                else if (e.ChangedButton == MouseButton.Right)
+                                {
+                                    if (medElement.Clock != null)
+                                    {
+                                        medElement.Clock.Controller.Stop();
+                                    }
+                                    else
+                                    {
+                                        medElement.Stop();
+                                    }
+
+                                    slider.Value = 0;
+                                }
+                            }
+                            );
+
+                }
+                );
+
+            bool ignoreSliderChange = false;
+            slider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(
+                (o, e) =>
+                {
+                    if (ignoreSliderChange)
+                    {
+                        ignoreSliderChange = false;
+                        return;
+                    }
+
+                    int timeMs = (int)slider.Value;
+                    var timeSpan = new TimeSpan(0, 0, 0, 0, timeMs);
+                    if (medElement.Clock == null)
+                    {
+                        medElement.Position = timeSpan;
+                    }
+                    else
+                    {
+                        bool wasPlaying = false;
+                        //Is Active
+                        if (medElement.Clock.CurrentState == ClockState.Active)
+                        {
+                            //Is Paused
+                            if (medElement.Clock.CurrentGlobalSpeed == 0.0)
+                            {
+                                
+                            }
+                            else //Is Playing
+                            {
+                                wasPlaying = true;
+                                medElement.Clock.Controller.Pause();
+                            }
+                        }
+                        else if (medElement.Clock.CurrentState == ClockState.Stopped)
+                        {
+                            medElement.Clock.Controller.Begin();
+                            medElement.Clock.Controller.Pause();
+                        }
+
+
+                        medElement.Clock.Controller.Seek(timeSpan, TimeSeekOrigin.BeginTime);
+
+                        if (wasPlaying)
+                        {
+                            medElement.Clock.Controller.Resume();
+                        }
+                    }
+                });
+
+            var uri = new Uri(videoPath, UriKind.Absolute);
+            var timeline = new MediaTimeline();
+            timeline.Source = uri;
+
+            medElement.Clock = timeline.CreateClock(true) as MediaClock;
+            if (medElement.Clock != null)
+            {
+                medElement.Clock.Controller.Stop();
+
+                medElement.Clock.CurrentTimeInvalidated += new EventHandler(
+                (o, e) =>
+                {
+                    TimeSpan? timeSpan = medElement.Clock.CurrentTime;
+                    double timeMS = timeSpan != null ? timeSpan.Value.TotalMilliseconds : 0;
+                    ignoreSliderChange = true;
+                    slider.Value = timeMS;
+                });
             }
 
 
@@ -1919,6 +2237,10 @@ namespace Tobi.Plugin.DocumentPane
                     case "img":
                         {
                             return walkBookTreeAndGenerateFlowDocument_img(node, parent, qname, textMedia);
+                        }
+                    case "video":
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_video(node, parent, qname, textMedia);
                         }
                     case "th":
                     case "td":
