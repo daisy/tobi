@@ -407,6 +407,16 @@ m_Stream.Length);
                     }
                 }
             }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_PlayKeepPitch))
+            {
+                m_Player.Pause();
+                m_Player.UseSoundTouch = Settings.Default.Audio_PlayKeepPitch;
+                m_Player.Resume();
+            }
+
+
+
+
             //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_Color_Stroke))
             //{
             //    ColorWaveBars = Settings.Default.AudioWaveForm_Color_Stroke;
