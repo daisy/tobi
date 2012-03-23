@@ -1685,6 +1685,7 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             var medElement = new MediaElement();
+            medElement.Focusable = false;
             medElement.ScrubbingEnabled = true;
             medElement.LoadedBehavior = MediaState.Manual; // Pause;
             medElement.UnloadedBehavior = MediaState.Stop;
@@ -1743,6 +1744,7 @@ namespace Tobi.Plugin.DocumentPane
             videoPanel.Children.Add(medElement);
 
             var slider = new Slider();
+            slider.Focusable = false;
             slider.TickPlacement = TickPlacement.None;
             slider.IsMoveToPointEnabled = true;
             slider.Minimum = 0;
@@ -1793,7 +1795,7 @@ namespace Tobi.Plugin.DocumentPane
                         medElement.Stop();
                     }
 
-                    slider.Value = 0;
+                    //slider.Value = 0;
                 }
                 );
 
@@ -1828,7 +1830,7 @@ namespace Tobi.Plugin.DocumentPane
 
                                 if (e.ChangedButton == MouseButton.Left)
                                 {
-                                    if (medElement.Clock==null)
+                                    if (medElement.Clock == null)
                                     {
                                         return;
                                     }
@@ -1904,7 +1906,7 @@ namespace Tobi.Plugin.DocumentPane
                             //Is Paused
                             if (medElement.Clock.CurrentGlobalSpeed == 0.0)
                             {
-                                
+
                             }
                             else //Is Playing
                             {
@@ -1928,6 +1930,49 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 });
 
+            bool wasPlayingBeforeDrag = false;
+            slider.AddHandler(Thumb.DragStartedEvent,
+                new DragStartedEventHandler(
+                (Action<object, DragStartedEventArgs>)(
+                (o, e) =>
+                {
+                    wasPlayingBeforeDrag = false;
+
+                    //Is Active
+                    if (medElement.Clock.CurrentState == ClockState.Active)
+                    {
+                        //Is Paused
+                        if (medElement.Clock.CurrentGlobalSpeed == 0.0)
+                        {
+
+                        }
+                        else //Is Playing
+                        {
+                            wasPlayingBeforeDrag = true;
+                            medElement.Clock.Controller.Pause();
+                        }
+                    }
+                    else if (medElement.Clock.CurrentState == ClockState.Stopped)
+                    {
+                        medElement.Clock.Controller.Begin();
+                        medElement.Clock.Controller.Pause();
+                    }
+                })));
+
+            slider.AddHandler(Thumb.DragCompletedEvent,
+                new DragCompletedEventHandler(
+                (Action<object, DragCompletedEventArgs>)(
+                (o, e) =>
+                {
+                    if (medElement.Clock != null && wasPlayingBeforeDrag)
+                    {
+                        medElement.Clock.Controller.Resume();
+                    }
+                    wasPlayingBeforeDrag = false;
+                })));
+
+
+
             var uri = new Uri(videoPath, UriKind.Absolute);
             var timeline = new MediaTimeline();
             timeline.Source = uri;
@@ -1942,6 +1987,14 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     TimeSpan? timeSpan = medElement.Clock.CurrentTime;
                     double timeMS = timeSpan != null ? timeSpan.Value.TotalMilliseconds : 0;
+
+
+                    if (medElement.NaturalDuration.HasTimeSpan
+                        && timeMS >= medElement.NaturalDuration.TimeSpan.TotalMilliseconds - 50)
+                    {
+                        medElement.Clock.Controller.Stop();
+                    }
+
                     ignoreSliderChange = true;
                     slider.Value = timeMS;
                 });

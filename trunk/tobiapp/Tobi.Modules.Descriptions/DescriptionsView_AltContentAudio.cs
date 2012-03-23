@@ -638,6 +638,12 @@ namespace Tobi.Plugin.Descriptions
             else if (AudioMediaElement.Clock.CurrentState == ClockState.Filling)
             {
                 AudioMediaElement.Clock.Controller.Stop();
+                AudioMediaElement.Clock.Controller.Begin();
+                AudioMediaElement.Clock.Controller.Pause();
+            }
+            else if (AudioMediaElement.Clock.CurrentState == ClockState.Stopped)
+            {
+                AudioMediaElement.Clock.Controller.Begin();
                 AudioMediaElement.Clock.Controller.Pause();
             }
 
