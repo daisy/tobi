@@ -261,7 +261,11 @@ namespace Tobi.Plugin.Validator.MissingAudio
             }
 
             QualifiedName qname = node.GetXmlElementQName();
-            if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+            if (qname != null &&
+                (
+                qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                || qname.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                ))
             {
                 DebugFix.Assert(node.Children.Count == 0);
                 return true;

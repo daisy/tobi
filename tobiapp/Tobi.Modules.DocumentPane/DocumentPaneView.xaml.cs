@@ -1978,18 +1978,6 @@ namespace Tobi.Plugin.DocumentPane
             findAndUpdateTreeNodeAudioTextStatus(cmd, done);
         }
 
-        private bool bTreeNodeNeedsAudio(TreeNode node)
-        {
-            QualifiedName qname = node.GetXmlElementQName();
-            if (node.GetTextMedia() != null
-                || qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         private void findAndUpdateTreeNodeText(TreeNodeChangeTextCommand cmd, bool done)
         {
             TreeNode node = cmd.TreeNode;
@@ -2084,7 +2072,7 @@ namespace Tobi.Plugin.DocumentPane
                 findAndUpdateTreeNodeAudioStatus(childTreeNode);
             }
 
-            if (!bTreeNodeNeedsAudio(node))
+            if (!XukToFlowDocument.bTreeNodeNeedsAudio(node))
             {
                 return;
             }

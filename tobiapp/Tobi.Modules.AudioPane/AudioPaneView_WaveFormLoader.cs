@@ -2022,7 +2022,10 @@ namespace Tobi.Plugin.AudioPane
                             var renderTargetBitmap = new RenderTargetBitmap((int)widthMagnified,
                                                                             (int)heightMagnified, 96, 96,
                                                                             PixelFormats.Pbgra32);
+
                             renderTargetBitmap.Render(drawingVisual);
+
+                            BitmapSourceGC.Manage(renderTargetBitmap);
                             renderTargetBitmap.Freeze();
 
                             if (renderMethod == WaveFormRenderMethod.WriteableBitmap
@@ -2046,6 +2049,7 @@ namespace Tobi.Plugin.AudioPane
                                                                            (int)heightMagnified, 96, 96,
                                                                            PixelFormats.Pbgra32, null, arrBits,
                                                                            stride);
+                                    BitmapSourceGC.Manage(bitmapSource);
                                     bitmapSource.Freeze();
 
                                     imageAndDraw.m_image.Source = bitmapSource;
@@ -2060,6 +2064,8 @@ namespace Tobi.Plugin.AudioPane
                                     writeableBitmap.WritePixels(
                                         new Int32Rect(0, 0, renderTargetBitmap.PixelWidth,
                                                       renderTargetBitmap.PixelHeight), arrBits, stride, 0);
+
+                                    BitmapSourceGC.Manage(writeableBitmap);
                                     writeableBitmap.Freeze();
 
                                     imageAndDraw.m_image.Source = writeableBitmap;

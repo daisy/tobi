@@ -106,7 +106,10 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
-            if (qname != null && qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase))
+            if (qname != null &&
+                (qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                || qname.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                ))
             {
                 XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("src");
                 if (xmlAttr != null && !String.IsNullOrEmpty(xmlAttr.Value))

@@ -1079,6 +1079,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             Thumb.DragStarted="OnZoomSliderDragStarted"
             
             IsMoveToPointEnabled="True"
+            IsDirectionReversed="True"
             
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
