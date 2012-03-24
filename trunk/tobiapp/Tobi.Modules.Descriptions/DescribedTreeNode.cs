@@ -190,11 +190,11 @@ namespace Tobi.Plugin.Descriptions
         {
             get
             {
-                if (!string.IsNullOrEmpty(m_Description))
+                if (string.IsNullOrEmpty(m_Description))
                 {
-                    return m_Description;
+                    m_Description = GetDescriptionLabel(TreeNode);
                 }
-                m_Description = GetDescriptionLabel(TreeNode);
+                
                 return m_Description;
             }
         }
@@ -204,11 +204,11 @@ namespace Tobi.Plugin.Descriptions
         {
             get
             {
-                if (!string.IsNullOrEmpty(m_DescriptionX))
+                if (string.IsNullOrEmpty(m_DescriptionX))
                 {
-                    return m_DescriptionX;
+                    m_DescriptionX = (HasDescription ? "(described) " : "(no description) ") + Description;
                 }
-                m_DescriptionX = (HasDescription ? "(described) " : "(no description) ") + Description;
+                
                 return m_DescriptionX;
             }
         }

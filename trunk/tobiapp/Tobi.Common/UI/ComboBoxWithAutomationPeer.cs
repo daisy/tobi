@@ -103,10 +103,10 @@ namespace Tobi.Common.UI
             if (dpd != null)
             {
                 m_AutomaticChangeNotificationForAutomationPropertiesName = true;
-                dpd.AddValueChanged(this, delegate
-                {
-                    TextBlockWithAutomationPeer.NotifyScreenReaderAutomationIfKeyboardFocused(m_AutomationPeer, this);
-                });
+                dpd.AddValueChanged(this, new EventHandler((o, e) =>
+                                                               {
+                                                                   TextBlockWithAutomationPeer.NotifyScreenReaderAutomationIfKeyboardFocused(m_AutomationPeer, this);
+                                                               }));
             }
 
             return m_AutomationPeer;

@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 using System.Windows.Controls;
+using AudioLib;
 
 namespace Tobi.Common.UI
 {
@@ -45,33 +47,59 @@ namespace Tobi.Common.UI
             return m_AutomationPeer;
         }
 
-        private static void NotifyScreenReaderAutomation(AutomationPeer automationPeer)
+        private static void NotifyScreenReaderAutomation(AutomationPeer automationPeer, string str)
         {
             if (automationPeer == null)
             {
                 return;
             }
 
-#if DEBUG
-            string name = automationPeer.GetName();
-            Console.WriteLine("AUTOMATION NAME ==> " + name);
-#endif //DEBUG
-
-            if (AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+            if (!AutomationInteropProvider.ClientsAreListening)
             {
-                automationPeer.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
-
-#if DEBUG
-                Console.WriteLine("AUTOMATION EVENT ==> AutomationFocusChanged");
-#endif //DEBUG
+                return;
             }
 
-            if (AutomationPeer.ListenerExists(AutomationEvents.TextPatternOnTextSelectionChanged))
-            {
-                automationPeer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
+            //            if (AutomationPeer.ListenerExists(AutomationEvents.AutomationFocusChanged))
+            //            {
+            //                automationPeer.RaiseAutomationEvent(AutomationEvents.AutomationFocusChanged);
 
+            //#if DEBUG
+            //                Console.WriteLine("AUTOMATION EVENT ==> AutomationFocusChanged");
+            //#endif //DEBUG
+            //            }
+
+            //            if (AutomationPeer.ListenerExists(AutomationEvents.TextPatternOnTextSelectionChanged))
+            //            {
+            //                automationPeer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
+
+            //#if DEBUG
+            //                Console.WriteLine("AUTOMATION EVENT ==> TextPatternOnTextSelectionChanged");
+            //#endif //DEBUG
+            //            }
+
+
+
+
+            //automationPeer.InvalidatePeer();
+
+            //AutomationEventArgs args = new AutomationEventArgs(InvokePatternIdentifiers.InvokedEvent);
+            //AutomationInteropProvider.RaiseAutomationEvent(InvokePatternIdentifiers.InvokedEvent, this, args);
+
+            //AutomationProperties.NameProperty
+
+            try
+            {
 #if DEBUG
-                Console.WriteLine("AUTOMATION EVENT ==> TextPatternOnTextSelectionChanged");
+                var autoProp = AutomationProperty.LookupById(AutomationElementIdentifiers.NameProperty.Id);
+                DebugFix.Assert(AutomationElementIdentifiers.NameProperty == autoProp);
+#endif //DEBUG
+                automationPeer.RaisePropertyChangedEvent(AutomationElementIdentifiers.NameProperty, "", str);
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                Console.WriteLine("Exception automationPeer.RaisePropertyChangedEvent");
+                Debugger.Break();
 #endif //DEBUG
             }
         }
@@ -80,7 +108,20 @@ namespace Tobi.Common.UI
         {
             if (uiElement.IsKeyboardFocused)
             {
-                TextBlockWithAutomationPeer.NotifyScreenReaderAutomation(automationPeer);
+                var str = uiElement.GetValue(AutomationProperties.NameProperty) as String;
+#if DEBUG
+                Console.WriteLine("AUTOMATION NAME ==> " + str);
+
+                var str2 = AutomationProperties.GetName(uiElement);
+                DebugFix.Assert(str2 == str);
+
+                if (automationPeer != null)
+                {
+                    string str3 = automationPeer.GetName();
+                    DebugFix.Assert(str3 == str);
+                }
+#endif //DEBUG
+                TextBlockWithAutomationPeer.NotifyScreenReaderAutomation(automationPeer, str);
             }
         }
 
@@ -90,9 +131,9 @@ namespace Tobi.Common.UI
 
             if (!skipNotify)
             {
-//#if DEBUG
-//                Debugger.Break();
-//#endif //DEBUG
+                //#if DEBUG
+                //                Debugger.Break();
+                //#endif //DEBUG
                 TextBlockWithAutomationPeer.NotifyScreenReaderAutomationIfKeyboardFocused(automationPeer, uiElement);
             }
         }
