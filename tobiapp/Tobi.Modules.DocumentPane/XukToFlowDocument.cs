@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
@@ -30,6 +32,12 @@ using urakawa.media.timing;
 using urakawa.property.xml;
 using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
+
+#if USE_WPF_MEDIAKIT
+using WPFMediaKit.DirectShow.Controls;
+using MediaState = System.Windows.Controls.MediaState;
+using WPFMediaKit.DirectShow.MediaPlayers;
+#endif //!USE_WPF_MEDIAKIT
 
 namespace Tobi.Plugin.DocumentPane
 {
@@ -1458,41 +1466,59 @@ namespace Tobi.Plugin.DocumentPane
                 throw new Exception("Node has children or text exists when processing image ??");
             }
 
+
+
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-            XmlAttribute srcAttr = xmlProp.GetAttribute("src");
 
-            if (srcAttr == null) return parent;
+            AbstractImageMedia imgMedia = node.GetImageMedia();
+            var imgMedia_ext = imgMedia as ExternalImageMedia;
+            var imgMedia_man = imgMedia as ManagedImageMedia;
 
-            string imagePath = srcAttr.Value;
+            string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
 
-            if (!FileDataProvider.isHTTPFile(imagePath))
+            string imagePath = null;
+
+            if (imgMedia_ext != null)
             {
+
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+
                 //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
 
-                string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
+                imagePath = Path.Combine(dirPath, Uri.UnescapeDataString(imgMedia_ext.Src));
+            }
+            else if (imgMedia_man != null)
+            {
+#if DEBUG
+                XmlAttribute srcAttr = xmlProp.GetAttribute("src");
 
-                imagePath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
+                DebugFix.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == srcAttr.Value);
+#endif //DEBUG
+                var fileDataProv = imgMedia_man.ImageMediaData.DataProvider as FileDataProvider;
 
-                AbstractImageMedia imgMedia = node.GetImageMedia();
-                var imgMedia_ext = imgMedia as ExternalImageMedia;
-                var imgMedia_man = imgMedia as ManagedImageMedia;
-
-                if (imgMedia_ext != null)
+                if (fileDataProv != null)
                 {
-                    imagePath = Path.Combine(dirPath, Uri.UnescapeDataString(imgMedia_ext.Src));
-                }
-                else if (imgMedia_man != null)
-                {
-                    DebugFix.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == srcAttr.Value);
-                    var fileDataProv = imgMedia_man.ImageMediaData.DataProvider as FileDataProvider;
-
-                    if (fileDataProv != null)
-                    {
-                        imagePath = fileDataProv.DataFileFullPath;
-                    }
+                    imagePath = fileDataProv.DataFileFullPath;
                 }
             }
 
+            if (imagePath == null || FileDataProvider.isHTTPFile(imagePath))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                return parent;
+            }
+
+
+
+
+
+
+            //if (!FileDataProvider.isHTTPFile(imagePath))
+            
             Image image = new Image();
 
             ImageSource imageSource = AutoGreyableImage.GetSVGOrBitmapImageSource(imagePath);
@@ -1650,45 +1676,75 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-            XmlAttribute srcAttr = xmlProp.GetAttribute("src");
 
-            if (srcAttr == null) return parent;
+            AbstractVideoMedia videoMedia = node.GetVideoMedia();
+            var videoMedia_ext = videoMedia as ExternalVideoMedia;
+            var videoMedia_man = videoMedia as ManagedVideoMedia;
+            
+            string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
+            
+            string videoPath = null;
 
-            string videoPath = srcAttr.Value;
-
-            if (!FileDataProvider.isHTTPFile(videoPath))
+            if (videoMedia_ext != null)
             {
+
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+
                 //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
 
-                string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
+                videoPath = Path.Combine(dirPath, Uri.UnescapeDataString(videoMedia_ext.Src));
+            }
+            else if (videoMedia_man != null)
+            {
+#if DEBUG
+                XmlAttribute srcAttr = xmlProp.GetAttribute("src");
 
-                videoPath = Path.Combine(dirPath, Uri.UnescapeDataString(srcAttr.Value));
+                DebugFix.Assert(videoMedia_man.VideoMediaData.OriginalRelativePath == srcAttr.Value);
+#endif //DEBUG
+                var fileDataProv = videoMedia_man.VideoMediaData.DataProvider as FileDataProvider;
 
-                AbstractVideoMedia videoMedia = node.GetVideoMedia();
-                var videoMedia_ext = videoMedia as ExternalVideoMedia;
-                var videoMedia_man = videoMedia as ManagedVideoMedia;
-
-                if (videoMedia_ext != null)
+                if (fileDataProv != null)
                 {
-                    videoPath = Path.Combine(dirPath, Uri.UnescapeDataString(videoMedia_ext.Src));
-                }
-                else if (videoMedia_man != null)
-                {
-                    DebugFix.Assert(videoMedia_man.VideoMediaData.OriginalRelativePath == srcAttr.Value);
-                    var fileDataProv = videoMedia_man.VideoMediaData.DataProvider as FileDataProvider;
-
-                    if (fileDataProv != null)
-                    {
-                        videoPath = fileDataProv.DataFileFullPath;
-                    }
+                    videoPath = fileDataProv.DataFileFullPath;
                 }
             }
 
-            var medElement = new MediaElement();
-            medElement.Focusable = false;
+            if (videoPath == null || FileDataProvider.isHTTPFile(videoPath))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+                return parent;
+            }
+
+
+            var medElement =
+#if !USE_WPF_MEDIAKIT
+                new MediaElement();
             medElement.ScrubbingEnabled = true;
-            medElement.LoadedBehavior = MediaState.Manual; // Pause;
-            medElement.UnloadedBehavior = MediaState.Stop;
+#else
+ new MediaUriElement();
+            medElement.PreferedPositionFormat = MediaPositionFormat.MediaTime;
+
+#endif //!USE_WPF_MEDIAKIT
+
+            medElement.Focusable = false;
+
+            medElement.LoadedBehavior =
+#if !USE_WPF_MEDIAKIT
+                MediaState.Manual;
+#else
+ WPFMediaKit.DirectShow.MediaPlayers.MediaState.Play;
+#endif //!USE_WPF_MEDIAKIT
+
+            medElement.UnloadedBehavior =
+#if !USE_WPF_MEDIAKIT
+                MediaState.Stop;
+#else
+ WPFMediaKit.DirectShow.MediaPlayers.MediaState.Stop;
+#endif //!USE_WPF_MEDIAKIT
 
 
             XmlAttribute srcW = xmlProp.GetAttribute("width");
@@ -1774,18 +1830,28 @@ namespace Tobi.Plugin.DocumentPane
             }
 
 
-            medElement.MediaFailed += new EventHandler<ExceptionRoutedEventArgs>(
+            medElement.MediaFailed +=
+#if !USE_WPF_MEDIAKIT
+            
+            new EventHandler<ExceptionRoutedEventArgs>(
                 (o, e) =>
-                {
+#else
+ new EventHandler<WPFMediaKit.DirectShow.MediaPlayers.MediaFailedEventArgs>(
+                    (o, e) =>
+#endif //!USE_WPF_MEDIAKIT
+
+                    {
 #if DEBUG
-                    Debugger.Break();
+                        Debugger.Break();
 #endif //DEBUG
-                }
+                    }
                 );
 
-            medElement.MediaEnded += new RoutedEventHandler(
+            medElement.MediaEnded +=
+                new RoutedEventHandler(
                 (oo, ee) =>
                 {
+#if !USE_WPF_MEDIAKIT
                     if (medElement.Clock != null)
                     {
                         medElement.Clock.Controller.Stop();
@@ -1794,6 +1860,9 @@ namespace Tobi.Plugin.DocumentPane
                     {
                         medElement.Stop();
                     }
+#else
+                    medElement.Stop();
+#endif //!USE_WPF_MEDIAKIT
 
                     //slider.Value = 0;
                 }
@@ -1803,33 +1872,64 @@ namespace Tobi.Plugin.DocumentPane
                 (oo, ee) =>
                 {
                     slider.Visibility = Visibility.Visible;
+
+#if !USE_WPF_MEDIAKIT
                     slider.Maximum = medElement.NaturalDuration.TimeSpan.TotalMilliseconds;
+#else
+                    //MediaPositionFormat.MediaTime
+                    MediaPositionFormat mpf = medElement.CurrentPositionFormat;
+                    slider.Maximum = medElement.MediaDuration;
+#endif //!USE_WPF_MEDIAKIT
 
 
 
                     // freeze frame (poster)
-                    if (medElement.LoadedBehavior == MediaState.Manual)
+                    if (medElement.LoadedBehavior ==
+#if !USE_WPF_MEDIAKIT
+                        MediaState.Manual
+#else
+ WPFMediaKit.DirectShow.MediaPlayers.MediaState.Manual
+#endif //!USE_WPF_MEDIAKIT
+)
                     {
-                        //double volume = medElement.Volume;
-                        //medElement.Volume = 0;
+#if !USE_WPF_MEDIAKIT
                         medElement.IsMuted = true;
+#else
+                        double volume = medElement.Volume;
+                        medElement.Volume = 0;
+#endif //!USE_WPF_MEDIAKIT
+
                         medElement.Play();
                         medElement.Pause();
+
+#if !USE_WPF_MEDIAKIT
                         medElement.IsMuted = false;
-                        //medElement.Volume = volume;
+#else
+                        medElement.Volume = volume;
+#endif //!USE_WPF_MEDIAKIT
+
                     }
 
 
                     medElement.MouseDown += new MouseButtonEventHandler(
                             (o, e) =>
                             {
-                                if (medElement.LoadedBehavior != MediaState.Manual)
+                                if (medElement.LoadedBehavior !=
+#if !USE_WPF_MEDIAKIT
+                        MediaState.Manual
+#else
+ WPFMediaKit.DirectShow.MediaPlayers.MediaState.Manual
+#endif //!USE_WPF_MEDIAKIT
+)
                                 {
                                     return;
                                 }
 
                                 if (e.ChangedButton == MouseButton.Left)
                                 {
+
+#if !USE_WPF_MEDIAKIT
+
                                     if (medElement.Clock == null)
                                     {
                                         return;
@@ -1861,9 +1961,23 @@ namespace Tobi.Plugin.DocumentPane
                                     //{
                                     //    medElement.Pause();
                                     //}
+#else
+                                    if (medElement.IsPlaying)
+                                    {
+                                        medElement.Pause();
+                                    }
+                                    else
+                                    {
+                                        medElement.Play();
+                                    }
+#endif //!USE_WPF_MEDIAKIT
+
                                 }
                                 else if (e.ChangedButton == MouseButton.Right)
                                 {
+
+#if !USE_WPF_MEDIAKIT
+
                                     if (medElement.Clock != null)
                                     {
                                         medElement.Clock.Controller.Stop();
@@ -1872,6 +1986,9 @@ namespace Tobi.Plugin.DocumentPane
                                     {
                                         medElement.Stop();
                                     }
+#else
+                                    medElement.Stop();
+#endif //!USE_WPF_MEDIAKIT
 
                                     slider.Value = 0;
                                 }
@@ -1892,7 +2009,12 @@ namespace Tobi.Plugin.DocumentPane
                     }
 
                     int timeMs = (int)slider.Value;
+#if !USE_WPF_MEDIAKIT
+                    
                     var timeSpan = new TimeSpan(0, 0, 0, 0, timeMs);
+
+
+
                     if (medElement.Clock == null)
                     {
                         medElement.Position = timeSpan;
@@ -1928,6 +2050,25 @@ namespace Tobi.Plugin.DocumentPane
                             medElement.Clock.Controller.Resume();
                         }
                     }
+
+                    
+#else
+                    bool wasPlaying = medElement.IsPlaying;
+
+                    if (wasPlaying)
+                    {
+                        medElement.Pause();
+                    }
+
+                    medElement.MediaPosition = timeMs;
+
+                    if (wasPlaying)
+                    {
+                        medElement.Play();
+                    }
+#endif //!USE_WPF_MEDIAKIT
+
+
                 });
 
             bool wasPlayingBeforeDrag = false;
@@ -1937,7 +2078,8 @@ namespace Tobi.Plugin.DocumentPane
                 (o, e) =>
                 {
                     wasPlayingBeforeDrag = false;
-
+#if !USE_WPF_MEDIAKIT
+                    
                     //Is Active
                     if (medElement.Clock.CurrentState == ClockState.Active)
                     {
@@ -1957,6 +2099,14 @@ namespace Tobi.Plugin.DocumentPane
                         medElement.Clock.Controller.Begin();
                         medElement.Clock.Controller.Pause();
                     }
+#else
+                    wasPlayingBeforeDrag = medElement.IsPlaying;
+
+                    if (wasPlayingBeforeDrag)
+                    {
+                        medElement.Pause();
+                    }
+#endif //!USE_WPF_MEDIAKIT
                 })));
 
             slider.AddHandler(Thumb.DragCompletedEvent,
@@ -1964,20 +2114,31 @@ namespace Tobi.Plugin.DocumentPane
                 (Action<object, DragCompletedEventArgs>)(
                 (o, e) =>
                 {
+#if !USE_WPF_MEDIAKIT
+                    
                     if (medElement.Clock != null && wasPlayingBeforeDrag)
                     {
                         medElement.Clock.Controller.Resume();
                     }
+#else
+
+                    if (wasPlayingBeforeDrag)
+                    {
+                        medElement.Play();
+                    }
+#endif //!USE_WPF_MEDIAKIT
                     wasPlayingBeforeDrag = false;
                 })));
 
 
-
             var uri = new Uri(videoPath, UriKind.Absolute);
+
+#if !USE_WPF_MEDIAKIT
+            
             var timeline = new MediaTimeline();
             timeline.Source = uri;
 
-            medElement.Clock = timeline.CreateClock(true) as MediaClock;
+                    medElement.Clock = timeline.CreateClock(true) as MediaClock;
             if (medElement.Clock != null)
             {
                 medElement.Clock.Controller.Stop();
@@ -1999,6 +2160,32 @@ namespace Tobi.Plugin.DocumentPane
                     slider.Value = timeMS;
                 });
             }
+
+#else
+            DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(
+                MediaSeekingElement.MediaPositionProperty,
+                typeof(MediaSeekingElement));
+            if (dpd != null)
+            {
+                dpd.AddValueChanged(medElement, new EventHandler((o, e) =>
+                {
+                    double timeMS = medElement.MediaPosition;
+
+                    if (timeMS >= medElement.MediaDuration - 50)
+                    {
+                        medElement.Stop();
+                    }
+
+                    ignoreSliderChange = true;
+                    slider.Value = timeMS;
+                }));
+            }
+
+
+            medElement.Source = uri;
+
+#endif //!USE_WPF_MEDIAKIT
+
 
 
             return parent;
