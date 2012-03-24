@@ -43,7 +43,7 @@ namespace Tobi.Plugin.Validator
             ILoggerFacade logger,
             IEventAggregator eventAggregator,
             [Import(typeof(ValidatorAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false, AllowDefault = false)]
-            ValidatorAggregator validator, 
+            ValidatorAggregator validator,
             [ImportMany(ValidationDataTemplateProperties.TypeIdentifier, typeof(ResourceDictionary), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
             IEnumerable<ResourceDictionary> resourceDictionaries)
         {
@@ -51,7 +51,7 @@ namespace Tobi.Plugin.Validator
             m_Logger = logger;
 
             m_ValidatorAggregator = validator;
-            
+
             foreach (ResourceDictionary dict in resourceDictionaries)
             {
                 Application.Current.Resources.MergedDictionaries.Add(dict);
@@ -59,12 +59,12 @@ namespace Tobi.Plugin.Validator
 
             DataContext = m_ValidatorAggregator;
             //DataContext = this;
-            
+
             InitializeComponent();
-            
+
             //foreach (var validator in m_ValidatorAggregator.Validators)
             //{
-                
+
             //}
 
             m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
@@ -74,7 +74,9 @@ namespace Tobi.Plugin.Validator
         {
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = obj.Item2;
             TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
-            SelectItemInListFromDocumentNodeSelection(treeNode);
+            
+            //TODO: this disturbs double-click selection!! (leads to random null pointer exceptions)
+            //SelectItemInListFromDocumentNodeSelection(treeNode);
         }
 
         private void ValidationItemsListBox_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -106,7 +108,7 @@ namespace Tobi.Plugin.Validator
             if (target == null) return;
 
             //get the visible tab
-            IValidator validator = (IValidator) Tabs.SelectedItem;
+            IValidator validator = (IValidator)Tabs.SelectedItem;
             if (validator == null) return;
 
             ValidationItem selection = null;
@@ -151,9 +153,9 @@ namespace Tobi.Plugin.Validator
             IEnumerator<IValidator> enumerator = m_ValidatorAggregator.Validators.GetEnumerator();
             int validatorNumbering = 1;
             int totalErrorCount = 0;
-            while(enumerator.MoveNext())
+            while (enumerator.MoveNext())
             {
-                clipboardText += string.Format(Tobi_Plugin_Validator_Lang.ClipboardValidatorEntry, 
+                clipboardText += string.Format(Tobi_Plugin_Validator_Lang.ClipboardValidatorEntry,
                     validatorNumbering, enumerator.Current.Name, enumerator.Current.Description);
 
                 int errorNumbering = 1;
@@ -161,7 +163,7 @@ namespace Tobi.Plugin.Validator
                 foreach (ValidationItem item in enumerator.Current.ValidationItems)
                 {
                     noErrors = false;
-                    clipboardText += string.Format(Tobi_Plugin_Validator_Lang.ClipboardErrorEntry, 
+                    clipboardText += string.Format(Tobi_Plugin_Validator_Lang.ClipboardErrorEntry,
                         validatorNumbering, errorNumbering, item.CompleteSummary);
                     errorNumbering++;
                     totalErrorCount++;
@@ -195,7 +197,7 @@ namespace Tobi.Plugin.Validator
 
             //filter out SelectionChanged events bubbling up from other controls
             if (e.OriginalSource != Tabs) return;
-            
+
             //this doesn't work because the tab changes before the tab content loads
             //the list will therefore always be the *old* list, not the new one.
             //SelectFirstInValidationItemsList();
@@ -221,7 +223,7 @@ namespace Tobi.Plugin.Validator
             }
         }
 
-       
+
     }
 
     [ValueConversion(typeof(ValidationSeverity), typeof(bool))]
