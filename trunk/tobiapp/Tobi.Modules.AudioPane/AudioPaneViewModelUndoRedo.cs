@@ -568,7 +568,7 @@ namespace Tobi.Plugin.AudioPane
                     : new Time(command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(command.SelectionData.m_LocalStreamLeftMark));
 
                 Time timeEnd = command.SelectionData.m_LocalStreamRightMark == -1
-                    ? new Time(command.OriginalManagedAudioMedia.AudioMediaData.AudioDuration.AsTimeSpan)
+                    ? new Time(command.OriginalManagedAudioMedia.AudioMediaData.AudioDuration)
                     : new Time(command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(command.SelectionData.m_LocalStreamRightMark));
 
                 Time diff = timeEnd.GetDifference(timeBegin);

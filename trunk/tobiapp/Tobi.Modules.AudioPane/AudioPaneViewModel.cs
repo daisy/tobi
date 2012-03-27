@@ -180,7 +180,7 @@ namespace Tobi.Plugin.AudioPane
                                 {
                                     long timeInLocalUnits = pcmFormat.Data.ConvertBytesToTime(totalLength);
 
-                                    m_TimeStringOther = FormatTimeSpan_Units(new Time(timeInLocalUnits));
+                                    m_TimeStringOther = FormatTimeSpan_Units(timeInLocalUnits);
                                     View.TimeMessageShow();
                                     //View.TimeMessageRefresh();
                                 }));
@@ -1334,7 +1334,7 @@ m_Stream.Length);
                     return "";
                 }
 
-                return FormatTimeSpan_Units(new Time(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Selection.SelectionBeginBytePosition)));
+                return FormatTimeSpan_Units(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Selection.SelectionBeginBytePosition));
             }
         }
 
@@ -1348,7 +1348,7 @@ m_Stream.Length);
                     return "";
                 }
 
-                return FormatTimeSpan_Units(new Time(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Selection.SelectionEndBytePosition)));
+                return FormatTimeSpan_Units(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Selection.SelectionEndBytePosition));
             }
         }
 
@@ -1362,7 +1362,7 @@ m_Stream.Length);
                     return "";
                 }
 
-                return FormatTimeSpan_Units(new Time(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Selection.SelectionEndBytePosition - State.Selection.SelectionBeginBytePosition)));
+                return FormatTimeSpan_Units(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Selection.SelectionEndBytePosition - State.Selection.SelectionBeginBytePosition));
             }
         }
 
@@ -1377,7 +1377,7 @@ m_Stream.Length);
                     return "";
                 }
 
-                return FormatTimeSpan_Units(new Time(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Audio.DataLength)));
+                return FormatTimeSpan_Units(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(State.Audio.DataLength));
             }
         }
 
@@ -1392,12 +1392,32 @@ m_Stream.Length);
         }
 
 
-        public static string FormatTimeSpan_Units(Time time)
-        {
-            if (Settings.Default.UseFriendlyTimeFormat)
-                return time.Format_H_MN_S_MS();
+        //public static string FormatTimeSpan_Units(Time time)
+        //{
+        //    if (Settings.Default.UseFriendlyTimeFormat)
+        //        return time.Format_H_MN_S_MS();
 
-            return time.Format_Standard();
+        //    return time.Format_Standard();
+        //}
+
+
+        //public static string FormatTimeSpan_Units(TimeSpan timeSpan)
+        //{
+        //    if (Settings.Default.UseFriendlyTimeFormat)
+        //        return Time.Format_H_MN_S_MS(timeSpan);
+
+        //    return Time.Format_Standard(timeSpan);
+        //}
+
+
+        public static string FormatTimeSpan_Units(long timeInLocalUnits)
+        {
+            TimeSpan timeSpan = Time.ConvertFromLocalUnitsToTimeSpan(timeInLocalUnits);
+
+            if (Settings.Default.UseFriendlyTimeFormat)
+                return Time.Format_H_MN_S_MS(timeSpan);
+
+            return Time.Format_Standard(timeSpan);
         }
 
 
@@ -1439,7 +1459,7 @@ m_Stream.Length);
             {
                 if (IsRecording || IsMonitoring)
                 {
-                    return FormatTimeSpan_Units(new Time(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(RecorderCurrentDurationBytePosition)));
+                    return FormatTimeSpan_Units(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(RecorderCurrentDurationBytePosition));
                 }
 
                 string strToDisplay = null;
@@ -1458,11 +1478,11 @@ m_Stream.Length);
                 {
                     if (IsPlaying && m_RecordAfterPlayOverwriteSelection > 0)
                     {
-                        strToDisplay = FormatTimeSpan_Units(new Time(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(m_RecordAfterPlayOverwriteSelection - PlayBytePosition)));
+                        strToDisplay = FormatTimeSpan_Units(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(m_RecordAfterPlayOverwriteSelection - PlayBytePosition));
                     }
                     else
                     {
-                        strToDisplay = FormatTimeSpan_Units(new Time(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(PlayBytePosition)));
+                        strToDisplay = FormatTimeSpan_Units(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(PlayBytePosition));
                     }
                 }
 
@@ -1490,8 +1510,8 @@ m_Stream.Length);
             {
                 return Tobi_Plugin_AudioPane_Lang.SessionDuration
                     + (TotalSessionAudioDurationInLocalUnits < 0
-                    ? "-" + FormatTimeSpan_Units(new Time(-TotalSessionAudioDurationInLocalUnits))
-                    : FormatTimeSpan_Units(new Time(TotalSessionAudioDurationInLocalUnits)));
+                    ? "-" + FormatTimeSpan_Units(-TotalSessionAudioDurationInLocalUnits)
+                    : FormatTimeSpan_Units(TotalSessionAudioDurationInLocalUnits));
             }
         }
         private long m_TotalSessionAudioDurationInLocalUnits;
@@ -1518,7 +1538,7 @@ m_Stream.Length);
             get
             {
                 return Tobi_Plugin_AudioPane_Lang.TotalDuration
-                    + FormatTimeSpan_Units(new Time(TotalDocumentAudioDurationInLocalUnits));
+                    + FormatTimeSpan_Units(TotalDocumentAudioDurationInLocalUnits);
             }
         }
 

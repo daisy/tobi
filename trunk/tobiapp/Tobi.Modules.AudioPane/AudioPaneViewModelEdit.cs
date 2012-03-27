@@ -212,7 +212,7 @@ namespace Tobi.Plugin.AudioPane
                     return !IsMonitoring && !IsRecording && !IsWaveFormLoading && !IsPlaying
                        && m_UrakawaSession.DocumentProject != null
                        && treeNodeSelection.Item1 != null
-                       && treeNodeSelection.Item1.GetXmlElementQName() != null
+                       && (IsSimpleMode || treeNodeSelection.Item1.GetXmlElementQName() != null)
                        && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
                         //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
                        ;

@@ -56,7 +56,7 @@ namespace Tobi.Plugin.AudioPane
             tryagain:
                 i++;
 
-            var filePath = Path.Combine(OutputDirectory, "tts_" + m_ttsFileNameCounter + DataProviderFactory.AUDIO_WAV_EXTENSION);
+                var filePath = Path.Combine(OutputDirectory, "tts_" + m_ttsFileNameCounter + DataProviderFactory.AUDIO_WAV_EXTENSION);
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
@@ -209,10 +209,15 @@ namespace Tobi.Plugin.AudioPane
             try
             {
             next:
-                var adjustedNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(treeNodeSelection.Item1, initial ? null : treeNode);
-                if (adjustedNode == null)
+                TreeNode adjustedNode = treeNodeSelection.Item1;
+                if (!m_viewModel.IsSimpleMode)
                 {
-                    return;
+                    adjustedNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(treeNodeSelection.Item1,
+                                                                                           initial ? null : treeNode);
+                    if (adjustedNode == null)
+                    {
+                        return;
+                    }
                 }
 
                 if (adjustedNode.GetManagedAudioMedia() != null

@@ -269,7 +269,7 @@ namespace Tobi.Plugin.AudioPane
                         (long)Math.Round(m_AudioPaneView.BytesPerPixel * (hoffset + currentTickX))));
 
                     var formattedText = new FormattedText(
-                        AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits)),
+                        AudioPaneViewModel.FormatTimeSpan_Units(timeInLocalUnits),
                         m_culture,
                         FlowDirection.LeftToRight,
                         m_typeFace,
@@ -354,7 +354,7 @@ namespace Tobi.Plugin.AudioPane
                     (long)Math.Round(m_AudioPaneView.BytesPerPixel * (hoffset + m_MousePosX))));
 
                 var formattedText = new FormattedText(
-                    AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits)),
+                    AudioPaneViewModel.FormatTimeSpan_Units(timeInLocalUnits),
                     m_culture,
                     FlowDirection.LeftToRight,
                     m_typeFace,
@@ -557,7 +557,7 @@ namespace Tobi.Plugin.AudioPane
 
                         if (marker.m_Tag1 == null || !(marker.m_Tag1 is string))
                         {
-                            strTime = AudioPaneViewModel.FormatTimeSpan_Units(new Time(timeInLocalUnits));
+                            strTime = AudioPaneViewModel.FormatTimeSpan_Units(timeInLocalUnits);
                             marker.m_Tag1 = strTime;
                         }
                         else

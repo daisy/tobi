@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -31,6 +32,15 @@ namespace Tobi.Plugin.Descriptions
 
         // WE NEED TO CAPTURE TOGGLE COMMANDS SUCH AS PLAY/PAUSE, RECORD, MONITOR (same KeyGesture, different Commands).
         private PopupModalWindow m_AudioPopupModalWindow;
+
+        private string extractHumanText(string str)
+        {
+            string text = str;
+            text = Regex.Replace(text, @"<[^<^>]+>", " ");
+            text = text.Trim();
+            text = Regex.Replace(text, @"\s+", " ");
+            return text;
+        }
 
         private void OnClick_ButtonAddEditAudio(object sender, RoutedEventArgs e)
         {
@@ -122,7 +132,7 @@ namespace Tobi.Plugin.Descriptions
                 textChannel.Name = "The DESCRIPTION Text Channel";
 
                 TextMedia text1 = presentation.MediaFactory.CreateTextMedia();
-                text1.Text = altContent.Text.Text;
+                text1.Text = extractHumanText(altContent.Text.Text);
 
                 ChannelsProperty chProp = presentation.RootNode.GetOrCreateChannelsProperty();
                 chProp.SetMedia(textChannel, text1);
@@ -203,6 +213,13 @@ namespace Tobi.Plugin.Descriptions
 
             windowPopup.AddInputBinding(audioSession.UndoCommand.KeyBinding);
             windowPopup.AddInputBinding(audioSession.RedoCommand.KeyBinding);
+
+            windowPopup.AddInputBinding(audioViewModel.CommandGenTTS.KeyBinding);
+
+
+            windowPopup.AddInputBinding(audioViewModel.CommandPlaybackRateUp.KeyBinding);
+            windowPopup.AddInputBinding(audioViewModel.CommandPlaybackRateDown.KeyBinding);
+            windowPopup.AddInputBinding(audioViewModel.CommandPlaybackRateReset.KeyBinding);
 
             //var bindings = Application.Current.MainWindow.InputBindings;
             //foreach (var binding in bindings)

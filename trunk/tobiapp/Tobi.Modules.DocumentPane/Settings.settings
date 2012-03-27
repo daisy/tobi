@@ -4,6 +4,9 @@
     <Profile Name="(Default)" />
   </Profiles>
   <Settings>
+    <Setting Name="EnableMediaKit" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="Document_Color_Hyperlink_Back" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF00FFFF</Value>
     </Setting>
