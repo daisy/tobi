@@ -25,6 +25,18 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableMediaKit {
+            get {
+                return ((bool)(this["EnableMediaKit"]));
+            }
+            set {
+                this["EnableMediaKit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FF00FFFF")]
         public global::System.Windows.Media.Color Document_Color_Hyperlink_Back {
             get {

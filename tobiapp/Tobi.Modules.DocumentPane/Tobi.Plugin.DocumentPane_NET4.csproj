@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\DebugNET4\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NET40</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40;ENABLE_WPF_MEDIAKIT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
@@ -91,6 +91,7 @@
       <DependentUpon>Tobi.Plugin.DocumentPane.Lang.resx</DependentUpon>
     </Compile>
     <Compile Include="XukToFlowDocument.cs" />
+    <Compile Include="XukToFlowDocument_Video.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="DocumentPaneView.xaml">

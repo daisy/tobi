@@ -960,9 +960,10 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <UI:ButtonRichCommand
         RichCommand="{Binding CommandGenTTS}"
-        Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
         />
 
+    <!-- 
+        Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}" -->
  
     <UI:ButtonRichCommand
       RichCommand="{Binding CommandDeleteAudioSelection}"/>

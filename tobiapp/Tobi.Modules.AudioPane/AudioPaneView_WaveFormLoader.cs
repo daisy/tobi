@@ -1563,8 +1563,7 @@ namespace Tobi.Plugin.AudioPane
                                                               AudioPaneViewModel
                                                                   .
                                                                   FormatTimeSpan_Units
-                                                                  (new Time(
-                                                                       timeInLocalUnits));
+                                                                  (timeInLocalUnits);
                                                           TimeMessageShow();
                                                           //TimeMessageRefresh();
 
