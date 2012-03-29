@@ -73,6 +73,8 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
   </Border>
 
   <Button
+        IsEnabled="{Binding HasNotDescribableTreeNodes, Converter={XAML:BoolToOppositeBoolConverter}, Mode=OneWay}"
+        Visibility="{Binding HasNotDescribableTreeNodes, Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
            DockPanel.Dock="Bottom"
            Content="Add / edit ..."
            Click="OnClick_ButtonAddEdit"

@@ -171,6 +171,7 @@
     <None Include="Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Settings_KeyGestures.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>

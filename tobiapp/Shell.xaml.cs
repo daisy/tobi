@@ -1083,6 +1083,8 @@ namespace Tobi
                                                    PopupModalWindow.DialogButton.Cancel,
                                                    true, 500, 150, details, 80);
 
+            //windowPopup.EnableEnterKeyDefault = true;
+            //windowPopup.IgnoreEscape = true;
 
             var backWorker = new BackgroundWorker
             {
