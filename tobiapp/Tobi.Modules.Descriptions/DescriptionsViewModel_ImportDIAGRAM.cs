@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
+using System.Text.RegularExpressions;
 using AudioLib;
 using urakawa.commands;
 using urakawa.core;
@@ -546,13 +547,24 @@ namespace Tobi.Plugin.Descriptions
             if (textNode != null)
             {
                 string strText = textNode.InnerXml;
-                TextMedia txtMedia = treeNode.Presentation.MediaFactory.CreateTextMedia();
-                txtMedia.Text = strText;
-                AlternateContentSetManagedMediaCommand cmd_AltContent_Text =
-                    treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode,
-                                                                                                      altContent,
-                                                                                                      txtMedia);
-                treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Text);
+
+                if (!string.IsNullOrEmpty(strText))
+                {
+                    strText = strText.Trim();
+                    strText = Regex.Replace(strText, @"\s+", " ");
+                    strText = strText.Replace("\r\n", "\n");
+                }
+
+                if (!string.IsNullOrEmpty(strText))
+                {
+                    TextMedia txtMedia = treeNode.Presentation.MediaFactory.CreateTextMedia();
+                    txtMedia.Text = strText;
+                    AlternateContentSetManagedMediaCommand cmd_AltContent_Text =
+                        treeNode.Presentation.CommandFactory.CreateAlternateContentSetManagedMediaCommand(treeNode,
+                                                                                                          altContent,
+                                                                                                          txtMedia);
+                    treeNode.Presentation.UndoRedoManager.Execute(cmd_AltContent_Text);
+                }
             }
 
             if (nObjects > 0 && ++objectIndex <= nObjects - 1)
