@@ -209,9 +209,16 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
-                    return !IsMonitoring && !IsRecording && !IsWaveFormLoading && !IsPlaying
+                    bool okay = treeNodeSelection.Item1 != null
+                        && (
+                        IsSimpleMode
+                        ? TreeNode.GetLengthStringChunks(treeNodeSelection.Item1.GetTextFlattened_()) > 0
+                        : true
+                            );
+
+                    return okay
+                       && !IsMonitoring && !IsRecording && !IsWaveFormLoading && !IsPlaying
                        && m_UrakawaSession.DocumentProject != null
-                       && treeNodeSelection.Item1 != null
                        && (IsSimpleMode || treeNodeSelection.Item1.GetXmlElementQName() != null)
                        && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
                         //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
