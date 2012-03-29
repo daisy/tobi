@@ -322,6 +322,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Include/merge image descriptions: .
+        /// </summary>
+        public static string ExportIncludeImageDescriptions {
+            get {
+                return ResourceManager.GetString("ExportIncludeImageDescriptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exporting....
         /// </summary>
         public static string Exporting {

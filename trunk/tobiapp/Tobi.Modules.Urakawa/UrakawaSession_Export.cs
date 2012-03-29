@@ -43,6 +43,75 @@ namespace Tobi.Plugin.Urakawa
 
                     m_Logger.Log(@"UrakawaSession.Export", Category.Debug, Priority.Medium);
 
+
+
+
+
+
+                    bool thereIsAtLeastOneError = false;
+                    if (m_Validators != null)
+                    {
+                        foreach (var validator in m_Validators)
+                        {
+                            foreach (var validationItem in validator.ValidationItems)
+                            {
+                                if (validationItem.Severity == ValidationSeverity.Error)
+                                {
+                                    thereIsAtLeastOneError = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (thereIsAtLeastOneError)
+                    {
+                        m_Logger.Log("UrakawaSession.Expor VALIDATION", Category.Debug, Priority.Medium);
+
+                        var label = new TextBlock
+                        {
+                            Text = Tobi_Plugin_Urakawa_Lang.ValidationIssuesConfirmExport,
+                            Margin = new Thickness(8, 0, 8, 0),
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Focusable = true,
+                            TextWrapping = TextWrapping.Wrap
+                        };
+
+                        var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
+
+                        var panel = new StackPanel
+                        {
+                            Orientation = System.Windows.Controls.Orientation.Horizontal,
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Stretch,
+                        };
+                        panel.Children.Add(iconProvider.IconLarge);
+                        panel.Children.Add(label);
+
+                        var windowPopup = new PopupModalWindow(m_ShellView,
+                                                               UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ValidationIssuesConfirmExport_Title),
+                                                               panel,
+                                                               PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                               PopupModalWindow.DialogButton.Cancel,
+                                                               true, 350, 160, null, 40);
+
+                        windowPopup.ShowModal();
+
+                        if (PopupModalWindow.IsButtonEscCancel(windowPopup.ClickedDialogButton))
+                        {
+                            if (m_EventAggregator != null)
+                            {
+                                m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Publish(null);
+                            }
+                            return;
+                        }
+                    }
+
+
+
+
+
                     var combo = new ComboBox
                     {
                         Margin = new Thickness(0, 0, 0, 12)
@@ -110,6 +179,35 @@ namespace Tobi.Plugin.Urakawa
                     panel__.Children.Add(label_);
                     panel__.Children.Add(checkBox);
 
+                    var checkBoxz = new CheckBox
+                    {
+                        IsThreeState = false,
+                        IsChecked = Settings.Default.ExportIncludeImageDescriptions,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+
+                    var label_z = new TextBlock
+                    {
+                        Text = Tobi_Plugin_Urakawa_Lang.ExportIncludeImageDescriptions,
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+
+
+                    var panel_z_ = new StackPanel
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Horizontal,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+                    panel_z_.Children.Add(label_z);
+                    panel_z_.Children.Add(checkBoxz);
+
                     var panel_ = new StackPanel
                     {
                         Orientation = System.Windows.Controls.Orientation.Vertical,
@@ -118,6 +216,7 @@ namespace Tobi.Plugin.Urakawa
                     };
                     panel_.Children.Add(combo);
                     panel_.Children.Add(panel__);
+                    panel_.Children.Add(panel_z_);
 
                     var windowPopup_ = new PopupModalWindow(m_ShellView,
                                                            UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ExportSettings),
@@ -131,6 +230,7 @@ namespace Tobi.Plugin.Urakawa
                     windowPopup_.EnableEnterKeyDefault = true;
 
                     Settings.Default.AudioExportEncodeToMp3 = checkBox.IsChecked.Value;
+                    Settings.Default.ExportIncludeImageDescriptions = checkBoxz.IsChecked.Value;
 
                     if (combo.SelectedItem == item1)
                     {
@@ -145,67 +245,6 @@ namespace Tobi.Plugin.Urakawa
                         Settings.Default.AudioExportSampleRate = SampleRate.Hz44100;
                     }
 
-
-
-                    bool thereIsAtLeastOneError = false;
-                    if (m_Validators != null)
-                    {
-                        foreach (var validator in m_Validators)
-                        {
-                            foreach (var validationItem in validator.ValidationItems)
-                            {
-                                if (validationItem.Severity == ValidationSeverity.Error)
-                                {
-                                    thereIsAtLeastOneError = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (thereIsAtLeastOneError)
-                    {
-                        m_Logger.Log("UrakawaSession.Expor VALIDATION", Category.Debug, Priority.Medium);
-
-                        var label = new TextBlock
-                        {
-                            Text = Tobi_Plugin_Urakawa_Lang.ValidationIssuesConfirmExport,
-                            Margin = new Thickness(8, 0, 8, 0),
-                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Focusable = true,
-                            TextWrapping = TextWrapping.Wrap
-                        };
-
-                        var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
-
-                        var panel = new StackPanel
-                        {
-                            Orientation = System.Windows.Controls.Orientation.Horizontal,
-                            HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Stretch,
-                        };
-                        panel.Children.Add(iconProvider.IconLarge);
-                        panel.Children.Add(label);
-
-                        var windowPopup = new PopupModalWindow(m_ShellView,
-                                                               UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ValidationIssuesConfirmExport_Title),
-                                                               panel,
-                                                               PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                               PopupModalWindow.DialogButton.Cancel,
-                                                               true, 350, 160, null, 40);
-
-                        windowPopup.ShowModal();
-
-                        if (PopupModalWindow.IsButtonEscCancel(windowPopup.ClickedDialogButton))
-                        {
-                            if (m_EventAggregator != null)
-                            {
-                                m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Publish(null);
-                            }
-                            return;
-                        }
-                    }
 
                     string rootFolder = Path.GetDirectoryName(DocumentFilePath);
 
@@ -258,7 +297,9 @@ namespace Tobi.Plugin.Urakawa
         {
             m_Logger.Log(String.Format(@"UrakawaSession.doExport() [{0}]", path), Category.Debug, Priority.Medium);
 
-            var converter = new Daisy3_Export(DocumentProject.Presentations.Get(0), path, null, Settings.Default.AudioExportEncodeToMp3, Settings.Default.AudioExportSampleRate, IsAcmCodecsDisabled);
+            var converter = new Daisy3_Export(DocumentProject.Presentations.Get(0), path, null,
+                Settings.Default.AudioExportEncodeToMp3, Settings.Default.AudioExportSampleRate,
+                IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions);
 
             m_ShellView.RunModalCancellableProgressTask(true,
                 Tobi_Plugin_Urakawa_Lang.Exporting,
