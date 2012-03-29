@@ -240,6 +240,10 @@ namespace Tobi.Plugin.AudioPane
                     return;
                 }
 
+#if DEBUG
+                DebugFix.Assert(TreeNode.GetLengthStringChunks(adjustedNode.GetTextFlattened_()) != 0);
+#endif
+
                 var converter = new AudioTTSGenerator(text, pcmFormat.Data, m_viewModel.m_Recorder.RecordingDirectory, m_viewModel.m_SpeechSynthesizer);
 
                 AddSubCancellable(converter);
