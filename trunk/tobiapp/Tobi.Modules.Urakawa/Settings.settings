@@ -12,7 +12,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="EnableRecentFilesMenu" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="AudioExportSampleRate" Type="AudioLib.SampleRate" Scope="User">
       <Value Profile="(Default)">Hz44100</Value>

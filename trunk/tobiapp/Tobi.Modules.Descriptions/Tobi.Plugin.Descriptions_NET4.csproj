@@ -37,7 +37,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\DebugNET4\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NET40</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40;ENABLE_WPF_MEDIAKIT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
@@ -46,7 +46,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\ReleaseNET4\</OutputPath>
-    <DefineConstants>TRACE;NET40</DefineConstants>
+    <DefineConstants>TRACE;NET40;ENABLE_WPF_MEDIAKIT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
@@ -154,6 +154,10 @@
     <ProjectReference Include="..\ExternalLibs\MEF\Lib.MEF_NET4.csproj">
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
       <Name>Lib.MEF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\WPFMediaKit\WPFMediaKit_NET4.csproj">
+      <Project>{6030628D-EE93-4D61-B6BE-8B6AE99F3935}</Project>
+      <Name>WPFMediaKit_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tobi.Common\Tobi.Common_NET4.csproj">
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>

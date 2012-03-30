@@ -4,6 +4,9 @@
     <Profile Name="(Default)" />
   </Profiles>
   <Settings>
+    <Setting Name="EnableMediaKit" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="SearchHits_Color" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF99FF66</Value>
     </Setting>

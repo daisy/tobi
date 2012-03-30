@@ -190,7 +190,7 @@ namespace Tobi.Plugin.DocumentPane
                 (o, e) =>
                 {
 #if ENABLE_WPF_MEDIAKIT
-                    if (Settings.Default.EnableMediaKit)
+                    if (Common.Settings.Default.EnableMediaKit)
                     {
                         medElement_MEDIAKIT_DIRECTSHOW = new MediaUriElement();
                     }

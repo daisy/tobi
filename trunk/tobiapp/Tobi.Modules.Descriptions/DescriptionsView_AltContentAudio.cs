@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -21,9 +22,17 @@ using urakawa.core;
 using urakawa.data;
 using urakawa.exception;
 using urakawa.media;
+using urakawa.media.timing;
 using urakawa.media.data.audio;
 using urakawa.property.alt;
 using urakawa.property.channel;
+using System.Diagnostics;
+
+#if ENABLE_WPF_MEDIAKIT
+using WPFMediaKit.DirectShow.Controls;
+using MediaState = System.Windows.Controls.MediaState;
+using WPFMediaKit.DirectShow.MediaPlayers;
+#endif //ENABLE_WPF_MEDIAKIT
 
 namespace Tobi.Plugin.Descriptions
 {
@@ -60,11 +69,7 @@ namespace Tobi.Plugin.Descriptions
             Application.Current.MainWindow.Cursor = Cursors.Wait;
             this.Cursor = Cursors.Wait; //m_ShellView
 
-
-            if (AudioMediaElement.Clock != null)
-            {
-                AudioMediaElement.Clock.Controller.Stop();
-            }
+            stopAudioPlayer();
 
 
 
@@ -350,14 +355,13 @@ namespace Tobi.Plugin.Descriptions
             if (DescriptionsListView.SelectedIndex < 0) return;
             AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
 
-            if (AudioMediaElement.Clock != null)
-            {
-                AudioMediaElement.Clock.Controller.Stop();
-            }
+            stopAudioPlayer();
 
             m_ViewModel.SetDescriptionAudio(altContent, null);
 
             DescriptionsListView.Items.Refresh();
+
+            resetAudioPlayer();
         }
 
 
@@ -480,8 +484,51 @@ namespace Tobi.Plugin.Descriptions
         //#endif // DEBUG
         //        }
 
+
+        private MediaElement medElement_WINDOWS_MEDIA_PLAYER = null;
+#if ENABLE_WPF_MEDIAKIT
+        private MediaUriElement medElement_MEDIAKIT_DIRECTSHOW = null;
+#endif //ENABLE_WPF_MEDIAKIT
+
+
+        private Action actionUpdateSliderFromVideoTime = null;
+        private bool doNotUpdateVideoTimeWhenSliderChanges = false;
+        private DispatcherTimer _timer = null;
+
+
+
         private void resetAudioPlayer()
         {
+            stopAudioPlayer();
+            
+            bool thereWasAMediaElement = false;
+
+            if (medElement_WINDOWS_MEDIA_PLAYER != null)
+            {
+                thereWasAMediaElement = true;
+                medElement_WINDOWS_MEDIA_PLAYER.Close();
+                medElement_WINDOWS_MEDIA_PLAYER = null;
+            }
+
+#if ENABLE_WPF_MEDIAKIT
+            if (medElement_MEDIAKIT_DIRECTSHOW != null)
+            {
+                thereWasAMediaElement = true;
+                medElement_MEDIAKIT_DIRECTSHOW.Close();
+                medElement_MEDIAKIT_DIRECTSHOW = null;
+            }
+#endif //ENABLE_WPF_MEDIAKIT
+
+
+            if (thereWasAMediaElement)
+            {
+                AudioMediaElementContainer.Children.RemoveAt(0);
+            }
+
+            AudioTimeSlider.Value = 0;
+            AudioTimeLabel.Text = "";
+
+
             if (DescriptionsListView.SelectedIndex < 0) return;
             AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
 
@@ -494,31 +541,8 @@ namespace Tobi.Plugin.Descriptions
 
             if (altProp.AlternateContents.IndexOf(altContent) < 0) return;
 
-
-
-            if (AudioMediaElement.Clock != null)
-            {
-                AudioMediaElement.Clock.Controller.Stop();
-                AudioMediaElement.Clock.Controller.Remove();
-
-                AudioMediaElement.Close();
-                AudioMediaElement.Clock = null;
-            }
-
-
-            //if (AudioMediaElement.Source != null)
-            //{
-            //    AudioMediaElement.Close();
-            //    AudioMediaElement.Source = null;
-            //}
-
-
-            m_SliderValueChangeFromCode = true;
-            AudioTimeSlider.Value = 0;
-
             if (altContent.Audio == null)
             {
-                AudioTimeSlider.Maximum = 100;
                 return;
             }
 
@@ -533,187 +557,678 @@ namespace Tobi.Plugin.Descriptions
                 return;
             }
 
+            var uri = new Uri(path);
 
-            var mediaTimeline = new MediaTimeline(new Uri(path));
-            mediaTimeline.CurrentTimeInvalidated += new EventHandler(mediaTimeline_CurrentTimeInvalidated);
-            AudioMediaElement.Clock = mediaTimeline.CreateClock(true) as MediaClock;
-            AudioMediaElement.Clock.Controller.Stop();
 
-            //AudioMediaElement.Source = new Uri(path);
-            //AudioMediaElement.Clock.CurrentTimeInvalidated += new EventHandler(mediaTimeline_CurrentTimeInvalidated);
-
-            //if (mediaPlayer == null)
-            //{
-            //    mediaPlayer = new MediaPlayer();
-            //    mediaPlayer.Volume = 1;
-            //    mediaPlayer.MediaOpened += new EventHandler(AudioElement_MediaOpened);
-            //    mediaPlayer.MediaEnded += new EventHandler(AudioElement_MediaEnded);
-            //}
-            //mediaPlayer.Open(new Uri(path));
-
-        }
-
-        //private MediaPlayer mediaPlayer;
-
-        private bool m_SliderValueChangeFromCode;
-
-        private void mediaTimeline_CurrentTimeInvalidated(object sender, EventArgs e)
-        {
-            if (m_SliderDragging) return;
-
-            if (AudioMediaElement.Clock == null) return;
-
-            if (AudioMediaElement.Clock.CurrentState == ClockState.Filling)
+#if ENABLE_WPF_MEDIAKIT
+            if (Common.Settings.Default.EnableMediaKit)
             {
-                AudioElement_MediaEnded(null, null);
-                return;
+                medElement_MEDIAKIT_DIRECTSHOW = new MediaUriElement();
+            }
+            else
+#endif //ENABLE_WPF_MEDIAKIT
+            {
+                medElement_WINDOWS_MEDIA_PLAYER = new MediaElement();
             }
 
-            if (AudioMediaElement.Clock.CurrentTime.HasValue)
+
+
+
+
+#if ENABLE_WPF_MEDIAKIT
+            DebugFix.Assert((medElement_WINDOWS_MEDIA_PLAYER == null) == (medElement_MEDIAKIT_DIRECTSHOW != null));
+#else  // DISABLE_WPF_MEDIAKIT
+            DebugFix.Assert(medElement_WINDOWS_MEDIA_PLAYER != null);
+#endif //ENABLE_WPF_MEDIAKIT
+
+
+            if (medElement_WINDOWS_MEDIA_PLAYER != null)
             {
-                m_SliderValueChangeFromCode = true;
-                AudioTimeSlider.Value = AudioMediaElement.Clock.CurrentTime.Value.TotalMilliseconds;
+                medElement_WINDOWS_MEDIA_PLAYER.Stretch = Stretch.Uniform;
+                medElement_WINDOWS_MEDIA_PLAYER.StretchDirection = StretchDirection.DownOnly;
             }
-        }
 
-        private void AudioElement_MediaOpened(object sender, EventArgs e)
-        {
-            if (AudioMediaElement.NaturalDuration.HasTimeSpan)
+#if ENABLE_WPF_MEDIAKIT
+            if (medElement_MEDIAKIT_DIRECTSHOW != null)
             {
-                AudioTimeSlider.Maximum = AudioMediaElement.NaturalDuration.TimeSpan.TotalMilliseconds;
+                medElement_MEDIAKIT_DIRECTSHOW.Stretch = Stretch.Uniform;
+                medElement_MEDIAKIT_DIRECTSHOW.StretchDirection = StretchDirection.DownOnly;
+            }
+#endif //ENABLE_WPF_MEDIAKIT
+
+
+
+            FrameworkElement mediaElement = null;
+            if (medElement_WINDOWS_MEDIA_PLAYER != null)
+            {
+                mediaElement = medElement_WINDOWS_MEDIA_PLAYER;
+            }
+            else
+            {
+                mediaElement = medElement_MEDIAKIT_DIRECTSHOW;
             }
 
-            if (AudioMediaElement.Clock == null) return;
+            mediaElement.Focusable = false;
 
-            AudioMediaElement.Clock.Controller.Stop();
+            mediaElement.Visibility = Visibility.Collapsed;
+
+            AudioMediaElementContainer.Children.Insert(0, mediaElement);
+
+            var actionMediaFailed = new Action<string>(
+                (str) =>
+                {
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                        (Action)(() =>
+                        {
+                            DebugFix.Assert(false);
+                        }
+                        ));
+                }
+                );
+
+
+            actionUpdateSliderFromVideoTime = null;
+            _timer = new DispatcherTimer();
+            _timer.Interval = new TimeSpan(0, 0, 0, 0, 250);
+            _timer.Stop();
+            _timer.Tick += (object oo, EventArgs ee) =>
+            {
+                actionUpdateSliderFromVideoTime.Invoke();
+            };
+
+
+
+            if (medElement_WINDOWS_MEDIA_PLAYER != null)
+            {
+                medElement_WINDOWS_MEDIA_PLAYER.ScrubbingEnabled = true;
+
+                medElement_WINDOWS_MEDIA_PLAYER.LoadedBehavior = MediaState.Manual;
+                medElement_WINDOWS_MEDIA_PLAYER.UnloadedBehavior = MediaState.Stop;
+
+
+                doNotUpdateVideoTimeWhenSliderChanges = false;
+                actionUpdateSliderFromVideoTime = new Action(() =>
+                {
+                    TimeSpan? timeSpan = medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime;
+                    double timeMS = timeSpan != null ? timeSpan.Value.TotalMilliseconds : 0;
+
+                    //Console.WriteLine("UPDATE: " + timeMS);
+
+                    //if (medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.HasTimeSpan
+                    //    && timeMS >= medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds - 50)
+                    //{
+                    //    medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Stop();
+                    //}
+
+                    doNotUpdateVideoTimeWhenSliderChanges = true;
+                    AudioTimeSlider.Value = timeMS;
+                });
+
+                medElement_WINDOWS_MEDIA_PLAYER.MediaFailed += new EventHandler<ExceptionRoutedEventArgs>(
+                    (oo, ee) =>
+                    {
+                        //#if DEBUG
+                        //                                Debugger.Break();
+                        //#endif //DEBUG
+                        //medElement_WINDOWS_MEDIA_PLAYER.Source
+                        actionMediaFailed.Invoke(uri.ToString()
+                            + " \n("
+                            + (ee.ErrorException != null ? ee.ErrorException.Message : "ERROR!")
+                            + ")");
+                    }
+                    );
+
+
+
+                medElement_WINDOWS_MEDIA_PLAYER.MediaOpened += new RoutedEventHandler(
+                    (oo, ee) =>
+                    {
+                        double durationMS = medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
+                        AudioTimeLabel.Text = Time.Format_Standard(medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan);
+
+                        AudioTimeSlider.Maximum = durationMS;
+
+
+                        // freeze frame (poster)
+                        if (medElement_WINDOWS_MEDIA_PLAYER.LoadedBehavior == MediaState.Manual)
+                        {
+                            medElement_WINDOWS_MEDIA_PLAYER.IsMuted = true;
+
+                            medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Begin();
+                            medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+
+                            medElement_WINDOWS_MEDIA_PLAYER.IsMuted = false;
+
+                            AudioTimeSlider.Value = 0.10;
+                        }
+                    }
+                    );
+
+
+
+                medElement_WINDOWS_MEDIA_PLAYER.MediaEnded +=
+                    new RoutedEventHandler(
+                    (oo, ee) =>
+                    {
+                        _timer.Stop();
+
+                        medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Stop();
+
+                        actionUpdateSliderFromVideoTime.Invoke();
+                    }
+                    );
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+#if ENABLE_WPF_MEDIAKIT
+            if (medElement_MEDIAKIT_DIRECTSHOW != null)
+            {
+                doNotUpdateVideoTimeWhenSliderChanges = false;
+                actionUpdateSliderFromVideoTime = new Action(() =>
+                {
+                    long timeVideo = medElement_MEDIAKIT_DIRECTSHOW.MediaPosition;
+
+                    //if (timeMS >= medElement_MEDIAKIT_DIRECTSHOW.MediaDuration - 50 * 10000.0)
+                    //{
+                    //    medElement_MEDIAKIT_DIRECTSHOW.Stop();
+                    //}
+
+
+                    double timeMS = timeVideo / 10000.0;
+
+                    //Console.WriteLine("UPDATE: " + timeMS);
+
+                    doNotUpdateVideoTimeWhenSliderChanges = true;
+                    AudioTimeSlider.Value = timeMS;
+                });
+
+
+                medElement_MEDIAKIT_DIRECTSHOW.MediaFailed += new EventHandler<WPFMediaKit.DirectShow.MediaPlayers.MediaFailedEventArgs>(
+                    (oo, ee) =>
+                    {
+                        //#if DEBUG
+                        //                        Debugger.Break();
+                        //#endif //DEBUG
+
+                        //medElement_MEDIAKIT_DIRECTSHOW.Source
+                        actionMediaFailed.Invoke(uri.ToString()
+                            + " \n("
+                            + (ee.Exception != null ? ee.Exception.Message : ee.Message)
+                            + ")");
+                    }
+                        );
+
+
+
+                medElement_MEDIAKIT_DIRECTSHOW.MediaOpened += new RoutedEventHandler(
+                    (oo, ee) =>
+                    {
+                        long durationVideo = medElement_MEDIAKIT_DIRECTSHOW.MediaDuration;
+                        if (durationVideo == 0)
+                        {
+                            return;
+                        }
+
+                        //MediaPositionFormat mpf = medElement.CurrentPositionFormat;
+                        //MediaPositionFormat.MediaTime
+                        double durationMS = durationVideo / 10000.0;
+
+                        AudioTimeSlider.Maximum = durationMS;
+
+                        var durationTimeSpan = new TimeSpan(0, 0, 0, 0, (int)Math.Round(durationMS));
+                        AudioTimeLabel.Text = Time.Format_Standard(durationTimeSpan);
+
+
+                        // freeze frame (poster)
+                        if (medElement_MEDIAKIT_DIRECTSHOW.LoadedBehavior == WPFMediaKit.DirectShow.MediaPlayers.MediaState.Manual)
+                        {
+                            if (false)
+                            {
+                                double volume = medElement_MEDIAKIT_DIRECTSHOW.Volume;
+                                medElement_MEDIAKIT_DIRECTSHOW.Volume = 0;
+
+                                medElement_MEDIAKIT_DIRECTSHOW.Play();
+                                AudioTimeSlider.Value = 0.10;
+                                medElement_MEDIAKIT_DIRECTSHOW.Pause();
+
+                                medElement_MEDIAKIT_DIRECTSHOW.Volume = volume;
+                            }
+                            else
+                            {
+                                medElement_MEDIAKIT_DIRECTSHOW.Pause();
+                                AudioTimeSlider.Value = 0.10;
+                            }
+                        }
+                    }
+                    );
+
+
+
+                medElement_MEDIAKIT_DIRECTSHOW.MediaEnded +=
+                    new RoutedEventHandler(
+                    (oo, ee) =>
+                    {
+                        _timer.Stop();
+                        medElement_MEDIAKIT_DIRECTSHOW.Pause();
+                        actionUpdateSliderFromVideoTime.Invoke();
+
+                        // TODO: BaseClasses.cs in WPF Media Kit,
+                        // MediaPlayerBase.OnMediaEvent
+                        // ==> remove StopGraphPollTimer();
+                        // in case EventCode.Complete.
+
+
+                        //m_DocumentPaneView.Dispatcher.BeginInvoke(
+                        //    DispatcherPriority.Background,
+                        //    (Action)(() =>
+                        //    {
+                        //        //medElement_MEDIAKIT_DIRECTSHOW.BeginInit();
+                        //        medElement_MEDIAKIT_DIRECTSHOW.Source = uri;
+                        //        //medElement_MEDIAKIT_DIRECTSHOW.EndInit();
+                        //    })
+                        //    );
+                    }
+                    );
+
+
+                medElement_MEDIAKIT_DIRECTSHOW.MediaClosed +=
+                    new RoutedEventHandler(
+                    (oo, ee) =>
+                    {
+                        int debug = 1;
+                    }
+                    );
+
+
+                //DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(
+                //    MediaSeekingElement.MediaPositionProperty,
+                //    typeof(MediaSeekingElement));
+                //if (dpd != null)
+                //{
+                //    dpd.AddValueChanged(medElement_MEDIAKIT_DIRECTSHOW, new EventHandler((o, e) =>
+                //    {
+                //        //actionRefreshTime.Invoke();
+
+                //        //if (!_timer.IsEnabled)
+                //        //{
+                //        //    _timer.Start();
+                //        //}
+                //    }));
+                //}
+
+            }
+#endif //ENABLE_WPF_MEDIAKIT
+
+
+
+
+            if (medElement_WINDOWS_MEDIA_PLAYER != null)
+            {
+                var timeline = new MediaTimeline();
+                timeline.Source = uri;
+
+                medElement_WINDOWS_MEDIA_PLAYER.Clock = timeline.CreateClock(true) as MediaClock;
+
+                medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Stop();
+
+                //medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTimeInvalidated += new EventHandler(
+                //(o, e) =>
+                //{
+                //    //actionRefreshTime.Invoke();
+                //    //if (!_timer.IsEnabled)
+                //    //{
+                //    //    _timer.Start();
+                //    //}
+                //});
+
+            }
+
+#if ENABLE_WPF_MEDIAKIT
+            if (medElement_MEDIAKIT_DIRECTSHOW != null)
+            {
+                medElement_MEDIAKIT_DIRECTSHOW.BeginInit();
+
+                medElement_MEDIAKIT_DIRECTSHOW.Loop = false;
+                medElement_MEDIAKIT_DIRECTSHOW.VideoRenderer = VideoRendererType.VideoMixingRenderer9;
+
+                // seems to be a multiplicator of 10,000 to get milliseconds
+                medElement_MEDIAKIT_DIRECTSHOW.PreferedPositionFormat = MediaPositionFormat.MediaTime;
+
+
+                medElement_MEDIAKIT_DIRECTSHOW.LoadedBehavior = WPFMediaKit.DirectShow.MediaPlayers.MediaState.Manual;
+                medElement_MEDIAKIT_DIRECTSHOW.UnloadedBehavior = WPFMediaKit.DirectShow.MediaPlayers.MediaState.Stop;
+
+                try
+                {
+                    medElement_MEDIAKIT_DIRECTSHOW.Source = uri;
+
+                    medElement_MEDIAKIT_DIRECTSHOW.EndInit();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                    ; // swallow (reported in MediaFailed)
+                }
+            }
+#endif //ENABLE_WPF_MEDIAKIT
         }
 
-        private void AudioElement_MediaEnded(object sender, EventArgs e)
+        private bool wasPlayingBeforeDrag = false;
+        private void OnDragStarted_AudioTimeSlider(object sender, DragStartedEventArgs e)
         {
-            if (AudioMediaElement.Clock == null) return;
+            if (medElement_WINDOWS_MEDIA_PLAYER != null)
+            {
+                wasPlayingBeforeDrag = false;
 
-            AudioMediaElement.Clock.Controller.Stop();
+                //Is Active
+                if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Active)
+                {
+                    //Is Paused
+                    if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentGlobalSpeed == 0.0)
+                    {
 
-            m_SliderValueChangeFromCode = true;
-            AudioTimeSlider.Value = 0;
+                    }
+                    else //Is Playing
+                    {
+                        wasPlayingBeforeDrag = true;
+                        medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                    }
+                }
+                else if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Stopped)
+                {
+                    medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Begin();
+                    medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                }
+            }
+
+#if ENABLE_WPF_MEDIAKIT
+            if (medElement_MEDIAKIT_DIRECTSHOW != null)
+            {
+                wasPlayingBeforeDrag = medElement_MEDIAKIT_DIRECTSHOW.IsPlaying;
+
+                if (wasPlayingBeforeDrag)
+                {
+                    medElement_MEDIAKIT_DIRECTSHOW.Pause();
+                }
+            }
+#endif //ENABLE_WPF_MEDIAKIT
+
         }
-
-
-        private bool m_SliderDragging = false;
 
         private void OnDragCompleted_AudioTimeSlider(object sender, DragCompletedEventArgs e)
         {
-            if (!AudioMediaElement.NaturalDuration.HasTimeSpan)
+            if (medElement_WINDOWS_MEDIA_PLAYER != null)
             {
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                if (wasPlayingBeforeDrag)
                 {
-                    resetAudioPlayer();
-                }));
-
-                return;
-            }
-
-            if (AudioMediaElement.Clock == null) return;
-
-            if (AudioMediaElement.Clock.CurrentState == ClockState.Filling)
-            {
-                AudioMediaElement.Clock.Controller.Stop();
-                AudioMediaElement.Clock.Controller.Pause();
-            }
-
-            int SliderValue = (int)AudioTimeSlider.Value;
-
-            TimeSpan ts = new TimeSpan(0, 0, 0, 0, SliderValue);
-
-            //AudioMediaElement.Clock.Controller.SeekAlignedToLastTick(ts, TimeSeekOrigin.BeginTime);
-            AudioMediaElement.Clock.Controller.Seek(ts, TimeSeekOrigin.BeginTime);
-
-            m_SliderDragging = false;
-        }
-
-        private void OnDragStarted_AudioTimeSlider(object sender, DragStartedEventArgs e)
-        {
-            if (AudioMediaElement.Clock == null) return;
-
-            if (!AudioMediaElement.NaturalDuration.HasTimeSpan)
-            {
-                AudioMediaElement.Clock.Controller.Stop();
-                return;
-            }
-
-
-            if (AudioMediaElement.Clock.CurrentState == ClockState.Active)
-            {
-                if (AudioMediaElement.Clock.IsPaused || AudioMediaElement.Clock.CurrentGlobalSpeed == 0.0)
-                {
+                    medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Resume();
                 }
-                else
-                {
-                    AudioMediaElement.Clock.Controller.Pause();
-                }
-            }
-            else if (AudioMediaElement.Clock.CurrentState == ClockState.Filling)
-            {
-                AudioMediaElement.Clock.Controller.Stop();
-                AudioMediaElement.Clock.Controller.Begin();
-                AudioMediaElement.Clock.Controller.Pause();
-            }
-            else if (AudioMediaElement.Clock.CurrentState == ClockState.Stopped)
-            {
-                AudioMediaElement.Clock.Controller.Begin();
-                AudioMediaElement.Clock.Controller.Pause();
+                wasPlayingBeforeDrag = false;
             }
 
-            m_SliderDragging = true;
+#if ENABLE_WPF_MEDIAKIT
+            if (medElement_MEDIAKIT_DIRECTSHOW != null)
+            {
+                if (wasPlayingBeforeDrag)
+                {
+                    medElement_MEDIAKIT_DIRECTSHOW.Play();
+                }
+                wasPlayingBeforeDrag = false;
+            }
+#endif //ENABLE_WPF_MEDIAKIT
+
         }
 
         private void OnAudioTimeSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (m_SliderValueChangeFromCode)
+            if (medElement_WINDOWS_MEDIA_PLAYER != null)
             {
-                m_SliderValueChangeFromCode = false;
-                return;
+                var timeSpan = new TimeSpan(0, 0, 0, 0, (int)Math.Round(AudioTimeSlider.Value));
+
+                if (doNotUpdateVideoTimeWhenSliderChanges || !_timer.IsEnabled)
+                {
+                    double durationMS = medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
+
+                    AudioTimeLabel.Text = String.Format(
+                        "{0} / {1}",
+                        Time.Format_Standard(timeSpan),
+                        Time.Format_Standard(medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan)
+                        );
+                }
+
+                if (doNotUpdateVideoTimeWhenSliderChanges)
+                {
+                    doNotUpdateVideoTimeWhenSliderChanges = false;
+                    return;
+                }
+
+                bool wasPlaying = false;
+
+                //Is Active
+                if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Active)
+                {
+                    //Is Paused
+                    if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentGlobalSpeed == 0.0)
+                    {
+
+                    }
+                    else //Is Playing
+                    {
+                        wasPlaying = true;
+                        medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                    }
+                }
+                else if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Stopped)
+                {
+                    medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Begin();
+                    medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                }
+
+                medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Seek(timeSpan, TimeSeekOrigin.BeginTime);
+
+                if (wasPlaying)
+                {
+                    medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Resume();
+                }
             }
 
-            OnDragStarted_AudioTimeSlider(null, null);
-            OnDragCompleted_AudioTimeSlider(null, null);
+#if ENABLE_WPF_MEDIAKIT
+            if (medElement_MEDIAKIT_DIRECTSHOW != null)
+            {
+                double timeMs = AudioTimeSlider.Value;
+
+                if (doNotUpdateVideoTimeWhenSliderChanges || !_timer.IsEnabled)
+                {
+                    var timeSpan = new TimeSpan(0, 0, 0, 0, (int)Math.Round(timeMs));
+
+                    double durationMS = medElement_MEDIAKIT_DIRECTSHOW.MediaDuration / 10000.0;
+
+                    //MediaPositionFormat.MediaTime
+                    //MediaPositionFormat mpf = medElement.CurrentPositionFormat;
+
+                    AudioTimeLabel.Text = String.Format(
+                        "{0} / {1}",
+                        Time.Format_Standard(timeSpan),
+                        Time.Format_Standard(new TimeSpan(0, 0, 0, 0, (int)Math.Round(durationMS)))
+                         );
+                }
+
+                if (doNotUpdateVideoTimeWhenSliderChanges)
+                {
+                    doNotUpdateVideoTimeWhenSliderChanges = false;
+                    return;
+                }
+
+                bool wasPlaying = medElement_MEDIAKIT_DIRECTSHOW.IsPlaying;
+
+                if (wasPlaying)
+                {
+                    medElement_MEDIAKIT_DIRECTSHOW.Pause();
+                }
+
+                long timeVideo = (long)Math.Round(timeMs * 10000.0);
+                medElement_MEDIAKIT_DIRECTSHOW.MediaPosition = timeVideo;
+
+                DebugFix.Assert(medElement_MEDIAKIT_DIRECTSHOW.MediaPosition == timeVideo);
+
+                if (wasPlaying)
+                {
+                    medElement_MEDIAKIT_DIRECTSHOW.Play();
+                }
+            }
+#endif //ENABLE_WPF_MEDIAKIT
+        }
+
+        private void stopAudioPlayer()
+        {
+
+            if (medElement_WINDOWS_MEDIA_PLAYER != null)
+            {
+                if (medElement_WINDOWS_MEDIA_PLAYER.LoadedBehavior != MediaState.Manual)
+                {
+                    return;
+                }
+
+                //Is Active
+                if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Active)
+                {
+                    //Is Paused
+                    if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentGlobalSpeed == 0.0)
+                    {
+                    }
+                    else //Is Playing
+                    {
+                        _timer.Stop();
+                        medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                        actionUpdateSliderFromVideoTime.Invoke();
+                    }
+                }
+            }
+
+#if ENABLE_WPF_MEDIAKIT
+            if (medElement_MEDIAKIT_DIRECTSHOW != null)
+            {
+                if (medElement_MEDIAKIT_DIRECTSHOW.LoadedBehavior != WPFMediaKit.DirectShow.MediaPlayers.MediaState.Manual)
+                {
+                    return;
+                }
+
+                if (medElement_MEDIAKIT_DIRECTSHOW.IsPlaying)
+                {
+                    _timer.Stop();
+                    medElement_MEDIAKIT_DIRECTSHOW.Pause();
+                    actionUpdateSliderFromVideoTime.Invoke();
+                }
+            }
+#endif //ENABLE_WPF_MEDIAKIT
         }
 
         private void OnClick_ButtonAudioPlayPause(object sender, RoutedEventArgs e)
         {
-            if (AudioMediaElement.Clock == null) return;
-
-            if (!AudioMediaElement.NaturalDuration.HasTimeSpan)
+            if (medElement_WINDOWS_MEDIA_PLAYER != null)
             {
-                AudioMediaElement.Clock.Controller.Stop();
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+                if (medElement_WINDOWS_MEDIA_PLAYER.LoadedBehavior != MediaState.Manual)
                 {
-                    resetAudioPlayer();
-                }));
+                    return;
+                }
 
-                return;
-            }
+                bool wasPlaying = false;
+                bool wasStopped = false;
 
-            if (AudioMediaElement.Clock.CurrentState == ClockState.Active)
-            {
-                if (//AudioMediaElement.Clock.IsPaused ||
-                    AudioMediaElement.Clock.CurrentGlobalSpeed == 0.0)
+                //Is Active
+                if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Active)
                 {
-                    AudioMediaElement.Clock.Controller.Resume();
+                    //Is Paused
+                    if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentGlobalSpeed == 0.0)
+                    {
+                    }
+                    else //Is Playing
+                    {
+                        wasPlaying = true;
+                        medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                    }
+                }
+                else if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Stopped)
+                {
+                    wasStopped = true;
+                    //medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Begin();
+                    //medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                }
+
+                double durationMS = medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
+                double timeMS =
+                    medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime == null
+                    || !medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime.HasValue
+                    ? -1.0
+                    : medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime.Value.TotalMilliseconds;
+
+                if (timeMS == -1.0 || timeMS >= durationMS)
+                {
+                    AudioTimeSlider.Value = 0.100;
+                }
+
+                if (!wasPlaying)
+                {
+                    _timer.Start();
+                    if (wasStopped)
+                    {
+                        medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Begin();
+                    }
+                    else
+                    {
+                        medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Resume();
+                    }
                 }
                 else
                 {
-                    AudioMediaElement.Clock.Controller.Pause();
+                    _timer.Stop();
+                    medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                    actionUpdateSliderFromVideoTime.Invoke();
                 }
             }
-            else if (AudioMediaElement.Clock.CurrentState == ClockState.Stopped)
+
+#if ENABLE_WPF_MEDIAKIT
+            if (medElement_MEDIAKIT_DIRECTSHOW != null)
             {
-                AudioMediaElement.Clock.Controller.Begin();
+                if (medElement_MEDIAKIT_DIRECTSHOW.LoadedBehavior != WPFMediaKit.DirectShow.MediaPlayers.MediaState.Manual)
+                {
+                    return;
+                }
+
+                if (medElement_MEDIAKIT_DIRECTSHOW.IsPlaying)
+                {
+                    _timer.Stop();
+                    medElement_MEDIAKIT_DIRECTSHOW.Pause();
+                    actionUpdateSliderFromVideoTime.Invoke();
+                }
+                else
+                {
+                    _timer.Start();
+                    medElement_MEDIAKIT_DIRECTSHOW.Play();
+                }
+
+
+                double durationMS = medElement_MEDIAKIT_DIRECTSHOW.MediaDuration / 10000.0;
+                double timeMS = medElement_MEDIAKIT_DIRECTSHOW.MediaPosition / 10000.0;
+
+                if (timeMS >= durationMS)
+                {
+                    AudioTimeSlider.Value = 0.100;
+                }
             }
-            else if (AudioMediaElement.Clock.CurrentState == ClockState.Filling)
-            {
-                AudioElement_MediaEnded(null, null);
-            }
+#endif //ENABLE_WPF_MEDIAKIT
         }
     }
 }
