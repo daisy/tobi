@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using Tobi.Common.UI.XAML;
@@ -19,13 +20,13 @@ namespace Tobi.Plugin.Validator.Metadata
 
         private void OnEditLinkClick(object sender, RoutedEventArgs e)
         {
-            var obj = sender as Hyperlink;
+            var obj = sender as Button;
             ((ValidationItem)obj.DataContext).TakeAction();
         }
 
         private void OnAddLinkClick(object sender, RoutedEventArgs e)
         {
-            var obj = sender as Hyperlink;
+            var obj = sender as Button;
             ValidationItem err = (ValidationItem)obj.DataContext;
             err.TakeAction();
         }

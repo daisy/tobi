@@ -9,16 +9,18 @@
            xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
            xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
            xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
-           
            Unloaded="OnUnloaded_Panel"
            Loaded="OnLoaded_Panel">
   <!-- 
            DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
 
+  <DockPanel
+    DockPanel.Dock="Top">
+  
   <StackPanel
-    DockPanel.Dock="Top"
+    DockPanel.Dock="Left"
     Orientation="Horizontal"
-                 HorizontalAlignment="Left"
+                 HorizontalAlignment="Stretch"
                       Margin="7,7,7,7">
     <Image
         Focusable="False"
@@ -29,25 +31,119 @@
                   StretchDirection="DownOnly"
         Source="{Binding DescribableImage, Mode=OneWay}"
                 
-                                Margin="0,0,8,0"
+                                Margin="0,0,12,0"
               />
 
-      <TextBlock Text="{Binding DescribableImageInfo, Mode=OneWay}"
+    <TextBlock
+      x:Name="ImageLabel"
+      Text="{Binding DescribableImageInfo, Mode=OneWay}"
+      
+      Focusable="True"
+      
                  FontWeight="Bold"
                  TextWrapping="WrapWithOverflow"
                  VerticalAlignment="Center"
                  HorizontalAlignment="Left"/>
-    </StackPanel>
+
+
+
+  </StackPanel>
+
 
   <Button
-    x:Name="ButtonImport"
+    x:Name="ButtonGoBasic"
+      
+  DockPanel.Dock="Right"
+        Style="{StaticResource ToolBarButtonBaseStyle}"
+          
+  Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+      
+           Content="Show basic editor"
+           HorizontalAlignment="Right"
+               VerticalAlignment="Top"
+           Click="OnClick_ButtonGoBasic"
+           Padding="4,2,4,2"
+           Margin="4,2,4,0"
+  />
+
+  <Button
+    x:Name="ButtonGoAdvanced"
+      
+  DockPanel.Dock="Right"
+        Style="{StaticResource ToolBarButtonBaseStyle}"
+          
+  Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+      
+           Content="Show advanced editor"
+           HorizontalAlignment="Right"
+               VerticalAlignment="Top"
+           Click="OnClick_ButtonGoAdvanced"
+           Padding="4,2,4,2"
+           Margin="4,2,4,0"
+  />
+
+  </DockPanel>
+  <Grid
+          HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+          >
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"></RowDefinition>
+    </Grid.RowDefinitions>
+    
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+
+  <DockPanel
+    x:Name="BasicPanel"
+    
+    Grid.Row="0"
+    Grid.Column="0"
+    
+        HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+    
+    Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+    LastChildFill="True">
+
+  </DockPanel>
+  
+  <DockPanel
+    x:Name="AdvancedPanel"
+    
+    Grid.Row="0"
+    Grid.Column="0"
+    
+        HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+    
+    Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+    LastChildFill="True">
+
+    <TextBlock
            DockPanel.Dock="Top"
+           HorizontalAlignment="Right"
+           
+           Padding="4,2,4,2"
+           Margin="4,2,4,0"
+        >
+      <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        Click="OnClick_ButtonImport"
+        KeyUp="OnKeyUp_ButtonImport">
+        <Run Text="Import DIAGRAM XML"/>
+      </Hyperlink>
+    </TextBlock>
+    
+  <!--<Button
+           DockPanel.Dock="Bottom"
            Content="Import DIAGRAM XML..."
            HorizontalAlignment="Right"
            Click="OnClick_ButtonImport"
            Padding="4,2,4,2"
-           Margin="4,2,4,2"
-  />
+           Margin="4,2,4,0"
+  />-->
 
   <TabControl
               BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
@@ -294,7 +390,7 @@ IsEnabled="{Binding HasMetadata}"
               Focusable="True"
               VerticalAlignment="Center"
                      HorizontalAlignment="Left"
-              Margin="0,4,4,0"
+              Margin="4,4,4,0"
                      DockPanel.Dock="Top">Additional metadata attributes:</TextBlock>
             <Button
                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
@@ -827,7 +923,7 @@ AlternationCount="2"
                   HorizontalAlignment="Stretch">
                 <Button
                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                       Control.TabIndex="3"
+                       Control.TabIndex="4"
                   x:Name="ButtonAddEditAudio"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -837,7 +933,7 @@ AlternationCount="2"
                   Click="OnClick_ButtonAddEditAudio"/>
                 <Button
                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                       Control.TabIndex="4"
+                       Control.TabIndex="5"
                   x:Name="ButtonClearAudio"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -867,20 +963,19 @@ AlternationCount="2"
                   Click="OnClick_ButtonAudioPlayPause"
               Margin="0,0,4,0"/>
 
-                <TextBox
+                <TextBlock
                   
+                       Control.TabIndex="3"
                 DockPanel.Dock="Right"
                 MinWidth="120"
                   x:Name="AudioTimeLabel"
                         IsEnabled="{Binding HasDescriptionAudio}"
-                  Focusable="False"
+                  Focusable="True"
                   TextWrapping="NoWrap"
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center"
                 TextAlignment="Center"
-                        >
-
-                </TextBox>
+                        />
                 <Slider x:Name="AudioTimeSlider"
                        Control.TabIndex="2"
                         IsEnabled="{Binding HasDescriptionAudio}"
@@ -1127,4 +1222,9 @@ IsEnabled="{Binding HasDescriptionMetadata}"
 
     </TabItem>
   </TabControl>
+
+  </DockPanel>
+
+  </Grid>
+
 </DockPanel>

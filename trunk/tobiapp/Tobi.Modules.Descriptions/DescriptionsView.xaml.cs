@@ -259,6 +259,15 @@ namespace Tobi.Plugin.Descriptions
 
 
 
+        private void OnKeyUp_ButtonImport(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.None
+                && e.Key == Key.Space)
+            {
+                OnClick_ButtonImport(null, null);
+            }
+        }
+
         private void OnClick_ButtonImport(object sender, RoutedEventArgs e)
         {
             m_Logger.Log("DescriptionView.OpenFileDialog (XML)", Category.Debug, Priority.Medium);
@@ -334,7 +343,7 @@ namespace Tobi.Plugin.Descriptions
             //}
             OnSelectionChanged_DescriptionsList(null, null);
 
-            FocusHelper.Focus(ButtonImport);
+            FocusHelper.Focus(ImageLabel);
         }
 
         private void OnLoaded_Panel(object sender, RoutedEventArgs e)
@@ -392,8 +401,6 @@ namespace Tobi.Plugin.Descriptions
         {
             CommandManager.InvalidateRequerySuggested();
         }
-
-
 
     }
 

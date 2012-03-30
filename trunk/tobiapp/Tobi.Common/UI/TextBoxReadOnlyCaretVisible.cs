@@ -119,6 +119,14 @@ namespace Tobi.Common.UI
 
         private void SetTextReadOnly(string txt)
         {
+            SetResourceReference(Control.BackgroundProperty, SystemColors.ControlBrushKey);
+            SetResourceReference(Control.BorderBrushProperty, SystemColors.ControlBrushKey);
+
+            if (txt == null)
+            {
+                txt = "";
+            }
+
             // The order is important ! (otherwise infinite loop due to TextChanged event)
             m_Text = null;
             Text = txt;

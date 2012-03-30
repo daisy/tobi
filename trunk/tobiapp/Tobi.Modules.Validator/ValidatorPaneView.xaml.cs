@@ -255,7 +255,25 @@ namespace Tobi.Plugin.Validator
     {
         public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return value == null ? Visibility.Collapsed : Visibility.Visible;
+            if (value == null)
+            {
+                return Visibility.Collapsed;
+            }
+
+            return Visibility.Visible;
+        }
+    }
+    [ValueConversion(typeof(ValidationItem), typeof(Boolean))]
+    public class EnabledConverter : ValueConverterMarkupExtensionBase<EnabledConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

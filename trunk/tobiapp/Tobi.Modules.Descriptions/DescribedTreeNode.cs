@@ -127,7 +127,7 @@ namespace Tobi.Plugin.Descriptions
                     int index = strAttr.LastIndexOf('/');
                     if (index >= 0)
                     {
-                        strBuilder.Append(strAttr.Substring(index));
+                        strBuilder.Append(strAttr.Substring(index + 1));
                     }
                     else
                     {
@@ -194,7 +194,7 @@ namespace Tobi.Plugin.Descriptions
                 {
                     m_Description = GetDescriptionLabel(TreeNode);
                 }
-                
+
                 return m_Description;
             }
         }
@@ -208,7 +208,7 @@ namespace Tobi.Plugin.Descriptions
                 {
                     m_DescriptionX = (HasDescription ? "(described) " : "(no description) ") + Description;
                 }
-                
+
                 return m_DescriptionX;
             }
         }

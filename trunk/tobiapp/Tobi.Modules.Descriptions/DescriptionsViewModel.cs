@@ -54,10 +54,23 @@ namespace Tobi.Plugin.Descriptions
 
             m_UrakawaSession = session;
 
+            ShowAdvancedEditor = false;
+
             m_EventAggregator.GetEvent<ProjectLoadedEvent>().Subscribe(OnProjectLoaded, ProjectLoadedEvent.THREAD_OPTION);
             m_EventAggregator.GetEvent<ProjectUnLoadedEvent>().Subscribe(OnProjectUnLoaded, ProjectUnLoadedEvent.THREAD_OPTION);
 
             m_EventAggregator.GetEvent<TreeNodeSelectionChangedEvent>().Subscribe(OnTreeNodeSelectionChanged, TreeNodeSelectionChangedEvent.THREAD_OPTION);
+        }
+
+        private bool m_ShowAdvancedEditor = false;
+        public bool ShowAdvancedEditor
+        {
+            get { return m_ShowAdvancedEditor; }
+            set
+            {
+                m_ShowAdvancedEditor = value;
+                RaisePropertyChanged(() => ShowAdvancedEditor);
+            }
         }
 
         public void OnPanelLoaded()

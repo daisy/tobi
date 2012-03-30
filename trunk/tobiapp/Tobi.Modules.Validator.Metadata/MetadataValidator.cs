@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
@@ -357,6 +358,8 @@ namespace Tobi.Plugin.Validator.Metadata
         //Complete sentences purposefully left out.
         private string m_DateHint = Tobi_Plugin_Validator_Metadata_Lang.DateHint;
         private string m_NumericHint = Tobi_Plugin_Validator_Metadata_Lang.NumericValueHint;
+        private string m_LanguageHint = Tobi_Plugin_Validator_Metadata_Lang.LanguageValueHint;
+
         private readonly IEventAggregator m_EventAggregator;
 
         public MetadataDataTypeValidator(MetadataValidator parentValidator, IEventAggregator eventAggregator)
@@ -524,7 +527,25 @@ namespace Tobi.Plugin.Validator.Metadata
         }
         private bool _validateLanguageCode(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
-            return true;
+            try
+            {
+                CultureInfo info = CultureInfo.GetCultureInfo(metadata.NameContentAttribute.Value);
+                if (info != null)
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+            }
+
+            MetadataFormatValidationError err =
+                new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
+            err.Hint = m_LanguageHint;
+
+            m_ParentValidator.ReportError(err);
+
+            return false;
         }
         private bool _validateString(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
