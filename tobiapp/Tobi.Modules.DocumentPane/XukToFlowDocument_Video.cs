@@ -142,7 +142,7 @@ namespace Tobi.Plugin.DocumentPane
             videoPanel.Children.Add(slider);
 
 
-            var timeLabel = new TextBox();
+            var timeLabel = new TextBlock();
             timeLabel.Focusable = false;
             //timeLabel.IsEnabled = false;
             timeLabel.TextWrapping = TextWrapping.NoWrap;

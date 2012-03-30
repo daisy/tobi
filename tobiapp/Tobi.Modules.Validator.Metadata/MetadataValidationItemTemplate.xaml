@@ -3,16 +3,22 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:Metadata="clr-namespace:Tobi.Plugin.Validator.Metadata" xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common">
 
-
-  <Style TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
+  <Style x:Key="MetadataDetailsStyle_" TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
     <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
     <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="Margin" Value="0,0,0,6"/>
   </Style>
 
-  <Style x:Key="MetadataHeadingStyle" TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
+  <Style x:Key="MetadataDetailsStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="Margin" Value="0,0,0,6"/>
+  </Style>
+
+  <Style x:Key="MetadataHeadingStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="FontWeight" Value="Bold"/>
     <!-- left, top, right, bottom -->
-    <Setter Property="Margin" Value="0,0,0,5"/>
+    <Setter Property="Margin" Value="0,0,0,6"/>
 
     <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
     <Setter Property="TextWrapping" Value="Wrap"/>
@@ -20,17 +26,18 @@
 
   <!-- this takes a MetadataError object -->
   <DataTemplate x:Key="MetadataDefinitionTemplate">
-    <StackPanel Focusable="False"  Margin="0,0,0,5">
-        <UI:TextBoxReadOnlyCaretVisible Style="{StaticResource MetadataHeadingStyle}"
+    <StackPanel Focusable="False" Orientation="Vertical">
+        <TextBlock Style="{StaticResource MetadataHeadingStyle}"
                    Focusable="True">
-          <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+          <TextBlock.Text>
             <Binding Converter="{Metadata:MetadataNameConverter}" 
                      Mode="OneWay" StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.RulesFor}"/>
-          </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
-        </UI:TextBoxReadOnlyCaretVisible>
+          </TextBlock.Text>
+        </TextBlock>
 
-       <UI:TextBoxReadOnlyCaretVisible Focusable="True">
-          <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+      <UI:TextBoxReadOnlyCaretVisible Focusable="True"
+                                      Style="{StaticResource MetadataDetailsStyle_}">
+        <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
             <MultiBinding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.DefinitionSummary}">
               <Binding Mode="OneWay" Path="Definition.Description"/>
               <Binding Mode="OneWay" Path="Definition.DataType" Converter="{Metadata:DataTypeToStringConverter}"/>
@@ -40,72 +47,90 @@
           </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
         </UI:TextBoxReadOnlyCaretVisible>
 
-        <UI:TextBoxReadOnlyCaretVisible Focusable="True" TextWrapping="Wrap"
+      <UI:TextBoxReadOnlyCaretVisible Focusable="True" TextWrapping="Wrap"
+                                      Style="{StaticResource MetadataDetailsStyle_}"
                    Visibility="{Binding Path=Definition, Converter={Metadata:DefinitionSynonymsListVisibilityConverter}}">
-          <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+        <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
             <Binding Path="Definition" Mode="OneWay" StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MetadataSynonyms2}"
                      Converter="{Metadata:DefinitionSynonymsListConverter}"/>
           </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
         </UI:TextBoxReadOnlyCaretVisible>
 
-      </StackPanel>
+      
+  </StackPanel>
   </DataTemplate>
 
   <DataTemplate DataType="{x:Type Metadata:MetadataDuplicateItemValidationError}">
-    <StackPanel Focusable="False">
-      <StackPanel Margin="5" Focusable="False">
-      <UI:TextBoxReadOnlyCaretVisible Focusable="True" Style="{StaticResource MetadataHeadingStyle}"
-                 TextReadOnly="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.DuplicateItemsDetected}"/>
-      <UI:TextBoxReadOnlyCaretVisible Focusable="True"
+    <StackPanel Focusable="False" Orientation="Vertical">
+      <TextBlock Focusable="True" Style="{StaticResource MetadataHeadingStyle}"
+                 Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.DuplicateItemsDetected}"/>
+        <UI:TextBoxReadOnlyCaretVisible Focusable="True"
+                                      Style="{StaticResource MetadataDetailsStyle_}"
         TextReadOnly="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.NotMoreThanOneInstance}" 
-        Margin="0,0,0,5"/>
+        />
       <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding}" />
-        <TextBlock
+
+      <Button Click="OnEditLinkClick"
+              Padding="4"
+              Content="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToEdit}" />
+
+      <!--<TextBlock
+          
+                                      Style="{StaticResource MetadataDetailsStyle}"
         >
         <Hyperlink 
           FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
           Click="OnEditLinkClick">
           <Run Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToEdit}"/>
         </Hyperlink>
-      </TextBlock>
-    </StackPanel>
+      </TextBlock>-->
     </StackPanel>
   </DataTemplate>
 
   <DataTemplate DataType="{x:Type Metadata:MetadataMissingItemValidationError}">
-    <StackPanel Focusable="False">
-      <StackPanel Margin="5" Focusable="False">
-      <UI:TextBoxReadOnlyCaretVisible Focusable="True" Style="{StaticResource MetadataHeadingStyle}"
-                                      TextReadOnly="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MissingRequiredItem}"/>
-      <UI:TextBoxReadOnlyCaretVisible Focusable="True" Margin="0,0,0,5">
-        <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+    <StackPanel Focusable="False" Orientation="Vertical">
+      <TextBlock Focusable="True" Style="{StaticResource MetadataHeadingStyle}"
+                                      Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.MissingRequiredItem}"/>
+        <UI:TextBoxReadOnlyCaretVisible Focusable="True" 
+                                      Style="{StaticResource MetadataDetailsStyle_}">
+          <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
           <Binding   Mode="OneWay" StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.EntryNotFound}" 
                    Path="Definition.Name"/>  
         </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
       </UI:TextBoxReadOnlyCaretVisible>
         <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding}" />
-        <TextBlock
+
+
+      <Button Click="OnAddLinkClick"
+              Padding="4"
+              Content="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToAddAndEdit}" />
+
+
+      <!--<TextBlock
+                                      Style="{StaticResource MetadataDetailsStyle}"
         >
+          
         <Hyperlink 
           FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
           Click="OnAddLinkClick">
           <Run Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToAddAndEdit}"/>
         </Hyperlink>
-      </TextBlock>
-    </StackPanel>
+      </TextBlock>-->
+    
     </StackPanel>
   </DataTemplate>
 
   <DataTemplate DataType="{x:Type Metadata:MetadataFormatValidationError}">
-    <StackPanel Focusable="False">
-      <StackPanel Margin="5" Focusable="False">
-      <UI:TextBoxReadOnlyCaretVisible Focusable="True" Style="{StaticResource MetadataHeadingStyle}"
-                 TextReadOnly="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidFormatting}"/>
+    <StackPanel Focusable="False" Orientation="Vertical">
       
-        <UI:TextBoxReadOnlyCaretVisible Focusable="True">
-        <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+      <TextBlock Focusable="True" Style="{StaticResource MetadataHeadingStyle}"
+                 Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.InvalidFormatting}"/>
+
+        <UI:TextBoxReadOnlyCaretVisible Focusable="True"
+                                      Style="{StaticResource MetadataDetailsStyle_}">
+          <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
         <MultiBinding StringFormat="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.FormatError}">
           <Binding Path="Target.NameContentAttribute.Name"/>
           <Binding Path="Target.NameContentAttribute.Value"/>
@@ -117,16 +142,20 @@
       <ContentPresenter ContentTemplate="{StaticResource MetadataDefinitionTemplate}"
                           Content="{Binding}" />
 
-        <TextBlock
+      <Button Click="OnEditLinkClick"
+              Padding="4"
+              Content="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToEdit}" />
+
+      <!--<TextBlock
+                                      Style="{StaticResource MetadataDetailsStyle}"
         >
         <Hyperlink 
           FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
           Click="OnEditLinkClick">
           <Run Text="{x:Static Metadata:Tobi_Plugin_Validator_Metadata_Lang.ClickToEdit}"/>
         </Hyperlink>
-      </TextBlock>
-      
-    </StackPanel>
+      </TextBlock>-->
+    
     </StackPanel>
   </DataTemplate>
   

@@ -744,7 +744,7 @@ namespace Tobi.Plugin.DocumentPane
             m_Logger.Log("showDialogTextEdit", Category.Debug, Priority.Medium);
 
 
-            var editBox = new TextBox
+            var editBox = new TextBoxReadOnlyCaretVisible
                               {
                                   Text = text,
                                   TextWrapping = TextWrapping.WrapWithOverflow

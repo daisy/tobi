@@ -4,46 +4,55 @@
     xmlns:MissingAudio="clr-namespace:Tobi.Plugin.Validator.MissingAudio" 
     xmlns:Common="clr-namespace:Tobi.Common.Validation;assembly=Tobi.Common" xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common">
 
-  <Style TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
+
+  <Style x:Key="MissingAudioDetailsStyle_" TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
+    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="Margin" Value="0,0,0,6"/>
+  </Style>
+
+  <Style  x:Key="MissingAudioDetailsStyle"  TargetType="{x:Type TextBlock}">
 
     <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
     <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="Margin" Value="0,0,0,6"/>
     <!--
     binding WORKS, but shouldn't be necessary for UIA...normally TextBlocks "speak" on their own
     <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text, Mode=OneWay}"/>-->
     <!--<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text, Mode=OneWay}"/>-->
   </Style>
 
-  <Style x:Key="MissingAudioHeadingStyle" TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
+  <Style x:Key="MissingAudioHeadingStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="FontWeight" Value="Bold"/>
     <!-- left, top, right, bottom -->
-    <Setter Property="Margin" Value="0,0,0,5"/>
+    <Setter Property="Margin" Value="0,0,0,6"/>
 
     <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
     <Setter Property="TextWrapping" Value="Wrap"/>
   </Style>
   
   <DataTemplate DataType="{x:Type MissingAudio:MissingAudioValidationError}">
-    <StackPanel Focusable="False">
-      <StackPanel Focusable="False" Margin="5">
-        <UI:TextBoxReadOnlyCaretVisible
+    <StackPanel Focusable="False" Orientation="Vertical">
+        <TextBlock
            Focusable="True"
            Style="{StaticResource MissingAudioHeadingStyle}"
-           TextReadOnly="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudio}"/>
-        <UI:TextBoxReadOnlyCaretVisible Focusable="True">
-          <UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
+           Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudio}"/>
+        <TextBlock Focusable="True"
+                   Style="{StaticResource MissingAudioDetailsStyle}">
+          <TextBlock.Text>
             <Binding StringFormat="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.MissingAudioMessage2}"
                      Path="Target"
                      Mode="OneWay"
                      Converter="{Common:ElementNameConverter}"/>
-          </UI:TextBoxReadOnlyCaretVisible.TextReadOnly>
-        </UI:TextBoxReadOnlyCaretVisible>
+          </TextBlock.Text>
+        </TextBlock>
 
         <ContentPresenter Content="{Binding Target}">
           <ContentPresenter.ContentTemplate>
             <DataTemplate>
 
               <UI:TextBoxReadOnlyCaretVisible Focusable="True"
+                   Style="{StaticResource MissingAudioDetailsStyle_}"
           TextReadOnly="{Binding Converter={Common:NodeToXmlConverter}}"/>
 
 
@@ -63,15 +72,19 @@
           </ContentPresenter.ContentTemplate>
         </ContentPresenter>
 
-        <TextBlock
+      <Button Click="OnViewLinkClick"
+              Padding="4"
+              Content="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.ClickToView}" />
+      
+        <!--<TextBlock
           
+                   Style="{StaticResource MissingAudioDetailsStyle}"
         >
           <Hyperlink Click="OnViewLinkClick"
         FocusVisualStyle="{StaticResource MyFocusVisualStyle}">
             <Run Text="{x:Static MissingAudio:Tobi_Plugin_Validator_MissingAudio_Lang.ClickToView}"/>
           </Hyperlink>
-        </TextBlock>
-      </StackPanel>
+        </TextBlock>-->
     </StackPanel>
   </DataTemplate>
 

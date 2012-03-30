@@ -241,6 +241,9 @@ An entry for {0} was not found.
   <data name="NumericValueHint" xml:space="preserve">
     <value>a numeric value</value>
   </data>
+  <data name="LanguageValueHint" xml:space="preserve">
+    <value>a language code</value>
+  </data>
   <data name="Occurrence" xml:space="preserve">
     <value>Is {0}</value>
     <comment>{0} = required, optional, or recommended</comment>

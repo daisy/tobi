@@ -153,9 +153,30 @@ namespace Tobi.Plugin.MetadataPane
                if (cvs != null) cvs.View.MoveCurrentTo(selection);
 
                //MetadataList.SelectedItem = selection;
-               MetadataList.Focus();
+               
                MetadataList.ScrollIntoView(selection);
 
+               FocusHelper.Focus(FocusableItem);
+            }
+        }
+
+        private UIElement FocusableItem
+        {
+            get
+            {
+                if (MetadataList.Focusable) return MetadataList;
+
+                if (MetadataList.SelectedIndex != -1)
+                {
+                    return MetadataList.ItemContainerGenerator.ContainerFromIndex(MetadataList.SelectedIndex) as ListViewItem;
+                }
+
+                if (MetadataList.Items.Count > 0)
+                {
+                    return MetadataList.ItemContainerGenerator.ContainerFromIndex(0) as ListViewItem;
+                }
+
+                return null;
             }
         }
 

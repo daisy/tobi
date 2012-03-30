@@ -163,7 +163,9 @@
     ScrollViewer.VerticalScrollBarVisibility="Auto"
     HorizontalContentAlignment="Stretch"
     IsSynchronizedWithCurrentItem="True"
-    x:Name="MetadataList">
+    x:Name="MetadataList"
+      
+      Focusable="False">
 
     <ListView.Style>
     <Style TargetType="{x:Type ListView}">

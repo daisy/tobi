@@ -12,6 +12,18 @@ namespace Tobi.Plugin.Descriptions
     public partial class DescriptionsView
     {
 
+
+        private void OnClick_ButtonGoAdvanced(object sender, RoutedEventArgs e)
+        {
+            forceRefreshDataUI();
+            m_ViewModel.ShowAdvancedEditor = true;
+        }
+        private void OnClick_ButtonGoBasic(object sender, RoutedEventArgs e)
+        {
+            forceRefreshDataUI();
+            m_ViewModel.ShowAdvancedEditor = false;
+        }
+
         private void OnSelectionChanged_DescriptionsList(object sender, SelectionChangedEventArgs e)
         {
             m_ViewModel.SetSelectedAlternateContent((AlternateContent)DescriptionsListView.SelectedItem);
