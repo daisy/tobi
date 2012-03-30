@@ -812,7 +812,9 @@ AlternationCount="2"
 
           <TabItem Header="Audio">
 
-            <DockPanel LastChildFill="True">
+            <DockPanel LastChildFill="True"
+                       x:Name="AudioMediaElementContainer"
+                       >
 
               <!-- TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.OriginalRelativePath, Mode=OneWay}"
                          DockPanel.Dock="Top"
@@ -844,32 +846,18 @@ AlternationCount="2"
                         IsEnabled="{Binding HasDescriptionAudio}"
                   Click="OnClick_ButtonClearAudio"/>
               </StackPanel>
-
-              <MediaElement x:Name="AudioMediaElement"
-                DockPanel.Dock="Top"
-                            Focusable="false"
-                        IsEnabled="{Binding HasDescriptionAudio}"
-                            Volume="1"
-                            
-                            LoadedBehavior="Manual"
-                            UnloadedBehavior="Stop"
-    
-                            Stretch="Fill"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            
-    MediaOpened="AudioElement_MediaOpened"
-              MediaEnded="AudioElement_MediaEnded"/>
               
               <DockPanel
                 LastChildFill="True"
                 HorizontalAlignment="Stretch"
                        VerticalAlignment="Center">
-              <StackPanel
-                DockPanel.Dock="Left"
+              <!--<StackPanel
                 Orientation="Horizontal"          >
 
+              </StackPanel>-->
+
                 <Button
+                DockPanel.Dock="Left"
                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                        Control.TabIndex="1"
                   x:Name="ButtonAudioPlayPause"
@@ -878,7 +866,21 @@ AlternationCount="2"
                         IsEnabled="{Binding HasDescriptionAudio}"
                   Click="OnClick_ButtonAudioPlayPause"
               Margin="0,0,4,0"/>
-              </StackPanel>
+
+                <TextBox
+                  
+                DockPanel.Dock="Right"
+                MinWidth="120"
+                  x:Name="AudioTimeLabel"
+                        IsEnabled="{Binding HasDescriptionAudio}"
+                  Focusable="False"
+                  TextWrapping="NoWrap"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                TextAlignment="Center"
+                        >
+
+                </TextBox>
                 <Slider x:Name="AudioTimeSlider"
                        Control.TabIndex="2"
                         IsEnabled="{Binding HasDescriptionAudio}"
@@ -890,13 +892,14 @@ AlternationCount="2"
           Thumb.DragCompleted="OnDragCompleted_AudioTimeSlider"
                         TickPlacement="None"
               IsMoveToPointEnabled="True"
+                        
+              LargeChange="1000"
+              SmallChange="500"
                         />
                 <!-- 
               TickFrequency="25"
               Delay="500"
               Interval="15"
-              LargeChange="20"
-              SmallChange="10"
               -->
               </DockPanel>
             </DockPanel>
