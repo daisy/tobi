@@ -923,7 +923,7 @@ AlternationCount="2"
                   HorizontalAlignment="Stretch">
                 <Button
                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                       Control.TabIndex="4"
+                       
                   x:Name="ButtonAddEditAudio"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -933,7 +933,7 @@ AlternationCount="2"
                   Click="OnClick_ButtonAddEditAudio"/>
                 <Button
                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                       Control.TabIndex="5"
+                       
                   x:Name="ButtonClearAudio"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -955,7 +955,7 @@ AlternationCount="2"
                 <Button
                 DockPanel.Dock="Left"
                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                       Control.TabIndex="1"
+                       
                   x:Name="ButtonAudioPlayPause"
                         
                         Content="Play/Pause"
@@ -965,7 +965,7 @@ AlternationCount="2"
 
                 <TextBlock
                   
-                       Control.TabIndex="3"
+                       
                 DockPanel.Dock="Right"
                 MinWidth="120"
                   x:Name="AudioTimeLabel"
@@ -977,7 +977,7 @@ AlternationCount="2"
                 TextAlignment="Center"
                         />
                 <Slider x:Name="AudioTimeSlider"
-                       Control.TabIndex="2"
+                       
                         IsEnabled="{Binding HasDescriptionAudio}"
                         ValueChanged="OnAudioTimeSliderValueChanged"
                         HorizontalAlignment="Stretch"
