@@ -55,7 +55,7 @@ namespace Tobi.Plugin.Urakawa
 
                     var windowPopup = new PopupModalWindow(m_ShellView,
                                                            UserInterfaceStrings.EscapeMnemonic(
-                                                           Tobi_Common_Lang.Menu_OpenRecent
+                                                           Tobi_Plugin_Urakawa_Lang.Menu_OpenRecent
                         //Tobi_Plugin_Urakawa_Lang.CmdOpenRecent_ShortDesc
                                                            ),
                                                            view,

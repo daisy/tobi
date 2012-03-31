@@ -133,7 +133,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export....
+        ///   Looks up a localized string similar to _Export....
         /// </summary>
         public static string CmdExport_ShortDesc {
             get {
@@ -205,7 +205,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Open recent ....
+        ///   Looks up a localized string similar to Open _recent ....
         /// </summary>
         public static string CmdOpenRecent_ShortDesc {
             get {
@@ -354,6 +354,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string Importing {
             get {
                 return ResourceManager.GetString("Importing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open recent.
+        /// </summary>
+        public static string Menu_OpenRecent {
+            get {
+                return ResourceManager.GetString("Menu_OpenRecent", resourceCulture);
             }
         }
         

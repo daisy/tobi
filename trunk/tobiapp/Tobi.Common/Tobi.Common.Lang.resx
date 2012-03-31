@@ -192,9 +192,6 @@
   <data name="Menu_Navigation" xml:space="preserve">
     <value>Navi_gation</value>
   </data>
-  <data name="Menu_OpenRecent" xml:space="preserve">
-    <value>_Open recent</value>
-  </data>
   <data name="Menu_Text" xml:space="preserve">
     <value>_Text</value>
   </data>

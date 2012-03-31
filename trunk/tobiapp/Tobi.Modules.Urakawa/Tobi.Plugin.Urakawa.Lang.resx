@@ -167,7 +167,7 @@ Press OK to ignore, or CANCEL to see the issues.</value>
     <value>Remove data files not used by the current project</value>
   </data>
   <data name="CmdExport_ShortDesc" xml:space="preserve">
-    <value>Export...</value>
+    <value>_Export...</value>
   </data>
   <data name="CmdExport_LongDesc" xml:space="preserve">
     <value>Export the current project...</value>
@@ -178,8 +178,11 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="CmdMenuClearRecentFiles_LongDesc" xml:space="preserve">
     <value>Clear the list of recently-opened files.</value>
   </data>
+  <data name="Menu_OpenRecent" xml:space="preserve">
+    <value>Open recent</value>
+  </data>
   <data name="CmdOpenRecent_ShortDesc" xml:space="preserve">
-    <value>_Open recent ...</value>
+    <value>Open _recent ...</value>
   </data>
   <data name="CmdOpenRecent_LongDesc" xml:space="preserve">
     <value>Open the recent files dialog</value>

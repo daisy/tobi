@@ -413,7 +413,7 @@ namespace Tobi
             //};
 
             var windowPopup = new PopupModalWindow(this,
-                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Lang.Exit),
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Lang.CmdMenuExit_ShortDesc),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
