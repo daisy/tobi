@@ -130,7 +130,7 @@ namespace Tobi.Plugin.Descriptions
             {
                 var label = new TextBlock
                 {
-                    Text = "Please select an image to describe.",
+                    Text = "You must first select an image to describe.",
                     Margin = new Thickness(8, 0, 8, 0),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,

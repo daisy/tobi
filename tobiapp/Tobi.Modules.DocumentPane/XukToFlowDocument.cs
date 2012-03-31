@@ -733,7 +733,10 @@ namespace Tobi.Plugin.DocumentPane
                     }
                     else
                     {
-                        data.Blocks.Add(new Paragraph(new Run(textMedia)));
+                        var run = new Run(textMedia);
+                        setTextDirection(node, null, run, null);
+                        var para = new Paragraph(run);
+                        data.Blocks.Add(para);
                     }
 
                     return parent;
@@ -773,7 +776,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia));
+                    var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
+                    data.Inlines.Add(run);
                 }
 
                 addBlock(parent, data);
@@ -800,7 +805,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia));
+                    var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
+                    data.Inlines.Add(run);
                     addInline(parent, data);
                 }
 
@@ -827,7 +834,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia));
+                    var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
+                    data.Inlines.Add(run);
                     addInline(parent, data);
                 }
 
@@ -854,7 +863,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia));
+                    var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
+                    data.Inlines.Add(run);
                     addInline(parent, data);
                 }
 
@@ -946,7 +957,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    var para = new Paragraph(new Run(textMedia));
+                    var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
+                    var para = new Paragraph(run);
                     data.Blocks.Add(para);
                     ((List)parent).ListItems.Add(data);
 
@@ -1018,7 +1031,9 @@ namespace Tobi.Plugin.DocumentPane
 
                         TableRow data = new TableRow();
                         ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(data);
-                        Paragraph para = new Paragraph(new Run(textMedia));
+                        var run = new Run(textMedia);
+                        setTextDirection(node, null, run, null);
+                        Paragraph para = new Paragraph(run);
                         TableCell cell = new TableCell(para);
 
                         setTag(para, node);
@@ -1212,7 +1227,9 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (attr != null && !String.IsNullOrEmpty(attr.Value))
                     {
-                        data.Inlines.Add(new Run(attr.Value));
+                        var run = new Run(attr.Value);
+                        setTextDirection(node, null, run, null);
+                        data.Inlines.Add(run);
                         addInline(parent, data);
                     }
                     else
@@ -1223,7 +1240,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    data.Inlines.Add(new Run(textMedia));
+                    var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
+                    data.Inlines.Add(run);
                     addInline(parent, data);
                 }
 
@@ -1289,13 +1308,16 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
-                    data.Inlines.Add(new Run("..."));
+                    var run = new Run("...");
+                    setTextDirection(node, null, run, null);
+                    data.Inlines.Add(run);
                     addInline(parent, data);
                 }
                 else
                 {
                     //var span = new Span();
                     var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
                     //span.Inlines.Add(run);
 
                     data.Inlines.Add(run);
@@ -1327,12 +1349,15 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
-                    data.Inlines.Add(new Run("..."));
+                    var run = new Run("...");
+                    setTextDirection(node, null, run, null);
+                    data.Inlines.Add(run);
                     addInline(parent, data);
                 }
                 else
                 {
                     var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
                     if (qname.LocalName == "sup")
                     {
                         run.SetValue(Inline.BaselineAlignmentProperty, BaselineAlignment.Superscript);
@@ -1373,7 +1398,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(textMedia)));
+                    var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
+                    data.Blocks.Add(new Paragraph(run));
                 }
 
                 addInline(parent, data);
@@ -1405,7 +1432,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(textMedia)));
+                    var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
+                    data.Blocks.Add(new Paragraph(run));
                 }
 
                 addInline(parent, data);
@@ -1437,7 +1466,9 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    data.Blocks.Add(new Paragraph(new Run(textMedia)));
+                    var run = new Run(textMedia);
+                    setTextDirection(node, null, run, null);
+                    data.Blocks.Add(new Paragraph(run));
                 }
 
                 addBlock(parent, data);
@@ -1607,11 +1638,14 @@ namespace Tobi.Plugin.DocumentPane
             //imagePanel.LastChildFill = true;
             if (!string.IsNullOrEmpty(imgAlt))
             {
-                var tb = new TextBlock(new Run(imgAlt))
+                var run = new Run(imgAlt);
+                var tb = new TextBlock(run)
                              {
                                  HorizontalAlignment = HorizontalAlignment.Center,
                                  TextWrapping = TextWrapping.Wrap
                              };
+
+                setTextDirection(node, tb, run, null);
                 imagePanel.Children.Add(tb);
             }
             imagePanel.Children.Add(image);
@@ -1674,6 +1708,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
 
                 var data = new Run(textMedia);
+                setTextDirection(node, null, data, null);
                 setTag(data, node);
                 addInline(parent, data);
 
@@ -2043,7 +2078,9 @@ namespace Tobi.Plugin.DocumentPane
                             return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
                                 data =>
                                 {
-                                    data.Inlines.Add(new Run(" "));
+                                    var run = new Run(" ");
+                                    setTextDirection(node, null, run, null);
+                                    data.Inlines.Add(run);
                                     data.TextDecorations = TextDecorations.OverLine;
                                 });
 
@@ -2071,7 +2108,9 @@ namespace Tobi.Plugin.DocumentPane
                                             return;
                                         }
                                     }
-                                    data.Inlines.Add(new Run(" "));
+                                    var run = new Run(" ");
+                                    setTextDirection(node, null, run, null);
+                                    data.Inlines.Add(run);
                                 }
                                 );
                         }
@@ -2383,6 +2422,60 @@ namespace Tobi.Plugin.DocumentPane
                         }
                     }
                 }
+            }
+        }
+
+        private void setTextDirection(TreeNode.TextDirection dir, FrameworkElement el, Inline il, Block bl)
+        {
+            if (dir == TreeNode.TextDirection.RTL)
+            {
+                if (il != null) { il.FlowDirection = FlowDirection.RightToLeft; }
+                if (bl != null) { bl.FlowDirection = FlowDirection.RightToLeft; }
+                if (el != null) { el.FlowDirection = FlowDirection.RightToLeft; }
+            }
+            else if (dir == TreeNode.TextDirection.LTR)
+            {
+                if (il != null) { il.FlowDirection = FlowDirection.LeftToRight; }
+                if (bl != null) { bl.FlowDirection = FlowDirection.LeftToRight; }
+                if (el != null) { el.FlowDirection = FlowDirection.LeftToRight; }
+            }
+            else //TreeNode.TextDirection.Unsure
+            {
+                if (il != null) { il.FlowDirection = FlowDirection.LeftToRight; }
+                if (bl != null) { bl.FlowDirection = FlowDirection.LeftToRight; }
+                if (el != null) { el.FlowDirection = FlowDirection.LeftToRight; }
+            }
+        }
+
+        private void setTextDirection(TreeNode.StringChunk strChunk, FrameworkElement el, Inline il, Block bl)
+        {
+            if (strChunk == null) return;
+
+            TreeNode.TextDirection dir = strChunk.Direction;
+            setTextDirection(dir, el, il, bl);
+        }
+        //private void setTextDirection(TreeNode.StringChunkRange strChunkRange, FrameworkElement el)
+        //{
+        //    if (strChunkRange == null) return;
+
+        //    setTextDirection(strChunkRange.First, el);
+        //}
+        private void setTextDirection(TreeNode node, FrameworkElement el, Inline il, Block bl)
+        {
+            TreeNode.StringChunkRange strChunkRange = node.GetTextFlattened_();
+            if (strChunkRange != null)
+            {
+                setTextDirection(strChunkRange.First, el, il, bl);
+            }
+            else
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+
+                // COSTLY (walks parent chain in tree)
+                TreeNode.TextDirection dir = node.GetTextDirectionality();
+                setTextDirection(dir, el, il, bl);
             }
         }
     }
