@@ -383,7 +383,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
   </GridSplitter>
 
   <DockPanel Grid.Column="0" Grid.Row="0"
-             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+             FlowDirection="LeftToRight">
 
     <WindowsFormsHost x:Name="WinFormHost"
                       DockPanel.Dock="Left"

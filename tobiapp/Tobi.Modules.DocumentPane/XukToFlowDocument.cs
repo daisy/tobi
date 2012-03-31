@@ -625,6 +625,11 @@ namespace Tobi.Plugin.DocumentPane
         {
             DebugFix.Assert(data.Tag == null);
 
+            if (data is Block)
+            {
+                setTextDirection(node, null, null, (Block)data);
+            }
+
             data.Tag = node;
             node.Tag = data;
             //data.Foreground = Brushes.Red; // default is normally overriden
@@ -2202,6 +2207,11 @@ namespace Tobi.Plugin.DocumentPane
             //    EventAggregator.GetEvent<DescribedTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
             //}
 
+            if (node.Parent == null && node.TextDirectionality == TreeNode.TextDirection.RTL)
+            {
+                m_FlowDoc.FlowDirection = FlowDirection.RightToLeft;
+            }
+
             QualifiedName qname = node.GetXmlElementQName();
             string localName = qname == null ? null : qname.LocalName;
 
@@ -2425,47 +2435,75 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private void setTextDirection(TreeNode.TextDirection dir, FrameworkElement el, Inline il, Block bl)
+        private FlowDirection setTextDirection(TreeNode.TextDirection dir, FrameworkElement el, Inline il, Block bl)
         {
+            FlowDirection direction = FlowDirection.LeftToRight;
+
             if (dir == TreeNode.TextDirection.RTL)
             {
-                if (il != null) { il.FlowDirection = FlowDirection.RightToLeft; }
-                if (bl != null) { bl.FlowDirection = FlowDirection.RightToLeft; }
-                if (el != null) { el.FlowDirection = FlowDirection.RightToLeft; }
+                direction = FlowDirection.RightToLeft;
+                if (il != null)
+                {
+#if false && DEBUG
+                    il.Background = ColorBrushCache.Get(Colors.Yellow);
+#endif //DEBUG
+                }
+                if (bl != null)
+                {
+                    //bl.TextAlignment = TextAlignment.Right;
+#if false && DEBUG
+                    bl.Background = ColorBrushCache.Get(Colors.Red);
+#endif //DEBUG
+                }
+                if (el != null)
+                {
+                    //el.HorizontalAlignment = HorizontalAlignment.Right;
+                }
             }
             else if (dir == TreeNode.TextDirection.LTR)
             {
-                if (il != null) { il.FlowDirection = FlowDirection.LeftToRight; }
-                if (bl != null) { bl.FlowDirection = FlowDirection.LeftToRight; }
-                if (el != null) { el.FlowDirection = FlowDirection.LeftToRight; }
+                direction = FlowDirection.LeftToRight;
             }
             else //TreeNode.TextDirection.Unsure
             {
-                if (il != null) { il.FlowDirection = FlowDirection.LeftToRight; }
-                if (bl != null) { bl.FlowDirection = FlowDirection.LeftToRight; }
-                if (el != null) { el.FlowDirection = FlowDirection.LeftToRight; }
+                direction = FlowDirection.LeftToRight;
             }
+
+            if (il != null)
+            {
+                il.FlowDirection = direction;
+            }
+            if (bl != null)
+            {
+                bl.FlowDirection = direction;
+            }
+            if (el != null)
+            {
+                el.FlowDirection = direction;
+            }
+
+            return direction;
         }
 
-        private void setTextDirection(TreeNode.StringChunk strChunk, FrameworkElement el, Inline il, Block bl)
+        private FlowDirection setTextDirection(TreeNode.StringChunk strChunk, FrameworkElement el, Inline il, Block bl)
         {
-            if (strChunk == null) return;
+            if (strChunk == null) return FlowDirection.LeftToRight;
 
             TreeNode.TextDirection dir = strChunk.Direction;
-            setTextDirection(dir, el, il, bl);
+            return setTextDirection(dir, el, il, bl);
         }
-        //private void setTextDirection(TreeNode.StringChunkRange strChunkRange, FrameworkElement el)
+        //private FlowDirection setTextDirection(TreeNode.StringChunkRange strChunkRange, FrameworkElement el)
         //{
         //    if (strChunkRange == null) return;
 
-        //    setTextDirection(strChunkRange.First, el);
+        //    return setTextDirection(strChunkRange.First, el);
         //}
-        private void setTextDirection(TreeNode node, FrameworkElement el, Inline il, Block bl)
+        private FlowDirection setTextDirection(TreeNode node, FrameworkElement el, Inline il, Block bl)
         {
             TreeNode.StringChunkRange strChunkRange = node.GetTextFlattened_();
             if (strChunkRange != null)
             {
-                setTextDirection(strChunkRange.First, el, il, bl);
+                return setTextDirection(strChunkRange.First, el, il, bl);
             }
             else
             {
@@ -2475,7 +2513,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 // COSTLY (walks parent chain in tree)
                 TreeNode.TextDirection dir = node.GetTextDirectionality();
-                setTextDirection(dir, el, il, bl);
+                return setTextDirection(dir, el, il, bl);
             }
         }
     }

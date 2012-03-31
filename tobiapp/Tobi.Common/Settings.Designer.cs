@@ -25,6 +25,18 @@ namespace Tobi.Common {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool WindowShellRightToLeft {
+            get {
+                return ((bool)(this["WindowShellRightToLeft"]));
+            }
+            set {
+                this["WindowShellRightToLeft"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool EnableMediaKit {
             get {
