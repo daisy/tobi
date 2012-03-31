@@ -710,6 +710,7 @@ namespace Tobi.Plugin.AudioPane
                         //string nodeTxt = !String.IsNullOrEmpty(imgAlt) ? imgAlt : marker.m_TreeNode.GetTextMediaFlattened(false);
 
                         string strText = null;
+                        FlowDirection flowDirection = FlowDirection.LeftToRight;
 
                         if (marker.m_Tag2 == null || !(marker.m_Tag2 is string))
                         {
@@ -717,6 +718,11 @@ namespace Tobi.Plugin.AudioPane
 
                             if (range != null && range.First != null && !String.IsNullOrEmpty(range.First.Str))
                             {
+                                if (range.First.Direction == TreeNode.TextDirection.RTL)
+                                {
+                                    flowDirection = FlowDirection.RightToLeft;
+                                }
+
                                 StringBuilder strBuilder = new StringBuilder(range.GetLength());
                                 TreeNode.ConcatStringChunks(range, -1, strBuilder);
 
@@ -738,7 +744,7 @@ namespace Tobi.Plugin.AudioPane
                         {
                             var formattedText = new FormattedText(strText,
                                                                       m_culture,
-                                                                      FlowDirection.LeftToRight,
+                                                                      flowDirection,
                                                                       m_typeFace,
                                                                       12 * (trans != null ? m_zoom : 1),
                                                                       m_phraseBrush

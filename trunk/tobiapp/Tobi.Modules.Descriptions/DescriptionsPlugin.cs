@@ -125,8 +125,10 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             return
                 //m_TextElementForEdit != null ||
-                node != null;
-            //&& node.GetXmlElementQName().LocalName == "img";
+                node != null
+                && node.GetXmlElementQName().LocalName == "img"
+                //&& node.GetXmlElementQName().LocalName == "video"
+                ;
         }
 
         private void ShowDialog()
