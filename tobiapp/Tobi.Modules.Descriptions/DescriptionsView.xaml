@@ -15,15 +15,17 @@
            DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
 
   <DockPanel
-    DockPanel.Dock="Top">
+    DockPanel.Dock="Top"
+     LastChildFill="True">
   
-  <StackPanel
+  <!--<StackPanel
     DockPanel.Dock="Left"
     Orientation="Horizontal"
                  HorizontalAlignment="Stretch"
-                      Margin="7,7,7,7">
+                      Margin="7,7,7,7">-->
     <Image
-        Focusable="False"
+      DockPanel.Dock="Left"
+      Focusable="False"
         Height="100"
         HorizontalAlignment="Left"
                VerticalAlignment="Top"
@@ -31,23 +33,10 @@
                   StretchDirection="DownOnly"
         Source="{Binding DescribableImage, Mode=OneWay}"
                 
-                                Margin="0,0,12,0"
+                                Margin="6,6,12,0"
               />
 
-    <TextBlock
-      x:Name="ImageLabel"
-      Text="{Binding DescribableImageInfo, Mode=OneWay}"
-      
-      Focusable="True"
-      
-                 FontWeight="Bold"
-                 TextWrapping="WrapWithOverflow"
-                 VerticalAlignment="Center"
-                 HorizontalAlignment="Left"/>
-
-
-
-  </StackPanel>
+  <!--</StackPanel>-->
 
 
   <Button
@@ -81,6 +70,19 @@
            Padding="4,2,4,2"
            Margin="4,2,4,0"
   />
+
+    <TextBlock
+      x:Name="ImageLabel"
+      Text="{Binding DescribableImageInfo, Mode=OneWay}"
+      
+      Focusable="True"
+      
+                 FontWeight="Bold"
+                 TextWrapping="WrapWithOverflow"
+                 VerticalAlignment="Center"
+                 HorizontalAlignment="Left"/>
+
+
 
   </DockPanel>
   <Grid
