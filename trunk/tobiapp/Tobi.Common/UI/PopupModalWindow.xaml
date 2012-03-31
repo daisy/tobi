@@ -10,6 +10,9 @@
         Loaded="OnWindowLoaded"
         Closing="OnWindowClosing"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        
+    FlowDirection="{Binding Source={x:Static Common:Settings.Default}, Path=WindowShellRightToLeft, Converter={XAML:WindowFlowDirectionConverter}, Mode=OneWay}"
+    
         >
   
   <!--<Window.Resources>

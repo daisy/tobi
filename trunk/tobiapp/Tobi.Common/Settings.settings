@@ -4,6 +4,9 @@
     <Profile Name="(Default)" />
   </Profiles>
   <Settings>
+    <Setting Name="WindowShellRightToLeft" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="EnableMediaKit" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

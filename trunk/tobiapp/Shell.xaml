@@ -25,6 +25,8 @@
     
     WindowState="{Binding Source={x:Static Tobi:Settings.Default}, Path=WindowShellFullScreen, Converter={XAML:WindowStateFullScreenConverter}, Mode=TwoWay}"
     
+    FlowDirection="{Binding Source={x:Static Common:Settings.Default}, Path=WindowShellRightToLeft, Converter={XAML:WindowFlowDirectionConverter}, Mode=OneWay}"
+    
     Closing="OnWindowClosing"
     Loaded="OnWindowLoaded"
         
