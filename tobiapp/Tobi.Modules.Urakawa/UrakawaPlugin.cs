@@ -73,7 +73,7 @@ namespace Tobi.Plugin.Urakawa
             {
                 int clearID = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_File, PreferredPosition.First, false,
-                Tobi_Common_Lang.Menu_OpenRecent, PreferredPosition.Last, true,
+                Tobi_Plugin_Urakawa_Lang.Menu_OpenRecent, PreferredPosition.Last, true,
                 new[] { m_UrakawaSession.ClearRecentFilesCommand });
 
                 resetRecentFilesSubMenu();
@@ -150,7 +150,7 @@ namespace Tobi.Plugin.Urakawa
 
             m_MenuBarId_6 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_File, PreferredPosition.First, true,
-                Tobi_Common_Lang.Menu_OpenRecent, PreferredPosition.First, true,
+                Tobi_Plugin_Urakawa_Lang.Menu_OpenRecent, PreferredPosition.First, true,
                 uriOpenCmds.ToArray());
         }
 
