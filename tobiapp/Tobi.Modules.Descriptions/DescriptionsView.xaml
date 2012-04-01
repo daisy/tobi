@@ -10,13 +10,20 @@
            xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
            xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
            Unloaded="OnUnloaded_Panel"
-           Loaded="OnLoaded_Panel">
+           Loaded="OnLoaded_Panel"
+           
+           
+      KeyboardNavigation.TabNavigation="Local">
   <!-- 
            DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
 
   <DockPanel
     DockPanel.Dock="Top"
-     LastChildFill="True">
+     LastChildFill="True"
+    
+    
+      KeyboardNavigation.TabNavigation="Local"
+    >
   
   <!--<StackPanel
     DockPanel.Dock="Left"
@@ -40,6 +47,7 @@
 
 
   <Button
+    Control.TabIndex="2"
     x:Name="ButtonGoBasic"
       
   DockPanel.Dock="Right"
@@ -55,7 +63,8 @@
            Margin="4,2,4,0"
   />
 
-  <Button
+    <Button
+      Control.TabIndex="3"
     x:Name="ButtonGoAdvanced"
       
   DockPanel.Dock="Right"
@@ -72,6 +81,9 @@
   />
 
     <TextBlock
+      KeyboardNavigation.TabIndex="1"
+      KeyboardNavigation.IsTabStop="true"
+      
       x:Name="ImageLabel"
       Text="{Binding DescribableImageInfo, Mode=OneWay}"
       
@@ -85,6 +97,8 @@
 
 
   </DockPanel>
+ 
+  
   <Grid
           HorizontalAlignment="Stretch"
                  VerticalAlignment="Stretch"
@@ -97,7 +111,8 @@
       <ColumnDefinition Width="*"></ColumnDefinition>
     </Grid.ColumnDefinitions>
 
-  <DockPanel
+    <DockPanel
+      KeyboardNavigation.TabNavigation="Local"
     x:Name="BasicPanel"
     
     Grid.Row="0"
@@ -109,11 +124,172 @@
     Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
     LastChildFill="True">
 
+    <ScrollViewer
+        HorizontalAlignment="Stretch"
+      DockPanel.Dock="Bottom"
+      HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+      <UI:TextBoxReadOnlyCaretVisible
+FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+               Control.TabIndex="2"
+        x:Name="ValidationTextBox"
+TextWrapping="WrapWithOverflow"
+        TextReadOnly="{Binding ValidationText}"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+        Focusable="True"
+                       />
+    </ScrollViewer>
+
+
+    <Grid
+            HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+          >
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"></RowDefinition>
+        <RowDefinition Height="*"></RowDefinition>
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+      </Grid.ColumnDefinitions>
+
+      <GroupBox
+        KeyboardNavigation.TabNavigation="Local"
+    Grid.Row="0"
+    Grid.Column="0"
+    
+        Margin="6, 6, 6, 6" Padding="6" >
+        <GroupBox.Header>
+          <TextBlock
+            Focusable="true"
+            FontWeight="Bold"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="1"
+                      Text="Long description:"/>
+        </GroupBox.Header>
+
+        <DockPanel LastChildFill="True">
+      <StackPanel Orientation="Horizontal"
+                  DockPanel.Dock="Bottom"
+          HorizontalAlignment="Stretch">
+        <Button
+                  FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+               Control.TabIndex="3"
+          VerticalAlignment="Center"
+          HorizontalAlignment="Stretch"
+                Margin="0,4,0,0"
+                Content="Edit"
+                      
+          Click="OnClick_ButtonEditText_LongDesc"/>
+        <Button
+                  FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+               Control.TabIndex="4"
+          VerticalAlignment="Center"
+          HorizontalAlignment="Stretch"
+                Margin="4,4,0,0"
+                Content="Clear"
+                IsEnabled="{Binding HasDescriptionText_LongDesc}"
+          Click="OnClick_ButtonClearText_LongDesc"/>
+      </StackPanel>
+
+          <ScrollViewer
+            
+        HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+    
+        HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <UI:TextBoxReadOnlyCaretVisible
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                     Control.TabIndex="2"
+              x:Name="DescriptionTextBox_LongDesc"
+      TextWrapping="WrapWithOverflow"
+              TextReadOnly="{Binding DescriptionText_LongDesc}"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+              Focusable="True"
+                    IsEnabled="{Binding HasDescriptionText_LongDesc}"
+                       />
+          </ScrollViewer>
+          <!--Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"-->
+        </DockPanel>
+      </GroupBox>
+
+      <GroupBox
+        KeyboardNavigation.TabNavigation="Local"
+    Grid.Row="1"
+    Grid.Column="0"
+    
+        Margin="6, 6, 6, 6" Padding="6" >
+        <GroupBox.Header>
+          <TextBlock
+            Focusable="true"
+            FontWeight="Bold"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="1"
+                      Text="Summary:"/>
+        </GroupBox.Header>
+
+        <DockPanel LastChildFill="True">
+          <StackPanel Orientation="Horizontal"
+                      DockPanel.Dock="Bottom"
+              HorizontalAlignment="Stretch">
+            <Button
+                      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   Control.TabIndex="3"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="0,4,0,0"
+                    Content="Edit"
+                      
+              Click="OnClick_ButtonEditText_Summary"/>
+            <Button
+                      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   Control.TabIndex="4"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="4,4,0,0"
+                    Content="Clear"
+                    IsEnabled="{Binding HasDescriptionText_Summary}"
+              Click="OnClick_ButtonClearText_Summary"/>
+          </StackPanel>
+
+          <ScrollViewer
+            
+        HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+    
+        HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <UI:TextBoxReadOnlyCaretVisible
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                     Control.TabIndex="2"
+              x:Name="DescriptionTextBox_Summary"
+      TextWrapping="WrapWithOverflow"
+              TextReadOnly="{Binding DescriptionText_Summary}"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+              Focusable="True"
+                    IsEnabled="{Binding HasDescriptionText_Summary}"
+                       />
+          </ScrollViewer>
+          <!--Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"-->
+        </DockPanel>
+      </GroupBox>
+
+    </Grid>
+
+
+
+
   </DockPanel>
   
   <DockPanel
     x:Name="AdvancedPanel"
     
+      KeyboardNavigation.TabNavigation="Local"
     Grid.Row="0"
     Grid.Column="0"
     
@@ -820,7 +996,7 @@ AlternationCount="2"
                       IsEnabled="{Binding HasDescriptionText}"
                 Click="OnClick_ButtonClearText"/>
             </StackPanel>
-
+              <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
               <UI:TextBoxReadOnlyCaretVisible
         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
         
@@ -830,9 +1006,10 @@ AlternationCount="2"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Stretch"
                 Focusable="True"
-             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                       IsEnabled="{Binding HasDescriptionText}"
+        TextWrapping="WrapWithOverflow"
                        />
+              </ScrollViewer>
             </DockPanel>
           </TabItem>
           
@@ -877,6 +1054,7 @@ AlternationCount="2"
               </StackPanel>
               <Image
                 Focusable="True"
+                  KeyboardNavigation.IsTabStop="True"
                        KeyboardNavigation.TabIndex="1"
                 
                         IsEnabled="{Binding HasDescriptionImage}"

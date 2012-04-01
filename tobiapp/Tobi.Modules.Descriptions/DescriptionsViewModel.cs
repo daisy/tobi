@@ -298,5 +298,10 @@ namespace Tobi.Plugin.Descriptions
 
             return false;
         }
+
+        public string ValidationText
+        {
+            get { return "NOT IMPLEMENTED YET."; }
+        }
     }
 }

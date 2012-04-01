@@ -2,6 +2,7 @@
 using Tobi.Common.MVVM;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.daisy;
 using urakawa.media;
 using urakawa.property.alt;
 
@@ -44,6 +45,7 @@ namespace Tobi.Plugin.Descriptions
             RaisePropertyChanged(() => Descriptions);
         }
 
+
         [NotifyDependsOn("Descriptions")]
         public bool HasDescriptionText
         {
@@ -68,5 +70,87 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
+        public AlternateContent GetAltContent(string diagramElementName)
+        {
+            if (m_UrakawaSession.DocumentProject == null) return null;
+
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return null;
+
+            AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return null;
+
+            if (altProp.AlternateContents.Count <= 0) return null;
+
+            AlternateContent altContentSpecific = null;
+
+            foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+            {
+                foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (metadata.NameContentAttribute.Value.Equals(diagramElementName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            altContentSpecific = altContent;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return altContentSpecific;
+        }
+
+        [NotifyDependsOn("HasDescriptionText_LongDesc")]
+        public string DescriptionText_LongDesc
+        {
+            get
+            {
+                AlternateContent altContentLongdesc = GetAltContent(DiagramContentModelHelper.D_LondDesc);
+                if (altContentLongdesc == null || altContentLongdesc.Text == null)
+                {
+                    return null;
+                }
+
+                return altContentLongdesc.Text.Text;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionText_LongDesc
+        {
+            get
+            {
+                string str = DescriptionText_LongDesc;
+                return (!string.IsNullOrEmpty(str));
+            }
+        }
+
+        [NotifyDependsOn("HasDescriptionText_Summary")]
+        public string DescriptionText_Summary
+        {
+            get
+            {
+                AlternateContent altContentSummary = GetAltContent(DiagramContentModelHelper.D_Summary);
+                if (altContentSummary == null || altContentSummary.Text == null)
+                {
+                    return null;
+                }
+
+                return altContentSummary.Text.Text;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionText_Summary
+        {
+            get
+            {
+                string str = DescriptionText_Summary;
+                return (!string.IsNullOrEmpty(str));
+            }
+        }
     }
 }

@@ -11,11 +11,11 @@ namespace Tobi.Plugin.Descriptions
 {
     public partial class DescriptionsViewModel
     {
-        public void AddDescription(string uid, string descriptionName)
+        public AlternateContent AddDescription(string uid, string descriptionName)
         {
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
             TreeNode node = selection.Item2 ?? selection.Item1;
-            if (node == null) return;
+            if (node == null) return null;
 
             //var altProp = node.GetOrCreateAlternateContentProperty();
             //if (altProp == null) return;
@@ -36,6 +36,8 @@ namespace Tobi.Plugin.Descriptions
             {
                 AddMetadata(null, altContent, DiagramContentModelHelper.DiagramElementName, descriptionName);
             }
+
+            return altContent;
         }
 
         public void RemoveDescription(AlternateContent altContent)

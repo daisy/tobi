@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common.UI;
 using urakawa.daisy;
@@ -62,11 +63,18 @@ namespace Tobi.Plugin.Descriptions
             }
             if (uid == null) return;
 
-            m_ViewModel.AddDescription(uid, descriptionName);
+            addNewDescription(uid, descriptionName);
+        }
+
+        private AlternateContent addNewDescription(string uid, string descriptionName)
+        {
+            AlternateContent altContent = m_ViewModel.AddDescription(uid, descriptionName);
 
             DescriptionsListView.Items.Refresh();
             DescriptionsListView.SelectedIndex = DescriptionsListView.Items.Count - 1;
             //FocusHelper.FocusBeginInvoke(DescriptionsListView);
+
+            DebugFix.Assert(DescriptionsListView.SelectedItem == altContent);
 
             MetadatasAltContentListView.Items.Refresh();
             if (MetadatasAltContentListView.Items.Count > 0)
@@ -77,6 +85,8 @@ namespace Tobi.Plugin.Descriptions
 
             //BindingExpression be = DescriptionTextBox.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
             //if (be != null) be.UpdateTarget();
+
+            return altContent;
         }
 
         private void OnClick_ButtonRemoveDescription(object sender, RoutedEventArgs e)
