@@ -45,40 +45,48 @@
 
   <!--</StackPanel>-->
 
-
+    <Border
+      
+           HorizontalAlignment="Right"
+               VerticalAlignment="Top"
+  DockPanel.Dock="Right"
+  Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+      
+      Focusable="false"  Padding="0" Margin="0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
   <Button
     Control.TabIndex="2"
     x:Name="ButtonGoBasic"
       
-  DockPanel.Dock="Right"
         Style="{StaticResource ToolBarButtonBaseStyle}"
           
-  Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
-      
            Content="Show basic editor"
-           HorizontalAlignment="Right"
-               VerticalAlignment="Top"
            Click="OnClick_ButtonGoBasic"
            Padding="4,2,4,2"
            Margin="4,2,4,0"
   />
 
+    </Border>
+    <Border
+      
+           HorizontalAlignment="Right"
+               VerticalAlignment="Top"
+  DockPanel.Dock="Right"
+  Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+      
+           Focusable="false" Padding="0" Margin="0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
     <Button
       Control.TabIndex="3"
     x:Name="ButtonGoAdvanced"
       
-  DockPanel.Dock="Right"
         Style="{StaticResource ToolBarButtonBaseStyle}"
           
-  Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-      
            Content="Show advanced editor"
-           HorizontalAlignment="Right"
-               VerticalAlignment="Top"
            Click="OnClick_ButtonGoAdvanced"
            Padding="4,2,4,2"
            Margin="4,2,4,0"
   />
+
+    </Border>
 
     <TextBlock
       KeyboardNavigation.TabIndex="1"
@@ -124,34 +132,55 @@
     Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
     LastChildFill="True">
 
-    <ScrollViewer
-        HorizontalAlignment="Stretch"
+      <GroupBox
+
+        KeyboardNavigation.TabNavigation="Local"
       DockPanel.Dock="Bottom"
+    
+                    KeyboardNavigation.IsTabStop="False"
+                    KeyboardNavigation.TabIndex="2"
+            Visibility="{Binding HasValidationWarning_Basic, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+        Margin="6, 6, 6, 0" Padding="6" >
+        <GroupBox.Header>
+          <TextBlock
+            Foreground="Red"
+            Focusable="true"
+            FontStyle="Italic"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="1"
+                      Text="Warnings"/>
+        </GroupBox.Header>
+
+        <ScrollViewer
+        HorizontalAlignment="Stretch"
       HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-      <UI:TextBoxReadOnlyCaretVisible
-FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-        
-               Control.TabIndex="2"
-        x:Name="ValidationTextBox"
-TextWrapping="WrapWithOverflow"
-        TextReadOnly="{Binding ValidationText}"
-               HorizontalAlignment="Stretch"
-               VerticalAlignment="Stretch"
-        Focusable="True"
+          <TextBlock
+    FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   
+                    KeyboardNavigation.IsTabStop="true"
+                    KeyboardNavigation.TabIndex="2"
+            x:Name="ValidationTextBox"
+    TextWrapping="WrapWithOverflow"
+            Text="{Binding ValidationText_Basic}"
+                   HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+            Focusable="True"
                        />
-    </ScrollViewer>
+        </ScrollViewer>
+      </GroupBox>
 
-
-    <Grid
+      <Grid
+                    KeyboardNavigation.IsTabStop="False"
+                    KeyboardNavigation.TabIndex="1"
             HorizontalAlignment="Stretch"
                    VerticalAlignment="Stretch"
           >
       <Grid.RowDefinitions>
         <RowDefinition Height="*"></RowDefinition>
-        <RowDefinition Height="*"></RowDefinition>
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"></ColumnDefinition>
         <ColumnDefinition Width="*"></ColumnDefinition>
       </Grid.ColumnDefinitions>
 
@@ -160,7 +189,7 @@ TextWrapping="WrapWithOverflow"
     Grid.Row="0"
     Grid.Column="0"
     
-        Margin="6, 6, 6, 6" Padding="6" >
+        Margin="6, 6, 6, 0" Padding="6" >
         <GroupBox.Header>
           <TextBlock
             Focusable="true"
@@ -219,10 +248,10 @@ TextWrapping="WrapWithOverflow"
 
       <GroupBox
         KeyboardNavigation.TabNavigation="Local"
-    Grid.Row="1"
-    Grid.Column="0"
+    Grid.Row="0"
+    Grid.Column="1"
     
-        Margin="6, 6, 6, 6" Padding="6" >
+        Margin="6, 6, 6, 0" Padding="6" >
         <GroupBox.Header>
           <TextBlock
             Focusable="true"

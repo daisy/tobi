@@ -13,6 +13,7 @@ using urakawa.command;
 using urakawa.core;
 using urakawa.daisy;
 using urakawa.events.undo;
+using urakawa.property.alt;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.Descriptions
@@ -299,9 +300,40 @@ namespace Tobi.Plugin.Descriptions
             return false;
         }
 
-        public string ValidationText
+        [NotifyDependsOn("ValidationText_Basic")]
+        public bool HasValidationWarning_Basic
         {
-            get { return "NOT IMPLEMENTED YET."; }
+            get { return string.IsNullOrEmpty(ValidationText_Basic); }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public string ValidationText_Basic
+        {
+            get
+            {
+                string str = "";
+                bool first = true;
+
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
+                if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+                {
+                    first = false;
+                    str += "- A long description must be specified.";
+                }
+                
+                altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
+                if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+                {
+                    if (!first)
+                    {
+                        str += "\n";
+                    }
+                    first = false;
+                    str += "- Specifying a summary is recommended.";
+                }
+
+                return str;
+            }
         }
     }
 }

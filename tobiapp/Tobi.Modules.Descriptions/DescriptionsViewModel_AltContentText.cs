@@ -87,6 +87,11 @@ namespace Tobi.Plugin.Descriptions
 
             foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
             {
+                if (altContentSpecific != null)
+                {
+                    break;
+                }
+
                 foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
                 {
                     if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName, StringComparison.OrdinalIgnoreCase))
