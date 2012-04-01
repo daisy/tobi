@@ -70,7 +70,7 @@ namespace Tobi.Plugin.StructureTrailPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Document structure focus.
+        ///   Looks up a localized string similar to _Text structure.
         /// </summary>
         public static string CmdDocumentFocus_ShortDesc {
             get {

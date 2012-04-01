@@ -115,7 +115,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Cleanup.
+        ///   Looks up a localized string similar to C_leanup.
         /// </summary>
         public static string CmdDataCleanup_ShortDesc {
             get {
@@ -187,7 +187,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current project.
+        ///   Looks up a localized string similar to _Current project.
         /// </summary>
         public static string CmdOpenDocumentFolder_ShortDesc {
             get {

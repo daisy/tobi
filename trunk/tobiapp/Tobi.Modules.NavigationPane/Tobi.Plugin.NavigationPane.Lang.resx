@@ -139,7 +139,7 @@
     <value>Navigation pane.</value>
   </data>
   <data name="CmdNavigationFocus_ShortDesc" xml:space="preserve">
-    <value>Navigation pane focus</value>
+    <value>_Navigation pane</value>
   </data>
   <data name="NoHeading" xml:space="preserve">
     <value>(No heading)</value>
@@ -235,7 +235,7 @@
     <value>Marked</value>
   </data>
   <data name="CmdNavigationToggleMark_ShortDesc" xml:space="preserve">
-    <value>Toggle document mark</value>
+    <value>Toggle document _mark</value>
   </data>
   <data name="CmdNavigationToggleMark_LongDesc" xml:space="preserve">
     <value>Switch on/off the marker on the currently-selected text item</value>

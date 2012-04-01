@@ -70,7 +70,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit text.
+        ///   Looks up a localized string similar to Edit _text.
         /// </summary>
         public static string CmdEditText_ShortDesc {
             get {
@@ -124,7 +124,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Follow link.
+        ///   Looks up a localized string similar to _Follow link.
         /// </summary>
         public static string CmdFollowLink_ShortDesc {
             get {
@@ -142,7 +142,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Narrow selection.
+        ///   Looks up a localized string similar to Narro_w selection.
         /// </summary>
         public static string CmdStructureDown_ShortDesc {
             get {
@@ -160,7 +160,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Expand selection.
+        ///   Looks up a localized string similar to E_xpand selection.
         /// </summary>
         public static string CmdStructureUp_ShortDesc {
             get {
@@ -205,7 +205,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text viewer focus.
+        ///   Looks up a localized string similar to _Document toolbar.
         /// </summary>
         public static string CmdTxtFocus_ShortDesc {
             get {
@@ -223,7 +223,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go back to link.
+        ///   Looks up a localized string similar to _Go back to link.
         /// </summary>
         public static string CmdUnfollowLink_ShortDesc {
             get {

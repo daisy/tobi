@@ -187,7 +187,7 @@
     <value>_Focus</value>
   </data>
   <data name="Menu_Magnification" xml:space="preserve">
-    <value>Ma_gnification</value>
+    <value>_Magnification</value>
   </data>
   <data name="Menu_Navigation" xml:space="preserve">
     <value>Navi_gation</value>
@@ -199,7 +199,7 @@
     <value>_Browse folder</value>
   </data>
   <data name="Menu_Tools" xml:space="preserve">
-    <value>_Tools</value>
+    <value>T_ools</value>
   </data>
   <data name="Menu_View" xml:space="preserve">
     <value>_View</value>

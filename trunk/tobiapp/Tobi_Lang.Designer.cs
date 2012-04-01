@@ -88,7 +88,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find next.
+        ///   Looks up a localized string similar to Find _next.
         /// </summary>
         public static string Cmd_ShortDesc_FindNext {
             get {
@@ -97,7 +97,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find previous.
+        ///   Looks up a localized string similar to Find _previous.
         /// </summary>
         public static string Cmd_ShortDesc_FindPrevious {
             get {
@@ -115,7 +115,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find....
+        ///   Looks up a localized string similar to _Find....
         /// </summary>
         public static string CmdFocus_ShortDesc_Find {
             get {
@@ -187,7 +187,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application executable and log.
+        ///   Looks up a localized string similar to _Application executable and log.
         /// </summary>
         public static string CmdOpenTobiFolder_ShortDesc {
             get {
@@ -205,7 +205,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Private storage space.
+        ///   Looks up a localized string similar to _Private storage space.
         /// </summary>
         public static string CmdOpenTobiIsolatedStorage_ShortDesc {
             get {
@@ -223,7 +223,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User settings.
+        ///   Looks up a localized string similar to _User settings.
         /// </summary>
         public static string CmdOpenTobiSettingsFolder_ShortDesc {
             get {

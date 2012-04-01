@@ -121,7 +121,7 @@
     <value>Modify the description(s) of the selected document item</value>
   </data>
   <data name="CmdEditDescriptions_ShortDesc" xml:space="preserve">
-    <value>Edit description(s)</value>
+    <value>Edit image _description</value>
   </data>
   <data name="DescriptionsPlugin_Description" xml:space="preserve">
     <value>A user-interface to edit image descriptions.</value>

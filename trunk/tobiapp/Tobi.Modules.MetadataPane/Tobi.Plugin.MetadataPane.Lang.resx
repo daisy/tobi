@@ -154,7 +154,7 @@
     <value>Required</value>
   </data>
   <data name="CmdShowMetadata_ShortDesc" xml:space="preserve">
-    <value>_Edit metadata...</value>
+    <value>Edit _metadata...</value>
   </data>
   <data name="CmdShowMetadata_LongDesc" xml:space="preserve">
     <value>Open the metadata editor</value>
