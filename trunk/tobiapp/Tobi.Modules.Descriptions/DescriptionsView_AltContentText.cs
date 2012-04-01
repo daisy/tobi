@@ -44,6 +44,10 @@ namespace Tobi.Plugin.Descriptions
         {
             OnClick_ButtonEditText_Specific(DiagramContentModelHelper.D_Summary);
         }
+        private void OnClick_ButtonEditText_SimplifiedLanguage(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonEditText_Specific(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
+        }
 
         private void OnClick_ButtonEditText(object sender, RoutedEventArgs e)
         {
@@ -70,6 +74,9 @@ namespace Tobi.Plugin.Descriptions
 
             BindingExpression be3 = DescriptionTextBox_Summary.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
             if (be3 != null) be3.UpdateTarget();
+
+            BindingExpression be4 = DescriptionTextBox_SimplifiedLanguage.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
+            if (be4 != null) be4.UpdateTarget();
         }
 
         private void OnClick_ButtonClearText_Specific(string diagramElementName)
@@ -87,12 +94,16 @@ namespace Tobi.Plugin.Descriptions
         {
             OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_Summary);
         }
-
+        
         private void OnClick_ButtonClearText_LongDesc(object sender, RoutedEventArgs e)
         {
             OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_LondDesc);
         }
-
+        private void OnClick_ButtonClearText_SimplifiedLanguage(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
+        }
+        
         private void OnClick_ButtonClearText(object sender, RoutedEventArgs e)
         {
             if (DescriptionsListView.SelectedIndex < 0) return;
@@ -110,6 +121,9 @@ namespace Tobi.Plugin.Descriptions
 
             BindingExpression be3 = DescriptionTextBox_Summary.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
             if (be3 != null) be3.UpdateTarget();
+
+            BindingExpression be4 = DescriptionTextBox_SimplifiedLanguage.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
+            if (be4 != null) be4.UpdateTarget();
         }
 
         private string showTextEditorPopupDialog(string editedText, String dialogTitle)

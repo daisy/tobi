@@ -113,13 +113,13 @@ namespace Tobi.Plugin.Descriptions
         {
             get
             {
-                AlternateContent altContentLongdesc = GetAltContent(DiagramContentModelHelper.D_LondDesc);
-                if (altContentLongdesc == null || altContentLongdesc.Text == null)
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
+                if (altContent == null || altContent.Text == null)
                 {
                     return null;
                 }
 
-                return altContentLongdesc.Text.Text;
+                return altContent.Text.Text;
             }
         }
 
@@ -138,13 +138,13 @@ namespace Tobi.Plugin.Descriptions
         {
             get
             {
-                AlternateContent altContentSummary = GetAltContent(DiagramContentModelHelper.D_Summary);
-                if (altContentSummary == null || altContentSummary.Text == null)
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
+                if (altContent == null || altContent.Text == null)
                 {
                     return null;
                 }
 
-                return altContentSummary.Text.Text;
+                return altContent.Text.Text;
             }
         }
 
@@ -154,6 +154,31 @@ namespace Tobi.Plugin.Descriptions
             get
             {
                 string str = DescriptionText_Summary;
+                return (!string.IsNullOrEmpty(str));
+            }
+        }
+
+        [NotifyDependsOn("HasDescriptionText_SimplifiedLanguage")]
+        public string DescriptionText_SimplifiedLanguage
+        {
+            get
+            {
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
+                if (altContent == null || altContent.Text == null)
+                {
+                    return null;
+                }
+
+                return altContent.Text.Text;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionText_SimplifiedLanguage
+        {
+            get
+            {
+                string str = DescriptionText_SimplifiedLanguage;
                 return (!string.IsNullOrEmpty(str));
             }
         }

@@ -166,7 +166,7 @@ namespace Tobi.Plugin.Descriptions
                                                   this,
                                                   PopupModalWindow.DialogButtonsSet.OkApplyCancel,
                                                   PopupModalWindow.DialogButton.Apply,
-                                                  true, 800, 500, null, 0);
+                                                  true, 1000, 600, null, 0);
             //this.OwnerWindow = windowPopup; DONE in ON PANEL LOADED EVENT
 
             windowPopup.IgnoreEscape = true;

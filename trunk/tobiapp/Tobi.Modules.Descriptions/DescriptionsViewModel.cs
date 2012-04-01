@@ -191,6 +191,24 @@ namespace Tobi.Plugin.Descriptions
             return false;
         }
 
+        public List<string> GetDuplicatedIDs(bool inHeadMetadata, bool inBodyContent)
+        {
+            var listOfIDs = new List<string>();
+            var listOfDuplicatedIDs = new List<string>();
+            foreach (var id in GetExistingXmlIDs(inHeadMetadata, inBodyContent))
+            {
+                if (!listOfIDs.Contains(id))
+                {
+                    listOfIDs.Add(id);
+                }
+                else if (!listOfDuplicatedIDs.Contains(id))
+                {
+                    listOfDuplicatedIDs.Add(id);
+                }
+            }
+            return listOfDuplicatedIDs;
+        }
+
         public IEnumerable<string> GetExistingXmlIDs(bool inHeadMetadata, bool inBodyContent)
         {
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
@@ -300,6 +318,80 @@ namespace Tobi.Plugin.Descriptions
             return false;
         }
 
+        [NotifyDependsOn("ValidationText_Descriptions")]
+        public bool HasValidationWarning_Descriptions
+        {
+            get { return string.IsNullOrEmpty(ValidationText_Descriptions); }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public string ValidationText_Descriptions
+        {
+            get
+            {
+                string str = "";
+                bool first = true;
+
+                string strDupIDS = "";
+                foreach (var id in GetDuplicatedIDs(false, true))
+                {
+                    strDupIDS += "[";
+                    strDupIDS += id;
+                    strDupIDS += "]";
+                }
+
+                if (!string.IsNullOrEmpty(strDupIDS))
+                {
+                    if (!first)
+                    {
+                        str += "\n";
+                    }
+                    first = false;
+                    str += "- Some identifiers are duplicated (may be valid if used for grouping image objects): ";
+                    str += strDupIDS;
+                }
+
+                return str;
+            }
+        }
+
+        [NotifyDependsOn("ValidationText_Metadata")]
+        public bool HasValidationWarning_Metadata
+        {
+            get { return string.IsNullOrEmpty(ValidationText_Metadata); }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public string ValidationText_Metadata
+        {
+            get
+            {
+                string str = "";
+                bool first = true;
+
+                string strDupIDS = "";
+                foreach (var id in GetDuplicatedIDs(true, false))
+                {
+                    strDupIDS += "[";
+                    strDupIDS += id;
+                    strDupIDS += "]";
+                }
+
+                if (!string.IsNullOrEmpty(strDupIDS))
+                {
+                    if (!first)
+                    {
+                        str += "\n";
+                    }
+                    first = false;
+                    str += "- Some identifiers are duplicated (may be valid if used for grouping metadata): ";
+                    str += strDupIDS;
+                }
+
+                return str;
+            }
+        }
+
         [NotifyDependsOn("ValidationText_Basic")]
         public bool HasValidationWarning_Basic
         {
@@ -320,7 +412,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     str += "- A long description must be specified.";
                 }
-                
+
                 altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
                 if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
                 {
