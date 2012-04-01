@@ -64,6 +64,11 @@ namespace Tobi.Plugin.Descriptions
 
             m_ViewModel.SetDescriptionText(altContent, txt);
 
+            forceRefreshUI();
+        }
+
+        private void forceRefreshUI()
+        {
             DescriptionsListView.Items.Refresh();
 
             BindingExpression be = DescriptionTextBox.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
@@ -111,19 +116,7 @@ namespace Tobi.Plugin.Descriptions
 
             m_ViewModel.SetDescriptionText(altContent, null);
 
-            DescriptionsListView.Items.Refresh();
-
-            BindingExpression be = DescriptionTextBox.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
-            if (be != null) be.UpdateTarget();
-
-            BindingExpression be2 = DescriptionTextBox_LongDesc.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
-            if (be2 != null) be2.UpdateTarget();
-
-            BindingExpression be3 = DescriptionTextBox_Summary.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
-            if (be3 != null) be3.UpdateTarget();
-
-            BindingExpression be4 = DescriptionTextBox_SimplifiedLanguage.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
-            if (be4 != null) be4.UpdateTarget();
+            forceRefreshUI();
         }
 
         private string showTextEditorPopupDialog(string editedText, String dialogTitle)

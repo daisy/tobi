@@ -17,6 +17,12 @@
   <!-- 
            DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
 
+  <DockPanel.Resources>
+    <Style TargetType="{x:Type Button}">
+      <Setter Property="Padding" Value="4,2,4,2"/>
+    </Style>
+  </DockPanel.Resources>
+
   <DockPanel
     DockPanel.Dock="Top"
      LastChildFill="True"
@@ -24,8 +30,8 @@
     
       KeyboardNavigation.TabNavigation="Local"
     >
-  
-  <!--<StackPanel
+
+    <!--<StackPanel
     DockPanel.Dock="Left"
     Orientation="Horizontal"
                  HorizontalAlignment="Stretch"
@@ -43,50 +49,88 @@
                                 Margin="6,6,12,0"
               />
 
-  <!--</StackPanel>-->
+    <!--</StackPanel>-->
 
-    <Border
+    <DockPanel DockPanel.Dock="Right"
+               
+           HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+  >
       
+    <Border
+      DockPanel.Dock="Top"
            HorizontalAlignment="Right"
                VerticalAlignment="Top"
-  DockPanel.Dock="Right"
+  
   Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
       
       Focusable="false"  Padding="0" Margin="0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
-  <Button
-    Control.TabIndex="2"
-    x:Name="ButtonGoBasic"
+      <Button
+        Control.TabIndex="2"
+        x:Name="ButtonGoBasic"
       
-        Style="{StaticResource ToolBarButtonBaseStyle}"
+            Style="{StaticResource ToolBarButtonBaseStyle}"
           
-           Content="Show basic editor"
-           Click="OnClick_ButtonGoBasic"
-           Padding="4,2,4,2"
-           Margin="4,2,4,0"
+               Content="Switch to basic editor"
+               Click="OnClick_ButtonGoBasic"
+               Padding="4,2,4,2"
+               Margin="4,2,4,0"
   />
 
     </Border>
-    <Border
+      <Border
+        DockPanel.Dock="Top"
       
            HorizontalAlignment="Right"
                VerticalAlignment="Top"
-  DockPanel.Dock="Right"
   Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
            Focusable="false" Padding="0" Margin="0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
-    <Button
-      Control.TabIndex="3"
-    x:Name="ButtonGoAdvanced"
+      <Button
+        Control.TabIndex="3"
+      x:Name="ButtonGoAdvanced"
       
-        Style="{StaticResource ToolBarButtonBaseStyle}"
+          Style="{StaticResource ToolBarButtonBaseStyle}"
           
-           Content="Show advanced editor"
-           Click="OnClick_ButtonGoAdvanced"
-           Padding="4,2,4,2"
-           Margin="4,2,4,0"
+             Content="Switch to advanced editor"
+             Click="OnClick_ButtonGoAdvanced"
+             Padding="4,2,4,2"
+             Margin="4,2,4,0"
   />
 
     </Border>
+
+      <TextBlock
+        DockPanel.Dock="Bottom"
+           HorizontalAlignment="Right"
+               VerticalAlignment="Bottom"
+  
+           Padding="4,2,4,2"
+           Margin="4,2,4,0"
+        >
+      <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        Focusable="true"
+        
+      KeyboardNavigation.TabIndex="4"
+      KeyboardNavigation.IsTabStop="true"
+        
+        Click="OnClick_ButtonImport"
+        KeyUp="OnKeyUp_ButtonImport">
+        <Run Text="Import DIAGRAM XML"/>
+      </Hyperlink>
+    </TextBlock>
+
+    <!--<Button
+           DockPanel.Dock="Bottom"
+           Content="Import DIAGRAM XML..."
+           HorizontalAlignment="Right"
+           Click="OnClick_ButtonImport"
+           Padding="4,2,4,2"
+           Margin="4,2,4,0"
+  />-->
+
+    </DockPanel>
 
     <TextBlock
       KeyboardNavigation.TabIndex="1"
@@ -110,6 +154,7 @@
   <Grid
           HorizontalAlignment="Stretch"
                  VerticalAlignment="Stretch"
+          Margin="0,12,0,0"
           >
     <Grid.RowDefinitions>
       <RowDefinition Height="*"></RowDefinition>
@@ -119,17 +164,26 @@
       <ColumnDefinition Width="*"></ColumnDefinition>
     </Grid.ColumnDefinitions>
 
-    <DockPanel
-      KeyboardNavigation.TabNavigation="Local"
-    x:Name="BasicPanel"
-    
+    <TabControl
+       x:Name="BasicPanel"
+        Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
     Grid.Row="0"
     Grid.Column="0"
     
+                BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+    BorderThickness="1"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+              >
+
+      <TabItem Header="Text descriptions">
+    <DockPanel
+      KeyboardNavigation.TabNavigation="Local"
+   
         HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch"
     
-    Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+
     LastChildFill="True">
 
       <GroupBox
@@ -140,7 +194,7 @@
                     KeyboardNavigation.IsTabStop="False"
                     KeyboardNavigation.TabIndex="2"
             Visibility="{Binding HasValidationWarning_Basic, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-        Margin="6, 6, 6, 0" Padding="6" >
+        Margin="6, 3, 6, 0" Padding="6" >
         <GroupBox.Header>
           <TextBlock
             Foreground="Red"
@@ -373,12 +427,19 @@
 
       </Grid>
 
-
-
-
   </DockPanel>
-  
-  <DockPanel
+
+      </TabItem>
+
+      <TabItem Header="Image descriptions">
+      </TabItem>
+    </TabControl>
+    
+    
+  <TabControl
+              BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+  BorderThickness="1"
+              
     x:Name="AdvancedPanel"
     
       KeyboardNavigation.TabNavigation="Local"
@@ -389,44 +450,7 @@
                VerticalAlignment="Stretch"
     
     Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
-    LastChildFill="True">
-
-    <TextBlock
-           DockPanel.Dock="Top"
-           HorizontalAlignment="Right"
-           
-           Padding="4,2,4,2"
-           Margin="4,2,4,0"
-        >
-      <Hyperlink
-        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-        Click="OnClick_ButtonImport"
-        KeyUp="OnKeyUp_ButtonImport">
-        <Run Text="Import DIAGRAM XML"/>
-      </Hyperlink>
-    </TextBlock>
-    
-  <!--<Button
-           DockPanel.Dock="Bottom"
-           Content="Import DIAGRAM XML..."
-           HorizontalAlignment="Right"
-           Click="OnClick_ButtonImport"
-           Padding="4,2,4,2"
-           Margin="4,2,4,0"
-  />-->
-
-  <TabControl
-              BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-  BorderThickness="1"
-              VerticalAlignment="Stretch"
-              HorizontalAlignment="Stretch"
               >
-    <TabControl.Resources>
-      <Style TargetType="{x:Type Button}">
-        <Setter Property="Padding" Value="4,2,4,2"/>
-      </Style>
-    </TabControl.Resources>
-    
     <TabItem Header="Metadata">
 
       <DockPanel LastChildFill="true">
@@ -439,7 +463,7 @@
                     KeyboardNavigation.IsTabStop="False"
                     KeyboardNavigation.TabIndex="2"
             Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-        Margin="6, 6, 6, 0" Padding="6" >
+        Margin="6, 3, 6, 0" Padding="6" >
         <GroupBox.Header>
           <TextBlock
             Foreground="Red"
@@ -924,7 +948,7 @@ AlternationCount="2"
                       KeyboardNavigation.IsTabStop="False"
                       KeyboardNavigation.TabIndex="2"
               Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-          Margin="6, 6, 6, 0" Padding="6" >
+          Margin="6, 3, 6, 0" Padding="6" >
           <GroupBox.Header>
             <TextBlock
               Foreground="Red"
@@ -1554,8 +1578,6 @@ AlternationCount="2"
     </TabItem>
   
   </TabControl>
-
-  </DockPanel>
 
   </Grid>
 
