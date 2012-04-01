@@ -649,6 +649,8 @@ namespace Tobi.Plugin.Descriptions
                 doNotUpdateVideoTimeWhenSliderChanges = false;
                 actionUpdateSliderFromVideoTime = new Action(() =>
                 {
+                    if (medElement_WINDOWS_MEDIA_PLAYER == null) return;
+
                     TimeSpan? timeSpan = medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime;
                     double timeMS = timeSpan != null ? timeSpan.Value.TotalMilliseconds : 0;
 
@@ -667,6 +669,8 @@ namespace Tobi.Plugin.Descriptions
                 medElement_WINDOWS_MEDIA_PLAYER.MediaFailed += new EventHandler<ExceptionRoutedEventArgs>(
                     (oo, ee) =>
                     {
+                        if (medElement_WINDOWS_MEDIA_PLAYER == null) return;
+
                         //#if DEBUG
                         //                                Debugger.Break();
                         //#endif //DEBUG
@@ -683,6 +687,8 @@ namespace Tobi.Plugin.Descriptions
                 medElement_WINDOWS_MEDIA_PLAYER.MediaOpened += new RoutedEventHandler(
                     (oo, ee) =>
                     {
+                        if (medElement_WINDOWS_MEDIA_PLAYER == null) return;
+
                         double durationMS = medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
                         AudioTimeLabel.Text = Time.Format_Standard(medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan);
 
@@ -710,6 +716,8 @@ namespace Tobi.Plugin.Descriptions
                     new RoutedEventHandler(
                     (oo, ee) =>
                     {
+                        if (medElement_WINDOWS_MEDIA_PLAYER == null) return;
+
                         _timer.Stop();
 
                         medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Stop();
@@ -736,6 +744,8 @@ namespace Tobi.Plugin.Descriptions
                 doNotUpdateVideoTimeWhenSliderChanges = false;
                 actionUpdateSliderFromVideoTime = new Action(() =>
                 {
+                    if (medElement_MEDIAKIT_DIRECTSHOW == null) return;
+
                     long timeVideo = medElement_MEDIAKIT_DIRECTSHOW.MediaPosition;
 
                     //if (timeMS >= medElement_MEDIAKIT_DIRECTSHOW.MediaDuration - 50 * 10000.0)
@@ -756,6 +766,8 @@ namespace Tobi.Plugin.Descriptions
                 medElement_MEDIAKIT_DIRECTSHOW.MediaFailed += new EventHandler<WPFMediaKit.DirectShow.MediaPlayers.MediaFailedEventArgs>(
                     (oo, ee) =>
                     {
+                        if (medElement_MEDIAKIT_DIRECTSHOW == null) return;
+
                         //#if DEBUG
                         //                        Debugger.Break();
                         //#endif //DEBUG
@@ -773,6 +785,8 @@ namespace Tobi.Plugin.Descriptions
                 medElement_MEDIAKIT_DIRECTSHOW.MediaOpened += new RoutedEventHandler(
                     (oo, ee) =>
                     {
+                        if (medElement_MEDIAKIT_DIRECTSHOW == null) return;
+
                         long durationVideo = medElement_MEDIAKIT_DIRECTSHOW.MediaDuration;
                         if (durationVideo == 0)
                         {
@@ -818,6 +832,8 @@ namespace Tobi.Plugin.Descriptions
                     new RoutedEventHandler(
                     (oo, ee) =>
                     {
+                        if (medElement_MEDIAKIT_DIRECTSHOW == null) return;
+
                         _timer.Stop();
                         medElement_MEDIAKIT_DIRECTSHOW.Pause();
                         actionUpdateSliderFromVideoTime.Invoke();
@@ -845,6 +861,8 @@ namespace Tobi.Plugin.Descriptions
                     new RoutedEventHandler(
                     (oo, ee) =>
                     {
+                        if (medElement_MEDIAKIT_DIRECTSHOW == null) return;
+
                         int debug = 1;
                     }
                     );
