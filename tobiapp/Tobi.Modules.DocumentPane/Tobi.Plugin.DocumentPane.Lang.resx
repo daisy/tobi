@@ -130,13 +130,13 @@
     <value>Toggle the text viewer mode</value>
   </data>
   <data name="CmdStructureDown_ShortDesc" xml:space="preserve">
-    <value>_Narrow selection</value>
+    <value>Narro_w selection</value>
   </data>
   <data name="CmdStructureDown_LongDesc" xml:space="preserve">
     <value>Contract the selection down one level in the document structure</value>
   </data>
   <data name="CmdStructureUp_ShortDesc" xml:space="preserve">
-    <value>_Expand selection</value>
+    <value>E_xpand selection</value>
   </data>
   <data name="CmdStructureUp_LongDesc" xml:space="preserve">
     <value>Grow the selection up one level in the document structure</value>
@@ -148,19 +148,19 @@
     <value>Single phrase</value>
   </data>
   <data name="CmdEditText_ShortDesc" xml:space="preserve">
-    <value>Edit text</value>
+    <value>Edit _text</value>
   </data>
   <data name="CmdEditText_LongDesc" xml:space="preserve">
     <value>Modify the text of the selected document phrase</value>
   </data>
   <data name="CmdFollowLink_ShortDesc" xml:space="preserve">
-    <value>Follow link</value>
+    <value>_Follow link</value>
   </data>
   <data name="CmdFollowLink_LongDesc" xml:space="preserve">
     <value>Follow the hyperlink in the document</value>
   </data>
   <data name="CmdUnfollowLink_ShortDesc" xml:space="preserve">
-    <value>Go back to link</value>
+    <value>_Go back to link</value>
   </data>
   <data name="CmdUnfollowLink_LongDesc" xml:space="preserve">
     <value>Jump back to the hyperlink that points to the current location in the document</value>
@@ -199,6 +199,6 @@
     <value>Converting XUK markup ...</value>
   </data>
   <data name="CmdTxtFocus_ShortDesc" xml:space="preserve">
-    <value>Text viewer focus</value>
+    <value>_Document toolbar</value>
   </data>
 </root>

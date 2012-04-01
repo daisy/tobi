@@ -124,6 +124,6 @@
     <value>Application toolbar.</value>
   </data>
   <data name="CmdToolbarFocus_ShortDesc" xml:space="preserve">
-    <value>Toolbar focus</value>
+    <value>_Main toolbar</value>
   </data>
 </root>

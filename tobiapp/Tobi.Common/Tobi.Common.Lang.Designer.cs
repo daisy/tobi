@@ -241,7 +241,7 @@ namespace Tobi.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ma_gnification.
+        ///   Looks up a localized string similar to _Magnification.
         /// </summary>
         public static string Menu_Magnification {
             get {
@@ -268,7 +268,7 @@ namespace Tobi.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Tools.
+        ///   Looks up a localized string similar to T_ools.
         /// </summary>
         public static string Menu_Tools {
             get {
