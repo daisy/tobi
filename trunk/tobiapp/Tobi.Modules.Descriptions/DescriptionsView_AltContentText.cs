@@ -48,6 +48,15 @@ namespace Tobi.Plugin.Descriptions
         {
             OnClick_ButtonEditText_Specific(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
         }
+        private void OnClick_ButtonEditText_SimplifiedImage(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonEditText_Specific(DiagramContentModelHelper.D_SimplifiedImage);
+        }
+
+        private void OnClick_ButtonEditText_Tactile(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonEditText_Specific(DiagramContentModelHelper.D_Tactile);
+        }
 
         private void OnClick_ButtonEditText(object sender, RoutedEventArgs e)
         {
@@ -82,6 +91,12 @@ namespace Tobi.Plugin.Descriptions
 
             BindingExpression be4 = DescriptionTextBox_SimplifiedLanguage.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
             if (be4 != null) be4.UpdateTarget();
+
+            BindingExpression be5 = DescriptionTextBox_Tactile.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
+            if (be5 != null) be5.UpdateTarget();
+
+            BindingExpression be6 = DescriptionTextBox_SimplifiedImage.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
+            if (be6 != null) be6.UpdateTarget();
         }
 
         private void OnClick_ButtonClearText_Specific(string diagramElementName)
@@ -107,6 +122,16 @@ namespace Tobi.Plugin.Descriptions
         private void OnClick_ButtonClearText_SimplifiedLanguage(object sender, RoutedEventArgs e)
         {
             OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
+        }
+
+        private void OnClick_ButtonClearText_SimplifiedImage(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_SimplifiedImage);
+        }
+
+        private void OnClick_ButtonClearText_Tactile(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_Tactile);
         }
         
         private void OnClick_ButtonClearText(object sender, RoutedEventArgs e)

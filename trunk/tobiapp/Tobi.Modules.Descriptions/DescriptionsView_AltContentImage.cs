@@ -1,8 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
+using urakawa.daisy;
 using urakawa.data;
 using urakawa.property.alt;
 
@@ -48,11 +50,41 @@ namespace Tobi.Plugin.Descriptions
 
             m_ViewModel.SetDescriptionImage(altContent, fullPath);
 
-            DescriptionsListView.Items.Refresh();
-
-            BindingExpression be = DescriptionImage.GetBindingExpression(Image.SourceProperty);
-            if (be != null) be.UpdateTarget();
+            forceRefreshUI_Image();
         }
+
+        private void OnClick_ButtonOpenImage_Specific(string diagramElementName)
+        {
+            bool descWasAdded = false;
+            AlternateContent altContent = m_ViewModel.GetAltContent(diagramElementName);
+            if (altContent == null)
+            {
+                string uid = m_ViewModel.GetNewXmlID(diagramElementName.Replace(':', '_'));
+                altContent = addNewDescription(uid, diagramElementName);
+                descWasAdded = true;
+            }
+
+            DebugFix.Assert(altContent != null);
+            DescriptionsListView.SelectedItem = altContent;
+            DebugFix.Assert(DescriptionsListView.SelectedItem == altContent);
+
+            OnClick_ButtonOpenImage(null, null);
+
+            if (descWasAdded && (altContent.Image == null || altContent.Image.ImageMediaData == null))
+            {
+                m_ViewModel.RemoveDescription(altContent);
+            }
+        }
+
+        private void OnClick_ButtonOpenImage_Tactile(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonOpenImage_Specific(DiagramContentModelHelper.D_Tactile);
+        }
+        private void OnClick_ButtonOpenImage_Simplified(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonOpenImage_Specific(DiagramContentModelHelper.D_SimplifiedImage);
+        }
+
 
         private void OnClick_ButtonClearImage(object sender, RoutedEventArgs e)
         {
@@ -61,11 +93,40 @@ namespace Tobi.Plugin.Descriptions
 
             m_ViewModel.SetDescriptionImage(altContent, null);
 
+            forceRefreshUI_Image();
+        }
+
+        private void OnClick_ButtonClearImage_Specific(string diagramElementName)
+        {
+            AlternateContent altContent = m_ViewModel.GetAltContent(diagramElementName);
+            DebugFix.Assert(altContent != null);
+
+            DescriptionsListView.SelectedItem = altContent;
+            DebugFix.Assert(DescriptionsListView.SelectedItem == altContent);
+
+            OnClick_ButtonClearImage(null, null);
+        }
+
+        private void OnClick_ButtonClearImage_Tactile(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonClearImage_Specific(DiagramContentModelHelper.D_Tactile);
+        }
+        private void OnClick_ButtonClearImage_Simplified(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonClearImage_Specific(DiagramContentModelHelper.D_SimplifiedImage);
+        }
+        private void forceRefreshUI_Image()
+        {
             DescriptionsListView.Items.Refresh();
 
             BindingExpression be = DescriptionImage.GetBindingExpression(Image.SourceProperty);
             if (be != null) be.UpdateTarget();
-        }
 
+            BindingExpression be1 = DescriptionImage_Simplified.GetBindingExpression(Image.SourceProperty);
+            if (be1 != null) be1.UpdateTarget();
+
+            BindingExpression be2 = DescriptionImage_Tactile.GetBindingExpression(Image.SourceProperty);
+            if (be2 != null) be2.UpdateTarget();
+        }
     }
 }

@@ -5,6 +5,8 @@ using Microsoft.Practices.Unity;
 using Tobi.Common.MVVM;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.daisy;
+using urakawa.data;
 using urakawa.media.data.image;
 using urakawa.property.alt;
 
@@ -57,31 +59,6 @@ namespace Tobi.Plugin.Descriptions
             RaisePropertyChanged(() => Descriptions);
         }
 
-
-        [NotifyDependsOn("Descriptions")]
-        public bool HasDescriptionImage
-        {
-            get
-            {
-                if (m_UrakawaSession.DocumentProject == null) return false;
-
-                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                TreeNode node = selection.Item2 ?? selection.Item1;
-                if (node == null) return false;
-
-                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
-                if (altProp == null) return false;
-
-                if (altProp.AlternateContents.Count <= 0) return false;
-
-                if (m_SelectedAlternateContent == null) return false;
-
-                if (altProp.AlternateContents.IndexOf(m_SelectedAlternateContent) < 0) return false;
-
-                return m_SelectedAlternateContent.Image != null;
-            }
-        }
-
         public ImageSource DescribableImage
         {
             get
@@ -127,5 +104,91 @@ namespace Tobi.Plugin.Descriptions
         }
 
 
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionImage
+        {
+            get
+            {
+                if (m_UrakawaSession.DocumentProject == null) return false;
+
+                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                TreeNode node = selection.Item2 ?? selection.Item1;
+                if (node == null) return false;
+
+                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                if (altProp == null) return false;
+
+                if (altProp.AlternateContents.Count <= 0) return false;
+
+                if (m_SelectedAlternateContent == null) return false;
+
+                if (altProp.AlternateContents.IndexOf(m_SelectedAlternateContent) < 0) return false;
+
+                return m_SelectedAlternateContent.Image != null;
+            }
+        }
+
+
+        [NotifyDependsOn("HasDescriptionImage_Simplified")]
+        public string DescriptionImage_Simplified
+        {
+            get
+            {
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_SimplifiedImage);
+                if (altContent == null
+                    || altContent.Image == null
+                    || altContent.Image.ImageMediaData == null
+                    || altContent.Image.ImageMediaData.DataProvider == null
+                    || !(altContent.Image.ImageMediaData.DataProvider is FileDataProvider)
+                    || string.IsNullOrEmpty(((FileDataProvider)altContent.Image.ImageMediaData.DataProvider).DataFileFullPath)
+                    )
+                {
+                    return null;
+                }
+
+                return ((FileDataProvider)altContent.Image.ImageMediaData.DataProvider).DataFileFullPath;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionImage_Simplified
+        {
+            get
+            {
+                string str = DescriptionImage_Simplified;
+                return (!string.IsNullOrEmpty(str));
+            }
+        }
+
+        [NotifyDependsOn("HasDescriptionImage_Tactile")]
+        public string DescriptionImage_Tactile
+        {
+            get
+            {
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_Tactile);
+                if (altContent == null
+                    || altContent.Image == null
+                    || altContent.Image.ImageMediaData == null
+                    || altContent.Image.ImageMediaData.DataProvider == null
+                    || !(altContent.Image.ImageMediaData.DataProvider is FileDataProvider)
+                    || string.IsNullOrEmpty(((FileDataProvider)altContent.Image.ImageMediaData.DataProvider).DataFileFullPath)
+                    )
+                {
+                    return null;
+                }
+
+                return ((FileDataProvider)altContent.Image.ImageMediaData.DataProvider).DataFileFullPath;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionImage_Tactile
+        {
+            get
+            {
+                string str = DescriptionImage_Tactile;
+                return (!string.IsNullOrEmpty(str));
+            }
+        }
     }
 }

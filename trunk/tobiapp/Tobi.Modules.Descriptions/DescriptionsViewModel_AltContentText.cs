@@ -182,5 +182,54 @@ namespace Tobi.Plugin.Descriptions
                 return (!string.IsNullOrEmpty(str));
             }
         }
+
+        [NotifyDependsOn("HasDescriptionText_SimplifiedImage")]
+        public string DescriptionText_SimplifiedImage
+        {
+            get
+            {
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_SimplifiedImage);
+                if (altContent == null || altContent.Text == null)
+                {
+                    return null;
+                }
+
+                return altContent.Text.Text;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionText_SimplifiedImage
+        {
+            get
+            {
+                string str = DescriptionText_SimplifiedImage;
+                return (!string.IsNullOrEmpty(str));
+            }
+        }
+        [NotifyDependsOn("HasDescriptionText_Tactile")]
+        public string DescriptionText_Tactile
+        {
+            get
+            {
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_Tactile);
+                if (altContent == null || altContent.Text == null)
+                {
+                    return null;
+                }
+
+                return altContent.Text.Text;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasDescriptionText_Tactile
+        {
+            get
+            {
+                string str = DescriptionText_Tactile;
+                return (!string.IsNullOrEmpty(str));
+            }
+        }
     }
 }

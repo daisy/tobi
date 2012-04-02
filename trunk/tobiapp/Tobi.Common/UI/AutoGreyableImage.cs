@@ -62,6 +62,8 @@ namespace Tobi.Common.UI
             if (targetType != typeof(Object) && targetType != typeof(ImageSource))
                 throw new InvalidOperationException("The target must be Object or ImageSource !");
 
+            if (value == null) return null;
+
             var path = value as string;
             ImageSource imageSource = AutoGreyableImage.GetSVGOrBitmapImageSource(path);
             return imageSource;
