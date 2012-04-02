@@ -155,7 +155,7 @@ namespace Tobi.Plugin.Descriptions
                                                      panel,
                                                      PopupModalWindow.DialogButtonsSet.Ok,
                                                      PopupModalWindow.DialogButton.Ok,
-                                                     true, 300, 160, null, 0);
+                                                     true, 340, 160, null, 0);
 
                 popup.ShowModal();
                 return;
