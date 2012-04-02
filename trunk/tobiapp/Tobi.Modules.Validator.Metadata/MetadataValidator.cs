@@ -525,20 +525,43 @@ namespace Tobi.Plugin.Validator.Metadata
 
             return true;
         }
+
+        // Cache is necessary because the exception raised by
+        // CultureInfo.GetCultureInfo is very expensive! (computationally speaking)
+        private static List<string> m_InvalidLanguageCodes = new List<string>();
+
         private bool _validateLanguageCode(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
-            try
+            string lang = metadata.NameContentAttribute.Value;
+            bool valid = true;
+            if (m_InvalidLanguageCodes.Contains(lang))
             {
-                CultureInfo info = CultureInfo.GetCultureInfo(metadata.NameContentAttribute.Value);
-                if (info != null)
+                valid = false;
+            }
+            else
+            {
+                try
                 {
-                    return true;
+                    CultureInfo info = CultureInfo.GetCultureInfo(lang);
+                    if (info != null)
+                    {
+                        return true;
+                    }
+                }
+                catch
+                {
+                    valid = false;
+
+                    if (!m_InvalidLanguageCodes.Contains(lang))
+                    {
+                        m_InvalidLanguageCodes.Add(lang);
+                    }
                 }
             }
-            catch
+            if (valid)
             {
+                return true;
             }
-
             MetadataFormatValidationError err =
                 new MetadataFormatValidationError(metadata, definition, m_EventAggregator);
             err.Hint = m_LanguageHint;
