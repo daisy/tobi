@@ -195,6 +195,44 @@ namespace Tobi.Plugin.Descriptions
             yield break;
         }
 
+        public IEnumerable<string> GetUnknownDIAGRAMnames()
+        {
+            if (m_UrakawaSession.DocumentProject == null) yield break;
+
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) yield break;
+
+            AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) yield break;
+
+            if (altProp.AlternateContents.Count <= 0) yield break;
+
+            foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+            {
+                foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (DiagramContentModelHelper.DIAGRAM_ElementNames.Contains(metadata.NameContentAttribute.Value)
+
+                            //!metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
+                            //&& !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
+                            //&& !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_SimplifiedLanguageDescription, StringComparison.OrdinalIgnoreCase)
+                            //&& !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
+                            //&& !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
+                            //&& !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.Annotation, StringComparison.OrdinalIgnoreCase)
+                            )
+                        {
+                            yield return metadata.NameContentAttribute.Value;
+                        }
+                    }
+                }
+            }
+
+            yield break;
+        }
+
         public IEnumerable<string> GetInvalidDIAGRAMnames()
         {
             if (m_UrakawaSession.DocumentProject == null) yield break;
@@ -214,14 +252,7 @@ namespace Tobi.Plugin.Descriptions
                 {
                     if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (
-                            !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
-                            && !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
-                            && !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_SimplifiedLanguageDescription, StringComparison.OrdinalIgnoreCase)
-                            && !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
-                            && !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
-                            && !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.Annotation, StringComparison.OrdinalIgnoreCase)
-                            )
+                        if (IsIDInValid(metadata.NameContentAttribute.Value))
                         {
                             yield return metadata.NameContentAttribute.Value;
                         }
@@ -232,7 +263,7 @@ namespace Tobi.Plugin.Descriptions
             yield break;
         }
 
-    public AlternateContent GetAltContent(string diagramElementName)
+        public AlternateContent GetAltContent(string diagramElementName)
         {
             foreach (var altContent in GetAltContents(diagramElementName))
             {
@@ -272,7 +303,7 @@ namespace Tobi.Plugin.Descriptions
             return null;
         }
 
-    public bool XmlIDAlreadyExists(string xmlid, bool inHeadMetadata, bool inBodyContent)
+        public bool XmlIDAlreadyExists(string xmlid, bool inHeadMetadata, bool inBodyContent)
         {
             foreach (var id in GetExistingXmlIDs(inHeadMetadata, inBodyContent))
             {
@@ -353,7 +384,7 @@ namespace Tobi.Plugin.Descriptions
 
         public bool IsIDInValid(string xmlid)
         {
-            return xmlid == null
+            return string.IsNullOrEmpty(xmlid)
                    || xmlid.Contains(" ")
                    || xmlid.Contains("\t")
                    || xmlid.Contains("\r")

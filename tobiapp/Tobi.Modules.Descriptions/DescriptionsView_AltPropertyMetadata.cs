@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -10,13 +11,14 @@ using urakawa.core;
 using urakawa.daisy;
 using urakawa.metadata;
 using urakawa.property.alt;
+using urakawa.xuk;
 
 namespace Tobi.Plugin.Descriptions
 {
     public partial class DescriptionsView
     {
 
-        private bool showMetadataAttributeEditorPopupDialog(string label1, string label2, MetadataAttribute metadataAttr, out string newName, out string newValue, bool isAltContentMetadata, bool isOptionalAttributes)
+        private bool showMetadataAttributeEditorPopupDialog(string label1, string label2, MetadataAttribute metadataAttr, out string newName, out string newValue, bool isAltContentMetadata, bool isOptionalAttributes, bool invalidSyntax)
         {
             m_Logger.Log("Descriptions.MetadataAttributeEditor", Category.Debug, Priority.Medium);
 
@@ -90,6 +92,8 @@ namespace Tobi.Plugin.Descriptions
             if (isAltContentMetadata)
             {
                 list.AddRange(DiagramContentModelHelper.DIAGRAM_ElementAttributes);
+                
+                list.Add(DiagramContentModelHelper.NA);
 
 #if true || SUPPORT_ANNOTATION_ELEMENT
                 list.Add(DiagramContentModelHelper.Ref);
@@ -150,6 +154,17 @@ namespace Tobi.Plugin.Descriptions
             panel.Children.Add(panelName);
             panel.Children.Add(panelValue);
 
+            if (invalidSyntax)
+            {
+                var msg = new TextBlock(new Run("(invalid syntax)"))
+                {
+                    Margin = new Thickness(0, 6, 0, 0),
+                    Focusable = true,
+                    FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+                };
+                panel.Children.Add(msg);
+            }
+
             //var details = new TextBoxReadOnlyCaretVisible
             //                  {
             //    TextReadOnly = Tobi_Lang.ExitConfirm
@@ -160,7 +175,7 @@ namespace Tobi.Plugin.Descriptions
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 300, 160, null, 40);
+                                                   true, 310, 200, null, 40);
 
             windowPopup.EnableEnterKeyDefault = true;
 
@@ -279,20 +294,40 @@ namespace Tobi.Plugin.Descriptions
             mdAttrTEMP.Name = md.NameContentAttribute.Name;
             mdAttrTEMP.Value = md.NameContentAttribute.Value;
 
+            bool invalidSyntax = false;
             bool ok = true;
             while (ok &&
                 (
-                string.IsNullOrEmpty(newName)
+                invalidSyntax
+                || string.IsNullOrEmpty(newName)
                 || string.IsNullOrEmpty(newValue)
-                || newName == md.NameContentAttribute.Name && newValue == md.NameContentAttribute.Value
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Property", "Content", mdAttrTEMP, out newName, out newValue, false, false);
+                ok = showMetadataAttributeEditorPopupDialog("Property", "Content", mdAttrTEMP, out newName, out newValue, false, false, invalidSyntax);
+
+                if (!ok)
+                {
+                    return;
+                }
+                else if (newName == md.NameContentAttribute.Name
+                    && newValue == md.NameContentAttribute.Value)
+                {
+                    return;
+                }
+
                 mdAttrTEMP.Name = newName;
                 mdAttrTEMP.Value = newValue;
+                if (!string.IsNullOrEmpty(newName) && !string.IsNullOrEmpty(newValue))
+                {
+                    invalidSyntax =
+                        m_ViewModel.IsIDInValid(newName)
+                    || (
+                    (newName.Equals(XmlReaderWriterHelper.XmlId) || newName.Equals(DiagramContentModelHelper.DiagramElementName))
+                    && m_ViewModel.IsIDInValid(newValue)
+                    );
+                }
             }
-            if (!ok) return;
 
             //bool ok = showMetadataAttributeEditorPopupDialog(md.NameContentAttribute, out newName, out newValue, false);
             //if (ok &&
@@ -322,20 +357,41 @@ namespace Tobi.Plugin.Descriptions
             mdAttrTEMP.Name = mdAttr.Name;
             mdAttrTEMP.Value = mdAttr.Value;
 
+            bool invalidSyntax = false;
             bool ok = true;
             while (ok &&
                 (
-                string.IsNullOrEmpty(newName)
+                invalidSyntax
+                || string.IsNullOrEmpty(newName)
                 || string.IsNullOrEmpty(newValue)
-                || newName == mdAttr.Name && newValue == mdAttr.Value
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttrTEMP, out newName, out newValue, false, true);
+                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttrTEMP, out newName, out newValue, false, true, invalidSyntax);
+
+                if (!ok)
+                {
+                    return;
+                }
+                else if (newName == mdAttr.Name
+                    && newValue == mdAttr.Value)
+                {
+                    return;
+                }
+
                 mdAttrTEMP.Name = newName;
                 mdAttrTEMP.Value = newValue;
+                if (!string.IsNullOrEmpty(newName) && !string.IsNullOrEmpty(newValue))
+                {
+                    invalidSyntax =
+                        m_ViewModel.IsIDInValid(newName)
+                    || (
+                    (newName.Equals(XmlReaderWriterHelper.XmlId) || newName.Equals(DiagramContentModelHelper.DiagramElementName))
+                    && m_ViewModel.IsIDInValid(newValue)
+                    );
+                }
             }
-            if (!ok) return;
+
 
             //bool ok = showMetadataAttributeEditorPopupDialog(mdAttr, out newName, out newValue, false);
             //if (ok &&
@@ -394,19 +450,31 @@ namespace Tobi.Plugin.Descriptions
             string newName = null;
             string newValue = null;
 
+            bool invalidSyntax = false;
             bool ok = true;
             while (ok &&
                 (
-                string.IsNullOrEmpty(newName)
+                invalidSyntax
+                || string.IsNullOrEmpty(newName)
                 || string.IsNullOrEmpty(newValue)
                 //|| newName == PROMPT_MD_NAME
                 //|| newValue == PROMPT_MD_VALUE
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Property", "Content", mdAttr, out newName, out newValue, false, false);
+                ok = showMetadataAttributeEditorPopupDialog("Property", "Content", mdAttr, out newName, out newValue, false, false, invalidSyntax);
                 mdAttr.Name = newName;
                 mdAttr.Value = newValue;
+
+                if (!string.IsNullOrEmpty(newName) && !string.IsNullOrEmpty(newValue))
+                {
+                    invalidSyntax =
+                        m_ViewModel.IsIDInValid(newName)
+                    || (
+                    (newName.Equals(XmlReaderWriterHelper.XmlId) || newName.Equals(DiagramContentModelHelper.DiagramElementName))
+                    && m_ViewModel.IsIDInValid(newValue)
+                    );
+                }
             }
             if (!ok) return;
 
@@ -453,19 +521,30 @@ namespace Tobi.Plugin.Descriptions
             string newName = null;
             string newValue = null;
 
+            bool invalidSyntax = false;
             bool ok = true;
             while (ok &&
                 (
-                string.IsNullOrEmpty(newName)
+                invalidSyntax
+                || string.IsNullOrEmpty(newName)
                 || string.IsNullOrEmpty(newValue)
                 //|| newName == PROMPT_MD_NAME
                 //|| newValue == PROMPT_MD_VALUE
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttr, out newName, out newValue, false, true);
+                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttr, out newName, out newValue, false, true, invalidSyntax);
                 mdAttr.Name = newName;
                 mdAttr.Value = newValue;
+                if (!string.IsNullOrEmpty(newName) && !string.IsNullOrEmpty(newValue))
+                {
+                    invalidSyntax =
+                        m_ViewModel.IsIDInValid(newName)
+                    || (
+                    (newName.Equals(XmlReaderWriterHelper.XmlId) || newName.Equals(DiagramContentModelHelper.DiagramElementName))
+                    && m_ViewModel.IsIDInValid(newValue)
+                    );
+                }
             }
             if (!ok) return;
 

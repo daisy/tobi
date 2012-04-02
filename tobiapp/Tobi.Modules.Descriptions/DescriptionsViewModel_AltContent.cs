@@ -400,6 +400,31 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
+            string strUnknownDIAGRAMs = "";
+            foreach (var id in GetUnknownDIAGRAMnames())
+            {
+                strUnknownDIAGRAMs += "[";
+                strUnknownDIAGRAMs += id;
+                strUnknownDIAGRAMs += "]";
+            }
+
+            if (!string.IsNullOrEmpty(strUnknownDIAGRAMs))
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Unknown DIAGRAM elements: ";
+                    message += strUnknownDIAGRAMs;
+                }
+            }
+
             string strInvalidDIAGRAMs = "";
             foreach (var id in GetInvalidDIAGRAMnames())
             {
@@ -420,7 +445,7 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Unknown DIAGRAM elements: ";
+                    message += "- Invalid syntax for DIAGRAM elements: ";
                     message += strInvalidDIAGRAMs;
                 }
             }

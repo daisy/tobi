@@ -216,7 +216,7 @@
             FontWeight="Bold"
                   KeyboardNavigation.IsTabStop="True"
                   KeyboardNavigation.TabIndex="1"
-                      Text="Warnings"/>
+                      Text="Notes"/>
         </GroupBox.Header>
 
         <ScrollViewer
@@ -666,7 +666,7 @@
                 FontWeight="Bold"
                       KeyboardNavigation.IsTabStop="True"
                       KeyboardNavigation.TabIndex="1"
-                          Text="Warnings"/>
+                          Text="Notes"/>
             </GroupBox.Header>
 
             <ScrollViewer
@@ -1247,7 +1247,7 @@
             FontWeight="Bold"
                   KeyboardNavigation.IsTabStop="True"
                   KeyboardNavigation.TabIndex="1"
-                      Text="Warnings"/>
+                      Text="Notes"/>
         </GroupBox.Header>
 
         <ScrollViewer
@@ -1742,7 +1742,7 @@ AlternationCount="2"
             FontWeight="Bold"
                     KeyboardNavigation.IsTabStop="True"
                     KeyboardNavigation.TabIndex="1"
-                        Text="Warnings"/>
+                        Text="Notes"/>
           </GroupBox.Header>
 
           <ScrollViewer

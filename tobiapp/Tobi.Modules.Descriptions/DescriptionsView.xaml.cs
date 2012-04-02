@@ -309,6 +309,19 @@ namespace Tobi.Plugin.Descriptions
             this.Cursor = Cursors.Arrow; //m_ShellView
         }
 
+
+
+        private void OnClick_ButtonGoAdvanced(object sender, RoutedEventArgs e)
+        {
+            forceRefreshDataUI();
+            m_ViewModel.ShowAdvancedEditor = true;
+        }
+        private void OnClick_ButtonGoBasic(object sender, RoutedEventArgs e)
+        {
+            forceRefreshDataUI();
+            m_ViewModel.ShowAdvancedEditor = false;
+        }
+
         private void forceRefreshDataUI()
         {
             MetadatasListView.Items.Refresh();
