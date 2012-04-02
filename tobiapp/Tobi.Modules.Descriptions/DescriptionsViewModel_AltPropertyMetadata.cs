@@ -318,6 +318,56 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
+            string strInvalidLangs = "";
+            foreach (var id in GetInvalidLanguageTags(true, false))
+            {
+                strInvalidLangs += "[";
+                strInvalidLangs += id;
+                strInvalidLangs += "]";
+            }
+
+            if (!string.IsNullOrEmpty(strInvalidLangs))
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Some language tags are invalid: ";
+                    message += strInvalidLangs;
+                }
+            }
+
+            string strInvalidDates = "";
+            foreach (var id in GetInvalidDateStrings(true, false))
+            {
+                strInvalidDates += "[";
+                strInvalidDates += id;
+                strInvalidDates += "]";
+            }
+
+            if (!string.IsNullOrEmpty(strInvalidDates))
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Some dates appear to be invalid: ";
+                    message += strInvalidDates;
+                }
+            }
+
             bool hasMessages = !first;
             return hasMessages;
         }

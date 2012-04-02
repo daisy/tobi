@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -13,6 +14,7 @@ using urakawa.command;
 using urakawa.core;
 using urakawa.daisy;
 using urakawa.events.undo;
+using urakawa.metadata.daisy;
 using urakawa.property.alt;
 using urakawa.xuk;
 
@@ -223,6 +225,14 @@ namespace Tobi.Plugin.Descriptions
             {
                 foreach (var metadata in altProp.Metadatas.ContentsAs_Enumerable)
                 {
+                    if (metadata.NameContentAttribute != null)
+                    {
+                        if (metadata.NameContentAttribute.Name.Equals(XmlReaderWriterHelper.XmlId))
+                        {
+                            yield return metadata.NameContentAttribute.Value;
+                        }
+                    }
+
                     if (metadata.OtherAttributes != null)
                     {
                         foreach (var metadataAttr in metadata.OtherAttributes.ContentsAs_Enumerable)
@@ -244,7 +254,8 @@ namespace Tobi.Plugin.Descriptions
                     {
                         foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
                         {
-                            if (metadata.NameContentAttribute.Name.Equals(XmlReaderWriterHelper.XmlId))
+                            if (metadata.NameContentAttribute != null
+                                && metadata.NameContentAttribute.Name.Equals(XmlReaderWriterHelper.XmlId))
                             {
                                 yield return metadata.NameContentAttribute.Value;
                             }
@@ -303,6 +314,20 @@ namespace Tobi.Plugin.Descriptions
             {
                 foreach (var metadata in altProp.Metadatas.ContentsAs_Enumerable)
                 {
+                    if (metadata.NameContentAttribute != null)
+                    {
+                        if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.About))
+                        {
+                            string idref = metadata.NameContentAttribute.Value;
+                            if (idref.StartsWith("#") && idref.Length > 1)
+                            {
+                                idref = idref.Substring(1, idref.Length - 1);
+                            }
+
+                            yield return idref;
+                        }
+                    }
+
                     if (metadata.OtherAttributes != null)
                     {
                         foreach (var metadataAttr in metadata.OtherAttributes.ContentsAs_Enumerable)
@@ -330,7 +355,8 @@ namespace Tobi.Plugin.Descriptions
                     {
                         foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
                         {
-                            if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.Ref))
+                            if (metadata.NameContentAttribute != null
+                                && metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.Ref))
                             {
                                 string idref = metadata.NameContentAttribute.Value;
                                 if (idref.StartsWith("#") && idref.Length > 1)
@@ -345,6 +371,198 @@ namespace Tobi.Plugin.Descriptions
             }
 
             yield break;
+        }
+
+        // Cache is necessary because the exception raised by
+        // CultureInfo.GetCultureInfo is very expensive! (computationally speaking)
+        private static List<string> m_InvalidLanguageCodes = new List<string>();
+
+        public IEnumerable<string> GetInvalidLanguageTags(bool inHeadMetadata, bool inBodyContent)
+        {
+            foreach (var lang in GetLanguageTags(inHeadMetadata, inBodyContent))
+            {
+                if (m_InvalidLanguageCodes.Contains(lang))
+                {
+                    yield return lang;
+                }
+                else
+                {
+                    bool valid = true;
+                    try
+                    {
+                        CultureInfo info = CultureInfo.GetCultureInfo(lang);
+                    }
+                    catch
+                    {
+                        valid = false;
+
+                        if (!m_InvalidLanguageCodes.Contains(lang))
+                        {
+                            m_InvalidLanguageCodes.Add(lang);
+                        }
+                    }
+                    if (!valid)
+                    {
+                        yield return lang;
+                    }
+                }
+            }
+
+            yield break;
+        }
+
+        public IEnumerable<string> GetLanguageTags(bool inHeadMetadata, bool inBodyContent)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) yield break;
+
+            var altProp = node.GetAlternateContentProperty();
+            if (altProp == null) yield break;
+
+
+            if (inHeadMetadata && altProp.Metadatas != null)
+            {
+                foreach (var metadata in altProp.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.NameContentAttribute != null)
+                    {
+                        if (metadata.NameContentAttribute.Name.Equals(XmlReaderWriterHelper.XmlLang))
+                        {
+                            yield return metadata.NameContentAttribute.Value;
+                        }
+                        else if (metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DC_Language, StringComparison.OrdinalIgnoreCase))
+                        {
+                            yield return metadata.NameContentAttribute.Value;
+                        }
+                    }
+
+                    if (metadata.OtherAttributes != null)
+                    {
+                        foreach (var metadataAttr in metadata.OtherAttributes.ContentsAs_Enumerable)
+                        {
+                            if (metadataAttr.Name.Equals(XmlReaderWriterHelper.XmlLang))
+                            {
+                                yield return metadataAttr.Value;
+                            }
+                            else if (metadataAttr.Name.Equals(SupportedMetadata_Z39862005.DC_Language, StringComparison.OrdinalIgnoreCase))
+                            {
+                                yield return metadataAttr.Value;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (inBodyContent && altProp.AlternateContents != null)
+            {
+                foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+                {
+                    if (altContent.Metadatas != null)
+                    {
+                        foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                        {
+                            if (metadata.NameContentAttribute != null
+                                && metadata.NameContentAttribute.Name.Equals(XmlReaderWriterHelper.XmlLang))
+                            {
+                                yield return metadata.NameContentAttribute.Value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        public IEnumerable<string> GetInvalidDateStrings(bool inHeadMetadata, bool inBodyContent)
+        {
+            foreach (var date in GetDateStrings(inHeadMetadata, inBodyContent))
+            {
+                DateTime dateTime;
+                if (!DateTime.TryParse(date, out dateTime))
+                {
+                    yield return date;
+                }
+            }
+
+            yield break;
+        }
+
+        public IEnumerable<string> GetDateStrings(bool inHeadMetadata, bool inBodyContent)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) yield break;
+
+            var altProp = node.GetAlternateContentProperty();
+            if (altProp == null) yield break;
+
+
+            if (inHeadMetadata && altProp.Metadatas != null)
+            {
+                foreach (var metadata in altProp.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.NameContentAttribute != null)
+                    {
+                        if (metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DC_Date, StringComparison.OrdinalIgnoreCase))
+                        {
+                            yield return metadata.NameContentAttribute.Value;
+                        }
+                        else if (metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DTB_PRODUCED_DATE, StringComparison.OrdinalIgnoreCase))
+                        {
+                            yield return metadata.NameContentAttribute.Value;
+                        }
+                        else if (metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DTB_REVISION_DATE, StringComparison.OrdinalIgnoreCase))
+                        {
+                            yield return metadata.NameContentAttribute.Value;
+                        }
+                        else if (metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DTB_SOURCE_DATE, StringComparison.OrdinalIgnoreCase))
+                        {
+                            yield return metadata.NameContentAttribute.Value;
+                        }
+                    }
+
+                    if (metadata.OtherAttributes != null)
+                    {
+                        foreach (var metadataAttr in metadata.OtherAttributes.ContentsAs_Enumerable)
+                        {
+                            if (metadataAttr.Name.Equals(SupportedMetadata_Z39862005.DC_Date, StringComparison.OrdinalIgnoreCase))
+                            {
+                                yield return metadataAttr.Value;
+                            }
+                            else if (metadataAttr.Name.Equals(SupportedMetadata_Z39862005.DTB_PRODUCED_DATE, StringComparison.OrdinalIgnoreCase))
+                            {
+                                yield return metadataAttr.Value;
+                            }
+                            else if (metadataAttr.Name.Equals(SupportedMetadata_Z39862005.DTB_REVISION_DATE, StringComparison.OrdinalIgnoreCase))
+                            {
+                                yield return metadataAttr.Value;
+                            }
+                            else if (metadataAttr.Name.Equals(SupportedMetadata_Z39862005.DTB_SOURCE_DATE, StringComparison.OrdinalIgnoreCase))
+                            {
+                                yield return metadataAttr.Value;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //if (inBodyContent && altProp.AlternateContents != null)
+            //{
+            //    foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+            //    {
+            //        if (altContent.Metadatas != null)
+            //        {
+            //            foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+            //            {
+            //                if (metadata.NameContentAttribute != null && metadata.NameContentAttribute.Name.Equals(DATE))
+            //                {
+            //                    yield return metadata.NameContentAttribute.Value;
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
         }
     }
 }
