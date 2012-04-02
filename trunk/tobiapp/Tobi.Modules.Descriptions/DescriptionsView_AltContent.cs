@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common.UI;
@@ -12,19 +13,6 @@ namespace Tobi.Plugin.Descriptions
 {
     public partial class DescriptionsView
     {
-
-
-        private void OnClick_ButtonGoAdvanced(object sender, RoutedEventArgs e)
-        {
-            forceRefreshDataUI();
-            m_ViewModel.ShowAdvancedEditor = true;
-        }
-        private void OnClick_ButtonGoBasic(object sender, RoutedEventArgs e)
-        {
-            forceRefreshDataUI();
-            m_ViewModel.ShowAdvancedEditor = false;
-        }
-
         private void OnSelectionChanged_DescriptionsList(object sender, SelectionChangedEventArgs e)
         {
             m_ViewModel.SetSelectedAlternateContent((AlternateContent)DescriptionsListView.SelectedItem);
@@ -32,37 +20,48 @@ namespace Tobi.Plugin.Descriptions
         }
 
 
-        private bool isUniqueIdInvalid(string txt, string promptedTxt)
-        {
-            return txt == "" || txt == promptedTxt;
-        }
-        private bool isDescriptionNameInvalid(string txt, string promptedTxt)
-        {
-            return txt == "" || txt == promptedTxt;
-        }
+        //private bool isUniqueIdInvalid(string txt, string promptedTxt)
+        //{
+        //    return txt == "" || txt == promptedTxt;
+        //}
+        //private bool isDescriptionNameInvalid(string txt, string promptedTxt)
+        //{
+        //    return txt == "" || txt == promptedTxt;
+        //}
 
         private void OnClick_ButtonAddDescription(object sender, RoutedEventArgs e)
         {
             string txt = ""; // PROMPT_DescriptionName;
             string descriptionName = "";
-            while (descriptionName != null && isDescriptionNameInvalid(descriptionName, "")) // PROMPT_DescriptionName))
+            bool invalidSyntax = false;
+            do
             {
                 // returns null only when dialog is cancelled, otherwise trimmed string (potentially empty)
-                descriptionName = showLineEditorPopupDialog(txt, "DIAGRAM element name", DiagramContentModelHelper.DIAGRAM_ElementNames);
+                descriptionName = showLineEditorPopupDialog(
+                    txt,
+                    "DIAGRAM element name",
+                    DiagramContentModelHelper.DIAGRAM_ElementNames,
+                    invalidSyntax);
                 txt = descriptionName;
-            }
+            } while (descriptionName != null
+                     && (invalidSyntax = m_ViewModel.IsIDInValid(descriptionName))
+                //&& isDescriptionNameInvalid(descriptionName, "")
+                ) // PROMPT_DescriptionName))
+                ;
+
             if (descriptionName == null) return;
 
-            txt = ""; // PROMPT_ID;
-            string uid = "";
-            while (uid != null && isUniqueIdInvalid(uid, "")) // PROMPT_ID))
-            {
-                // returns null only when dialog is cancelled, otherwise trimmed string (potentially empty)
-                uid = showLineEditorPopupDialog(txt, "Unique identifier", null);
-                txt = uid;
-            }
-            if (uid == null) return;
+            //txt = ""; // PROMPT_ID;
+            //string uid = "";
+            //while (uid != null && isUniqueIdInvalid(uid, "")) // PROMPT_ID))
+            //{
+            //    // returns null only when dialog is cancelled, otherwise trimmed string (potentially empty)
+            //    uid = showLineEditorPopupDialog(txt, "Unique identifier", null);
+            //    txt = uid;
+            //}
+            //if (uid == null) return;
 
+            string uid = m_ViewModel.GetNewXmlID(descriptionName.Replace(':', '_'));
             addNewDescription(uid, descriptionName);
         }
 
@@ -108,7 +107,7 @@ namespace Tobi.Plugin.Descriptions
         }
 
 
-        private string showLineEditorPopupDialog(string editedText, string dialogTitle, List<string> predefinedCandidates)
+        private string showLineEditorPopupDialog(string editedText, string dialogTitle, List<string> predefinedCandidates, bool invalidSyntax)
         {
             m_Logger.Log("showTextEditorPopupDialog", Category.Debug, Priority.Medium);
 
@@ -129,6 +128,17 @@ namespace Tobi.Plugin.Descriptions
                 panel.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
                 editBox.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
                 panel.Children.Add(editBox);
+
+                if (invalidSyntax)
+                {
+                    var msg = new TextBlock(new Run("(invalid syntax)"))
+                                  {
+                                      Margin = new Thickness(0, 6, 0, 0),
+                                      Focusable = true,
+                                      FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+                                  };
+                    panel.Children.Add(msg);
+                }
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        dialogTitle,
@@ -190,6 +200,17 @@ namespace Tobi.Plugin.Descriptions
                 panel.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
                 editBoxCombo_Name.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
                 panel.Children.Add(editBoxCombo_Name);
+
+                if (invalidSyntax)
+                {
+                    var msg = new TextBlock(new Run("(invalid syntax)"))
+                    {
+                        Margin = new Thickness(0, 6, 0, 0),
+                        Focusable = true,
+                        FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+                    };
+                    panel.Children.Add(msg);
+                }
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        dialogTitle,
