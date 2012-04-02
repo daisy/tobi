@@ -127,6 +127,9 @@ namespace Tobi.Plugin.Descriptions
             m_ViewModel.SetMetadataAttr(null, altContent, md, null, newName, newValue);
 
             MetadatasAltContentListView.Items.Refresh();
+
+
+            DescriptionsListView.Items.Refresh();
         }
 
         private void OnClick_ButtonRemoveMetadataAltContent(object sender, RoutedEventArgs e)
@@ -154,6 +157,9 @@ namespace Tobi.Plugin.Descriptions
                                                                 : MetadatasAltContentListView.Items.Count - 1;
             }
             //FocusHelper.FocusBeginInvoke(MetadatasAltContentListView);
+
+
+            DescriptionsListView.Items.Refresh();
         }
 
         private void OnClick_ButtonAddMetadataAltContent(object sender, RoutedEventArgs e)
@@ -240,6 +246,8 @@ namespace Tobi.Plugin.Descriptions
             MetadatasAltContentListView.Items.Refresh();
             MetadatasAltContentListView.SelectedIndex = MetadatasAltContentListView.Items.Count - 1;
             //FocusHelper.FocusBeginInvoke(MetadatasAltContentListView);
+
+            DescriptionsListView.Items.Refresh();
         }
     }
 }

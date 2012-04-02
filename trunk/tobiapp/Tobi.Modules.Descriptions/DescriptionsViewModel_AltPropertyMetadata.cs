@@ -268,6 +268,31 @@ namespace Tobi.Plugin.Descriptions
         {
             bool first = true;
 
+            string strInvalidIDS = "";
+            foreach (var id in GetInvalidIDs(true, false))
+            {
+                strInvalidIDS += "[";
+                strInvalidIDS += id;
+                strInvalidIDS += "]";
+            }
+
+            if (!string.IsNullOrEmpty(strInvalidIDS))
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Some identifiers are invalid: ";
+                    message += strInvalidIDS;
+                }
+            }
+
             string strDupIDS = "";
             foreach (var id in GetDuplicatedIDs(true, false))
             {

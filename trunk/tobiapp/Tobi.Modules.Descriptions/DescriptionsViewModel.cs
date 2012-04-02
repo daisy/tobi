@@ -265,6 +265,33 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
+        public bool IsIDInValid(string xmlid)
+        {
+            return xmlid == null
+                   || xmlid.Contains(" ")
+                   || xmlid.Contains("\t")
+                   || xmlid.Contains("\r")
+                   || xmlid.Contains("\n")
+                   || xmlid.Contains("\\")
+                   || xmlid.Contains("/")
+                   || xmlid.Contains("<")
+                   || xmlid.Contains(">")
+                   || xmlid.Contains("'")
+                   || xmlid.Contains("\"");
+        }
+
+        public IEnumerable<string> GetInvalidIDs(bool inHeadMetadata, bool inBodyContent)
+        {
+            foreach (var id in GetExistingXmlIDs(inHeadMetadata, inBodyContent))
+            {
+                if (IsIDInValid(id))
+                {
+                    yield return id;
+                }
+            }
+            yield break;
+        }
+
         public bool IsIDReferenced(string xmlid, bool inHeadMetadata, bool inBodyContent)
         {
             foreach (var idRef in GetReferencedIDs(inHeadMetadata, inBodyContent))
