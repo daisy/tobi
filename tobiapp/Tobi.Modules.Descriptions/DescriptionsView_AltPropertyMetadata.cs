@@ -93,8 +93,6 @@ namespace Tobi.Plugin.Descriptions
             {
                 list.AddRange(DiagramContentModelHelper.DIAGRAM_ElementAttributes);
                 
-                list.Add(DiagramContentModelHelper.NA);
-
 #if true || SUPPORT_ANNOTATION_ELEMENT
                 list.Add(DiagramContentModelHelper.Ref);
                 list.Add(DiagramContentModelHelper.Role);
@@ -110,6 +108,7 @@ namespace Tobi.Plugin.Descriptions
                 else
                 {
                     list.AddRange(DiagramContentModelHelper.DIAGRAM_MetadataProperties);
+                    list.Add(DiagramContentModelHelper.NA);
                 }
             }
             editBoxCombo_Name.ItemsSource = list;

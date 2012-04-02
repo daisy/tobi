@@ -61,6 +61,15 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audio (click to edit).
+        /// </summary>
+        public static string AudioIcon {
+            get {
+                return ResourceManager.GetString("AudioIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Modify the description(s) of the selected document item.
         /// </summary>
         public static string CmdEditDescriptions_LongDesc {
@@ -93,6 +102,15 @@ namespace Tobi.Plugin.Descriptions {
         public static string DescriptionsPlugin_Name {
             get {
                 return ResourceManager.GetString("DescriptionsPlugin_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No audio (click to edit).
+        /// </summary>
+        public static string NoAudioIcon {
+            get {
+                return ResourceManager.GetString("NoAudioIcon", resourceCulture);
             }
         }
     }

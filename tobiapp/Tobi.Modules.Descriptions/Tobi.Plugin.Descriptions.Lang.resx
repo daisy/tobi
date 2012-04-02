@@ -129,4 +129,10 @@
   <data name="DescriptionsPlugin_Name" xml:space="preserve">
     <value>Descriptions editor.</value>
   </data>
+  <data name="NoAudioIcon" xml:space="preserve">
+    <value>No audio (click to edit)</value>
+  </data>
+  <data name="AudioIcon" xml:space="preserve">
+    <value>Audio (click to edit)</value>
+  </data>
 </root>

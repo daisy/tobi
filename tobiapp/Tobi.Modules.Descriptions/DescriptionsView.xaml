@@ -308,14 +308,19 @@
                Padding="0"
                   
                   x:Name="ButtonAudio_LongDesc"
-          Click="OnClick_ButtonAudio_LongDesc"
-                  
-                    ToolTip="Audio (click to edit)">
+          Click="OnClick_ButtonAudio_LongDesc">
+
+          <Button.ToolTip>
+            <ToolTip
+              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}"
+              ContentStringFormat="{}{0}"
+      />
+          </Button.ToolTip>
           <Button.Style>
             <Style TargetType="{x:Type Button}"
                    BasedOn="{StaticResource ToolBarButtonBaseStyle}">
               <Style.Setters>
-                <Setter Property="AutomationProperties.Name" Value="Audio (click to edit)">
+                <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}">
                 </Setter>
               </Style.Setters>
             </Style>
@@ -339,13 +344,20 @@
                   x:Name="ButtonNoAudio_LongDesc"
           Click="OnClick_ButtonNoAudio_LongDesc"
                   
-                    ToolTip="No audio (click to edit)"
+                   
                   >
+
+          <Button.ToolTip>
+            <ToolTip
+              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}"
+              ContentStringFormat="{}{0}"
+      />
+          </Button.ToolTip>
           <Button.Style>
             <Style TargetType="{x:Type Button}"
                    BasedOn="{StaticResource ToolBarButtonBaseStyle}">
               <Style.Setters>
-                <Setter Property="AutomationProperties.Name" Value="No audio (click to edit)">
+                <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}">
                 </Setter>
               </Style.Setters>
             </Style>
@@ -433,13 +445,19 @@
                   
                       x:Name="ButtonAudio_Summary"
               Click="OnClick_ButtonAudio_Summary"
-                  
-                        ToolTip="Audio (click to edit)">
+                  >
+
+              <Button.ToolTip>
+                <ToolTip
+                  Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}"
+                  ContentStringFormat="{}{0}"
+      />
+              </Button.ToolTip>
               <Button.Style>
                 <Style TargetType="{x:Type Button}"
                        BasedOn="{StaticResource ToolBarButtonBaseStyle}">
                   <Style.Setters>
-                    <Setter Property="AutomationProperties.Name" Value="Audio (click to edit)">
+                    <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}">
                     </Setter>
                   </Style.Setters>
                 </Style>
@@ -463,13 +481,19 @@
                       x:Name="ButtonNoAudio_Summary"
               Click="OnClick_ButtonNoAudio_Summary"
                   
-                        ToolTip="No audio (click to edit)"
                   >
+
+              <Button.ToolTip>
+                <ToolTip
+                  Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}"
+                  ContentStringFormat="{}{0}"
+      />
+              </Button.ToolTip>
               <Button.Style>
                 <Style TargetType="{x:Type Button}"
                        BasedOn="{StaticResource ToolBarButtonBaseStyle}">
                   <Style.Setters>
-                    <Setter Property="AutomationProperties.Name" Value="No audio (click to edit)">
+                    <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}">
                     </Setter>
                   </Style.Setters>
                 </Style>
@@ -556,13 +580,18 @@
                   
                         x:Name="ButtonAudio_SimplifiedLanguage"
                 Click="OnClick_ButtonAudio_SimplifiedLanguage"
-                  
-                          ToolTip="Audio (click to edit)">
+                  >
+          <Button.ToolTip>
+            <ToolTip
+              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}"
+              ContentStringFormat="{}{0}"
+      />
+          </Button.ToolTip>
                 <Button.Style>
                   <Style TargetType="{x:Type Button}"
                          BasedOn="{StaticResource ToolBarButtonBaseStyle}">
                     <Style.Setters>
-                      <Setter Property="AutomationProperties.Name" Value="Audio (click to edit)">
+                      <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}">
                       </Setter>
                     </Style.Setters>
                   </Style>
@@ -586,13 +615,19 @@
                         x:Name="ButtonNoAudio_SimplifiedLanguage"
                 Click="OnClick_ButtonNoAudio_SimplifiedLanguage"
                   
-                          ToolTip="No audio (click to edit)"
                   >
+
+                <Button.ToolTip>
+                  <ToolTip
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}"
+                    ContentStringFormat="{}{0}"
+      />
+                </Button.ToolTip>
                 <Button.Style>
                   <Style TargetType="{x:Type Button}"
                          BasedOn="{StaticResource ToolBarButtonBaseStyle}">
                     <Style.Setters>
-                      <Setter Property="AutomationProperties.Name" Value="No audio (click to edit)">
+                      <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}">
                       </Setter>
                     </Style.Setters>
                   </Style>
@@ -876,13 +911,18 @@
                   
                             x:Name="ButtonAudio_SimplifiedImage"
                     Click="OnClick_ButtonAudio_SimplifiedImage"
-                  
-                              ToolTip="Audio (click to edit)">
+                  >
+                    <Button.ToolTip>
+                      <ToolTip
+                        Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}"
+                        ContentStringFormat="{}{0}"
+      />
+                    </Button.ToolTip>
                     <Button.Style>
                       <Style TargetType="{x:Type Button}"
                              BasedOn="{StaticResource ToolBarButtonBaseStyle}">
                         <Style.Setters>
-                          <Setter Property="AutomationProperties.Name" Value="Audio (click to edit)">
+                          <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}">
                           </Setter>
                         </Style.Setters>
                       </Style>
@@ -905,13 +945,19 @@
                             x:Name="ButtonNoAudio_SimplifiedImage"
                     Click="OnClick_ButtonNoAudio_SimplifiedImage"
                   
-                              ToolTip="No audio (click to edit)"
+                              
                   >
+                      <Button.ToolTip>
+                        <ToolTip
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}"
+                          ContentStringFormat="{}{0}"
+      />
+                      </Button.ToolTip>
                     <Button.Style>
                       <Style TargetType="{x:Type Button}"
                              BasedOn="{StaticResource ToolBarButtonBaseStyle}">
                         <Style.Setters>
-                          <Setter Property="AutomationProperties.Name" Value="No audio (click to edit)">
+                          <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}">
                           </Setter>
                         </Style.Setters>
                       </Style>
@@ -1122,13 +1168,18 @@
                   
                               x:Name="ButtonAudio_TactileImage"
                       Click="OnClick_ButtonAudio_TactileImage"
-                  
-                                ToolTip="Audio (click to edit)">
+                  >
+          <Button.ToolTip>
+            <ToolTip
+              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}"
+              ContentStringFormat="{}{0}"
+      />
+          </Button.ToolTip>
                       <Button.Style>
                         <Style TargetType="{x:Type Button}"
                                BasedOn="{StaticResource ToolBarButtonBaseStyle}">
                           <Style.Setters>
-                            <Setter Property="AutomationProperties.Name" Value="Audio (click to edit)">
+                            <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}">
                             </Setter>
                           </Style.Setters>
                         </Style>
@@ -1151,13 +1202,18 @@
                               x:Name="ButtonNoAudio_TactileImage"
                       Click="OnClick_ButtonNoAudio_TactileImage"
                   
-                                ToolTip="No audio (click to edit)"
                   >
+                      <Button.ToolTip>
+                        <ToolTip
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}"
+                          ContentStringFormat="{}{0}"
+      />
+                      </Button.ToolTip>
                       <Button.Style>
                         <Style TargetType="{x:Type Button}"
                                BasedOn="{StaticResource ToolBarButtonBaseStyle}">
                           <Style.Setters>
-                            <Setter Property="AutomationProperties.Name" Value="No audio (click to edit)">
+                            <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}">
                             </Setter>
                           </Style.Setters>
                         </Style>
@@ -1766,7 +1822,7 @@ AlternationCount="2"
         <Grid Height="Auto" Width="Auto"
           KeyboardNavigation.TabNavigation="Local">
           <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="300"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
           </Grid.ColumnDefinitions>
