@@ -3,6 +3,7 @@ using System.IO;
 using Tobi.Common.MVVM;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.daisy;
 using urakawa.exception;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
@@ -96,5 +97,76 @@ namespace Tobi.Plugin.Descriptions
                 return m_SelectedAlternateContent.Audio != null;
             }
         }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasAudio_LongDesc
+        {
+            get
+            {
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
+                if (altContent != null)
+                {
+                    return altContent.Audio != null;
+                }
+                return false;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasAudio_Summary
+        {
+            get
+            {
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
+                if (altContent != null)
+                {
+                    return altContent.Audio != null;
+                }
+                return false;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasAudio_SimplifiedLanguage
+        {
+            get
+            {
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
+                if (altContent != null)
+                {
+                    return altContent.Audio != null;
+                }
+                return false;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasAudio_SimplifiedImage
+        {
+            get
+            {
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_SimplifiedImage);
+                if (altContent != null)
+                {
+                    return altContent.Audio != null;
+                }
+                return false;
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public bool HasAudio_TactileImage
+        {
+            get
+            {
+                AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_Tactile);
+                if (altContent != null)
+                {
+                    return altContent.Audio != null;
+                }
+                return false;
+            }
+        }
+
     }
 }

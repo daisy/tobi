@@ -346,6 +346,18 @@ namespace Tobi.Plugin.Descriptions
             FocusHelper.Focus(ImageLabel);
         }
 
+        private ScalableGreyableImageProvider m_iconAudioHigh1 = null;
+        private ScalableGreyableImageProvider m_iconAudioHigh2 = null;
+        private ScalableGreyableImageProvider m_iconAudioHigh3 = null;
+        private ScalableGreyableImageProvider m_iconAudioHigh4 = null;
+        private ScalableGreyableImageProvider m_iconAudioHigh5 = null;
+
+        private ScalableGreyableImageProvider m_iconAudioMuted1 = null;
+        private ScalableGreyableImageProvider m_iconAudioMuted2 = null;
+        private ScalableGreyableImageProvider m_iconAudioMuted3 = null;
+        private ScalableGreyableImageProvider m_iconAudioMuted4 = null;
+        private ScalableGreyableImageProvider m_iconAudioMuted5 = null;
+
         private void OnLoaded_Panel(object sender, RoutedEventArgs e)
         {
             var win = Window.GetWindow(this);
@@ -353,6 +365,53 @@ namespace Tobi.Plugin.Descriptions
                 OwnerWindow = (PopupModalWindow)win;
 
 
+            if (m_iconAudioHigh1 == null)
+            {
+                m_iconAudioHigh1 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-low"), m_ShellView.MagnificationLevel);
+                ButtonAudio_LongDesc.Content = m_iconAudioHigh1.IconMedium;
+
+                m_iconAudioHigh2 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-low"), m_ShellView.MagnificationLevel);
+                ButtonAudio_Summary.Content = m_iconAudioHigh2.IconMedium;
+
+                m_iconAudioHigh3 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-low"), m_ShellView.MagnificationLevel);
+                ButtonAudio_SimplifiedLanguage.Content = m_iconAudioHigh3.IconMedium;
+
+                m_iconAudioHigh4 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-low"), m_ShellView.MagnificationLevel);
+                ButtonNoAudio_SimplifiedImage.Content = m_iconAudioHigh4.IconMedium;
+
+                m_iconAudioHigh5 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-low"), m_ShellView.MagnificationLevel);
+                ButtonNoAudio_TactileImage.Content = m_iconAudioHigh5.IconMedium;
+            }
+
+            if (m_iconAudioMuted1 == null)
+            {
+                m_iconAudioMuted1 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-muted"), m_ShellView.MagnificationLevel);
+                ButtonNoAudio_LongDesc.Content = m_iconAudioMuted1.IconMedium;
+
+                m_iconAudioMuted2 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-muted"), m_ShellView.MagnificationLevel);
+                ButtonNoAudio_Summary.Content = m_iconAudioMuted2.IconMedium;
+
+                m_iconAudioMuted3 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-muted"), m_ShellView.MagnificationLevel);
+                ButtonNoAudio_SimplifiedLanguage.Content = m_iconAudioMuted3.IconMedium;
+
+                m_iconAudioMuted4 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-muted"), m_ShellView.MagnificationLevel);
+                ButtonNoAudio_SimplifiedImage.Content = m_iconAudioMuted4.IconMedium;
+
+                m_iconAudioMuted5 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-muted"), m_ShellView.MagnificationLevel);
+                ButtonNoAudio_TactileImage.Content = m_iconAudioMuted5.IconMedium;
+            }
+
+            m_iconAudioHigh1.IconDrawScale = m_ShellView.MagnificationLevel;
+            m_iconAudioHigh2.IconDrawScale = m_ShellView.MagnificationLevel;
+            m_iconAudioHigh3.IconDrawScale = m_ShellView.MagnificationLevel;
+            m_iconAudioHigh4.IconDrawScale = m_ShellView.MagnificationLevel;
+            m_iconAudioHigh5.IconDrawScale = m_ShellView.MagnificationLevel;
+
+            m_iconAudioMuted1.IconDrawScale = m_ShellView.MagnificationLevel;
+            m_iconAudioMuted2.IconDrawScale = m_ShellView.MagnificationLevel;
+            m_iconAudioMuted3.IconDrawScale = m_ShellView.MagnificationLevel;
+            m_iconAudioMuted4.IconDrawScale = m_ShellView.MagnificationLevel;
+            m_iconAudioMuted5.IconDrawScale = m_ShellView.MagnificationLevel;
 
             m_ViewModel.OnPanelLoaded();
 
