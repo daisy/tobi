@@ -203,6 +203,13 @@ namespace Tobi.Plugin.Descriptions
             AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
             if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
             {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
                 first = false;
                 if (message != null)
                 {

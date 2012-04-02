@@ -165,43 +165,80 @@ namespace Tobi.Plugin.Descriptions
             //RaisePropertyChanged(() => Metadatas);
         }
 
-
-        public AlternateContent GetAltContent(string diagramElementName)
+        public IEnumerable<AlternateContent> GetAltContents(string diagramElementName)
         {
-            if (m_UrakawaSession.DocumentProject == null) return null;
+            if (m_UrakawaSession.DocumentProject == null) yield break;
 
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
             TreeNode node = selection.Item2 ?? selection.Item1;
-            if (node == null) return null;
+            if (node == null) yield break;
 
             AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
-            if (altProp == null) return null;
+            if (altProp == null) yield break;
 
-            if (altProp.AlternateContents.Count <= 0) return null;
-
-            AlternateContent altContentSpecific = null;
+            if (altProp.AlternateContents.Count <= 0) yield break;
 
             foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
             {
-                if (altContentSpecific != null)
-                {
-                    break;
-                }
-
                 foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
                 {
                     if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName, StringComparison.OrdinalIgnoreCase))
                     {
                         if (metadata.NameContentAttribute.Value.Equals(diagramElementName, StringComparison.OrdinalIgnoreCase))
                         {
-                            altContentSpecific = altContent;
-                            break;
+                            yield return altContent;
                         }
                     }
                 }
             }
 
-            return altContentSpecific;
+            yield break;
+        }
+
+        public IEnumerable<string> GetInvalidDIAGRAMnames()
+        {
+            if (m_UrakawaSession.DocumentProject == null) yield break;
+
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) yield break;
+
+            AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) yield break;
+
+            if (altProp.AlternateContents.Count <= 0) yield break;
+
+            foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+            {
+                foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (
+                            !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
+                            && !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
+                            && !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_SimplifiedLanguageDescription, StringComparison.OrdinalIgnoreCase)
+                            && !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_SimplifiedImage, StringComparison.OrdinalIgnoreCase)
+                            && !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_Tactile, StringComparison.OrdinalIgnoreCase)
+                            && !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.Annotation, StringComparison.OrdinalIgnoreCase)
+                            )
+                        {
+                            yield return metadata.NameContentAttribute.Value;
+                        }
+                    }
+                }
+            }
+
+            yield break;
+        }
+
+    public AlternateContent GetAltContent(string diagramElementName)
+        {
+            foreach (var altContent in GetAltContents(diagramElementName))
+            {
+                return altContent;
+            }
+            return null;
         }
 
 
@@ -218,7 +255,24 @@ namespace Tobi.Plugin.Descriptions
             return id;
         }
 
-        public bool XmlIDAlreadyExists(string xmlid, bool inHeadMetadata, bool inBodyContent)
+        public string GetXmlID(AlternateContent altContent)
+        {
+            if (altContent.Metadatas != null)
+            {
+                foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.NameContentAttribute != null
+                        && metadata.NameContentAttribute.Name.Equals(XmlReaderWriterHelper.XmlId))
+                    {
+                        return metadata.NameContentAttribute.Value;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+    public bool XmlIDAlreadyExists(string xmlid, bool inHeadMetadata, bool inBodyContent)
         {
             foreach (var id in GetExistingXmlIDs(inHeadMetadata, inBodyContent))
             {
@@ -288,16 +342,10 @@ namespace Tobi.Plugin.Descriptions
             {
                 foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
                 {
-                    if (altContent.Metadatas != null)
+                    string id = GetXmlID(altContent);
+                    if (!string.IsNullOrEmpty(id))
                     {
-                        foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
-                        {
-                            if (metadata.NameContentAttribute != null
-                                && metadata.NameContentAttribute.Name.Equals(XmlReaderWriterHelper.XmlId))
-                            {
-                                yield return metadata.NameContentAttribute.Value;
-                            }
-                        }
+                        yield return id;
                     }
                 }
             }
