@@ -195,8 +195,8 @@
     
                     KeyboardNavigation.IsTabStop="False"
                     KeyboardNavigation.TabIndex="2"
-            Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-        Margin="6, 3, 6, 0" Padding="6" >
+            Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToVisibilityConverter}}"
+        Margin="0, 3, 0, 0" Padding="6" >
         <GroupBox.Header>
           <TextBlock
             Foreground="Red"
@@ -246,7 +246,7 @@
     Grid.Row="0"
     Grid.Column="0"
     
-        Margin="6, 6, 6, 0" Padding="6" >
+        Margin="0, 6, 0, 0" Padding="6" >
         <GroupBox.Header>
           <TextBlock
             Focusable="true"
@@ -308,7 +308,7 @@
     Grid.Row="0"
     Grid.Column="1"
     
-        Margin="6, 6, 6, 0" Padding="6" >
+        Margin="0, 6, 0, 0" Padding="6" >
         <GroupBox.Header>
           <TextBlock
             Focusable="true"
@@ -370,7 +370,7 @@
       Grid.Row="0"
       Grid.Column="2"
     
-          Margin="6, 6, 6, 0" Padding="6" >
+          Margin="0, 6, 0, 0" Padding="6" >
           <GroupBox.Header>
             <TextBlock
               Focusable="true"
@@ -451,8 +451,8 @@
     
                         KeyboardNavigation.IsTabStop="False"
                         KeyboardNavigation.TabIndex="2"
-                Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-            Margin="6, 3, 6, 0" Padding="6" >
+                Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToVisibilityConverter}}"
+            Margin="0, 3, 0, 0" Padding="6" >
             <GroupBox.Header>
               <TextBlock
                 Foreground="Red"
@@ -501,7 +501,7 @@
           Grid.Row="0"
           Grid.Column="0"
     
-              Margin="6, 6, 6, 0" Padding="6" >
+              Margin="0, 6, 0, 0" Padding="6" >
               <GroupBox.Header>
                 <TextBlock
                   Focusable="true"
@@ -514,42 +514,42 @@
               <Grid
                     HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
+              KeyboardNavigation.TabNavigation="Local"
           >
                 <Grid.RowDefinitions>
                   <RowDefinition Height="*"></RowDefinition>
+                  <RowDefinition Height="Auto"></RowDefinition>
                   <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"></ColumnDefinition>
                   <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <DockPanel LastChildFill="True"
-              KeyboardNavigation.TabNavigation="Local"
-                           Grid.Row="0"
-          Grid.Column="0">
+                  <DockPanel LastChildFill="True" Grid.Row="0"
+          Grid.Column="0"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Left"
+                          >
                   <TextBlock Text="Image:"
                              FontWeight="Bold"
-                             Margin="0,6,0,6"
+                             Margin="0,0,0,6"
                                Focusable="true"
                              KeyboardNavigation.IsTabStop="true"
                              KeyboardNavigation.TabIndex="1"
                               DockPanel.Dock="Top"
                              ></TextBlock>
-                  <!-- TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.OriginalRelativePath, Mode=OneWay}"
-                         DockPanel.Dock="Top"
-                         HorizontalAlignment="Center"/>
-              <TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
-                         DockPanel.Dock="Bottom"/ -->
-
+                    
                   <StackPanel Orientation="Horizontal"
                               DockPanel.Dock="Bottom"
-                      HorizontalAlignment="Stretch">
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
                     <Button
                             FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                            Control.TabIndex="3"
                       x:Name="ButtonOpenImage_Simplified"
-                      VerticalAlignment="Center"
+                      VerticalAlignment="Bottom"
                       HorizontalAlignment="Stretch"
                             Margin="0,4,0,0"
                             Content="Open..."
@@ -559,7 +559,7 @@
                             FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                            Control.TabIndex="4"
                       x:Name="ButtonClearImage_Simplified"
-                      VerticalAlignment="Center"
+                      VerticalAlignment="Bottom"
                       HorizontalAlignment="Stretch"
                             Margin="4,4,0,0"
                             Content="Clear"
@@ -567,8 +567,15 @@
                       Click="OnClick_ButtonClearImage_Simplified"/>
                   </StackPanel>
 
-                  <Border
-                    Padding="0" Margin="0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+
+                </DockPanel>
+
+
+                  <Border Grid.Row="0"
+            Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                    Padding="0" Margin="6, 0, 0, 0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
           >
                   <Image
                     Focusable="True"
@@ -601,75 +608,89 @@
                   </Image>
 
                   </Border>
-                    </DockPanel>
-                
-              <DockPanel LastChildFill="True"
-              KeyboardNavigation.TabNavigation="Local"
-          Grid.Row="1"
+
+                <GridSplitter
+                  Margin="0,3,0,3"
+                  Grid.ColumnSpan="2"
+                    Grid.Row="1"
+                     Focusable="False"
+                     HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                </GridSplitter>
+
+                  <DockPanel LastChildFill="True"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Left"
+          Grid.Row="2"
           Grid.Column="0">
 
                 <TextBlock Text="Tour:"
                            FontWeight="Bold"
                                Focusable="true"
-                             Margin="0,12,0,6"
+                             Margin="0,0,0,6"
                               DockPanel.Dock="Top"
                            KeyboardNavigation.IsTabStop="true"
-                           KeyboardNavigation.TabIndex="1"
+                           KeyboardNavigation.TabIndex="5"
                              ></TextBlock>
                 <StackPanel Orientation="Horizontal"
                             DockPanel.Dock="Bottom"
-                    HorizontalAlignment="Stretch">
+                    HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
                   <Button
                             FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                         Control.TabIndex="3"
-                    VerticalAlignment="Center"
+                         Control.TabIndex="7"
+                    VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                           Margin="0,4,0,0"
                           Content="Edit"
                       
                     Click="OnClick_ButtonEditText_SimplifiedImage"/>
                   <Button
-                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                         Control.TabIndex="4"
-                    VerticalAlignment="Center"
+                    FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                    VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                           Margin="4,4,0,0"
                           Content="Clear"
                           IsEnabled="{Binding HasDescriptionText_SimplifiedImage}"
-                    Click="OnClick_ButtonClearText_SimplifiedImage"/>
+                    Click="OnClick_ButtonClearText_SimplifiedImage"
+                    
+                         Control.TabIndex="8"/>
                 </StackPanel>
 
-                <ScrollViewer
-            
-              HorizontalAlignment="Stretch"
-                     VerticalAlignment="Stretch"
-    
-              HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                  <UI:TextBoxReadOnlyCaretVisible
-            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-        
-                           Control.TabIndex="2"
-                    x:Name="DescriptionTextBox_SimplifiedImage"
-            TextWrapping="WrapWithOverflow"
-                    TextReadOnly="{Binding DescriptionText_SimplifiedImage}"
-                           HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch"
-                    Focusable="True"
-                          IsEnabled="{Binding HasDescriptionText_SimplifiedImage}"
-                       />
-                </ScrollViewer>
-                <!--Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"-->
               </DockPanel>
 
-            </Grid>
+                  <ScrollViewer
+                    Margin="6, 0, 0, 0"
+             Grid.Row="2"
+            Grid.Column="1"
+             
+                HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+    
+                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <UI:TextBoxReadOnlyCaretVisible
+              FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                             Control.TabIndex="6"
+                      x:Name="DescriptionTextBox_SimplifiedImage"
+              TextWrapping="WrapWithOverflow"
+                      TextReadOnly="{Binding DescriptionText_SimplifiedImage}"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch"
+                      Focusable="True"
+                            IsEnabled="{Binding HasDescriptionText_SimplifiedImage}"
+                       />
+                  </ScrollViewer>
+              
+              </Grid>
             </GroupBox>
+
 
             <GroupBox
               KeyboardNavigation.TabNavigation="Local"
           Grid.Row="0"
           Grid.Column="1"
     
-              Margin="6, 6, 6, 0" Padding="6" >
+              Margin="12, 6, 0, 0" Padding="6" >
               <GroupBox.Header>
                 <TextBlock
                   Focusable="true"
@@ -682,153 +703,176 @@
               <Grid
                     HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
+            KeyboardNavigation.TabNavigation="Local"
           >
                 <Grid.RowDefinitions>
                   <RowDefinition Height="*"></RowDefinition>
+                  <RowDefinition Height="Auto"></RowDefinition>
                   <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"></ColumnDefinition>
                   <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                  <DockPanel LastChildFill="True"
-                KeyboardNavigation.TabNavigation="Local"
-                             Grid.Row="0"
-          Grid.Column="0">
-                    <TextBlock Text="Image:"
-                               FontWeight="Bold"
-                               Margin="0,6,0,6"
+                <DockPanel LastChildFill="True" Grid.Row="0"
+        Grid.Column="0"
+                         VerticalAlignment="Stretch"
+                         HorizontalAlignment="Left"
+                          >
+                  <TextBlock Text="Image:"
+                             FontWeight="Bold"
+                             Margin="0,0,0,6"
                                Focusable="true"
-                               KeyboardNavigation.IsTabStop="true"
-                               KeyboardNavigation.TabIndex="1"
-                                DockPanel.Dock="Top"
+                             KeyboardNavigation.IsTabStop="true"
+                             KeyboardNavigation.TabIndex="1"
+                              DockPanel.Dock="Top"
                              ></TextBlock>
-                    <!-- TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.OriginalRelativePath, Mode=OneWay}"
-                         DockPanel.Dock="Top"
-                         HorizontalAlignment="Center"/>
-              <TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
-                         DockPanel.Dock="Bottom"/ -->
 
-                    <StackPanel Orientation="Horizontal"
-                                DockPanel.Dock="Bottom"
-                        HorizontalAlignment="Stretch">
-                      <Button
-                              FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                             Control.TabIndex="3"
-                        x:Name="ButtonOpenImage_Tactile"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                              Margin="0,4,0,0"
-                              Content="Open..."
-                        
-                        Click="OnClick_ButtonOpenImage_Tactile"/>
-                      <Button
-                              FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                             Control.TabIndex="4"
-                        x:Name="ButtonClearImage_Tactile"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Stretch"
-                              Margin="4,4,0,0"
-                              Content="Clear"
-                              IsEnabled="{Binding HasDescriptionImage_Tactile}"
-                        Click="OnClick_ButtonClearImage_Tactile"/>
-                    </StackPanel>
-
-                    <Border
-                      Padding="0" Margin="0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
-          >
-                    <Image
-                      Focusable="True"
-                        KeyboardNavigation.IsTabStop="True"
-                             KeyboardNavigation.TabIndex="2"
-                
-                              IsEnabled="{Binding HasDescriptionImage_Tactile}"
-                      x:Name="DescriptionImage_Tactile"
+                  <StackPanel Orientation="Horizontal"
+                              DockPanel.Dock="Bottom"
                       HorizontalAlignment="Stretch"
-                             VerticalAlignment="Stretch"
-                                Stretch = "Uniform"
-                                StretchDirection="DownOnly"
-                      ToolTip="{Binding DescriptionImage_Tactile, Mode=OneWay}"
-                      Source="{Binding DescriptionImage_Tactile, Mode=OneWay, Converter={UI:PathToImageSourceConverter}}"
+                      VerticalAlignment="Stretch">
+                    <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                           Control.TabIndex="3"
+                      x:Name="ButtonOpenImage_Tactile"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Stretch"
+                            Margin="0,4,0,0"
+                            Content="Open..."
+                        
+                      Click="OnClick_ButtonOpenImage_Tactile"/>
+                    <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                           Control.TabIndex="4"
+                      x:Name="ButtonClearImage_Tactile"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Stretch"
+                            Margin="4,4,0,0"
+                            Content="Clear"
+                            IsEnabled="{Binding HasDescriptionImage_Tactile}"
+                      Click="OnClick_ButtonClearImage_Tactile"/>
+                  </StackPanel>
+
+
+                </DockPanel>
+
+
+                <Border Grid.Row="0"
+          Grid.Column="1"
+                  HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"
+                  Padding="0" Margin="6, 0, 0, 0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+          >
+                  <Image
+                    Focusable="True"
+                      KeyboardNavigation.IsTabStop="True"
+                           KeyboardNavigation.TabIndex="2"
+                
+                            IsEnabled="{Binding HasDescriptionImage_Tactile}"
+                    x:Name="DescriptionImage_Tactile"
+                    HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                              Stretch = "Uniform"
+                              StretchDirection="DownOnly"
+                    ToolTip="{Binding DescriptionImage_Tactile, Mode=OneWay}"
+                    Source="{Binding DescriptionImage_Tactile, Mode=OneWay, Converter={UI:PathToImageSourceConverter}}"
               >
-                      <Image.Style>
-                        <Style TargetType="{x:Type Image}">
-                          <Style.Setters>
-                            <Setter Property="AutomationProperties.Name">
-                              <Setter.Value>
-                                <MultiBinding StringFormat="Image full path: {0}"  Mode="OneWay">
-                                  <Binding Path="DescriptionImage_Tactile" Mode="OneWay"/>
-                                  <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
-                                </MultiBinding>
-                              </Setter.Value>
-                            </Setter>
-                          </Style.Setters>
-                        </Style>
-                      </Image.Style>
-                    </Image>
-                    </Border>
-                  </DockPanel>
+                    <Image.Style>
+                      <Style TargetType="{x:Type Image}">
+                        <Style.Setters>
+                          <Setter Property="AutomationProperties.Name">
+                            <Setter.Value>
+                              <MultiBinding StringFormat="Image full path: {0}"  Mode="OneWay">
+                                <Binding Path="DescriptionImage_Tactile" Mode="OneWay"/>
+                                <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
+                              </MultiBinding>
+                            </Setter.Value>
+                          </Setter>
+                        </Style.Setters>
+                      </Style>
+                    </Image.Style>
+                  </Image>
+
+                </Border>
+
+                <GridSplitter
+                  Margin="0,3,0,3"
+                  Grid.ColumnSpan="2"
+                    Grid.Row="1"
+                     Focusable="False"
+                     HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                </GridSplitter>
+
                 <DockPanel LastChildFill="True"
-                KeyboardNavigation.TabNavigation="Local"
-            Grid.Row="1"
-            Grid.Column="0">
+                         VerticalAlignment="Stretch"
+                         HorizontalAlignment="Left"
+        Grid.Row="2"
+        Grid.Column="0">
 
                   <TextBlock Text="Tour:"
                              FontWeight="Bold"
-                               Focusable="true"
-                             Margin="0,12,0,6"
-                              DockPanel.Dock="Top"
+                                 Focusable="true"
+                               Margin="0,0,0,6"
+                                DockPanel.Dock="Top"
                              KeyboardNavigation.IsTabStop="true"
-                             KeyboardNavigation.TabIndex="1"
+                             KeyboardNavigation.TabIndex="5"
                              ></TextBlock>
                   <StackPanel Orientation="Horizontal"
                               DockPanel.Dock="Bottom"
-                      HorizontalAlignment="Stretch">
+                      HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
                     <Button
                               FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                           Control.TabIndex="3"
-                      VerticalAlignment="Center"
+                           Control.TabIndex="7"
+                      VerticalAlignment="Bottom"
                       HorizontalAlignment="Stretch"
                             Margin="0,4,0,0"
                             Content="Edit"
                       
-                      Click="OnClick_ButtonEditText_Tactile"/>
+                      Click="OnClick_ButtonEditText_TactileImage"/>
                     <Button
-                              FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                           Control.TabIndex="4"
-                      VerticalAlignment="Center"
+                      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                      VerticalAlignment="Bottom"
                       HorizontalAlignment="Stretch"
                             Margin="4,4,0,0"
                             Content="Clear"
-                            IsEnabled="{Binding HasDescriptionText_Tactile}"
-                      Click="OnClick_ButtonClearText_Tactile"/>
+                            IsEnabled="{Binding HasDescriptionText_TactileImage}"
+                      Click="OnClick_ButtonClearText_TactileImage"
+                    
+                           Control.TabIndex="8"/>
                   </StackPanel>
 
-                  <ScrollViewer
-            
-                HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch"
-    
-                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                    <UI:TextBoxReadOnlyCaretVisible
-              FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-        
-                             Control.TabIndex="2"
-                      x:Name="DescriptionTextBox_Tactile"
-              TextWrapping="WrapWithOverflow"
-                      TextReadOnly="{Binding DescriptionText_Tactile}"
-                             HorizontalAlignment="Stretch"
-                             VerticalAlignment="Stretch"
-                      Focusable="True"
-                            IsEnabled="{Binding HasDescriptionText_Tactile}"
-                       />
-                  </ScrollViewer>
-                  <!--Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"-->
                 </DockPanel>
+
+                <ScrollViewer
+                  Margin="6, 0, 0, 0"
+           Grid.Row="2"
+          Grid.Column="1"
+             
+              HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+    
+              HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                  <UI:TextBoxReadOnlyCaretVisible
+            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                           Control.TabIndex="6"
+                    x:Name="DescriptionTextBox_TactileImage"
+            TextWrapping="WrapWithOverflow"
+                    TextReadOnly="{Binding DescriptionText_TactileImage}"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                    Focusable="True"
+                          IsEnabled="{Binding HasDescriptionText_TactileImage}"
+                       />
+                </ScrollViewer>
 
               </Grid>
             </GroupBox>
+
 
           </Grid>
 
@@ -864,8 +908,8 @@
     
                     KeyboardNavigation.IsTabStop="False"
                     KeyboardNavigation.TabIndex="2"
-            Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-        Margin="6, 3, 6, 0" Padding="6" >
+            Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToVisibilityConverter}}"
+        Margin="0, 3, 0, 0" Padding="6" >
         <GroupBox.Header>
           <TextBlock
             Foreground="Red"
@@ -1349,8 +1393,8 @@ AlternationCount="2"
     
                       KeyboardNavigation.IsTabStop="False"
                       KeyboardNavigation.TabIndex="2"
-              Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-          Margin="6, 3, 6, 0" Padding="6" >
+              Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToVisibilityConverter}}"
+          Margin="0, 3, 0, 0" Padding="6" >
           <GroupBox.Header>
             <TextBlock
               Foreground="Red"

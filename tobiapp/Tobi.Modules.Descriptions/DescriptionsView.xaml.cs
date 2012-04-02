@@ -135,7 +135,7 @@ namespace Tobi.Plugin.Descriptions
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     Focusable = true,
-                    TextWrapping = TextWrapping.Wrap
+                    TextWrapping = TextWrapping.WrapWithOverflow
                 };
 
                 var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);

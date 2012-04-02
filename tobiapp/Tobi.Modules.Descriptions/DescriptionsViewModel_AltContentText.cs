@@ -207,8 +207,8 @@ namespace Tobi.Plugin.Descriptions
                 return (!string.IsNullOrEmpty(str));
             }
         }
-        [NotifyDependsOn("HasDescriptionText_Tactile")]
-        public string DescriptionText_Tactile
+        [NotifyDependsOn("HasDescriptionText_TactileImage")]
+        public string DescriptionText_TactileImage
         {
             get
             {
@@ -223,11 +223,11 @@ namespace Tobi.Plugin.Descriptions
         }
 
         [NotifyDependsOn("Descriptions")]
-        public bool HasDescriptionText_Tactile
+        public bool HasDescriptionText_TactileImage
         {
             get
             {
-                string str = DescriptionText_Tactile;
+                string str = DescriptionText_TactileImage;
                 return (!string.IsNullOrEmpty(str));
             }
         }
