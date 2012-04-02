@@ -190,5 +190,106 @@ namespace Tobi.Plugin.Descriptions
                 return (!string.IsNullOrEmpty(str));
             }
         }
+
+        private bool getValidationText_BasicImage(ref string message)
+        {
+            bool first = true;
+
+            AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_SimplifiedImage);
+            if (altContent != null)
+            {
+                if (altContent.Image != null && altContent.Text == null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- It is recommended to specify a tour for the simplified image.";
+                    }
+                }
+                if (altContent.Image == null && altContent.Text != null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- A tour is specified without its associated simplified image.";
+                    }
+                }
+            }
+            altContent = GetAltContent(DiagramContentModelHelper.D_Tactile);
+            if (altContent != null)
+            {
+                if (altContent.Image != null && altContent.Text == null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- It is recommended to specify a tour for the tactile image.";
+                    }
+                }
+                if (altContent.Image == null && altContent.Text != null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- A tour is specified without its associated tactile image.";
+                    }
+                }
+            }
+
+            bool hasMessages = !first;
+            return hasMessages;
+        }
+
+        [NotifyDependsOn("ValidationText_BasicImage")]
+        public bool HasValidationWarning_BasicImage
+        {
+            get
+            {
+                string str = null;
+                return getValidationText_BasicImage(ref str);
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public string ValidationText_BasicImage
+        {
+            get
+            {
+                string str = "";
+                if (HasValidationWarning_BasicImage)
+                {
+                    getValidationText_BasicImage(ref str);
+                }
+                return str;
+            }
+        }
     }
 }

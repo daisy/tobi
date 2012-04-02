@@ -264,5 +264,86 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
+        private bool getValidationText_Metadata(ref string message)
+        {
+            bool first = true;
+
+            string strDupIDS = "";
+            foreach (var id in GetDuplicatedIDs(true, false))
+            {
+                strDupIDS += "[";
+                strDupIDS += id;
+                strDupIDS += "]";
+            }
+
+            if (!string.IsNullOrEmpty(strDupIDS))
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Some identifiers are duplicated (this may be valid if used for grouping metadata): ";
+                    message += strDupIDS;
+                }
+            }
+
+            string strMissingIDS = "";
+            foreach (var id in GetReferencedMissingIDs(true, false))
+            {
+                strMissingIDS += "[";
+                strMissingIDS += id;
+                strMissingIDS += "]";
+            }
+
+            if (!string.IsNullOrEmpty(strMissingIDS))
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Some identifiers are referenced, but are missing: ";
+                    message += strMissingIDS;
+                }
+            }
+
+            bool hasMessages = !first;
+            return hasMessages;
+        }
+
+        [NotifyDependsOn("ValidationText_Metadata")]
+        public bool HasValidationWarning_Metadata
+        {
+            get
+            {
+                string str = null;
+                return getValidationText_Metadata(ref str);
+            }
+        }
+
+        [NotifyDependsOn("Metadatas")]
+        public string ValidationText_Metadata
+        {
+            get
+            {
+                string str = "";
+                if (HasValidationWarning_Metadata)
+                {
+                    getValidationText_Metadata(ref str);
+                }
+                return str;
+            }
+        }
     }
 }

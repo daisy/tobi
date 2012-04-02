@@ -188,13 +188,25 @@
 
     LastChildFill="True">
 
+      <TextBlock
+        Text="No issues detected."
+        Margin="0, 6, 0, 0"
+        
+      DockPanel.Dock="Bottom"
+        
+        Focusable="true"
+        FontWeight="Bold"
+              KeyboardNavigation.IsTabStop="True"
+              KeyboardNavigation.TabIndex="1"
+                  
+      Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+        />
+      
       <GroupBox
 
         KeyboardNavigation.TabNavigation="Local"
       DockPanel.Dock="Bottom"
     
-                    KeyboardNavigation.IsTabStop="False"
-                    KeyboardNavigation.TabIndex="2"
             Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToVisibilityConverter}}"
         Margin="0, 3, 0, 0" Padding="6" >
         <GroupBox.Header>
@@ -444,13 +456,23 @@
 
         LastChildFill="True">
 
+          <TextBlock
+            Text="No issues detected."
+            DockPanel.Dock="Bottom"
+    
+                Focusable="true"
+                FontWeight="Bold"
+                      KeyboardNavigation.IsTabStop="True"
+                      KeyboardNavigation.TabIndex="1"
+                Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+            Margin="0, 3, 0, 0" 
+            />
+          
           <GroupBox
 
             KeyboardNavigation.TabNavigation="Local"
           DockPanel.Dock="Bottom"
     
-                        KeyboardNavigation.IsTabStop="False"
-                        KeyboardNavigation.TabIndex="2"
                 Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToVisibilityConverter}}"
             Margin="0, 3, 0, 0" Padding="6" >
             <GroupBox.Header>
@@ -901,13 +923,23 @@
 
       <DockPanel LastChildFill="true">
 
-      <GroupBox
+        <TextBlock
+          Text="No issues detected."
+          DockPanel.Dock="Bottom"
+    
+              Focusable="true"
+              FontWeight="Bold"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1"
+              Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+          Margin="0, 3, 0, 0"
+            />
+
+        <GroupBox
 
         KeyboardNavigation.TabNavigation="Local"
       DockPanel.Dock="Bottom"
     
-                    KeyboardNavigation.IsTabStop="False"
-                    KeyboardNavigation.TabIndex="2"
             Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToVisibilityConverter}}"
         Margin="0, 3, 0, 0" Padding="6" >
         <GroupBox.Header>
@@ -1386,13 +1418,23 @@ AlternationCount="2"
 
       <DockPanel LastChildFill="true">
 
+        <TextBlock
+          Text="No issues detected."
+          DockPanel.Dock="Bottom"
+    
+              Focusable="true"
+              FontWeight="Bold"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1"
+              Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+          Margin="0, 3, 0, 0"
+            />
+
         <GroupBox
 
           KeyboardNavigation.TabNavigation="Local"
         DockPanel.Dock="Bottom"
     
-                      KeyboardNavigation.IsTabStop="False"
-                      KeyboardNavigation.TabIndex="2"
               Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToVisibilityConverter}}"
           Margin="0, 3, 0, 0" Padding="6" >
           <GroupBox.Header>
