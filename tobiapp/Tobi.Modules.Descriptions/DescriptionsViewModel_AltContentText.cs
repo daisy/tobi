@@ -231,5 +231,66 @@ namespace Tobi.Plugin.Descriptions
                 return (!string.IsNullOrEmpty(str));
             }
         }
+
+
+
+        private bool getValidationText_BasicText(ref string message)
+        {
+            bool first = true;
+
+            AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
+            if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+            {
+                first = false;
+                if (message != null)
+                {
+                    message += "- A long description must be specified.";
+                }
+            }
+
+            altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
+            if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Specifying a summary is recommended.";
+                }
+            }
+
+            bool hasMessages = !first;
+            return hasMessages;
+        }
+
+        [NotifyDependsOn("ValidationText_BasicText")]
+        public bool HasValidationWarning_BasicText
+        {
+            get
+            {
+                string str = null;
+                return getValidationText_BasicText(ref str);
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public string ValidationText_BasicText
+        {
+            get
+            {
+                string str = "";
+                if (HasValidationWarning_BasicText)
+                {
+                    getValidationText_BasicText(ref str);
+                }
+                return str;
+            }
+        }
     }
 }

@@ -254,15 +254,49 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
+        public bool IsIDReferenced(string xmlid, bool inHeadMetadata, bool inBodyContent)
+        {
+            foreach (var idRef in GetReferencedIDs(inHeadMetadata, inBodyContent))
+            {
+                if (xmlid == idRef)
+                {
+                    return true;
+                }
+            }
 
-        public bool XmlIDIsReferredTo(string xmlid, bool inHeadMetadata, bool inBodyContent)
+            return false;
+        }
+
+        public IEnumerable<string> GetReferencedMissingIDs(bool inHeadMetadata, bool inBodyContent)
+        {
+            foreach (var idRef in GetReferencedIDs(inHeadMetadata, inBodyContent))
+            {
+                bool found = false;
+                foreach (var id in GetExistingXmlIDs(inHeadMetadata, inBodyContent))
+                {
+                    if (idRef == id)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    yield return idRef;
+                }
+            }
+            yield break;
+        }
+
+
+        public IEnumerable<string> GetReferencedIDs(bool inHeadMetadata, bool inBodyContent)
         {
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
             TreeNode node = selection.Item2 ?? selection.Item1;
-            if (node == null) return false;
+            if (node == null) yield break;
 
             var altProp = node.GetAlternateContentProperty();
-            if (altProp == null) return false;
+            if (altProp == null) yield break;
 
 
             if (inHeadMetadata && altProp.Metadatas != null)
@@ -280,10 +314,8 @@ namespace Tobi.Plugin.Descriptions
                                 {
                                     idref = idref.Substring(1, idref.Length - 1);
                                 }
-                                if (idref == xmlid)
-                                {
-                                    return true;
-                                }
+
+                                yield return idref;
                             }
                         }
                     }
@@ -305,293 +337,14 @@ namespace Tobi.Plugin.Descriptions
                                 {
                                     idref = idref.Substring(1, idref.Length - 1);
                                 }
-                                if (idref == xmlid)
-                                {
-                                    return true;
-                                }
+                                yield return idref;
                             }
                         }
                     }
                 }
             }
 
-            return false;
-        }
-
-
-        private bool getValidationText_Descriptions(ref string message)
-        {
-            bool first = true;
-
-            string strDupIDS = "";
-            foreach (var id in GetDuplicatedIDs(false, true))
-            {
-                strDupIDS += "[";
-                strDupIDS += id;
-                strDupIDS += "]";
-            }
-
-            if (!string.IsNullOrEmpty(strDupIDS))
-            {
-                if (!first)
-                {
-                    if (message != null)
-                    {
-                        message += "\n";
-                    }
-                }
-                first = false;
-                if (message != null)
-                {
-                    message += "- Some identifiers are duplicated (may be valid if used for grouping image objects): ";
-                    message += strDupIDS;
-                }
-            }
-
-            bool hasMessages = !first;
-            return hasMessages;
-        }
-
-        [NotifyDependsOn("ValidationText_Descriptions")]
-        public bool HasValidationWarning_Descriptions
-        {
-            get
-            {
-                string str = null;
-                return getValidationText_Descriptions(ref str);
-            }
-        }
-
-        [NotifyDependsOn("Descriptions")]
-        public string ValidationText_Descriptions
-        {
-            get
-            {
-                string str = "";
-                if (HasValidationWarning_Descriptions)
-                {
-                    getValidationText_Descriptions(ref str);
-                }
-                return str;
-            }
-        }
-
-        private bool getValidationText_Metadata(ref string message)
-        {
-            bool first = true;
-
-            string strDupIDS = "";
-            foreach (var id in GetDuplicatedIDs(true, false))
-            {
-                strDupIDS += "[";
-                strDupIDS += id;
-                strDupIDS += "]";
-            }
-
-            if (!string.IsNullOrEmpty(strDupIDS))
-            {
-                if (!first)
-                {
-                    if (message != null)
-                    {
-                        message += "\n";
-                    }
-                }
-                first = false;
-                if (message != null)
-                {
-                    message += "- Some identifiers are duplicated (may be valid if used for grouping metadata): ";
-                    message += strDupIDS;
-                }
-            }
-
-            bool hasMessages = !first;
-            return hasMessages;
-        }
-
-        [NotifyDependsOn("ValidationText_Metadata")]
-        public bool HasValidationWarning_Metadata
-        {
-            get
-            {
-                string str = null;
-                return getValidationText_Metadata(ref str);
-            }
-        }
-
-        [NotifyDependsOn("Metadatas")]
-        public string ValidationText_Metadata
-        {
-            get
-            {
-                string str = "";
-                if (HasValidationWarning_Metadata)
-                {
-                    getValidationText_Metadata(ref str);
-                }
-                return str;
-            }
-        }
-
-
-        private bool getValidationText_BasicImage(ref string message)
-        {
-            bool first = true;
-
-            AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_SimplifiedImage);
-            if (altContent != null)
-            {
-                if (altContent.Image != null && altContent.Text == null)
-                {
-                    if (!first)
-                    {
-                        if (message != null)
-                        {
-                            message += "\n";
-                        }
-                    }
-                    first = false;
-                    if (message != null)
-                    {
-                        message += "- It is recommended to specify a tour for the simplified image.";
-                    }
-                }
-                if (altContent.Image == null && altContent.Text != null)
-                {
-                    if (!first)
-                    {
-                        if (message != null)
-                        {
-                            message += "\n";
-                        }
-                    }
-                    first = false;
-                    if (message != null)
-                    {
-                        message += "- A tour is specified without its associated simplified image.";
-                    }
-                }
-            }
-            altContent = GetAltContent(DiagramContentModelHelper.D_Tactile);
-            if (altContent != null)
-            {
-                if (altContent.Image != null && altContent.Text == null)
-                {
-                    if (!first)
-                    {
-                        if (message != null)
-                        {
-                            message += "\n";
-                        }
-                    }
-                    first = false;
-                    if (message != null)
-                    {
-                        message += "- It is recommended to specify a tour for the tactile image.";
-                    }
-                }
-                if (altContent.Image == null && altContent.Text != null)
-                {
-                    if (!first)
-                    {
-                        if (message != null)
-                        {
-                            message += "\n";
-                        }
-                    }
-                    first = false;
-                    if (message != null)
-                    {
-                        message += "- A tour is specified without its associated tactile image.";
-                    }
-                }
-            }
-
-            bool hasMessages = !first;
-            return hasMessages;
-        }
-
-        [NotifyDependsOn("ValidationText_BasicImage")]
-        public bool HasValidationWarning_BasicImage
-        {
-            get
-            {
-                string str = null;
-                return getValidationText_BasicImage(ref str);
-            }
-        }
-
-        [NotifyDependsOn("Descriptions")]
-        public string ValidationText_BasicImage
-        {
-            get
-            {
-                string str = "";
-                if (HasValidationWarning_BasicImage)
-                {
-                    getValidationText_BasicImage(ref str);
-                }
-                return str;
-            }
-        }
-
-        private bool getValidationText_BasicText(ref string message)
-        {
-            bool first = true;
-
-            AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
-            if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
-            {
-                first = false;
-                if (message != null)
-                {
-                    message += "- A long description must be specified.";
-                }
-            }
-
-            altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
-            if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
-            {
-                if (!first)
-                {
-                    if (message != null)
-                    {
-                        message += "\n";
-                    }
-                }
-                first = false;
-                if (message != null)
-                {
-                    message += "- Specifying a summary is recommended.";
-                }
-            }
-
-            bool hasMessages = !first;
-            return hasMessages;
-        }
-
-        [NotifyDependsOn("ValidationText_BasicText")]
-        public bool HasValidationWarning_BasicText
-        {
-            get
-            {
-                string str = null;
-                return getValidationText_BasicText(ref str);
-            }
-        }
-
-        [NotifyDependsOn("Descriptions")]
-        public string ValidationText_BasicText
-        {
-            get
-            {
-                string str = "";
-                if (HasValidationWarning_BasicText)
-                {
-                    getValidationText_BasicText(ref str);
-                }
-                return str;
-            }
+            yield break;
         }
     }
 }

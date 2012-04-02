@@ -103,5 +103,86 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
+        private bool getValidationText_Descriptions(ref string message)
+        {
+            bool first = true;
+
+            string strDupIDS = "";
+            foreach (var id in GetDuplicatedIDs(false, true))
+            {
+                strDupIDS += "[";
+                strDupIDS += id;
+                strDupIDS += "]";
+            }
+
+            if (!string.IsNullOrEmpty(strDupIDS))
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Some identifiers are duplicated (this may be valid if used for grouping image objects): ";
+                    message += strDupIDS;
+                }
+            }
+
+            string strMissingIDS = "";
+            foreach (var id in GetReferencedMissingIDs(false, true))
+            {
+                strMissingIDS += "[";
+                strMissingIDS += id;
+                strMissingIDS += "]";
+            }
+
+            if (!string.IsNullOrEmpty(strMissingIDS))
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Some identifiers are referenced, but are missing: ";
+                    message += strMissingIDS;
+                }
+            }
+
+            bool hasMessages = !first;
+            return hasMessages;
+        }
+
+        [NotifyDependsOn("ValidationText_Descriptions")]
+        public bool HasValidationWarning_Descriptions
+        {
+            get
+            {
+                string str = null;
+                return getValidationText_Descriptions(ref str);
+            }
+        }
+
+        [NotifyDependsOn("Descriptions")]
+        public string ValidationText_Descriptions
+        {
+            get
+            {
+                string str = "";
+                if (HasValidationWarning_Descriptions)
+                {
+                    getValidationText_Descriptions(ref str);
+                }
+                return str;
+            }
+        }
     }
 }

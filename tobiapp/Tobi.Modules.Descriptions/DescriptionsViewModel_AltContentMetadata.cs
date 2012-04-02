@@ -30,6 +30,5 @@ namespace Tobi.Plugin.Descriptions
                 return m_SelectedAlternateContent.Metadatas.Count > 0;
             }
         }
-
     }
 }
