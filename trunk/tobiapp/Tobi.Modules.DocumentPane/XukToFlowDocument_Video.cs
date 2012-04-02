@@ -44,6 +44,9 @@ namespace Tobi.Plugin.DocumentPane
 {
     public partial class XukToFlowDocument
     {
+        public List<Action<object, RoutedEventArgs>> FlowDocumentLoadedEvents = new List<Action<object, RoutedEventArgs>>();
+        public List<Action<object, RoutedEventArgs>> FlowDocumentUnLoadedEvents = new List<Action<object, RoutedEventArgs>>();
+
         private TextElement walkBookTreeAndGenerateFlowDocument_video(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
         {
             if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia))
@@ -186,8 +189,8 @@ namespace Tobi.Plugin.DocumentPane
             MediaUriElement medElement_MEDIAKIT_DIRECTSHOW = null;
 #endif //ENABLE_WPF_MEDIAKIT
 
-            m_FlowDoc.Loaded += new RoutedEventHandler(
-                (o, e) =>
+            var reh = (Action<object, RoutedEventArgs>)(
+                (object o, RoutedEventArgs e) =>
                 {
 #if ENABLE_WPF_MEDIAKIT
                     if (Common.Settings.Default.EnableMediaKit)
@@ -895,24 +898,40 @@ namespace Tobi.Plugin.DocumentPane
 #endif //ENABLE_WPF_MEDIAKIT
                 });
 
-            m_FlowDoc.Unloaded += new RoutedEventHandler(
-                (o, e) =>
+            FlowDocumentLoadedEvents.Add(reh);
+            m_FlowDoc.Loaded += new RoutedEventHandler(reh);
+
+
+
+
+            var reh2 = (Action<object, RoutedEventArgs>)(
+                (object o, RoutedEventArgs e) =>
                 {
+                    bool thereWasOne = false;
                     if (medElement_WINDOWS_MEDIA_PLAYER != null)
                     {
+                        thereWasOne = true;
                         medElement_WINDOWS_MEDIA_PLAYER.Close();
+                        medElement_WINDOWS_MEDIA_PLAYER = null;
                     }
 
 #if ENABLE_WPF_MEDIAKIT
                     if (medElement_MEDIAKIT_DIRECTSHOW != null)
                     {
+                        thereWasOne = true;
                         medElement_MEDIAKIT_DIRECTSHOW.Close();
+                        medElement_MEDIAKIT_DIRECTSHOW = null;
                     }
 #endif //ENABLE_WPF_MEDIAKIT
 
-                    videoPanel.Children.RemoveAt(1);
+                    if (thereWasOne)
+                    {
+                        videoPanel.Children.RemoveAt(1);
+                    }
                 });
 
+            FlowDocumentUnLoadedEvents.Add(reh2);
+            m_FlowDoc.Unloaded += new RoutedEventHandler(reh2);
 
 
             return parent;

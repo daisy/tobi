@@ -3319,12 +3319,38 @@ namespace Tobi.Plugin.DocumentPane
             //    ExceptionHandler.Handle(ex, false, m_ShellView);
             //}
 
+            
             var action = (Action)(() =>
                              {
+                                 // NOTE: raises the UNLOAD + LOAD event sequence for the FlowDocument
                                  FlowDocReader.Document = TheFlowDocument;
                                  //converter.m_FlowDoc;
+
+
+                                 foreach (var ev in FlowDocumentUnLoadedEvents)
+                                 {
+                                     TheFlowDocument.Unloaded -= new RoutedEventHandler(ev);
+                                 }
+                                 FlowDocumentUnLoadedEvents.Clear();
+
+
+
+                                 FlowDocumentUnLoadedEvents.AddRange(converter.FlowDocumentUnLoadedEvents);
+                                 converter.FlowDocumentUnLoadedEvents.Clear();
+
+                                 FlowDocumentLoadedEvents.AddRange(converter.FlowDocumentLoadedEvents);
+                                 converter.FlowDocumentLoadedEvents.Clear();
                              });
+
+            foreach (var ev in FlowDocumentLoadedEvents)
+            {
+                TheFlowDocument.Loaded -= new RoutedEventHandler(ev);
+            }
+            FlowDocumentLoadedEvents.Clear();
+
+
             FlowDocReader.Document = new FlowDocument(new Paragraph(new Run(Tobi_Plugin_DocumentPane_Lang.CreatingFlowDocument)));
+
 
             // WE CAN'T USE A THREAD BECAUSE FLOWDOCUMENT CANNOT BE FROZEN FOR INTER-THREAD INSTANCE EXCHANGE !! :(
             m_ShellView.RunModalCancellableProgressTask(false,
@@ -3334,10 +3360,14 @@ namespace Tobi.Plugin.DocumentPane
                 action
                 );
 
+
             //GC.Collect();
             //GC.WaitForFullGCComplete();
             //GC.WaitForPendingFinalizers();
         }
+
+        public List<Action<object, RoutedEventArgs>> FlowDocumentLoadedEvents = new List<Action<object, RoutedEventArgs>>();
+        public List<Action<object, RoutedEventArgs>> FlowDocumentUnLoadedEvents = new List<Action<object, RoutedEventArgs>>();
 
         //private void selectNode(TreeNode node)
         //{

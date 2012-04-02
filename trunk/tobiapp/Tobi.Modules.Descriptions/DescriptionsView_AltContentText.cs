@@ -53,7 +53,7 @@ namespace Tobi.Plugin.Descriptions
             OnClick_ButtonEditText_Specific(DiagramContentModelHelper.D_SimplifiedImage);
         }
 
-        private void OnClick_ButtonEditText_Tactile(object sender, RoutedEventArgs e)
+        private void OnClick_ButtonEditText_TactileImage(object sender, RoutedEventArgs e)
         {
             OnClick_ButtonEditText_Specific(DiagramContentModelHelper.D_Tactile);
         }
@@ -92,7 +92,7 @@ namespace Tobi.Plugin.Descriptions
             BindingExpression be4 = DescriptionTextBox_SimplifiedLanguage.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
             if (be4 != null) be4.UpdateTarget();
 
-            BindingExpression be5 = DescriptionTextBox_Tactile.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
+            BindingExpression be5 = DescriptionTextBox_TactileImage.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
             if (be5 != null) be5.UpdateTarget();
 
             BindingExpression be6 = DescriptionTextBox_SimplifiedImage.GetBindingExpression(TextBoxReadOnlyCaretVisible.TextReadOnlyProperty);
@@ -129,7 +129,7 @@ namespace Tobi.Plugin.Descriptions
             OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_SimplifiedImage);
         }
 
-        private void OnClick_ButtonClearText_Tactile(object sender, RoutedEventArgs e)
+        private void OnClick_ButtonClearText_TactileImage(object sender, RoutedEventArgs e)
         {
             OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_Tactile);
         }
