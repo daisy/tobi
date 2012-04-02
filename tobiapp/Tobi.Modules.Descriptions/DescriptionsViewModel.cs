@@ -214,7 +214,7 @@ namespace Tobi.Plugin.Descriptions
                 {
                     if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (DiagramContentModelHelper.DIAGRAM_ElementNames.Contains(metadata.NameContentAttribute.Value)
+                        if (!DiagramContentModelHelper.DIAGRAM_ElementNames.Contains(metadata.NameContentAttribute.Value)
 
                             //!metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_LondDesc, StringComparison.OrdinalIgnoreCase)
                             //&& !metadata.NameContentAttribute.Value.Equals(DiagramContentModelHelper.D_Summary, StringComparison.OrdinalIgnoreCase)
