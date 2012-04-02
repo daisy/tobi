@@ -166,6 +166,44 @@ namespace Tobi.Plugin.Descriptions
         }
 
 
+        public AlternateContent GetAltContent(string diagramElementName)
+        {
+            if (m_UrakawaSession.DocumentProject == null) return null;
+
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null) return null;
+
+            AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+            if (altProp == null) return null;
+
+            if (altProp.AlternateContents.Count <= 0) return null;
+
+            AlternateContent altContentSpecific = null;
+
+            foreach (var altContent in altProp.AlternateContents.ContentsAs_Enumerable)
+            {
+                if (altContentSpecific != null)
+                {
+                    break;
+                }
+
+                foreach (var metadata in altContent.Metadatas.ContentsAs_Enumerable)
+                {
+                    if (metadata.NameContentAttribute.Name.Equals(DiagramContentModelHelper.DiagramElementName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (metadata.NameContentAttribute.Value.Equals(diagramElementName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            altContentSpecific = altContent;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return altContentSpecific;
+        }
+
 
         private int m_XmlIDCounter = -1;
         public string GetNewXmlID(string prefix)

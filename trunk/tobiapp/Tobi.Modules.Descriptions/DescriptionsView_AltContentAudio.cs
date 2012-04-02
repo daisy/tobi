@@ -19,6 +19,7 @@ using Tobi.Plugin.AudioPane;
 using Tobi.Plugin.Urakawa;
 using urakawa;
 using urakawa.core;
+using urakawa.daisy;
 using urakawa.data;
 using urakawa.exception;
 using urakawa.media;
@@ -38,6 +39,79 @@ namespace Tobi.Plugin.Descriptions
 {
     public partial class DescriptionsView
     {
+        private void ShowAudio(string diagramElementName)
+        {
+            m_ViewModel.ShowAdvancedEditor = true;
+            TabItem_Descriptions.IsSelected = true;
+            TabItem_Audio.IsSelected = true;
+
+            AlternateContent altContent = m_ViewModel.GetAltContent(diagramElementName);
+            if (altContent != null)
+            {
+                DescriptionsListView.SelectedItem = altContent;
+            }
+
+            //FocusHelper.Focus(ButtonAddEditAudio);
+
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)
+                (() =>
+                {
+                    var item = DescriptionsListView.ItemContainerGenerator.ContainerFromIndex(DescriptionsListView.SelectedIndex)
+                        as ListViewItem;
+                    if (item != null)
+                    {
+                        FocusHelper.Focus(item);
+                    }
+                }));
+        }
+
+        private void OnClick_ButtonAudio_LongDesc(object sender, RoutedEventArgs e)
+        {
+            ShowAudio(DiagramContentModelHelper.D_LondDesc);
+        }
+        private void OnClick_ButtonNoAudio_LongDesc(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonAudio_LongDesc(sender, e);
+        }
+
+        private void OnClick_ButtonAudio_Summary(object sender, RoutedEventArgs e)
+        {
+            ShowAudio(DiagramContentModelHelper.D_Summary);
+        }
+        private void OnClick_ButtonNoAudio_Summary(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonAudio_Summary(sender, e);
+        }
+
+        private void OnClick_ButtonAudio_SimplifiedLanguage(object sender, RoutedEventArgs e)
+        {
+            ShowAudio(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
+        }
+        private void OnClick_ButtonNoAudio_SimplifiedLanguage(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonAudio_SimplifiedLanguage(sender, e);
+        }
+
+
+        private void OnClick_ButtonAudio_TactileImage(object sender, RoutedEventArgs e)
+        {
+            ShowAudio(DiagramContentModelHelper.D_Tactile);
+        }
+        private void OnClick_ButtonNoAudio_TactileImage(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonAudio_TactileImage(sender, e);
+        }
+
+        private void OnClick_ButtonAudio_SimplifiedImage(object sender, RoutedEventArgs e)
+        {
+            ShowAudio(DiagramContentModelHelper.D_SimplifiedImage);
+        }
+        private void OnClick_ButtonNoAudio_SimplifiedImage(object sender, RoutedEventArgs e)
+        {
+            OnClick_ButtonAudio_SimplifiedImage(sender, e);
+        }
+
+
 
         // WE NEED TO CAPTURE TOGGLE COMMANDS SUCH AS PLAY/PAUSE, RECORD, MONITOR (same KeyGesture, different Commands).
         private PopupModalWindow m_AudioPopupModalWindow;
@@ -500,7 +574,7 @@ namespace Tobi.Plugin.Descriptions
         private void resetAudioPlayer()
         {
             stopAudioPlayer();
-            
+
             bool thereWasAMediaElement = false;
 
             if (medElement_WINDOWS_MEDIA_PLAYER != null)
