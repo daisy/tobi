@@ -107,6 +107,324 @@ namespace Tobi.Plugin.Descriptions
         {
             bool first = true;
 
+            int count = 0;
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_LondDesc))
+            {
+                count++;
+            }
+            if (count ==0)
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- No long description is specified.";
+                }
+            }
+            else if (count > 1)
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- There are more than one long description (";
+                    message += count;
+                    message += ")";
+                }
+            }
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_LondDesc))
+            {
+                if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- Text is missing for long description.";
+                    }
+
+                    break;
+                }
+            }
+
+            count = 0;
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Summary))
+            {
+                count++;
+            }
+            if (count == 0)
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Specifying a summary is recommended.";
+                }
+            }
+            else if (count > 1)
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- There are more than one summary (";
+                    message += count;
+                    message += ")";
+                }
+            }
+
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Summary))
+            {
+                if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- Text is missing for summary.";
+                    }
+
+                    break;
+                }
+            }
+
+            count = 0;
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_SimplifiedLanguageDescription))
+            {
+                count++;
+            }
+            if (count > 1)
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- There are more than one simplified language (";
+                    message += count;
+                    message += ")";
+                }
+            }
+
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_SimplifiedLanguageDescription))
+            {
+                if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- Text is missing for simplified language.";
+                    }
+
+                    break;
+                }
+            }
+
+            count = 0;
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_SimplifiedImage))
+            {
+                count++;
+            }
+            if (count > 1)
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- There are more than one simplified image (";
+                    message += count;
+                    message += "), which will be grouped if they have the same identifier and share the same tour.";
+                }
+            }
+
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_SimplifiedImage))
+            {
+                if (altContent.Image == null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- Image is missing for simplified image.";
+                    }
+
+                    break;
+                }
+            }
+
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_SimplifiedImage))
+            {
+                if (altContent.Image != null
+                    && (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text)))
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- Tour text is recommended for for simplified image.";
+                    }
+
+                    break;
+                }
+            }
+
+            count = 0;
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Tactile))
+            {
+                count++;
+            }
+            if (count > 1)
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- There are more than one tactile image (";
+                    message += count;
+                    message += "), which will be grouped if they have the same identifier and share the same tour.";
+                }
+            }
+
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Tactile))
+            {
+                if (altContent.Image == null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- Image is missing for tactile image.";
+                    }
+
+                    break;
+                }
+            }
+
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Tactile))
+            {
+                if (altContent.Image != null
+                    && (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text)))
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- Tour text is recommended for for tactile image.";
+                    }
+
+                    break;
+                }
+            }
+
+            string strInvalidDIAGRAMs = "";
+            foreach (var id in GetInvalidDIAGRAMnames())
+            {
+                strInvalidDIAGRAMs += "[";
+                strInvalidDIAGRAMs += id;
+                strInvalidDIAGRAMs += "]";
+            }
+
+            if (!string.IsNullOrEmpty(strInvalidDIAGRAMs))
+            {
+                if (!first)
+                {
+                    if (message != null)
+                    {
+                        message += "\n";
+                    }
+                }
+                first = false;
+                if (message != null)
+                {
+                    message += "- Unknown DIAGRAM elements: ";
+                    message += strInvalidDIAGRAMs;
+                }
+            }
+
             string strInvalidIDS = "";
             foreach (var id in GetInvalidIDs(false, true))
             {
