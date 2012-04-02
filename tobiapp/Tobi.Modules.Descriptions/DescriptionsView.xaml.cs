@@ -361,8 +361,8 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
         {
-            BindingExpression be = DescriptionImage.GetBindingExpression(Image.SourceProperty);
-            if (be != null) be.UpdateTarget();
+            forceRefreshUI();
+            forceRefreshUI_Image();
 
             if (m_OwnerWindow != null)
             {
