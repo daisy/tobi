@@ -188,19 +188,36 @@
 
     LastChildFill="True">
 
-      <TextBlock
-        Text="No issues detected."
-        Margin="0, 6, 0, 0"
-        
+      <GroupBox
+KeyboardNavigation.TabNavigation="Local"
       DockPanel.Dock="Bottom"
+    
+      Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+        Margin="0, 3, 0, 0" Padding="6" >
+        <GroupBox.Header>
+          
+          <TextBlock
+          Text="Notes"
+        
+          Focusable="true"
+          FontWeight="Bold"
+                KeyboardNavigation.IsTabStop="True"
+                KeyboardNavigation.TabIndex="1"
+
+        />
+        </GroupBox.Header>
+
+        <TextBlock
+        Text="No issues detected."
         
         Focusable="true"
         FontWeight="Bold"
               KeyboardNavigation.IsTabStop="True"
-              KeyboardNavigation.TabIndex="1"
-                  
-      Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+              KeyboardNavigation.TabIndex="2"
+
         />
+        </GroupBox>
+      
       
       <GroupBox
 
@@ -337,6 +354,7 @@
                 Margin="4,4,0,0"
                 Content="ZZZZ"
                   
+                IsEnabled="{Binding HasDescriptionText_LongDesc}"
   Visibility="{Binding HasAudio_LongDesc, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
                Padding="0"
@@ -474,6 +492,7 @@
                     Margin="4,4,0,0"
                     Content="ZZZZ"
                   
+                    IsEnabled="{Binding HasDescriptionText_Summary}"
       Visibility="{Binding HasAudio_Summary, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
                    Padding="0"
@@ -607,7 +626,7 @@
                 HorizontalAlignment="Right"
                       Margin="4,4,0,0"
                       Content="ZZZZ"
-                  
+                  IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
         Visibility="{Binding HasAudio_SimplifiedLanguage, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
                      Padding="0"
@@ -675,17 +694,36 @@
 
         LastChildFill="True">
 
-          <TextBlock
-            Text="No issues detected."
-            DockPanel.Dock="Bottom"
+          <GroupBox
+KeyboardNavigation.TabNavigation="Local"
+          DockPanel.Dock="Bottom"
     
-                Focusable="true"
-                FontWeight="Bold"
-                      KeyboardNavigation.IsTabStop="True"
-                      KeyboardNavigation.TabIndex="1"
-                Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-            Margin="0, 3, 0, 0" 
-            />
+          Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+            Margin="0, 3, 0, 0" Padding="6" >
+            <GroupBox.Header>
+
+              <TextBlock
+              Text="Notes"
+        
+              Focusable="true"
+              FontWeight="Bold"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1"
+
+        />
+            </GroupBox.Header>
+
+            <TextBlock
+            Text="No issues detected."
+        
+            Focusable="true"
+            FontWeight="Bold"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="2"
+
+        />
+          </GroupBox>
+
           
           <GroupBox
 
@@ -937,7 +975,7 @@
                     HorizontalAlignment="Right"
                           Margin="4,4,0,0"
                           Content="ZZZZ"
-                  
+                  IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
             Visibility="{Binding HasAudio_SimplifiedImage, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
                          Padding="0"
@@ -1162,6 +1200,7 @@
                             Margin="4,4,0,0"
                             Content="ZZZZ"
                   
+                            
               Visibility="{Binding HasAudio_TactileImage, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
       
                            Padding="0"
@@ -1195,6 +1234,7 @@
                             Margin="4,4,0,0"
                             Content="ZZZZ"
                   
+                            IsEnabled="{Binding HasDescriptionText_TactileImage}"
               Visibility="{Binding HasAudio_TactileImage, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
                            Padding="0"
@@ -1277,17 +1317,35 @@
 
       <DockPanel LastChildFill="true">
 
-        <TextBlock
-          Text="No issues detected."
-          DockPanel.Dock="Bottom"
+        <GroupBox
+KeyboardNavigation.TabNavigation="Local"
+        DockPanel.Dock="Bottom"
     
-              Focusable="true"
-              FontWeight="Bold"
-                    KeyboardNavigation.IsTabStop="True"
-                    KeyboardNavigation.TabIndex="1"
-              Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-          Margin="0, 3, 0, 0"
-            />
+        Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+          Margin="0, 3, 0, 0" Padding="6" >
+          <GroupBox.Header>
+
+            <TextBlock
+            Text="Notes"
+        
+            Focusable="true"
+            FontWeight="Bold"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="1"
+
+        />
+          </GroupBox.Header>
+
+          <TextBlock
+          Text="No issues detected."
+        
+          Focusable="true"
+          FontWeight="Bold"
+                KeyboardNavigation.IsTabStop="True"
+                KeyboardNavigation.TabIndex="2"
+
+        />
+        </GroupBox>
 
         <GroupBox
 
@@ -1772,17 +1830,35 @@ AlternationCount="2"
 
       <DockPanel LastChildFill="true">
 
-        <TextBlock
-          Text="No issues detected."
-          DockPanel.Dock="Bottom"
+        <GroupBox
+KeyboardNavigation.TabNavigation="Local"
+        DockPanel.Dock="Bottom"
     
-              Focusable="true"
-              FontWeight="Bold"
-                    KeyboardNavigation.IsTabStop="True"
-                    KeyboardNavigation.TabIndex="1"
-              Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-          Margin="0, 3, 0, 0"
-            />
+        Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+          Margin="0, 3, 0, 0" Padding="6" >
+          <GroupBox.Header>
+
+            <TextBlock
+            Text="Notes"
+        
+            Focusable="true"
+            FontWeight="Bold"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="1"
+
+        />
+          </GroupBox.Header>
+
+          <TextBlock
+          Text="No issues detected."
+        
+          Focusable="true"
+          FontWeight="Bold"
+                KeyboardNavigation.IsTabStop="True"
+                KeyboardNavigation.TabIndex="2"
+
+        />
+        </GroupBox>
 
         <GroupBox
 

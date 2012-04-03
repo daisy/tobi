@@ -390,10 +390,10 @@ namespace Tobi.Plugin.Descriptions
                 ButtonAudio_SimplifiedLanguage.Content = m_iconAudioHigh3.IconMedium;
 
                 m_iconAudioHigh4 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-low"), m_ShellView.MagnificationLevel);
-                ButtonNoAudio_SimplifiedImage.Content = m_iconAudioHigh4.IconMedium;
+                ButtonAudio_SimplifiedImage.Content = m_iconAudioHigh4.IconMedium;
 
                 m_iconAudioHigh5 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-low"), m_ShellView.MagnificationLevel);
-                ButtonNoAudio_TactileImage.Content = m_iconAudioHigh5.IconMedium;
+                ButtonAudio_TactileImage.Content = m_iconAudioHigh5.IconMedium;
             }
 
             if (m_iconAudioMuted1 == null)
