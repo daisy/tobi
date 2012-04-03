@@ -201,7 +201,7 @@ namespace Tobi.Plugin.Descriptions
             bool first = true;
 
             AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
-            if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+            if (altContent == null)
             {
                 if (!first)
                 {
@@ -216,9 +216,7 @@ namespace Tobi.Plugin.Descriptions
                     message += "- A long description must be specified.";
                 }
             }
-
-            altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
-            if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+            else if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
             {
                 if (!first)
                 {
@@ -230,9 +228,26 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Specifying a summary is recommended.";
+                    message += "- The long description text is missing.";
                 }
             }
+
+            //altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
+            //if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+            //{
+            //    if (!first)
+            //    {
+            //        if (message != null)
+            //        {
+            //            message += "\n";
+            //        }
+            //    }
+            //    first = false;
+            //    if (message != null)
+            //    {
+            //        message += "- Specifying a summary is recommended.";
+            //    }
+            //}
 
             bool hasMessages = !first;
             return hasMessages;
