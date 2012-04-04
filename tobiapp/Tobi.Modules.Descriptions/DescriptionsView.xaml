@@ -277,12 +277,35 @@ KeyboardNavigation.TabNavigation="Local"
     
         Margin="0, 6, 0, 0" Padding="6" >
         <GroupBox.Header>
-          <TextBlock
+
+          <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+            Click="OnClick_LongDescription"
+            KeyUp="OnKeyUp_LongDescription"
             Focusable="true"
-            FontWeight="Bold"
                   KeyboardNavigation.IsTabStop="True"
-                  KeyboardNavigation.TabIndex="1"
-                      Text="Long Description"/>
+                  KeyboardNavigation.TabIndex="1">
+            <Hyperlink.ToolTip>
+              <ToolTip>
+                <TextBlock Width="150" Margin="3"
+                           TextWrapping="WrapWithOverflow"
+                           Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.LongDescriptionHelp}">
+                </TextBlock>
+              </ToolTip>
+            </Hyperlink.ToolTip>
+            <Hyperlink.Style>
+              <Style TargetType="{x:Type Hyperlink}">
+                <Style.Setters>
+                  <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.LongDescriptionHelp}">
+                  </Setter>
+                </Style.Setters>
+              </Style>
+            </Hyperlink.Style>
+            <Run
+            FontWeight="Bold"
+            Text="Long Description"></Run>
+          </Hyperlink>
+          
         </GroupBox.Header>
 
         <DockPanel LastChildFill="True">
@@ -413,12 +436,36 @@ KeyboardNavigation.TabNavigation="Local"
     
         Margin="0, 6, 0, 0" Padding="6" >
         <GroupBox.Header>
-          <TextBlock
+
+          <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+            Click="OnClick_SummaryDescription"
+            KeyUp="OnKeyUp_SummaryDescription"
             Focusable="true"
-            FontWeight="Bold"
                   KeyboardNavigation.IsTabStop="True"
-                  KeyboardNavigation.TabIndex="1"
-                      Text="Summary"/>
+                  KeyboardNavigation.TabIndex="1">
+            <Hyperlink.ToolTip>
+              <ToolTip>
+                <TextBlock Width="150" Margin="3"
+                           TextWrapping="WrapWithOverflow"
+                           Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SummaryDescriptionHelp}">
+                </TextBlock>
+              </ToolTip>
+            </Hyperlink.ToolTip>
+            <Hyperlink.Style>
+              <Style TargetType="{x:Type Hyperlink}">
+                <Style.Setters>
+                  <Setter Property="AutomationProperties.Name"
+                          Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SummaryDescriptionHelp}">
+                  </Setter>
+                </Style.Setters>
+              </Style>
+            </Hyperlink.Style>
+            <Run
+            FontWeight="Bold"
+            Text="Summary"></Run>
+          </Hyperlink>
+
         </GroupBox.Header>
 
         <DockPanel LastChildFill="True">
@@ -550,12 +597,35 @@ KeyboardNavigation.TabNavigation="Local"
     
           Margin="0, 6, 0, 0" Padding="6" >
           <GroupBox.Header>
-            <TextBlock
+
+            <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+              Click="OnClick_SimplifiedDescription"
+              KeyUp="OnKeyUp_SimplifiedDescription"
               Focusable="true"
-              FontWeight="Bold"
                     KeyboardNavigation.IsTabStop="True"
-                    KeyboardNavigation.TabIndex="1"
-                        Text="Simplified Language"/>
+                    KeyboardNavigation.TabIndex="1">
+              <Hyperlink.ToolTip>
+                <ToolTip>
+                  <TextBlock Width="150" Margin="3"
+                             TextWrapping="WrapWithOverflow"
+                             Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SimplifiedDescriptionHelp}">
+                  </TextBlock>
+                </ToolTip>
+              </Hyperlink.ToolTip>
+              <Hyperlink.Style>
+                <Style TargetType="{x:Type Hyperlink}">
+                  <Style.Setters>
+                    <Setter Property="AutomationProperties.Name"
+                            Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SimplifiedDescriptionHelp}">
+                    </Setter>
+                  </Style.Setters>
+                </Style>
+              </Hyperlink.Style>
+              <Run
+              FontWeight="Bold"
+              Text="Simplified Language"></Run>
+            </Hyperlink>
           </GroupBox.Header>
 
           <DockPanel LastChildFill="True">
@@ -781,14 +851,14 @@ KeyboardNavigation.TabNavigation="Local"
           Grid.Column="0"
     
               Margin="0, 6, 0, 0" Padding="6" >
-              <GroupBox.Header>
+              <!--<GroupBox.Header>
                 <TextBlock
                   Focusable="true"
                   FontWeight="Bold"
                         KeyboardNavigation.IsTabStop="True"
                         KeyboardNavigation.TabIndex="1"
                             Text="Simplified Image"/>
-              </GroupBox.Header>
+              </GroupBox.Header>-->
 
               <Grid
                     HorizontalAlignment="Stretch"
@@ -811,14 +881,38 @@ KeyboardNavigation.TabNavigation="Local"
                            VerticalAlignment="Stretch"
                            HorizontalAlignment="Left"
                           >
-                  <TextBlock Text="Image:"
-                             FontWeight="Bold"
-                             Margin="0,0,0,6"
-                               Focusable="true"
-                             KeyboardNavigation.IsTabStop="true"
-                             KeyboardNavigation.TabIndex="1"
-                              DockPanel.Dock="Top"
-                             ></TextBlock>
+                    <TextBlock
+                              DockPanel.Dock="Top">
+                      <Hyperlink
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                      Click="OnClick_SimplifiedImage"
+                      KeyUp="OnKeyUp_SimplifiedImage"
+                      Focusable="true"
+                            KeyboardNavigation.IsTabStop="True"
+                            KeyboardNavigation.TabIndex="1">
+                      <Hyperlink.ToolTip>
+                        <ToolTip>
+                          <TextBlock 
+                             Width="150" Margin="3"
+                                     TextWrapping="WrapWithOverflow"
+                                     Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SimplifiedImageHelp}">
+                          </TextBlock>
+                        </ToolTip>
+                      </Hyperlink.ToolTip>
+                      <Hyperlink.Style>
+                        <Style TargetType="{x:Type Hyperlink}">
+                          <Style.Setters>
+                            <Setter Property="AutomationProperties.Name"
+                                    Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SimplifiedImageHelp}">
+                            </Setter>
+                          </Style.Setters>
+                        </Style>
+                      </Hyperlink.Style>
+                      <Run
+                      FontWeight="Bold"
+                      Text="Simplified Image"></Run>
+                    </Hyperlink>
+                    </TextBlock>
                     
                   <StackPanel Orientation="Horizontal"
                               DockPanel.Dock="Bottom"
@@ -902,15 +996,38 @@ KeyboardNavigation.TabNavigation="Local"
           Grid.Row="2"
           Grid.Column="0">
 
-                <TextBlock Text="Tour:"
-                           FontWeight="Bold"
-                               Focusable="true"
-                             Margin="0,0,0,6"
-                              DockPanel.Dock="Top"
-                           KeyboardNavigation.IsTabStop="true"
-                           KeyboardNavigation.TabIndex="5"
-                             ></TextBlock>
-                <StackPanel Orientation="Horizontal"
+                    <TextBlock
+                                DockPanel.Dock="Top">
+                      <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                        Click="OnClick_Tour"
+                        KeyUp="OnKeyUp_Tour"
+                        Focusable="true"
+                              KeyboardNavigation.IsTabStop="True"
+                              KeyboardNavigation.TabIndex="5">
+                        <Hyperlink.ToolTip>
+                          <ToolTip>
+                            <TextBlock Width="150" Margin="3"
+                                       TextWrapping="WrapWithOverflow"
+                                       Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TourHelp}">
+                            </TextBlock>
+                          </ToolTip>
+                        </Hyperlink.ToolTip>
+                        <Hyperlink.Style>
+                          <Style TargetType="{x:Type Hyperlink}">
+                            <Style.Setters>
+                              <Setter Property="AutomationProperties.Name"
+                                      Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TourHelp}">
+                              </Setter>
+                            </Style.Setters>
+                          </Style>
+                        </Hyperlink.Style>
+                        <Run
+                        FontWeight="Bold"
+                        Text="Tour"></Run>
+                      </Hyperlink>
+                    </TextBlock>
+                    <StackPanel Orientation="Horizontal"
                             DockPanel.Dock="Bottom"
                     HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch">
@@ -1038,14 +1155,14 @@ KeyboardNavigation.TabNavigation="Local"
           Grid.Column="1"
     
               Margin="12, 6, 0, 0" Padding="6" >
-              <GroupBox.Header>
+              <!--<GroupBox.Header>
                 <TextBlock
                   Focusable="true"
                   FontWeight="Bold"
                         KeyboardNavigation.IsTabStop="True"
                         KeyboardNavigation.TabIndex="1"
                             Text="Tactile Image"/>
-              </GroupBox.Header>
+              </GroupBox.Header>-->
 
               <Grid
                     HorizontalAlignment="Stretch"
@@ -1068,15 +1185,38 @@ KeyboardNavigation.TabNavigation="Local"
                          VerticalAlignment="Stretch"
                          HorizontalAlignment="Left"
                           >
-                  <TextBlock Text="Image:"
-                             FontWeight="Bold"
-                             Margin="0,0,0,6"
-                               Focusable="true"
-                             KeyboardNavigation.IsTabStop="true"
-                             KeyboardNavigation.TabIndex="1"
+                  <TextBlock
+                            DockPanel.Dock="Top">
+                    <Hyperlink
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                               DockPanel.Dock="Top"
-                             ></TextBlock>
-
+                      Click="OnClick_TactileImage"
+                      KeyUp="OnKeyUp_TactileImage"
+                      Focusable="true"
+                            KeyboardNavigation.IsTabStop="True"
+                            KeyboardNavigation.TabIndex="1">
+                    <Hyperlink.ToolTip>
+                      <ToolTip>
+                        <TextBlock Width="150" Margin="3"
+                                   TextWrapping="WrapWithOverflow"
+                                   Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TactileImageHelp}">
+                        </TextBlock>
+                      </ToolTip>
+                    </Hyperlink.ToolTip>
+                    <Hyperlink.Style>
+                      <Style TargetType="{x:Type Hyperlink}">
+                        <Style.Setters>
+                          <Setter Property="AutomationProperties.Name"
+                                  Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TactileImageHelp}">
+                          </Setter>
+                        </Style.Setters>
+                      </Style>
+                    </Hyperlink.Style>
+                    <Run
+                    FontWeight="Bold"
+                    Text="Tactile Image"></Run>
+                  </Hyperlink>
+                  </TextBlock>
                   <StackPanel Orientation="Horizontal"
                               DockPanel.Dock="Bottom"
                       HorizontalAlignment="Stretch"
@@ -1159,15 +1299,39 @@ KeyboardNavigation.TabNavigation="Local"
         Grid.Row="2"
         Grid.Column="0">
 
-                  <TextBlock Text="Tour:"
-                             FontWeight="Bold"
-                                 Focusable="true"
-                               Margin="0,0,0,6"
-                                DockPanel.Dock="Top"
-                             KeyboardNavigation.IsTabStop="true"
-                             KeyboardNavigation.TabIndex="5"
-                             ></TextBlock>
-                  <StackPanel Orientation="Horizontal"
+                  <TextBlock
+                              DockPanel.Dock="Top">
+                    <Hyperlink
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                                        Click="OnClick_Tour"
+                                        KeyUp="OnKeyUp_Tour"
+                                        Focusable="true"
+                                              KeyboardNavigation.IsTabStop="True"
+                                              KeyboardNavigation.TabIndex="5">
+                    <Hyperlink.ToolTip>
+                      <ToolTip>
+                        <TextBlock Width="150" Margin="3"
+                                   TextWrapping="WrapWithOverflow"
+                                   Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TourHelp}">
+                        </TextBlock>
+                      </ToolTip>
+                    </Hyperlink.ToolTip>
+                    <Hyperlink.Style>
+                      <Style TargetType="{x:Type Hyperlink}">
+                        <Style.Setters>
+                          <Setter Property="AutomationProperties.Name"
+                                  Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TourHelp}">
+                          </Setter>
+                        </Style.Setters>
+                      </Style>
+                    </Hyperlink.Style>
+                    <Run
+                    FontWeight="Bold"
+                    Text="Tour"></Run>
+                  </Hyperlink>
+                  </TextBlock>
+                    
+                    <StackPanel Orientation="Horizontal"
                               DockPanel.Dock="Bottom"
                       HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch">
