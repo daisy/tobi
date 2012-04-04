@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common.UI;
@@ -193,5 +196,95 @@ namespace Tobi.Plugin.Descriptions
             return null;
         }
 
+        private void OnKeyUp_Tour(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.None
+                && e.Key == Key.Space)
+            {
+                OnClick_Tour(null, null);
+            }
+        }
+
+        private void OnClick_Tour(object sender, RoutedEventArgs e)
+        {
+            //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
+            Process.Start(Tobi_Plugin_Descriptions_Lang.TourHelpURI);
+        }
+
+        private void OnKeyUp_TactileImage(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.None
+                && e.Key == Key.Space)
+            {
+                OnClick_TactileImage(null, null);
+            }
+        }
+
+        private void OnClick_TactileImage(object sender, RoutedEventArgs e)
+        {
+            //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
+            Process.Start(Tobi_Plugin_Descriptions_Lang.TactileImageHelpURI);
+        }
+
+        private void OnKeyUp_SimplifiedImage(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.None
+                && e.Key == Key.Space)
+            {
+                OnClick_SimplifiedImage(null, null);
+            }
+        }
+
+        private void OnClick_SimplifiedImage(object sender, RoutedEventArgs e)
+        {
+            //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
+            Process.Start(Tobi_Plugin_Descriptions_Lang.SimplifiedImageHelpURI);
+        }
+
+
+        private void OnKeyUp_SimplifiedDescription(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.None
+                && e.Key == Key.Space)
+            {
+                OnClick_SimplifiedDescription(null, null);
+            }
+        }
+
+        private void OnClick_SimplifiedDescription(object sender, RoutedEventArgs e)
+        {
+            //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
+            Process.Start(Tobi_Plugin_Descriptions_Lang.SimplifiedDescriptionHelpURI);
+        }
+
+        private void OnKeyUp_SummaryDescription(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.None
+                && e.Key == Key.Space)
+            {
+                OnClick_SummaryDescription(null, null);
+            }
+        }
+
+        private void OnClick_SummaryDescription(object sender, RoutedEventArgs e)
+        {
+            //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
+            Process.Start(Tobi_Plugin_Descriptions_Lang.SummaryDescriptionHelpURI);
+        }
+
+        private void OnKeyUp_LongDescription(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.None
+                && e.Key == Key.Space)
+            {
+                OnClick_LongDescription(null, null);
+            }
+        }
+
+        private void OnClick_LongDescription(object sender, RoutedEventArgs e)
+        {
+            //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
+            Process.Start(Tobi_Plugin_Descriptions_Lang.LongDescriptionHelpURI);
+        }
     }
 }
