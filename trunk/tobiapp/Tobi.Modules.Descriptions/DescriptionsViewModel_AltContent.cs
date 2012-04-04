@@ -158,7 +158,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- Text is missing for long description.";
+                        message += "- The long description text is missing.";
                     }
 
                     break;
@@ -217,7 +217,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- Text is missing for summary.";
+                        message += "- The summary text is missing.";
                     }
 
                     break;
@@ -261,7 +261,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- Text is missing for simplified language.";
+                        message += "-The simplified language text is missing.";
                     }
 
                     break;
