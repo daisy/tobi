@@ -2283,72 +2283,6 @@ KeyboardNavigation.TabNavigation="Local"
             </TabItem>
 
 
-            <TabItem Header="Image">
-              <DockPanel LastChildFill="True"
-          KeyboardNavigation.TabNavigation="Local">
-
-                <!-- TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.OriginalRelativePath, Mode=OneWay}"
-                         DockPanel.Dock="Top"
-                         HorizontalAlignment="Center"/>
-              <TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
-                         DockPanel.Dock="Bottom"/ -->
-
-                <StackPanel Orientation="Horizontal"
-                            DockPanel.Dock="Bottom"
-                    HorizontalAlignment="Stretch">
-                  <Button
-                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                         Control.TabIndex="2"
-                    x:Name="ButtonOpenImage"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Stretch"
-                          Margin="0,4,0,0"
-                          Content="Open..."
-                        
-                    Click="OnClick_ButtonOpenImage"/>
-                  <Button
-                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                         Control.TabIndex="3"
-                    x:Name="ButtonClearImage"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Stretch"
-                          Margin="4,4,0,0"
-                          Content="Clear"
-                          IsEnabled="{Binding HasDescriptionImage}"
-                    Click="OnClick_ButtonClearImage"/>
-                </StackPanel>
-                <Image
-                  Focusable="True"
-                    KeyboardNavigation.IsTabStop="True"
-                         KeyboardNavigation.TabIndex="1"
-                
-                          IsEnabled="{Binding HasDescriptionImage}"
-                  x:Name="DescriptionImage"
-                  HorizontalAlignment="Stretch"
-                         VerticalAlignment="Stretch"
-                            Stretch = "Uniform"
-                            StretchDirection="DownOnly"
-                  ToolTip="{Binding ElementName=DescriptionsListView, Path=SelectedItem, Mode=OneWay, Converter={Descriptions:AlternateContentToImagePathConverter}}"
-                  Source="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay, Converter={UI:PathToImageSourceConverter}}"
-              >
-                  <Image.Style>
-                    <Style TargetType="{x:Type Image}">
-                      <Style.Setters>
-                        <Setter Property="AutomationProperties.Name">
-                          <Setter.Value>
-                            <MultiBinding StringFormat="Image full path: {0}"  Mode="OneWay">
-                              <Binding ElementName="DescriptionsListView" Path="SelectedItem" Mode="OneWay" Converter="{Descriptions:AlternateContentToImagePathConverter}"/>
-                              <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
-                            </MultiBinding>
-                          </Setter.Value>
-                        </Setter>
-                      </Style.Setters>
-                    </Style>
-                  </Image.Style>
-                </Image>
-              </DockPanel>
-            </TabItem>
-
 
             <TabItem Header="Audio" x:Name="TabItem_Audio">
 
@@ -2447,7 +2381,75 @@ KeyboardNavigation.TabNavigation="Local"
 
             </TabItem>
 
-            <TabItem Header="Attributes">
+
+                            <TabItem Header="Image">
+                                <DockPanel LastChildFill="True"
+          KeyboardNavigation.TabNavigation="Local">
+
+                                    <!-- TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.OriginalRelativePath, Mode=OneWay}"
+                         DockPanel.Dock="Top"
+                         HorizontalAlignment="Center"/>
+              <TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
+                         DockPanel.Dock="Bottom"/ -->
+
+                                    <StackPanel Orientation="Horizontal"
+                            DockPanel.Dock="Bottom"
+                    HorizontalAlignment="Stretch">
+                                        <Button
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="2"
+                    x:Name="ButtonOpenImage"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="0,4,0,0"
+                          Content="Open..."
+                        
+                    Click="OnClick_ButtonOpenImage"/>
+                                        <Button
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="3"
+                    x:Name="ButtonClearImage"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="4,4,0,0"
+                          Content="Clear"
+                          IsEnabled="{Binding HasDescriptionImage}"
+                    Click="OnClick_ButtonClearImage"/>
+                                    </StackPanel>
+                                    <Image
+                  Focusable="True"
+                    KeyboardNavigation.IsTabStop="True"
+                         KeyboardNavigation.TabIndex="1"
+                
+                          IsEnabled="{Binding HasDescriptionImage}"
+                  x:Name="DescriptionImage"
+                  HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"
+                            Stretch = "Uniform"
+                            StretchDirection="DownOnly"
+                  ToolTip="{Binding ElementName=DescriptionsListView, Path=SelectedItem, Mode=OneWay, Converter={Descriptions:AlternateContentToImagePathConverter}}"
+                  Source="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay, Converter={UI:PathToImageSourceConverter}}"
+              >
+                                        <Image.Style>
+                                            <Style TargetType="{x:Type Image}">
+                                                <Style.Setters>
+                                                    <Setter Property="AutomationProperties.Name">
+                                                        <Setter.Value>
+                                                            <MultiBinding StringFormat="Image full path: {0}"  Mode="OneWay">
+                                                                <Binding ElementName="DescriptionsListView" Path="SelectedItem" Mode="OneWay" Converter="{Descriptions:AlternateContentToImagePathConverter}"/>
+                                                                <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
+                                                            </MultiBinding>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style.Setters>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </DockPanel>
+                            </TabItem>
+
+
+                            <TabItem Header="Attributes">
 
               <DockPanel LastChildFill="True"
           KeyboardNavigation.TabNavigation="Local">
