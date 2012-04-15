@@ -216,4 +216,7 @@
   <data name="Yes" xml:space="preserve">
     <value>_Yes</value>
   </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>_Help</value>
+  </data>
 </root>

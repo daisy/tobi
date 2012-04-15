@@ -58,6 +58,7 @@ namespace Tobi.Plugin.Urakawa
         private int m_MenuBarId_5;
         private int m_MenuBarId_6 = -1;
         private int m_MenuBarId_7;
+        private int m_MenuBarId_8;
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
@@ -105,7 +106,12 @@ namespace Tobi.Plugin.Urakawa
             m_MenuBarId_7 = m_MenuBarView.AddMenuBarGroup(
                     Tobi_Common_Lang.Menu_Tools, PreferredPosition.Last, true,
                     Tobi_Common_Lang.Menu_BrowseFolder, PreferredPosition.First, false,
-                    new[] { m_UrakawaSession.OpenDocumentFolderCommand });
+                    new[] {m_UrakawaSession.OpenDocumentFolderCommand });
+
+            m_MenuBarId_8 = m_MenuBarView.AddMenuBarGroup(
+                    Tobi_Common_Lang.Menu_Help, PreferredPosition.Last, true,
+                    null, PreferredPosition.First, false,
+                    new[] { m_UrakawaSession.OpenUserManualCommand, m_UrakawaSession.OpenImageDescriptionsManualCommand });
 
             m_Logger.Log(@"Urakawa session commands pushed to menubar", Category.Debug, Priority.Medium);
         }
