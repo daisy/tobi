@@ -241,7 +241,7 @@ namespace Tobi.Plugin.Urakawa
                 {
                     m_Logger.Log(@"ShellView.OpenImageDescriptionsManualCommand", Category.Debug, Priority.Medium);
 
-                    m_ShellView.ExecuteShellProcess("http://www.daisy.org/tobi/ImageDescriptionWorkflow");
+                    m_ShellView.ExecuteShellProcess("http://www.daisy.org/tobi/image-description-manual");
                 },
                  () => true,
                 Settings_KeyGestures.Default,
