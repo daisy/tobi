@@ -6,12 +6,14 @@ using System.IO;
 using System.Xml;
 using System.Text.RegularExpressions;
 using AudioLib;
+using Microsoft.Practices.Composite.Logging;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.daisy;
 using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.media;
+using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
 using urakawa.media.data.image;
@@ -356,46 +358,136 @@ namespace Tobi.Plugin.Descriptions
                         {
                             string extension = Path.GetExtension(fullPath);
 
+                            bool isWav = String.Equals(extension, DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase);
+
+                            AudioLibPCMFormat wavFormat = null;
+                            if (isWav)
+                            {
+                                Stream fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                                try
+                                {
+                                    uint dataLength;
+                                    wavFormat = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
+                                }
+                                finally
+                                {
+                                    fileStream.Close();
+                                }
+                            }
+                            string originalFilePath = null;
+
+                            DebugFix.Assert(treeNode.Presentation.MediaDataManager.EnforceSinglePCMFormat);
+
+                            bool wavNeedsConversion = false;
+                            if (wavFormat != null)
+                            {
+                                wavNeedsConversion = !wavFormat.IsCompatibleWith(treeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data);
+                            }
+                            if (!isWav || wavNeedsConversion)
+                            {
+                                originalFilePath = fullPath;
+
+                                var audioFormatConvertorSession =
+                                    new AudioFormatConvertorSession(
+                                    //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
+                                    treeNode.Presentation.DataProviderManager.DataFileDirectoryFullPath,
+                                treeNode.Presentation.MediaDataManager.DefaultPCMFormat, m_UrakawaSession.IsAcmCodecsDisabled);
+
+                                //filePath = m_AudioFormatConvertorSession.ConvertAudioFileFormat(filePath);
+
+                                bool cancelled = false;
+
+                                var converter = new AudioClipConverter(audioFormatConvertorSession, fullPath);
+
+                                bool result = ShellView.RunModalCancellableProgressTask(true,
+                                    "Converting audio...",
+                                    converter,
+                                    () =>
+                                    {
+                                        m_Logger.Log(@"Audio conversion CANCELLED", Category.Debug, Priority.Medium);
+                                        cancelled = true;
+                                    },
+                                    () =>
+                                    {
+                                        m_Logger.Log(@"Audio conversion DONE", Category.Debug, Priority.Medium);
+                                        cancelled = false;
+                                    });
+
+                                if (cancelled)
+                                {
+                                    DebugFix.Assert(!result);
+                                    break;
+                                }
+
+                                fullPath = converter.ConvertedFilePath;
+                                if (string.IsNullOrEmpty(fullPath))
+                                {
+                                    break;
+                                }
+
+                                m_Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, fullPath),
+                                           Category.Debug, Priority.Medium);
+
+                                //Stream fileStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                                //try
+                                //{
+                                //    uint dataLength;
+                                //    wavFormat = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
+                                //}
+                                //finally
+                                //{
+                                //    fileStream.Close();
+                                //}
+                            }
+
+
                             ManagedAudioMedia manAudioMedia = treeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
-                            AudioMediaData audioMediaData = treeNode.Presentation.MediaDataFactory.CreateAudioMediaData(extension);
+                            AudioMediaData audioMediaData = treeNode.Presentation.MediaDataFactory.CreateAudioMediaData(DataProviderFactory.AUDIO_WAV_EXTENSION);
                             manAudioMedia.AudioMediaData = audioMediaData;
 
-                            Stream wavStream = null;
-                            try
-                            {
-                                wavStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                            FileDataProvider dataProv = (FileDataProvider)treeNode.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                            dataProv.InitByCopyingExistingFile(fullPath);
+                            audioMediaData.AppendPcmData(dataProv);
 
-                                uint dataLength;
-                                AudioLibPCMFormat pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
+                            //                            Stream wavStream = null;
+                            //                            try
+                            //                            {
+                            //                                wavStream = File.Open(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-                                if (!treeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.IsCompatibleWith(pcmInfo))
-                                {
-                                    wavStream.Close();
-                                    wavStream = null;
+                            //                                uint dataLength;
+                            //                                AudioLibPCMFormat pcmInfo = AudioLibPCMFormat.RiffHeaderParse(wavStream, out dataLength);
 
-                                    AudioFormatConvertorSession audioFormatConvertorSession =
-                                        new AudioFormatConvertorSession(
-                                        //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
-                                        treeNode.Presentation.DataProviderManager.DataFileDirectoryFullPath,
-                                    treeNode.Presentation.MediaDataManager.DefaultPCMFormat, m_UrakawaSession.IsAcmCodecsDisabled);
+                            //                                if (!treeNode.Presentation.MediaDataManager.DefaultPCMFormat.Data.IsCompatibleWith(pcmInfo))
+                            //                                {
+                            //#if DEBUG
+                            //                                    Debugger.Break();
+                            //#endif //DEBUG
+                            //                                    wavStream.Close();
+                            //                                    wavStream = null;
 
-                                    string newfullWavPath = audioFormatConvertorSession.ConvertAudioFileFormat(fullPath);
+                            //                                    var audioFormatConvertorSession =
+                            //                                        new AudioFormatConvertorSession(
+                            //                                        //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
+                            //                                        treeNode.Presentation.DataProviderManager.DataFileDirectoryFullPath,
+                            //                                    treeNode.Presentation.MediaDataManager.DefaultPCMFormat, m_UrakawaSession.IsAcmCodecsDisabled);
 
-                                    FileDataProvider dataProv = (FileDataProvider)treeNode.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                                    dataProv.InitByMovingExistingFile(newfullWavPath);
-                                    audioMediaData.AppendPcmData(dataProv);
-                                }
-                                else // use original wav file by copying it to data directory
-                                {
-                                    FileDataProvider dataProv = (FileDataProvider)treeNode.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
-                                    dataProv.InitByCopyingExistingFile(fullPath);
-                                    audioMediaData.AppendPcmData(dataProv);
-                                }
-                            }
-                            finally
-                            {
-                                if (wavStream != null) wavStream.Close();
-                            }
+                            //                                    string newfullWavPath = audioFormatConvertorSession.ConvertAudioFileFormat(fullPath);
+
+                            //                                    FileDataProvider dataProv = (FileDataProvider)treeNode.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                            //                                    dataProv.InitByMovingExistingFile(newfullWavPath);
+                            //                                    audioMediaData.AppendPcmData(dataProv);
+                            //                                }
+                            //                                else // use original wav file by copying it to data directory
+                            //                                {
+                            //                                    FileDataProvider dataProv = (FileDataProvider)treeNode.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                            //                                    dataProv.InitByCopyingExistingFile(fullPath);
+                            //                                    audioMediaData.AppendPcmData(dataProv);
+                            //                                }
+                            //                            }
+                            //                            finally
+                            //                            {
+                            //                                if (wavStream != null) wavStream.Close();
+                            //                            }
 
 
 

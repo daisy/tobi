@@ -484,9 +484,14 @@ namespace Tobi
 
         public void DimBackgroundWhile(Action action)
         {
-            var aLayer = AdornerLayer.GetAdornerLayer((Visual)Content);
+            DimBackgroundWhile(action, this);
+        }
 
-            var theAdorner = new DimAdorner((UIElement)Content);
+        public void DimBackgroundWhile(Action action, Window owner)
+        {
+            var aLayer = AdornerLayer.GetAdornerLayer((Visual)owner.Content);
+
+            var theAdorner = new DimAdorner((UIElement)owner.Content);
             if (aLayer != null)
             {
                 aLayer.Add(theAdorner);
@@ -494,13 +499,23 @@ namespace Tobi
 
             //Effect = new BlurEffect();
 
-            action.Invoke();
-
-            //Effect = null;
-
-            if (aLayer != null)
+            try
             {
-                aLayer.Remove(theAdorner);
+                action.Invoke();
+
+                //Effect = null;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+            finally
+            {
+                if (aLayer != null)
+                {
+                    aLayer.Remove(theAdorner);
+                }
             }
         }
 
@@ -1180,9 +1195,9 @@ namespace Tobi
                 try
                 {
 #endif
-                    reporter.RunTask();
+                reporter.RunTask();
 
-                    args.Result = @"dummy result";
+                args.Result = @"dummy result";
 #if DEBUG
                 }
                 catch (Exception ex)

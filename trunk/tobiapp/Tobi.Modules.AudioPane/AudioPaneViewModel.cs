@@ -21,38 +21,6 @@ using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
 {
-    public class AudioClipConverter : DualCancellableProgressReporter
-    {
-        private readonly string SourceFilePath;
-        private readonly AudioFormatConvertorSession AudioFormatConvertorSession;
-
-        public AudioClipConverter(AudioFormatConvertorSession audioFormatConvertorSession, string sourceFilePath)
-        {
-            AudioFormatConvertorSession = audioFormatConvertorSession;
-            SourceFilePath = sourceFilePath;
-
-            AddSubCancellable(audioFormatConvertorSession);
-        }
-
-        public string ConvertedFilePath
-        {
-            get;
-            private set;
-        }
-
-        public override void DoWork()
-        {
-            try
-            {
-                ConvertedFilePath = AudioFormatConvertorSession.ConvertAudioFileFormat(SourceFilePath);
-            }
-            finally
-            {
-                RemoveSubCancellable(AudioFormatConvertorSession);
-            }
-        }
-    }
-
     ///<summary>
     /// Single shared instance (singleton) of the audio view
     ///</summary>

@@ -104,17 +104,6 @@ namespace Tobi.Common.UI
         private PopupModalWindow(IShellView shellView)
         {
             ShellView = shellView;
-            if (this != Application.Current.MainWindow)
-            {
-                try
-                {
-                    Owner = Application.Current.MainWindow;
-                }
-                catch
-                {
-                    Console.WriteLine(@"Failed to set Owner of popup dialog window !");
-                }
-            }
 
             //if (this != Application.Current.MainWindow)
             //{
@@ -227,7 +216,58 @@ namespace Tobi.Common.UI
             ActiveAware.IsActive = true;
             if (ShellView != null)
             {
-                ShellView.DimBackgroundWhile(() => ShowDialog());
+                if (Owner != null)
+                {
+                    ShellView.DimBackgroundWhile(() =>
+                                                     {
+                                                         try
+                                                         {
+                                                             ShowDialog();
+                                                         }
+                                                         catch (Exception ex)
+                                                         {
+                                                             if (Owner != null)
+                                                             {
+                                                                 //Owner.ForceCursor = true;
+
+                                                                 Owner.Cursor = Cursors.Arrow;
+                                                                 this.Cursor = Cursors.Arrow;
+                                                             }
+
+                                                             ForceClose(DialogButton.ESC);
+
+                                                             ExceptionHandler.Handle(ex, false, ShellView);
+                                                         }
+                                                     }, Owner);
+                }
+                else
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+
+                    ShellView.DimBackgroundWhile(() =>
+                                                     {
+                                                         try
+                                                         {
+                                                             ShowDialog();
+                                                         }
+                                                         catch (Exception ex)
+                                                         {
+                                                             if (Owner != null)
+                                                             {
+                                                                 //Owner.ForceCursor = true;
+
+                                                                 Owner.Cursor = Cursors.Arrow;
+                                                                 this.Cursor = Cursors.Arrow;
+                                                             }
+
+                                                             ForceClose(DialogButton.ESC);
+
+                                                             ExceptionHandler.Handle(ex, false, ShellView);
+                                                         }
+                                                     });
+                }
             }
             else
             {
@@ -237,7 +277,17 @@ namespace Tobi.Common.UI
                 }
                 catch (Exception ex)
                 {
-                    // oops !
+                    if (Owner != null)
+                    {
+                        //Owner.ForceCursor = true;
+
+                        Owner.Cursor = Cursors.Arrow;
+                        this.Cursor = Cursors.Arrow;
+                    }
+
+                    ForceClose(DialogButton.ESC);
+
+                    ExceptionHandler.Handle(ex, false, ShellView);
                 }
             }
         }
@@ -264,7 +314,21 @@ namespace Tobi.Common.UI
             ShowInTaskbar = true;
 
             ActiveAware.IsActive = true;
-            Show();
+
+            try
+            {
+                Show();
+            }
+            catch
+            {
+                if (Owner != null)
+                {
+                    //Owner.ForceCursor = true;
+
+                    Owner.Cursor = Cursors.Arrow;
+                    this.Cursor = Cursors.Arrow;
+                }
+            }
         }
 
         private void ensureVisible()
@@ -341,9 +405,32 @@ namespace Tobi.Common.UI
             object content,
             DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton,
             double width, double height,
-            object details, double detailsHeight)
+            object details, double detailsHeight, Window owner = null)
             : this(shellView)
         {
+
+            if (this != Application.Current.MainWindow)
+            {
+                try
+                {
+                    if (owner != null)
+                    {
+                        Owner = owner;
+                    }
+                    else
+                    {
+                        Owner = Application.Current.MainWindow;
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine(@"Failed to set Owner of popup dialog window !");
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                }
+            }
+
             var zoom = (ShellView != null ? ShellView.MagnificationLevel : (Double)FindResource("MagnificationLevel"));
 
             Left = -1;
