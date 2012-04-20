@@ -36,6 +36,8 @@ namespace Tobi.Plugin.Descriptions
 
         }
 
+        public IShellView ShellView;
+
         private readonly IEventAggregator m_EventAggregator;
         private readonly ILoggerFacade m_Logger;
 

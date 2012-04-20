@@ -336,6 +336,8 @@ namespace Tobi.Common
         VisualBrush LoadGnomeFoxtrotIcon(string resourceKey);
 
         void DimBackgroundWhile(Action action);
+        void DimBackgroundWhile(Action action, Window owner);
+
         void ExecuteShellProcess(string shellCmd);
     }
 }

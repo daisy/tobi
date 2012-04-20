@@ -137,7 +137,7 @@ namespace Tobi.Plugin.Descriptions
                                                          panel,
                                                          PopupModalWindow.DialogButtonsSet.Ok,
                                                          PopupModalWindow.DialogButton.Ok,
-                                                         true, 300, 160, null, 0);
+                                                         true, 300, 160, null, 0, m_DescriptionPopupModalWindow);
                     //view.OwnerWindow = windowPopup;
 
 
@@ -266,7 +266,7 @@ namespace Tobi.Plugin.Descriptions
                                                          panel,
                                                          PopupModalWindow.DialogButtonsSet.Ok,
                                                          PopupModalWindow.DialogButton.Ok,
-                                                         true, 300, 160, null, 0);
+                                                         true, 300, 160, null, 0, m_DescriptionPopupModalWindow);
                     //view.OwnerWindow = windowPopup;
 
                     windowPopup.ShowModal();

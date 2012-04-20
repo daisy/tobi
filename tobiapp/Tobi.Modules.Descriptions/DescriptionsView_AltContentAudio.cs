@@ -111,7 +111,7 @@ namespace Tobi.Plugin.Descriptions
             OnClick_ButtonAudio_SimplifiedImage(sender, e);
         }
 
-
+        private PopupModalWindow m_DescriptionPopupModalWindow;
 
         // WE NEED TO CAPTURE TOGGLE COMMANDS SUCH AS PLAY/PAUSE, RECORD, MONITOR (same KeyGesture, different Commands).
         private PopupModalWindow m_AudioPopupModalWindow;
@@ -143,285 +143,292 @@ namespace Tobi.Plugin.Descriptions
             Application.Current.MainWindow.Cursor = Cursors.Wait;
             this.Cursor = Cursors.Wait; //m_ShellView
 
-            stopAudioPlayer();
-
-
-
-            var pres = m_Session.DocumentProject.Presentations.Get(0);
-
-            var project = new Project();
-            project.SetPrettyFormat(m_Session.DocumentProject.IsPrettyFormat());
-
-            // a proxy project/presentation/treenode (and UrakawaSession wrapper) to bridge the standard audio recording feature, without altering the main document.
-            var presentation = new Presentation();
-            presentation.Project = project;
-            presentation.RootUri = pres.RootUri;
-            int index = pres.DataProviderManager.DataFileDirectory.IndexOf(DataProviderManager.DefaultDataFileDirectorySeparator + DataProviderManager.DefaultDataFileDirectory);
-            string prefix = pres.DataProviderManager.DataFileDirectory.Substring(0, index);
-            string suffix = "--IMAGE_DESCRIPTIONS_TEMP_AUDIO";
-            //DebugFix.Assert(Path.GetFileName(pres.RootUri.LocalPath) == prefix);
-            presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(prefix + suffix);
-            presentation.MediaDataManager.DefaultPCMFormat = pres.MediaDataManager.DefaultPCMFormat.Copy();
-            presentation.MediaDataManager.EnforceSinglePCMFormat = true;
-
-            //DebugFix.Assert(presentation.DataProviderManager.DataFileDirectoryFullPath == pres.DataProviderManager.DataFileDirectoryFullPath + suffix);
-
-
-            project.Presentations.Insert(0, presentation);
-
-            var treeNode = presentation.TreeNodeFactory.Create();
-            presentation.RootNode = treeNode;
-
-            if (altContent.Audio != null)
+            try
             {
-                var audioChannel = presentation.ChannelFactory.CreateAudioChannel();
-                audioChannel.Name = "The DESCRIPTION Audio Channel";
+                stopAudioPlayer();
 
-                ManagedAudioMedia audio1 = presentation.MediaFactory.CreateManagedAudioMedia();
-                AudioMediaData audioData1 = presentation.MediaDataFactory.CreateAudioMediaData();
-                audio1.AudioMediaData = audioData1;
 
-                // WARNING: WavAudioMediaData implementation differs from AudioMediaData:
-                // the latter is naive and performs a stream binary copy, the latter is optimized and re-uses existing WavClips. 
-                //  WARNING 2: The audio data from the given parameter gets emptied !
-                //audio1.AudioMediaData.MergeWith(manMedia.AudioMediaData);
 
-                if (!audio1.AudioMediaData.PCMFormat.Data.IsCompatibleWith(altContent.Audio.AudioMediaData.PCMFormat.Data))
+                var pres = m_Session.DocumentProject.Presentations.Get(0);
+
+                var project = new Project();
+                project.SetPrettyFormat(m_Session.DocumentProject.IsPrettyFormat());
+
+                // a proxy project/presentation/treenode (and UrakawaSession wrapper) to bridge the standard audio recording feature, without altering the main document.
+                var presentation = new Presentation();
+                presentation.Project = project;
+                presentation.RootUri = pres.RootUri;
+                int index = pres.DataProviderManager.DataFileDirectory.IndexOf(DataProviderManager.DefaultDataFileDirectorySeparator + DataProviderManager.DefaultDataFileDirectory);
+                string prefix = pres.DataProviderManager.DataFileDirectory.Substring(0, index);
+                string suffix = "--IMAGE_DESCRIPTIONS_TEMP_AUDIO";
+                //DebugFix.Assert(Path.GetFileName(pres.RootUri.LocalPath) == prefix);
+                presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(prefix + suffix);
+                presentation.MediaDataManager.DefaultPCMFormat = pres.MediaDataManager.DefaultPCMFormat.Copy();
+                presentation.MediaDataManager.EnforceSinglePCMFormat = true;
+
+                //DebugFix.Assert(presentation.DataProviderManager.DataFileDirectoryFullPath == pres.DataProviderManager.DataFileDirectoryFullPath + suffix);
+
+
+                project.Presentations.Insert(0, presentation);
+
+                var treeNode = presentation.TreeNodeFactory.Create();
+                presentation.RootNode = treeNode;
+
+                if (altContent.Audio != null)
                 {
-                    throw new InvalidDataFormatException(
-                        "Can not merge description audio with a AudioMediaData with incompatible audio data");
+                    var audioChannel = presentation.ChannelFactory.CreateAudioChannel();
+                    audioChannel.Name = "The DESCRIPTION Audio Channel";
+
+                    ManagedAudioMedia audio1 = presentation.MediaFactory.CreateManagedAudioMedia();
+                    AudioMediaData audioData1 = presentation.MediaDataFactory.CreateAudioMediaData();
+                    audio1.AudioMediaData = audioData1;
+
+                    // WARNING: WavAudioMediaData implementation differs from AudioMediaData:
+                    // the latter is naive and performs a stream binary copy, the latter is optimized and re-uses existing WavClips. 
+                    //  WARNING 2: The audio data from the given parameter gets emptied !
+                    //audio1.AudioMediaData.MergeWith(manMedia.AudioMediaData);
+
+                    if (!audio1.AudioMediaData.PCMFormat.Data.IsCompatibleWith(altContent.Audio.AudioMediaData.PCMFormat.Data))
+                    {
+                        throw new InvalidDataFormatException(
+                            "Can not merge description audio with a AudioMediaData with incompatible audio data");
+                    }
+                    Stream stream = altContent.Audio.AudioMediaData.OpenPcmInputStream();
+                    try
+                    {
+                        audio1.AudioMediaData.AppendPcmData(stream, null); //manMedia.AudioMediaData.AudioDuration
+                    }
+                    finally
+                    {
+                        stream.Close();
+                    }
+
+                    ChannelsProperty chProp = presentation.RootNode.GetOrCreateChannelsProperty();
+                    chProp.SetMedia(audioChannel, audio1);
                 }
-                Stream stream = altContent.Audio.AudioMediaData.OpenPcmInputStream();
-                try
+
+                if (altContent.Text != null)
                 {
-                    audio1.AudioMediaData.AppendPcmData(stream, null); //manMedia.AudioMediaData.AudioDuration
+                    var textChannel = presentation.ChannelFactory.CreateTextChannel();
+                    textChannel.Name = "The DESCRIPTION Text Channel";
+
+                    TextMedia text1 = presentation.MediaFactory.CreateTextMedia();
+                    text1.Text = extractHumanText(altContent.Text.Text);
+
+                    ChannelsProperty chProp = presentation.RootNode.GetOrCreateChannelsProperty();
+                    chProp.SetMedia(textChannel, text1);
                 }
-                finally
+
+                presentation.RootNode.XukInAfter_TextMediaCache();
+
+                var audioEventAggregator = new EventAggregator();
+
+                var audioSession = new UrakawaSession(
+                    m_Logger,
+                    m_Container,
+                    audioEventAggregator, //m_EventAggregator,
+                    this //m_ShellView
+                    );
+                audioSession.DocumentProject = project;
+
+                var audioViewModel = new AudioPaneViewModel(
+                    m_Logger,
+                    audioEventAggregator, //m_EventAggregator,
+                    this, //m_ShellView,
+                    audioSession
+                    );
+                audioViewModel.IsSimpleMode = true;
+                audioViewModel.InputBindingManager = this; //m_ShellView
+                //m_audioViewModel.PlaybackRate = xxx; TODO: copy from main document session
+
+                var audioView = new AudioPaneView(
+                    m_Logger,
+                    audioEventAggregator, //m_EventAggregator,
+                    audioViewModel,
+                    this //m_ShellView
+                    );
+
+                var windowPopup = new PopupModalWindow(m_ShellView,
+                                                      UserInterfaceStrings.EscapeMnemonic("(audio) " + Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc),
+                                                      audioView,
+                                                      PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                      PopupModalWindow.DialogButton.Cancel,
+                                                      true, 850, 320, null, 0, m_DescriptionPopupModalWindow);
+
+                windowPopup.IgnoreEscape = true;
+
+                //UIElement win = TryFindParent<Window>(this);
+
+                // WE HAND PICK THE COMMAND KEY BINDINGS INSTEAD OF RELYING ON AUTO REGISTRATION!
+
+                windowPopup.AddInputBinding(audioViewModel.CommandPause.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandPlay.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandStopMonitor.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandStartMonitor.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandStopRecord.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandStartRecord.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandInsertFile.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandPlayPreviewLeft.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandPlayPreviewRight.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandRewind.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandFastForward.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandGotoBegining.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandGotoEnd.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandDeleteAudioSelection.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandSelectAll.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandSelectLeft.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandSelectRight.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandClearSelection.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandZoomFitFull.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoomSelection.KeyBinding);
+
+                windowPopup.AddInputBinding(audioSession.UndoCommand.KeyBinding);
+                windowPopup.AddInputBinding(audioSession.RedoCommand.KeyBinding);
+
+                windowPopup.AddInputBinding(audioViewModel.CommandGenTTS.KeyBinding);
+
+
+                windowPopup.AddInputBinding(audioViewModel.CommandPlaybackRateUp.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandPlaybackRateDown.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandPlaybackRateReset.KeyBinding);
+
+                //var bindings = Application.Current.MainWindow.InputBindings;
+                //foreach (var binding in bindings)
+                //{
+                //    if (binding is KeyBinding)
+                //    {
+                //        var keyBinding = (KeyBinding)binding;
+                //        if (keyBinding.Command == m_ShellView.ExitCommand)
+                //        {
+                //            continue;
+                //        }
+                //        windowPopup.AddInputBinding(keyBinding);
+                //    }
+                //}
+
+                //windowPopup.InputBindings.AddRange(Application.Current.MainWindow.InputBindings);
+
+                windowPopup.KeyUp += (object o, KeyEventArgs ev) =>
                 {
-                    stream.Close();
+                    var key = (ev.Key == Key.System
+                                    ? ev.SystemKey
+                                    : (ev.Key == Key.ImeProcessed ? ev.ImeProcessedKey : ev.Key));
+
+                    if (key == Key.Escape)
+                    {
+                        audioEventAggregator.GetEvent<EscapeEvent>().Publish(null);
+                    }
+                };
+
+                windowPopup.Closed += (o, ev) => Dispatcher.BeginInvoke(
+                    DispatcherPriority.Background,
+                    (Action)(() =>
+                    {
+                        //
+                    }));
+
+                //presentation.UndoRedoManager.StartTransaction
+                //    ("(AUDIO) " + Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc,
+                //    "(AUDIO) " + Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_LongDesc);
+
+
+
+                windowPopup.Loaded += (o, ev) => Dispatcher.BeginInvoke(
+                    DispatcherPriority.Background,
+                    (Action)(() =>
+                    {
+                        audioViewModel.OnProjectLoaded(audioSession.DocumentProject);
+
+                        //Tuple<TreeNode, TreeNode> treeNodeSelection = m_Session.GetTreeNodeSelection();
+                        //--
+                        audioSession.PerformTreeNodeSelection(audioSession.DocumentProject.Presentations.Get(0).RootNode);
+                        //--
+                        //m_audioSession.ForceInitTreeNodeSelection(m_audioSession.DocumentProject.Presentations.Get(0).RootNode);
+                        //
+                        //var treeNodeSelection = new Tuple<TreeNode, TreeNode>(m_audioSession.DocumentProject.Presentations.Get(0).RootNode, null);
+                        //var oldTreeNodeSelection = new Tuple<TreeNode, TreeNode>(treeNodeSelection.Item1.Parent, null);
+                        //var tuple = new Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>(oldTreeNodeSelection, treeNodeSelection);
+                        //m_audioViewModel.OnTreeNodeSelectionChanged(tuple);
+
+                    }));
+
+                Application.Current.MainWindow.Cursor = Cursors.Arrow;
+                this.Cursor = Cursors.Arrow; //m_ShellView
+
+                m_AudioPopupModalWindow = windowPopup;
+                m_AudioPopupModalWindow.ShowModal();
+                m_AudioPopupModalWindow = null;
+
+                audioViewModel.OnProjectUnLoaded(audioSession.DocumentProject);
+
+                //bool empty = m_audioSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionEmpty;
+
+
+
+                if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
+                {
+                    //presentation.UndoRedoManager.EndTransaction();
+
+                    //if (DescriptionsListView.SelectedIndex < 0) return;
+                    //AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
+
+                    // Can be null (or empty audio media data), but that's ok.
+                    ManagedAudioMedia manMedia_ = presentation.RootNode.GetManagedAudioMedia();
+
+                    m_ViewModel.SetDescriptionAudio(altContent, manMedia_);
+
+                    DescriptionsListView.Items.Refresh();
+
+                    //presentation.UndoRedoManager.Undo();
+                }
+                else
+                {
+                    //presentation.UndoRedoManager.CancelTransaction();
                 }
 
-                ChannelsProperty chProp = presentation.RootNode.GetOrCreateChannelsProperty();
-                chProp.SetMedia(audioChannel, audio1);
-            }
+                //while (presentation.UndoRedoManager.CanUndo)
+                //{
+                //    presentation.UndoRedoManager.Undo();
+                //}
 
-            if (altContent.Text != null)
-            {
-                var textChannel = presentation.ChannelFactory.CreateTextChannel();
-                textChannel.Name = "The DESCRIPTION Text Channel";
+                presentation.UndoRedoManager.FlushCommands();
 
-                TextMedia text1 = presentation.MediaFactory.CreateTextMedia();
-                text1.Text = extractHumanText(altContent.Text.Text);
-
-                ChannelsProperty chProp = presentation.RootNode.GetOrCreateChannelsProperty();
-                chProp.SetMedia(textChannel, text1);
-            }
-
-            presentation.RootNode.XukInAfter_TextMediaCache();
-
-            var audioEventAggregator = new EventAggregator();
-
-            var audioSession = new UrakawaSession(
-                m_Logger,
-                m_Container,
-                audioEventAggregator, //m_EventAggregator,
-                this //m_ShellView
-                );
-            audioSession.DocumentProject = project;
-
-            var audioViewModel = new AudioPaneViewModel(
-                m_Logger,
-                audioEventAggregator, //m_EventAggregator,
-                this, //m_ShellView,
-                audioSession
-                );
-            audioViewModel.IsSimpleMode = true;
-            audioViewModel.InputBindingManager = this; //m_ShellView
-            //m_audioViewModel.PlaybackRate = xxx; TODO: copy from main document session
-
-            var audioView = new AudioPaneView(
-                m_Logger,
-                audioEventAggregator, //m_EventAggregator,
-                audioViewModel,
-                this //m_ShellView
-                );
-
-            var windowPopup = new PopupModalWindow(m_ShellView,
-                                                  UserInterfaceStrings.EscapeMnemonic("(audio) " + Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc),
-                                                  audioView,
-                                                  PopupModalWindow.DialogButtonsSet.OkCancel,
-                                                  PopupModalWindow.DialogButton.Cancel,
-                                                  true, 850, 320, null, 0);
-
-            windowPopup.IgnoreEscape = true;
-
-            //UIElement win = TryFindParent<Window>(this);
-
-            // WE HAND PICK THE COMMAND KEY BINDINGS INSTEAD OF RELYING ON AUTO REGISTRATION!
-
-            windowPopup.AddInputBinding(audioViewModel.CommandPause.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandPlay.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandStopMonitor.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandStartMonitor.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandStopRecord.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandStartRecord.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandInsertFile.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandPlayPreviewLeft.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandPlayPreviewRight.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandRewind.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandFastForward.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandGotoBegining.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandGotoEnd.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandDeleteAudioSelection.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandSelectAll.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandSelectLeft.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandSelectRight.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandClearSelection.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandZoomFitFull.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandZoomSelection.KeyBinding);
-
-            windowPopup.AddInputBinding(audioSession.UndoCommand.KeyBinding);
-            windowPopup.AddInputBinding(audioSession.RedoCommand.KeyBinding);
-
-            windowPopup.AddInputBinding(audioViewModel.CommandGenTTS.KeyBinding);
-
-
-            windowPopup.AddInputBinding(audioViewModel.CommandPlaybackRateUp.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandPlaybackRateDown.KeyBinding);
-            windowPopup.AddInputBinding(audioViewModel.CommandPlaybackRateReset.KeyBinding);
-
-            //var bindings = Application.Current.MainWindow.InputBindings;
-            //foreach (var binding in bindings)
-            //{
-            //    if (binding is KeyBinding)
-            //    {
-            //        var keyBinding = (KeyBinding)binding;
-            //        if (keyBinding.Command == m_ShellView.ExitCommand)
-            //        {
-            //            continue;
-            //        }
-            //        windowPopup.AddInputBinding(keyBinding);
-            //    }
-            //}
-
-            //windowPopup.InputBindings.AddRange(Application.Current.MainWindow.InputBindings);
-
-            windowPopup.KeyUp += (object o, KeyEventArgs ev) =>
-            {
-                var key = (ev.Key == Key.System
-                                ? ev.SystemKey
-                                : (ev.Key == Key.ImeProcessed ? ev.ImeProcessedKey : ev.Key));
-
-                if (key == Key.Escape)
+                ManagedAudioMedia manMedia = presentation.RootNode.GetManagedAudioMedia();
+                if (manMedia != null)
                 {
-                    audioEventAggregator.GetEvent<EscapeEvent>().Publish(null);
+                    manMedia.AudioMediaData = null;
                 }
-            };
 
-            windowPopup.Closed += (o, ev) => Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                (Action)(() =>
+                string deletedDataFolderPath = audioSession.DataCleanup(false);
+                string[] files = Directory.GetFiles(deletedDataFolderPath);
+                if (files.Length != 0)
                 {
-                    //
-                }));
+                    //m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
 
-            //presentation.UndoRedoManager.StartTransaction
-            //    ("(AUDIO) " + Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc,
-            //    "(AUDIO) " + Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_LongDesc);
-
-
-
-            windowPopup.Loaded += (o, ev) => Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                (Action)(() =>
-                {
-                    audioViewModel.OnProjectLoaded(audioSession.DocumentProject);
-
-                    //Tuple<TreeNode, TreeNode> treeNodeSelection = m_Session.GetTreeNodeSelection();
-                    //--
-                    audioSession.PerformTreeNodeSelection(audioSession.DocumentProject.Presentations.Get(0).RootNode);
-                    //--
-                    //m_audioSession.ForceInitTreeNodeSelection(m_audioSession.DocumentProject.Presentations.Get(0).RootNode);
-                    //
-                    //var treeNodeSelection = new Tuple<TreeNode, TreeNode>(m_audioSession.DocumentProject.Presentations.Get(0).RootNode, null);
-                    //var oldTreeNodeSelection = new Tuple<TreeNode, TreeNode>(treeNodeSelection.Item1.Parent, null);
-                    //var tuple = new Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>(oldTreeNodeSelection, treeNodeSelection);
-                    //m_audioViewModel.OnTreeNodeSelectionChanged(tuple);
-
-                }));
-
-
-            Application.Current.MainWindow.Cursor = Cursors.Arrow;
-            this.Cursor = Cursors.Arrow; //m_ShellView
-
-            m_AudioPopupModalWindow = windowPopup;
-            windowPopup.ShowModal();
-            m_AudioPopupModalWindow = null;
-
-            audioViewModel.OnProjectUnLoaded(audioSession.DocumentProject);
-
-            //bool empty = m_audioSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionEmpty;
-
-
-
-            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
-            {
-                //presentation.UndoRedoManager.EndTransaction();
-
-                //if (DescriptionsListView.SelectedIndex < 0) return;
-                //AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
-
-                // Can be null (or empty audio media data), but that's ok.
-                ManagedAudioMedia manMedia_ = presentation.RootNode.GetManagedAudioMedia();
-
-                m_ViewModel.SetDescriptionAudio(altContent, manMedia_);
-
-                DescriptionsListView.Items.Refresh();
-
-                //presentation.UndoRedoManager.Undo();
-            }
-            else
-            {
-                //presentation.UndoRedoManager.CancelTransaction();
-            }
-
-            //while (presentation.UndoRedoManager.CanUndo)
-            //{
-            //    presentation.UndoRedoManager.Undo();
-            //}
-
-            presentation.UndoRedoManager.FlushCommands();
-
-            ManagedAudioMedia manMedia = presentation.RootNode.GetManagedAudioMedia();
-            if (manMedia != null)
-            {
-                manMedia.AudioMediaData = null;
-            }
-
-            string deletedDataFolderPath = audioSession.DataCleanup(false);
-            string[] files = Directory.GetFiles(deletedDataFolderPath);
-            if (files.Length != 0)
-            {
-                //m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
-
-                //TODO: delete containing folder(s) ?
-                foreach (var file in files)
-                {
-                    File.Delete(file);
+                    //TODO: delete containing folder(s) ?
+                    foreach (var file in files)
+                    {
+                        File.Delete(file);
+                    }
                 }
-            }
 
-            resetAudioPlayer();
+                resetAudioPlayer();
+            }
+            finally
+            {
+                Application.Current.MainWindow.Cursor = Cursors.Arrow;
+                this.Cursor = Cursors.Arrow; //m_ShellView
+            }
         }
 
         private void OnClick_ButtonClearAudio(object sender, RoutedEventArgs e)
@@ -512,6 +519,11 @@ namespace Tobi.Plugin.Descriptions
         public void DimBackgroundWhile(Action action)
         {
             m_ShellView.DimBackgroundWhile(action);
+        }
+
+        public void DimBackgroundWhile(Action action, Window owner)
+        {
+            m_ShellView.DimBackgroundWhile(action, owner);
         }
 
         public void ExecuteShellProcess(string shellCmd)

@@ -2507,9 +2507,10 @@ namespace Tobi.Plugin.DocumentPane
             }
             else
             {
-#if DEBUG
-                Debugger.Break();
-#endif //DEBUG
+                // no text happens with empty P paragraphs!
+//#if DEBUG
+//                Debugger.Break();
+//#endif //DEBUG
 
                 // COSTLY (walks parent chain in tree)
                 TreeNode.TextDirection dir = node.GetTextDirectionality();

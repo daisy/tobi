@@ -44,6 +44,7 @@ namespace Tobi.Plugin.Descriptions
         private readonly IUnityContainer m_Container;
         private readonly IEventAggregator m_EventAggregator;
 
+        
         [ImportingConstructor]
         public DescriptionsView(
             ILoggerFacade logger,
@@ -63,6 +64,7 @@ namespace Tobi.Plugin.Descriptions
             m_Session = session;
 
             m_ViewModel = viewModel;
+            m_ViewModel.ShellView = m_ShellView;
 
             m_Logger.Log("DescriptionsView.ctor", Category.Debug, Priority.Medium);
 
@@ -99,7 +101,7 @@ namespace Tobi.Plugin.Descriptions
                                                  panel,
                                                  PopupModalWindow.DialogButtonsSet.YesNo,
                                                  PopupModalWindow.DialogButton.Yes,
-                                                 true, 300, 160, null, 0);
+                                                 true, 300, 160, null, 0, m_DescriptionPopupModalWindow);
 
             popup.ShowModal();
 
@@ -221,7 +223,11 @@ namespace Tobi.Plugin.Descriptions
                 DebugFix.Assert(altProp != null);
             }
 
+            m_DescriptionPopupModalWindow = windowPopup;
+
             windowPopup.ShowModal();
+
+            m_DescriptionPopupModalWindow = null;
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok
                 || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Apply)
@@ -301,12 +307,17 @@ namespace Tobi.Plugin.Descriptions
             Application.Current.MainWindow.Cursor = Cursors.Wait;
             this.Cursor = Cursors.Wait; //m_ShellView
 
-            m_ViewModel.ImportDiagramXML(fullPath);
+            try
+            {
+                m_ViewModel.ImportDiagramXML(fullPath);
 
-            forceRefreshDataUI();
-
-            Application.Current.MainWindow.Cursor = Cursors.Arrow;
-            this.Cursor = Cursors.Arrow; //m_ShellView
+                forceRefreshDataUI();
+            }
+            finally
+            {
+                Application.Current.MainWindow.Cursor = Cursors.Arrow;
+                this.Cursor = Cursors.Arrow; //m_ShellView
+            }
         }
 
 

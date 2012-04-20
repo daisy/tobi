@@ -145,7 +145,7 @@ namespace Tobi.Plugin.Descriptions
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.OkCancel,
                                                        PopupModalWindow.DialogButton.Ok,
-                                                       true, 300, 160, null, 40);
+                                                       true, 300, 160, null, 40, m_DescriptionPopupModalWindow);
 
                 windowPopup.EnableEnterKeyDefault = true;
 
@@ -217,7 +217,7 @@ namespace Tobi.Plugin.Descriptions
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.OkCancel,
                                                        PopupModalWindow.DialogButton.Ok,
-                                                       true, 300, 160, null, 40);
+                                                       true, 300, 160, null, 40, m_DescriptionPopupModalWindow);
 
                 windowPopup.EnableEnterKeyDefault = true;
 
