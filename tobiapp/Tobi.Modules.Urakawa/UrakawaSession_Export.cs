@@ -94,7 +94,7 @@ namespace Tobi.Plugin.Urakawa
                                                                panel,
                                                                PopupModalWindow.DialogButtonsSet.OkCancel,
                                                                PopupModalWindow.DialogButton.Cancel,
-                                                               true, 350, 160, null, 40);
+                                                               true, 350, 160, null, 40,null);
 
                         windowPopup.ShowModal();
 
@@ -223,7 +223,7 @@ namespace Tobi.Plugin.Urakawa
                                                            panel_,
                                                            PopupModalWindow.DialogButtonsSet.Ok,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           false, 300, 180, null, 40);
+                                                           false, 300, 180, null, 40, null);
 
                     windowPopup_.ShowModal();
 

@@ -313,7 +313,7 @@ namespace Tobi.Common.UI
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
                                                    !doExit, 500, 250,
-                                                   (String.IsNullOrEmpty(exStackTrace) ? null : details), 130);
+                                                   (String.IsNullOrEmpty(exStackTrace) ? null : details), 130, null);
 
             AudioCues.PlayExclamation();
 

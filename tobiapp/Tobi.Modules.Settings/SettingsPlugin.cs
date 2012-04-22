@@ -132,7 +132,7 @@ namespace Tobi.Plugin.Settings
                                                    view,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Cancel,
-                                                   true, 800, 500, null, 0);
+                                                   true, 800, 500, null, 0,null);
             windowPopup.IgnoreEscape = true;
 
             //view.OwnerWindow = windowPopup;

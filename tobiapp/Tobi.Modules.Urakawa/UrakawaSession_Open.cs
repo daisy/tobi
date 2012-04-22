@@ -138,7 +138,7 @@ namespace Tobi.Plugin.Urakawa
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.Close,
                                                        PopupModalWindow.DialogButton.Close,
-                                                       true, 300, 170, details, 40);
+                                                       true, 300, 170, details, 40, null);
 
                 windowPopup.ShowModal();
 

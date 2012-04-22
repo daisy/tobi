@@ -82,7 +82,7 @@ namespace Tobi.Plugin.Urakawa
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false, 300, 135, null, 40);
+                                                   false, 300, 135, null, 40,null);
 
             windowPopup.ShowModal();
             windowPopup.EnableEnterKeyDefault = true;

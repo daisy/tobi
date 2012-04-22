@@ -68,7 +68,7 @@ namespace Tobi.Plugin.MetadataPane
                                                    this,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 700, 400, null, 0);
+                                                   true, 700, 400, null, 0,null);
             windowPopup.IgnoreEscape = true;
 
             m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction

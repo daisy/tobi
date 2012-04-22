@@ -61,7 +61,7 @@ namespace Tobi.Plugin.Urakawa
                                                            view,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           true, 800, 500, null, 0);
+                                                           true, 800, 500, null, 0,null);
                     //view.OwnerWindow = windowPopup;
 
                     windowPopup.EnableEnterKeyDefault = true;
