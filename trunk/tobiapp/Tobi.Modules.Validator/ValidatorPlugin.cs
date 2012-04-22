@@ -136,7 +136,7 @@ namespace Tobi.Plugin.Validator
                                                    m_ValidatorPaneView,
                                                    PopupModalWindow.DialogButtonsSet.Close,
                                                    PopupModalWindow.DialogButton.Close,
-                                                   true, 700, 450, null, 0);
+                                                   true, 700, 450, null, 0,null);
             windowPopup.ShowFloating(null);
 
             windowPopup.Closed += (o, args) =>

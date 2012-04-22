@@ -318,7 +318,7 @@ namespace Tobi.Plugin.DocumentPane
                             this,
                             PopupModalWindow.DialogButtonsSet.None,
                             PopupModalWindow.DialogButton.Close,
-                            true, 800, 600, null, 0);
+                            true, 800, 600,null, 0, null);
 
                         m_DocumentNarratorWindow.IgnoreEscape = true;
 
@@ -755,7 +755,7 @@ namespace Tobi.Plugin.DocumentPane
                                                    new ScrollViewer { Content = editBox },
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 300, 160, null, 40);
+                                                   true, 300, 160,null, 40,null);
 
             windowPopup.EnableEnterKeyDefault = true;
 

@@ -405,7 +405,7 @@ namespace Tobi.Common.UI
             object content,
             DialogButtonsSet buttons, DialogButton button, bool allowEscapeAndCloseButton,
             double width, double height,
-            object details, double detailsHeight, Window owner = null)
+            object details, double detailsHeight, Window owner )
             : this(shellView)
         {
 

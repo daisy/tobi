@@ -417,7 +417,7 @@ namespace Tobi
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   true, 300, 160, null, 40);
+                                                   true, 300, 160, null, 40,null);
 
             windowPopup.ShowModal();
 
@@ -801,7 +801,7 @@ namespace Tobi
                                                    PopupModalWindow.DialogButton.ESC,
                 //PopupModalWindow.DialogButtonsSet.Cancel,
                 //PopupModalWindow.DialogButton.Cancel,
-                                                   false, 500, 120, details, 80);
+                                                   false, 500, 120, details, 80,null);
 #if SKIP_EVENT_ON_INTERVAL
             Stopwatch m_StopWatch = null;
             Stopwatch m_StopWatch2 = null;
@@ -979,7 +979,7 @@ namespace Tobi
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.None,
                                                        PopupModalWindow.DialogButton.ESC,
-                                                       false, 500, 150, null, 80);
+                                                       false, 500, 150, null, 80,null);
 
                 reporter.RequestCancellation = true;
 
@@ -1096,7 +1096,7 @@ namespace Tobi
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Cancel,
                                                    PopupModalWindow.DialogButton.Cancel,
-                                                   true, 500, 150, details, 80);
+                                                   true, 500, 150, details, 80,null);
 
             //windowPopup.EnableEnterKeyDefault = true;
             //windowPopup.IgnoreEscape = true;
@@ -1311,7 +1311,7 @@ namespace Tobi
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.None,
                                                        PopupModalWindow.DialogButton.ESC,
-                                                       false, 500, 150, null, 80);
+                                                       false, 500, 150, null, 80,null);
 
                 //m_OpenXukActionWorker.CancelAsync();
                 reporter.RequestCancellation = true;
