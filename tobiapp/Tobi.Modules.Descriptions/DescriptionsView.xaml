@@ -329,9 +329,9 @@ KeyboardNavigation.TabNavigation="Local"
           VerticalAlignment="Center"
           HorizontalAlignment="Left"
                 Margin="4,4,0,0"
-                Content="Clear"
+                Content="Remove"
                 IsEnabled="{Binding HasDescriptionText_LongDesc}"
-          Click="OnClick_ButtonClearText_LongDesc"/>
+          Click="OnClick_ButtonRemoveText_LongDesc"/>
 
 
         <Button
@@ -490,9 +490,9 @@ KeyboardNavigation.TabNavigation="Local"
               VerticalAlignment="Center"
               HorizontalAlignment="Left"
                     Margin="4,4,0,0"
-                    Content="Clear"
+                    Content="Remove"
                     IsEnabled="{Binding HasDescriptionText_Summary}"
-              Click="OnClick_ButtonClearText_Summary"/>
+              Click="OnClick_ButtonRemoveText_Summary"/>
 
 
             <Button
@@ -649,9 +649,9 @@ KeyboardNavigation.TabNavigation="Local"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                       Margin="4,4,0,0"
-                      Content="Clear"
+                      Content="Remove"
                       IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
-                Click="OnClick_ButtonClearText_SimplifiedLanguage"/>
+                Click="OnClick_ButtonRemoveText_SimplifiedLanguage"/>
 
 
               <Button

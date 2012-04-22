@@ -113,16 +113,16 @@ namespace Tobi.Plugin.Descriptions
             OnClick_ButtonClearText(null, null);
         }
 
-        private void OnClick_ButtonClearText_Summary(object sender, RoutedEventArgs e)
+        private void OnClick_ButtonRemoveText_Summary(object sender, RoutedEventArgs e)
         {
             OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_Summary);
         }
         
-        private void OnClick_ButtonClearText_LongDesc(object sender, RoutedEventArgs e)
+        private void OnClick_ButtonRemoveText_LongDesc(object sender, RoutedEventArgs e)
         {
             OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_LondDesc);
         }
-        private void OnClick_ButtonClearText_SimplifiedLanguage(object sender, RoutedEventArgs e)
+        private void OnClick_ButtonRemoveText_SimplifiedLanguage(object sender, RoutedEventArgs e)
         {
             OnClick_ButtonClearText_Specific(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
         }
