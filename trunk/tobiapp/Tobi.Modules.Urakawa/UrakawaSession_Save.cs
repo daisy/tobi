@@ -128,7 +128,7 @@ namespace Tobi.Plugin.Urakawa
 
                     if (File.Exists(dlg.FileName))
                     {
-                        if (!askUserConfirmOverwriteFileFolder(dlg.FileName, false))
+                        if (!askUserConfirmOverwriteFileFolder(dlg.FileName, false, null))
                         {
                             return;
                         }
@@ -308,7 +308,7 @@ namespace Tobi.Plugin.Urakawa
             return notCancelled;
         }
 
-        private bool askUserConfirmOverwriteFileFolder(string path, bool folder)
+        public bool askUserConfirmOverwriteFileFolder(string path, bool folder, Window owner)
         {
             m_Logger.Log(@"UrakawaSession_Save.askUserConfirmOverwriteFileFolder", Category.Debug, Priority.Medium);
 

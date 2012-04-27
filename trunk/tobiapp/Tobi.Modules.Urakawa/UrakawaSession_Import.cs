@@ -26,7 +26,7 @@ namespace Tobi.Plugin.Urakawa
             string xukPath = Daisy3_Import.GetXukFilePath(outputDirectory, DocumentFilePath);
             if (File.Exists(xukPath))
             {
-                if (!askUserConfirmOverwriteFileFolder(xukPath, false))
+                if (!askUserConfirmOverwriteFileFolder(xukPath, false, null))
                 {
                     return false;
                 }
@@ -80,12 +80,18 @@ namespace Tobi.Plugin.Urakawa
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ProjectSampleRate),
                                                    panel,
-                                                   PopupModalWindow.DialogButtonsSet.Ok,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false, 300, 135, null, 40,null);
+                                                   false, 300, 135, null, 40, null);
+
+            windowPopup.EnableEnterKeyDefault = true;
 
             windowPopup.ShowModal();
-            windowPopup.EnableEnterKeyDefault = true;
+
+            if (!PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                return false;
+            }
 
             if (combo.SelectedItem == item1)
             {

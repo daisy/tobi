@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Windows;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
@@ -13,6 +14,8 @@ namespace Tobi.Common
     ///</summary>
     public interface IUrakawaSession : IPropertyChangedNotifyBase
     {
+        bool askUserConfirmOverwriteFileFolder(string path, bool folder, Window owner);
+
         RichDelegateCommand UndoCommand { get; }
         RichDelegateCommand RedoCommand { get; }
 
