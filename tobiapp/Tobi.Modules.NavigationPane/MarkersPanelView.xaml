@@ -200,13 +200,15 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
         SelectionChanged="onMarkersSelected"
 
         IsTabStop="{Binding HasNotMarkers}"
-        Focusable="{Binding HasNotMarkers}"
         
         Control.TabIndex="0"
         AutomationProperties.Name="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Marks}"
         search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"
         
         AlternationCount="2">
+
+      <!--Focusable="{Binding HasNotMarkers}"-->
+      
       <ListView.ItemTemplate>
         <DataTemplate>
           <TextBlock Text="{Binding Description}"/>
