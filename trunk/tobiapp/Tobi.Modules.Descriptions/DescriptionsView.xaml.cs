@@ -14,6 +14,7 @@ using Tobi.Common.UI;
 using Tobi.Common.UI.XAML;
 using urakawa.core;
 using urakawa.daisy;
+using urakawa.daisy.export;
 using urakawa.data;
 using urakawa.metadata;
 using urakawa.property.alt;
@@ -235,6 +236,12 @@ namespace Tobi.Plugin.Descriptions
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok
                 || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Apply)
             {
+                altProp = node.GetAlternateContentProperty(); //node.GetProperty<AlternateContentProperty>();
+                if (altProp != null)
+                {
+                    removeEmptyDescriptions(altProp);
+                }
+
                 bool empty = m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionEmpty;
 
                 m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
@@ -274,7 +281,24 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
-
+        private void removeEmptyDescriptions(AlternateContentProperty altProp)
+        {
+            foreach (AlternateContent altContent in altProp.AlternateContents.ContentsAs_ListCopy)
+            {
+                if (altContent.IsEmpty ||
+                    altContent.Text == null
+                    &&
+                    altContent.Image == null
+                    &&
+                    altContent.Audio == null
+                    &&
+                    !Daisy3_Export.AltContentHasSignificantMetadata(altContent)
+                    )
+                {
+                    m_ViewModel.RemoveDescription(altContent);
+                }
+            }
+        }
 
         private void OnKeyUp_ButtonImport(object sender, KeyEventArgs e)
         {
