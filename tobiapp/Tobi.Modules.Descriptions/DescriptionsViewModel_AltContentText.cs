@@ -201,7 +201,7 @@ namespace Tobi.Plugin.Descriptions
             bool first = true;
 
             AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
-            if (altContent == null)
+            if (altContent == null || altContent.Text == null)
             {
                 if (!first)
                 {
@@ -216,38 +216,112 @@ namespace Tobi.Plugin.Descriptions
                     message += "- A long description must be specified.";
                 }
             }
-            else if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
+            else
             {
-                if (!first)
+                if (altContent.Text == null)
                 {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
                     if (message != null)
                     {
-                        message += "\n";
+                        message += "- The long description has no text.";
                     }
                 }
-                first = false;
-                if (message != null)
-                {
-                    message += "- The long description text is missing.";
-                }
+
+                //if (altContent.Audio != null && altContent.Text == null)
+                //{
+                //    if (!first)
+                //    {
+                //        if (message != null)
+                //        {
+                //            message += "\n";
+                //        }
+                //    }
+                //    first = false;
+                //    if (message != null)
+                //    {
+                //        message += "- The long description has audio but no corresponding text.";
+                //    }
+                //}
             }
 
-            //altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
-            //if (altContent == null || altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
-            //{
-            //    if (!first)
-            //    {
-            //        if (message != null)
-            //        {
-            //            message += "\n";
-            //        }
-            //    }
-            //    first = false;
-            //    if (message != null)
-            //    {
-            //        message += "- Specifying a summary is recommended.";
-            //    }
-            //}
+            altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
+            if (altContent != null)
+            {
+                if (altContent.Text == null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- The summary has no text.";
+                    }
+                }
+
+                //if (altContent.Audio != null && altContent.Text == null)
+                //{
+                //    if (!first)
+                //    {
+                //        if (message != null)
+                //        {
+                //            message += "\n";
+                //        }
+                //    }
+                //    first = false;
+                //    if (message != null)
+                //    {
+                //        message += "- The summary has audio but no corresponding text.";
+                //    }
+                //}
+            }
+
+            altContent = GetAltContent(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
+            if (altContent != null)
+            {
+                if (altContent.Text == null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- The simplified language has no text.";
+                    }
+                }
+
+                //if (altContent.Audio != null && altContent.Text == null)
+                //{
+                //    if (!first)
+                //    {
+                //        if (message != null)
+                //        {
+                //            message += "\n";
+                //        }
+                //    }
+                //    first = false;
+                //    if (message != null)
+                //    {
+                //        message += "- The simplified language has audio but no corresponding text.";
+                //    }
+                //}
+            }
 
             bool hasMessages = !first;
             return hasMessages;

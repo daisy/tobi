@@ -92,7 +92,7 @@ namespace Tobi.Plugin.Descriptions
             if (isAltContentMetadata)
             {
                 list.AddRange(DiagramContentModelHelper.DIAGRAM_ElementAttributes);
-                
+
 #if true || SUPPORT_ANNOTATION_ELEMENT
                 list.Add(DiagramContentModelHelper.Ref);
                 list.Add(DiagramContentModelHelper.Role);
@@ -332,6 +332,59 @@ namespace Tobi.Plugin.Descriptions
             //if (ok &&
             //    (newName != md.NameContentAttribute.Name || newValue != md.NameContentAttribute.Value))
             //{
+            foreach (Metadata m in altProp.Metadatas.ContentsAs_Enumerable)
+            {
+                if (md == m)
+                {
+                    continue;
+                }
+
+                if (m.NameContentAttribute.Name == newName
+                    &&
+                    (
+                    newName.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":")
+                    //newName.Equals(XmlReaderWriterHelper.XmlId)
+                    //|| newName.Equals(XmlReaderWriterHelper.XmlLang)
+                    )
+                    )
+                {
+                    var label = new TextBlock
+                    {
+                        Text = "This attribute already exists.",
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
+
+                    var panel = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                    };
+                    panel.Children.Add(iconProvider.IconLarge);
+                    panel.Children.Add(label);
+                    //panel.Margin = new Thickness(8, 8, 8, 0);
+
+                    var windowPopup = new PopupModalWindow(m_ShellView,
+                                                         UserInterfaceStrings.EscapeMnemonic("Duplicate attribute!"),
+                                                         panel,
+                                                         PopupModalWindow.DialogButtonsSet.Ok,
+                                                         PopupModalWindow.DialogButton.Ok,
+                                                         true, 300, 160, null, 0, m_DescriptionPopupModalWindow);
+                    //view.OwnerWindow = windowPopup;
+
+
+                    windowPopup.ShowModal();
+                    return;
+                }
+            }
+
+
             m_ViewModel.SetMetadataAttr(altProp, null, md, null, newName, newValue);
 
             MetadatasListView.Items.Refresh();
@@ -396,6 +449,54 @@ namespace Tobi.Plugin.Descriptions
             //if (ok &&
             //    (newName != mdAttr.Name || newValue != mdAttr.Value))
             //{
+            if (md.OtherAttributes != null)
+            {
+                foreach (MetadataAttribute mAtt in md.OtherAttributes.ContentsAs_Enumerable)
+                {
+                    if (mdAttr == mAtt)
+                    {
+                        continue;
+                    }
+
+                    if (mAtt.Name == newName)
+                    {
+                        var label = new TextBlock
+                        {
+                            Text = "This attribute already exists.",
+                            Margin = new Thickness(8, 0, 8, 0),
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Focusable = true,
+                            TextWrapping = TextWrapping.Wrap
+                        };
+
+                        var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
+
+                        var panel = new StackPanel
+                        {
+                            Orientation = Orientation.Horizontal,
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Stretch,
+                        };
+                        panel.Children.Add(iconProvider.IconLarge);
+                        panel.Children.Add(label);
+                        //panel.Margin = new Thickness(8, 8, 8, 0);
+
+                        var windowPopup = new PopupModalWindow(m_ShellView,
+                                                             UserInterfaceStrings.EscapeMnemonic("Duplicate attribute!"),
+                                                             panel,
+                                                             PopupModalWindow.DialogButtonsSet.Ok,
+                                                             PopupModalWindow.DialogButton.Ok,
+                                                             true, 300, 160, null, 0, m_DescriptionPopupModalWindow);
+                        //view.OwnerWindow = windowPopup;
+
+
+                        windowPopup.ShowModal();
+                        return;
+                    }
+                }
+            }
+
             m_ViewModel.SetMetadataAttr(altProp, null, md, mdAttr, newName, newValue);
 
             MetadataAttributesListView.Items.Refresh();
@@ -481,6 +582,54 @@ namespace Tobi.Plugin.Descriptions
             //if (ok &&
             //    newName != mdAttr.Name && newValue != mdAttr.Value)
             //{
+            foreach (Metadata m in altProp.Metadatas.ContentsAs_Enumerable)
+            {
+                if (m.NameContentAttribute.Name == newName
+                    &&
+                    (
+                    newName.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XML + ":")
+                    //newName.Equals(XmlReaderWriterHelper.XmlId)
+                    //|| newName.Equals(XmlReaderWriterHelper.XmlLang)
+                    )
+                    )
+                {
+                    var label = new TextBlock
+                    {
+                        Text = "This attribute already exists.",
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
+
+                    var panel = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                    };
+                    panel.Children.Add(iconProvider.IconLarge);
+                    panel.Children.Add(label);
+                    //panel.Margin = new Thickness(8, 8, 8, 0);
+
+                    var windowPopup = new PopupModalWindow(m_ShellView,
+                                                         UserInterfaceStrings.EscapeMnemonic("Duplicate attribute!"),
+                                                         panel,
+                                                         PopupModalWindow.DialogButtonsSet.Ok,
+                                                         PopupModalWindow.DialogButton.Ok,
+                                                         true, 300, 160, null, 0, m_DescriptionPopupModalWindow);
+                    //view.OwnerWindow = windowPopup;
+
+
+                    windowPopup.ShowModal();
+                    return;
+                }
+            }
+
+
             m_ViewModel.AddMetadata(altProp, null, newName, newValue);
             MetadatasListView.Items.Refresh();
             MetadatasListView.SelectedIndex = MetadatasListView.Items.Count - 1;
@@ -551,6 +700,50 @@ namespace Tobi.Plugin.Descriptions
             //if (ok &&
             //    newName != mdAttr.Name && newValue != mdAttr.Value)
             //{
+            if (md.OtherAttributes != null)
+            {
+                foreach (MetadataAttribute mAtt in md.OtherAttributes.ContentsAs_Enumerable)
+                {
+                    if (mAtt.Name == newName)
+                    {
+                        var label = new TextBlock
+                        {
+                            Text = "This attribute already exists.",
+                            Margin = new Thickness(8, 0, 8, 0),
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Focusable = true,
+                            TextWrapping = TextWrapping.Wrap
+                        };
+
+                        var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
+
+                        var panel = new StackPanel
+                        {
+                            Orientation = Orientation.Horizontal,
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Stretch,
+                        };
+                        panel.Children.Add(iconProvider.IconLarge);
+                        panel.Children.Add(label);
+                        //panel.Margin = new Thickness(8, 8, 8, 0);
+
+                        var windowPopup = new PopupModalWindow(m_ShellView,
+                                                             UserInterfaceStrings.EscapeMnemonic("Duplicate attribute!"),
+                                                             panel,
+                                                             PopupModalWindow.DialogButtonsSet.Ok,
+                                                             PopupModalWindow.DialogButton.Ok,
+                                                             true, 300, 160, null, 0, m_DescriptionPopupModalWindow);
+                        //view.OwnerWindow = windowPopup;
+
+
+                        windowPopup.ShowModal();
+                        return;
+                    }
+                }
+            }
+
+
             m_ViewModel.AddMetadataAttr(md, newName, newValue);
             MetadataAttributesListView.Items.Refresh();
             MetadataAttributesListView.SelectedIndex = MetadataAttributesListView.Items.Count - 1;
