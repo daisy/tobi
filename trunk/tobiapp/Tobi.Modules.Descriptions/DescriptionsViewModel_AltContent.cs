@@ -181,9 +181,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The long description text is missing.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
@@ -202,9 +206,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The long description shouldn't have an image.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
             count = 0;
@@ -281,9 +289,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The summary text is missing.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
@@ -302,9 +314,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The summary shouldn't have an image.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
@@ -367,9 +383,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The simplified language text is missing.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
@@ -388,9 +408,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The simplified language shouldn't have an image.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
@@ -432,9 +456,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The simplified image has audio but no corresponding tour.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
@@ -453,9 +481,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- Image is missing for simplified image.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
@@ -475,9 +507,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- Tour text is recommended for simplified image.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
@@ -519,9 +555,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The tactile image has audio but no corresponding tour.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
@@ -540,9 +580,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- Image is missing for tactile image.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
@@ -562,9 +606,13 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- Tour text is recommended for tactile image.";
-                    }
 
-                    break;
+                        string xmlId = GetXmlID(altContent);
+                        if (!String.IsNullOrEmpty(xmlId))
+                        {
+                            message += " [" + xmlId + "]";
+                        }
+                    }
                 }
             }
 
