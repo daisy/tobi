@@ -106,20 +106,20 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit in advanced mode....
+        /// </summary>
+        public static string EditAdvanced {
+            get {
+                return ResourceManager.GetString("EditAdvanced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The long description provides the primary description of the associated image, graphic or visually-oriented structure. It should therefore contain a comprehensive explanation of the referenced item. See the summary description for information on how to include a compact description..
         /// </summary>
         public static string LongDescriptionHelp {
             get {
                 return ResourceManager.GetString("LongDescriptionHelp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thelongdescelement.
-        /// </summary>
-        public static string LongDescriptionHelpURI {
-            get {
-                return ResourceManager.GetString("LongDescriptionHelpURI", resourceCulture);
             }
         }
         
@@ -142,29 +142,11 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thesimplifiedlanguagedescriptionelement.
-        /// </summary>
-        public static string SimplifiedDescriptionHelpURI {
-            get {
-                return ResourceManager.GetString("SimplifiedDescriptionHelpURI", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The simplified image provides a simplified version of the source image, optionally associated with an explanatory tour. Using the advanced editor, it is possible to specify one or more identical simplified images, in different formats..
         /// </summary>
         public static string SimplifiedImageHelp {
             get {
                 return ResourceManager.GetString("SimplifiedImageHelp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thesimplifiedimageelement.
-        /// </summary>
-        public static string SimplifiedImageHelpURI {
-            get {
-                return ResourceManager.GetString("SimplifiedImageHelpURI", resourceCulture);
             }
         }
         
@@ -178,15 +160,6 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thesummaryelement.
-        /// </summary>
-        public static string SummaryDescriptionHelpURI {
-            get {
-                return ResourceManager.GetString("SummaryDescriptionHelpURI", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The tactile image provides an alternative image to the source image, optionally associated with an explanatory tour. Using the advanced editor, it is possible to specify one or more identical tactile images for different production methods, differentiated by their role attribute (e.g., one for swell paper production and another for stereolithograph printing)..
         /// </summary>
         public static string TactileImageHelp {
@@ -196,29 +169,11 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thetactileelement.
-        /// </summary>
-        public static string TactileImageHelpURI {
-            get {
-                return ResourceManager.GetString("TactileImageHelpURI", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The tour description associated with a tactile graphic or a simplified alternative image provides orientation, and explains how to conceptually explore the images..
         /// </summary>
         public static string TourHelp {
             get {
                 return ResourceManager.GetString("TourHelp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thetourelement.
-        /// </summary>
-        public static string TourHelpURI {
-            get {
-                return ResourceManager.GetString("TourHelpURI", resourceCulture);
             }
         }
     }

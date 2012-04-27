@@ -284,7 +284,8 @@ KeyboardNavigation.TabNavigation="Local"
             KeyUp="OnKeyUp_LongDescription"
             Focusable="true"
                   KeyboardNavigation.IsTabStop="True"
-                  KeyboardNavigation.TabIndex="1">
+        KeyboardNavigation.TabIndex="1"
+                  >
             <Hyperlink.ToolTip>
               <ToolTip>
                 <TextBlock Width="150" Margin="3"
@@ -305,13 +306,15 @@ KeyboardNavigation.TabNavigation="Local"
             FontWeight="Bold"
             Text="Long Description"></Run>
           </Hyperlink>
-          
+
         </GroupBox.Header>
 
         <DockPanel LastChildFill="True">
       <DockPanel
                   DockPanel.Dock="Bottom"
           HorizontalAlignment="Stretch">
+
+          
         <Button
           DockPanel.Dock="Left"
                   FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
@@ -329,10 +332,56 @@ KeyboardNavigation.TabNavigation="Local"
           VerticalAlignment="Center"
           HorizontalAlignment="Left"
                 Margin="4,4,0,0"
-                Content="Remove"
+                Content="Clear"
                 IsEnabled="{Binding HasDescriptionText_LongDesc}"
           Click="OnClick_ButtonRemoveText_LongDesc"/>
 
+
+
+
+
+
+        <Border
+          DockPanel.Dock="Right"
+               HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+  
+            Focusable="false"
+            Padding="0"
+                    Margin="4,4,0,0"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+          <Button
+                    FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                 Control.TabIndex="7"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Right"
+                      
+                  Content=">>"
+                  
+          Padding="0"
+            Margin="0"
+                  
+            Click="OnClick_ButtonAdvanced_LongDesc">
+
+            <Button.ToolTip>
+              <ToolTip
+                Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                ContentStringFormat="{}{0}"
+      />
+            </Button.ToolTip>
+            <Button.Style>
+              <Style TargetType="{x:Type Button}"
+                     BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                <Style.Setters>
+                  <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                  </Setter>
+                </Style.Setters>
+              </Style>
+            </Button.Style>
+          </Button>
+        </Border>
 
         <Button
           DockPanel.Dock="Right"
@@ -404,6 +453,7 @@ KeyboardNavigation.TabNavigation="Local"
             </Style>
           </Button.Style>
         </Button>
+
       </DockPanel>
 
           <ScrollViewer
@@ -490,9 +540,52 @@ KeyboardNavigation.TabNavigation="Local"
               VerticalAlignment="Center"
               HorizontalAlignment="Left"
                     Margin="4,4,0,0"
-                    Content="Remove"
+                    Content="Clear"
                     IsEnabled="{Binding HasDescriptionText_Summary}"
               Click="OnClick_ButtonRemoveText_Summary"/>
+
+
+            <Border
+              DockPanel.Dock="Right"
+                   HorizontalAlignment="Right"
+                         VerticalAlignment="Center"
+  
+                Focusable="false"
+                Padding="0"
+                        Margin="4,4,0,0"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+              <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                     Control.TabIndex="7"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Right"
+                      
+                      Content=">>"
+                  
+              Padding="0"
+                Margin="0"
+                  
+                Click="OnClick_ButtonAdvanced_Summary">
+
+                <Button.ToolTip>
+                  <ToolTip
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                    ContentStringFormat="{}{0}"
+      />
+                </Button.ToolTip>
+                <Button.Style>
+                  <Style TargetType="{x:Type Button}"
+                         BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                    <Style.Setters>
+                      <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                      </Setter>
+                    </Style.Setters>
+                  </Style>
+                </Button.Style>
+              </Button>
+            </Border>
 
 
             <Button
@@ -649,9 +742,52 @@ KeyboardNavigation.TabNavigation="Local"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                       Margin="4,4,0,0"
-                      Content="Remove"
+                      Content="Clear"
                       IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
                 Click="OnClick_ButtonRemoveText_SimplifiedLanguage"/>
+
+
+              <Border
+                DockPanel.Dock="Right"
+                     HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+  
+                  Focusable="false"
+                  Padding="0"
+                          Margin="4,4,0,0"
+                  BorderThickness="1"
+                  BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+                <Button
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                       Control.TabIndex="7"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Right"
+                      
+                        Content=">>"
+                  
+                Padding="0"
+                  Margin="0"
+                  
+                  Click="OnClick_ButtonAdvanced_SimplifiedLang">
+
+                  <Button.ToolTip>
+                    <ToolTip
+                      Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                      ContentStringFormat="{}{0}"
+      />
+                  </Button.ToolTip>
+                  <Button.Style>
+                    <Style TargetType="{x:Type Button}"
+                           BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                      <Style.Setters>
+                        <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                        </Setter>
+                      </Style.Setters>
+                    </Style>
+                  </Button.Style>
+                </Button>
+              </Border>
 
 
               <Button
@@ -938,6 +1074,50 @@ KeyboardNavigation.TabNavigation="Local"
                             Content="Clear"
                             IsEnabled="{Binding HasDescriptionImage_Simplified}"
                       Click="OnClick_ButtonClearImage_Simplified"/>
+
+
+                    <Border
+                           HorizontalAlignment="Right"
+                                 VerticalAlignment="Bottom"
+  
+                        Focusable="false"
+                        Padding="0"
+                                Margin="20,4,0,0"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+                      <Button
+                                FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                             Control.TabIndex="5"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right"
+                      
+                              Content=">>"
+                  
+                      Padding="0"
+                        Margin="0"
+                  
+                        Click="OnClick_ButtonAdvanced_SimplifiedImage">
+
+                        <Button.ToolTip>
+                          <ToolTip
+                            Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                            ContentStringFormat="{}{0}"
+      />
+                        </Button.ToolTip>
+                        <Button.Style>
+                          <Style TargetType="{x:Type Button}"
+                                 BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                            <Style.Setters>
+                              <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                              </Setter>
+                            </Style.Setters>
+                          </Style>
+                        </Button.Style>
+                      </Button>
+                    </Border>
+
+
                   </StackPanel>
 
 
@@ -1051,8 +1231,7 @@ KeyboardNavigation.TabNavigation="Local"
                     
                          Control.TabIndex="8"/>
 
-
-                  <Button
+                      <Button
                             FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                          Control.TabIndex="9"
                     VerticalAlignment="Bottom"
@@ -1118,7 +1297,55 @@ KeyboardNavigation.TabNavigation="Local"
                       </Style>
                     </Button.Style>
                   </Button>
-                </StackPanel>
+
+
+
+
+                      <Border
+                             HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom"
+  
+                          Focusable="false"
+                          Padding="0"
+                                  Margin="4,4,0,0"
+                          BorderThickness="1"
+                          BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+                        <Button
+                                  FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                               Control.TabIndex="11"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Right"
+                      
+                                Content=">>"
+                  
+                        Padding="0"
+                          Margin="0"
+                  
+                          Click="OnClick_ButtonAdvanced_SimplifiedImage_Text">
+
+                          <Button.ToolTip>
+                            <ToolTip
+                              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                              ContentStringFormat="{}{0}"
+      />
+                          </Button.ToolTip>
+                          <Button.Style>
+                            <Style TargetType="{x:Type Button}"
+                                   BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                              <Style.Setters>
+                                <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                                </Setter>
+                              </Style.Setters>
+                            </Style>
+                          </Button.Style>
+                        </Button>
+                      </Border>
+
+
+
+
+                    </StackPanel>
 
               </DockPanel>
 
@@ -1241,6 +1468,51 @@ KeyboardNavigation.TabNavigation="Local"
                             Content="Clear"
                             IsEnabled="{Binding HasDescriptionImage_Tactile}"
                       Click="OnClick_ButtonClearImage_Tactile"/>
+
+
+                    <Border
+                           HorizontalAlignment="Right"
+                                 VerticalAlignment="Bottom"
+  
+                        Focusable="false"
+                        Padding="0"
+                                Margin="20,4,0,0"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+                      <Button
+                                FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                             Control.TabIndex="5"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right"
+                      
+                              Content=">>"
+                  
+                      Padding="0"
+                        Margin="0"
+                  
+                        Click="OnClick_ButtonAdvanced_TactileImage">
+
+                        <Button.ToolTip>
+                          <ToolTip
+                            Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                            ContentStringFormat="{}{0}"
+      />
+                        </Button.ToolTip>
+                        <Button.Style>
+                          <Style TargetType="{x:Type Button}"
+                                 BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                            <Style.Setters>
+                              <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                              </Setter>
+                            </Style.Setters>
+                          </Style>
+                        </Button.Style>
+                      </Button>
+                    </Border>
+
+
+
                   </StackPanel>
 
 
@@ -1356,7 +1628,7 @@ KeyboardNavigation.TabNavigation="Local"
                            Control.TabIndex="8"/>
 
 
-                    <Button
+                      <Button
                               FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                            Control.TabIndex="9"
                       VerticalAlignment="Bottom"
@@ -1423,7 +1695,52 @@ KeyboardNavigation.TabNavigation="Local"
                         </Style>
                       </Button.Style>
                     </Button>
-                  </StackPanel>
+
+                      <Border
+                             HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom"
+  
+                          Focusable="false"
+                          Padding="0"
+                                  Margin="4,4,0,0"
+                          BorderThickness="1"
+                          BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+                        <Button
+                                  FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                               Control.TabIndex="11"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Right"
+                      
+                                Content=">>"
+                  
+                        Padding="0"
+                          Margin="0"
+                  
+                          Click="OnClick_ButtonAdvanced_TactileImage_Text">
+
+                          <Button.ToolTip>
+                            <ToolTip
+                              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                              ContentStringFormat="{}{0}"
+      />
+                          </Button.ToolTip>
+                          <Button.Style>
+                            <Style TargetType="{x:Type Button}"
+                                   BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                              <Style.Setters>
+                                <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                                </Setter>
+                              </Style.Setters>
+                            </Style>
+                          </Button.Style>
+                        </Button>
+                      </Border>
+
+
+
+
+                    </StackPanel>
 
                 </DockPanel>
 
@@ -2238,7 +2555,7 @@ KeyboardNavigation.TabNavigation="Local"
             </TabControl.Resources>
 
 
-            <TabItem Header="Text">
+            <TabItem Header="Text" x:Name="TabItem_Text">
               <DockPanel LastChildFill="True"
           KeyboardNavigation.TabNavigation="Local">
                 <StackPanel Orientation="Horizontal"
@@ -2382,7 +2699,7 @@ KeyboardNavigation.TabNavigation="Local"
             </TabItem>
 
 
-                            <TabItem Header="Image">
+                            <TabItem Header="Image" x:Name="TabItem_Image">
                                 <DockPanel LastChildFill="True"
           KeyboardNavigation.TabNavigation="Local">
 
@@ -2449,7 +2766,7 @@ KeyboardNavigation.TabNavigation="Local"
                             </TabItem>
 
 
-                            <TabItem Header="Attributes">
+                            <TabItem Header="Attributes" x:Name="TabItem_Attributes">
 
               <DockPanel LastChildFill="True"
           KeyboardNavigation.TabNavigation="Local">

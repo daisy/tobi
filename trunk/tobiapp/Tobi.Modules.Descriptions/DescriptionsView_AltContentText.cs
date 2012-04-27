@@ -208,7 +208,7 @@ namespace Tobi.Plugin.Descriptions
         private void OnClick_Tour(object sender, RoutedEventArgs e)
         {
             //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
-            Process.Start(Tobi_Plugin_Descriptions_Lang.TourHelpURI);
+            Process.Start(DiagramContentModelHelper.URI_Help_Tour);
         }
 
         private void OnKeyUp_TactileImage(object sender, KeyEventArgs e)
@@ -223,7 +223,7 @@ namespace Tobi.Plugin.Descriptions
         private void OnClick_TactileImage(object sender, RoutedEventArgs e)
         {
             //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
-            Process.Start(Tobi_Plugin_Descriptions_Lang.TactileImageHelpURI);
+            Process.Start(DiagramContentModelHelper.URI_Help_TactileImage);
         }
 
         private void OnKeyUp_SimplifiedImage(object sender, KeyEventArgs e)
@@ -238,7 +238,7 @@ namespace Tobi.Plugin.Descriptions
         private void OnClick_SimplifiedImage(object sender, RoutedEventArgs e)
         {
             //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
-            Process.Start(Tobi_Plugin_Descriptions_Lang.SimplifiedImageHelpURI);
+            Process.Start(DiagramContentModelHelper.URI_Help_SimplifiedImage);
         }
 
 
@@ -254,7 +254,7 @@ namespace Tobi.Plugin.Descriptions
         private void OnClick_SimplifiedDescription(object sender, RoutedEventArgs e)
         {
             //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
-            Process.Start(Tobi_Plugin_Descriptions_Lang.SimplifiedDescriptionHelpURI);
+            Process.Start(DiagramContentModelHelper.URI_Help_SimplifiedDescription);
         }
 
         private void OnKeyUp_SummaryDescription(object sender, KeyEventArgs e)
@@ -269,7 +269,7 @@ namespace Tobi.Plugin.Descriptions
         private void OnClick_SummaryDescription(object sender, RoutedEventArgs e)
         {
             //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
-            Process.Start(Tobi_Plugin_Descriptions_Lang.SummaryDescriptionHelpURI);
+            Process.Start(DiagramContentModelHelper.URI_Help_SummaryDescription);
         }
 
         private void OnKeyUp_LongDescription(object sender, KeyEventArgs e)
@@ -284,7 +284,7 @@ namespace Tobi.Plugin.Descriptions
         private void OnClick_LongDescription(object sender, RoutedEventArgs e)
         {
             //string uriStr = ((Hyperlink) sender).NavigateUri.ToString();
-            Process.Start(Tobi_Plugin_Descriptions_Lang.LongDescriptionHelpURI);
+            Process.Start(DiagramContentModelHelper.URI_Help_LongDescription);
         }
     }
 }

@@ -138,37 +138,22 @@
   <data name="LongDescriptionHelp" xml:space="preserve">
     <value>The long description provides the primary description of the associated image, graphic or visually-oriented structure. It should therefore contain a comprehensive explanation of the referenced item. See the summary description for information on how to include a compact description.</value>
   </data>
-  <data name="LongDescriptionHelpURI" xml:space="preserve">
-    <value>http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thelongdescelement</value>
-  </data>
   <data name="SummaryDescriptionHelp" xml:space="preserve">
     <value>The summary description provides a shorter, more succinct version of the primary long description.</value>
-  </data>
-  <data name="SummaryDescriptionHelpURI" xml:space="preserve">
-    <value>http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thesummaryelement</value>
   </data>
   <data name="SimplifiedDescriptionHelp" xml:space="preserve">
     <value>The simplified language description provides a simplified version of the primary long description.</value>
   </data>
-  <data name="SimplifiedDescriptionHelpURI" xml:space="preserve">
-    <value>http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thesimplifiedlanguagedescriptionelement</value>
-  </data>
   <data name="TactileImageHelp" xml:space="preserve">
     <value>The tactile image provides an alternative image to the source image, optionally associated with an explanatory tour. Using the advanced editor, it is possible to specify one or more identical tactile images for different production methods, differentiated by their role attribute (e.g., one for swell paper production and another for stereolithograph printing).</value>
-  </data>
-  <data name="TactileImageHelpURI" xml:space="preserve">
-    <value>http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thetactileelement</value>
   </data>
   <data name="SimplifiedImageHelp" xml:space="preserve">
     <value>The simplified image provides a simplified version of the source image, optionally associated with an explanatory tour. Using the advanced editor, it is possible to specify one or more identical simplified images, in different formats.</value>
   </data>
-  <data name="SimplifiedImageHelpURI" xml:space="preserve">
-    <value>http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thesimplifiedimageelement</value>
-  </data>
   <data name="TourHelp" xml:space="preserve">
     <value>The tour description associated with a tactile graphic or a simplified alternative image provides orientation, and explains how to conceptually explore the images.</value>
   </data>
-  <data name="TourHelpURI" xml:space="preserve">
-    <value>http://www.daisy.org/z3998/2012/auth/features/description/1.0/#h_thetourelement</value>
+  <data name="EditAdvanced" xml:space="preserve">
+    <value>Edit in advanced mode...</value>
   </data>
 </root>
