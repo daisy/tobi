@@ -98,13 +98,17 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
         KeyboardNavigation.DirectionalNavigation="Contained"
         
         IsTabStop="{Binding HasNotDescribableTreeNodes, Mode=OneWay}"
-        Focusable="{Binding HasNotDescribableTreeNodes, Mode=OneWay}"
         
         Control.TabIndex="0"
         AutomationProperties.Name="Descriptions"
         search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"
         
         AlternationCount="2">
+      
+      <!--
+        Focusable="{Binding HasNotDescribableTreeNodes, Mode=OneWay}"
+        -->
+
       <ListView.ItemTemplate>
         <DataTemplate>
           <StackPanel Orientation="Vertical"

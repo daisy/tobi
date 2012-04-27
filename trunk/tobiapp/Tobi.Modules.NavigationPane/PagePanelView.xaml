@@ -163,12 +163,13 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
         SelectionChanged="onPageSelected"
         
         IsTabStop="{Binding HasNotPages}"
-        Focusable="{Binding HasNotPages}"
         
         AutomationProperties.Name="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Pages}"
         search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"
         
         AlternationCount="2">
+
+      <!--Focusable="{Binding HasNotPages}"-->
       
       <ListView.ItemTemplate>
         <DataTemplate>
