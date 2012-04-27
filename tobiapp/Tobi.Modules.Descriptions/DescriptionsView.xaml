@@ -102,27 +102,66 @@
 
     </Border>
 
-      <TextBlock
+      <StackPanel
         DockPanel.Dock="Bottom"
            HorizontalAlignment="Right"
                VerticalAlignment="Bottom"
-  
-           Padding="4,2,4,2"
-           Margin="4,2,4,0"
-        >
-      <Hyperlink
+        
+        Orientation="Horizontal"
+  >
+        <TextBlock
+          Text="DIAGRAM XML:"
+             Padding="4,2,4,2"
+             Margin="4,2,4,0"
         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
         Focusable="true"
         
       KeyboardNavigation.TabIndex="4"
       KeyboardNavigation.IsTabStop="true"
+        />
+      
+      <TextBlock
+           Padding="4,2,4,2"
+           Margin="0,2,0,0"
+        >
+      <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        Focusable="true"
+        
+      KeyboardNavigation.TabIndex="5"
+      KeyboardNavigation.IsTabStop="true"
         
         Click="OnClick_ButtonImport"
         KeyUp="OnKeyUp_ButtonImport">
-        <Run Text="Import DIAGRAM XML"/>
+        <Run Text="Import"/>
       </Hyperlink>
     </TextBlock>
 
+        <TextBlock
+          Text="/"
+             Padding="4,2,4,2"
+             Margin="0,2,0,0"
+        />
+
+        <TextBlock
+             Padding="4,2,4,2"
+             Margin="0,2,0,0"
+        >
+          <Hyperlink
+            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+            Focusable="true"
+        
+          KeyboardNavigation.TabIndex="6"
+          KeyboardNavigation.IsTabStop="true"
+        
+            Click="OnClick_ButtonExport"
+            KeyUp="OnKeyUp_ButtonExport">
+            <Run Text="Export"/>
+          </Hyperlink>
+        </TextBlock>
+        
+      </StackPanel>
+      
     <!--<Button
            DockPanel.Dock="Bottom"
            Content="Import DIAGRAM XML..."

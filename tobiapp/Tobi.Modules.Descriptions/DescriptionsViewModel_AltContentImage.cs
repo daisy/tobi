@@ -78,7 +78,7 @@ namespace Tobi.Plugin.Descriptions
                 TreeNode checkedNode = getCheckTreeNode();
                 if (checkedNode == null) return null;
 
-                return DescribableTreeNode.GetDescriptionLabel(checkedNode);
+                return DescribableTreeNode.GetDescriptionLabel(checkedNode, 1000);
             }
         }
 

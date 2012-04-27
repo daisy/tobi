@@ -73,7 +73,7 @@ namespace Tobi.Plugin.Descriptions
             return null;
         }
 
-        public static string GetDescriptionLabel(TreeNode treeNode)
+        public static string GetDescriptionLabel(TreeNode treeNode, int limit)
         {
             QualifiedName qname = treeNode.GetXmlElementQName();
             //if (qname != null)
@@ -89,7 +89,7 @@ namespace Tobi.Plugin.Descriptions
                 strBuilder = new StringBuilder(range.GetLength());
                 TreeNode.ConcatStringChunks(range, -1, strBuilder);
                 length = strBuilder.Length;
-                if (length > 40)
+                if (length > limit)
                 {
                     //string str = strBuilder.ToString(0, 40);
                     //#if NET40
@@ -101,8 +101,8 @@ namespace Tobi.Plugin.Descriptions
                     //strBuilder.Append("(...)");
 
                     string addon = "(...)";
-                    strBuilder.Insert(40, addon);
-                    length = 40 + addon.Length;
+                    strBuilder.Insert(limit, addon);
+                    length = limit + addon.Length;
                 }
             }
 
@@ -192,7 +192,7 @@ namespace Tobi.Plugin.Descriptions
             {
                 if (string.IsNullOrEmpty(m_Description))
                 {
-                    m_Description = GetDescriptionLabel(TreeNode);
+                    m_Description = GetDescriptionLabel(TreeNode, 100);
                 }
 
                 return m_Description;

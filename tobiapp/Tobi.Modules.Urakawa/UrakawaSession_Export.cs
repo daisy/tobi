@@ -94,7 +94,7 @@ namespace Tobi.Plugin.Urakawa
                                                                panel,
                                                                PopupModalWindow.DialogButtonsSet.OkCancel,
                                                                PopupModalWindow.DialogButton.Cancel,
-                                                               true, 350, 160, null, 40,null);
+                                                               true, 350, 160, null, 40, null);
 
                         windowPopup.ShowModal();
 
@@ -221,13 +221,18 @@ namespace Tobi.Plugin.Urakawa
                     var windowPopup_ = new PopupModalWindow(m_ShellView,
                                                            UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ExportSettings),
                                                            panel_,
-                                                           PopupModalWindow.DialogButtonsSet.Ok,
+                                                           PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
                                                            false, 300, 180, null, 40, null);
 
+                    windowPopup_.EnableEnterKeyDefault = true;
+
                     windowPopup_.ShowModal();
 
-                    windowPopup_.EnableEnterKeyDefault = true;
+                    if (!PopupModalWindow.IsButtonOkYesApply(windowPopup_.ClickedDialogButton))
+                    {
+                        return;
+                    }
 
                     Settings.Default.AudioExportEncodeToMp3 = checkBox.IsChecked.Value;
                     Settings.Default.ExportIncludeImageDescriptions = checkBoxz.IsChecked.Value;
@@ -274,16 +279,16 @@ namespace Tobi.Plugin.Urakawa
 
                     if (Directory.Exists(exportDir))
                     {
-                        if (!askUserConfirmOverwriteFileFolder(exportDir, true))
+                        if (!askUserConfirmOverwriteFileFolder(exportDir, true, null))
                         {
                             return;
                         }
 
                         FileDataProvider.DeleteDirectory(exportDir);
                     }
-                    
+
                     FileDataProvider.CreateDirectory(exportDir);
-                   
+
                     doExport(exportDir);
                 },
                 () => DocumentProject != null,

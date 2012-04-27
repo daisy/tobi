@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,13 +13,18 @@ using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.UI;
 using Tobi.Common.UI.XAML;
+using Tobi.Plugin.Urakawa;
 using urakawa.core;
 using urakawa.daisy;
 using urakawa.daisy.export;
 using urakawa.data;
+using urakawa.media.data.audio;
+using urakawa.media.data.image;
 using urakawa.metadata;
 using urakawa.property.alt;
 using urakawa.xuk;
+using DialogResult = System.Windows.Forms.DialogResult;
+using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 
 namespace Tobi.Plugin.Descriptions
 {
@@ -300,6 +306,15 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
+        private void OnKeyUp_ButtonExport(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.None
+                && e.Key == Key.Space)
+            {
+                OnClick_ButtonExport(null, null);
+            }
+        }
+
         private void OnKeyUp_ButtonImport(object sender, KeyEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.None
@@ -309,9 +324,214 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
+        private void OnClick_ButtonExport(object sender, RoutedEventArgs e)
+        {
+            m_Logger.Log("DescriptionView.OnClick_ButtonExport", Category.Debug, Priority.Medium);
+
+            Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+            if (node == null
+                || node.GetAlternateContentProperty() == null
+                || node.GetImageMedia() == null
+                || !(node.GetImageMedia() is ManagedImageMedia))
+            {
+                return;
+            }
+
+
+            SampleRate sampleRate = SampleRate.Hz22050; // Settings.Default.AudioExportSampleRate;
+            bool encodeToMp3 = true; // Settings.Default.AudioExportEncodeToMp3;
+
+
+            var combo = new ComboBox
+            {
+                Margin = new Thickness(0, 0, 0, 12)
+            };
+
+            ComboBoxItem item1 = new ComboBoxItem();
+            item1.Content = AudioLib.SampleRate.Hz11025.ToString();
+            combo.Items.Add(item1);
+
+            ComboBoxItem item2 = new ComboBoxItem();
+            item2.Content = AudioLib.SampleRate.Hz22050.ToString();
+            combo.Items.Add(item2);
+
+            ComboBoxItem item3 = new ComboBoxItem();
+            item3.Content = AudioLib.SampleRate.Hz44100.ToString();
+            combo.Items.Add(item3);
+
+            switch (sampleRate)
+            {
+                case AudioLib.SampleRate.Hz11025:
+                    {
+                        combo.SelectedItem = item1;
+                        combo.Text = item1.Content.ToString();
+                        break;
+                    }
+                case AudioLib.SampleRate.Hz22050:
+                    {
+                        combo.SelectedItem = item2;
+                        combo.Text = item2.Content.ToString();
+                        break;
+                    }
+                case AudioLib.SampleRate.Hz44100:
+                    {
+                        combo.SelectedItem = item3;
+                        combo.Text = item3.Content.ToString();
+                        break;
+                    }
+            }
+
+            var checkBox = new CheckBox
+            {
+                IsThreeState = false,
+                IsChecked = encodeToMp3,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            var label_ = new TextBlock
+            {
+                Text = Tobi_Plugin_Urakawa_Lang.ExportEncodeMp3,
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+
+            var panel__ = new StackPanel
+            {
+                Orientation = System.Windows.Controls.Orientation.Horizontal,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            panel__.Children.Add(label_);
+            panel__.Children.Add(checkBox);
+
+            var panel_ = new StackPanel
+            {
+                Orientation = System.Windows.Controls.Orientation.Vertical,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            panel_.Children.Add(combo);
+            panel_.Children.Add(panel__);
+
+            var windowPopup_ = new PopupModalWindow(m_ShellView,
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ExportSettings),
+                                                   panel_,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   false, 300, 180, null, 40, m_DescriptionPopupModalWindow);
+
+            windowPopup_.EnableEnterKeyDefault = true;
+
+            windowPopup_.ShowModal();
+
+            if (!PopupModalWindow.IsButtonOkYesApply(windowPopup_.ClickedDialogButton))
+            {
+                return;
+            }
+
+            encodeToMp3 = checkBox.IsChecked.Value;
+            //Settings.Default.AudioExportEncodeToMp3 = checkBox.IsChecked.Value;
+
+            if (combo.SelectedItem == item1)
+            {
+                sampleRate = SampleRate.Hz11025; //Settings.Default.AudioExportSampleRate
+            }
+            else if (combo.SelectedItem == item2)
+            {
+                sampleRate = SampleRate.Hz22050; //Settings.Default.AudioExportSampleRate
+            }
+            else if (combo.SelectedItem == item3)
+            {
+                sampleRate = SampleRate.Hz44100; //Settings.Default.AudioExportSampleRate
+            }
+
+
+
+            string rootFolder = Path.GetDirectoryName(m_Session.DocumentFilePath);
+
+            var dlg = new FolderBrowserDialog
+            {
+                RootFolder = Environment.SpecialFolder.MyComputer,
+                SelectedPath = rootFolder,
+                ShowNewFolderButton = true,
+                Description = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic("Export DIAGRAM XML")
+            };
+
+            DialogResult result = DialogResult.Abort;
+
+            m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
+            if (result != DialogResult.OK && result != DialogResult.Yes)
+            {
+                return;
+            }
+            if (!Directory.Exists(dlg.SelectedPath))
+            {
+                return;
+            }
+
+
+            ManagedImageMedia managedImage = (ManagedImageMedia)node.GetImageMedia();
+            string exportImageName = FileDataProvider.EliminateForbiddenFileNameCharacters(managedImage.ImageMediaData.OriginalRelativePath);
+            string imageDescriptionDirectoryPath = Daisy3_Export.GetAndCreateImageDescriptionDirectoryPath(false, exportImageName, dlg.SelectedPath);
+
+            if (Directory.Exists(imageDescriptionDirectoryPath))
+            {
+                if (!m_Session.askUserConfirmOverwriteFileFolder(imageDescriptionDirectoryPath, true, m_DescriptionPopupModalWindow))
+                {
+                    return;
+                }
+
+                FileDataProvider.DeleteDirectory(imageDescriptionDirectoryPath);
+            }
+
+            FileDataProvider.CreateDirectory(imageDescriptionDirectoryPath);
+
+
+
+
+            PCMFormatInfo audioFormat = node.Presentation.MediaDataManager.DefaultPCMFormat;
+            AudioLibPCMFormat pcmFormat = audioFormat.Data;
+
+            if ((ushort)sampleRate != pcmFormat.SampleRate)
+            {
+                pcmFormat.SampleRate = (ushort)sampleRate;
+            }
+
+
+            Application.Current.MainWindow.Cursor = Cursors.Wait;
+            this.Cursor = Cursors.Wait; //m_ShellView
+
+            try
+            {
+                string descriptionFile = Daisy3_Export.CreateImageDescription(
+                    pcmFormat, encodeToMp3, 0,
+                   imageDescriptionDirectoryPath, exportImageName,
+                   node.GetAlternateContentProperty(),
+                   null,
+                   null,
+                   null);
+            }
+            finally
+            {
+                Application.Current.MainWindow.Cursor = Cursors.Arrow;
+                this.Cursor = Cursors.Arrow; //m_ShellView
+            }
+
+
+            m_ShellView.ExecuteShellProcess(imageDescriptionDirectoryPath);
+        }
+
+
         private void OnClick_ButtonImport(object sender, RoutedEventArgs e)
         {
-            m_Logger.Log("DescriptionView.OpenFileDialog (XML)", Category.Debug, Priority.Medium);
+            m_Logger.Log("DescriptionView.OnClick_ButtonImport", Category.Debug, Priority.Medium);
 
             var dlg = new OpenFileDialog
             {
@@ -420,8 +640,12 @@ namespace Tobi.Plugin.Descriptions
         private void OnLoaded_Panel(object sender, RoutedEventArgs e)
         {
             var win = Window.GetWindow(this);
-            if (win is PopupModalWindow)
-                OwnerWindow = (PopupModalWindow)win;
+
+            //if (win is PopupModalWindow)
+            //    OwnerWindow = (PopupModalWindow)win;
+
+            OwnerWindow = win as PopupModalWindow; // can be NULL !!
+
 
 
             if (m_iconAudioHigh1 == null)
