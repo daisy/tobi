@@ -44,7 +44,7 @@ namespace Tobi.Plugin.Descriptions
         private readonly IUnityContainer m_Container;
         private readonly IEventAggregator m_EventAggregator;
 
-        
+
         [ImportingConstructor]
         public DescriptionsView(
             ILoggerFacade logger,
@@ -157,7 +157,7 @@ namespace Tobi.Plugin.Descriptions
                                                      panel,
                                                      PopupModalWindow.DialogButtonsSet.Ok,
                                                      PopupModalWindow.DialogButton.Ok,
-                                                     true, 340, 160, null, 0,null);
+                                                     true, 340, 160, null, 0, null);
 
                 popup.ShowModal();
                 return;
@@ -168,7 +168,7 @@ namespace Tobi.Plugin.Descriptions
                                                   this,
                                                   PopupModalWindow.DialogButtonsSet.OkApplyCancel,
                                                   PopupModalWindow.DialogButton.Apply,
-                                                  true, 1000, 600, null, 0,null);
+                                                  true, 1000, 600, null, 0, null);
             //this.OwnerWindow = windowPopup; DONE in ON PANEL LOADED EVENT
 
             windowPopup.IgnoreEscape = true;
@@ -216,9 +216,12 @@ namespace Tobi.Plugin.Descriptions
             //TreeNode node = selection.Item2 ?? selection.Item1;
             //if (node == null) return;
 
-            var altProp = node.GetProperty<AlternateContentProperty>();
+            bool hadAltProp = true;
+            var altProp = node.GetAlternateContentProperty(); //node.GetProperty<AlternateContentProperty>();
             if (altProp == null)
             {
+                hadAltProp = false;
+
                 altProp = node.GetOrCreateAlternateContentProperty();
                 DebugFix.Assert(altProp != null);
             }
@@ -238,9 +241,13 @@ namespace Tobi.Plugin.Descriptions
 
                 if (empty)
                 {
-                    altProp = node.GetProperty<AlternateContentProperty>();
-                    if (altProp != null && altProp.IsEmpty)
+                    altProp = node.GetAlternateContentProperty(); //node.GetProperty<AlternateContentProperty>();
+                    if (altProp != null && !hadAltProp)
                     {
+#if DEBUG
+                        DebugFix.Assert(altProp.IsEmpty);
+#endif //DEBUG
+
                         node.RemoveProperty(altProp);
                     }
                 }
@@ -249,9 +256,13 @@ namespace Tobi.Plugin.Descriptions
             {
                 m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
 
-                altProp = node.GetProperty<AlternateContentProperty>();
-                if (altProp != null && altProp.IsEmpty)
+                altProp = node.GetAlternateContentProperty(); //node.GetProperty<AlternateContentProperty>();
+                if (altProp != null && !hadAltProp)
                 {
+#if DEBUG
+                    DebugFix.Assert(altProp.IsEmpty);
+#endif //DEBUG
+
                     node.RemoveProperty(altProp);
                 }
             }

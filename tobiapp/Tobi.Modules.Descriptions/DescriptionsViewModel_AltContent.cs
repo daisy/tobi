@@ -366,7 +366,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "-The simplified language text is missing.";
+                        message += "- The simplified language text is missing.";
                     }
 
                     break;

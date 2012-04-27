@@ -3,8 +3,10 @@ using Tobi.Common.MVVM;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.daisy;
+using urakawa.daisy.export;
 using urakawa.media;
 using urakawa.property.alt;
+using urakawa.xuk;
 
 namespace Tobi.Plugin.Descriptions
 {
@@ -194,14 +196,12 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
-
-
         private bool getValidationText_BasicText(ref string message)
         {
             bool first = true;
 
             AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
-            if (altContent == null || altContent.Text == null)
+            if (altContent == null)
             {
                 if (!first)
                 {
@@ -218,7 +218,12 @@ namespace Tobi.Plugin.Descriptions
             }
             else
             {
-                if (altContent.Text == null)
+                if (altContent.Text == null
+                    && (
+                    altContent.Audio != null
+                    || Daisy3_Export.AltContentHasSignificantMetadata(altContent)
+                    )
+                    )
                 {
                     if (!first)
                     {
@@ -230,7 +235,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The long description has no text.";
+                        message += "- The long description has no text (has other data, see advanced editor).";
                     }
                 }
 
@@ -254,7 +259,12 @@ namespace Tobi.Plugin.Descriptions
             altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
             if (altContent != null)
             {
-                if (altContent.Text == null)
+                if (altContent.Text == null
+                    && (
+                    altContent.Audio != null
+                    || Daisy3_Export.AltContentHasSignificantMetadata(altContent)
+                    )
+                    )
                 {
                     if (!first)
                     {
@@ -266,7 +276,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The summary has no text.";
+                        message += "- The summary has no text (has other data, see advanced editor).";
                     }
                 }
 
@@ -290,7 +300,12 @@ namespace Tobi.Plugin.Descriptions
             altContent = GetAltContent(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
             if (altContent != null)
             {
-                if (altContent.Text == null)
+                if (altContent.Text == null
+                    && (
+                    altContent.Audio != null
+                    || Daisy3_Export.AltContentHasSignificantMetadata(altContent)
+                    )
+                    )
                 {
                     if (!first)
                     {
@@ -302,7 +317,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The simplified language has no text.";
+                        message += "- The simplified language has no text (has other data, see advanced editor).";
                     }
                 }
 

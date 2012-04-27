@@ -6,6 +6,7 @@ using Tobi.Common.MVVM;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.daisy;
+using urakawa.daisy.export;
 using urakawa.data;
 using urakawa.media.data.image;
 using urakawa.property.alt;
@@ -213,7 +214,15 @@ namespace Tobi.Plugin.Descriptions
                         message += "- It is recommended to specify a tour for the simplified image.";
                     }
                 }
-                if (altContent.Image == null)
+
+                bool otherDataInAdvancedMode = altContent.Audio != null
+                                               || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
+                if (altContent.Image == null
+                    && (
+                    altContent.Text != null
+                    || otherDataInAdvancedMode
+                    )
+                    )
                 {
                     if (!first)
                     {
@@ -226,6 +235,10 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The simplified image is missing.";
+                        if (otherDataInAdvancedMode)
+                        {
+                            message += " (has other data, see advanced editor)";
+                        }
                     }
                 }
                 //if (altContent.Image == null && altContent.Text != null)
@@ -277,7 +290,14 @@ namespace Tobi.Plugin.Descriptions
                         message += "- It is recommended to specify a tour for the tactile image.";
                     }
                 }
-                if (altContent.Image == null)
+                bool otherDataInAdvancedMode = altContent.Audio != null
+                                               || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
+                if (altContent.Image == null
+                    && (
+                    altContent.Text != null
+                    || otherDataInAdvancedMode
+                    )
+                    )
                 {
                     if (!first)
                     {
@@ -290,6 +310,10 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The tactile image is missing.";
+                        if (otherDataInAdvancedMode)
+                        {
+                            message += " (has other data, see advanced editor)";
+                        }
                     }
                 }
                 //if (altContent.Image == null && altContent.Text != null)

@@ -41,11 +41,37 @@ namespace Tobi.Plugin.Descriptions
     {
         private void ShowAudio(string diagramElementName)
         {
+            ShowAdvanced(diagramElementName, 0);
+        }
+
+        private void ShowAdvanced(string diagramElementName, int target)
+        {
             m_ViewModel.ShowAdvancedEditor = true;
             TabItem_Descriptions.IsSelected = true;
-            TabItem_Audio.IsSelected = true;
+            if (target == 0)
+            {
+                TabItem_Audio.IsSelected = true;
+            }
+            else if (target == 1)
+            {
+                TabItem_Text.IsSelected = true;
+            }
+            else if (target == 2)
+            {
+                TabItem_Image.IsSelected = true;
+            }
+            else
+            {
+                TabItem_Attributes.IsSelected = true;
+            }
 
             AlternateContent altContent = m_ViewModel.GetAltContent(diagramElementName);
+            if (altContent == null)
+            {
+                string uid = m_ViewModel.GetNewXmlID(diagramElementName.Replace(':', '_'));
+                altContent = addNewDescription(uid, diagramElementName);
+            }
+
             if (altContent != null)
             {
                 DescriptionsListView.SelectedItem = altContent;
@@ -64,6 +90,40 @@ namespace Tobi.Plugin.Descriptions
                     }
                 }));
         }
+
+        private void OnClick_ButtonAdvanced_LongDesc(object sender, RoutedEventArgs e)
+        {
+            ShowAdvanced(DiagramContentModelHelper.D_LondDesc, 1);
+        }
+        private void OnClick_ButtonAdvanced_Summary(object sender, RoutedEventArgs e)
+        {
+            ShowAdvanced(DiagramContentModelHelper.D_Summary, 1);
+        }
+        private void OnClick_ButtonAdvanced_SimplifiedLang(object sender, RoutedEventArgs e)
+        {
+            ShowAdvanced(DiagramContentModelHelper.D_SimplifiedLanguageDescription, 1);
+        }
+
+
+        private void OnClick_ButtonAdvanced_TactileImage(object sender, RoutedEventArgs e)
+        {
+            ShowAdvanced(DiagramContentModelHelper.D_Tactile, 2);
+        }
+        private void OnClick_ButtonAdvanced_TactileImage_Text(object sender, RoutedEventArgs e)
+        {
+            ShowAdvanced(DiagramContentModelHelper.D_Tactile, 1);
+        }
+
+        private void OnClick_ButtonAdvanced_SimplifiedImage(object sender, RoutedEventArgs e)
+        {
+            ShowAdvanced(DiagramContentModelHelper.D_SimplifiedImage, 2);
+        }
+        private void OnClick_ButtonAdvanced_SimplifiedImage_Text(object sender, RoutedEventArgs e)
+        {
+            ShowAdvanced(DiagramContentModelHelper.D_SimplifiedImage, 1);
+        }
+
+
 
         private void OnClick_ButtonAudio_LongDesc(object sender, RoutedEventArgs e)
         {
