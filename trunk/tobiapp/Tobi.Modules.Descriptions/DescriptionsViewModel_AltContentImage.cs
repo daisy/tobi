@@ -213,7 +213,7 @@ namespace Tobi.Plugin.Descriptions
                         message += "- It is recommended to specify a tour for the simplified image.";
                     }
                 }
-                if (altContent.Image == null && altContent.Text != null)
+                if (altContent.Image == null)
                 {
                     if (!first)
                     {
@@ -225,7 +225,37 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- A tour is specified without its associated simplified image.";
+                        message += "- The simplified image is missing.";
+                    }
+                }
+                //if (altContent.Image == null && altContent.Text != null)
+                //{
+                //    if (!first)
+                //    {
+                //        if (message != null)
+                //        {
+                //            message += "\n";
+                //        }
+                //    }
+                //    first = false;
+                //    if (message != null)
+                //    {
+                //        message += "- A tour is specified without its associated simplified image.";
+                //    }
+                //}
+                if (altContent.Audio != null && altContent.Text == null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- The simplified image has audio but no corresponding tour.";
                     }
                 }
             }
@@ -247,7 +277,7 @@ namespace Tobi.Plugin.Descriptions
                         message += "- It is recommended to specify a tour for the tactile image.";
                     }
                 }
-                if (altContent.Image == null && altContent.Text != null)
+                if (altContent.Image == null)
                 {
                     if (!first)
                     {
@@ -259,7 +289,37 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- A tour is specified without its associated tactile image.";
+                        message += "- The tactile image is missing.";
+                    }
+                }
+                //if (altContent.Image == null && altContent.Text != null)
+                //{
+                //    if (!first)
+                //    {
+                //        if (message != null)
+                //        {
+                //            message += "\n";
+                //        }
+                //    }
+                //    first = false;
+                //    if (message != null)
+                //    {
+                //        message += "- A tour is specified without its associated tactile image.";
+                //    }
+                //}
+                if (altContent.Audio != null && altContent.Text == null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- The tactile image has audio but no corresponding tour.";
                     }
                 }
             }

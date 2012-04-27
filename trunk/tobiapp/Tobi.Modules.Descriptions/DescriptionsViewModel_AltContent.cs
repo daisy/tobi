@@ -144,6 +144,28 @@ namespace Tobi.Plugin.Descriptions
                     message += ")";
                 }
             }
+
+            //foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_LondDesc))
+            //{
+            //    if (altContent.Audio != null && altContent.Text == null)
+            //    {
+            //        if (!first)
+            //        {
+            //            if (message != null)
+            //            {
+            //                message += "\n";
+            //            }
+            //        }
+            //        first = false;
+            //        if (message != null)
+            //        {
+            //            message += "- The long description has audio but no corresponding text.";
+            //        }
+
+            //        break;
+            //    }
+            //}
+
             foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_LondDesc))
             {
                 if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
@@ -165,6 +187,26 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_LondDesc))
+            {
+                if (altContent.Image != null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- The long description shouldn't have an image.";
+                    }
+
+                    break;
+                }
+            }
             count = 0;
             foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Summary))
             {
@@ -172,18 +214,18 @@ namespace Tobi.Plugin.Descriptions
             }
             if (count == 0)
             {
-                if (!first)
-                {
-                    if (message != null)
-                    {
-                        message += "\n";
-                    }
-                }
-                first = false;
-                if (message != null)
-                {
-                    message += "- Specifying a summary is recommended.";
-                }
+                //if (!first)
+                //{
+                //    if (message != null)
+                //    {
+                //        message += "\n";
+                //    }
+                //}
+                //first = false;
+                //if (message != null)
+                //{
+                //    message += "- Specifying a summary is recommended.";
+                //}
             }
             else if (count > 1)
             {
@@ -203,6 +245,27 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
+            //foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Summary))
+            //{
+            //    if (altContent.Audio != null && altContent.Text == null)
+            //    {
+            //        if (!first)
+            //        {
+            //            if (message != null)
+            //            {
+            //                message += "\n";
+            //            }
+            //        }
+            //        first = false;
+            //        if (message != null)
+            //        {
+            //            message += "- The summary has audio but no corresponding text.";
+            //        }
+
+            //        break;
+            //    }
+            //}
+
             foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Summary))
             {
                 if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
@@ -218,6 +281,27 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "- The summary text is missing.";
+                    }
+
+                    break;
+                }
+            }
+
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Summary))
+            {
+                if (altContent.Image != null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- The summary shouldn't have an image.";
                     }
 
                     break;
@@ -247,6 +331,27 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
+            //foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_SimplifiedLanguageDescription))
+            //{
+            //    if (altContent.Audio != null && altContent.Text == null)
+            //    {
+            //        if (!first)
+            //        {
+            //            if (message != null)
+            //            {
+            //                message += "\n";
+            //            }
+            //        }
+            //        first = false;
+            //        if (message != null)
+            //        {
+            //            message += "- The simplified language has audio but no corresponding text.";
+            //        }
+
+            //        break;
+            //    }
+            //}
+
             foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_SimplifiedLanguageDescription))
             {
                 if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
@@ -262,6 +367,27 @@ namespace Tobi.Plugin.Descriptions
                     if (message != null)
                     {
                         message += "-The simplified language text is missing.";
+                    }
+
+                    break;
+                }
+            }
+
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_SimplifiedLanguageDescription))
+            {
+                if (altContent.Image != null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- The simplified language shouldn't have an image.";
                     }
 
                     break;
@@ -288,6 +414,27 @@ namespace Tobi.Plugin.Descriptions
                     message += "- There are more than one simplified image (";
                     message += count;
                     message += "), which will be grouped if they have the same identifier and share the same tour.";
+                }
+            }
+
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_SimplifiedImage))
+            {
+                if (altContent.Audio != null && altContent.Text == null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- The simplified image has audio but no corresponding tour.";
+                    }
+
+                    break;
                 }
             }
 
@@ -327,7 +474,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- Tour text is recommended for for simplified image.";
+                        message += "- Tour text is recommended for simplified image.";
                     }
 
                     break;
@@ -354,6 +501,27 @@ namespace Tobi.Plugin.Descriptions
                     message += "- There are more than one tactile image (";
                     message += count;
                     message += "), which will be grouped if they have the same identifier and share the same tour.";
+                }
+            }
+
+            foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Tactile))
+            {
+                if (altContent.Audio != null && altContent.Text == null)
+                {
+                    if (!first)
+                    {
+                        if (message != null)
+                        {
+                            message += "\n";
+                        }
+                    }
+                    first = false;
+                    if (message != null)
+                    {
+                        message += "- The tactile image has audio but no corresponding tour.";
+                    }
+
+                    break;
                 }
             }
 
@@ -393,7 +561,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- Tour text is recommended for for tactile image.";
+                        message += "- Tour text is recommended for tactile image.";
                     }
 
                     break;
