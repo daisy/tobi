@@ -298,7 +298,7 @@ namespace Tobi.Plugin.Urakawa
                     if (m_EventAggregator != null)
                     {
                         m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_Urakawa_Lang.Saved);
-                    } 
+                    }
 
                     RaisePropertyChanged(() => IsDirty);
                     //IsDirty = false;
@@ -339,7 +339,7 @@ namespace Tobi.Plugin.Urakawa
             var details = new TextBoxReadOnlyCaretVisible
             {
                 FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
-        
+
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(6),
                 TextReadOnly = String.Format(Tobi_Plugin_Urakawa_Lang.UrakawaSession_SavePath, path)
@@ -350,7 +350,7 @@ namespace Tobi.Plugin.Urakawa
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   false, 300, 160, details, 40,null);
+                                                   false, 300, 160, details, 40, owner);
 
             windowPopup.ShowModal();
 
@@ -394,7 +394,7 @@ namespace Tobi.Plugin.Urakawa
             var details = new TextBoxReadOnlyCaretVisible
             {
                 FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
-        
+
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(6),
                 TextReadOnly = String.Format(Tobi_Plugin_Urakawa_Lang.UrakawaSession_SavePath, path)
@@ -404,7 +404,7 @@ namespace Tobi.Plugin.Urakawa
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   false, 380, 190, details, 40,null);
+                                                   false, 380, 190, details, 40, null);
 
             windowPopup.ShowModal();
 

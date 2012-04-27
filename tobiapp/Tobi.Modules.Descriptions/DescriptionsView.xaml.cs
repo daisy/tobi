@@ -339,8 +339,12 @@ namespace Tobi.Plugin.Descriptions
             }
 
 
-            SampleRate sampleRate = SampleRate.Hz22050; // Settings.Default.AudioExportSampleRate;
-            bool encodeToMp3 = true; // Settings.Default.AudioExportEncodeToMp3;
+            SampleRate sampleRate = SampleRate.Hz22050;
+            sampleRate = Urakawa.Settings.Default.AudioExportSampleRate;
+
+
+            bool encodeToMp3 = true;
+            encodeToMp3 = Urakawa.Settings.Default.AudioExportEncodeToMp3;
 
 
             var combo = new ComboBox
@@ -436,19 +440,22 @@ namespace Tobi.Plugin.Descriptions
             }
 
             encodeToMp3 = checkBox.IsChecked.Value;
-            //Settings.Default.AudioExportEncodeToMp3 = checkBox.IsChecked.Value;
+            Urakawa.Settings.Default.AudioExportEncodeToMp3 = checkBox.IsChecked.Value;
 
             if (combo.SelectedItem == item1)
             {
-                sampleRate = SampleRate.Hz11025; //Settings.Default.AudioExportSampleRate
+                sampleRate = SampleRate.Hz11025;
+                Urakawa.Settings.Default.AudioExportSampleRate = sampleRate;
             }
             else if (combo.SelectedItem == item2)
             {
-                sampleRate = SampleRate.Hz22050; //Settings.Default.AudioExportSampleRate
+                sampleRate = SampleRate.Hz22050;
+                Urakawa.Settings.Default.AudioExportSampleRate = sampleRate;
             }
             else if (combo.SelectedItem == item3)
             {
-                sampleRate = SampleRate.Hz44100; //Settings.Default.AudioExportSampleRate
+                sampleRate = SampleRate.Hz44100;
+                Urakawa.Settings.Default.AudioExportSampleRate = sampleRate;
             }
 
 
@@ -511,6 +518,7 @@ namespace Tobi.Plugin.Descriptions
             try
             {
                 string descriptionFile = Daisy3_Export.CreateImageDescription(
+                    Urakawa.Settings.Default.AudioCodecDisableACM,
                     pcmFormat, encodeToMp3, 0,
                    imageDescriptionDirectoryPath, exportImageName,
                    node.GetAlternateContentProperty(),
