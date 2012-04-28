@@ -74,7 +74,7 @@ namespace Tobi.Plugin.Validator
         {
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = obj.Item2;
             TreeNode treeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
-            
+
             //TODO: this disturbs double-click selection!! (leads to random null pointer exceptions)
             //SelectItemInListFromDocumentNodeSelection(treeNode);
         }
@@ -83,6 +83,7 @@ namespace Tobi.Plugin.Validator
         {
             var list = sender as ListBox;
             var validationItem = list.SelectedItem as ValidationItem;
+            if (validationItem == null) return;
             validationItem.TakeAction();
         }
 

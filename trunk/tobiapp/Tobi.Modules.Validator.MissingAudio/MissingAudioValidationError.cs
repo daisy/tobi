@@ -26,7 +26,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
        
         public override void TakeAction()
         {
-            m_UrakawaSession.PerformTreeNodeSelection(Target);
+            m_UrakawaSession.PerformTreeNodeSelection(Target, false, null);
         }
 
         public override bool CanTakeAction
