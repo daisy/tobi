@@ -37,7 +37,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override void TakeAction()
         {
-            m_UrakawaSession.PerformTreeNodeSelection(Target);
+            m_UrakawaSession.PerformTreeNodeSelection(Target, false, null);
         }
 
         public override bool CanTakeAction
@@ -105,7 +105,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override void TakeAction()
         {
-            m_UrakawaSession.PerformTreeNodeSelection(Target);
+            m_UrakawaSession.PerformTreeNodeSelection(Target, false, null);
         }
 
         public override bool CanTakeAction

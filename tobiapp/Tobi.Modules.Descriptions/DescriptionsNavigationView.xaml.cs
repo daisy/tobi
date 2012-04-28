@@ -128,7 +128,7 @@ namespace Tobi.Plugin.Descriptions
 
                 _ignoreTreeNodeSelectedEvent = true;
 
-                m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+                m_UrakawaSession.PerformTreeNodeSelection(treeNode, false, null);
                 //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
             }
 

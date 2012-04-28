@@ -455,7 +455,9 @@ KeyboardNavigation.TabNavigation="Local"
           </Button.Style>
         </Button>
         
-        
+        <!-- 
+                IsEnabled="{Binding HasDescriptionText_LongDesc}"
+                -->
         <Button
           DockPanel.Dock="Right"
                   FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
@@ -465,7 +467,6 @@ KeyboardNavigation.TabNavigation="Local"
                 Margin="4,4,0,0"
                 Content="ZZZZ"
                   
-                IsEnabled="{Binding HasDescriptionText_LongDesc}"
   Visibility="{Binding HasAudio_LongDesc, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
                Padding="0"
@@ -662,6 +663,9 @@ KeyboardNavigation.TabNavigation="Local"
             </Button>
 
 
+            <!-- 
+                    IsEnabled="{Binding HasDescriptionText_Summary}"
+                    -->
             <Button
               DockPanel.Dock="Right"
                       FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
@@ -671,7 +675,6 @@ KeyboardNavigation.TabNavigation="Local"
                     Margin="4,4,0,0"
                     Content="ZZZZ"
                   
-                    IsEnabled="{Binding HasDescriptionText_Summary}"
       Visibility="{Binding HasAudio_Summary, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
                    Padding="0"
@@ -862,7 +865,9 @@ KeyboardNavigation.TabNavigation="Local"
                 </Button.Style>
               </Button>
 
-
+<!-- 
+                  IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
+                  -->
               <Button
                 DockPanel.Dock="Right"
                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
@@ -871,7 +876,6 @@ KeyboardNavigation.TabNavigation="Local"
                 HorizontalAlignment="Right"
                       Margin="4,4,0,0"
                       Content="ZZZZ"
-                  IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
         Visibility="{Binding HasAudio_SimplifiedLanguage, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
                      Padding="0"
@@ -1302,15 +1306,16 @@ KeyboardNavigation.TabNavigation="Local"
                     </Button.Style>
                   </Button>
 
-
-                  <Button
+                      <!-- 
+                  IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
+                  -->
+                      <Button
                             FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                          Control.TabIndex="10"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Right"
                           Margin="4,4,0,0"
                           Content="ZZZZ"
-                  IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
             Visibility="{Binding HasAudio_SimplifiedImage, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
                          Padding="0"
@@ -1700,7 +1705,9 @@ KeyboardNavigation.TabNavigation="Local"
                       </Button.Style>
                     </Button>
 
-
+<!-- 
+                            IsEnabled="{Binding HasDescriptionText_TactileImage}"
+                            -->
                     <Button
                               FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                            Control.TabIndex="10"
@@ -1709,7 +1716,6 @@ KeyboardNavigation.TabNavigation="Local"
                             Margin="4,4,0,0"
                             Content="ZZZZ"
                   
-                            IsEnabled="{Binding HasDescriptionText_TactileImage}"
               Visibility="{Binding HasAudio_TactileImage, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
       
                            Padding="0"
