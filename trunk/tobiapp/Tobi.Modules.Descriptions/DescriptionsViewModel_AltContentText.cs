@@ -203,8 +203,9 @@ namespace Tobi.Plugin.Descriptions
             AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
             if (altContent == null
                 ||
-                altContent.Audio != null
-                    || Daisy3_Export.AltContentHasSignificantMetadata(altContent)
+                altContent.Text == null
+                ||
+                 string.IsNullOrEmpty(altContent.Text.Text)
                 )
             {
                 if (!first)
@@ -222,29 +223,29 @@ namespace Tobi.Plugin.Descriptions
             }
             else
             {
-                bool otherDataInAdvancedMode = altContent.Audio != null
-                                               || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
-                if (altContent.Text == null
-                    && otherDataInAdvancedMode
-                    )
-                {
-                    if (!first)
-                    {
-                        if (message != null)
-                        {
-                            message += "\n";
-                        }
-                    }
-                    first = false;
-                    if (message != null)
-                    {
-                        message += "- The long description has no text.";
-                        if (otherDataInAdvancedMode)
-                        {
-                            message += " (has other data, see advanced editor)";
-                        }
-                    }
-                }
+                //bool otherDataInAdvancedMode = altContent.Audio != null
+                //                               || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
+                //if (altContent.Text == null
+                //    && otherDataInAdvancedMode
+                //    )
+                //{
+                //    if (!first)
+                //    {
+                //        if (message != null)
+                //        {
+                //            message += "\n";
+                //        }
+                //    }
+                //    first = false;
+                //    if (message != null)
+                //    {
+                //        message += "- The long description has no text.";
+                //        if (otherDataInAdvancedMode)
+                //        {
+                //            message += " (has other data, see advanced editor)";
+                //        }
+                //    }
+                //}
 
                 //if (altContent.Audio != null && altContent.Text == null)
                 //{
