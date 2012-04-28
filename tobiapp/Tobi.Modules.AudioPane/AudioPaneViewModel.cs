@@ -1628,10 +1628,10 @@ m_Stream.Length);
 
                     //Logger.Log("++++++ PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.LastPlayHeadTime", Category.Debug, Priority.Medium);
 
-//#if DEBUG
-//                    Stopwatch stopwatch = new Stopwatch();
-//                    stopwatch.Start();
-//#endif //DEBUG
+                    //#if DEBUG
+                    //                    Stopwatch stopwatch = new Stopwatch();
+                    //                    stopwatch.Start();
+                    //#endif //DEBUG
                     if (!TheDispatcher.CheckAccess())
                     {
 #if DEBUG
@@ -1651,12 +1651,12 @@ m_Stream.Length);
                         }),
                             DispatcherPriority.Background);
                     }
-                    
-//#if DEBUG
-//                    TimeSpan time = stopwatch.Elapsed;
-//                    Logger.Log("%%%%%%%%%%%%%% PLAYBACK CHUNK SWITCH TREENODE SELECT: " + time, Category.Debug, Priority.Medium);
-//                    stopwatch.Stop();
-//#endif //DEBUG
+
+                    //#if DEBUG
+                    //                    TimeSpan time = stopwatch.Elapsed;
+                    //                    Logger.Log("%%%%%%%%%%%%%% PLAYBACK CHUNK SWITCH TREENODE SELECT: " + time, Category.Debug, Priority.Medium);
+                    //                    stopwatch.Stop();
+                    //#endif //DEBUG
                 }
                 else
                 {
@@ -1803,20 +1803,25 @@ m_Stream.Length);
         {
             if (!TheDispatcher.CheckAccess())
             {
-
                 TheDispatcher.BeginInvoke(DispatcherPriority.Normal,
                                   (Action<object, VuMeter.PeakOverloadEventArgs>)OnPeakMeterOverloaded_, sender, e);
                 return;
             }
-#if DEBUG
-            Debugger.Break();
-#endif
+
+            OnPeakMeterOverloaded_(sender, e);
+
+            //#if DEBUG
+            //            Debugger.Break();
+            //#endif
         }
         private void OnPeakMeterOverloaded_(object sender, VuMeter.PeakOverloadEventArgs e)
         {
             if (e != null)
             {
-                AudioCues.PlayHi();
+                if (!IsRecording)
+                {
+                    AudioCues.PlayHi();
+                }
 
                 if (e.Channel == 1)
                 {

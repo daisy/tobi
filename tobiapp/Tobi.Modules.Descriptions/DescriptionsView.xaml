@@ -227,72 +227,6 @@
 
     LastChildFill="True">
 
-      <GroupBox
-KeyboardNavigation.TabNavigation="Local"
-      DockPanel.Dock="Bottom"
-    
-      Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-        Margin="0, 3, 0, 0" Padding="6" >
-        <GroupBox.Header>
-          
-          <TextBlock
-          Text="Notes"
-        
-          Focusable="true"
-          FontWeight="Bold"
-                KeyboardNavigation.IsTabStop="True"
-                KeyboardNavigation.TabIndex="1"
-
-        />
-        </GroupBox.Header>
-
-        <TextBlock
-        Text="No issues detected."
-        
-        Focusable="true"
-        FontWeight="Bold"
-              KeyboardNavigation.IsTabStop="True"
-              KeyboardNavigation.TabIndex="2"
-
-        />
-        </GroupBox>
-      
-      
-      <GroupBox
-
-        KeyboardNavigation.TabNavigation="Local"
-      DockPanel.Dock="Bottom"
-    
-            Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToVisibilityConverter}}"
-        Margin="0, 3, 0, 0" Padding="6" >
-        <GroupBox.Header>
-          <TextBlock
-            Foreground="Red"
-            Focusable="true"
-            FontWeight="Bold"
-                  KeyboardNavigation.IsTabStop="True"
-                  KeyboardNavigation.TabIndex="1"
-                      Text="Notes"/>
-        </GroupBox.Header>
-
-        <ScrollViewer
-        HorizontalAlignment="Stretch"
-      HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-          <TextBlock
-    FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                   
-                    KeyboardNavigation.IsTabStop="true"
-                    KeyboardNavigation.TabIndex="2"
-
-    TextWrapping="WrapWithOverflow"
-            Text="{Binding ValidationText_BasicText}"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Stretch"
-            Focusable="True"
-                       />
-        </ScrollViewer>
-      </GroupBox>
-
       <Grid
                     KeyboardNavigation.IsTabStop="False"
                     KeyboardNavigation.TabIndex="1"
@@ -301,6 +235,8 @@ KeyboardNavigation.TabNavigation="Local"
           >
       <Grid.RowDefinitions>
         <RowDefinition Height="*"></RowDefinition>
+        <RowDefinition Height="Auto"></RowDefinition>
+        <RowDefinition Height="66"></RowDefinition>
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
@@ -926,6 +862,92 @@ KeyboardNavigation.TabNavigation="Local"
           </DockPanel>
         </GroupBox>
 
+
+        <GridSplitter
+            Grid.Row="1"
+          Grid.ColumnSpan="3"
+              
+          Margin="0,3,0,3"
+             Focusable="False"
+             HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        </GridSplitter>
+
+
+        <GroupBox
+          MinHeight="40"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            
+            
+  KeyboardNavigation.TabNavigation="Local"
+    
+        Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+          Margin="0, 0, 0, 0" Padding="6" >
+          <GroupBox.Header>
+
+            <TextBlock
+            Text="Notes"
+        
+            Focusable="true"
+            FontWeight="Bold"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="1"
+
+        />
+          </GroupBox.Header>
+
+          <TextBlock
+          Text="No issues detected."
+        
+          Focusable="true"
+          FontWeight="Bold"
+                KeyboardNavigation.IsTabStop="True"
+                KeyboardNavigation.TabIndex="2"
+
+        />
+        </GroupBox>
+
+
+        <GroupBox
+MinHeight="50"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            
+          KeyboardNavigation.TabNavigation="Local"
+    
+              Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToVisibilityConverter}}"
+          Margin="0, 0, 0, 0"
+Padding="6,3,6,3"
+>
+          <GroupBox.Header>
+            <TextBlock
+              Foreground="Red"
+              Focusable="true"
+              FontWeight="Bold"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1"
+                        Text="Notes"/>
+          </GroupBox.Header>
+
+          <ScrollViewer
+          HorizontalAlignment="Stretch"
+        HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <TextBlock
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   
+                      KeyboardNavigation.IsTabStop="true"
+                      KeyboardNavigation.TabIndex="2"
+
+      TextWrapping="WrapWithOverflow"
+              Text="{Binding ValidationText_BasicText}"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+              Focusable="True"
+                       />
+          </ScrollViewer>
+        </GroupBox>
+
+
       </Grid>
 
   </DockPanel>
@@ -943,72 +965,6 @@ KeyboardNavigation.TabNavigation="Local"
 
         LastChildFill="True">
 
-          <GroupBox
-KeyboardNavigation.TabNavigation="Local"
-          DockPanel.Dock="Bottom"
-    
-          Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-            Margin="0, 3, 0, 0" Padding="6" >
-            <GroupBox.Header>
-
-              <TextBlock
-              Text="Notes"
-        
-              Focusable="true"
-              FontWeight="Bold"
-                    KeyboardNavigation.IsTabStop="True"
-                    KeyboardNavigation.TabIndex="1"
-
-        />
-            </GroupBox.Header>
-
-            <TextBlock
-            Text="No issues detected."
-        
-            Focusable="true"
-            FontWeight="Bold"
-                  KeyboardNavigation.IsTabStop="True"
-                  KeyboardNavigation.TabIndex="2"
-
-        />
-          </GroupBox>
-
-          
-          <GroupBox
-
-            KeyboardNavigation.TabNavigation="Local"
-          DockPanel.Dock="Bottom"
-    
-                Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToVisibilityConverter}}"
-            Margin="0, 3, 0, 0" Padding="6" >
-            <GroupBox.Header>
-              <TextBlock
-                Foreground="Red"
-                Focusable="true"
-                FontWeight="Bold"
-                      KeyboardNavigation.IsTabStop="True"
-                      KeyboardNavigation.TabIndex="1"
-                          Text="Notes"/>
-            </GroupBox.Header>
-
-            <ScrollViewer
-            HorizontalAlignment="Stretch"
-          HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-              <TextBlock
-        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                   
-                        KeyboardNavigation.IsTabStop="true"
-                        KeyboardNavigation.TabIndex="2"
-
-        TextWrapping="WrapWithOverflow"
-                Text="{Binding ValidationText_BasicImage}"
-                       HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch"
-                Focusable="True"
-                       />
-            </ScrollViewer>
-          </GroupBox>
-
           <Grid
                         KeyboardNavigation.IsTabStop="False"
                         KeyboardNavigation.TabIndex="1"
@@ -1017,6 +973,8 @@ KeyboardNavigation.TabNavigation="Local"
           >
             <Grid.RowDefinitions>
               <RowDefinition Height="*"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="66"></RowDefinition>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -1815,6 +1773,88 @@ KeyboardNavigation.TabNavigation="Local"
               </Grid>
             </GroupBox>
 
+            <GridSplitter
+                Grid.Row="1"
+              Grid.ColumnSpan="2"
+              
+              Margin="0,3,0,3"
+                 Focusable="False"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            </GridSplitter>
+
+
+            <GroupBox
+MinHeight="40"
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+      
+  KeyboardNavigation.TabNavigation="Local"
+    
+            Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+              Margin="0, 0, 0, 0" Padding="6" >
+              <GroupBox.Header>
+
+                <TextBlock
+                Text="Notes"
+        
+                Focusable="true"
+                FontWeight="Bold"
+                      KeyboardNavigation.IsTabStop="True"
+                      KeyboardNavigation.TabIndex="1"
+
+        />
+              </GroupBox.Header>
+
+              <TextBlock
+              Text="No issues detected."
+        
+              Focusable="true"
+              FontWeight="Bold"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="2"
+
+        />
+            </GroupBox>
+
+
+            <GroupBox
+MinHeight="50"
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            
+              KeyboardNavigation.TabNavigation="Local"
+    
+                  Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToVisibilityConverter}}"
+              Margin="0, 0, 0, 0"
+Padding="6,3,6,3"
+>
+              <GroupBox.Header>
+                <TextBlock
+                  Foreground="Red"
+                  Focusable="true"
+                  FontWeight="Bold"
+                        KeyboardNavigation.IsTabStop="True"
+                        KeyboardNavigation.TabIndex="1"
+                            Text="Notes"/>
+              </GroupBox.Header>
+
+              <ScrollViewer
+              HorizontalAlignment="Stretch"
+            HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <TextBlock
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   
+                          KeyboardNavigation.IsTabStop="true"
+                          KeyboardNavigation.TabIndex="2"
+
+          TextWrapping="WrapWithOverflow"
+                  Text="{Binding ValidationText_BasicImage}"
+                         HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"
+                  Focusable="True"
+                       />
+              </ScrollViewer>
+            </GroupBox>
 
           </Grid>
 
@@ -1843,72 +1883,6 @@ KeyboardNavigation.TabNavigation="Local"
 
       <DockPanel LastChildFill="true">
 
-        <GroupBox
-KeyboardNavigation.TabNavigation="Local"
-        DockPanel.Dock="Bottom"
-    
-        Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-          Margin="0, 3, 0, 0" Padding="6" >
-          <GroupBox.Header>
-
-            <TextBlock
-            Text="Notes"
-        
-            Focusable="true"
-            FontWeight="Bold"
-                  KeyboardNavigation.IsTabStop="True"
-                  KeyboardNavigation.TabIndex="1"
-
-        />
-          </GroupBox.Header>
-
-          <TextBlock
-          Text="No issues detected."
-        
-          Focusable="true"
-          FontWeight="Bold"
-                KeyboardNavigation.IsTabStop="True"
-                KeyboardNavigation.TabIndex="2"
-
-        />
-        </GroupBox>
-
-        <GroupBox
-
-        KeyboardNavigation.TabNavigation="Local"
-      DockPanel.Dock="Bottom"
-    
-            Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToVisibilityConverter}}"
-        Margin="0, 3, 0, 0" Padding="6" >
-        <GroupBox.Header>
-          <TextBlock
-            Foreground="Red"
-            Focusable="true"
-            FontWeight="Bold"
-                  KeyboardNavigation.IsTabStop="True"
-                  KeyboardNavigation.TabIndex="1"
-                      Text="Notes"/>
-        </GroupBox.Header>
-
-        <ScrollViewer
-        HorizontalAlignment="Stretch"
-      HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-          <TextBlock
-    FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                   
-                    KeyboardNavigation.IsTabStop="true"
-                    KeyboardNavigation.TabIndex="2"
-
-    TextWrapping="WrapWithOverflow"
-            Text="{Binding ValidationText_Metadata}"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Stretch"
-            Focusable="True"
-                       />
-        </ScrollViewer>
-      </GroupBox>
-
-
       <Grid Height="Auto" Width="Auto" 
           KeyboardNavigation.TabNavigation="Local">
         <Grid.ColumnDefinitions>
@@ -1918,6 +1892,8 @@ KeyboardNavigation.TabNavigation="Local"
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
           <RowDefinition Height="*"/>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="66"></RowDefinition>
         </Grid.RowDefinitions>
         
         <DockPanel LastChildFill="True"
@@ -2123,6 +2099,7 @@ IsEnabled="{Binding HasMetadata}"
           </UI:SortableListView2>
 
         </DockPanel>
+        
         <GridSplitter
             Grid.Column="1" Grid.Row="0"
              Focusable="False"
@@ -2346,22 +2323,28 @@ AlternationCount="2"
 
         </DockPanel>
 
-      </Grid>
 
-      </DockPanel>
-    </TabItem>
-    
-    
-    <TabItem Header="Descriptions" x:Name="TabItem_Descriptions">
 
-      <DockPanel LastChildFill="true">
+        <GridSplitter
+            Grid.Row="1"
+          Grid.ColumnSpan="3"
+              
+          Margin="0,3,0,3"
+             Focusable="False"
+             HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        </GridSplitter>
 
         <GroupBox
+MinHeight="40"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            
+            
 KeyboardNavigation.TabNavigation="Local"
-        DockPanel.Dock="Bottom"
+        
     
-        Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-          Margin="0, 3, 0, 0" Padding="6" >
+        Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+          Margin="0, 0, 0, 0" Padding="6" >
           <GroupBox.Header>
 
             <TextBlock
@@ -2387,17 +2370,24 @@ KeyboardNavigation.TabNavigation="Local"
         </GroupBox>
 
         <GroupBox
-
-          KeyboardNavigation.TabNavigation="Local"
-        DockPanel.Dock="Bottom"
+MinHeight="50"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+      
+            
+            
+        KeyboardNavigation.TabNavigation="Local"
+      
     
-              Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToVisibilityConverter}}"
-          Margin="0, 3, 0, 0" Padding="6" >
+            Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToVisibilityConverter}}"
+        Margin="0, 0, 0, 0"
+Padding="6,3,6,3"
+>
           <GroupBox.Header>
             <TextBlock
               Foreground="Red"
               Focusable="true"
-            FontWeight="Bold"
+              FontWeight="Bold"
                     KeyboardNavigation.IsTabStop="True"
                     KeyboardNavigation.TabIndex="1"
                         Text="Notes"/>
@@ -2411,15 +2401,27 @@ KeyboardNavigation.TabNavigation="Local"
                    
                       KeyboardNavigation.IsTabStop="true"
                       KeyboardNavigation.TabIndex="2"
-              
+
       TextWrapping="WrapWithOverflow"
-              Text="{Binding ValidationText_Descriptions}"
+              Text="{Binding ValidationText_Metadata}"
                      HorizontalAlignment="Stretch"
                      VerticalAlignment="Stretch"
               Focusable="True"
                        />
           </ScrollViewer>
         </GroupBox>
+
+
+
+      </Grid>
+
+      </DockPanel>
+    </TabItem>
+    
+    
+    <TabItem Header="Descriptions" x:Name="TabItem_Descriptions">
+
+      <DockPanel LastChildFill="true">
 
         <Grid Height="Auto" Width="Auto"
           KeyboardNavigation.TabNavigation="Local">
@@ -2428,8 +2430,11 @@ KeyboardNavigation.TabNavigation="Local"
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
           </Grid.ColumnDefinitions>
+          
           <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="66"></RowDefinition>
           </Grid.RowDefinitions>
 
           <DockPanel LastChildFill="True"
@@ -3019,6 +3024,96 @@ KeyboardNavigation.TabNavigation="Local"
             </TabItem>
 
           </TabControl>
+
+          <GridSplitter
+              Grid.Row="1"
+            Grid.ColumnSpan="3"
+              
+            Margin="0,3,0,3"
+               Focusable="False"
+               HorizontalAlignment="Stretch" VerticalAlignment="Center">
+          </GridSplitter>
+
+          <GroupBox
+MinHeight="40"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            
+  KeyboardNavigation.TabNavigation="Local"
+          
+    
+          Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+            Margin="0, 0, 0, 0" Padding="6" >
+            <GroupBox.Header>
+
+              <TextBlock
+              Text="Notes"
+        
+              Focusable="true"
+              FontWeight="Bold"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1"
+
+        />
+            </GroupBox.Header>
+
+            <TextBlock
+            Text="No issues detected."
+        
+            Focusable="true"
+            FontWeight="Bold"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="2"
+
+        />
+          </GroupBox>
+          
+          
+          <GroupBox
+MinHeight="50"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            
+            
+            
+            KeyboardNavigation.TabNavigation="Local"
+          
+                Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToVisibilityConverter}}"
+            Margin="0, 0, 0, 0"
+Padding="6,3,6,3"
+>
+            <GroupBox.Header>
+              <TextBlock
+                Foreground="Red"
+                Focusable="true"
+              FontWeight="Bold"
+                      KeyboardNavigation.IsTabStop="True"
+                      KeyboardNavigation.TabIndex="1"
+                          Text="Notes"/>
+            </GroupBox.Header>
+
+            <ScrollViewer
+            HorizontalAlignment="Stretch"
+          HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+>
+              <TextBlock
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   
+                        KeyboardNavigation.IsTabStop="true"
+                        KeyboardNavigation.TabIndex="2"
+              
+        TextWrapping="WrapWithOverflow"
+                Text="{Binding ValidationText_Descriptions}"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                Focusable="True"
+                       />
+            </ScrollViewer>
+          </GroupBox>
+
+
+
+
         </Grid>
       </DockPanel>
     </TabItem>

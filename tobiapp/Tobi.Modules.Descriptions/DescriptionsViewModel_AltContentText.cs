@@ -201,7 +201,11 @@ namespace Tobi.Plugin.Descriptions
             bool first = true;
 
             AlternateContent altContent = GetAltContent(DiagramContentModelHelper.D_LondDesc);
-            if (altContent == null)
+            if (altContent == null
+                ||
+                altContent.Audio != null
+                    || Daisy3_Export.AltContentHasSignificantMetadata(altContent)
+                )
             {
                 if (!first)
                 {
@@ -218,11 +222,10 @@ namespace Tobi.Plugin.Descriptions
             }
             else
             {
+                bool otherDataInAdvancedMode = altContent.Audio != null
+                                               || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
                 if (altContent.Text == null
-                    && (
-                    altContent.Audio != null
-                    || Daisy3_Export.AltContentHasSignificantMetadata(altContent)
-                    )
+                    && otherDataInAdvancedMode
                     )
                 {
                     if (!first)
@@ -235,7 +238,11 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The long description has no text (has other data, see advanced editor).";
+                        message += "- The long description has no text.";
+                        if (otherDataInAdvancedMode)
+                        {
+                            message += " (has other data, see advanced editor)";
+                        }
                     }
                 }
 
@@ -259,11 +266,10 @@ namespace Tobi.Plugin.Descriptions
             altContent = GetAltContent(DiagramContentModelHelper.D_Summary);
             if (altContent != null)
             {
+                bool otherDataInAdvancedMode = altContent.Audio != null
+                                               || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
                 if (altContent.Text == null
-                    && (
-                    altContent.Audio != null
-                    || Daisy3_Export.AltContentHasSignificantMetadata(altContent)
-                    )
+                    && otherDataInAdvancedMode
                     )
                 {
                     if (!first)
@@ -276,7 +282,11 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The summary has no text (has other data, see advanced editor).";
+                        message += "- The summary has no text.";
+                        if (otherDataInAdvancedMode)
+                        {
+                            message += " (has other data, see advanced editor)";
+                        }
                     }
                 }
 
@@ -300,11 +310,10 @@ namespace Tobi.Plugin.Descriptions
             altContent = GetAltContent(DiagramContentModelHelper.D_SimplifiedLanguageDescription);
             if (altContent != null)
             {
+                bool otherDataInAdvancedMode = altContent.Audio != null
+                                               || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
                 if (altContent.Text == null
-                    && (
-                    altContent.Audio != null
-                    || Daisy3_Export.AltContentHasSignificantMetadata(altContent)
-                    )
+                    && otherDataInAdvancedMode
                     )
                 {
                     if (!first)
@@ -317,7 +326,11 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The simplified language has no text (has other data, see advanced editor).";
+                        message += "- The simplified language has no text.";
+                        if (otherDataInAdvancedMode)
+                        {
+                            message += " (has other data, see advanced editor)";
+                        }
                     }
                 }
 

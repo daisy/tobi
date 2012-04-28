@@ -4,6 +4,7 @@ using Tobi.Common.MVVM;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.daisy;
+using urakawa.daisy.export;
 using urakawa.property.alt;
 using urakawa.xuk;
 
@@ -170,6 +171,8 @@ namespace Tobi.Plugin.Descriptions
             {
                 if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
                 {
+                    bool otherDataInAdvancedMode = altContent.Audio != null
+                                                   || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
                     if (!first)
                     {
                         if (message != null)
@@ -185,7 +188,11 @@ namespace Tobi.Plugin.Descriptions
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
                         {
-                            message += " [" + xmlId + "]";
+                            message += " [" + xmlId + "] ";
+                        }
+                        if (otherDataInAdvancedMode)
+                        {
+                            message += " (has other data)";
                         }
                     }
                 }
@@ -278,6 +285,8 @@ namespace Tobi.Plugin.Descriptions
             {
                 if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
                 {
+                    bool otherDataInAdvancedMode = altContent.Audio != null
+                                                   || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
                     if (!first)
                     {
                         if (message != null)
@@ -293,7 +302,11 @@ namespace Tobi.Plugin.Descriptions
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
                         {
-                            message += " [" + xmlId + "]";
+                            message += " [" + xmlId + "] ";
+                        }
+                        if (otherDataInAdvancedMode)
+                        {
+                            message += " (has other data)";
                         }
                     }
                 }
@@ -372,6 +385,8 @@ namespace Tobi.Plugin.Descriptions
             {
                 if (altContent.Text == null || string.IsNullOrEmpty(altContent.Text.Text))
                 {
+                    bool otherDataInAdvancedMode = altContent.Audio != null
+                                                   || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
                     if (!first)
                     {
                         if (message != null)
@@ -387,7 +402,11 @@ namespace Tobi.Plugin.Descriptions
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
                         {
-                            message += " [" + xmlId + "]";
+                            message += " [" + xmlId + "] ";
+                        }
+                        if (otherDataInAdvancedMode)
+                        {
+                            message += " (has other data)";
                         }
                     }
                 }
@@ -470,6 +489,9 @@ namespace Tobi.Plugin.Descriptions
             {
                 if (altContent.Image == null)
                 {
+                    bool otherDataInAdvancedMode = altContent.Audio != null
+                                                   || altContent.Text != null
+                                                   || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
                     if (!first)
                     {
                         if (message != null)
@@ -485,7 +507,11 @@ namespace Tobi.Plugin.Descriptions
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
                         {
-                            message += " [" + xmlId + "]";
+                            message += " [" + xmlId + "] ";
+                        }
+                        if (otherDataInAdvancedMode)
+                        {
+                            message += " (has other data)";
                         }
                     }
                 }
@@ -567,6 +593,9 @@ namespace Tobi.Plugin.Descriptions
 
             foreach (var altContent in GetAltContents(DiagramContentModelHelper.D_Tactile))
             {
+                bool otherDataInAdvancedMode = altContent.Audio != null
+                                               || altContent.Text != null
+                                               || Daisy3_Export.AltContentHasSignificantMetadata(altContent);
                 if (altContent.Image == null)
                 {
                     if (!first)
@@ -584,7 +613,11 @@ namespace Tobi.Plugin.Descriptions
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
                         {
-                            message += " [" + xmlId + "]";
+                            message += " [" + xmlId + "] ";
+                        }
+                        if (otherDataInAdvancedMode)
+                        {
+                            message += " (has other data)";
                         }
                     }
                 }
