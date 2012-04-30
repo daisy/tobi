@@ -258,6 +258,9 @@ namespace Tobi.Plugin.Descriptions
         }
 
 
-
+        public void TryOpenFile(string filePath)
+        {
+            
+        }
     }
 }

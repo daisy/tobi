@@ -6,22 +6,52 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
 using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Test;
 using Tobi.Common.UI;
 
 namespace Tobi
 {
+    public class AppRefProvider : MarshalByRefObject
+    {
+        private Application app;
+        //private Dispatcher dispatcher;
+        public AppRefProvider(Application a) //, Dispatcher d)
+        {
+            app = a;
+            //dispatcher = d;
+        }
+
+        public void TryOpenFile(string filePath)
+        {
+            app.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                (Action)(() =>
+                             {
+                                 var shell = app.MainWindow as Shell;
+                                 if (shell != null)
+                                 {
+                                     shell.TryOpenFile(filePath);
+                                 }
+                             }
+                        ));
+        }
+    }
+
     /// <summary>
     /// The application delegates to the Composite WPF <see cref="Bootstrapper"/>
     /// </summary>
+    // [Serializable()]
     public partial class App
     {
         public App()
@@ -36,17 +66,136 @@ namespace Tobi
             set;
         }
 
+        public string ParameterOpenFilePath;
+
         /// <summary>
         /// Application Entry Point.
         /// </summary>
+        //[DebuggerNonUserCodeAttribute()]
         [STAThreadAttribute()]
-        [DebuggerNonUserCodeAttribute()]
         [LoaderOptimization(LoaderOptimization.SingleDomain)]
         public static void Main()
         {
-            var app = new App();
-            app.InitializeComponent();
-            app.Run();
+            string productName = "Daisy_Tobi";
+            string tobiAppRefProviderToken = "TobiAppRefProvider";
+
+            bool firstInstance;
+            var theMutex = new Mutex(false, "Local\\" + productName, out firstInstance);
+
+            try
+            {
+                string[] appParamters = null;
+
+                bool clickOnce = ApplicationDeployment.IsNetworkDeployed;
+                if (clickOnce)
+                {
+                    appParamters = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
+                }
+                else
+                {
+                    appParamters = Environment.GetCommandLineArgs();
+                }
+                bool hasParameters = appParamters != null &&
+                                     (clickOnce ? appParamters.Length > 0
+                                     : appParamters.Length > 1);
+
+                string filePath = "";
+
+                if (hasParameters)
+                {
+                    if (clickOnce)
+                    {
+                        filePath = appParamters[0]; //new Uri(appParamters[0]).LocalPath
+                    }
+                    else
+                    {
+                        try
+                        {
+                            //Tobi.exe /verbose /debuglevel=3
+                            var dict = CommandLineDictionary.FromArguments(appParamters.Skip(1), '/', '=');
+
+                            //bool verbose = d.ContainsKey("verbose");
+                            //int testId = Int32.Parse(d["debuglevel"]);
+
+                            string open;
+                            dict.TryGetValue("open", out open);
+
+                            if (!string.IsNullOrEmpty(open))
+                            {
+                                filePath = open;
+                            }
+                        }
+                        catch
+                        {
+                            filePath = appParamters[1];
+                        }
+                    }
+                }
+
+                if (firstInstance)
+                {
+                    IChannel theChannel = new System.Runtime.Remoting.Channels.Ipc.IpcChannel(productName);
+                    try
+                    {
+                        ChannelServices.RegisterChannel(theChannel, false);
+
+                        var app = new App();
+                        app.InitializeComponent();
+
+                        DebugFix.Assert(app == Application.Current);
+
+                        RemotingServices.Marshal(new AppRefProvider(app
+                            //, app.Dispatcher
+                            ), tobiAppRefProviderToken, typeof(AppRefProvider));
+
+                        if (!string.IsNullOrEmpty(filePath))
+                        {
+                            app.ParameterOpenFilePath = filePath;
+                        }
+
+                        app.Run();
+                    }
+                    catch (SocketException ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    finally
+                    {
+                        ChannelServices.UnregisterChannel(theChannel);
+                    }
+                }
+                else
+                {
+                    if (
+#if DEBUG
+true ||
+#endif //DEBUG
+ !string.IsNullOrEmpty(filePath))
+                    {
+#if DEBUG
+                        MessageBox.Show("DEBUG: Tobi instance already running >> " + filePath);
+#endif //DEBUG
+
+                        try
+                        {
+                            AppRefProvider appRefProvider =
+                                (AppRefProvider)RemotingServices.Connect(
+                                    typeof(AppRefProvider),
+                                    "ipc://" + productName + "/" + tobiAppRefProviderToken);
+
+                            appRefProvider.TryOpenFile(filePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                theMutex.Close();
+            }
         }
 
         ///<summary>
@@ -62,7 +211,7 @@ namespace Tobi
 #if NET40
             //http://blogs.msdn.com/jgoldb/archive/2010/04/12/what-s-new-for-performance-in-wpf-in-net-4.aspx
             //http://blogs.msdn.com/jgoldb/archive/2007/10/10/performance-improvements-in-wpf-in-net-3-5-3-0-sp1.aspx
-            
+
             Console.WriteLine(@"Shell WpfSoftwareRender => " + Tobi.Common.Settings.Default.WpfSoftwareRender);
 
             if (Tobi.Common.Settings.Default.WpfSoftwareRender)
@@ -81,13 +230,6 @@ namespace Tobi
 
             // Ignore 0 index:
             //Environment.GetCommandLineArgs()
-
-            //Tobi.exe -verbose -debuglevel:3
-            var d = CommandLineDictionary.FromArguments(e.Args, '-', ':');
-
-            //bool verbose = d.ContainsKey("verbose");
-            //int testId = Int32.Parse(d["debuglevel"]);
-
             //or:
 
             /*
@@ -252,8 +394,40 @@ c.Execute();
             }
             str = Tobi_Lang.LangStringKey1;
 #else //DEBUG
-            SetCulture(Settings.Default.Lang);
+            try
+            {
+                SetCulture(Settings.Default.Lang);
+            }
+            catch (ConfigurationErrorsException ex)
+            {
+                HandleConfigurationErrorsException(ex);
+            }
 #endif //DEBUG
+
+            string lang = Thread.CurrentThread.CurrentUICulture.ToString();
+
+            if (false && ApplicationDeployment.IsNetworkDeployed)
+            {
+                ApplicationDeployment deploy = ApplicationDeployment.CurrentDeployment;
+                try
+                {
+                    if (!deploy.IsFileGroupDownloaded(lang)) //deploy.IsFirstRun
+                    {
+                        deploy.DownloadFileGroup(lang);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+
+                    MessageBox.Show(ex.Message);
+
+                    // Log error. Do not report this error to the user, because a satellite
+                    // assembly may not exist if the user's culture and the application's
+                    // default culture match.
+                }
+            }
 
             //to use on individual forms: this.Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
             FrameworkElement.LanguageProperty.OverrideMetadata(
@@ -274,12 +448,7 @@ c.Execute();
 
             ShutdownMode = ShutdownMode.OnMainWindowClose;
 
-
-#if (FALSE && DEBUG && VSTUDIO) // We want the release-mode exception capture dialog, even when debugging in Visual Studio
-            runInDebugMode();
-#else
-            runInReleaseMode();
-#endif
+            runBootstrapper();
         }
 
         private static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
@@ -305,19 +474,26 @@ c.Execute();
             return null;
         }
 
-        private static void runInDebugMode()
-        {
-            var bootstrapper = new Bootstrapper();
-            bootstrapper.Run();
-        }
-
-        private static void runInReleaseMode()
+        private static void runBootstrapper()
         {
             AppDomain.CurrentDomain.UnhandledException += appDomainUnhandledException;
             try
             {
                 var bootstrapper = new Bootstrapper();
                 bootstrapper.Run();
+
+                var app = Application.Current as App;
+                if (app != null)
+                {
+                    var shell = app.MainWindow as Shell;
+                    if (shell != null)
+                    {
+                        shell.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                                                     (Action)(() =>
+                                shell.TryOpenFile(app.ParameterOpenFilePath)
+                                                              ));
+                    }
+                }
             }
             catch (Exception ex)
             {

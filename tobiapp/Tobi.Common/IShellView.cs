@@ -339,5 +339,7 @@ namespace Tobi.Common
         void DimBackgroundWhile(Action action, Window owner);
 
         void ExecuteShellProcess(string shellCmd);
+
+        void TryOpenFile(string filePath);
     }
 }

@@ -1349,10 +1349,20 @@ namespace Tobi
             {
                 foreach (string filePath in ((DataObject)e.Data).GetFileDropList())
                 {
-                    m_UrakawaSession.TryOpenFile(filePath);
+                    TryOpenFile(filePath);
                     break;
                 }
             }
+        }
+
+        public void TryOpenFile(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return;
+            }
+
+            m_UrakawaSession.TryOpenFile(filePath);
         }
     }
 }
