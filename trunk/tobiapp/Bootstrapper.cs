@@ -174,7 +174,8 @@ namespace Tobi
             string url = ApplicationConstants.TOBI_ANON_USAGE_URI;
 
             url += "?version=" + Uri.EscapeDataString(ApplicationConstants.APP_VERSION);
-            url += "&clickonce=" + (ApplicationDeployment.IsNetworkDeployed ? "true" : "false");
+            url += "&clickonce=" + (ApplicationDeployment.IsNetworkDeployed ? "true" :
+                (Debugger.IsAttached ? "VS" : "false"));
             url += "&datetime=" + Uri.EscapeDataString(DateTime.Now.ToString("yyyy-MM-dd_HH:mm:ss_K"));
             url += "&datetimeutc=" + Uri.EscapeDataString(DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss_K"));
             url += "&os=" + Uri.EscapeDataString(ApplicationConstants.OS_INFORMATION);
