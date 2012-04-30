@@ -105,7 +105,15 @@ namespace Tobi
                 {
                     if (clickOnce)
                     {
-                        filePath = appParamters[0]; //new Uri(appParamters[0]).LocalPath
+                        try
+                        {
+                            filePath = new Uri(appParamters[0]).LocalPath;
+                        }
+                        catch
+                        {
+                            filePath = "";
+                            MessageBox.Show("CANNOT PARSE URI: " + appParamters[0]);
+                        }
                     }
                     else
                     {
