@@ -212,8 +212,7 @@ namespace Tobi.Plugin.AudioPane
                 TreeNode adjustedNode = treeNodeSelection.Item1;
                 if (!m_viewModel.IsSimpleMode)
                 {
-                    adjustedNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(treeNodeSelection.Item1,
-                                                                                           initial ? null : treeNode);
+                    adjustedNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, treeNodeSelection.Item1, initial ? null : treeNode);
                     if (adjustedNode == null)
                     {
                         return;
@@ -455,7 +454,7 @@ namespace Tobi.Plugin.AudioPane
                 CommandRefresh.Execute();
 
             next:
-                var adjustedNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(treeNodeSelection.Item1, initial ? null : treeNode);
+                var adjustedNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, treeNodeSelection.Item1, initial ? null : treeNode);
                 if (adjustedNode == null)
                 {
                     return;
