@@ -230,7 +230,7 @@ namespace Tobi.Plugin.Urakawa
                         m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
                     }
 
-                    var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(DocumentProject.Presentations.Get(0).RootNode, null);
+                    var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, DocumentProject.Presentations.Get(0).RootNode, null);
                     if (treeNode != null)
                     {
                         //m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded", Category.Debug, Priority.Medium);

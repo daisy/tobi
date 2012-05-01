@@ -318,7 +318,7 @@ namespace Tobi.Plugin.DocumentPane
                             this,
                             PopupModalWindow.DialogButtonsSet.None,
                             PopupModalWindow.DialogButton.Close,
-                            true, 800, 600,null, 0, null);
+                            true, 800, 600, null, 0, null);
 
                         m_DocumentNarratorWindow.IgnoreEscape = true;
 
@@ -755,7 +755,7 @@ namespace Tobi.Plugin.DocumentPane
                                                    new ScrollViewer { Content = editBox },
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 300, 160,null, 40,null);
+                                                   true, 300, 160, null, 40, null);
 
             windowPopup.EnableEnterKeyDefault = true;
 
@@ -1189,14 +1189,8 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             previous = previous.GetPreviousSiblingWithText();
                         }
-                        previous = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, previous);
 
-                        if (previous == null)
-                        {
-                            previous = previousDirect;
-                        }
-
-                        m_UrakawaSession.PerformTreeNodeSelection(previous);
+                        selectEnsureTreeNodeHasNoSignificantTextOnlySiblings(true, previousDirect, previous);
                     }
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)
@@ -1274,14 +1268,8 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             next = next.GetNextSiblingWithText();
                         }
-                        next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
 
-                        if (next == null)
-                        {
-                            next = nextDirect;
-                        }
-
-                        m_UrakawaSession.PerformTreeNodeSelection(next);
+                        selectEnsureTreeNodeHasNoSignificantTextOnlySiblings(false, nextDirect, next);
                     }
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)
@@ -1435,6 +1423,33 @@ namespace Tobi.Plugin.DocumentPane
             m_ShellView.ActiveAware.IsActiveChanged += (sender, e) => refreshCommandsIsActive();
 
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
+        }
+
+        private void selectEnsureTreeNodeHasNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode nextDirect, TreeNode next)
+        {
+            TreeNode beforeAdjust = next;
+            next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
+
+            if (next == null)
+            {
+                next = nextDirect;
+                m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
+            }
+            else
+            {
+                if (beforeAdjust == null
+                    || beforeAdjust == next
+                    || !next.IsAncestorOf(beforeAdjust)
+                    || next.GetAudioMedia() != null
+                    || next.GetFirstDescendantWithManagedAudio() == null)
+                {
+                    m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
+                }
+                else
+                {
+                    m_UrakawaSession.PerformTreeNodeSelection(next, false, beforeAdjust);
+                }
+            }
         }
 
         private Block createWelcomeEmptyFlowDoc()
@@ -2422,7 +2437,7 @@ namespace Tobi.Plugin.DocumentPane
             else
             {
                 Dispatcher.Invoke(DispatcherPriority.Render, (Action)(textElement.BringIntoView));
-                
+
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action<TextElement>)(scrollToView_), textElement);
             }
         }
@@ -3319,7 +3334,7 @@ namespace Tobi.Plugin.DocumentPane
             //    ExceptionHandler.Handle(ex, false, m_ShellView);
             //}
 
-            
+
             var action = (Action)(() =>
                              {
                                  // NOTE: raises the UNLOAD + LOAD event sequence for the FlowDocument

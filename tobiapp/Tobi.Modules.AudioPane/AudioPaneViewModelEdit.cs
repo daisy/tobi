@@ -331,8 +331,7 @@ namespace Tobi.Plugin.AudioPane
                             next = next.GetNextSiblingWithText();
                         }
                         next =
-                            TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(
-                                m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
+                            TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
 
                         if (next != null)
                         {
@@ -360,7 +359,7 @@ namespace Tobi.Plugin.AudioPane
                     //CutCommand.Execute();
                     OnEscape(null);
 
-                    m_UrakawaSession.PerformTreeNodeSelection(next);
+                    m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
                     OnEscape(null);
 
                     Tuple<TreeNode, TreeNode> treeNodeSelectionNew = m_UrakawaSession.GetTreeNodeSelection();

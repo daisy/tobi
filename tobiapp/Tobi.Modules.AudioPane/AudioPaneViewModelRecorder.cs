@@ -574,7 +574,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         next = next.GetNextSiblingWithText();
                     }
-                    next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
+                    next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
 
                     if (next != null)
                     {
@@ -586,7 +586,7 @@ namespace Tobi.Plugin.AudioPane
 
                         m_StateToRestore = null;
 
-                        m_UrakawaSession.PerformTreeNodeSelection(next);
+                        m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
                         State.Selection.ClearSelection();
 
                         m_RecordAndContinue = false;
