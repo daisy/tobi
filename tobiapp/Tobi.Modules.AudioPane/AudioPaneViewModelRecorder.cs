@@ -567,15 +567,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                 //TreeNode next = electNextRecordableNode(treeNode);
                 tryNext:
-                    TreeNode next = treeNode.GetNextSiblingWithText();
-                    while (next != null && (next.GetXmlElementQName() == null
-                            || TreeNode.TextOnlyContainsPunctuation(next.GetText())
-                            ))
-                    {
-                        next = next.GetNextSiblingWithText();
-                    }
-                    next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
-
+                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, treeNode);
                     if (next != null)
                     {
                         if (Settings.Default.Audio_EnableSkippability && isTreeNodeSkippable(next))

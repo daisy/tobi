@@ -314,14 +314,7 @@ namespace Tobi.Plugin.AudioPane
                     return;
                 }
 
-                treeNode = adjustedNode.GetNextSiblingWithText();
-                while (treeNode != null && (treeNode.GetXmlElementQName() == null
-                        || TreeNode.TextOnlyContainsPunctuation(treeNode.GetText())
-                        ))
-                {
-                    treeNode = treeNode.GetNextSiblingWithText();
-                }
-
+                treeNode = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, adjustedNode);
                 if (treeNode == null)
                 {
                     return;
@@ -438,200 +431,200 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private void CommandGenTTS_ExecuteOLDFLICKERINGDIALOG()
-        {
-            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-            TreeNode treeNode = treeNodeSelection.Item1;
+        //private void CommandGenTTS_ExecuteOLDFLICKERINGDIALOG()
+        //{
+        //    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+        //    TreeNode treeNode = treeNodeSelection.Item1;
 
-            bool cancelled = false;
+        //    bool cancelled = false;
 
-            bool initial = true;
-            m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio, Tobi_Plugin_AudioPane_Lang.CmdAudioGenTTS_LongDesc);
-            try
-            {
-                CommandSelectAll.Execute();
-                CommandDeleteAudioSelection.Execute();
-                CommandRefresh.Execute();
+        //    bool initial = true;
+        //    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio, Tobi_Plugin_AudioPane_Lang.CmdAudioGenTTS_LongDesc);
+        //    try
+        //    {
+        //        CommandSelectAll.Execute();
+        //        CommandDeleteAudioSelection.Execute();
+        //        CommandRefresh.Execute();
 
-            next:
-                var adjustedNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, treeNodeSelection.Item1, initial ? null : treeNode);
-                if (adjustedNode == null)
-                {
-                    return;
-                }
-                initial = false;
+        //    next:
+        //        var adjustedNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, treeNodeSelection.Item1, initial ? null : treeNode);
+        //        if (adjustedNode == null)
+        //        {
+        //            return;
+        //        }
+        //        initial = false;
 
-                var text = adjustedNode.GetTextFlattened();
-                if (string.IsNullOrEmpty(text))
-                {
-                    return;
-                }
+        //        var text = adjustedNode.GetTextFlattened();
+        //        if (string.IsNullOrEmpty(text))
+        //        {
+        //            return;
+        //        }
 
-                var pcmFormat = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+        //        var pcmFormat = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
 
-                var converter = new AudioTTSGenerator(text, pcmFormat.Data, m_Recorder.RecordingDirectory, m_SpeechSynthesizer);
+        //        var converter = new AudioTTSGenerator(text, pcmFormat.Data, m_Recorder.RecordingDirectory, m_SpeechSynthesizer);
 
-                bool result = m_ShellView.RunModalCancellableProgressTask(true,
-                    Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio,
-                    converter,
-                    () =>
-                    {
-                        Logger.Log(@"Audio TTS CANCELLED", Category.Debug, Priority.Medium);
-                        cancelled = true;
-                    },
-                    () =>
-                    {
-                        Logger.Log(@"Audio TTS DONE", Category.Debug, Priority.Medium);
-                        cancelled = false;
-                    });
+        //        bool result = m_ShellView.RunModalCancellableProgressTask(true,
+        //            Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio,
+        //            converter,
+        //            () =>
+        //            {
+        //                Logger.Log(@"Audio TTS CANCELLED", Category.Debug, Priority.Medium);
+        //                cancelled = true;
+        //            },
+        //            () =>
+        //            {
+        //                Logger.Log(@"Audio TTS DONE", Category.Debug, Priority.Medium);
+        //                cancelled = false;
+        //            });
 
-                if (cancelled)
-                {
-                    DebugFix.Assert(!result);
+        //        if (cancelled)
+        //        {
+        //            DebugFix.Assert(!result);
 
-                    if (!string.IsNullOrEmpty(converter.GeneratedAudioFilePath)
-                        && File.Exists(converter.GeneratedAudioFilePath))
-                    {
-                        File.Delete(converter.GeneratedAudioFilePath);
-                    }
-                    return;
-                }
+        //            if (!string.IsNullOrEmpty(converter.GeneratedAudioFilePath)
+        //                && File.Exists(converter.GeneratedAudioFilePath))
+        //            {
+        //                File.Delete(converter.GeneratedAudioFilePath);
+        //            }
+        //            return;
+        //        }
 
-                if (!File.Exists(converter.GeneratedAudioFilePath))
-                {
-                    return;
-                }
+        //        if (!File.Exists(converter.GeneratedAudioFilePath))
+        //        {
+        //            return;
+        //        }
 
-                TreeNode sub = adjustedNode == treeNodeSelection.Item1 ? null : adjustedNode;
-                Tuple<TreeNode, TreeNode> newSelection = m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelection.Item1, false, sub);
-                if (newSelection.Item1 != treeNodeSelection.Item1 || newSelection.Item2 != sub)
-                {
-                    return;
-                }
+        //        TreeNode sub = adjustedNode == treeNodeSelection.Item1 ? null : adjustedNode;
+        //        Tuple<TreeNode, TreeNode> newSelection = m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelection.Item1, false, sub);
+        //        if (newSelection.Item1 != treeNodeSelection.Item1 || newSelection.Item2 != sub)
+        //        {
+        //            return;
+        //        }
 
-                openFile(converter.GeneratedAudioFilePath, true, true, pcmFormat);
+        //        openFile(converter.GeneratedAudioFilePath, true, true, pcmFormat);
 
-                CommandRefresh.Execute();
-                if (View != null)
-                {
-                    View.CancelWaveFormLoad(true);
-                }
+        //        CommandRefresh.Execute();
+        //        if (View != null)
+        //        {
+        //            View.CancelWaveFormLoad(true);
+        //        }
 
-                treeNode = adjustedNode.GetNextSiblingWithText();
-                while (treeNode != null && (treeNode.GetXmlElementQName() == null
-                        || TreeNode.TextOnlyContainsPunctuation(treeNode.GetText())
-                        ))
-                {
-                    treeNode = treeNode.GetNextSiblingWithText();
-                }
+        //        treeNode = adjustedNode.GetNextSiblingWithText();
+        //        while (treeNode != null && (treeNode.GetXmlElementQName() == null
+        //                || TreeNode.TextOnlyContainsPunctuation(treeNode.GetText())
+        //                ))
+        //        {
+        //            treeNode = treeNode.GetNextSiblingWithText();
+        //        }
 
-                if (treeNode == null)
-                {
-                    return;
-                }
+        //        if (treeNode == null)
+        //        {
+        //            return;
+        //        }
 
-                goto next;
-            }
-            catch (Exception ex)
-            {
-                cancelled = true;
-            }
-            finally
-            {
-                if (cancelled)
-                {
-                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
+        //        goto next;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        cancelled = true;
+        //    }
+        //    finally
+        //    {
+        //        if (cancelled)
+        //        {
+        //            m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
 
-                    //TODO: waveform not refreshed !!
+        //            //TODO: waveform not refreshed !!
 
-                    //m_LastSetPlayBytePosition = -1;
+        //            //m_LastSetPlayBytePosition = -1;
 
-                    ////AudioPlayer_UpdateWaveFormPlayHead();
-                    //if (View != null)
-                    //{
-                    //    View.RefreshUI_WaveFormPlayHead();
-                    //}
+        //            ////AudioPlayer_UpdateWaveFormPlayHead();
+        //            //if (View != null)
+        //            //{
+        //            //    View.RefreshUI_WaveFormPlayHead();
+        //            //}
 
-                    ////RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
+        //            ////RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
 
-                    //if (View != null)
-                    //{
-                    //    View.ResetAll();
-                    //}
+        //            //if (View != null)
+        //            //{
+        //            //    View.ResetAll();
+        //            //}
 
-                    //if (AudioPlaybackStreamKeepAlive)
-                    //{
-                    //    ensurePlaybackStreamIsDead();
-                    //}
-                    //if (m_CurrentAudioStreamProvider() != null)
-                    //{
-                    //    m_StateToRestore = null;
-                    //    CommandRefresh.Execute();
-                    //}
-                }
-                else
-                {
-                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
-                }
-            }
+        //            //if (AudioPlaybackStreamKeepAlive)
+        //            //{
+        //            //    ensurePlaybackStreamIsDead();
+        //            //}
+        //            //if (m_CurrentAudioStreamProvider() != null)
+        //            //{
+        //            //    m_StateToRestore = null;
+        //            //    CommandRefresh.Execute();
+        //            //}
+        //        }
+        //        else
+        //        {
+        //            m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+        //        }
+        //    }
 
 
-            //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-            //TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
-            //if (node == null) return;
+        //    //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+        //    //TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+        //    //if (node == null) return;
 
-            //var text = node.GetTextMediaFlattened(true);
-            //if (string.IsNullOrEmpty(text)) return;
+        //    //var text = node.GetTextMediaFlattened(true);
+        //    //if (string.IsNullOrEmpty(text)) return;
 
-            //bool cancelled = false;
+        //    //bool cancelled = false;
 
-            //var pcmFormat = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+        //    //var pcmFormat = m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
 
-            //var converter = new AudioTTSGenerator(text, pcmFormat.Data, m_Recorder.RecordingDirectory, m_SpeechSynthesizer);
+        //    //var converter = new AudioTTSGenerator(text, pcmFormat.Data, m_Recorder.RecordingDirectory, m_SpeechSynthesizer);
 
-            //bool result = m_ShellView.RunModalCancellableProgressTask(true,
-            //    Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio,
-            //    converter,
-            //    () =>
-            //    {
-            //        Logger.Log(@"Audio TTS CANCELLED", Category.Debug, Priority.Medium);
-            //        cancelled = true;
-            //    },
-            //    () =>
-            //    {
-            //        Logger.Log(@"Audio TTS DONE", Category.Debug, Priority.Medium);
-            //        cancelled = false;
-            //    });
+        //    //bool result = m_ShellView.RunModalCancellableProgressTask(true,
+        //    //    Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio,
+        //    //    converter,
+        //    //    () =>
+        //    //    {
+        //    //        Logger.Log(@"Audio TTS CANCELLED", Category.Debug, Priority.Medium);
+        //    //        cancelled = true;
+        //    //    },
+        //    //    () =>
+        //    //    {
+        //    //        Logger.Log(@"Audio TTS DONE", Category.Debug, Priority.Medium);
+        //    //        cancelled = false;
+        //    //    });
 
-            //if (cancelled)
-            //{
-            //    DebugFix.Assert(!result);
+        //    //if (cancelled)
+        //    //{
+        //    //    DebugFix.Assert(!result);
 
-            //    if (!string.IsNullOrEmpty(converter.GeneratedAudioFilePath)
-            //        && File.Exists(converter.GeneratedAudioFilePath))
-            //    {
-            //        File.Delete(converter.GeneratedAudioFilePath);
-            //    }
-            //    return;
-            //}
+        //    //    if (!string.IsNullOrEmpty(converter.GeneratedAudioFilePath)
+        //    //        && File.Exists(converter.GeneratedAudioFilePath))
+        //    //    {
+        //    //        File.Delete(converter.GeneratedAudioFilePath);
+        //    //    }
+        //    //    return;
+        //    //}
 
-            //if (!File.Exists(converter.GeneratedAudioFilePath))
-            //{
-            //    return;
-            //}
+        //    //if (!File.Exists(converter.GeneratedAudioFilePath))
+        //    //{
+        //    //    return;
+        //    //}
 
-            //if (treeNodeSelection.Item2 == null)
-            //{
-            //    CommandSelectAll.Execute();
-            //}
-            //else
-            //{
-            //    long byteOffset = getByteOffset(treeNodeSelection.Item2, null);
-            //    SelectChunk(byteOffset);
-            //}
+        //    //if (treeNodeSelection.Item2 == null)
+        //    //{
+        //    //    CommandSelectAll.Execute();
+        //    //}
+        //    //else
+        //    //{
+        //    //    long byteOffset = getByteOffset(treeNodeSelection.Item2, null);
+        //    //    SelectChunk(byteOffset);
+        //    //}
 
-            //openFile(converter.GeneratedAudioFilePath, true, true, pcmFormat);
-        }
+        //    //openFile(converter.GeneratedAudioFilePath, true, true, pcmFormat);
+        //}
 
 
         internal SpeechSynthesizer m_SpeechSynthesizer = new SpeechSynthesizer();

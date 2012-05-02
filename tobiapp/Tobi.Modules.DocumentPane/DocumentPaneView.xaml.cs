@@ -1175,22 +1175,14 @@ namespace Tobi.Plugin.DocumentPane
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
 
-                    TreeNode previousDirect = node.GetPreviousSiblingWithText();
-                    if (previousDirect == null)
+                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(true, node);
+                    if (next == null)
                     {
                         AudioCues.PlayBeep();
                     }
                     else
                     {
-                        TreeNode previous = previousDirect;
-                        while (previous != null && (previous.GetXmlElementQName() == null
-                               || TreeNode.TextOnlyContainsPunctuation(previous.GetText())
-                               ))
-                        {
-                            previous = previous.GetPreviousSiblingWithText();
-                        }
-
-                        selectEnsureTreeNodeHasNoSignificantTextOnlySiblings(true, previousDirect, previous);
+                        m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
                     }
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)
@@ -1254,22 +1246,14 @@ namespace Tobi.Plugin.DocumentPane
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
 
-                    TreeNode nextDirect = node.GetNextSiblingWithText();
-                    if (nextDirect == null)
+                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, node);
+                    if (next == null)
                     {
                         AudioCues.PlayBeep();
                     }
                     else
                     {
-                        TreeNode next = nextDirect;
-                        while (next != null && (next.GetXmlElementQName() == null
-                               || TreeNode.TextOnlyContainsPunctuation(next.GetText())
-                               ))
-                        {
-                            next = next.GetNextSiblingWithText();
-                        }
-
-                        selectEnsureTreeNodeHasNoSignificantTextOnlySiblings(false, nextDirect, next);
+                        m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
                     }
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)
@@ -1423,33 +1407,6 @@ namespace Tobi.Plugin.DocumentPane
             m_ShellView.ActiveAware.IsActiveChanged += (sender, e) => refreshCommandsIsActive();
 
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
-        }
-
-        private void selectEnsureTreeNodeHasNoSignificantTextOnlySiblings(bool directionPrevious, TreeNode nextDirect, TreeNode next)
-        {
-            TreeNode beforeAdjust = next;
-            next = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(directionPrevious, m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, next);
-
-            if (next == null)
-            {
-                next = nextDirect;
-                m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
-            }
-            else
-            {
-                if (beforeAdjust == null
-                    || beforeAdjust == next
-                    || !next.IsAncestorOf(beforeAdjust)
-                    || next.GetAudioMedia() != null
-                    || next.GetFirstDescendantWithManagedAudio() == null)
-                {
-                    m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
-                }
-                else
-                {
-                    m_UrakawaSession.PerformTreeNodeSelection(next, false, beforeAdjust);
-                }
-            }
         }
 
         private Block createWelcomeEmptyFlowDoc()
