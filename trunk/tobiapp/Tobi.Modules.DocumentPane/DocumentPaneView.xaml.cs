@@ -1175,14 +1175,15 @@ namespace Tobi.Plugin.DocumentPane
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
 
-                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(true, node);
+                    TreeNode nested;
+                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(true, node, out nested);
                     if (next == null)
                     {
                         AudioCues.PlayBeep();
                     }
                     else
                     {
-                        m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
+                        m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
                     }
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)
@@ -1246,14 +1247,15 @@ namespace Tobi.Plugin.DocumentPane
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
 
-                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, node);
+                    TreeNode nested;
+                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, node, out nested);
                     if (next == null)
                     {
                         AudioCues.PlayBeep();
                     }
                     else
                     {
-                        m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
+                        m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
                     }
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)
