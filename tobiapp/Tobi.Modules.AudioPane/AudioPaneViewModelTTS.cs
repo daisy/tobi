@@ -314,7 +314,8 @@ namespace Tobi.Plugin.AudioPane
                     return;
                 }
 
-                treeNode = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, adjustedNode);
+                TreeNode nested;
+                treeNode = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, adjustedNode, out nested);
                 if (treeNode == null)
                 {
                     return;

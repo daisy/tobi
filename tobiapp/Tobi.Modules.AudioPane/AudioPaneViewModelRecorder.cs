@@ -549,7 +549,7 @@ namespace Tobi.Plugin.AudioPane
                 ////!Settings.Default.Audio_EnableSkippability
                 //if (m_RecordAndContinue)
                 //{
-                    
+
                 //}
                 //else
                 //{
@@ -567,7 +567,8 @@ namespace Tobi.Plugin.AudioPane
                 {
                 //TreeNode next = electNextRecordableNode(treeNode);
                 tryNext:
-                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, treeNode);
+                    TreeNode nested;
+                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, treeNode, out nested);
                     if (next != null)
                     {
                         if (Settings.Default.Audio_EnableSkippability && isTreeNodeSkippable(next))
@@ -578,7 +579,7 @@ namespace Tobi.Plugin.AudioPane
 
                         m_StateToRestore = null;
 
-                        m_UrakawaSession.PerformTreeNodeSelection(next, false, null);
+                        m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
                         State.Selection.ClearSelection();
 
                         m_RecordAndContinue = false;
