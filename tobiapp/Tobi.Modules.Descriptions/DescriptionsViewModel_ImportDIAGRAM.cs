@@ -200,11 +200,11 @@ namespace Tobi.Plugin.Descriptions
                         }
 
 
-                        if (attribute.Name.StartsWith("xmlns:"))
+                        if (attribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":"))
                         {
                             //
                         }
-                        else if (attribute.Name == "xmlns")
+                        else if (attribute.Name == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
                         {
                             //
                         }
@@ -212,7 +212,10 @@ namespace Tobi.Plugin.Descriptions
                         {
                             MetadataAttribute metadatattribute = new MetadataAttribute();
                             metadatattribute.Name = attribute.Name;
-                            metadatattribute.NamespaceUri = attribute.Name.Contains(":") ? attribute.NamespaceURI : null;
+                            metadatattribute.NamespaceUri =
+                                attribute.Name.IndexOf(':') >= 0
+                                //attribute.Name.Contains(":")
+                                ? attribute.NamespaceURI : null;
                             metadatattribute.Value = attribute.Value;
                             AlternateContentMetadataAddCommand cmd_AltPropMetadataAttr =
                                 treeNode.Presentation.CommandFactory.CreateAlternateContentMetadataAddCommand(
@@ -335,11 +338,11 @@ namespace Tobi.Plugin.Descriptions
                     XmlAttribute attribute = diagramElementNode.Attributes[i];
 
 
-                    if (attribute.Name.StartsWith("xmlns:"))
+                    if (attribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":"))
                     {
                         //
                     }
-                    else if (attribute.Name == "xmlns")
+                    else if (attribute.Name == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
                     {
                         //
                     }
@@ -563,11 +566,11 @@ namespace Tobi.Plugin.Descriptions
                         XmlAttribute attribute = obj.Attributes[j];
 
 
-                        if (attribute.Name.StartsWith("xmlns:"))
+                        if (attribute.Name.StartsWith(XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":"))
                         {
                             //
                         }
-                        else if (attribute.Name == "xmlns")
+                        else if (attribute.Name == XmlReaderWriterHelper.NS_PREFIX_XMLNS)
                         {
                             //
                         }

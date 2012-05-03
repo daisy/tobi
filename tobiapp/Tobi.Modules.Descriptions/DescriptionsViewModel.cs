@@ -387,16 +387,16 @@ namespace Tobi.Plugin.Descriptions
         public bool IsIDInValid(string xmlid)
         {
             return string.IsNullOrEmpty(xmlid)
-                   || xmlid.Contains(" ")
-                   || xmlid.Contains("\t")
-                   || xmlid.Contains("\r")
-                   || xmlid.Contains("\n")
-                   || xmlid.Contains("\\")
-                   || xmlid.Contains("/")
-                   || xmlid.Contains("<")
-                   || xmlid.Contains(">")
-                   || xmlid.Contains("'")
-                   || xmlid.Contains("\"");
+                   || xmlid.IndexOf(' ') >= 0 //xmlid.Contains(" ")
+                   || xmlid.IndexOf('\t') >= 0
+                   || xmlid.IndexOf('\r') >= 0
+                   || xmlid.IndexOf('\n') >= 0
+                   || xmlid.IndexOf('\\') >= 0
+                   || xmlid.IndexOf('/') >= 0
+                   || xmlid.IndexOf('<') >= 0
+                   || xmlid.IndexOf('>') >= 0
+                   || xmlid.IndexOf('\'') >= 0
+                   || xmlid.IndexOf('"') >= 0;
         }
 
         public IEnumerable<string> GetInvalidIDs(bool inHeadMetadata, bool inBodyContent)
