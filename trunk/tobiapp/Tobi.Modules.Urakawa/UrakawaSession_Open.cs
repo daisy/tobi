@@ -52,7 +52,8 @@ namespace Tobi.Plugin.Urakawa
                         FileName = @"",
                         DefaultExt = @".xml",
 #if DEBUG
-                        Filter = @"DTBook, OPF, OBI, XUK or EPUB (*.xml, *.opf, *.obi, *.xuk, *.xukbundle, *.epub)|*.xml;*.opf;*.obi;*.xuk;*.xukbundle;*.epub",
+                        //Filter = @"DTBook, OPF, OBI, XUK or EPUB (*.xml, *.opf, *.obi, *.xuk, *.xukbundle, *.epub)|*.xml;*.opf;*.obi;*.xuk;*.xukbundle;*.epub",
+                        Filter = @"DTBook, OPF, OBI, XUK, EPUB or MML (*.xml, *.opf, *.obi, *.xuk, *.xukbundle, *.epub, *.mml)|*.xml;*.opf;*.obi;*.xuk;*.xukbundle;*.epub;*.mml",
 #else
                         Filter = @"DTBook, OPF, OBI or XUK (*.xml, *.opf, *.obi, *.xuk)|*.xml;*.opf;*.obi;*.xuk",
 #endif //DEBUG
@@ -127,7 +128,7 @@ namespace Tobi.Plugin.Urakawa
                 var details = new TextBoxReadOnlyCaretVisible
                 {
                     FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
-        
+
                     BorderThickness = new Thickness(1),
                     Padding = new Thickness(6),
                     TextReadOnly = fileUri.ToString()
@@ -351,6 +352,90 @@ namespace Tobi.Plugin.Urakawa
                 //    return false;
                 //}
             }
+            else if (String.Equals(ext, ".mml", StringComparison.OrdinalIgnoreCase))
+            {
+                //http://www.cs.duke.edu/courses/fall08/cps116/docs/saxon/samples/cs/Examples.cs
+
+                string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string xslt_dir = Path.Combine(workingDirectory, "pmml_XSLT2");
+
+                XmlReaderSettings settings = XmlReaderWriterHelper.GetDefaultXmlReaderConfiguration(false, false);
+
+                //string xslFilePath1 = Path.Combine(xslt_dir, "fontMetrics.xsl");
+
+                //string xslFilePath2 = Path.Combine(xslt_dir, "formattingMode.xsl");
+
+                //string xslFilePath3 = Path.Combine(xslt_dir, "drawingMode.xsl");
+
+
+                string xslFilePath = Path.Combine(xslt_dir, "pmml2svg.xsl");
+
+                //TextReader input = new StreamReader(xslFilePath);
+
+                var stream = new FileStream(xslFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                var baseUri = new Uri("file:///" + xslFilePath);
+
+                var xmlReader = XmlReader.Create(stream, settings, baseUri.ToString());
+
+                var processor = new Processor();
+                processor.XmlResolver = new LocalXmlUrlResolver(false);
+
+                XsltCompiler compiler = processor.NewXsltCompiler();
+                compiler.BaseUri = baseUri;
+                compiler.XmlResolver = new LocalXmlUrlResolver(false);
+
+                XsltTransformer transformer = null;
+                try
+                {
+                    XsltExecutable exe = compiler.Compile(xmlReader);
+                    transformer = exe.Load();
+                }
+                catch
+                {
+                    xmlReader.Close();
+                    foreach (StaticError error in compiler.ErrorList)
+                    {
+                        Console.WriteLine("At line " + error.LineNumber + ": " + error.Message);
+                    }
+                    throw;
+                }
+
+                xmlReader.Close();
+
+                transformer.InputXmlResolver = new LocalXmlUrlResolver(false);
+                transformer.MessageListener = new MyMessageListener();
+                //transformer.BaseOutputUri = compiler.BaseUri;
+
+                var xmlDoc = new XmlDocument();
+                xmlDoc.Load(fileUri.LocalPath);
+
+                DocumentBuilder builder = processor.NewDocumentBuilder();
+                //builder.BaseUri = baseUri;
+                //builder.XmlResolver = new LocalXmlUrlResolver(false);
+                XdmNode inputNode = builder.Build(xmlDoc);
+                transformer.InitialContextNode = inputNode;
+
+
+
+                //XdmDestination results = new XdmDestination();
+                //transformer.SetParameter(new QName("", "", "include-attributes"), new XdmAtomicValue(true));
+                //transformer.Run(results);
+                //string xml = results.XdmNode.OuterXml;
+
+
+
+                string outputFileName = fileUri.LocalPath + ".svg";
+                using (StreamWriter streamWriter = new StreamWriter(outputFileName, false, Encoding.UTF8))
+                {
+                    var xmlWriter = new XmlTextWriter(streamWriter);
+
+                    var dest = new TextWriterDestination(xmlWriter);
+                    transformer.Run(dest);
+                }
+
+                m_ShellView.ExecuteShellProcess(Path.GetDirectoryName(fileUri.LocalPath));
+            }
             else if (String.Equals(ext, ".obi", StringComparison.OrdinalIgnoreCase))
             {
                 string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -398,6 +483,16 @@ namespace Tobi.Plugin.Urakawa
             }
 
             return false;
+        }
+    }
+
+    public class MyMessageListener : IMessageListener
+    {
+        public void Message(XdmNode content, bool terminate, IXmlLocation location)
+        {
+            Console.Out.WriteLine("MESSAGE terminate=" + (terminate ? "yes" : "no") + " at " + DateTime.Now);
+            Console.Out.WriteLine("From instruction at line " + location.LineNumber + " of " + location.BaseUri);
+            Console.Out.WriteLine(">>" + content.StringValue);
         }
     }
 }
