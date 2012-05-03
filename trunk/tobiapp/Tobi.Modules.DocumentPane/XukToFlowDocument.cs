@@ -1720,473 +1720,478 @@ namespace Tobi.Plugin.DocumentPane
                 return parent;
             }
 
-            if (qname.NamespaceUri.Length == 0
-                || qname.NamespaceUri == m_TreeNode.Presentation.PropertyFactory.DefaultXmlNamespaceUri)
+            // node.Children.Count ?
+            // String.IsNullOrEmpty(textMedia) ?
+
+            switch (qname.LocalName)
             {
-                // node.Children.Count ?
-                // String.IsNullOrEmpty(textMedia) ?
+                case "math":
+                    {
+                        string xmlFragment = node.GetXmlFragment();
+                        return null;
+                    }
+                case "p":
+                case "level":
+                case "level1":
+                case "level2":
+                case "level3":
+                case "level4":
+                case "level5":
+                case "level6":
+                case "bodymatter":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia, null);
+                    }
+                case "frontmatter":
+                case "rearmatter":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                //data.BorderBrush = Brushes.GreenYellow;
+                                data.BorderThickness = new Thickness(2.0);
+                                data.Padding = new Thickness(4.0);
+                            }
+                            );
+                    }
+                case "blockquote":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                data.BorderThickness = new Thickness(2.0);
+                                data.Padding = new Thickness(2.0);
+                                data.Margin = new Thickness(4.0);
 
-                switch (qname.LocalName)
-                {
-                    case "p":
-                    case "level":
-                    case "level1":
-                    case "level2":
-                    case "level3":
-                    case "level4":
-                    case "level5":
-                    case "level6":
-                    case "bodymatter":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia, null);
-                        }
-                    case "frontmatter":
-                    case "rearmatter":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                                data =>
+                                //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                DebugFix.Assert(data.Tag != null);
+                                DebugFix.Assert(data.Tag is TreeNode);
+                                DebugFix.Assert(node == data.Tag);
+
+                                var qName = node.GetXmlElementQName();
+                                DebugFix.Assert(qName != null);
+                                DebugFix.Assert(qName.LocalName == "blockquote");
+#endif
+                                SetBorderAndBackColorBasedOnTreeNodeTag(data);
+
+                            }
+                            );
+                    }
+                case "note":
+                case "annotation":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                data.BorderThickness = new Thickness(2.0);
+                                data.Padding = new Thickness(2.0);
+                                data.FontSize = m_FlowDoc.FontSize / 1.2;
+
+                                //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                DebugFix.Assert(data.Tag != null);
+                                DebugFix.Assert(data.Tag is TreeNode);
+                                DebugFix.Assert(node == data.Tag);
+
+                                var qName = node.GetXmlElementQName();
+                                DebugFix.Assert(qName != null);
+                                DebugFix.Assert(qName.LocalName == "annotation" || qName.LocalName == "note");
+#endif
+                                SetBorderAndBackColorBasedOnTreeNodeTag(data);
+
+                                XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+                                XmlAttribute attr = xmlProp.GetAttribute("id");
+
+                                if (attr != null && !String.IsNullOrEmpty(attr.Value))
                                 {
-                                    //data.BorderBrush = Brushes.GreenYellow;
-                                    data.BorderThickness = new Thickness(2.0);
-                                    data.Padding = new Thickness(4.0);
+                                    //string name = IdToName(attr.Value);
+                                    data.ToolTip = attr.Value;
+
+                                    m_DocumentPaneView.AddIdLinkTarget(attr.Value, data);
                                 }
-                                );
-                        }
-                    case "blockquote":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    data.BorderThickness = new Thickness(2.0);
-                                    data.Padding = new Thickness(2.0);
-                                    data.Margin = new Thickness(4.0);
-
-                                    //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
-#if DEBUG
-                                    DebugFix.Assert(data.Tag != null);
-                                    DebugFix.Assert(data.Tag is TreeNode);
-                                    DebugFix.Assert(node == data.Tag);
-
-                                    var qName = node.GetXmlElementQName();
-                                    DebugFix.Assert(qName != null);
-                                    DebugFix.Assert(qName.LocalName == "blockquote");
-#endif
-                                    SetBorderAndBackColorBasedOnTreeNodeTag(data);
-
-                                }
-                                );
-                        }
-                    case "note":
-                    case "annotation":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    data.BorderThickness = new Thickness(2.0);
-                                    data.Padding = new Thickness(2.0);
-                                    data.FontSize = m_FlowDoc.FontSize / 1.2;
-
-                                    //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
-#if DEBUG
-                                    DebugFix.Assert(data.Tag != null);
-                                    DebugFix.Assert(data.Tag is TreeNode);
-                                    DebugFix.Assert(node == data.Tag);
-
-                                    var qName = node.GetXmlElementQName();
-                                    DebugFix.Assert(qName != null);
-                                    DebugFix.Assert(qName.LocalName == "annotation" || qName.LocalName == "note");
-#endif
-                                    SetBorderAndBackColorBasedOnTreeNodeTag(data);
-
-                                    XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-                                    XmlAttribute attr = xmlProp.GetAttribute("id");
-
-                                    if (attr != null && !String.IsNullOrEmpty(attr.Value))
-                                    {
-                                        //string name = IdToName(attr.Value);
-                                        data.ToolTip = attr.Value;
-
-                                        m_DocumentPaneView.AddIdLinkTarget(attr.Value, data);
-                                    }
-                                }
-                                );
-                        }
-                    case "noteref":
-                    case "annoref":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_annoref_noteref(node, parent, qname, textMedia);
-                        }
-                    case "caption":
-                        {
-                            if (parent is Table)
-                            {
-                                return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
                             }
-                            else
-                            {
-                                return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                                 data =>
-                                 {
-                                     data.BorderThickness = new Thickness(1.0);
-                                     data.Padding = new Thickness(2.0);
-                                     data.FontWeight = FontWeights.Light;
-                                     data.FontSize = m_FlowDoc.FontSize / 1.2;
-                                     data.TextAlignment = TextAlignment.Center;
-                                     //data.Foreground = Brushes.DarkGreen;
-
-                                     //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
-#if DEBUG
-                                     DebugFix.Assert(data.Tag != null);
-                                     DebugFix.Assert(data.Tag is TreeNode);
-                                     DebugFix.Assert(node == data.Tag);
-
-                                     var qName = node.GetXmlElementQName();
-                                     DebugFix.Assert(qName != null);
-                                     DebugFix.Assert(qName.LocalName == "caption");
-#endif
-                                     SetBorderAndBackColorBasedOnTreeNodeTag(data);
-                                 });
-                            }
-                        }
-                    case "h1":
-                    case "levelhd":
-                    case "hd":
-                        {
-                            if (qname.LocalName == "hd" && parent is List)
-                            {
-                                return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
-                            }
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    data.FontSize = m_FlowDoc.FontSize * 1.5;
-                                    data.FontWeight = FontWeights.Heavy;
-                                });
-                        }
-                    case "h2":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    data.FontSize = m_FlowDoc.FontSize * 1.25;
-                                    data.FontWeight = FontWeights.Heavy;
-                                });
-                        }
-                    case "h3":
-                    case "h4":
-                    case "h5":
-                    case "h6":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    data.FontSize = m_FlowDoc.FontSize * 1.15;
-                                    data.FontWeight = FontWeights.Heavy;
-                                });
-                        }
-                    case "doctitle":
-                    case "docauthor":
-                    case "covertitle":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    data.BorderThickness = new Thickness(1.0);
-                                    data.FontSize = m_FlowDoc.FontSize * 1.3;
-                                    data.FontWeight = FontWeights.Heavy;
-                                    //data.Foreground = Brushes.Navy;
-
-                                    //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
-#if DEBUG
-                                    DebugFix.Assert(data.Tag != null);
-                                    DebugFix.Assert(data.Tag is TreeNode);
-                                    DebugFix.Assert(node == data.Tag);
-
-                                    var qName = node.GetXmlElementQName();
-                                    DebugFix.Assert(qName != null);
-                                    DebugFix.Assert(qName.LocalName == "doctitle" || qName.LocalName == "docauthor" || qName.LocalName == "covertitle");
-#endif
-                                    SetBorderAndBackColorBasedOnTreeNodeTag(data);
-                                });
-                        }
-                    case "pagenum":
-                        {
-                            DelegateParagraphInitializer delegatePageNumPara =
-                                    data =>
-                                    {
-                                        formatPageNumberAndSetId_Para(node, data);
-                                    };
-                            DelegateSpanInitializer delegatePageNumSpan =
-                                    data =>
-                                    {
-                                        formatPageNumberAndSetId_Span(node, data);
-                                    };
-                            if (parent is Table)
-                            {
-                                return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
-                            }
-                            if (parent is List)
-                            {
-                                return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
-                            }
-                            if (parent == null || parent is TableCell || parent is Section || parent is Floater || parent is Figure || parent is ListItem)
-                            {
-                                return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, delegatePageNumPara);
-                            }
-                            if (parent is Paragraph || parent is Span)
-                            {
-                                return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, delegatePageNumSpan);
-                            }
-
-                            Debug.Fail("Page pagenum cannot be added due to incompatible FlowDocument structure !");
-                            break;
-                        }
-                    case "imggroup":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    data.BorderThickness = new Thickness(0.5);
-                                    data.Padding = new Thickness(2.0);
-
-                                    //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
-#if DEBUG
-                                    DebugFix.Assert(data.Tag != null);
-                                    DebugFix.Assert(data.Tag is TreeNode);
-                                    DebugFix.Assert(node == data.Tag);
-
-                                    var qName = node.GetXmlElementQName();
-                                    DebugFix.Assert(qName != null);
-                                    DebugFix.Assert(qName.LocalName == "imggroup");
-#endif
-                                    SetBorderAndBackColorBasedOnTreeNodeTag(data);
-                                });
-                        }
-                    case "sidebar":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    data.BorderThickness = new Thickness(2.0);
-                                    data.Padding = new Thickness(2.0);
-
-                                    //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
-#if DEBUG
-                                    DebugFix.Assert(data.Tag != null);
-                                    DebugFix.Assert(data.Tag is TreeNode);
-                                    DebugFix.Assert(node == data.Tag);
-
-                                    var qName = node.GetXmlElementQName();
-                                    DebugFix.Assert(qName != null);
-                                    DebugFix.Assert(qName.LocalName == "sidebar");
-#endif
-                                    SetBorderAndBackColorBasedOnTreeNodeTag(data);
-                                });
-                        }
-                    case "img":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_img(node, parent, qname, textMedia);
-                        }
-                    case "video":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_video(node, parent, qname, textMedia);
-                        }
-                    case "th":
-                    case "td":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_th_td(node, parent, qname, textMedia);
-                        }
-                    case "br":
-                        {
-                            var data = new LineBreak();
-                            setTag(data, node);
-                            addInline(parent, data);
-                            return parent;
-                        }
-                    case "em":
-                    case "i":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_em_i(node, parent, qname, textMedia);
-                        }
-                    case "strong":
-                    case "b":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_strong_b(node, parent, qname, textMedia);
-                        }
-                    case "underline":
-                    case "u":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_underline_u(node, parent, qname, textMedia);
-                        }
-                    case "anchor":
-                    case "a":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_anchor_a(node, parent, qname, textMedia);
-                        }
-                    case "table":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_table(node, parent, qname, textMedia);
-                        }
-                    case "tr":
-                    case "thead":
-                    case "tfoot":
-                    case "tbody":
+                            );
+                    }
+                case "noteref":
+                case "annoref":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_annoref_noteref(node, parent, qname, textMedia);
+                    }
+                case "caption":
+                    {
+                        if (parent is Table)
                         {
                             return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
                         }
-                    case "list":
-                    case "ul":
-                    case "ol":
-                    case "dl":
+                        else
                         {
-                            return walkBookTreeAndGenerateFlowDocument_list_dl(node, parent, qname, textMedia);
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                             data =>
+                             {
+                                 data.BorderThickness = new Thickness(1.0);
+                                 data.Padding = new Thickness(2.0);
+                                 data.FontWeight = FontWeights.Light;
+                                 data.FontSize = m_FlowDoc.FontSize / 1.2;
+                                 data.TextAlignment = TextAlignment.Center;
+                                 //data.Foreground = Brushes.DarkGreen;
+
+                                 //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                 DebugFix.Assert(data.Tag != null);
+                                 DebugFix.Assert(data.Tag is TreeNode);
+                                 DebugFix.Assert(node == data.Tag);
+
+                                 var qName = node.GetXmlElementQName();
+                                 DebugFix.Assert(qName != null);
+                                 DebugFix.Assert(qName.LocalName == "caption");
+#endif
+                                 SetBorderAndBackColorBasedOnTreeNodeTag(data);
+                             });
                         }
-                    case "dt":
-                    case "dd":
-                    case "li":
+                    }
+                case "h1":
+                case "levelhd":
+                case "hd":
+                    {
+                        if (qname.LocalName == "hd" && parent is List)
                         {
                             return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
                         }
-                    case "span":
-                    case "linenum":
-                    case "sent":
-                    case "w":
-                    case "cite":
-                    case "author":
-                    case "bdo":
-                    case "kbd":
-                    case "dfn":
-                    case "abbr":
-                    case "q":
-                    case "rbc":
-                    case "rtc":
-                    case "rp":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
-                        }
-                    case "sup":
-                    case "sub":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
-                        }
-                    case "ruby":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    //data.Background = Brushes.BlanchedAlmond;
-                                }
-                                );
-                        }
-                    case "rb":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    var run = new Run(" ");
-                                    setTextDirection(node, null, run, null);
-                                    data.Inlines.Add(run);
-                                    data.TextDecorations = TextDecorations.OverLine;
-                                });
-
-                        }
-                    case "rt":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    //var converter = new FontFamilyConverter();
-                                    //data.FontFamily = (FontFamily)converter.ConvertFrom("Meiryo");
-
-                                    //data.FontFamily = new FontFamily("Meiryo");
-
-                                    data.Typography.Variants = FontVariants.Subscript;
-
-                                    var xmlProp = node.GetProperty<XmlProperty>();
-                                    if (xmlProp != null)
-                                    {
-                                        var attr = xmlProp.GetAttribute("rbspan");
-
-                                        if (attr != null && !String.IsNullOrEmpty(attr.Value))
-                                        {
-                                            data.TextDecorations = TextDecorations.Underline;
-                                            return;
-                                        }
-                                    }
-                                    var run = new Run(" ");
-                                    setTextDirection(node, null, run, null);
-                                    data.Inlines.Add(run);
-                                }
-                                );
-                        }
-                    case "acronym":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
-                                data =>
-                                {
-                                    XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-                                    if (xmlProp == null) return;
-
-                                    XmlAttribute attr = xmlProp.GetAttribute("title");
-                                    if (attr == null) return;
-
-                                    if (!String.IsNullOrEmpty(attr.Value))
-                                    {
-                                        data.ToolTip = attr.Value;
-                                    }
-                                }
-                                );
-                        }
-                    case "line":
-                    case "dateline":
-                    case "bridgehead":
-                    case "byline":
-                    case "title":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, null);
-                        }
-                    case "lic":
-                    case "prodnote":
-                    case "div":
-                    case "samp":
-                    case "poem":
-                    case "linegroup":
-                    case "code":
-                    case "book":
-                    case "address":
-                    case "epigraph":
-                        {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia, null);
-                        }
-                    case "col":
-                    case "colgroup":
-                        {
-                            Debug.Fail(String.Format(@"DTBook element not yet supported [{0}]", qname.LocalName));
-                            break;
-                        }
-                    case "hr":
-                        {
-                            Console.WriteLine(@"XUK to FlowDocument converter: ignoring HR markup.");
-                            break;
-                        }
-                    default:
-                        {
-                            Debug.Fail(String.Format("Unknown DTBook element ! [{0}]", qname.LocalName));
-                            break;
-                        }
-                }
-            }
-            else
-            {
-                return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
-                    data =>
-                    {
-                        data.BorderBrush = Brushes.Red;
-                        data.BorderThickness = new Thickness(1.0);
-                        data.Padding = new Thickness(4.0);
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                data.FontSize = m_FlowDoc.FontSize * 1.5;
+                                data.FontWeight = FontWeights.Heavy;
+                            });
                     }
-                    );
-                //System.Diagnostics.Debug.Fail(String.Format("Unknown element namespace in DTBook ! [{0}]", qname.NamespaceUri));
+                case "h2":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                data.FontSize = m_FlowDoc.FontSize * 1.25;
+                                data.FontWeight = FontWeights.Heavy;
+                            });
+                    }
+                case "h3":
+                case "h4":
+                case "h5":
+                case "h6":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                data.FontSize = m_FlowDoc.FontSize * 1.15;
+                                data.FontWeight = FontWeights.Heavy;
+                            });
+                    }
+                case "doctitle":
+                case "docauthor":
+                case "covertitle":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                data.BorderThickness = new Thickness(1.0);
+                                data.FontSize = m_FlowDoc.FontSize * 1.3;
+                                data.FontWeight = FontWeights.Heavy;
+                                //data.Foreground = Brushes.Navy;
+
+                                //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                DebugFix.Assert(data.Tag != null);
+                                DebugFix.Assert(data.Tag is TreeNode);
+                                DebugFix.Assert(node == data.Tag);
+
+                                var qName = node.GetXmlElementQName();
+                                DebugFix.Assert(qName != null);
+                                DebugFix.Assert(qName.LocalName == "doctitle" || qName.LocalName == "docauthor" || qName.LocalName == "covertitle");
+#endif
+                                SetBorderAndBackColorBasedOnTreeNodeTag(data);
+                            });
+                    }
+                case "pagenum":
+                    {
+                        DelegateParagraphInitializer delegatePageNumPara =
+                                data =>
+                                {
+                                    formatPageNumberAndSetId_Para(node, data);
+                                };
+                        DelegateSpanInitializer delegatePageNumSpan =
+                                data =>
+                                {
+                                    formatPageNumberAndSetId_Span(node, data);
+                                };
+                        if (parent is Table)
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
+                        }
+                        if (parent is List)
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
+                        }
+                        if (parent == null || parent is TableCell || parent is Section || parent is Floater || parent is Figure || parent is ListItem)
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, delegatePageNumPara);
+                        }
+                        if (parent is Paragraph || parent is Span)
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, delegatePageNumSpan);
+                        }
+
+                        Debug.Fail("Page pagenum cannot be added due to incompatible FlowDocument structure !");
+                        break;
+                    }
+                case "imggroup":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                data.BorderThickness = new Thickness(0.5);
+                                data.Padding = new Thickness(2.0);
+
+                                //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                DebugFix.Assert(data.Tag != null);
+                                DebugFix.Assert(data.Tag is TreeNode);
+                                DebugFix.Assert(node == data.Tag);
+
+                                var qName = node.GetXmlElementQName();
+                                DebugFix.Assert(qName != null);
+                                DebugFix.Assert(qName.LocalName == "imggroup");
+#endif
+                                SetBorderAndBackColorBasedOnTreeNodeTag(data);
+                            });
+                    }
+                case "sidebar":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                data.BorderThickness = new Thickness(2.0);
+                                data.Padding = new Thickness(2.0);
+
+                                //data.BorderBrush = m_ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
+#if DEBUG
+                                DebugFix.Assert(data.Tag != null);
+                                DebugFix.Assert(data.Tag is TreeNode);
+                                DebugFix.Assert(node == data.Tag);
+
+                                var qName = node.GetXmlElementQName();
+                                DebugFix.Assert(qName != null);
+                                DebugFix.Assert(qName.LocalName == "sidebar");
+#endif
+                                SetBorderAndBackColorBasedOnTreeNodeTag(data);
+                            });
+                    }
+                case "img":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_img(node, parent, qname, textMedia);
+                    }
+                case "video":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_video(node, parent, qname, textMedia);
+                    }
+                case "th":
+                case "td":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_th_td(node, parent, qname, textMedia);
+                    }
+                case "br":
+                    {
+                        var data = new LineBreak();
+                        setTag(data, node);
+                        addInline(parent, data);
+                        return parent;
+                    }
+                case "em":
+                case "i":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_em_i(node, parent, qname, textMedia);
+                    }
+                case "strong":
+                case "b":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_strong_b(node, parent, qname, textMedia);
+                    }
+                case "underline":
+                case "u":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_underline_u(node, parent, qname, textMedia);
+                    }
+                case "anchor":
+                case "a":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_anchor_a(node, parent, qname, textMedia);
+                    }
+                case "table":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_table(node, parent, qname, textMedia);
+                    }
+                case "tr":
+                case "thead":
+                case "tfoot":
+                case "tbody":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
+                    }
+                case "list":
+                case "ul":
+                case "ol":
+                case "dl":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_list_dl(node, parent, qname, textMedia);
+                    }
+                case "dt":
+                case "dd":
+                case "li":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
+                    }
+                case "span":
+                case "linenum":
+                case "sent":
+                case "w":
+                case "cite":
+                case "author":
+                case "bdo":
+                case "kbd":
+                case "dfn":
+                case "abbr":
+                case "q":
+                case "rbc":
+                case "rtc":
+                case "rp":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
+                    }
+                case "sup":
+                case "sub":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
+                    }
+                case "ruby":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                //data.Background = Brushes.BlanchedAlmond;
+                            }
+                            );
+                    }
+                case "rb":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                var run = new Run(" ");
+                                setTextDirection(node, null, run, null);
+                                data.Inlines.Add(run);
+                                data.TextDecorations = TextDecorations.OverLine;
+                            });
+
+                    }
+                case "rt":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                //var converter = new FontFamilyConverter();
+                                //data.FontFamily = (FontFamily)converter.ConvertFrom("Meiryo");
+
+                                //data.FontFamily = new FontFamily("Meiryo");
+
+                                data.Typography.Variants = FontVariants.Subscript;
+
+                                var xmlProp = node.GetProperty<XmlProperty>();
+                                if (xmlProp != null)
+                                {
+                                    var attr = xmlProp.GetAttribute("rbspan");
+
+                                    if (attr != null && !String.IsNullOrEmpty(attr.Value))
+                                    {
+                                        data.TextDecorations = TextDecorations.Underline;
+                                        return;
+                                    }
+                                }
+                                var run = new Run(" ");
+                                setTextDirection(node, null, run, null);
+                                data.Inlines.Add(run);
+                            }
+                            );
+                    }
+                case "acronym":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                            data =>
+                            {
+                                XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+                                if (xmlProp == null) return;
+
+                                XmlAttribute attr = xmlProp.GetAttribute("title");
+                                if (attr == null) return;
+
+                                if (!String.IsNullOrEmpty(attr.Value))
+                                {
+                                    data.ToolTip = attr.Value;
+                                }
+                            }
+                            );
+                    }
+                case "line":
+                case "dateline":
+                case "bridgehead":
+                case "byline":
+                case "title":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, null);
+                    }
+                case "lic":
+                case "prodnote":
+                case "div":
+                case "samp":
+                case "poem":
+                case "linegroup":
+                case "code":
+                case "book":
+                case "address":
+                case "epigraph":
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia, null);
+                    }
+                case "col":
+                case "colgroup":
+                    {
+                        Debug.Fail(String.Format(@"DTBook element not yet supported [{0}]", qname.LocalName));
+                        break;
+                    }
+                case "hr":
+                    {
+                        Console.WriteLine(@"XUK to FlowDocument converter: ignoring HR markup.");
+                        break;
+                    }
+                default:
+                    {
+                        if (false && string.IsNullOrEmpty(qname.NamespaceUri)
+                            || qname.NamespaceUri == m_TreeNode.Presentation.PropertyFactory.DefaultXmlNamespaceUri)
+                        {
+                            Debug.Fail(String.Format("Unknown DTBook / HTML element ! [{0}]", qname.LocalName));
+                            break;
+                        }
+                        else
+                        {
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                                data =>
+                                {
+                                    data.BorderBrush = Brushes.Red;
+                                    data.BorderThickness = new Thickness(1.0);
+                                    data.Padding = new Thickness(4.0);
+                                }
+                                );
+                            //System.Diagnostics.Debug.Fail(String.Format("Unknown element namespace in DTBook ! [{0}]", qname.NamespaceUri));
+                        }
+                    }
             }
 
             return parent;
@@ -2337,10 +2342,14 @@ namespace Tobi.Plugin.DocumentPane
                         m_stopwatch.Start();
                     }
 
-                    walkBookTreeAndGenerateFlowDocument(node.Children.Get(i), parentNext);
+                    if (parentNext != null)
+                    {
+                        walkBookTreeAndGenerateFlowDocument(node.Children.Get(i), parentNext);
+                    }
                 }
 
-                if (!string.IsNullOrEmpty(localName)
+                if (parentNext != null
+                    && !string.IsNullOrEmpty(localName)
                     && localName.Equals("table", StringComparison.OrdinalIgnoreCase))
                 {
                     int n = ((Table)parentNext).Columns.Count;
@@ -2508,9 +2517,9 @@ namespace Tobi.Plugin.DocumentPane
             else
             {
                 // no text happens with empty P paragraphs!
-//#if DEBUG
-//                Debugger.Break();
-//#endif //DEBUG
+                //#if DEBUG
+                //                Debugger.Break();
+                //#endif //DEBUG
 
                 // COSTLY (walks parent chain in tree)
                 TreeNode.TextDirection dir = node.GetTextDirectionality();

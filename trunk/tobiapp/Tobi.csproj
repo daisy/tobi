@@ -201,112 +201,112 @@
     <Content Include="paper_tile_texture.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\drawingMode.xsl">
+    <Content Include="pmml2svg_XSLT2\drawingMode.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\fontMetrics.xsl">
+    <Content Include="pmml2svg_XSLT2\fontMetrics.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\formattingMode.xsl">
+    <Content Include="pmml2svg_XSLT2\formattingMode.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\operator-dictionary.xml">
+    <Content Include="pmml2svg_XSLT2\operator-dictionary.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\pmml2svg.xsl">
+    <Content Include="pmml2svg_XSLT2\pmml2svg.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXGeneral-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXGeneral-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXGeneral-BoldItalic.xml">
+    <Content Include="pmml2svg_XSLT2\STIXGeneral-BoldItalic.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXGeneral-Italic.xml">
+    <Content Include="pmml2svg_XSLT2\STIXGeneral-Italic.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXGeneral-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXGeneral-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXGeneral.xml">
+    <Content Include="pmml2svg_XSLT2\STIXGeneral.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXIntegralsD-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsD-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXIntegralsD-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsD-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXIntegralsSm-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsSm-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXIntegralsSm-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsSm-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXIntegralsUp-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUp-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXIntegralsUp-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUp-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXIntegralsUpD-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUpD-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXIntegralsUpD-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUpD-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXIntegralsUpSm-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUpSm-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXIntegralsUpSm-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUpSm-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXNonUnicode-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXNonUnicode-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXNonUnicode-BoldItalic.xml">
+    <Content Include="pmml2svg_XSLT2\STIXNonUnicode-BoldItalic.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXNonUnicode-Italic.xml">
+    <Content Include="pmml2svg_XSLT2\STIXNonUnicode-Italic.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXNonUnicode-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXNonUnicode-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXSizeFiveSym-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXSizeFiveSym-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXSizeFourSym-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXSizeFourSym-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXSizeFourSym-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXSizeFourSym-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXSizeOneSym-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXSizeOneSym-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXSizeOneSym-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXSizeOneSym-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXSizeOneSym.xml">
+    <Content Include="pmml2svg_XSLT2\STIXSizeOneSym.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXSizeThreeSym-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXSizeThreeSym-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXSizeThreeSym-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXSizeThreeSym-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXSizeTwoSym-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXSizeTwoSym-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXSizeTwoSym-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXSizeTwoSym-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXVariants-Bold.xml">
+    <Content Include="pmml2svg_XSLT2\STIXVariants-Bold.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="pmml_XSLT2\STIXVariants-Regular.xml">
+    <Content Include="pmml2svg_XSLT2\STIXVariants-Regular.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="tpbnarrator.res">
