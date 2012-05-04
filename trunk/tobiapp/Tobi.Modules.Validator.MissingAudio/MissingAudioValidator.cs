@@ -259,16 +259,17 @@ namespace Tobi.Plugin.Validator.MissingAudio
                 DebugFix.Assert(node.Children.Count == 0);
                 return true;
             }
-
-            QualifiedName qname = node.GetXmlElementQName();
-            if (qname != null &&
-                (
-                qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
-                || qname.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
-                ))
+            if (node.HasXmlProperty)
             {
-                DebugFix.Assert(node.Children.Count == 0);
-                return true;
+                string localName = node.GetXmlElementLocalName();
+
+                if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                        || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                    )
+                {
+                    DebugFix.Assert(node.Children.Count == 0);
+                    return true;
+                }
             }
 
             return false;

@@ -35,11 +35,13 @@ namespace Tobi.Plugin.NavigationPane
         {
             StringBuilder strBuilder = new StringBuilder();
             int length = 0;
-            QualifiedName qname = treeNode.GetXmlElementQName();
-            if (qname != null)
+
+            if (treeNode.HasXmlProperty)
             {
+                string localName = treeNode.GetXmlElementLocalName();
+
                 strBuilder.Append("[");
-                strBuilder.Append(qname.LocalName);
+                strBuilder.Append(localName);
                 strBuilder.Append("] ");
 
                 length = strBuilder.Length;

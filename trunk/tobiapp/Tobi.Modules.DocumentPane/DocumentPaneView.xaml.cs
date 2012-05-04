@@ -1767,12 +1767,11 @@ namespace Tobi.Plugin.DocumentPane
 
         private TreeNode ensureTreeNodeIsNoteAnnotation(TreeNode treeNode)
         {
-            if (treeNode == null) return null;
-            QualifiedName qname = treeNode.GetXmlElementQName();
-            if (qname == null) return null;
+            if (treeNode == null || !treeNode.HasXmlProperty) return null;
 
-            if (qname.LocalName == "annotation"
-                || qname.LocalName == "note")
+            string localName = treeNode.GetXmlElementLocalName();
+            if (localName == "annotation"
+                || localName == "note")
             {
                 return treeNode;
             }
@@ -3266,7 +3265,12 @@ namespace Tobi.Plugin.DocumentPane
         private void createFlowDocumentFromXuk(Project project)
         {
             TreeNode root = project.Presentations.Get(0).RootNode;
+
             TreeNode nodeBook = root.GetFirstChildWithXmlElementName("book");
+            if (nodeBook == null)
+            {
+                nodeBook = root.GetFirstChildWithXmlElementName("body");
+            }
 
             DebugFix.Assert(root == nodeBook);
 

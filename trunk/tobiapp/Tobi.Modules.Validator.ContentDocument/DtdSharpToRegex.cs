@@ -18,7 +18,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         public Regex GetRegex(TreeNode node)
         {
             if (DtdRegexTable == null) return null;
-            object regexObj = DtdRegexTable[node.GetXmlElementQName().LocalName];
+            object regexObj = DtdRegexTable[node.GetXmlElementLocalName()];
             if (regexObj == null) return null;
             return (Regex)regexObj;
         }
@@ -111,7 +111,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 if (child.HasXmlProperty)
                 {
-                    names += child.GetXmlElementQName().LocalName + "#";
+                    names += child.GetXmlElementLocalName() + "#";
                 }
             }
             return names;

@@ -53,9 +53,7 @@ namespace Tobi.Plugin.NavigationPane
 
         private static Tuple<TreeNode, TreeNode> ComputeLevelNodes(TreeNode node)
         {
-            QualifiedName qName = node.GetXmlElementQName();
-
-            if (qName == null)
+            if (!node.HasXmlProperty)
             {
 #if NET40
                 return new Tuple<TreeNode, TreeNode>(null, null);
@@ -67,7 +65,9 @@ namespace Tobi.Plugin.NavigationPane
             TreeNode level = null;
             TreeNode heading = null;
 
-            if (HeadingsNavigator.IsLevel(qName.LocalName))
+            string localName = node.GetXmlElementLocalName();
+
+            if (HeadingsNavigator.IsLevel(localName))
             {
                 level = node;
 
@@ -76,24 +76,25 @@ namespace Tobi.Plugin.NavigationPane
                     TreeNode nd = level.Children.Get(0);
                     if (nd != null)
                     {
-                        QualifiedName qname = nd.GetXmlElementQName();
-                        if (qname != null && qname.LocalName == "pagenum" && level.Children.Count > 1)
+                        localName = nd.HasXmlProperty ? node.GetXmlElementLocalName() : null;
+
+                        if (localName != null && localName == "pagenum" && level.Children.Count > 1)
                         {
                             nd = level.Children.Get(1);
                             if (nd != null)
                             {
-                                qname = nd.GetXmlElementQName();
+                                localName = nd.GetXmlElementLocalName();
                             }
                         }
-                        if (qname != null &&
-                            (HeadingsNavigator.IsHeading(qname.LocalName)))
+                        if (localName != null &&
+                            (HeadingsNavigator.IsHeading(localName)))
                         {
                             heading = nd;
                         }
                     }
                 }
             }
-            else if (HeadingsNavigator.IsHeading(qName.LocalName))
+            else if (HeadingsNavigator.IsHeading(localName))
             {
                 heading = node;
             }
@@ -135,7 +136,7 @@ namespace Tobi.Plugin.NavigationPane
 
                     if (WrappedTreeNode_LevelHeading != null
                         && (WrappedTreeNode_LevelHeading == node
-                        //|| HeadingsNavigator.IsHeading(node.GetXmlElementQName().LocalName)
+                        //|| HeadingsNavigator.IsHeading(node.GetXmlElementLocalName())
                             )
                         )
                     {
@@ -258,14 +259,14 @@ namespace Tobi.Plugin.NavigationPane
                 TreeNode.ConcatStringChunks(range, -1, strBuilder);
 
                 strBuilder.Insert(0, "] ");
-                strBuilder.Insert(0, heading.GetXmlElementQName().LocalName);
+                strBuilder.Insert(0, heading.GetXmlElementLocalName());
                 strBuilder.Insert(0, "[");
             }
             else
             {
                 strBuilder = new StringBuilder();
                 strBuilder.Append("[");
-                strBuilder.Append(level.GetXmlElementQName().LocalName);
+                strBuilder.Append(level.GetXmlElementLocalName());
                 strBuilder.Append("] ");
                 strBuilder.Append(Tobi_Plugin_NavigationPane_Lang.NoHeading);
             }

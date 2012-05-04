@@ -126,8 +126,8 @@ namespace Tobi.Plugin.Descriptions
             return
                 //m_TextElementForEdit != null ||
                 node != null
-                && node.GetXmlElementQName().LocalName == "img"
-                //&& node.GetXmlElementQName().LocalName == "video"
+                && node.GetXmlElementLocalName() == "img"
+                //&& node.GetXmlElementLocalName() == "video"
                 ;
         }
 

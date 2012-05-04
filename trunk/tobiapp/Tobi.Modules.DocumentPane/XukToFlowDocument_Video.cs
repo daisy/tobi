@@ -47,7 +47,7 @@ namespace Tobi.Plugin.DocumentPane
         public List<Action<object, RoutedEventArgs>> FlowDocumentLoadedEvents = new List<Action<object, RoutedEventArgs>>();
         public List<Action<object, RoutedEventArgs>> FlowDocumentUnLoadedEvents = new List<Action<object, RoutedEventArgs>>();
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_video(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_video(TreeNode node, TextElement parent, string textMedia)
         {
             if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia))
             {
