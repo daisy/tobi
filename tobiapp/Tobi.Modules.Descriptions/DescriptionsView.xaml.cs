@@ -224,7 +224,7 @@ namespace Tobi.Plugin.Descriptions
             //if (node == null) return;
 
             bool hadAltProp = true;
-            var altProp = node.GetAlternateContentProperty(); //node.GetProperty<AlternateContentProperty>();
+            var altProp = node.GetAlternateContentProperty(); //node.GetAlternateContentProperty();
             if (altProp == null)
             {
                 hadAltProp = false;
@@ -242,7 +242,7 @@ namespace Tobi.Plugin.Descriptions
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok
                 || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Apply)
             {
-                altProp = node.GetAlternateContentProperty(); //node.GetProperty<AlternateContentProperty>();
+                altProp = node.GetAlternateContentProperty(); //node.GetAlternateContentProperty();
                 if (altProp != null)
                 {
                     removeEmptyDescriptions(altProp);
@@ -254,7 +254,7 @@ namespace Tobi.Plugin.Descriptions
 
                 if (empty)
                 {
-                    altProp = node.GetAlternateContentProperty(); //node.GetProperty<AlternateContentProperty>();
+                    altProp = node.GetAlternateContentProperty(); //node.GetAlternateContentProperty();
                     if (altProp != null && !hadAltProp)
                     {
 #if DEBUG
@@ -269,7 +269,7 @@ namespace Tobi.Plugin.Descriptions
             {
                 m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
 
-                altProp = node.GetAlternateContentProperty(); //node.GetProperty<AlternateContentProperty>();
+                altProp = node.GetAlternateContentProperty(); //node.GetAlternateContentProperty();
                 if (altProp != null && !hadAltProp)
                 {
 #if DEBUG

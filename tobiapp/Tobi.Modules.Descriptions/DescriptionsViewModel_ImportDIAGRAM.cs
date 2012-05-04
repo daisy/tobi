@@ -31,7 +31,7 @@ namespace Tobi.Plugin.Descriptions
         {
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
             TreeNode treeNode = selection.Item2 ?? selection.Item1;
-            var altProp = treeNode.GetProperty<AlternateContentProperty>();
+            var altProp = treeNode.GetAlternateContentProperty();
 
 
 

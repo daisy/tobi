@@ -18,7 +18,7 @@ namespace Tobi.Plugin.Descriptions
                 TreeNode node = selection.Item2 ?? selection.Item1;
                 if (node == null) return false;
 
-                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                AlternateContentProperty altProp = node.GetAlternateContentProperty();
                 if (altProp == null) return false;
 
                 if (altProp.AlternateContents.Count <= 0) return false;

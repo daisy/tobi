@@ -163,7 +163,7 @@ namespace Tobi.Plugin.Descriptions
         {
             get
             {
-                var altProp = TreeNode.GetProperty<AlternateContentProperty>();
+                var altProp = TreeNode.GetAlternateContentProperty();
                 return altProp != null && !altProp.IsEmpty;
 
                 //return TreeNode.HasAlternateContentProperty;
