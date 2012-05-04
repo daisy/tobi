@@ -344,8 +344,10 @@ namespace Tobi.Plugin.NavigationPane
 
         public override bool IsIncluded(TreeNode node)
         {
-            QualifiedName qname = node.GetXmlElementQName();
-            return qname != null && (IsLevel(qname.LocalName) || IsHeading(qname.LocalName));
+            if (!node.HasXmlProperty) return false;
+
+            string localName = node.GetXmlElementLocalName();
+            return IsLevel(localName) || IsHeading(localName);
         }
 
         private HeadingTreeNodeWrapper findTreeNodeWrapper(TreeNode node)

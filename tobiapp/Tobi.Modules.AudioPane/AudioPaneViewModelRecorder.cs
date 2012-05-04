@@ -519,8 +519,7 @@ namespace Tobi.Plugin.AudioPane
 
         private bool isTreeNodeSkippable(TreeNode node)
         {
-            QualifiedName qname = node.GetXmlElementQName();
-            if (qname != null && isElementSkippable(qname.LocalName))
+            if (node.HasXmlProperty && isElementSkippable(node.GetXmlElementLocalName()))
             {
                 return true;
             }

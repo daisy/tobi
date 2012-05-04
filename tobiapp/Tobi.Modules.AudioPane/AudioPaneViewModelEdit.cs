@@ -220,7 +220,7 @@ namespace Tobi.Plugin.AudioPane
                     return okay
                        && !IsMonitoring && !IsRecording && !IsWaveFormLoading && !IsPlaying
                        && m_UrakawaSession.DocumentProject != null
-                       && (IsSimpleMode || treeNodeSelection.Item1.GetXmlElementQName() != null)
+                       && (IsSimpleMode || treeNodeSelection.Item1.HasXmlProperty)
                        && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
                         //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
                        ;
@@ -234,7 +234,7 @@ namespace Tobi.Plugin.AudioPane
                     // return !IsMonitoring && !IsRecording && !IsWaveFormLoading && !IsPlaying
                     //     && m_UrakawaSession.DocumentProject != null
                     //&& node != null
-                    //&& node.GetXmlElementQName() != null
+                    //&& node.HasXmlProperty
                     //&& node.GetFirstAncestorWithManagedAudio() == null
                     //&& node.GetFirstDescendantWithManagedAudio() == null;
                 }
@@ -402,7 +402,7 @@ namespace Tobi.Plugin.AudioPane
                 ||
                 m_UrakawaSession.DocumentProject != null
                    && node != null
-                   && (IsSimpleMode || node.GetXmlElementQName() != null)
+                   && (IsSimpleMode || node.HasXmlProperty)
                    && node.GetFirstAncestorWithManagedAudio() == null
                    && node.GetFirstDescendantWithManagedAudio() == null
                 //&& node.GetManagedAudioMedia() == null

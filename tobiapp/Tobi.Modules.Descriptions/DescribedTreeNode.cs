@@ -75,7 +75,6 @@ namespace Tobi.Plugin.Descriptions
 
         public static string GetDescriptionLabel(TreeNode treeNode, int limit)
         {
-            QualifiedName qname = treeNode.GetXmlElementQName();
             //if (qname != null)
             //{
             //    str = "[" + qname.LocalName + "] ";
@@ -106,38 +105,42 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
 
-            if (qname != null &&
-                (qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
-                || qname.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
-                ))
+            if (treeNode.HasXmlProperty)
             {
-                XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("src");
-                if (xmlAttr != null && !String.IsNullOrEmpty(xmlAttr.Value))
+                string localName = treeNode.GetXmlElementLocalName();
+
+                if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                    || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                    )
                 {
-
-                    if (strBuilder == null)
+                    XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("src");
+                    if (xmlAttr != null && !String.IsNullOrEmpty(xmlAttr.Value))
                     {
-                        strBuilder = new StringBuilder();
-                    }
 
-                    int l1 = strBuilder.Length;
+                        if (strBuilder == null)
+                        {
+                            strBuilder = new StringBuilder();
+                        }
 
-                    strBuilder.Append("  --> [");
-                    string strAttr = xmlAttr.Value.TrimEnd('/');
-                    int index = strAttr.LastIndexOf('/');
-                    if (index >= 0)
-                    {
-                        strBuilder.Append(strAttr.Substring(index + 1));
-                    }
-                    else
-                    {
-                        strBuilder.Append(strAttr);
-                    }
-                    strBuilder.Append("] ");
+                        int l1 = strBuilder.Length;
 
-                    int l2 = strBuilder.Length;
-                    int added = l2 - l1;
-                    length += added;
+                        strBuilder.Append("  --> [");
+                        string strAttr = xmlAttr.Value.TrimEnd('/');
+                        int index = strAttr.LastIndexOf('/');
+                        if (index >= 0)
+                        {
+                            strBuilder.Append(strAttr.Substring(index + 1));
+                        }
+                        else
+                        {
+                            strBuilder.Append(strAttr);
+                        }
+                        strBuilder.Append("] ");
+
+                        int l2 = strBuilder.Length;
+                        int added = l2 - l1;
+                        length += added;
+                    }
                 }
             }
 

@@ -36,10 +36,9 @@ namespace Tobi.Plugin.StructureTrailPane
 
         public override string ToString()
         {
-            QualifiedName qname = TreeNode.GetXmlElementQName();
-            if (qname != null)
+            if (TreeNode.HasXmlProperty)
             {
-                return qname.LocalName;
+                return TreeNode.GetXmlElementLocalName();
             }
             return "TEXT";
         }
@@ -79,7 +78,7 @@ namespace Tobi.Plugin.StructureTrailPane
             int counter = 0;
             foreach (TreeNode n in PathToCurrentTreeNode)
             {
-                QualifiedName qname = n.GetXmlElementQName();
+                string localName = n.HasXmlProperty ? n.GetXmlElementLocalName() : null;
 
                 //TODO: could use Label+Hyperlink+TextBlock instead of button
                 // (not with NavigateUri+RequestNavigate, because it requires a valid URI.
@@ -99,7 +98,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     Style = m_ButtonStyle
                 };
 
-                string str = (qname != null ? qname.LocalName : "TEXT");
+                string str = (localName != null ? localName : "TEXT");
                 var run = new Run(str)
                 {
                     TextDecorations = TextDecorations.Underline
@@ -182,7 +181,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 }
 
                 butt.SetValue(AutomationProperties.NameProperty,
-                    (qname != null ? qname.LocalName : Tobi_Plugin_StructureTrailPane_Lang.NoXMLFound)
+                    (localName != null ? localName : Tobi_Plugin_StructureTrailPane_Lang.NoXMLFound)
                     + (selected ? Tobi_Plugin_StructureTrailPane_Lang.Selected : "")
                     + (withMedia ? Tobi_Plugin_StructureTrailPane_Lang.Audio : ""));
 
@@ -231,19 +230,20 @@ namespace Tobi.Plugin.StructureTrailPane
                     bool childIsInPath = PathToCurrentTreeNode.Contains(child);
 
                     var menuItem = new MenuItem();
-                    QualifiedName qnameChild = child.GetXmlElementQName();
-                    if (qnameChild != null)
+                    
+                    if (child.HasXmlProperty)
                     {
+                        string localName = child.GetXmlElementLocalName();
                         if (childIsInPath)
                         {
-                            var runMenuItem = new Run(qnameChild.LocalName) { FontWeight = FontWeights.ExtraBold };
+                            var runMenuItem = new Run(localName) { FontWeight = FontWeights.ExtraBold };
                             var textBlock = new TextBlock(runMenuItem);
                             //textBlock.SetValue(AutomationProperties.NameProperty, qnameChild.LocalName);
                             menuItem.Header = textBlock;
                         }
                         else
                         {
-                            menuItem.Header = qnameChild.LocalName;
+                            menuItem.Header = localName;
                         }
                     }
                     else
@@ -644,10 +644,11 @@ namespace Tobi.Plugin.StructureTrailPane
             strBuilder.Insert(0, audioInfo);
             strBuilder.Insert(0, " ");
 
-            QualifiedName qName = treeNode.GetXmlElementQName();
-            string qNameStr = (qName == null
+            string localName = treeNode.HasXmlProperty ? treeNode.GetXmlElementLocalName() : null;
+
+            string qNameStr = (localName == null
                                   ? Tobi_Plugin_StructureTrailPane_Lang.NoXML
-                                  : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, qName.LocalName)
+                                  : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, localName)
                              );
 
             strBuilder.Insert(0, qNameStr);

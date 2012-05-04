@@ -120,9 +120,9 @@ namespace Tobi.Common.Validation
         //    string xml = "";
         //    string nodeName = "";
         //    string indent = new string('\t', level);
-        //    if (node.GetXmlElementQName() != null)
+        //    if (node.HasXmlProperty)
         //    {
-        //        nodeName = node.GetXmlElementQName().LocalName;
+        //        nodeName = node.GetXmlElementLocalName();
         //        xml += string.Format("\n{0}<{1}>", indent, nodeName);
         //    }
 
@@ -140,20 +140,26 @@ namespace Tobi.Common.Validation
         public static string GetTreeNodeName(TreeNode node)
         {
             string nodeName = GetNearestTreeNodeName(node);
-            if (string.IsNullOrEmpty(nodeName)) return "";
+            if (string.IsNullOrEmpty(nodeName))
+            {
+                return "";
+            }
             return nodeName;
         }
+
         public static string GetNearestTreeNodeName(TreeNode node)
         {
-            if (node.GetXmlElementQName() == null)
+            if (node.HasXmlProperty)
             {
-                if (node.Parent != null)
-                    return GetNearestTreeNodeName(node.Parent);
-                else
-                    return "";
+                return node.GetXmlElementLocalName();
             }
 
-            return node.GetXmlElementQName().LocalName;
+            if (node.Parent != null)
+            {
+                return GetNearestTreeNodeName(node.Parent);
+            }
+
+            return "";
         }
 
     }

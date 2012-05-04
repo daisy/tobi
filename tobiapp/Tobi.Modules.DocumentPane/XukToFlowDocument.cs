@@ -323,18 +323,21 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             var treeNode = (TreeNode)data.Tag;
-            var qName = treeNode.GetXmlElementQName();
-            if (qName == null) return;
-            if (qName.LocalName == "pagenum")
+
+            if (!treeNode.HasXmlProperty) return;
+
+            string localName = treeNode.GetXmlElementLocalName();
+
+            if (localName == "pagenum")
             {
                 data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_PageNum_Back);
             }
-            else if (qName.LocalName == "a" || qName.LocalName == "anchor"
-                || qName.LocalName == "annoref" || qName.LocalName == "noteref")
+            else if (localName == "a" || localName == "anchor"
+                || localName == "annoref" || localName == "noteref")
             {
                 data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_Hyperlink_Back);
             }
-            else if (qName.LocalName == "th" || qName.LocalName == "td")
+            else if (localName == "th" || localName == "td")
             {
                 DebugFix.Assert(data is TableCell);
                 if (data is TableCell)
@@ -342,7 +345,7 @@ namespace Tobi.Plugin.DocumentPane
                     ((TableCell)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
                 }
             }
-            else if (qName.LocalName == "sidebar")
+            else if (localName == "sidebar")
             {
                 DebugFix.Assert(data is Section);
                 if (data is Section)
@@ -350,15 +353,15 @@ namespace Tobi.Plugin.DocumentPane
                     ((Section)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
                 }
             }
-            else if (qName.LocalName == "imggroup"
-                 || qName.LocalName == "doctitle"
-                 || qName.LocalName == "docauthor"
-                 || qName.LocalName == "covertitle"
-                 || qName.LocalName == "caption"
-                 || qName.LocalName == "note"
-                 || qName.LocalName == "annotation"
-                 || qName.LocalName == "blockquote"
-                 || qName.LocalName == "table"
+            else if (localName == "imggroup"
+                 || localName == "doctitle"
+                 || localName == "docauthor"
+                 || localName == "covertitle"
+                 || localName == "caption"
+                 || localName == "note"
+                 || localName == "annotation"
+                 || localName == "blockquote"
+                 || localName == "table"
                 )
             {
                 DebugFix.Assert(data is Block);
@@ -381,9 +384,7 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(data.Tag is TreeNode);
             DebugFix.Assert(node == data.Tag);
 
-            var qName = node.GetXmlElementQName();
-            DebugFix.Assert(qName != null);
-            DebugFix.Assert(qName.LocalName == "pagenum");
+            DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "pagenum");
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -409,9 +410,7 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(data.Tag is TreeNode);
             DebugFix.Assert(node == data.Tag);
 
-            var qName = node.GetXmlElementQName();
-            DebugFix.Assert(qName != null);
-            DebugFix.Assert(qName.LocalName == "pagenum");
+            DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "pagenum");
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -608,14 +607,16 @@ namespace Tobi.Plugin.DocumentPane
                 return true;
             }
 
-            QualifiedName qname = node.GetXmlElementQName();
-            if (qname != null &&
-                (qname.LocalName.Equals("img", StringComparison.OrdinalIgnoreCase)
-                || qname.LocalName.Equals("video", StringComparison.OrdinalIgnoreCase)
-                ))
+            if (node.HasXmlProperty)
             {
-                DebugFix.Assert(node.Children.Count == 0);
-                return true;
+                string localName = node.GetXmlElementLocalName();
+                if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                     || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                    )
+                {
+                    DebugFix.Assert(node.Children.Count == 0);
+                    return true;
+                }
             }
 
             return false;
@@ -669,7 +670,7 @@ namespace Tobi.Plugin.DocumentPane
         //    return name.Replace("_DaSh_", "-");
         //}
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_th_td(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_th_td(TreeNode node, TextElement parent, string textMedia)
         {
             if (parent is Table)
             {
@@ -685,9 +686,10 @@ namespace Tobi.Plugin.DocumentPane
                 DebugFix.Assert(data.Tag is TreeNode);
                 DebugFix.Assert(node == data.Tag);
 
-                var qName = node.GetXmlElementQName();
-                DebugFix.Assert(qName != null);
-                DebugFix.Assert(qName.LocalName == "th" || qName.LocalName == "td");
+                DebugFix.Assert(node.HasXmlProperty &&
+                    (node.GetXmlElementLocalName() == "td"
+                    || node.GetXmlElementLocalName() == "th")
+                    );
 #endif
                 SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -695,21 +697,21 @@ namespace Tobi.Plugin.DocumentPane
 
                 if (trg.Tag != null && trg.Tag is TreeNode)
                 {
-                    QualifiedName qn = ((TreeNode)trg.Tag).GetXmlElementQName();
-                    if (qn != null)
+                    if (((TreeNode) trg.Tag).HasXmlProperty)
                     {
-                        if (qn.LocalName == "thead")
+                        string localName = ((TreeNode) trg.Tag).GetXmlElementLocalName();
+                        if (localName == "thead")
                         {
                             //data.Background = Brushes.LightGreen;
                             data.FontWeight = FontWeights.Heavy;
                         }
-                        if (qn.LocalName == "tfoot")
+                        if (localName == "tfoot")
                         {
                             //data.Background = Brushes.LightBlue;
                         }
                     }
                 }
-                if (qname.LocalName == "th")
+                if (node.GetXmlElementLocalName() == "th")
                 {
                     data.FontWeight = FontWeights.Heavy;
                 }
@@ -763,7 +765,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Paragraph(TreeNode node, TextElement parent, QualifiedName qname, string textMedia, DelegateParagraphInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Paragraph(TreeNode node, TextElement parent, string textMedia, DelegateParagraphInitializer initializer)
         {
             Paragraph data = new Paragraph();
             setTag(data, node);
@@ -797,7 +799,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_underline_u(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_underline_u(TreeNode node, TextElement parent, string textMedia)
         {
             Underline data = new Underline();
             setTag(data, node);
@@ -826,7 +828,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_strong_b(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_strong_b(TreeNode node, TextElement parent, string textMedia)
         {
             Bold data = new Bold();
             setTag(data, node);
@@ -855,7 +857,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_em_i(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_em_i(TreeNode node, TextElement parent, string textMedia)
         {
             Italic data = new Italic();
             setTag(data, node);
@@ -884,7 +886,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_list_dl(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_list_dl(TreeNode node, TextElement parent, string textMedia)
         {
             List data = new List();
             setTag(data, node);
@@ -902,7 +904,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_table(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_table(TreeNode node, TextElement parent, string textMedia)
         {
             m_cellsToExpand.Clear();
             m_currentTD = 0;
@@ -920,9 +922,7 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(data.Tag is TreeNode);
             DebugFix.Assert(node == data.Tag);
 
-            var qName = node.GetXmlElementQName();
-            DebugFix.Assert(qName != null);
-            DebugFix.Assert(qName.LocalName == "table");
+            DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "table");
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -942,7 +942,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_li_dd_dt(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_li_dd_dt(TreeNode node, TextElement parent, string textMedia)
         {
             if (!(parent is List))
             {
@@ -968,13 +968,15 @@ namespace Tobi.Plugin.DocumentPane
                     data.Blocks.Add(para);
                     ((List)parent).ListItems.Add(data);
 
-                    if (qname.LocalName == "pagenum")
+                    string localName = node.GetXmlElementLocalName();
+
+                    if (localName == "pagenum")
                     {
                         //data.Tag = null;
                         setTag(para, node);
                         formatPageNumberAndSetId_Para(node, para);
                     }
-                    else if (qname.LocalName == "hd")
+                    else if (localName == "hd")
                     {
                         //data.Tag = null;
                         setTag(para, node);
@@ -991,8 +993,10 @@ namespace Tobi.Plugin.DocumentPane
             //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
             else
             {
+                string localName = node.GetXmlElementLocalName();
+
                 ((List)parent).ListItems.Add(data);
-                if (qname.LocalName == "pagenum")
+                if (localName == "pagenum")
                 {
                     //data.Tag = null;
                     var para = new Paragraph();
@@ -1001,7 +1005,7 @@ namespace Tobi.Plugin.DocumentPane
                     data.Blocks.Add(para);
                     return para;
                 }
-                else if (qname.LocalName == "hd")
+                else if (localName == "hd")
                 {
                     //data.Tag = null;
                     var para = new Paragraph();
@@ -1018,13 +1022,15 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(TreeNode node, TextElement parent, string textMedia)
         {
+            string localName = node.GetXmlElementLocalName();
+
             if (node.Children.Count == 0)
             {
                 if (parent is Table)
                 {
-                    if ((qname.LocalName == "pagenum" || qname.LocalName == "caption")
+                    if ((localName == "pagenum" || localName == "caption")
                         && textMedia != null && !string.IsNullOrEmpty(textMedia))
                     {
                         m_currentTD = 0;
@@ -1043,7 +1049,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         setTag(para, node);
 
-                        if (qname.LocalName == "caption")
+                        if (localName == "caption")
                         {
                             formatCaptionCell(cell);
                         }
@@ -1079,7 +1085,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (parent is Table)
                 {
-                    if (qname.LocalName == "pagenum" || qname.LocalName == "caption")
+                    if (localName == "pagenum" || localName == "caption")
                     {
                         m_currentTD = 0;
 
@@ -1095,7 +1101,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         setTag(para, node);
 
-                        if (qname.LocalName == "caption")
+                        if (localName == "caption")
                         {
                             formatCaptionCell(cell);
                         }
@@ -1112,9 +1118,9 @@ namespace Tobi.Plugin.DocumentPane
                         m_firstTR = false;
                         return para;
                     }
-                    else if (qname.LocalName == "thead"
-                        || qname.LocalName == "tbody"
-                        || qname.LocalName == "tfoot")
+                    else if (localName == "thead"
+                        || localName == "tbody"
+                        || localName == "tfoot")
                     {
                         TableRowGroup rowGroup = new TableRowGroup();
                         setTag(rowGroup, node);
@@ -1130,8 +1136,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         if (node.Parent != null)
                         {
-                            QualifiedName qnameParent = node.Parent.GetXmlElementQName();
-                            if (qnameParent != null && qnameParent.LocalName == "table")
+                            if (node.Parent.HasXmlProperty && node.Parent.GetXmlElementLocalName() == "table")
                             {
                                 if (!m_firstTR)
                                 {
@@ -1171,7 +1176,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, string textMedia)
         {
             //Hyperlink data = new Hyperlink();
             var data = new Underline();
@@ -1181,9 +1186,10 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(data.Tag is TreeNode);
             DebugFix.Assert(node == data.Tag);
 
-            var qName = node.GetXmlElementQName();
-            DebugFix.Assert(qName != null);
-            DebugFix.Assert(qName.LocalName == "anchor" || qName.LocalName == "a");
+            DebugFix.Assert(node.HasXmlProperty &&
+                (node.GetXmlElementLocalName() == "a"
+                || node.GetXmlElementLocalName() == "anchor")
+                );
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -1261,7 +1267,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_annoref_noteref(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_annoref_noteref(TreeNode node, TextElement parent, string textMedia)
         {
             var data = new Hyperlink();
             setTag(data, node);
@@ -1275,10 +1281,11 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(data.Tag != null);
             DebugFix.Assert(data.Tag is TreeNode);
             DebugFix.Assert(node == data.Tag);
-
-            var qName = node.GetXmlElementQName();
-            DebugFix.Assert(qName != null);
-            DebugFix.Assert(qName.LocalName == "annoref" || qName.LocalName == "noteref");
+            
+                DebugFix.Assert(node.HasXmlProperty &&
+                    (node.GetXmlElementLocalName() == "annoref"
+                    || node.GetXmlElementLocalName() == "noteref")
+                    );
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -1340,7 +1347,7 @@ namespace Tobi.Plugin.DocumentPane
         }
 
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Span(TreeNode node, TextElement parent, QualifiedName qname, string textMedia, DelegateSpanInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Span(TreeNode node, TextElement parent, string textMedia, DelegateSpanInitializer initializer)
         {
             Span data = new Span();
             setTag(data, node);
@@ -1352,7 +1359,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.Children.Count == 0)
             {
-                if (textMedia == null || String.IsNullOrEmpty(textMedia))
+                if (String.IsNullOrEmpty(textMedia))
                 {
                     var run = new Run("...");
                     setTextDirection(node, null, run, null);
@@ -1361,13 +1368,14 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
+                    string localName = node.GetXmlElementLocalName();
                     var run = new Run(textMedia);
                     setTextDirection(node, null, run, null);
-                    if (qname.LocalName == "sup")
+                    if (localName == "sup")
                     {
                         run.SetValue(Inline.BaselineAlignmentProperty, BaselineAlignment.Superscript);
                     }
-                    else if (qname.LocalName == "sub")
+                    else if (localName == "sub")
                     {
                         run.SetValue(Inline.BaselineAlignmentProperty, BaselineAlignment.Subscript);
                     }
@@ -1385,7 +1393,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Floater(TreeNode node, TextElement parent, QualifiedName qname, string textMedia, DelegateFloaterInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Floater(TreeNode node, TextElement parent, string textMedia, DelegateFloaterInitializer initializer)
         {
             Floater data = new Floater();
             setTag(data, node);
@@ -1419,7 +1427,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Figure(TreeNode node, TextElement parent, QualifiedName qname, string textMedia, DelegateFigureInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Figure(TreeNode node, TextElement parent, string textMedia, DelegateFigureInitializer initializer)
         {
             Figure data = new Figure();
             setTag(data, node);
@@ -1453,7 +1461,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_Section(TreeNode node, TextElement parent, QualifiedName qname, string textMedia, DelegateSectionInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_Section(TreeNode node, TextElement parent, string textMedia, DelegateSectionInitializer initializer)
         {
             Section data = new Section();
             setTag(data, node);
@@ -1487,7 +1495,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_img(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_img(TreeNode node, TextElement parent, string textMedia)
         {
             if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia))
             {
@@ -1699,9 +1707,9 @@ namespace Tobi.Plugin.DocumentPane
             return parent;
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_(TreeNode node, TextElement parent, QualifiedName qname, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_(TreeNode node, TextElement parent, string textMedia)
         {
-            if (qname == null)
+            if (!node.HasXmlProperty)
             {
                 //assumption based on the caller: node.Children.Count == 0 && textMedia != null
                 if (textMedia.Length == 0)
@@ -1723,7 +1731,9 @@ namespace Tobi.Plugin.DocumentPane
             // node.Children.Count ?
             // String.IsNullOrEmpty(textMedia) ?
 
-            switch (qname.LocalName)
+            string localName = node.GetXmlElementLocalName();
+
+            switch (localName)
             {
                 case "math":
                     {
@@ -1740,12 +1750,12 @@ namespace Tobi.Plugin.DocumentPane
                 case "level6":
                 case "bodymatter":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia, null);
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia, null);
                     }
                 case "frontmatter":
                 case "rearmatter":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                             data =>
                             {
                                 //data.BorderBrush = Brushes.GreenYellow;
@@ -1756,7 +1766,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "blockquote":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                             data =>
                             {
                                 data.BorderThickness = new Thickness(2.0);
@@ -1769,9 +1779,7 @@ namespace Tobi.Plugin.DocumentPane
                                 DebugFix.Assert(data.Tag is TreeNode);
                                 DebugFix.Assert(node == data.Tag);
 
-                                var qName = node.GetXmlElementQName();
-                                DebugFix.Assert(qName != null);
-                                DebugFix.Assert(qName.LocalName == "blockquote");
+                                DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "blockquote");
 #endif
                                 SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -1781,7 +1789,7 @@ namespace Tobi.Plugin.DocumentPane
                 case "note":
                 case "annotation":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                             data =>
                             {
                                 data.BorderThickness = new Thickness(2.0);
@@ -1793,10 +1801,11 @@ namespace Tobi.Plugin.DocumentPane
                                 DebugFix.Assert(data.Tag != null);
                                 DebugFix.Assert(data.Tag is TreeNode);
                                 DebugFix.Assert(node == data.Tag);
-
-                                var qName = node.GetXmlElementQName();
-                                DebugFix.Assert(qName != null);
-                                DebugFix.Assert(qName.LocalName == "annotation" || qName.LocalName == "note");
+                                
+                                DebugFix.Assert(node.HasXmlProperty &&
+                                    (node.GetXmlElementLocalName() == "annotation"
+                                    || node.GetXmlElementLocalName() == "note")
+                                    );
 #endif
                                 SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -1816,17 +1825,17 @@ namespace Tobi.Plugin.DocumentPane
                 case "noteref":
                 case "annoref":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_annoref_noteref(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_annoref_noteref(node, parent, textMedia);
                     }
                 case "caption":
                     {
                         if (parent is Table)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
+                            return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, textMedia);
                         }
                         else
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                              data =>
                              {
                                  data.BorderThickness = new Thickness(1.0);
@@ -1842,9 +1851,8 @@ namespace Tobi.Plugin.DocumentPane
                                  DebugFix.Assert(data.Tag is TreeNode);
                                  DebugFix.Assert(node == data.Tag);
 
-                                 var qName = node.GetXmlElementQName();
-                                 DebugFix.Assert(qName != null);
-                                 DebugFix.Assert(qName.LocalName == "caption");
+                                 DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "caption");
+                                 
 #endif
                                  SetBorderAndBackColorBasedOnTreeNodeTag(data);
                              });
@@ -1854,11 +1862,11 @@ namespace Tobi.Plugin.DocumentPane
                 case "levelhd":
                 case "hd":
                     {
-                        if (qname.LocalName == "hd" && parent is List)
+                        if (localName == "hd" && parent is List)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
+                            return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, textMedia);
                         }
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                             data =>
                             {
                                 data.FontSize = m_FlowDoc.FontSize * 1.5;
@@ -1867,7 +1875,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "h2":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                             data =>
                             {
                                 data.FontSize = m_FlowDoc.FontSize * 1.25;
@@ -1879,7 +1887,7 @@ namespace Tobi.Plugin.DocumentPane
                 case "h5":
                 case "h6":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                             data =>
                             {
                                 data.FontSize = m_FlowDoc.FontSize * 1.15;
@@ -1890,7 +1898,7 @@ namespace Tobi.Plugin.DocumentPane
                 case "docauthor":
                 case "covertitle":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, textMedia,
                             data =>
                             {
                                 data.BorderThickness = new Thickness(1.0);
@@ -1904,9 +1912,11 @@ namespace Tobi.Plugin.DocumentPane
                                 DebugFix.Assert(data.Tag is TreeNode);
                                 DebugFix.Assert(node == data.Tag);
 
-                                var qName = node.GetXmlElementQName();
-                                DebugFix.Assert(qName != null);
-                                DebugFix.Assert(qName.LocalName == "doctitle" || qName.LocalName == "docauthor" || qName.LocalName == "covertitle");
+                                DebugFix.Assert(node.HasXmlProperty &&
+                                    (node.GetXmlElementLocalName() == "doctitle"
+                                    || node.GetXmlElementLocalName() == "docauthor"
+                                    || node.GetXmlElementLocalName() == "covertitle")
+                                    );
 #endif
                                 SetBorderAndBackColorBasedOnTreeNodeTag(data);
                             });
@@ -1925,19 +1935,19 @@ namespace Tobi.Plugin.DocumentPane
                                 };
                         if (parent is Table)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
+                            return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, textMedia);
                         }
                         if (parent is List)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
+                            return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, textMedia);
                         }
                         if (parent == null || parent is TableCell || parent is Section || parent is Floater || parent is Figure || parent is ListItem)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, delegatePageNumPara);
+                            return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, textMedia, delegatePageNumPara);
                         }
                         if (parent is Paragraph || parent is Span)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, delegatePageNumSpan);
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia, delegatePageNumSpan);
                         }
 
                         Debug.Fail("Page pagenum cannot be added due to incompatible FlowDocument structure !");
@@ -1945,7 +1955,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "imggroup":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                             data =>
                             {
                                 data.BorderThickness = new Thickness(0.5);
@@ -1957,16 +1967,15 @@ namespace Tobi.Plugin.DocumentPane
                                 DebugFix.Assert(data.Tag is TreeNode);
                                 DebugFix.Assert(node == data.Tag);
 
-                                var qName = node.GetXmlElementQName();
-                                DebugFix.Assert(qName != null);
-                                DebugFix.Assert(qName.LocalName == "imggroup");
+                                DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "imggroup");
+                                
 #endif
                                 SetBorderAndBackColorBasedOnTreeNodeTag(data);
                             });
                     }
                 case "sidebar":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                             data =>
                             {
                                 data.BorderThickness = new Thickness(2.0);
@@ -1978,25 +1987,24 @@ namespace Tobi.Plugin.DocumentPane
                                 DebugFix.Assert(data.Tag is TreeNode);
                                 DebugFix.Assert(node == data.Tag);
 
-                                var qName = node.GetXmlElementQName();
-                                DebugFix.Assert(qName != null);
-                                DebugFix.Assert(qName.LocalName == "sidebar");
+                                DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "sidebar");
+
 #endif
                                 SetBorderAndBackColorBasedOnTreeNodeTag(data);
                             });
                     }
                 case "img":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_img(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_img(node, parent, textMedia);
                     }
                 case "video":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_video(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_video(node, parent, textMedia);
                     }
                 case "th":
                 case "td":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_th_td(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_th_td(node, parent, textMedia);
                     }
                 case "br":
                     {
@@ -2008,46 +2016,46 @@ namespace Tobi.Plugin.DocumentPane
                 case "em":
                 case "i":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_em_i(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_em_i(node, parent, textMedia);
                     }
                 case "strong":
                 case "b":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_strong_b(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_strong_b(node, parent, textMedia);
                     }
                 case "underline":
                 case "u":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_underline_u(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_underline_u(node, parent, textMedia);
                     }
                 case "anchor":
                 case "a":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_anchor_a(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_anchor_a(node, parent, textMedia);
                     }
                 case "table":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_table(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_table(node, parent, textMedia);
                     }
                 case "tr":
                 case "thead":
                 case "tfoot":
                 case "tbody":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, textMedia);
                     }
                 case "list":
                 case "ul":
                 case "ol":
                 case "dl":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_list_dl(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_list_dl(node, parent, textMedia);
                     }
                 case "dt":
                 case "dd":
                 case "li":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, qname, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, textMedia);
                     }
                 case "span":
                 case "linenum":
@@ -2064,16 +2072,16 @@ namespace Tobi.Plugin.DocumentPane
                 case "rtc":
                 case "rp":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia, null);
                     }
                 case "sup":
                 case "sub":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia, null);
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia, null);
                     }
                 case "ruby":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
                             data =>
                             {
                                 //data.Background = Brushes.BlanchedAlmond;
@@ -2082,7 +2090,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "rb":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
                             data =>
                             {
                                 var run = new Run(" ");
@@ -2094,7 +2102,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "rt":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
                             data =>
                             {
                                 //var converter = new FontFamilyConverter();
@@ -2123,7 +2131,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "acronym":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, qname, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
                             data =>
                             {
                                 XmlProperty xmlProp = node.GetProperty<XmlProperty>();
@@ -2145,7 +2153,7 @@ namespace Tobi.Plugin.DocumentPane
                 case "byline":
                 case "title":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, qname, textMedia, null);
+                        return walkBookTreeAndGenerateFlowDocument_Paragraph(node, parent, textMedia, null);
                     }
                 case "lic":
                 case "prodnote":
@@ -2155,15 +2163,16 @@ namespace Tobi.Plugin.DocumentPane
                 case "linegroup":
                 case "code":
                 case "book":
+                case "body":
                 case "address":
                 case "epigraph":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia, null);
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia, null);
                     }
                 case "col":
                 case "colgroup":
                     {
-                        Debug.Fail(String.Format(@"DTBook element not yet supported [{0}]", qname.LocalName));
+                        Debug.Fail(String.Format(@"DTBook element not yet supported [{0}]", localName));
                         break;
                     }
                 case "hr":
@@ -2173,15 +2182,20 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 default:
                     {
-                        if (false && string.IsNullOrEmpty(qname.NamespaceUri)
-                            || qname.NamespaceUri == m_TreeNode.Presentation.PropertyFactory.DefaultXmlNamespaceUri)
+                        if (false
+                            //&&
+                            //(
+                            //string.IsNullOrEmpty(qname.NamespaceUri)
+                            //|| qname.NamespaceUri == m_TreeNode.Presentation.PropertyFactory.DefaultXmlNamespaceUri
+                            //)
+                            )
                         {
-                            Debug.Fail(String.Format("Unknown DTBook / HTML element ! [{0}]", qname.LocalName));
+                            Debug.Fail(String.Format("Unknown DTBook / HTML element ! [{0}]", localName));
                             break;
                         }
                         else
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, qname, textMedia,
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                                 data =>
                                 {
                                     data.BorderBrush = Brushes.Red;
@@ -2189,7 +2203,7 @@ namespace Tobi.Plugin.DocumentPane
                                     data.Padding = new Thickness(4.0);
                                 }
                                 );
-                            //System.Diagnostics.Debug.Fail(String.Format("Unknown element namespace in DTBook ! [{0}]", qname.NamespaceUri));
+                            //System.Diagnostics.Debug.Fail(String.Format("Unknown element namespace in DTBook ! [{0}]".NamespaceUri));
                         }
                     }
             }
@@ -2217,15 +2231,11 @@ namespace Tobi.Plugin.DocumentPane
                 m_FlowDoc.FlowDirection = FlowDirection.RightToLeft;
             }
 
-            QualifiedName qname = node.GetXmlElementQName();
-            string localName = qname == null ? null : qname.LocalName;
-
-            if (!string.IsNullOrEmpty(localName)
-                && localName.Equals("img", StringComparison.OrdinalIgnoreCase))
+            if (node.HasXmlProperty
+                && node.GetXmlElementLocalName().Equals("img", StringComparison.OrdinalIgnoreCase))
             {
                 EventAggregator.GetEvent<DescribableTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
             }
-
 
             TextElement parentNext = parent;
 
@@ -2234,7 +2244,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (node.Children.Count == 0)
             {
-                if (qname == null)
+                if (!node.HasXmlProperty)
                 {
                     if (textMedia == null)
                     {
@@ -2246,26 +2256,26 @@ namespace Tobi.Plugin.DocumentPane
                     else //childCount == 0 && qname == null && textMedia != null
                     {
                         //parentNext = generateFlowDocument_NoChild_NoXml_Text(node, parent, textMedia);
-                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, qname, textMedia);
+                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, textMedia);
                     }
                 }
                 else //childCount == 0 && qname != null
                 {
                     if (textMedia == null)
                     {
-                        //parentNext = generateFlowDocument_NoChild_Xml_NoText(node, parent, qname);
-                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, qname, textMedia);
+                        //parentNext = generateFlowDocument_NoChild_Xml_NoText(node, parent);
+                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, textMedia);
                     }
                     else //childCount == 0 && qname != null && textMedia != null
                     {
-                        //parentNext = generateFlowDocument_NoChild_Xml_Text(node, parent, qname, textMedia);
-                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, qname, textMedia);
+                        //parentNext = generateFlowDocument_NoChild_Xml_Text(node, parent, textMedia);
+                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, textMedia);
                     }
                 }
             }
             else //childCount != 0
             {
-                if (qname == null)
+                if (!node.HasXmlProperty)
                 {
                     if (textMedia == null)
                     {
@@ -2286,8 +2296,8 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (textMedia == null)
                     {
-                        //parentNext = generateFlowDocument_Child_Xml_NoText(node, parent, qname);
-                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, qname, textMedia);
+                        //parentNext = generateFlowDocument_Child_Xml_NoText(node, parent);
+                        parentNext = walkBookTreeAndGenerateFlowDocument_(node, parent, textMedia);
                     }
                     else //childCount != 0 && qname != null && textMedia != null
                     {
@@ -2348,6 +2358,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 }
 
+                string localName = node.GetXmlElementLocalName();
                 if (parentNext != null
                     && !string.IsNullOrEmpty(localName)
                     && localName.Equals("table", StringComparison.OrdinalIgnoreCase))
@@ -2368,10 +2379,9 @@ namespace Tobi.Plugin.DocumentPane
 
                         if (trg.Tag != null && trg.Tag is TreeNode)
                         {
-                            QualifiedName qn = ((TreeNode)trg.Tag).GetXmlElementQName();
-                            if (qn != null)
+                            if (((TreeNode)trg.Tag).HasXmlProperty)
                             {
-                                switch (qn.LocalName)
+                                switch (((TreeNode)trg.Tag).GetXmlElementLocalName())
                                 {
                                     case "caption":
                                         {
@@ -2396,8 +2406,7 @@ namespace Tobi.Plugin.DocumentPane
 
                                             if (trgFirst.Tag != null && trgFirst.Tag is TreeNode)
                                             {
-                                                QualifiedName qun = ((TreeNode)trgFirst.Tag).GetXmlElementQName();
-                                                if (qun != null && qun.LocalName == "caption")
+                                                if (((TreeNode)trgFirst.Tag).HasXmlProperty && ((TreeNode)trgFirst.Tag).GetXmlElementLocalName() == "caption")
                                                 {
                                                     if (index == 1)
                                                     {
