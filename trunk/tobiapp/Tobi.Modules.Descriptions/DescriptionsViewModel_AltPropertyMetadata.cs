@@ -17,7 +17,7 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) return;
 
-            var altProp_ = node.GetProperty<AlternateContentProperty>();
+            var altProp_ = node.GetAlternateContentProperty();
             if (altProp_ == null) return;
 
             if (altProp != null && altProp_ != altProp) return;
@@ -65,7 +65,7 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) return;
 
-            var altProp = node.GetProperty<AlternateContentProperty>();
+            var altProp = node.GetAlternateContentProperty();
             if (altProp == null) return;
 
             int index = altProp.Metadatas.IndexOf(md);
@@ -88,7 +88,7 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) return;
 
-            var altProp = node.GetProperty<AlternateContentProperty>();
+            var altProp = node.GetAlternateContentProperty();
             if (altProp == null) return;
 
             int index = altProp.Metadatas.IndexOf(md);
@@ -114,7 +114,7 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) return;
 
-            var altProp_ = node.GetProperty<AlternateContentProperty>();
+            var altProp_ = node.GetAlternateContentProperty();
             if (altProp_ == null) return;
 
             if (altProp != null && altProp_ != altProp) return;
@@ -191,7 +191,7 @@ namespace Tobi.Plugin.Descriptions
         //        TreeNode node = selection.Item2 ?? selection.Item1;
         //        if (node == null) return null;
 
-        //        AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+        //        AlternateContentProperty altProp = node.GetAlternateContentProperty();
         //        if (altProp == null) return null;
 
         //        return altProp.Metadatas.Get(m_SelectedMedatadata).OtherAttributes.ContentsAs_Enumerable;
@@ -215,7 +215,7 @@ namespace Tobi.Plugin.Descriptions
                 TreeNode node = selection.Item2 ?? selection.Item1;
                 if (node == null) return false;
 
-                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                AlternateContentProperty altProp = node.GetAlternateContentProperty();
                 if (altProp == null) return false;
 
                 if (altProp.Metadatas.Count <= 0) return false;
@@ -239,7 +239,7 @@ namespace Tobi.Plugin.Descriptions
                 TreeNode node = selection.Item2 ?? selection.Item1;
                 if (node == null) return false;
 
-                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                AlternateContentProperty altProp = node.GetAlternateContentProperty();
                 if (altProp == null) return false;
 
                 return altProp.Metadatas.Count > 0;
@@ -256,7 +256,7 @@ namespace Tobi.Plugin.Descriptions
                 TreeNode node = selection.Item2 ?? selection.Item1;
                 if (node == null) return null;
 
-                AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+                AlternateContentProperty altProp = node.GetAlternateContentProperty();
                 if (altProp == null) return null;
 
                 //return new ObservableCollection<Metadata>(altProp.Metadatas.ContentsAs_Enumerable);

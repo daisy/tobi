@@ -175,7 +175,7 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) yield break;
 
-            AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+            AlternateContentProperty altProp = node.GetAlternateContentProperty();
             if (altProp == null) yield break;
 
             if (altProp.AlternateContents.Count <= 0) yield break;
@@ -205,7 +205,7 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) yield break;
 
-            AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+            AlternateContentProperty altProp = node.GetAlternateContentProperty();
             if (altProp == null) yield break;
 
             if (altProp.AlternateContents.Count <= 0) yield break;
@@ -243,7 +243,7 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) yield break;
 
-            AlternateContentProperty altProp = node.GetProperty<AlternateContentProperty>();
+            AlternateContentProperty altProp = node.GetAlternateContentProperty();
             if (altProp == null) yield break;
 
             if (altProp.AlternateContents.Count <= 0) yield break;

@@ -281,7 +281,7 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) return;
 
-            var altProp = node.GetProperty<AlternateContentProperty>();
+            var altProp = node.GetAlternateContentProperty();
             if (altProp == null) return;
 
             if (MetadatasListView.SelectedIndex < 0) return;
@@ -396,7 +396,7 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) return;
 
-            var altProp = node.GetProperty<AlternateContentProperty>();
+            var altProp = node.GetAlternateContentProperty();
             if (altProp == null) return;
 
             if (MetadatasListView.SelectedIndex < 0) return;
@@ -509,7 +509,7 @@ namespace Tobi.Plugin.Descriptions
             TreeNode node = selection.Item2 ?? selection.Item1;
             if (node == null) return;
 
-            var altProp = node.GetProperty<AlternateContentProperty>();
+            var altProp = node.GetAlternateContentProperty();
             if (altProp == null) return;
 
             //if (DescriptionsListView.SelectedIndex < 0) return;

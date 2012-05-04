@@ -264,15 +264,13 @@ namespace Tobi.Plugin.DocumentPane
         {
             //setTag(data, node);
 
-            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-            XmlAttribute attr = xmlProp.GetAttribute("id");
+            string id = node.GetXmlElementId();
 
             string pageID = null;
 
-            if (attr != null &&
-                !String.IsNullOrEmpty(attr.Value))
+            if (!string.IsNullOrEmpty(id))
             {
-                pageID = attr.Value;
+                pageID = id;
             }
             else
             {
@@ -724,7 +722,7 @@ namespace Tobi.Plugin.DocumentPane
                     ((Table)parent).Columns.Add(new TableColumn());
                 }
 
-                XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+                XmlProperty xmlProp = node.GetXmlProperty();
                 XmlAttribute attr = xmlProp.GetAttribute("colspan");
 
                 if (attr != null && !String.IsNullOrEmpty(attr.Value))
@@ -1196,7 +1194,7 @@ namespace Tobi.Plugin.DocumentPane
             //data.Background = m_ColorBrushCache.Get(Settings.Default.Document_Color_Hyperlink_Back);
             ////data.Foreground = Brushes.Blue;
 
-            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlProperty xmlProp = node.GetXmlProperty();
             XmlAttribute attr = xmlProp.GetAttribute("href");
             if (attr != null)
             {
@@ -1221,13 +1219,11 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
-                    attr = xmlProp.GetAttribute("id");
-                    if (attr != null)
+                    string id = node.GetXmlElementId();
+
+                    if (!String.IsNullOrEmpty(id))
                     {
-                        if (!String.IsNullOrEmpty(attr.Value))
-                        {
-                            data.ToolTip = attr.Value;
-                        }
+                        data.ToolTip = id;
                     }
                 }
             }
@@ -1292,7 +1288,7 @@ namespace Tobi.Plugin.DocumentPane
             //data.Background = m_ColorBrushCache.Get(Settings.Default.Document_Color_Hyperlink_Back);
             ////data.Foreground = Brushes.Blue;
 
-            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlProperty xmlProp = node.GetXmlProperty();
             XmlAttribute attr = xmlProp.GetAttribute("idref");
 
             if (attr != null && !String.IsNullOrEmpty(attr.Value) && attr.Value.Length > 1)
@@ -1507,7 +1503,7 @@ namespace Tobi.Plugin.DocumentPane
 
 
 
-            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlProperty xmlProp = node.GetXmlProperty();
 
             AbstractImageMedia imgMedia = node.GetImageMedia();
             var imgMedia_ext = imgMedia as ExternalImageMedia;
@@ -1809,15 +1805,13 @@ namespace Tobi.Plugin.DocumentPane
 #endif
                                 SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
-                                XmlProperty xmlProp = node.GetProperty<XmlProperty>();
-                                XmlAttribute attr = xmlProp.GetAttribute("id");
-
-                                if (attr != null && !String.IsNullOrEmpty(attr.Value))
+                                string id = node.GetXmlElementId();
+                                if (!string.IsNullOrEmpty(id))
                                 {
                                     //string name = IdToName(attr.Value);
-                                    data.ToolTip = attr.Value;
+                                    data.ToolTip = id;
 
-                                    m_DocumentPaneView.AddIdLinkTarget(attr.Value, data);
+                                    m_DocumentPaneView.AddIdLinkTarget(id, data);
                                 }
                             }
                             );
@@ -2112,7 +2106,7 @@ namespace Tobi.Plugin.DocumentPane
 
                                 data.Typography.Variants = FontVariants.Subscript;
 
-                                var xmlProp = node.GetProperty<XmlProperty>();
+                                var xmlProp = node.GetXmlProperty();
                                 if (xmlProp != null)
                                 {
                                     var attr = xmlProp.GetAttribute("rbspan");
@@ -2134,7 +2128,7 @@ namespace Tobi.Plugin.DocumentPane
                         return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
                             data =>
                             {
-                                XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+                                XmlProperty xmlProp = node.GetXmlProperty();
                                 if (xmlProp == null) return;
 
                                 XmlAttribute attr = xmlProp.GetAttribute("title");

@@ -57,7 +57,7 @@ namespace Tobi.Plugin.DocumentPane
                 throw new Exception("Node has children or text exists when processing video ??");
             }
 
-            XmlProperty xmlProp = node.GetProperty<XmlProperty>();
+            XmlProperty xmlProp = node.GetXmlProperty();
 
             AbstractVideoMedia videoMedia = node.GetVideoMedia();
             var videoMedia_ext = videoMedia as ExternalVideoMedia;
