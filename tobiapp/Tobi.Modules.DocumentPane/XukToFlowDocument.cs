@@ -1734,6 +1734,7 @@ namespace Tobi.Plugin.DocumentPane
                 case "math":
                     {
                         string xmlFragment = node.GetXmlFragment();
+                        MessageBox.Show(xmlFragment);
                         return null;
                     }
                 case "p":
