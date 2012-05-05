@@ -695,9 +695,9 @@ namespace Tobi.Plugin.DocumentPane
 
                 if (trg.Tag != null && trg.Tag is TreeNode)
                 {
-                    if (((TreeNode) trg.Tag).HasXmlProperty)
+                    if (((TreeNode)trg.Tag).HasXmlProperty)
                     {
-                        string localName = ((TreeNode) trg.Tag).GetXmlElementLocalName();
+                        string localName = ((TreeNode)trg.Tag).GetXmlElementLocalName();
                         if (localName == "thead")
                         {
                             //data.Background = Brushes.LightGreen;
@@ -1277,11 +1277,11 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(data.Tag != null);
             DebugFix.Assert(data.Tag is TreeNode);
             DebugFix.Assert(node == data.Tag);
-            
-                DebugFix.Assert(node.HasXmlProperty &&
-                    (node.GetXmlElementLocalName() == "annoref"
-                    || node.GetXmlElementLocalName() == "noteref")
-                    );
+
+            DebugFix.Assert(node.HasXmlProperty &&
+                (node.GetXmlElementLocalName() == "annoref"
+                || node.GetXmlElementLocalName() == "noteref")
+                );
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -1797,7 +1797,7 @@ namespace Tobi.Plugin.DocumentPane
                                 DebugFix.Assert(data.Tag != null);
                                 DebugFix.Assert(data.Tag is TreeNode);
                                 DebugFix.Assert(node == data.Tag);
-                                
+
                                 DebugFix.Assert(node.HasXmlProperty &&
                                     (node.GetXmlElementLocalName() == "annotation"
                                     || node.GetXmlElementLocalName() == "note")
@@ -1846,7 +1846,7 @@ namespace Tobi.Plugin.DocumentPane
                                  DebugFix.Assert(node == data.Tag);
 
                                  DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "caption");
-                                 
+
 #endif
                                  SetBorderAndBackColorBasedOnTreeNodeTag(data);
                              });
@@ -1962,7 +1962,7 @@ namespace Tobi.Plugin.DocumentPane
                                 DebugFix.Assert(node == data.Tag);
 
                                 DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "imggroup");
-                                
+
 #endif
                                 SetBorderAndBackColorBasedOnTreeNodeTag(data);
                             });
@@ -2220,7 +2220,10 @@ namespace Tobi.Plugin.DocumentPane
             //    EventAggregator.GetEvent<DescribedTreeNodeFoundByFlowDocumentParserEvent>().Publish(node);
             //}
 
-            if (node.Parent == null && node.TextDirectionality == TreeNode.TextDirection.RTL)
+            if (node.Parent == null &&
+                node.GetTextDirectionality() //node.TextDirectionality
+                == TreeNode.TextDirection.RTL
+                )
             {
                 m_FlowDoc.FlowDirection = FlowDirection.RightToLeft;
             }
