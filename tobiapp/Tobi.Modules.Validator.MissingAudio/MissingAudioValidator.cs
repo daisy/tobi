@@ -12,6 +12,7 @@ using urakawa;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.daisy;
 using urakawa.events.undo;
 using urakawa.xuk;
 
@@ -254,22 +255,34 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
         private static bool bTreeNodeNeedsAudio(TreeNode node)
         {
+            if (node.HasXmlProperty)
+            {
+                string localName = node.GetXmlElementLocalName();
+                bool isMath = localName.Equals("math", StringComparison.OrdinalIgnoreCase);
+
+                if (!isMath
+                    && node.GetXmlNamespaceUri() == DiagramContentModelHelper.NS_URL_MATHML)
+                {
+                    return false;
+                }
+
+                if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                     || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                     || isMath
+                    )
+                {
+                    if (!isMath)
+                    {
+                        DebugFix.Assert(node.Children.Count == 0);
+                    }
+                    return true;
+                }
+            }
+
             if (node.GetTextMedia() != null)
             {
                 DebugFix.Assert(node.Children.Count == 0);
                 return true;
-            }
-            if (node.HasXmlProperty)
-            {
-                string localName = node.GetXmlElementLocalName();
-
-                if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
-                        || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
-                    )
-                {
-                    DebugFix.Assert(node.Children.Count == 0);
-                    return true;
-                }
             }
 
             return false;

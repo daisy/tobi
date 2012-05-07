@@ -23,6 +23,7 @@ using Tobi.Common;
 using Tobi.Common.UI;
 using Tobi.Common.UI.XAML;
 using urakawa.core;
+using urakawa.daisy;
 using urakawa.data;
 using urakawa.exception;
 using urakawa.media;
@@ -351,6 +352,15 @@ namespace Tobi.Plugin.DocumentPane
                     ((Section)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
                 }
             }
+            else if (localName == "math")
+            {
+                data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_Hyperlink_Back);
+                DebugFix.Assert(data is Section);
+                if (data is Section)
+                {
+                    ((Section)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
+                }
+            }
             else if (localName == "imggroup"
                  || localName == "doctitle"
                  || localName == "docauthor"
@@ -599,22 +609,34 @@ namespace Tobi.Plugin.DocumentPane
 
         public static bool bTreeNodeNeedsAudio(TreeNode node)
         {
+            if (node.HasXmlProperty)
+            {
+                string localName = node.GetXmlElementLocalName();
+                bool isMath = localName.Equals("math", StringComparison.OrdinalIgnoreCase);
+
+                if (!isMath
+                    && node.GetXmlNamespaceUri() == DiagramContentModelHelper.NS_URL_MATHML)
+                {
+                    return false;
+                }
+
+                if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                     || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                     || isMath
+                    )
+                {
+                    if(!isMath)
+                    {
+                        DebugFix.Assert(node.Children.Count == 0);
+                    }
+                    return true;
+                }
+            }
+
             if (node.GetTextMedia() != null)
             {
                 DebugFix.Assert(node.Children.Count == 0);
                 return true;
-            }
-
-            if (node.HasXmlProperty)
-            {
-                string localName = node.GetXmlElementLocalName();
-                if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
-                     || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
-                    )
-                {
-                    DebugFix.Assert(node.Children.Count == 0);
-                    return true;
-                }
             }
 
             return false;
@@ -1491,6 +1513,31 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        private TextElement walkBookTreeAndGenerateFlowDocument_MathML(TreeNode node, TextElement parent, string textMedia, DelegateSectionInitializer initializer)
+        {
+            Section data = new Section();
+            setTag(data, node);
+
+            if (initializer != null)
+            {
+                initializer(data);
+            }
+
+            if (textMedia == null || String.IsNullOrEmpty(textMedia))
+            {
+                data.Blocks.Add(new Paragraph(new LineBreak()));
+            }
+            else
+            {
+                var run = new Run(textMedia);
+                setTextDirection(node, null, run, null);
+                data.Blocks.Add(new Paragraph(run));
+            }
+
+            addBlock(parent, data);
+            return data;
+        }
+
         private TextElement walkBookTreeAndGenerateFlowDocument_img(TreeNode node, TextElement parent, string textMedia)
         {
             if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia))
@@ -1729,14 +1776,65 @@ namespace Tobi.Plugin.DocumentPane
 
             string localName = node.GetXmlElementLocalName();
 
+            if (node.GetXmlNamespaceUri() == DiagramContentModelHelper.NS_URL_MATHML)
+            {
+                if (localName == DiagramContentModelHelper.Math)
+                {
+                    string xmlFragment = node.GetXmlFragment();
+                    MessageBox.Show(xmlFragment);
+
+
+                    //TreeNode.StringChunkRange str = node.GetText();
+                    XmlProperty xmlProp = node.GetXmlProperty();
+                    string altText = null;
+                    XmlAttribute altAttr = xmlProp.GetAttribute("alttext");
+                    if (altAttr != null)
+                    {
+                        altText = altAttr.Value;
+                    }
+
+                    if (!string.IsNullOrEmpty(altText))
+                    {
+                        return walkBookTreeAndGenerateFlowDocument_MathML(node, parent, altText,
+                            data =>
+                            {
+                                //data.BorderBrush = Brushes.Green;
+                                //data.BorderThickness = new Thickness(2.0);
+                                //data.Padding = new Thickness(4.0);
+
+
+                                SetBorderAndBackColorBasedOnTreeNodeTag(data);
+                            }
+                            );
+                    }
+
+                    return walkBookTreeAndGenerateFlowDocument_MathML(node, parent, null,
+                        data =>
+                        {
+                            //data.BorderBrush = Brushes.Green;
+                            //data.BorderThickness = new Thickness(2.0);
+                            //data.Padding = new Thickness(4.0);
+
+
+                            SetBorderAndBackColorBasedOnTreeNodeTag(data);
+                        }
+                        );
+                }
+
+                return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                    data =>
+                    {
+                        data.BorderBrush = Brushes.GreenYellow;
+                        data.BorderThickness = new Thickness(2.0);
+                        data.Padding = new Thickness(4.0);
+
+                        data.IsEnabled = false;
+                    }
+                    );
+            }
+
             switch (localName)
             {
-                case "math":
-                    {
-                        string xmlFragment = node.GetXmlFragment();
-                        MessageBox.Show(xmlFragment);
-                        return null;
-                    }
                 case "p":
                 case "level":
                 case "level1":

@@ -1981,13 +1981,14 @@ namespace Tobi.Plugin.DocumentPane
                     Run run = null;
                     foreach (var run_ in VisualLogicalTreeWalkHelper.FindObjectsInLogicalTreeWithMatchingType<Run>(text, null))
                     {
-                        if (run != null)
-                        {
-                            run = null;
-                            Debug.Fail("WTF ?");
-                            break;
-                        }
-                        run = run_;
+                        //if (run != null)
+                        //{
+                        //    run = null;
+                        //    Debug.Fail("WTF ?");
+                        //    break;
+                        //}
+                        run = run_
+                        break;
                     }
                     if (run != null)
                     {
