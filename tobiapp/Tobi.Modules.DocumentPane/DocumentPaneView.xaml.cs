@@ -1987,7 +1987,7 @@ namespace Tobi.Plugin.DocumentPane
                         //    Debug.Fail("WTF ?");
                         //    break;
                         //}
-                        run = run_
+                        run = run_;
                         break;
                     }
                     if (run != null)
