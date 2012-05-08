@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
+using AudioLib;
 using DtdSharp;
 using urakawa.core;
 
@@ -17,18 +19,32 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public Regex GetRegex(TreeNode node)
         {
-            if (DtdRegexTable == null) return null;
+            if (DtdRegexTable == null)
+            {
+                return null;
+            }
             object regexObj = DtdRegexTable[node.GetXmlElementLocalName()];
-            if (regexObj == null) return null;
+            if (regexObj == null)
+            {
+                return null;
+            }
             return (Regex)regexObj;
+        }
+
+        public void Reset()
+        {
+            DtdRegexTable = null;
         }
 
         //take a DtdSharp data structure and create a hashmap where 
         //key: element name
         //value: regex representing the allowed children
-        public Hashtable ParseDtdIntoHashtable(DTD dtd)
+        public void ParseDtdIntoHashtable(DTD dtd)
         {
-            DtdRegexTable = new Hashtable();
+            if (DtdRegexTable == null)
+            {
+                DtdRegexTable = new Hashtable();
+            }
             foreach (DictionaryEntry entry in dtd.Elements)
             {
                 DTDElement dtdElement = (DTDElement)entry.Value;
@@ -36,7 +52,6 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 Regex regex = new Regex(regexStr);
                 DtdRegexTable.Add(dtdElement.Name, regex);
             }
-            return DtdRegexTable;
         }
 
         /// <summary>
@@ -50,8 +65,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
         /// <returns></returns>
         public void ReadFromCache(StreamReader reader)
         {
-            DtdRegexTable = new Hashtable();
-
+            if (DtdRegexTable == null)
+            {
+                DtdRegexTable = new Hashtable();
+            }
             try
             {
                 string name = reader.ReadLine();
@@ -67,6 +84,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
             }
             catch
             {
+                //DebugFix.Assert(false);
+#if DEBUG
+                Debugger.Break();
+#endif // DEBUG
                 DtdRegexTable = null;
             }
         }
@@ -85,7 +106,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
         /// <param name="writer"></param>
         public void WriteToCache(StreamWriter writer)
         {
-            if (DtdRegexTable == null) return;
+            if (DtdRegexTable == null)
+            {
+                return;
+            }
 
             foreach (DictionaryEntry entry in DtdRegexTable)
             {
@@ -183,6 +207,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 regexStr += "**UNKNOWN**";
             }
+
             if (dtdItem.Cardinal == DTDCardinal.ZEROONE)
             {
                 regexStr += "?";
@@ -195,6 +220,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 regexStr += "+";
             }
+
             return regexStr;
         }
     }
