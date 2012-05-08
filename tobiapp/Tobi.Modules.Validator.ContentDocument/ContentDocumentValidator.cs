@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using DtdSharp;
@@ -80,10 +82,86 @@ namespace Tobi.Plugin.Validator.ContentDocument
             get { return Tobi_Plugin_Validator_ContentDocument_Lang.ContentDocumentValidator_Description; }
         }
 
+        private void loadDTD(string dtdIdentifier)
+        {
+            DTD dtd = UseDtd(dtdIdentifier);
+            if (dtd == null)
+            {
+                return;
+            }
+
+            foreach (DictionaryEntry entry in dtd.Entities)
+            {
+                DTDEntity dtdEntity = (DTDEntity)entry.Value;
+
+                if (dtdEntity.ExternalId == null)
+                {
+                    continue;
+                }
+
+                string system = dtdEntity.ExternalId.System;
+                if (dtdEntity.ExternalId is DTDPublic)
+                {
+                    string pub = ((DTDPublic)dtdEntity.ExternalId).Pub;
+                    if (!string.IsNullOrEmpty(pub))
+                    {
+                        system = pub.Replace(" ", "%20");
+                    }
+                }
+
+                foreach (String key in DTDs.DTDs.ENTITIES_MAPPING.Keys)
+                {
+                    if (system.Contains(key))
+                    {
+                        loadDTD(DTDs.DTDs.ENTITIES_MAPPING[key]);
+                    }
+                }
+            }
+        }
+
         public override bool Validate()
         {
+#if DEBUG
+            m_DtdRegex.Reset();
+#endif // DEBUG
+
             if (m_DtdRegex.DtdRegexTable == null || m_DtdRegex.DtdRegexTable.Count == 0)
-                UseDtd(DTDs.DTDs.DTBOOK_2005_3);
+            {
+                m_DtdIdentifier = DTDs.DTDs.DTBOOK_2005_3_MATHML;
+                loadDTD(m_DtdIdentifier);
+
+                string dtdCache = m_DtdIdentifier + ".cache";
+                string dirpath = Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, m_DtdStoreDirName);
+                string path = Path.Combine(dirpath, dtdCache);
+
+                //cache the dtd and save it as dtdIdenfier + ".cache"
+#if USE_ISOLATED_STORAGE
+
+                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    stream = new IsolatedStorageFileStream(dtdCache, FileMode.Create, FileAccess.Write, FileShare.None, store);
+                }
+
+                // NOTE: we could actually use the same code as below, which gives more control over the subdirectory and doesn't have any size limits:
+#else
+                if (!Directory.Exists(dirpath))
+                {
+                    FileDataProvider.CreateDirectory(dirpath);
+                }
+
+                Stream stream = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None);
+#endif //USE_ISOLATED_STORAGE
+                var writer = new StreamWriter(stream);
+                try
+                {
+                    m_DtdRegex.WriteToCache(writer);
+                }
+                finally
+                {
+                    writer.Flush();
+                    writer.Close();
+                }
+            }
 
             if (m_Session.DocumentProject != null)
             {
@@ -106,15 +184,13 @@ namespace Tobi.Plugin.Validator.ContentDocument
             return IsValid;
         }
 
-        private DTD m_Dtd;
         private DtdSharpToRegex m_DtdRegex;
         private string m_DtdIdentifier;
 
         private const string m_DtdStoreDirName = "Cached-DTDs";
 
-        public void UseDtd(string dtdIdentifier)
+        public DTD UseDtd(string dtdIdentifier)
         {
-            m_DtdIdentifier = dtdIdentifier;
             string dtdCache = dtdIdentifier + ".cache";
 
             //check to see if we have a cached version of this file
@@ -160,6 +236,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 {
                     stream.Close();
                 }
+
+                return null;
             }
 #endif //USE_ISOLATED_STORAGE
             else
@@ -168,49 +246,26 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 Stream dtdStream = DTDs.DTDs.Fetch(dtdIdentifier);
                 if (dtdStream == null)
                 {
-                    m_Dtd = null;
+
+                    //DebugFix.Assert(false);
+#if DEBUG
+                    Debugger.Break();
+#endif // DEBUG
                     MissingDtdValidationError error = new MissingDtdValidationError()
                                                                {
                                                                    DtdIdentifier = m_DtdIdentifier
                                                                };
                     addValidationItem(error);
-                    return;
+                    return null;
                 }
 
                 // NOTE: the Stream is automatically closed by the parser, see Scanner.ReadNextChar()
                 DTDParser parser = new DTDParser(new StreamReader(dtdStream));
-                m_Dtd = parser.Parse(true);
+                DTD dtd = parser.Parse(true);
 
-                m_DtdRegex.ParseDtdIntoHashtable(m_Dtd);
+                m_DtdRegex.ParseDtdIntoHashtable(dtd);
 
-                //cache the dtd and save it as dtdIdenfier + ".cache"
-
-#if USE_ISOLATED_STORAGE
-
-                using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    stream = new IsolatedStorageFileStream(dtdCache, FileMode.Create, FileAccess.Write, FileShare.None, store);
-                }
-
-                // NOTE: we could actually use the same code as below, which gives more control over the subdirectory and doesn't have any size limits:
-#else
-                if (!Directory.Exists(dirpath))
-                {
-                    FileDataProvider.CreateDirectory(dirpath);
-                }
-
-                Stream stream = File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None);
-#endif //USE_ISOLATED_STORAGE
-                var writer = new StreamWriter(stream);
-                try
-                {
-                    m_DtdRegex.WriteToCache(writer);
-                }
-                finally
-                {
-                    writer.Flush();
-                    writer.Close();
-                }
+                return dtd;
             }
         }
 
@@ -257,7 +312,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
                 //look for more details about this error -- which child element is causing problems?
                 //RevalidateChildren(regex, childrenNames, error);
-                
+
                 addValidationItem(error2);
                 return false;
             }
@@ -267,40 +322,40 @@ namespace Tobi.Plugin.Validator.ContentDocument
         }
 
         //child element names must be formatted like "a#b#c#"
-    /*    private static void RevalidateChildren(Regex regex, string childrenNames, ContentDocumentValidationError error)
-        {
-            Match match = regex.Match(childrenNames);
+        /*    private static void RevalidateChildren(Regex regex, string childrenNames, ContentDocumentValidationError error)
+            {
+                Match match = regex.Match(childrenNames);
 
-            if (match.ToString() == childrenNames)
-            {
-                //we can say that the element after the last child element in the sequence
-                //is where the problems start
-                //and childrenNames is known to start at the beginning of the target node's children
-                ArrayList childrenArr = StringToArrayList(childrenNames, '#');
-                if (childrenArr.Count < error.Target.Children.Count)
+                if (match.ToString() == childrenNames)
                 {
-                    //error.BeginningOfError = error.Target.Children.Get(childrenArr.Count);
-                }
-            }
-            else
-            {
-                //test subsets of children -- for a#b#c# test a#b#
-                ArrayList childrenArr = StringToArrayList(childrenNames, '#');
-                if (childrenArr.Count >= 2)
-                {
-                    string subchildren = ArrayListToString(childrenArr.GetRange(0, childrenArr.Count - 1), '#');
-                    RevalidateChildren(regex, subchildren, error);
+                    //we can say that the element after the last child element in the sequence
+                    //is where the problems start
+                    //and childrenNames is known to start at the beginning of the target node's children
+                    ArrayList childrenArr = StringToArrayList(childrenNames, '#');
+                    if (childrenArr.Count < error.Target.Children.Count)
+                    {
+                        //error.BeginningOfError = error.Target.Children.Get(childrenArr.Count);
+                    }
                 }
                 else
                 {
-                    //there are no smaller subsets to test, so the error could be either with the first child
-                    //or just a general error with the overall sequence
-                    //better not to be specific if we aren't sures
-                    //error.BeginningOfError = null;
+                    //test subsets of children -- for a#b#c# test a#b#
+                    ArrayList childrenArr = StringToArrayList(childrenNames, '#');
+                    if (childrenArr.Count >= 2)
+                    {
+                        string subchildren = ArrayListToString(childrenArr.GetRange(0, childrenArr.Count - 1), '#');
+                        RevalidateChildren(regex, subchildren, error);
+                    }
+                    else
+                    {
+                        //there are no smaller subsets to test, so the error could be either with the first child
+                        //or just a general error with the overall sequence
+                        //better not to be specific if we aren't sures
+                        //error.BeginningOfError = null;
+                    }
                 }
             }
-        }
-        */
+            */
         private static ArrayList StringToArrayList(string input, char delim)
         {
             ArrayList arr = new ArrayList(input.Split(delim));
@@ -319,7 +374,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             }
             return str;
         }
-        
+
         //list the allowed elements, given a regex representing DTD rules
         //it would be easier to just construct this from DtdSharp objects, but there's a chance
         //that DtdSharp was never used in the scenario where Tobi caches a parsed DTD and uses that instead of
@@ -336,16 +391,16 @@ namespace Tobi.Plugin.Validator.ContentDocument
             //it's not the most efficient way to only retrieve a unique list of element names
             //however, we are dealing with small datasets, so it's not really an issue
             DtdNode dtdExpressionAsTree = Treeify(cleaner);
-            
+
             //get a list of the dtd items that are elements (not just groupings of other elements)
             List<DtdNode> list = GetAllDtdElements(dtdExpressionAsTree);
-            
+
             //keep track of already-seen items
             Hashtable temp = new Hashtable();
 
             //make a list of unique element names
             string elementNames = "";
-            foreach(DtdNode node in list)
+            foreach (DtdNode node in list)
             {
                 if (!temp.ContainsKey(node.ElementName))
                 {
@@ -383,11 +438,11 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 AdditionalInfo = "";
                 Children = new List<DtdNode>();
                 ChildRelationship = "and";
-            }  
-      
+            }
+
         }
 
-        private static DtdNode Treeify (string regex)
+        private static DtdNode Treeify(string regex)
         {
             List<DtdNode> parentQ = new List<DtdNode>();
             //for each open paren, start a new DtdTreeNode
@@ -395,7 +450,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             DtdNode node = null;
             bool first = true;
             DtdNode root = null;
-            for (int i = 0; i<regex.Length; i++)
+            for (int i = 0; i < regex.Length; i++)
             {
                 if (regex[i] == '(')
                 {
@@ -409,7 +464,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                         node.Parent = parentQ[parentQ.Count - 1];
                     }
                     parentQ.Add(node);
-                    
+
                 }
                 else if (regex[i] == ')')
                 {

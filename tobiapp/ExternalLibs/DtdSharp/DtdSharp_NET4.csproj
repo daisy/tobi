@@ -82,4 +82,10 @@
     <Reference Include="System" />
     <Reference Include="System.Xaml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib_NET4.csproj">
+      <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
+      <Name>AudioLib_NET4</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
