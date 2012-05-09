@@ -29,8 +29,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 return null;
             }
-
+#if NET40
             strBuilder.Clear();
+#else
+            strBuilder.Length = 0;
+#endif //NET40
+
             buildPrefixedQualifiedName(strBuilder, node);
             string key = strBuilder.ToString();
 
@@ -59,8 +63,11 @@ namespace Tobi.Plugin.Validator.ContentDocument
             foreach (DictionaryEntry entry in dtd.Elements)
             {
                 DTDElement dtdElement = (DTDElement)entry.Value;
-
+#if NET40
                 strBuilder.Clear();
+#else
+                strBuilder.Length = 0;
+#endif //NET40
                 GenerateRegexForAllowedChildren(strBuilder, dtdElement.Content);
                 string regexStr = strBuilder.ToString();
                 Regex regex = new Regex(regexStr);
@@ -156,7 +163,11 @@ namespace Tobi.Plugin.Validator.ContentDocument
         //created from the DTD
         public static string GenerateChildNameList(StringBuilder strBuilder, TreeNode node)
         {
+#if NET40
             strBuilder.Clear();
+#else
+            strBuilder.Length = 0;
+#endif //NET40
 
             if (node.GetTextMedia() != null)
             {
