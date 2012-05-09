@@ -65,6 +65,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             base.OnProjectLoaded(project);
 
+
+            //ThreadPool.QueueUserWorkItem(
+            //    delegate(Object o) // or: (foo) => {} (LAMBDA)
+            //        { }, obj);
             Validate();
         }
 
