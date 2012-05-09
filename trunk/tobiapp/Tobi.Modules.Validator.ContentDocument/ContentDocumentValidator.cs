@@ -122,9 +122,9 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override bool Validate()
         {
-#if DEBUG
-            m_DtdRegex.Reset();
-#endif // DEBUG
+            //#if DEBUG
+            //            m_DtdRegex.Reset();
+            //#endif // DEBUG
 
             if (m_DtdRegex.DtdRegexTable == null || m_DtdRegex.DtdRegexTable.Count == 0)
             {
@@ -168,8 +168,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 resetToValid();
 
-                if (m_DtdRegex == null || m_DtdRegex.DtdRegexTable == null ||
-                    m_DtdRegex.DtdRegexTable.Count == 0)
+                if (m_DtdRegex == null || m_DtdRegex.DtdRegexTable == null || m_DtdRegex.DtdRegexTable.Count == 0)
                 {
                     MissingDtdValidationError error = new MissingDtdValidationError()
                                                                {
@@ -277,7 +276,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
             bool result = ValidateNodeContent(strBuilder, node);
             foreach (TreeNode child in node.Children.ContentsAs_Enumerable)
             {
-                result = result && ValidateNode(strBuilder, child);
+                bool res = ValidateNode(strBuilder, child);
+                result = result && res;
             }
             return result;
         }
@@ -301,7 +301,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
                 Match match = regex.Match(childrenNames);
 
-                if (match.Success && match.ToString() == childrenNames)
+                string matchStr = match.ToString();
+                if (match.Success && matchStr == childrenNames)
                 {
                     return true;
                 }
@@ -386,8 +387,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             if (string.IsNullOrEmpty(regex)) return "";
 
-            //string cleaner = regex.Replace("?:", "").Replace("#", "").Replace("((", "( (").Replace("))", ") )").Replace(")?(", ")? (");
-            string cleaner = regex.Replace("?:", "").Replace("#", "");
+            //string cleaner = regex.Replace("?:", "").Replace(DELIMITER, "").Replace("((", "( (").Replace("))", ") )").Replace(")?(", ")? (");
+            string cleaner = regex.Replace("?:", "").Replace("" + DtdSharpToRegex.DELIMITER, "");
 
             //this tree structure could also be used to tell the user what the proper sequence(s) should be
             //it's not the most efficient way to only retrieve a unique list of element names
@@ -398,21 +399,28 @@ namespace Tobi.Plugin.Validator.ContentDocument
             List<DtdNode> list = GetAllDtdElements(dtdExpressionAsTree);
 
             //keep track of already-seen items
-            Hashtable temp = new Hashtable();
+            var alreadySeen = new List<string>();
 
             //make a list of unique element names
-            string elementNames = "";
+            var strBuilder = new StringBuilder();
+            bool first = true;
             foreach (DtdNode node in list)
             {
-                if (!temp.ContainsKey(node.ElementName))
+                if (!alreadySeen.Contains(node.ElementName))
                 {
-                    if (!string.IsNullOrEmpty(elementNames))
-                        elementNames += ", ";
-                    elementNames += node.ElementName;
-                    temp[node.ElementName] = true;
+                    if (!first)
+                    {
+                        strBuilder.Append(", ");
+                    }
+                    first = false;
+
+                    strBuilder.Append(node.ElementName);
+                    
+                    alreadySeen.Add(node.ElementName);
                 }
             }
-            return elementNames;
+
+            return strBuilder.ToString();
         }
 
         private static List<DtdNode> GetAllDtdElements(DtdNode node)
@@ -483,14 +491,14 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     if (node.Parent != null)
                         node.Parent.ChildRelationship = "or";
                 }
-                else if (regex[i] == 'P')
+                else if (regex[i] == DtdSharpToRegex.PCDATA[0])
                 {
                     //look ahead for PCDATA
-                    string str = regex.Substring(i, 6);
-                    if (str == "PCDATA")
+                    string str = regex.Substring(i, DtdSharpToRegex.PCDATA.Length);
+                    if (str == DtdSharpToRegex.PCDATA)
                     {
                         node = new DtdNode();
-                        node.ElementName = "PCDATA";
+                        node.ElementName = "TEXT";
                         if (parentQ.Count > 0)
                         {
                             parentQ[parentQ.Count - 1].Children.Add(node);
@@ -502,20 +510,19 @@ namespace Tobi.Plugin.Validator.ContentDocument
                             first = false;
                         }
 
-                        i += 5;
+                        i += (DtdSharpToRegex.PCDATA.Length - 1);
                     }
                 }
                 else
                 {
                     temp += regex[i];
-                    node.ElementName = temp;
+                    node.ElementName = temp.Replace(DtdSharpToRegex.NAMESPACE_PREFIX_SEPARATOR, ':');
                 }
 
             }
 
             return root;
         }
-
     }
 
 

@@ -196,8 +196,8 @@ namespace Tobi.Plugin.Validator.Metadata
                 if (!_validateItem(metadata))
                     isValid = false;
             }
-
-            isValid = isValid && _validateAsSet(); //metadatas);
+            bool val = _validateAsSet();
+            isValid = isValid && val; //metadatas);
 
             return isValid;
         }
@@ -274,14 +274,7 @@ namespace Tobi.Plugin.Validator.Metadata
             //check the data type
             bool meetsDataTypeRequirement = m_DataTypeValidator.Validate(metadata, metadataDefinition);
 
-            if (!(meetsOccurrenceRequirement && meetsDataTypeRequirement))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return meetsOccurrenceRequirement && meetsDataTypeRequirement;
         }
 
         private bool _validateAsSet() //IEnumerable<urakawa.metadata.Metadata> metadatas)
