@@ -247,7 +247,6 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 Stream dtdStream = DTDs.DTDs.Fetch(dtdIdentifier);
                 if (dtdStream == null)
                 {
-
                     //DebugFix.Assert(false);
 #if DEBUG
                     Debugger.Break();
