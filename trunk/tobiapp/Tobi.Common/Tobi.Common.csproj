@@ -117,6 +117,10 @@
       <Project>{E8056611-E49C-4BC3-A682-A629D5CEC11C}</Project>
       <Name>SharpVectors.Converters</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\SharpVector\SharpVectorRenderingWpf\SharpVectors.Rendering.Wpf.csproj">
+      <Project>{A2576CE0-E492-490F-97E9-C0E7ABAFAF27}</Project>
+      <Name>SharpVectors.Rendering.Wpf</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\SharpVector\SharpVectorRuntime\SharpVectors.Runtime.csproj">
       <Project>{2CD52982-A1C2-4A14-9D69-D64719357216}</Project>
       <Name>SharpVectors.Runtime</Name>
