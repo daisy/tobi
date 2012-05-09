@@ -625,7 +625,7 @@ namespace Tobi.Plugin.DocumentPane
                      || isMath
                     )
                 {
-                    if(!isMath)
+                    if (!isMath)
                     {
                         DebugFix.Assert(node.Children.Count == 0);
                     }
@@ -2284,20 +2284,44 @@ namespace Tobi.Plugin.DocumentPane
                             )
                         {
                             Debug.Fail(String.Format("Unknown DTBook / HTML element ! [{0}]", localName));
-                            break;
                         }
                         else
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
-                                data =>
-                                {
-                                    data.BorderBrush = Brushes.Red;
-                                    data.BorderThickness = new Thickness(1.0);
-                                    data.Padding = new Thickness(4.0);
-                                }
-                                );
+                            if (parent == null
+                                || parent is TableCell
+                                || parent is Section
+                                || parent is Floater
+                                || parent is Figure
+                                || parent is ListItem)
+                            {
+                                return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                                    data =>
+                                    {
+                                        data.BorderBrush = Brushes.Red;
+                                        data.BorderThickness = new Thickness(1.0);
+                                        data.Padding = new Thickness(4.0);
+                                    }
+                                    );
+                            }
+                            else if (parent is Paragraph
+                                || parent is Span
+                                //|| parent is TableCell
+                                //|| parent is Section
+                                //|| parent is Floater
+                                //|| parent is Figure
+                                //|| parent is ListItem
+                                )
+                            {
+                                return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
+                                    data =>
+                                    {
+                                    }
+                                    );
+                            }
                             //System.Diagnostics.Debug.Fail(String.Format("Unknown element namespace in DTBook ! [{0}]".NamespaceUri));
                         }
+                        
+                        break;
                     }
             }
 

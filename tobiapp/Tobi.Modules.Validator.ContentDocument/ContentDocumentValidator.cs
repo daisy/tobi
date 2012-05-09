@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using DtdSharp;
 using Microsoft.Practices.Composite.Events;
@@ -178,7 +179,8 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 }
                 else
                 {
-                    ValidateNode(m_Session.DocumentProject.Presentations.Get(0).RootNode);
+                    var strBuilder = new StringBuilder();
+                    ValidateNode(strBuilder, m_Session.DocumentProject.Presentations.Get(0).RootNode);
                 }
             }
             return IsValid;
@@ -270,26 +272,26 @@ namespace Tobi.Plugin.Validator.ContentDocument
         }
 
         //recursive function to validate the tree
-        public bool ValidateNode(TreeNode node)
+        public bool ValidateNode(StringBuilder strBuilder, TreeNode node)
         {
-            bool result = ValidateNodeContent(node);
+            bool result = ValidateNodeContent(strBuilder, node);
             foreach (TreeNode child in node.Children.ContentsAs_Enumerable)
             {
-                result = result & ValidateNode(child);
+                result = result && ValidateNode(strBuilder, child);
             }
             return result;
         }
 
         //check a single node
-        private bool ValidateNodeContent(TreeNode node)
+        private bool ValidateNodeContent(StringBuilder strBuilder, TreeNode node)
         {
             if (node.HasXmlProperty)
             {
-                string childrenNames = DtdSharpToRegex.GenerateChildNameList(node);
-                Regex regex = m_DtdRegex.GetRegex(node);
+                string childrenNames = DtdSharpToRegex.GenerateChildNameList(strBuilder, node);
+                Regex regex = m_DtdRegex.GetRegex(strBuilder, node);
                 if (regex == null)
                 {
-                    UndefinedElementValidationError error1 = new UndefinedElementValidationError(m_Session)
+                    var error1 = new UndefinedElementValidationError(m_Session)
                                                                {
                                                                    Target = node
                                                                };
@@ -304,7 +306,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     return true;
                 }
 
-                InvalidElementSequenceValidationError error2 = new InvalidElementSequenceValidationError(m_Session)
+                var error2 = new InvalidElementSequenceValidationError(m_Session)
                                                            {
                                                                Target = node,
                                                                AllowedChildNodes = regex.ToString(),
@@ -356,24 +358,24 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 }
             }
             */
-        private static ArrayList StringToArrayList(string input, char delim)
-        {
-            ArrayList arr = new ArrayList(input.Split(delim));
-            //trim the null item at the end of the array list
-            if (string.IsNullOrEmpty((string)arr[arr.Count - 1]))
-                arr.RemoveAt(arr.Count - 1);
-            return arr;
-        }
-        private static string ArrayListToString(ArrayList arr, char delim)
-        {
-            string str = "";
-            for (int i = 0; i < arr.Count; i++)
-            {
-                str += arr[i].ToString();
-                str += delim;
-            }
-            return str;
-        }
+        //private static ArrayList StringToArrayList(string input, char delim)
+        //{
+        //    ArrayList arr = new ArrayList(input.Split(delim));
+        //    //trim the null item at the end of the array list
+        //    if (string.IsNullOrEmpty((string)arr[arr.Count - 1]))
+        //        arr.RemoveAt(arr.Count - 1);
+        //    return arr;
+        //}
+        //private static string ArrayListToString(ArrayList arr, char delim)
+        //{
+        //    string str = "";
+        //    for (int i = 0; i < arr.Count; i++)
+        //    {
+        //        str += arr[i].ToString();
+        //        str += delim;
+        //    }
+        //    return str;
+        //}
 
         //list the allowed elements, given a regex representing DTD rules
         //it would be easier to just construct this from DtdSharp objects, but there's a chance
