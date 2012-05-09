@@ -151,7 +151,7 @@ namespace Tobi.Common.Validation
         {
             if (node.HasXmlProperty)
             {
-                return node.GetXmlElementLocalName();
+                return node.GetXmlElementPrefixedLocalName();
             }
 
             if (node.Parent != null)
@@ -159,7 +159,7 @@ namespace Tobi.Common.Validation
                 return GetNearestTreeNodeName(node.Parent);
             }
 
-            return "";
+            return null;
         }
 
     }

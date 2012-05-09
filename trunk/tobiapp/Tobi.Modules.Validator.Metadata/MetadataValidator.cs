@@ -197,7 +197,7 @@ namespace Tobi.Plugin.Validator.Metadata
                     isValid = false;
             }
 
-            isValid = isValid & _validateAsSet(); //metadatas);
+            isValid = isValid && _validateAsSet(); //metadatas);
 
             return isValid;
         }
@@ -274,7 +274,7 @@ namespace Tobi.Plugin.Validator.Metadata
             //check the data type
             bool meetsDataTypeRequirement = m_DataTypeValidator.Validate(metadata, metadataDefinition);
 
-            if (!(meetsOccurrenceRequirement & meetsDataTypeRequirement))
+            if (!(meetsOccurrenceRequirement && meetsDataTypeRequirement))
             {
                 return false;
             }

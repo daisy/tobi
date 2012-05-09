@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using AudioLib;
 using DtdSharp;
@@ -17,17 +18,23 @@ namespace Tobi.Plugin.Validator.ContentDocument
     {
         public Hashtable DtdRegexTable { get; private set; }
 
-        public Regex GetRegex(TreeNode node)
+        public Regex GetRegex(StringBuilder strBuilder, TreeNode node)
         {
             if (DtdRegexTable == null)
             {
                 return null;
             }
-            object regexObj = DtdRegexTable[node.GetXmlElementLocalName()];
+
+            strBuilder.Clear();
+            buildPrefixedQualifiedName(strBuilder, node);
+
+            object regexObj = DtdRegexTable[strBuilder.ToString()];
+
             if (regexObj == null)
             {
                 return null;
             }
+
             return (Regex)regexObj;
         }
 
@@ -120,25 +127,41 @@ namespace Tobi.Plugin.Validator.ContentDocument
             }
         }
 
+        private static void buildPrefixedQualifiedName(StringBuilder strBuilder, TreeNode n)
+        {
+            if (n.NeedsXmlNamespacePrefix())
+            {
+                string nsUri = n.GetXmlNamespaceUri();
+                string prefix = n.GetXmlNamespacePrefix(nsUri);
+
+                strBuilder.Append(prefix);
+                strBuilder.Append(':');
+            }
+
+            strBuilder.Append(n.GetXmlElementLocalName());
+        }
+
         //return a string list of the child node names
         //so that they are compatible with the regular expression 
         //created from the DTD
-        public static string GenerateChildNameList(TreeNode node)
+        public static string GenerateChildNameList(StringBuilder strBuilder, TreeNode node)
         {
-            string names = "";
+            strBuilder.Clear();
 
             if (node.GetTextMedia() != null)
             {
-                names += "#PCDATA";
+                strBuilder.Append("#PCDATA");
             }
             foreach (TreeNode child in node.Children.ContentsAs_Enumerable)
             {
                 if (child.HasXmlProperty)
                 {
-                    names += child.GetXmlElementLocalName() + "#";
+                    buildPrefixedQualifiedName(strBuilder, child);
+                    strBuilder.Append("#");
                 }
             }
-            return names;
+
+            return strBuilder.ToString();
         }
 
         private static string GenerateRegexForAllowedChildren(DTDItem dtdItem)

@@ -38,7 +38,7 @@ namespace Tobi.Plugin.StructureTrailPane
         {
             if (TreeNode.HasXmlProperty)
             {
-                return TreeNode.GetXmlElementLocalName();
+                return TreeNode.GetXmlElementPrefixedLocalName();
             }
             return "TEXT";
         }
@@ -78,7 +78,7 @@ namespace Tobi.Plugin.StructureTrailPane
             int counter = 0;
             foreach (TreeNode n in PathToCurrentTreeNode)
             {
-                string localName = n.HasXmlProperty ? n.GetXmlElementLocalName() : null;
+                string localName = n.HasXmlProperty ? n.GetXmlElementPrefixedLocalName() : null;
 
                 //TODO: could use Label+Hyperlink+TextBlock instead of button
                 // (not with NavigateUri+RequestNavigate, because it requires a valid URI.
@@ -233,7 +233,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     
                     if (child.HasXmlProperty)
                     {
-                        string localName = child.GetXmlElementLocalName();
+                        string localName = child.GetXmlElementPrefixedLocalName();
                         if (childIsInPath)
                         {
                             var runMenuItem = new Run(localName) { FontWeight = FontWeights.ExtraBold };
@@ -644,7 +644,7 @@ namespace Tobi.Plugin.StructureTrailPane
             strBuilder.Insert(0, audioInfo);
             strBuilder.Insert(0, " ");
 
-            string localName = treeNode.HasXmlProperty ? treeNode.GetXmlElementLocalName() : null;
+            string localName = treeNode.HasXmlProperty ? treeNode.GetXmlElementPrefixedLocalName() : null;
 
             string qNameStr = (localName == null
                                   ? Tobi_Plugin_StructureTrailPane_Lang.NoXML

@@ -38,7 +38,7 @@ namespace Tobi.Plugin.NavigationPane
 
             if (treeNode.HasXmlProperty)
             {
-                string localName = treeNode.GetXmlElementLocalName();
+                string localName = treeNode.GetXmlElementPrefixedLocalName();
 
                 strBuilder.Append("[");
                 strBuilder.Append(localName);
