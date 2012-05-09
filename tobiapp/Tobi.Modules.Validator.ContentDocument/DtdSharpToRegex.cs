@@ -16,32 +16,35 @@ namespace Tobi.Plugin.Validator.ContentDocument
     /// </summary>
     public class DtdSharpToRegex
     {
-        public Hashtable DtdRegexTable { get; private set; }
+        public const char DELIMITER = '~';
+        public const char NAMESPACE_PREFIX_SEPARATOR = '@';
+        public const string PCDATA = "€PCDATA€";
+        public const string UNKNOWN = "€UNKNOWN€";
+        
+        public Dictionary<string, Regex> DtdRegexTable { get; private set; }
 
         public Regex GetRegex(StringBuilder strBuilder, TreeNode node)
         {
-            if (DtdRegexTable == null)
+            if (DtdRegexTable == null || DtdRegexTable.Count == 0)
             {
                 return null;
             }
 
             strBuilder.Clear();
             buildPrefixedQualifiedName(strBuilder, node);
+            string key = strBuilder.ToString();
 
-            object regexObj = DtdRegexTable[strBuilder.ToString()];
+            Regex regex;
+            DtdRegexTable.TryGetValue(key, out regex);
 
-            if (regexObj == null)
-            {
-                return null;
-            }
-
-            return (Regex)regexObj;
+            //return DtdRegexTable[key];
+            return regex;
         }
 
-        public void Reset()
-        {
-            DtdRegexTable = null;
-        }
+        //public void Reset()
+        //{
+        //    DtdRegexTable = null;
+        //}
 
         //take a DtdSharp data structure and create a hashmap where 
         //key: element name
@@ -50,14 +53,21 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             if (DtdRegexTable == null)
             {
-                DtdRegexTable = new Hashtable();
+                DtdRegexTable = new Dictionary<string, Regex>();
             }
+            var strBuilder = new StringBuilder();
             foreach (DictionaryEntry entry in dtd.Elements)
             {
                 DTDElement dtdElement = (DTDElement)entry.Value;
-                string regexStr = GenerateRegexForAllowedChildren(dtdElement.Content);
+
+                strBuilder.Clear();
+                GenerateRegexForAllowedChildren(strBuilder, dtdElement.Content);
+                string regexStr = strBuilder.ToString();
                 Regex regex = new Regex(regexStr);
-                DtdRegexTable.Add(dtdElement.Name, regex);
+                string key = dtdElement.Name.Replace(':', NAMESPACE_PREFIX_SEPARATOR);
+
+                DtdRegexTable[key] = regex;
+                //DtdRegexTable.Add(key, regex);
             }
         }
 
@@ -74,7 +84,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             if (DtdRegexTable == null)
             {
-                DtdRegexTable = new Hashtable();
+                DtdRegexTable = new Dictionary<string, Regex>();
             }
             try
             {
@@ -85,6 +95,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 {
                     Regex regEx = new Regex(regExpStr);
                     DtdRegexTable[name] = regEx;
+                    //DtdRegexTable.Add(name, regEx);
                     name = reader.ReadLine();
                     regExpStr = reader.ReadLine();
                 }
@@ -113,17 +124,16 @@ namespace Tobi.Plugin.Validator.ContentDocument
         /// <param name="writer"></param>
         public void WriteToCache(StreamWriter writer)
         {
-            if (DtdRegexTable == null)
+            if (DtdRegexTable == null || DtdRegexTable.Count == 0)
             {
                 return;
             }
 
-            foreach (DictionaryEntry entry in DtdRegexTable)
+            foreach (string key in DtdRegexTable.Keys)
             {
-                string name = (string)entry.Key;
-                string regExpStr = ((Regex)entry.Value).ToString();
-                writer.WriteLine(name);
-                writer.WriteLine(regExpStr);
+                string val = DtdRegexTable[key].ToString();
+                writer.WriteLine(key);
+                writer.WriteLine(val);
             }
         }
 
@@ -135,7 +145,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 string prefix = n.GetXmlNamespacePrefix(nsUri);
 
                 strBuilder.Append(prefix);
-                strBuilder.Append(':');
+                strBuilder.Append(NAMESPACE_PREFIX_SEPARATOR);
             }
 
             strBuilder.Append(n.GetXmlElementLocalName());
@@ -150,101 +160,136 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
             if (node.GetTextMedia() != null)
             {
-                strBuilder.Append("#PCDATA");
+                strBuilder.Append(PCDATA);
             }
             foreach (TreeNode child in node.Children.ContentsAs_Enumerable)
             {
                 if (child.HasXmlProperty)
                 {
                     buildPrefixedQualifiedName(strBuilder, child);
-                    strBuilder.Append("#");
+                    strBuilder.Append(DELIMITER);
                 }
             }
 
             return strBuilder.ToString();
         }
 
-        private static string GenerateRegexForAllowedChildren(DTDItem dtdItem)
+        private static void GenerateRegexForAllowedChildren(StringBuilder stringBuilder, DTDItem dtdItem)
         {
-            string regexStr = "";
-
             if (dtdItem is DTDAny)
             {
-                regexStr += "";// "Any";
+                stringBuilder.Append("");// "Any";
             }
             else if (dtdItem is DTDEmpty)
             {
-                regexStr += "";
+                stringBuilder.Append("");
             }
             else if (dtdItem is DTDName)
             {
-                regexStr += "(?:" + ((DTDName)dtdItem).Value + "#)";
+                stringBuilder.Append("(?:");
+                string name = ((DTDName) dtdItem).Value;
+                name = name.Replace(':', NAMESPACE_PREFIX_SEPARATOR);
+                stringBuilder.Append(Regex.Escape(name));
+                stringBuilder.Append(DELIMITER);
+                stringBuilder.Append(")");
             }
             else if (dtdItem is DTDChoice)
             {
                 List<DTDItem> items = ((DTDChoice)dtdItem).Items;
-                if (items.Count > 1) regexStr += "(?:";
+                if (items.Count > 1)
+                {
+                    stringBuilder.Append("(?:");
+                }
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
                 {
-                    if (!isFirst) regexStr += "|";
+                    if (!isFirst)
+                    {
+                        stringBuilder.Append("|");
+                    }
                     isFirst = false;
-                    regexStr += GenerateRegexForAllowedChildren(item);
+                    
+                    GenerateRegexForAllowedChildren(stringBuilder, item);
                 }
-                if (items.Count > 1) regexStr += ")";
+                if (items.Count > 1)
+                {
+                    stringBuilder.Append(")");
+                }
             }
             else if (dtdItem is DTDSequence)
             {
                 List<DTDItem> items = ((DTDSequence)dtdItem).Items;
-                if (items.Count > 1) regexStr += "(?:";
+                if (items.Count > 1)
+                {
+                    stringBuilder.Append("(?:");
+                }
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
                 {
-                    if (!isFirst) regexStr += "";
-                    regexStr += GenerateRegexForAllowedChildren(item);
+                    if (!isFirst)
+                    {
+                        stringBuilder.Append("");
+                    }
+                    GenerateRegexForAllowedChildren(stringBuilder, item);
                     isFirst = false;
                 }
-                if (items.Count > 1) regexStr += ")";
+                if (items.Count > 1)
+                {
+                    stringBuilder.Append(")");
+                }
             }
             else if (dtdItem is DTDMixed)
             {
                 List<DTDItem> items = ((DTDMixed)dtdItem).Items;
-                if (items.Count > 1) regexStr += "(?:";
+                if (items.Count > 1)
+                {
+                    stringBuilder.Append("(?:");
+                }
 
                 bool isFirst = true;
                 foreach (DTDItem item in items)
                 {
-                    if (!isFirst) regexStr += "|";
-                    regexStr += GenerateRegexForAllowedChildren(item);
+                    if (!isFirst)
+                    {
+                        stringBuilder.Append("|");
+                    }
+                    
+                    GenerateRegexForAllowedChildren(stringBuilder, item);
                     isFirst = false;
                 }
-                if (items.Count > 1) regexStr += ")";
+                if (items.Count > 1)
+                {
+                    stringBuilder.Append(")");
+                }
             }
             else if (dtdItem is DTDPCData)
             {
-                regexStr += "#PCDATA";
+                stringBuilder.Append(Regex.Escape(PCDATA));
             }
             else
             {
-                regexStr += "**UNKNOWN**";
+
+                //DebugFix.Assert(false);
+#if DEBUG
+                Debugger.Break();
+#endif // DEBUG
+                stringBuilder.Append(Regex.Escape(UNKNOWN));
             }
 
             if (dtdItem.Cardinal == DTDCardinal.ZEROONE)
             {
-                regexStr += "?";
+                stringBuilder.Append("?");
             }
             else if (dtdItem.Cardinal == DTDCardinal.ZEROMANY)
             {
-                regexStr += "*";
+                stringBuilder.Append("*");
             }
             else if (dtdItem.Cardinal == DTDCardinal.ONEMANY)
             {
-                regexStr += "+";
+                stringBuilder.Append("+");
             }
-
-            return regexStr;
         }
     }
 }
