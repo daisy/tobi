@@ -228,7 +228,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             string path = Path.Combine(dirpath, dtdCache);
             if (File.Exists(path))
             {
-                Stream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None);
+                Stream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
                 try
                 {
                     m_DtdRegex.ReadFromCache(new StreamReader(stream));

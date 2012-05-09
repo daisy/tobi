@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using SharpVectors.Converters;
+using SharpVectors.Renderers.Wpf;
 using Tobi.Common.UI.XAML;
 using urakawa.data;
 
@@ -225,6 +226,38 @@ namespace Tobi.Common.UI
             //            }
 
             return renderBitmap; //renderBitmap.GetAsFrozen();
+        }
+
+        public static ImageSource GetSVGImageSource(string svgXml)
+        {
+            ImageSource imageSource = null;
+
+            try
+            {
+                WpfDrawingSettings settings = new WpfDrawingSettings();
+                settings.IncludeRuntime = true;
+                settings.TextAsGeometry = true;
+                settings.OptimizePath = true;
+                //settings.CultureInfo = ;
+
+                using (var stringReader = new StringReader(svgXml))
+                {
+                    using (FileSvgReader reader = new FileSvgReader(settings))
+                    {
+                        DrawingGroup drawGroup = reader.Read(stringReader);
+
+                        if (drawGroup != null)
+                        {
+                            return new DrawingImage(drawGroup);
+                        }
+                    }
+                }
+            }
+            catch (Exception e1)
+            {
+                return null;
+            }
+            return imageSource;
         }
 
         public static ImageSource GetSVGOrBitmapImageSource(string filepath)

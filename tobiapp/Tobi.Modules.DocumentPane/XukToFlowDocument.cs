@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -82,7 +83,7 @@ namespace Tobi.Plugin.DocumentPane
     public partial class XukToFlowDocument : DualCancellableProgressReporter
     {
         private DocumentPaneView m_DocumentPaneView;
-
+        private IUrakawaSession m_UrakawaSession;
         //private Stopwatch m_StopWatch;
 
         private int m_percentageProgress = 0;
@@ -131,7 +132,7 @@ namespace Tobi.Plugin.DocumentPane
         }
 
         public XukToFlowDocument(DocumentPaneView documentPaneView, TreeNode node, FlowDocument flowDocument,
-            ILoggerFacade logger, IEventAggregator aggregator, IShellView shellView
+            ILoggerFacade logger, IEventAggregator aggregator, IShellView shellView, IUrakawaSession urakawaSession
             //DelegateOnMouseUpFlowDoc delegateOnMouseUpFlowDoc,
             //DelegateOnMouseDownTextElementWithNode delegateOnMouseDownTextElementWithNode,
             //DelegateOnRequestNavigate delegateOnRequestNavigate,
@@ -140,6 +141,7 @@ namespace Tobi.Plugin.DocumentPane
             )
         {
             m_DocumentPaneView = documentPaneView;
+            m_UrakawaSession = urakawaSession;
 
             COUNT++;
 
@@ -352,15 +354,15 @@ namespace Tobi.Plugin.DocumentPane
                     ((Section)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
                 }
             }
-            else if (localName == "math")
-            {
-                data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_Hyperlink_Back);
-                DebugFix.Assert(data is Section);
-                if (data is Section)
-                {
-                    ((Section)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
-                }
-            }
+            //else if (localName == "math")
+            //{
+            //    data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_Hyperlink_Back);
+            //    DebugFix.Assert(data is Section);
+            //    if (data is Section)
+            //    {
+            //        ((Section)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
+            //    }
+            //}
             else if (localName == "imggroup"
                  || localName == "doctitle"
                  || localName == "docauthor"
@@ -1513,29 +1515,205 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_MathML(TreeNode node, TextElement parent, string textMedia, DelegateSectionInitializer initializer)
+        private TextElement walkBookTreeAndGenerateFlowDocument_MathML(TreeNode node, TextElement parent, string textMedia
+            //, DelegateSectionInitializer initializer
+            )
         {
-            Section data = new Section();
-            setTag(data, node);
+            //Section data = new Section();
+            //setTag(data, node);
 
-            if (initializer != null)
+            //if (initializer != null)
+            //{
+            //    initializer(data);
+            //}
+
+            //if (String.IsNullOrEmpty(textMedia))
+            //{
+            //    data.Blocks.Add(new Paragraph(new LineBreak()));
+            //}
+            //else
+            //{
+            //    var run = new Run(textMedia);
+            //    setTextDirection(node, null, run, null);
+            //    data.Blocks.Add(new Paragraph(run));
+            //}
+
+            Image image = new Image();
+
+            image.HorizontalAlignment = HorizontalAlignment.Center;
+            image.VerticalAlignment = VerticalAlignment.Top;
+
+            image.Stretch = Stretch.Uniform;
+            image.StretchDirection = StretchDirection.DownOnly;
+
+            //image.MinWidth = image.Width;
+            //image.MinHeight = image.Height;
+            //image.MaxWidth = image.Width;
+            //image.MaxHeight = image.Height;
+
+            //Floater floater = new Floater();
+            //floater.Blocks.Add(img);
+            //floater.Width = image.Width;
+            //addInline(parent, floater);
+
+            //Figure figure = new Figure(img);
+            //figure.Width = image.Width;
+            //addInline(parent, figure);
+
+
+            if (!String.IsNullOrEmpty(textMedia))
             {
-                initializer(data);
+                image.ToolTip = textMedia;
             }
 
-            if (textMedia == null || String.IsNullOrEmpty(textMedia))
+            bool parentHasBlocks = parent is TableCell
+                                   || parent is Section
+                                   || parent is Floater
+                                   || parent is Figure
+                                   || parent is ListItem;
+
+            var imagePanel = new StackPanel();
+            imagePanel.Orientation = Orientation.Vertical;
+            //imagePanel.LastChildFill = true;
+            if (!string.IsNullOrEmpty(textMedia))
             {
-                data.Blocks.Add(new Paragraph(new LineBreak()));
+                var run = new Run(textMedia);
+                var tb = new TextBlock(run)
+                {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                setTextDirection(node, tb, run, null);
+                imagePanel.Children.Add(tb);
+            }
+            imagePanel.Children.Add(image);
+
+            imagePanel.HorizontalAlignment = HorizontalAlignment.Center;
+            imagePanel.VerticalAlignment = VerticalAlignment.Top;
+
+            //imagePanel.Width = image.Width;
+            //imagePanel.MaxWidth = image.Width;
+
+            //imagePanel.Height = image.Height;
+            //imagePanel.MaxHeight = image.Height;
+
+            if (parentHasBlocks)
+            {
+                var img = new BlockUIContainer(imagePanel);
+
+                //img.LineStackingStrategy = LineStackingStrategy.MaxHeight;
+
+                //img.BorderBrush = Brushes.RoyalBlue;
+                //img.BorderThickness = new Thickness(2.0);
+
+                setTag(img, node);
+
+                //if (initializer != null)
+                //{
+                //    initializer(img);
+                //}
+
+                //data.Blocks.Add(img);
+                addBlock(parent, img);
+
+                //if (!string.IsNullOrEmpty(imgAlt))
+                //{
+                //    Paragraph paraAlt = new Paragraph(new Run("(" + imgAlt + ")"));
+                //    paraAlt.BorderBrush = Brushes.CadetBlue;
+                //    paraAlt.BorderThickness = new Thickness(1.0);
+                //    paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
+                //    addBlock(parent, paraAlt);
+                //}
             }
             else
             {
-                var run = new Run(textMedia);
-                setTextDirection(node, null, run, null);
-                data.Blocks.Add(new Paragraph(run));
+                var img = new InlineUIContainer(imagePanel);
+
+                setTag(img, node);
+
+                //if (initializer != null)
+                //{
+                //    initializer(img);
+                //}
+
+                //data.Blocks.Add(img);
+                addInline(parent, img);
             }
 
-            addBlock(parent, data);
-            return data;
+
+            ThreadPool.QueueUserWorkItem(
+                delegate(Object o) // or: (foo) => {} (LAMBDA)
+                {
+                    Image image_ = (Image)o;
+
+                    string xmlFragment = null;
+                    string svg_ = null;
+                    try
+                    {
+                        xmlFragment = node.GetXmlFragment();
+                        //MessageBox.Show(xmlFragment);
+
+                        svg_ = m_UrakawaSession.Convert_MathML_to_SVG(xmlFragment, null);
+                        //MessageBox.Show(svg_);
+                    }
+                    catch (Exception ex)
+                    {
+                        svg_ = null;
+                        //m_DocumentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
+                        //                                          (DispatcherOperationCallback)delegate(object obj)
+                        //                                                                           {
+                        //                                                                               throw ex;
+                        //                                                                           }, null);
+                        //return;
+                    }
+                    m_DocumentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
+                            (DispatcherOperationCallback)delegate(object obj)
+                            {
+                                var svg = (string)obj;
+
+                                ImageSource imageSource = svg == null ? null : AutoGreyableImage.GetSVGImageSource(svg);
+                                if (imageSource == null)
+                                {
+                                    Console.WriteLine(@"Problem trying to load MathML (svg): [" + xmlFragment + @"]");
+#if DEBUG
+                                    Debugger.Break();
+#endif //DEBUG
+
+                                    VisualBrush brush = ShellView.LoadGnomeNeuIcon("Neu_emblem-important");
+                                    RenderTargetBitmap bitmap = AutoGreyableImage.CreateFromVectorGraphics(brush, 100, 100);
+
+                                    image_.Source = bitmap;
+                                }
+                                else
+                                {
+                                    image_.Source = imageSource;
+                                }
+
+                                if (image_.Source.CanFreeze)
+                                {
+                                    image_.Source.Freeze();
+                                }
+
+                                if (image_.Source is BitmapSource)
+                                {
+                                    BitmapSource bitmap = (BitmapSource)image_.Source;
+                                    int ph = bitmap.PixelHeight;
+                                    int pw = bitmap.PixelWidth;
+                                    double dpix = bitmap.DpiX;
+                                    double dpiy = bitmap.DpiY;
+                                    //image.Width = pw;
+                                    //image.Height = ph;
+                                }
+
+                                return null;
+                            }, svg_);
+                }, image);
+
+            return parent;
+
+            //addBlock(parent, data);
+            //return data;
         }
 
         private TextElement walkBookTreeAndGenerateFlowDocument_img(TreeNode node, TextElement parent, string textMedia)
@@ -1746,7 +1924,6 @@ namespace Tobi.Plugin.DocumentPane
                 addInline(parent, img);
             }
 
-
             return parent;
         }
 
@@ -1780,10 +1957,6 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (localName == DiagramContentModelHelper.Math)
                 {
-                    string xmlFragment = node.GetXmlFragment();
-                    MessageBox.Show(xmlFragment);
-
-
                     //TreeNode.StringChunkRange str = node.GetText();
                     XmlProperty xmlProp = node.GetXmlProperty();
                     string altText = null;
@@ -1795,31 +1968,35 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (!string.IsNullOrEmpty(altText))
                     {
-                        return walkBookTreeAndGenerateFlowDocument_MathML(node, parent, altText,
-                            data =>
-                            {
-                                //data.BorderBrush = Brushes.Green;
-                                //data.BorderThickness = new Thickness(2.0);
-                                //data.Padding = new Thickness(4.0);
+                        return walkBookTreeAndGenerateFlowDocument_MathML(node, parent, altText
+                            //,
+                            //data =>
+                            //{
+                            //    //data.BorderBrush = Brushes.Green;
+                            //    //data.BorderThickness = new Thickness(2.0);
+                            //    //data.Padding = new Thickness(4.0);
 
 
-                                SetBorderAndBackColorBasedOnTreeNodeTag(data);
-                            }
+                            //    SetBorderAndBackColorBasedOnTreeNodeTag(data);
+                            //}
                             );
                     }
 
-                    return walkBookTreeAndGenerateFlowDocument_MathML(node, parent, null,
-                        data =>
-                        {
-                            //data.BorderBrush = Brushes.Green;
-                            //data.BorderThickness = new Thickness(2.0);
-                            //data.Padding = new Thickness(4.0);
+                    return walkBookTreeAndGenerateFlowDocument_MathML(node, parent, null
+                        //,
+                        //data =>
+                        //{
+                        //    //data.BorderBrush = Brushes.Green;
+                        //    //data.BorderThickness = new Thickness(2.0);
+                        //    //data.Padding = new Thickness(4.0);
 
 
-                            SetBorderAndBackColorBasedOnTreeNodeTag(data);
-                        }
+                        //    SetBorderAndBackColorBasedOnTreeNodeTag(data);
+                        //}
                         );
                 }
+                
+                return parent;
 
                 return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
                     data =>
@@ -2320,7 +2497,7 @@ namespace Tobi.Plugin.DocumentPane
                             }
                             //System.Diagnostics.Debug.Fail(String.Format("Unknown element namespace in DTBook ! [{0}]".NamespaceUri));
                         }
-                        
+
                         break;
                     }
             }
