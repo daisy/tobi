@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using AudioLib;
 using DtdSharp;
 using urakawa.core;
+using urakawa.daisy;
 
 namespace Tobi.Plugin.Validator.ContentDocument
 {
@@ -20,7 +21,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
         public const char NAMESPACE_PREFIX_SEPARATOR = '@';
         public const string PCDATA = "€PCDATA€";
         public const string UNKNOWN = "€UNKNOWN€";
-        
+
         public Dictionary<string, Regex> DtdRegexTable { get; private set; }
 
         public Regex GetRegex(StringBuilder strBuilder, TreeNode node)
@@ -146,10 +147,20 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         private static void buildPrefixedQualifiedName(StringBuilder strBuilder, TreeNode n)
         {
-            if (n.NeedsXmlNamespacePrefix())
+            string nsUri = n.GetXmlNamespaceUri();
+
+            bool isMath = nsUri == DiagramContentModelHelper.NS_URL_MATHML;
+            if (isMath || n.NeedsXmlNamespacePrefix())
             {
-                string nsUri = n.GetXmlNamespaceUri();
-                string prefix = n.GetXmlNamespacePrefix(nsUri);
+                string prefix = null;
+                if (isMath)
+                {
+                    prefix = DiagramContentModelHelper.NS_PREFIX_MATHML;
+                }
+                else
+                {
+                    prefix = n.GetXmlNamespacePrefix(nsUri);
+                }
 
                 strBuilder.Append(prefix);
                 strBuilder.Append(NAMESPACE_PREFIX_SEPARATOR);
@@ -198,7 +209,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             else if (dtdItem is DTDName)
             {
                 stringBuilder.Append("(?:");
-                string name = ((DTDName) dtdItem).Value;
+                string name = ((DTDName)dtdItem).Value;
                 name = name.Replace(':', NAMESPACE_PREFIX_SEPARATOR);
                 stringBuilder.Append(Regex.Escape(name));
                 stringBuilder.Append(DELIMITER);
@@ -220,7 +231,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                         stringBuilder.Append("|");
                     }
                     isFirst = false;
-                    
+
                     GenerateRegexForAllowedChildren(stringBuilder, item);
                 }
                 if (items.Count > 1)
@@ -266,7 +277,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     {
                         stringBuilder.Append("|");
                     }
-                    
+
                     GenerateRegexForAllowedChildren(stringBuilder, item);
                     isFirst = false;
                 }
