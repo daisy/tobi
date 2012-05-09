@@ -12,7 +12,7 @@ namespace Tobi.Plugin.DocumentPane
             if (te != null) return te;
 
 #if DEBUG
-            Debugger.Break();
+            //Debugger.Break();
 #endif
             return FindTextElement(node, TheFlowDocument.Blocks);
         }

@@ -2300,7 +2300,7 @@ namespace Tobi.Plugin.DocumentPane
             if (textElement1 == null)
             {
 #if DEBUG
-                Debugger.Break();
+                //Debugger.Break();
 #endif //DEBUG
                 Console.WriteLine(@"TextElement not rendered for TreeNode: " + newTreeNodeSelection.Item1.ToString());
                 return;
