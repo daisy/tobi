@@ -354,112 +354,34 @@ namespace Tobi.Plugin.Urakawa
             }
             else if (String.Equals(ext, ".mml", StringComparison.OrdinalIgnoreCase))
             {
-                //http://www.cs.duke.edu/courses/fall08/cps116/docs/saxon/samples/cs/Examples.cs
+                string mathML = File.ReadAllText(fileUri.LocalPath, Encoding.UTF8);
+                string svgFileOutput = fileUri.LocalPath + ".svg";
 
-                string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string xslt_dir = Path.Combine(workingDirectory, "pmml_XSLT2");
-
-                XmlReaderSettings settings = XmlReaderWriterHelper.GetDefaultXmlReaderConfiguration(false, false);
-
-                //string xslFilePath1 = Path.Combine(xslt_dir, "fontMetrics.xsl");
-
-                //string xslFilePath2 = Path.Combine(xslt_dir, "formattingMode.xsl");
-
-                //string xslFilePath3 = Path.Combine(xslt_dir, "drawingMode.xsl");
-
-
-                string xslFilePath = Path.Combine(xslt_dir, "pmml2svg.xsl");
-
-                //TextReader input = new StreamReader(xslFilePath);
-
-                var stream = new FileStream(xslFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-                var baseUri = new Uri("file:///" + xslFilePath);
-
-                var xmlReader = XmlReader.Create(stream, settings, baseUri.ToString());
-
-                var processor = new Processor();
-                processor.XmlResolver = new LocalXmlUrlResolver(false);
-
-                XsltCompiler compiler = processor.NewXsltCompiler();
-                compiler.BaseUri = baseUri;
-                compiler.XmlResolver = new LocalXmlUrlResolver(false);
-
-                XsltTransformer transformer = null;
-                try
-                {
-                    XsltExecutable exe = compiler.Compile(xmlReader);
-                    transformer = exe.Load();
-                }
-                catch
-                {
-                    xmlReader.Close();
-                    foreach (StaticError error in compiler.ErrorList)
-                    {
-                        Console.WriteLine("At line " + error.LineNumber + ": " + error.Message);
-                    }
-                    throw;
-                }
-
-                xmlReader.Close();
-
-                transformer.InputXmlResolver = new LocalXmlUrlResolver(false);
-                transformer.MessageListener = new MyMessageListener();
-                //transformer.BaseOutputUri = compiler.BaseUri;
-
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load(fileUri.LocalPath);
-
-                DocumentBuilder builder = processor.NewDocumentBuilder();
-                //builder.BaseUri = baseUri;
-                //builder.XmlResolver = new LocalXmlUrlResolver(false);
-                XdmNode inputNode = builder.Build(xmlDoc);
-                transformer.InitialContextNode = inputNode;
-
-
-
-                //XdmDestination results = new XdmDestination();
-                //transformer.SetParameter(new QName("", "", "include-attributes"), new XdmAtomicValue(true));
-                //transformer.Run(results);
-                //string xml = results.XdmNode.OuterXml;
-
-
-
-                string outputFileName = fileUri.LocalPath + ".svg";
-                using (StreamWriter streamWriter = new StreamWriter(outputFileName, false, Encoding.UTF8))
-                {
-                    var xmlWriter = new XmlTextWriter(streamWriter);
-
-                    var dest = new TextWriterDestination(xmlWriter);
-                    transformer.Run(dest);
-                }
+                string svg = Convert_MathML_to_SVG(mathML, svgFileOutput);
 
                 m_ShellView.ExecuteShellProcess(Path.GetDirectoryName(fileUri.LocalPath));
             }
             else if (String.Equals(ext, ".obi", StringComparison.OrdinalIgnoreCase))
             {
-                string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string xslFilePath = Path.Combine(workingDirectory, "Obi-to-XUK2.xsl");
-                TextReader input = new StreamReader(xslFilePath);
+                initSaxonXslt_Obi_Tobi_XUK();
 
-                var processor = new Processor();
-                XsltCompiler compiler = processor.NewXsltCompiler();
-                XsltTransformer transformer = compiler.Compile(input).Load();
-                input.Close();
-
-                var xmlDoc = new XmlDocument();
-                xmlDoc.Load(fileUri.LocalPath);
-
-                XdmNode inputNode = processor.NewDocumentBuilder().Build(xmlDoc);
-                transformer.InitialContextNode = inputNode;
-
-                string outputFileName = fileUri.LocalPath + ".xuk";
-                using (StreamWriter streamWriter = new StreamWriter(outputFileName, false, Encoding.UTF8))
+                string outputFileName = null;
+                lock (LOCK)
                 {
-                    var xmlWriter = new XmlTextWriter(streamWriter);
+                    var xmlDoc = new XmlDocument();
+                    xmlDoc.Load(fileUri.LocalPath);
 
-                    var dest = new TextWriterDestination(xmlWriter);
-                    transformer.Run(dest);
+                    XdmNode inputNode = m_SaxonProcessor.NewDocumentBuilder().Build(xmlDoc);
+                    m_SaxonXslt_Obi_Tobi_XUK.InitialContextNode = inputNode;
+
+                    outputFileName = fileUri.LocalPath + ".xuk";
+                    using (var streamWriter = new StreamWriter(outputFileName, false, Encoding.UTF8))
+                    {
+                        var xmlWriter = new XmlTextWriter(streamWriter);
+
+                        var dest = new TextWriterDestination(xmlWriter);
+                        m_SaxonXslt_Obi_Tobi_XUK.Run(dest);
+                    }
                 }
 
                 OpenFile(outputFileName);
@@ -483,6 +405,141 @@ namespace Tobi.Plugin.Urakawa
             }
 
             return false;
+        }
+
+        private readonly Object LOCK = new object();
+
+        private Processor m_SaxonProcessor;
+
+        private void initSaxonXslt(string xslFilePath, out XsltTransformer xlstTransformer)
+        {
+            if (m_SaxonProcessor == null)
+            {
+                m_SaxonProcessor = new Processor
+                {
+                    XmlResolver = new LocalXmlUrlResolver(false)
+                };
+            }
+
+            var stream = new FileStream(xslFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            var baseUri = new Uri("file:///" + xslFilePath);
+
+            XmlReaderSettings settings = XmlReaderWriterHelper.GetDefaultXmlReaderConfiguration(false, false);
+
+            var xmlReader = XmlReader.Create(stream, settings, baseUri.ToString());
+
+            //TextReader xmlReader = new StreamReader(xslFilePath);
+
+            XsltCompiler compiler = m_SaxonProcessor.NewXsltCompiler();
+            compiler.BaseUri = baseUri;
+            compiler.XmlResolver = new LocalXmlUrlResolver(false);
+
+            try
+            {
+                XsltExecutable exe = compiler.Compile(xmlReader);
+                xlstTransformer = exe.Load();
+            }
+            catch
+            {
+                xmlReader.Close();
+                foreach (StaticError error in compiler.ErrorList)
+                {
+                    Console.WriteLine("At line " + error.LineNumber + ": " + error.Message);
+                }
+                throw;
+            }
+
+            xmlReader.Close();
+
+            xlstTransformer.InputXmlResolver = new LocalXmlUrlResolver(false);
+            xlstTransformer.MessageListener = new MyMessageListener();
+            //xlstTransformer.BaseOutputUri = compiler.BaseUri;
+        }
+
+        private XsltTransformer m_SaxonXslt_Obi_Tobi_XUK;
+        private void initSaxonXslt_Obi_Tobi_XUK()
+        {
+            lock (LOCK)
+            {
+                if (m_SaxonXslt_Obi_Tobi_XUK == null)
+                {
+                    string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    string xslFilePath = Path.Combine(workingDirectory, "Obi-to-XUK2.xsl");
+
+                    initSaxonXslt(xslFilePath, out m_SaxonXslt_Obi_Tobi_XUK);
+                }
+            }
+        }
+
+        private XsltTransformer m_SaxonXslt_MathML_SVG;
+        private void initSaxonXslt_MathML_SVG()
+        {
+            lock (LOCK)
+            {
+                if (m_SaxonXslt_MathML_SVG == null)
+                {
+                    //http://www.cs.duke.edu/courses/fall08/cps116/docs/saxon/samples/cs/Examples.cs
+
+                    string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    string xslt_dir = Path.Combine(workingDirectory, "pmml2svg_XSLT2");
+
+                    //string xslFilePath1 = Path.Combine(xslt_dir, "fontMetrics.xsl");
+
+                    //string xslFilePath2 = Path.Combine(xslt_dir, "formattingMode.xsl");
+
+                    //string xslFilePath3 = Path.Combine(xslt_dir, "drawingMode.xsl");
+
+
+                    string xslFilePath = Path.Combine(xslt_dir, "pmml2svg.xsl");
+
+                    initSaxonXslt(xslFilePath, out m_SaxonXslt_MathML_SVG);
+                }
+            }
+        }
+
+        public string Convert_MathML_to_SVG(string mathML, string svgFileOutput)
+        {
+            initSaxonXslt_MathML_SVG();
+
+            lock (LOCK)
+            {
+                var source = new XmlTextReader(new StringReader(mathML));
+                //var source = new MemoryStream(Encoding.UTF8.GetBytes(sourceString));
+
+                var xmlDoc = new XmlDocument();
+                xmlDoc.Load(source);
+
+                source.Close();
+
+                DocumentBuilder builder = m_SaxonProcessor.NewDocumentBuilder();
+                //builder.BaseUri = baseUri;
+                //builder.XmlResolver = new LocalXmlUrlResolver(false);
+                XdmNode inputNode = builder.Build(xmlDoc);
+                m_SaxonXslt_MathML_SVG.InitialContextNode = inputNode;
+
+
+                if (!string.IsNullOrEmpty(svgFileOutput))
+                {
+                    using (var streamWriter = new StreamWriter(svgFileOutput, false, Encoding.UTF8))
+                    {
+                        var xmlWriter = new XmlTextWriter(streamWriter);
+
+                        var dest = new TextWriterDestination(xmlWriter);
+                        m_SaxonXslt_MathML_SVG.Run(dest);
+                    }
+
+                    string src = File.ReadAllText(svgFileOutput);
+                    return src;
+                }
+                else
+                {
+                    var dest = new XdmDestination();
+                    m_SaxonXslt_MathML_SVG.Run(dest);
+                    string src = dest.XdmNode.OuterXml;
+                    return src;
+                }
+            }
         }
     }
 

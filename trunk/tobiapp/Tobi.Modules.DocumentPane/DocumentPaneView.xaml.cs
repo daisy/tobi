@@ -3283,7 +3283,8 @@ namespace Tobi.Plugin.DocumentPane
 
             var converter = new XukToFlowDocument(this,
                 nodeBook, TheFlowDocument,
-                m_Logger, m_EventAggregator, m_ShellView
+                m_Logger, m_EventAggregator, m_ShellView,
+                m_UrakawaSession
                 //OnMouseUpFlowDoc,
                 //m_DelegateOnMouseDownTextElementWithNode,
                 //m_DelegateOnRequestNavigate,
