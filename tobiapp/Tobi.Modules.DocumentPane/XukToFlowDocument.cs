@@ -1742,7 +1742,7 @@ namespace Tobi.Plugin.DocumentPane
             {
 
 #if DEBUG
-                Debugger.Break();
+                //Debugger.Break();
 #endif //DEBUG
 
                 //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
@@ -1786,7 +1786,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 Console.WriteLine(@"Problem trying to load image: [" + imagePath + @"]");
 #if DEBUG
-                Debugger.Break();
+                //Debugger.Break();
 #endif //DEBUG
 
                 VisualBrush brush = ShellView.LoadGnomeNeuIcon("Neu_emblem-important");
