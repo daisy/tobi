@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4A42D266-BA34-4C4D-BE37-EA49CE6AABAB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tobi.Plugin.Validator.ContentDocument</RootNamespace>
+    <AssemblyName>Tobi.Plugin.Validator.ContentDocument</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\DebugNET4\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\ReleaseNET4\</OutputPath>
+    <DefineConstants>TRACE;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore">
+    </Reference>
+    <Reference Include="PresentationFramework">
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+    </Reference>
+    <Reference Include="WindowsBase">
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ContentDocumentValidationError.cs" />
+    <Compile Include="ContentDocumentValidationItemTemplate.xaml.cs">
+      <DependentUpon>ContentDocumentValidationItemTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ContentDocumentValidator.cs" />
+    <Compile Include="ContentDocumentValidatorPlugin.cs" />
+    <Compile Include="DtdSharpToRegex.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tobi.Plugin.Validator.ContentDocument.Lang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tobi.Plugin.Validator.ContentDocument.Lang.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib_NET4.csproj">
+      <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
+      <Name>AudioLib_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core_NET4.csproj">
+      <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
+      <Name>UrakawaSDK.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy_NET4.csproj">
+      <Project>{69E083B4-AC97-4416-B7D4-61DEBA8A910D}</Project>
+      <Name>UrakawaSDK.daisy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\dtds\DTDs_NET4.csproj">
+      <Project>{3393A6E2-BB27-4D53-ACAA-629723D51F5E}</Project>
+      <Name>DTDs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation_NET4.csproj">
+      <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
+      <Name>Lib.Composite.Presentation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite_NET4.csproj">
+      <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
+      <Name>Lib.Composite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\DtdSharp\DtdSharp_NET4.csproj">
+      <Project>{85655D56-6C48-4F93-AD3A-D0DEA9A79B1C}</Project>
+      <Name>DtdSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\MEF\Lib.MEF_NET4.csproj">
+      <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
+      <Name>Lib.MEF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tobi.Common\Tobi.Common_NET4.csproj">
+      <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
+      <Name>Tobi.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tobi.Plugin.Validator.ContentDocument.Lang.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Tobi.Plugin.Validator.ContentDocument.Lang.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="ContentDocumentValidationItemTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
