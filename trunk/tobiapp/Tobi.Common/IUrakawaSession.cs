@@ -27,9 +27,11 @@ namespace Tobi.Common
         Tuple<TreeNode, TreeNode> PerformTreeNodeSelection(TreeNode clickedNode, bool allowAutoSubNodeAndToggle, TreeNode subClickedNode);
 
         Tuple<TreeNode, TreeNode> GetTreeNodeSelection();
-        
+
         void SaveRecentFiles();
         ObservableCollection<Uri> RecentFiles { get; }
+
+        ObservableCollection<Uri> XukSpineItems { get; }
 
         /// <summary>
         /// The Project instance for the currently active document.

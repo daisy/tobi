@@ -101,6 +101,10 @@
     <Compile Include="UrakawaSession_RecentFiles.cs" />
     <Compile Include="UrakawaSession_Save.cs" />
     <Compile Include="UrakawaSession_TreeNodeSelection.cs" />
+    <Compile Include="UrakawaSession_XukSpine.cs" />
+    <Compile Include="XukSpineView.xaml.cs">
+      <DependentUpon>XukSpineView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib_NET4.csproj">
@@ -190,6 +194,10 @@
     <Page Include="RecentFilesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="XukSpineView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

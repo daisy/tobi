@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using System.Xml;
 using AudioLib;
 using Saxon.Api;
@@ -52,10 +54,9 @@ namespace Tobi.Plugin.Urakawa
                         FileName = @"",
                         DefaultExt = @".xml",
 #if DEBUG
-                        //Filter = @"DTBook, OPF, OBI, XUK or EPUB (*.xml, *.opf, *.obi, *.xuk, *.xukbundle, *.epub)|*.xml;*.opf;*.obi;*.xuk;*.xukbundle;*.epub",
-                        Filter = @"DTBook, OPF, OBI, XUK, EPUB or MML (*.xml, *.opf, *.obi, *.xuk, *.xukbundle, *.epub, *.mml)|*.xml;*.opf;*.obi;*.xuk;*.xukbundle;*.epub;*.mml",
+                        Filter = @"DTBook, OPF, OBI, XUK, EPUB or MML (*.xml, *.opf, *.obi, *" + OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION + ", *.epub, *.mml)|*.xml;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION + ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub;*.mml",
 #else
-                        Filter = @"DTBook, OPF, OBI or XUK (*.xml, *.opf, *.obi, *.xuk)|*.xml;*.opf;*.obi;*.xuk",
+                        Filter = @"DTBook, OPF, OBI or XUK (*.xml, *.opf, *.obi, *" + OpenXukAction.XUK_EXTENSION + ")|*.xml;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION,
 #endif //DEBUG
                         CheckFileExists = false,
                         CheckPathExists = false,
@@ -155,9 +156,9 @@ namespace Tobi.Plugin.Urakawa
 
             string ext = Path.GetExtension(fileUri.ToString());
             if (
-                String.Equals(ext, ".xuk", StringComparison.OrdinalIgnoreCase)
+                String.Equals(ext, OpenXukAction.XUK_EXTENSION, StringComparison.OrdinalIgnoreCase)
                 ||
-                String.Equals(ext, ".xukbundle", StringComparison.OrdinalIgnoreCase)
+                String.Equals(ext, OpenXukAction.XUK_SPINE_EXTENSION, StringComparison.OrdinalIgnoreCase)
                 )
             {
                 //todo: should we implement HTTP open ?
@@ -224,24 +225,48 @@ namespace Tobi.Plugin.Urakawa
 
                 if (DocumentProject != null)
                 {
-                    //m_Logger.Log(@"-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug, Priority.Medium);
-
-                    if (m_EventAggregator != null)
+                    if (String.Equals(ext, OpenXukAction.XUK_SPINE_EXTENSION, StringComparison.OrdinalIgnoreCase))
                     {
-                        m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
+                        parseXukSpine(DocumentFilePath);
+
+                        if (ShowXukSpineCommand.CanExecute())
+                        {
+                            Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => ShowXukSpineCommand.Execute()));
+                        }
                     }
-
-                    var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, DocumentProject.Presentations.Get(0).RootNode, null);
-                    if (treeNode != null)
+                    else
                     {
-                        //m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded", Category.Debug, Priority.Medium);
+                        //m_Logger.Log(@"-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug, Priority.Medium);
 
-                        PerformTreeNodeSelection(treeNode);
-                        //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                        if (m_EventAggregator != null)
+                        {
+                            m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
+                        }
+
+                        var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, DocumentProject.Presentations.Get(0).RootNode, null);
+                        if (treeNode != null)
+                        {
+                            //m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded", Category.Debug, Priority.Medium);
+
+                            PerformTreeNodeSelection(treeNode);
+                            //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                        }
+
+                        string spineFilePath = null; // DocumentFilePath;
+                        //TODO: find the parent spine file, if any
+
+                        if (!string.IsNullOrEmpty(spineFilePath))
+                        {
+                            parseXukSpine(spineFilePath);
+                        }
                     }
 
                     return true;
                 }
+
+                
+
+
                 //var progressBar = new ProgressBar
                 //{
                 //    IsIndeterminate = false,
@@ -374,7 +399,7 @@ namespace Tobi.Plugin.Urakawa
                     XdmNode inputNode = m_SaxonProcessor.NewDocumentBuilder().Build(xmlDoc);
                     m_SaxonXslt_Obi_Tobi_XUK.InitialContextNode = inputNode;
 
-                    outputFileName = fileUri.LocalPath + ".xuk";
+                    outputFileName = fileUri.LocalPath + OpenXukAction.XUK_EXTENSION;
                     using (var streamWriter = new StreamWriter(outputFileName, false, Encoding.UTF8))
                     {
                         var xmlWriter = new XmlTextWriter(streamWriter);
@@ -405,6 +430,13 @@ namespace Tobi.Plugin.Urakawa
             }
 
             return false;
+        }
+
+        private void parseXukSpine(string path)
+        {
+            XukSpineItems = new ObservableCollection<Uri>();
+
+            //TODO: parse spine file
         }
 
         private readonly Object LOCK = new object();
