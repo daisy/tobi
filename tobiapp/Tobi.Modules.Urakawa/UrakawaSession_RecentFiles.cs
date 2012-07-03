@@ -41,7 +41,6 @@ namespace Tobi.Plugin.Urakawa
 
         private void InitializeRecentFiles()
         {
-            //
             OpenRecentCommand = new RichDelegateCommand(
                 Tobi_Plugin_Urakawa_Lang.CmdOpenRecent_ShortDesc,
                 Tobi_Plugin_Urakawa_Lang.CmdOpenRecent_LongDesc,

@@ -187,6 +187,12 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="CmdOpenRecent_LongDesc" xml:space="preserve">
     <value>Open the recent files dialog</value>
   </data>
+  <data name="CmdShowXukSpine_ShortDesc" xml:space="preserve">
+    <value>Project sp_ine...</value>
+  </data>
+  <data name="CmdShowXukSpine_LongDesc" xml:space="preserve">
+    <value>Open the project spine dialog</value>
+  </data>
   <data name="UrakawaOpenAction_ShortDesc" xml:space="preserve">
     <value>Opening XUK file...</value>
   </data>

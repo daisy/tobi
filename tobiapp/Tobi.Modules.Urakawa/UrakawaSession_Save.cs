@@ -106,8 +106,8 @@ namespace Tobi.Plugin.Urakawa
                     var dlg = new SaveFileDialog
                     {
                         FileName = @"tobi_doc",
-                        DefaultExt = @".xuk",
-                        Filter = @"XUK (*.xuk)|*.xuk",
+                        DefaultExt = OpenXukAction.XUK_EXTENSION,
+                        Filter = @"XUK (*" + OpenXukAction.XUK_EXTENSION + ")|*" + OpenXukAction.XUK_EXTENSION,
                         CheckFileExists = false,
                         CheckPathExists = false,
                         AddExtension = true,

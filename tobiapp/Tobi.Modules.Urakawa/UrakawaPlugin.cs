@@ -59,8 +59,14 @@ namespace Tobi.Plugin.Urakawa
         private int m_MenuBarId_6 = -1;
         private int m_MenuBarId_7;
         private int m_MenuBarId_8;
+        private int m_MenuBarId_9;
         protected override void OnMenuBarReady()
         {
+            m_MenuBarId_9 = m_MenuBarView.AddMenuBarGroup(
+                Tobi_Common_Lang.Menu_View, PreferredPosition.Last, true,
+                null, PreferredPosition.First, true,
+                new[] { m_UrakawaSession.ShowXukSpineCommand });
+
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_File, PreferredPosition.First, true,
                 null, PreferredPosition.First, true,
@@ -106,7 +112,7 @@ namespace Tobi.Plugin.Urakawa
             m_MenuBarId_7 = m_MenuBarView.AddMenuBarGroup(
                     Tobi_Common_Lang.Menu_Tools, PreferredPosition.Last, true,
                     Tobi_Common_Lang.Menu_BrowseFolder, PreferredPosition.First, false,
-                    new[] {m_UrakawaSession.OpenDocumentFolderCommand });
+                    new[] { m_UrakawaSession.OpenDocumentFolderCommand });
 
             m_MenuBarId_8 = m_MenuBarView.AddMenuBarGroup(
                     Tobi_Common_Lang.Menu_Help, PreferredPosition.Last, true,
@@ -130,7 +136,7 @@ namespace Tobi.Plugin.Urakawa
                 string uriStr = uri.IsFile ? uri.LocalPath : uri.ToString();
                 RichDelegateCommand cmd = null;
                 cmd = new RichDelegateCommand(
-                    uriStr.Replace("_","__"), //uri.Scheme.ToLower() == "file"
+                    uriStr.Replace("_", "__"), //uri.Scheme.ToLower() == "file"
                     uri.ToString(),
                     null, null,
                     () =>
@@ -192,12 +198,12 @@ namespace Tobi.Plugin.Urakawa
 
         public override string Name
         {
-            get { return Tobi_Plugin_Urakawa_Lang.UrakawaPlugin_Name; } 
+            get { return Tobi_Plugin_Urakawa_Lang.UrakawaPlugin_Name; }
         }
 
         public override string Description
         {
-            get { return Tobi_Plugin_Urakawa_Lang.UrakawaPlugin_Description; } 
+            get { return Tobi_Plugin_Urakawa_Lang.UrakawaPlugin_Description; }
         }
     }
 }

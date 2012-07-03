@@ -69,6 +69,7 @@ namespace Tobi.Plugin.Urakawa
 
             InitializeCommands();
             InitializeRecentFiles();
+            InitializeXukSpines();
         }
 
         //#pragma warning disable 1591 // missing comments
@@ -147,7 +148,7 @@ namespace Tobi.Plugin.Urakawa
                 RaisePropertyChanged(() => DocumentFilePath);
             }
         }
-        
+
         public bool IsAcmCodecsDisabled
         {
             get { return Settings.Default.AudioCodecDisableACM; }
@@ -218,7 +219,7 @@ namespace Tobi.Plugin.Urakawa
                 Tobi_Plugin_Urakawa_Lang.CmdOpenUserManual_ShortDesc,
                 Tobi_Plugin_Urakawa_Lang.CmdOpenUserManual_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
-               null ,
+               null,
                 () =>
                 {
                     m_Logger.Log(@"ShellView.OpenUserManualCommand", Category.Debug, Priority.Medium);
@@ -349,22 +350,22 @@ namespace Tobi.Plugin.Urakawa
                                                                           Tobi_Plugin_Urakawa_Lang.CleaningUpDataFiles,
                                                                           new Cleaner(project.Presentations.Get(0),
                                                                                       deletedDataFolderPath),
-                                                                          //project.Presentations.Get(0).Cleanup();
+                    //project.Presentations.Get(0).Cleanup();
                                                                           () =>
-                                                                              {
-                                                                                  m_Logger.Log(@"CANCELLED",
-                                                                                               Category.Debug,
-                                                                                               Priority.Medium);
-                                                                                  cancelled = true;
+                                                                          {
+                                                                              m_Logger.Log(@"CANCELLED",
+                                                                                           Category.Debug,
+                                                                                           Priority.Medium);
+                                                                              cancelled = true;
 
-                                                                              },
+                                                                          },
                                                                           () =>
-                                                                              {
-                                                                                  m_Logger.Log(@"DONE", Category.Debug,
-                                                                                               Priority.Medium);
-                                                                                  cancelled = false;
+                                                                          {
+                                                                              m_Logger.Log(@"DONE", Category.Debug,
+                                                                                           Priority.Medium);
+                                                                              cancelled = false;
 
-                                                                              });
+                                                                          });
                 if (cancelled)
                 {
                     DebugFix.Assert(!result);
@@ -558,9 +559,8 @@ namespace Tobi.Plugin.Urakawa
 
                 var details = new TextBoxReadOnlyCaretVisible
                     {
-                        
-        FocusVisualStyle=(Style)Application.Current.Resources["MyFocusVisualStyle"],
-        
+                        FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
                         BorderThickness = new Thickness(1),
                         Padding = new Thickness(6),
                         TextReadOnly = Tobi_Plugin_Urakawa_Lang.UnsavedChangesDetails
@@ -574,7 +574,7 @@ namespace Tobi.Plugin.Urakawa
                                                        buttonset == PopupModalWindow.DialogButtonsSet.Cancel
                                                        || buttonset == PopupModalWindow.DialogButtonsSet.OkCancel
                                                        || buttonset == PopupModalWindow.DialogButtonsSet.YesNoCancel,
-                                                       350, 180, details, 40,null);
+                                                       350, 180, details, 40, null);
 
                 windowPopup.ShowModal();
 
@@ -601,6 +601,8 @@ namespace Tobi.Plugin.Urakawa
             //m_Logger.Log(@"-- PublishEvent [ProjectUnLoadedEvent] UrakawaSession.close", Category.Debug, Priority.Medium);
 
             var oldProject = DocumentProject;
+
+            XukSpineItems = null; // new ObservableCollection<Uri>();
 
             DocumentFilePath = null;
             DocumentProject = null;
