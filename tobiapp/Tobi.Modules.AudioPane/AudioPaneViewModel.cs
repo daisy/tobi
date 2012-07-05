@@ -582,6 +582,12 @@ m_Stream.Length);
             }
             if (IsRecording)
             {
+#if !DISABLE_SINGLE_RECORD_FILE
+                if (m_RecordAndContinue)
+                {
+                    return;
+                }
+#endif
                 m_RecordAndContinue = false;
                 m_InterruptRecording = true;
                 CommandStopRecord.Execute();
@@ -1355,6 +1361,12 @@ m_Stream.Length);
         {
             get
             {
+#if !DISABLE_SINGLE_RECORD_FILE
+                if (m_RecordAndContinue_StopBytePos >= 0) //m_RecordAndContinue
+                {
+                    return m_Recorder.CurrentDurationBytePosition - m_RecordAndContinue_StopBytePos;
+                }
+#endif
                 return m_Recorder.CurrentDurationBytePosition;
             }
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AudioLib;
@@ -10,7 +11,9 @@ using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.core;
+using urakawa.data;
 using urakawa.media.data.audio;
+using urakawa.media.timing;
 using urakawa.xuk;
 using InputDevice = AudioLib.InputDevice;
 
@@ -24,6 +27,9 @@ namespace Tobi.Plugin.AudioPane
         public long PlayBytePosition;
         public long SelectionBeginBytePosition;
         public long SelectionEndBytePosition;
+#if !DISABLE_SINGLE_RECORD_FILE
+        public long RecordAndContinue_StopBytePos;
+#endif
     }
 
     public partial class AudioPaneViewModel
@@ -38,6 +44,11 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandStopMonitor { get; private set; }
 
         private bool m_RecordAndContinue = false;
+
+#if !DISABLE_SINGLE_RECORD_FILE
+        private long m_RecordAndContinue_StopBytePos = -1;
+        private bool m_RecordAndContinue_StopSingleFileRecord = false;
+#endif
 
         private void initializeCommands_Recorder()
         {
@@ -68,12 +79,21 @@ namespace Tobi.Plugin.AudioPane
                     IsAutoPlay = false;
                     m_RecordAndContinue = true;
                     m_InterruptRecording = false;
+
+#if !DISABLE_SINGLE_RECORD_FILE
+                    m_RecordAndContinue_StopBytePos = m_Recorder.CurrentDurationBytePosition_BufferLookAhead;
+                    OnAudioRecordingFinished(null,
+                                              new AudioRecorder.AudioRecordingFinishEventArgs(
+                                                  m_Recorder.RecordedFilePath));
+#else
                     m_Recorder.StopRecording();
 
                     if (EventAggregator != null)
                     {
                         EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped);
                     }
+#endif
+                    //ENABLE_SINGLE_RECORD_FILE
                 },
                 () =>
                 {
@@ -131,6 +151,8 @@ namespace Tobi.Plugin.AudioPane
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartRecord", Category.Debug, Priority.Medium);
+
+                    m_RecordAndContinue_StopBytePos = -1;
 
                     if (stopWatchRecorder != null)
                     {
@@ -391,6 +413,9 @@ namespace Tobi.Plugin.AudioPane
                 PlayBytePosition = PlayBytePosition,
                 SelectionBeginBytePosition = State.Selection.SelectionBeginBytePosition,
                 SelectionEndBytePosition = State.Selection.SelectionEndBytePosition,
+#if !DISABLE_SINGLE_RECORD_FILE
+                RecordAndContinue_StopBytePos = m_RecordAndContinue ? m_RecordAndContinue_StopBytePos : -1
+#endif
             };
 
             if (m_DeferredRecordingDataItems == null)
@@ -411,6 +436,14 @@ namespace Tobi.Plugin.AudioPane
             bool skipDrawing = Settings.Default.AudioWaveForm_DisableDraw;
             Settings.Default.AudioWaveForm_DisableDraw = true;
 
+
+#if !DISABLE_SINGLE_RECORD_FILE
+            string previousRecordedFile = null;
+            FileDataProvider currentFileDataProvider = null;
+            AudioLibPCMFormat currentPcmFormat = null;
+            long currentPcmDataLength = -1;
+            long previousBytePosEnd = 0;
+#endif
             foreach (var deferredRecordingDataItem in m_DeferredRecordingDataItems)
             {
                 Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.PerformTreeNodeSelection(deferredRecordingDataItem.TreeNode1, false, deferredRecordingDataItem.TreeNode2);
@@ -464,7 +497,48 @@ namespace Tobi.Plugin.AudioPane
                     continue;
                 }
 
+#if !DISABLE_SINGLE_RECORD_FILE
+
+                TreeNode treeNode = deferredRecordingDataItem.TreeNode1 ?? deferredRecordingDataItem.TreeNode2;
+
+                if (string.IsNullOrEmpty(previousRecordedFile)
+                    || previousRecordedFile != deferredRecordingDataItem.RecordedFilePath)
+                {
+                    PCMFormatInfo pcmInfo = State.Audio.PcmFormatRecordingMonitoring;
+                    currentPcmFormat = (pcmInfo != null ? pcmInfo.Copy().Data : null);
+                    if (currentPcmFormat == null)
+                    {
+                        Stream fileStream = File.Open(deferredRecordingDataItem.RecordedFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                        try
+                        {
+                            uint dataLength;
+                            currentPcmFormat = AudioLibPCMFormat.RiffHeaderParse(fileStream, out dataLength);
+
+                            currentPcmDataLength = dataLength;
+                        }
+                        finally
+                        {
+                            fileStream.Close();
+                        }
+                    }
+
+                    currentFileDataProvider = (FileDataProvider)treeNode.Presentation.DataProviderFactory.Create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                    currentFileDataProvider.InitByMovingExistingFile(deferredRecordingDataItem.RecordedFilePath);
+                    if (File.Exists(deferredRecordingDataItem.RecordedFilePath)) //check exist just in case file adopted by DataProviderManager
+                    {
+                        File.Delete(deferredRecordingDataItem.RecordedFilePath);
+                    }
+                }
+
+                //Time duration = new Time(currentPcmFormat.ConvertBytesToTime(currentPcmDataLength));
+
+                if (previousBytePosEnd < 0) previousBytePosEnd = 0;
+                long bytePosEnd = deferredRecordingDataItem.RecordAndContinue_StopBytePos;
+
+                openFile(treeNode, currentFileDataProvider, previousBytePosEnd, bytePosEnd, currentPcmFormat, currentPcmDataLength);
+#else
                 openFile(deferredRecordingDataItem.RecordedFilePath, true, true, State.Audio.PcmFormatRecordingMonitoring);
+#endif
 
                 needsRefresh = true;
 
@@ -473,6 +547,11 @@ namespace Tobi.Plugin.AudioPane
                 //{
                 //    m_viewModel.View.CancelWaveFormLoad(true);
                 //}
+
+#if !DISABLE_SINGLE_RECORD_FILE
+                previousRecordedFile = deferredRecordingDataItem.RecordedFilePath;
+                previousBytePosEnd = deferredRecordingDataItem.RecordAndContinue_StopBytePos;
+#endif
             }
 
             m_DeferredRecordingDataItems = null;
@@ -532,6 +611,15 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnAudioRecordingFinished_(object sender, AudioRecorder.AudioRecordingFinishEventArgs e)
         {
+
+#if !DISABLE_SINGLE_RECORD_FILE
+            if (m_RecordAndContinue_StopSingleFileRecord)
+            {
+                m_RecordAndContinue_StopSingleFileRecord = false;
+                return;
+            }
+#endif
+
             if (m_InterruptRecording)
             {
                 m_RecordAndContinue = false;
@@ -558,6 +646,11 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_RecordAndContinue)
             {
+#if !DISABLE_SINGLE_RECORD_FILE
+#if DEBUG
+                DebugFix.Assert(IsRecording);
+#endif
+#endif
                 IsAutoPlay = false;
 
                 Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
@@ -581,8 +674,21 @@ namespace Tobi.Plugin.AudioPane
                         m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
                         State.Selection.ClearSelection();
 
+                        //must appear after tree node selection!!!
                         m_RecordAndContinue = false;
+
+#if !DISABLE_SINGLE_RECORD_FILE
+                        //RaisePropertyChanged(() => State.Audio.PcmFormatRecordingMonitoring);
+
+                        //if (EventAggregator != null)
+                        //{
+                        //    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Recording);
+                        //}
+                        //PCMFormatInfo pcmFormatInfo = State.Audio.GetCurrentPcmFormat();
+                        OnStateChanged_Recorder(null, new AudioRecorder.StateChangedEventArgs(AudioRecorder.State.Stopped));
+#else
                         State.Audio.PcmFormatRecordingMonitoring = null;
+#endif
 
                         Tuple<TreeNode, TreeNode> treeNodeSelectionNew = m_UrakawaSession.GetTreeNodeSelection();
                         TreeNode treeNodeNew = treeNodeSelectionNew.Item2 ?? treeNodeSelectionNew.Item1;
@@ -600,10 +706,18 @@ namespace Tobi.Plugin.AudioPane
                                     View.CancelWaveFormLoad(true);
                                 }
 
+#if !DISABLE_SINGLE_RECORD_FILE
+                                //??
+#else
                                 CommandStartRecord.Execute();
+#endif
                             }
                             else
                             {
+#if !DISABLE_SINGLE_RECORD_FILE
+                                m_RecordAndContinue_StopSingleFileRecord = true;
+                                CommandStopRecord.Execute();
+#endif
                                 if (m_DeferredRecordingDataItems != null)
                                 {
                                     checkAndAddDeferredRecordingDataItems();
@@ -619,10 +733,21 @@ namespace Tobi.Plugin.AudioPane
                                 //CommandSelectAll.Execute();
                             }
                         }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
 
                         return;
                     }
                 }
+
+#if !DISABLE_SINGLE_RECORD_FILE
+                m_RecordAndContinue_StopSingleFileRecord = true;
+                CommandStopRecord.Execute();
+#endif
             }
 
             m_RecordAndContinue = false;
