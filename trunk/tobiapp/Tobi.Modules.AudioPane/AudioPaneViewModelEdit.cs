@@ -14,6 +14,7 @@ using urakawa.data;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.audio.codec;
+using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -408,6 +409,43 @@ namespace Tobi.Plugin.AudioPane
                 //&& node.GetManagedAudioMedia() == null
                    ;
         }
+
+#if !DISABLE_SINGLE_RECORD_FILE
+        internal void openFile(TreeNode treeNode, FileDataProvider dataProv, long byteBegin, long byteEnd, AudioLibPCMFormat pcmInfo, long pcmDataLength)
+        {
+            Logger.Log("AudioPaneViewModel.OpenFile_FileDataProvider", Category.Debug, Priority.Medium);
+
+            CommandPause.Execute();
+
+            if (byteBegin < 0) byteBegin = 0;
+            if (byteEnd <= 0) byteEnd = pcmDataLength;
+
+            ManagedAudioMedia managedAudioMedia = treeNode.Presentation.MediaFactory.CreateManagedAudioMedia();
+
+            var mediaData = (WavAudioMediaData)treeNode.Presentation.MediaDataFactory.CreateAudioMediaData();
+
+            managedAudioMedia.AudioMediaData = mediaData;
+
+            if (byteBegin == 0 && byteEnd == pcmDataLength)
+            {
+                mediaData.AppendPcmData(dataProv);
+            }
+            else
+            {
+                mediaData.AppendPcmData(
+                    dataProv,
+                new Time(pcmInfo.ConvertBytesToTime(byteBegin)),
+                (byteEnd == pcmDataLength ? null : new Time(pcmInfo.ConvertBytesToTime(byteEnd)))
+                );
+            }
+
+            if (managedAudioMedia.Duration.AsTimeSpan.TotalMilliseconds > 500)
+                insertAudioAtCursorOrSelectionReplace(managedAudioMedia);
+            else
+                Console.WriteLine(@"audio clip too short to be inserted ! " + managedAudioMedia.Duration.AsLocalUnits / AudioLibPCMFormat.TIME_UNIT + @"ms");
+
+        }
+#endif
 
 
         internal void openFile(String str, bool insert, bool deleteAfterInsert, PCMFormatInfo pcmInfo)
