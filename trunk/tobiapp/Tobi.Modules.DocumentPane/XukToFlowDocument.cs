@@ -354,7 +354,7 @@ namespace Tobi.Plugin.DocumentPane
                     ((Section)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
                 }
             }
-            //else if (localName == "math")
+            //else if (localName == DiagramContentModelHelper.Math)
             //{
             //    data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_Hyperlink_Back);
             //    DebugFix.Assert(data is Section);
