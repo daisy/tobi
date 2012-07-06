@@ -116,10 +116,17 @@
         <audio src="tpbnarrator_res.mp3" clipBegin="0:00:11.093" clipEnd="0:00:12.930" />
       </resource>
     </nodeSet>
-    
+
     <nodeSet id="esns008" select="//seq[@class='prodnote']">
       <resource xml:lang="en" id="esr008">
         <text>Optional producer note</text>
+        <audio src="tpbnarrator_res.mp3" clipBegin="0:00:12.930" clipEnd="0:00:15.017" />
+      </resource>
+    </nodeSet>
+
+    <nodeSet id="esns009" select="//seq[@class='math']">
+      <resource xml:lang="en" id="esr009">
+        <text>Mathematical formula</text>
         <audio src="tpbnarrator_res.mp3" clipBegin="0:00:12.930" clipEnd="0:00:15.017" />
       </resource>
     </nodeSet>
