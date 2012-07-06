@@ -510,10 +510,10 @@ namespace Tobi.Plugin.Validator.Metadata
         //works for both double and int
         private bool _validateNumber(urakawa.metadata.Metadata metadata, MetadataDefinition definition)
         {
-            bool res = _validateInteger(metadata, definition);
-            if (!res) return false;
+            //bool res = _validateInteger(metadata, definition);
+            //if (!res) return false;
 
-            res = _validateDouble(metadata, definition);
+            bool res = _validateDouble(metadata, definition);
             if (!res) return false;
 
             return true;
