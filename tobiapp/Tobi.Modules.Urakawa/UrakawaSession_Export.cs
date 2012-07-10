@@ -32,7 +32,8 @@ namespace Tobi.Plugin.Urakawa
                 Tobi_Plugin_Urakawa_Lang.CmdExport_ShortDesc,
                 Tobi_Plugin_Urakawa_Lang.CmdExport_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadGnomeNeuIcon(@"Neu_accessories-archiver"),
+                //m_ShellView.LoadGnomeNeuIcon(@"Neu_accessories-archiver"),
+                m_ShellView.LoadTangoIcon(@"media-eject"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save_As")),
                 () =>
                 {

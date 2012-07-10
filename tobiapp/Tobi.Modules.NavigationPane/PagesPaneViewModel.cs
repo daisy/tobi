@@ -258,6 +258,11 @@ namespace Tobi.Plugin.NavigationPane
 
         private void onProjectLoaded(Project project)
         {
+            if (m_session.IsXukSpine)
+            {
+                return;
+            }
+
             project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;

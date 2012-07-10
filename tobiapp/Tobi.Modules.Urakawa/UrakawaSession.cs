@@ -86,10 +86,6 @@ namespace Tobi.Plugin.Urakawa
 
         public RichDelegateCommand DataCleanupCommand { get; private set; }
 
-        public RichDelegateCommand OpenUserManualCommand { get; private set; }
-
-        public RichDelegateCommand OpenImageDescriptionsManualCommand { get; private set; }
-
         private Project m_DocumentProject;
         public Project DocumentProject
         {
@@ -214,45 +210,6 @@ namespace Tobi.Plugin.Urakawa
 
             m_ShellView.RegisterRichCommand(OpenDocumentFolderCommand);
 
-
-            OpenUserManualCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.CmdOpenUserManual_ShortDesc,
-                Tobi_Plugin_Urakawa_Lang.CmdOpenUserManual_LongDesc,
-                null, // KeyGesture obtained from settings (see last parameters below)
-               null,
-                () =>
-                {
-                    m_Logger.Log(@"ShellView.OpenUserManualCommand", Category.Debug, Priority.Medium);
-
-                    m_ShellView.ExecuteShellProcess("http://www.daisy.org/tobi/user-manual");
-                },
-                 () => true,
-                Settings_KeyGestures.Default,
-                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
-                );
-
-            m_ShellView.RegisterRichCommand(OpenUserManualCommand);
-
-            OpenImageDescriptionsManualCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.CmdOpenImageDescriptionsManual_ShortDesc,
-                Tobi_Plugin_Urakawa_Lang.CmdOpenImageDescriptionsManual_LongDesc,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                null,
-                () =>
-                {
-                    m_Logger.Log(@"ShellView.OpenImageDescriptionsManualCommand", Category.Debug, Priority.Medium);
-
-                    m_ShellView.ExecuteShellProcess("http://www.daisy.org/tobi/image-description-manual");
-                },
-                 () => true,
-                Settings_KeyGestures.Default,
-                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
-                );
-
-            m_ShellView.RegisterRichCommand(OpenImageDescriptionsManualCommand);
-            //
-
-            //
             //
             //
             UndoCommand = new RichDelegateCommand(

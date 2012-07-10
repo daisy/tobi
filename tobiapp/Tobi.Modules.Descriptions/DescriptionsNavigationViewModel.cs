@@ -256,6 +256,11 @@ namespace Tobi.Plugin.Descriptions
         #region Events
         private void onProjectLoaded(Project project)
         {
+            if (m_UrakawaSession.IsXukSpine)
+            {
+                return;
+            }
+
             DescriptionsNavigator = new DescriptionsNavigator(View);
             View.LoadProject();
 

@@ -239,6 +239,11 @@ namespace Tobi
                     null, PreferredPosition.Any, true,
                     new[] { ExitCommand });
 
+                int uid5 = m_MenuBarView.AddMenuBarGroup(
+                        Tobi_Common_Lang.Menu_Help, PreferredPosition.Last, false,
+                        null, PreferredPosition.First, false,
+                        new[] { OpenUserManualCommand, OpenImageDescriptionsManualCommand });
+
                 int uid2 = m_MenuBarView.AddMenuBarGroup(
                     Tobi_Common_Lang.Menu_View, PreferredPosition.First, true,
                     Tobi_Common_Lang.Menu_Magnification, PreferredPosition.First, true,
@@ -253,6 +258,8 @@ namespace Tobi
                     Tobi_Common_Lang.Menu_Tools, PreferredPosition.Last, true,
                     Tobi_Common_Lang.Menu_BrowseFolder, PreferredPosition.First, false,
                     new[] { OpenTobiSettingsFolderCommand, OpenTobiFolderCommand, OpenTobiIsolatedStorageCommand });
+
+
 
 #if DEBUG
                 //int uidX = m_MenuBarView.AddMenuBarGroup(RegionNames.MenuBar_Tools, new[] { ShowLogFilePathCommand }, null, false);

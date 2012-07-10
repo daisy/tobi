@@ -216,4 +216,16 @@
   <data name="WindowsTitleKey_UrakawaSessionIsNull" xml:space="preserve">
     <value>Tobi {{{{{{0}}}}}} - {0}</value>
   </data>
+  <data name="CmdOpenImageDescriptionsManual_LongDesc" xml:space="preserve">
+    <value>Open image description guide in web browser</value>
+  </data>
+  <data name="CmdOpenImageDescriptionsManual_ShortDesc" xml:space="preserve">
+    <value>_Image description guide (online)</value>
+  </data>
+  <data name="CmdOpenUserManual_LongDesc" xml:space="preserve">
+    <value>Open user manual in web browser</value>
+  </data>
+  <data name="CmdOpenUserManual_ShortDesc" xml:space="preserve">
+    <value>_User manual (online)</value>
+  </data>
 </root>

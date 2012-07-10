@@ -63,6 +63,11 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
         protected override void OnProjectLoaded(Project project)
         {
+            if (m_Session.IsXukSpine)
+            {
+                return;
+            }
+
             // WE MUST PREVENT THE BASE CLASS TO RESET THE VALIDATION ITEMS (WHICH WE JUST RECEIVED FROM THE FLOWDOC PARSER)
             //base.OnProjectLoaded(project);
 

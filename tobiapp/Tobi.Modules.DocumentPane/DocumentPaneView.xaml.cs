@@ -2122,6 +2122,12 @@ namespace Tobi.Plugin.DocumentPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
                 return;
             }
+
+            if (m_UrakawaSession.IsXukSpine)
+            {
+                return;
+            }
+
             m_FindAndReplaceManager = null;
 
             m_PathToTreeNode = null;

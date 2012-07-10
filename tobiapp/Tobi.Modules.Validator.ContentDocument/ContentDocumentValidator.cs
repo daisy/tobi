@@ -65,6 +65,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
         {
             base.OnProjectLoaded(project);
 
+            if (m_Session.IsXukSpine)
+            {
+                return;
+            }
 
             //ThreadPool.QueueUserWorkItem(
             //    delegate(Object o) // or: (foo) => {} (LAMBDA)

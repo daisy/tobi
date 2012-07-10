@@ -49,7 +49,7 @@ namespace Tobi.Plugin.Urakawa
                 Tobi_Plugin_Urakawa_Lang.CmdShowXukSpine_ShortDesc,
                 Tobi_Plugin_Urakawa_Lang.CmdShowXukSpine_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon(@"folder-saved-search"),
+                m_ShellView.LoadTangoIcon(@"preferences-desktop-locale"),
                 () =>
                 {
                     m_Logger.Log("UrakawaSession.ShowXukSpineCommand", Category.Debug, Priority.Medium);
