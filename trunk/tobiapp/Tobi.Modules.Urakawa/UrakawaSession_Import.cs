@@ -8,6 +8,7 @@ using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.UI;
 using urakawa.daisy.import;
+using urakawa.data;
 
 namespace Tobi.Plugin.Urakawa
 {
@@ -20,13 +21,16 @@ namespace Tobi.Plugin.Urakawa
             m_Logger.Log(String.Format(@"UrakawaSession.doImport() [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
 
             string outputDirectory = Path.Combine(Path.GetDirectoryName(DocumentFilePath),
-                                                  XUK_DIR + Path.DirectorySeparatorChar +
-                                                  Path.GetFileName(DocumentFilePath) + XUK_DIR);
+                                                    XUK_DIR
+                                                    + Path.DirectorySeparatorChar
+                                                    + Path.GetFileName(DocumentFilePath)
+                                                    + XUK_DIR);
 
-            string xukPath = Daisy3_Import.GetXukFilePath(outputDirectory, DocumentFilePath);
-            if (File.Exists(xukPath))
+            //string xukPath = Daisy3_Import.GetXukFilePath(outputDirectory, DocumentFilePath);
+            //if (File.Exists(xukPath))
+            if (Directory.Exists(outputDirectory))
             {
-                if (!askUserConfirmOverwriteFileFolder(xukPath, false, null))
+                if (!askUserConfirmOverwriteFileFolder(outputDirectory, false, null))
                 {
                     return false;
                 }
