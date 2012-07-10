@@ -108,10 +108,10 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 if (dtdEntity.ExternalId is DTDPublic)
                 {
                     string pub = ((DTDPublic)dtdEntity.ExternalId).Pub;
-                    if (!string.IsNullOrEmpty(pub))
-                    {
-                        system = pub.Replace(" ", "%20");
-                    }
+                    //if (!string.IsNullOrEmpty(pub))
+                    //{
+                    //    system = pub.Replace(" ", "%20");
+                    //}
                 }
 
                 foreach (String key in DTDs.DTDs.ENTITIES_MAPPING.Keys)
