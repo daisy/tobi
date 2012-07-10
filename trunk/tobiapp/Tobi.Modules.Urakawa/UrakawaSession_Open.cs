@@ -240,7 +240,7 @@ namespace Tobi.Plugin.Urakawa
                         //String.Equals(ext, OpenXukAction.XUK_SPINE_EXTENSION, StringComparison.OrdinalIgnoreCase)
                         )
                     {
-                        parseXukSpine(DocumentFilePath, DocumentProject);
+                        parseXukSpine(DocumentFilePath, DocumentProject, null);
 
                         if (ShowXukSpineCommand.CanExecute())
                         {
@@ -258,13 +258,7 @@ namespace Tobi.Plugin.Urakawa
                             //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
                         }
 
-                        string spineFilePath = null; // DocumentFilePath;
-                        //TODO: find the parent spine file, if any
-
-                        if (!string.IsNullOrEmpty(spineFilePath))
-                        {
-                            parseXukSpine(spineFilePath);
-                        }
+                        tryParseXukSpine(DocumentFilePath);
                     }
 
                     return true;
@@ -438,7 +432,7 @@ namespace Tobi.Plugin.Urakawa
             return false;
         }
 
-        private void parseXukSpine(string projectPath, Project project)
+        private bool parseXukSpine(string projectPath, Project project, string xukFileToMatch)
         {
             string rootDir = Path.GetDirectoryName(projectPath);
             //string rootDir = Directory.GetParent(dir).Name;
@@ -480,16 +474,82 @@ namespace Tobi.Plugin.Urakawa
                     continue;
                 }
 
-                Uri uri = new Uri(fullXukPath, UriKind.Absolute);
-                XukSpineItems.Add(uri);
+                if (!string.IsNullOrEmpty(xukFileToMatch))
+                {
+                    string fileOnly = Path.GetFileName(fullXukPath);
+
+                    if (xukFileToMatch == fileOnly)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    Uri uri = new Uri(fullXukPath, UriKind.Absolute);
+                    XukSpineItems.Add(uri);
+                }
             }
+
+            return false;
         }
 
-        private void parseXukSpine(string path)
+        private void tryParseXukSpine(string currentProjectPath)
         {
-            //TODO: parse spine file into project
-            Project project = null;
-            //parseXukSpine(project);
+            string fileOnly = Path.GetFileName(currentProjectPath);
+
+            string dir = Path.GetDirectoryName(currentProjectPath);
+            string[] files = Directory.GetFiles(dir, "*.xukspine");
+
+            foreach (var projectPath in files)
+            {
+                Uri uri = new Uri(projectPath, UriKind.Absolute);
+
+                var project = new Project();
+
+                var action = new OpenXukAction(project, uri)
+                    {
+                        ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc,
+                        LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_LongDesc
+                    };
+
+                bool cancelled = false;
+
+                bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                                                                          Tobi_Plugin_Urakawa_Lang.
+                                                                              UrakawaOpenAction_ShortDesc, action,
+                                                                          () =>
+                                                                              {
+                                                                                  cancelled = true;
+                                                                                  project = null;
+                                                                              },
+                                                                          () =>
+                                                                              {
+                                                                                  cancelled = false;
+
+                                                                                  if (project.Presentations.Count == 0)
+                                                                                  {
+                                                                                      Debug.Fail(
+                                                                                          "Project does not contain a Presentation !" +
+                                                                                          Environment.NewLine +
+                                                                                          uri.ToString());
+                                                                                      //workException = new XukException()
+                                                                                  }
+                                                                              }
+                    );
+
+                if (!result)
+                {
+                    DebugFix.Assert(cancelled);
+                    return;
+                }
+
+                bool ok = parseXukSpine(projectPath, project, fileOnly);
+                if (ok)
+                {
+                    parseXukSpine(projectPath, project, null);
+                    return;
+                }
+            }
         }
 
         private readonly Object LOCK = new object();
