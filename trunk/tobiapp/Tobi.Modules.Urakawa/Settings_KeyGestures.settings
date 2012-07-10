@@ -31,5 +31,8 @@
     <Setting Name="Keyboard_Export" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] E</Value>
     </Setting>
+    <Setting Name="Keyboard_ShowXukSpine" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] U</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

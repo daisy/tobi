@@ -85,8 +85,8 @@ namespace Tobi.Plugin.Urakawa
                     }
                 },
                 () => HasXukSpine,
-                null, //Settings_KeyGestures.Default,
-                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowXukSpine)
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowXukSpine)
                 );
 
             m_ShellView.RegisterRichCommand(ShowXukSpineCommand);
