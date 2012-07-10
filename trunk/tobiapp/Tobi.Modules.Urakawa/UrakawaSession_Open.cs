@@ -160,9 +160,9 @@ namespace Tobi.Plugin.Urakawa
 
             string ext = Path.GetExtension(fileUri.ToString());
             if (
-                String.Equals(ext, OpenXukAction.XUK_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                OpenXukAction.XUK_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
                 ||
-                String.Equals(ext, OpenXukAction.XUK_SPINE_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                OpenXukAction.XUK_SPINE_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
                 )
             {
                 //todo: should we implement HTTP open ?
@@ -383,7 +383,7 @@ namespace Tobi.Plugin.Urakawa
                 //    return false;
                 //}
             }
-            else if (String.Equals(ext, ".mml", StringComparison.OrdinalIgnoreCase))
+            else if (".mml".Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 string mathML = File.ReadAllText(fileUri.LocalPath, Encoding.UTF8);
                 string svgFileOutput = fileUri.LocalPath + DataProviderFactory.IMAGE_SVG_EXTENSION;
@@ -392,7 +392,7 @@ namespace Tobi.Plugin.Urakawa
 
                 m_ShellView.ExecuteShellProcess(Path.GetDirectoryName(fileUri.LocalPath));
             }
-            else if (String.Equals(ext, ".obi", StringComparison.OrdinalIgnoreCase))
+            else if (".obi".Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 initSaxonXslt_Obi_Tobi_XUK();
 

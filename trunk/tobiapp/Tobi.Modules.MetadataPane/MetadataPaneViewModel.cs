@@ -242,7 +242,7 @@ namespace Tobi.Plugin.MetadataPane
                     bool exists = false;
                     foreach (Metadata item in m_UrakawaSession.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                     {
-                        if (item.NameContentAttribute.Name.Equals(definition.Name, StringComparison.OrdinalIgnoreCase))
+                        if (item.NameContentAttribute.Name.Equals(definition.Name, StringComparison.Ordinal)) //OrdinalIgnoreCase
                         {
                             exists = true;
                             break;

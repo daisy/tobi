@@ -21,9 +21,7 @@ namespace Tobi.Plugin.Urakawa
             {
                 return !string.IsNullOrEmpty(DocumentFilePath)
                        &&
-                       String.Equals(Path.GetExtension(DocumentFilePath),
-                                     OpenXukAction.XUK_SPINE_EXTENSION,
-                                     StringComparison.OrdinalIgnoreCase);
+                       OpenXukAction.XUK_SPINE_EXTENSION.Equals(Path.GetExtension(DocumentFilePath), StringComparison.OrdinalIgnoreCase);
             }
         }
 

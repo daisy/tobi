@@ -264,8 +264,7 @@ namespace Tobi.Plugin.MetadataPane
             
             if (item.Definition == null) return false;
 
-            return string.Equals(item.Definition.Name, SupportedMetadata_Z39862005.DC_Identifier,
-                                 StringComparison.OrdinalIgnoreCase);
+            return item.Definition.Name.Equals(SupportedMetadata_Z39862005.DC_Identifier, StringComparison.Ordinal); //OrdinalIgnoreCase
         }
     }
 }

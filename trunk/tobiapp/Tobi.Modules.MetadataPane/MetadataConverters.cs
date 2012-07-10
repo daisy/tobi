@@ -86,7 +86,7 @@ namespace Tobi.Plugin.MetadataPane
             var list = (ObservableCollection<string>)values[0];
             string newItem = (string) values[1];
 
-            bool found = list.Any(s => s.Equals(newItem, StringComparison.OrdinalIgnoreCase));
+            bool found = list.Any(s => s.Equals(newItem, StringComparison.Ordinal)); //OrdinalIgnoreCase
             if (!found)
             {
                 list.Insert(0, newItem);
