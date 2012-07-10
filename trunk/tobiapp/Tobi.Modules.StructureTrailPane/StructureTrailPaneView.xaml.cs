@@ -557,6 +557,11 @@ namespace Tobi.Plugin.StructureTrailPane
                 return;
             }
 
+            if (m_UrakawaSession.IsXukSpine)
+            {
+                return;
+            }
+
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Background = SystemColors.WindowBrush;
             BreadcrumbPanel.Children.Add(m_FocusStartElement);

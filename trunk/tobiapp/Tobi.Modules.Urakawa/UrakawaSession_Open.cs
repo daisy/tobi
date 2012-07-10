@@ -18,8 +18,11 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
+using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.exception;
+using urakawa.media;
+using urakawa.property.xml;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.Urakawa
@@ -226,9 +229,18 @@ namespace Tobi.Plugin.Urakawa
 
                 if (DocumentProject != null)
                 {
-                    if (String.Equals(ext, OpenXukAction.XUK_SPINE_EXTENSION, StringComparison.OrdinalIgnoreCase))
+                    //m_Logger.Log(@"-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug, Priority.Medium);
+
+                    if (m_EventAggregator != null)
                     {
-                        parseXukSpine(DocumentFilePath);
+                        m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
+                    }
+
+                    if (IsXukSpine
+                        //String.Equals(ext, OpenXukAction.XUK_SPINE_EXTENSION, StringComparison.OrdinalIgnoreCase)
+                        )
+                    {
+                        parseXukSpine(DocumentFilePath, DocumentProject);
 
                         if (ShowXukSpineCommand.CanExecute())
                         {
@@ -237,13 +249,6 @@ namespace Tobi.Plugin.Urakawa
                     }
                     else
                     {
-                        //m_Logger.Log(@"-- PublishEvent [ProjectLoadedEvent] UrakawaSession.OpenFile", Category.Debug, Priority.Medium);
-
-                        if (m_EventAggregator != null)
-                        {
-                            m_EventAggregator.GetEvent<ProjectLoadedEvent>().Publish(DocumentProject);
-                        }
-
                         var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, DocumentProject.Presentations.Get(0).RootNode, null);
                         if (treeNode != null)
                         {
@@ -265,7 +270,7 @@ namespace Tobi.Plugin.Urakawa
                     return true;
                 }
 
-                
+
 
 
                 //var progressBar = new ProgressBar
@@ -433,11 +438,58 @@ namespace Tobi.Plugin.Urakawa
             return false;
         }
 
-        private void parseXukSpine(string path)
+        private void parseXukSpine(string projectPath, Project project)
         {
+            string rootDir = Path.GetDirectoryName(projectPath);
+            //string rootDir = Directory.GetParent(dir).Name;
+
             XukSpineItems = new ObservableCollection<Uri>();
 
-            //TODO: parse spine file
+            Presentation presentation = project.Presentations.Get(0);
+
+            foreach (var treeNode in presentation.RootNode.Children.ContentsAs_Enumerable)
+            {
+                TextMedia txtMedia = treeNode.GetTextMedia() as TextMedia;
+                if (txtMedia == null) continue;
+                string path = txtMedia.Text;
+
+                XmlProperty xmlProp = treeNode.GetXmlProperty();
+                if (xmlProp == null) continue;
+
+                string name = treeNode.GetXmlElementLocalName();
+                if (name != "metadata") continue;
+
+                bool hasXuk = false;
+                foreach (var xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
+                {
+                    if (xmlAttr.LocalName == "xuk" && xmlAttr.Value == "true")
+                    {
+                        hasXuk = true;
+                        break;
+                    }
+                }
+
+                if (!hasXuk) continue;
+
+                string fullXukPath = Daisy3_Import.GetXukFilePath(rootDir, path, false);
+                if (!File.Exists(fullXukPath))
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                    continue;
+                }
+
+                Uri uri = new Uri(fullXukPath, UriKind.Absolute);
+                XukSpineItems.Add(uri);
+            }
+        }
+
+        private void parseXukSpine(string path)
+        {
+            //TODO: parse spine file into project
+            Project project = null;
+            //parseXukSpine(project);
         }
 
         private readonly Object LOCK = new object();

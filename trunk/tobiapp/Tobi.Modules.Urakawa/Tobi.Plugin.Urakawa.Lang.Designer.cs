@@ -196,24 +196,6 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open image description guide in web browser.
-        /// </summary>
-        public static string CmdOpenImageDescriptionsManual_LongDesc {
-            get {
-                return ResourceManager.GetString("CmdOpenImageDescriptionsManual_LongDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Image description guide (online).
-        /// </summary>
-        public static string CmdOpenImageDescriptionsManual_ShortDesc {
-            get {
-                return ResourceManager.GetString("CmdOpenImageDescriptionsManual_ShortDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open the recent files dialog.
         /// </summary>
         public static string CmdOpenRecent_LongDesc {
@@ -228,24 +210,6 @@ namespace Tobi.Plugin.Urakawa {
         public static string CmdOpenRecent_ShortDesc {
             get {
                 return ResourceManager.GetString("CmdOpenRecent_ShortDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open user manual in web browser.
-        /// </summary>
-        public static string CmdOpenUserManual_LongDesc {
-            get {
-                return ResourceManager.GetString("CmdOpenUserManual_LongDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _User manual (online).
-        /// </summary>
-        public static string CmdOpenUserManual_ShortDesc {
-            get {
-                return ResourceManager.GetString("CmdOpenUserManual_ShortDesc", resourceCulture);
             }
         }
         
@@ -486,6 +450,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string RecentFileName {
+            get {
+                return ResourceManager.GetString("RecentFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please wait....
         /// </summary>
         public static string RunningTask {
@@ -587,7 +560,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to open file.
+        ///   Looks up a localized string similar to Open file.
         /// </summary>
         public static string UrakawaSession_OpenFile {
             get {

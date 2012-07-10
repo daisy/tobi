@@ -279,6 +279,11 @@ namespace Tobi.Plugin.NavigationPane
         #region Events
         private void onProjectLoaded(Project project)
         {
+            if (m_UrakawaSession.IsXukSpine)
+            {
+                return;
+            }
+
             MarkersNavigator = new MarkersNavigator(View);
             View.LoadProject();
 

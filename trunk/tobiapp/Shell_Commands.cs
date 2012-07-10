@@ -48,10 +48,48 @@ namespace Tobi
         public RichDelegateCommand OpenTobiSettingsFolderCommand { get; private set; }
         public RichDelegateCommand OpenTobiIsolatedStorageCommand { get; private set; }
 
+        public RichDelegateCommand OpenUserManualCommand { get; private set; }
+        public RichDelegateCommand OpenImageDescriptionsManualCommand { get; private set; }
+
         private void initCommands()
         {
             m_Logger.Log(@"ShellView.initCommands", Category.Debug, Priority.Medium);
 
+            OpenUserManualCommand = new RichDelegateCommand(
+                Tobi_Lang.CmdOpenUserManual_ShortDesc,
+                Tobi_Lang.CmdOpenUserManual_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+               null,
+                () =>
+                {
+                    m_Logger.Log(@"ShellView.OpenUserManualCommand", Category.Debug, Priority.Medium);
+
+                    ExecuteShellProcess("http://www.daisy.org/tobi/user-manual");
+                },
+                 () => true,
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Help)
+                );
+
+            RegisterRichCommand(OpenUserManualCommand);
+
+            OpenImageDescriptionsManualCommand = new RichDelegateCommand(
+                Tobi_Lang.CmdOpenImageDescriptionsManual_ShortDesc,
+                Tobi_Lang.CmdOpenImageDescriptionsManual_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null,
+                () =>
+                {
+                    m_Logger.Log(@"ShellView.OpenImageDescriptionsManualCommand", Category.Debug, Priority.Medium);
+
+                    ExecuteShellProcess("http://www.daisy.org/tobi/image-description-manual");
+                },
+                 () => true,
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
+                );
+
+            RegisterRichCommand(OpenImageDescriptionsManualCommand);
             //
             ExitCommand = new RichDelegateCommand(
                 Tobi_Lang.CmdMenuExit_ShortDesc,

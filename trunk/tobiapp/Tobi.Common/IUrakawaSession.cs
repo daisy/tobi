@@ -50,6 +50,8 @@ namespace Tobi.Common
 
         bool IsAcmCodecsDisabled { get; }
 
+        bool IsXukSpine { get; }
+
         /// <summary>
         /// Requests to close the current document.
         /// </summary>

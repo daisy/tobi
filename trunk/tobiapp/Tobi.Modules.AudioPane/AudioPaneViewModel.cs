@@ -1159,6 +1159,11 @@ m_Stream.Length);
                 return;
             }
 
+            if (m_UrakawaSession.IsXukSpine)
+            {
+                return;
+            }
+
             TotalSessionAudioDurationInLocalUnits = 0;
 
             if (View != null)

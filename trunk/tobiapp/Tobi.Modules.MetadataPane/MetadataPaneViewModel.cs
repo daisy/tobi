@@ -100,6 +100,11 @@ namespace Tobi.Plugin.MetadataPane
 
         private void OnProjectLoaded(Project project)
         {
+            //if (m_UrakawaSession.IsXukSpine)
+            //{
+            //    return;
+            //}
+
             m_Logger.Log("MetadataPaneViewModel.OnProject(UN)Loaded" + (project == null ? "(null)" : ""),
                 Category.Debug, Priority.Medium);
 

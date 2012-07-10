@@ -72,6 +72,14 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
+        public string ShortDescription
+        {
+            get
+            {
+                return Path.GetFileName(FullDescription);
+            }
+        }
+
         private bool? m_FileFound = null;
         //[NotifyDependsOn("Uri")]
         public bool FileFound
@@ -284,9 +292,9 @@ namespace Tobi.Plugin.Urakawa
         {
             XukSpineItems = new ObservableCollection<XukSpineItemWrapper>();
 
-            if (m_Session.XukSpineItems.Count <= 0) return;
+            if (m_Session.XukSpineItems == null || m_Session.XukSpineItems.Count <= 0) return;
 
-            for (int i = m_Session.XukSpineItems.Count - 1; i >= 0; i--)
+            for (int i = 0; i < m_Session.XukSpineItems.Count; i++)
             //foreach (var fileUri in m_Session.XukSpineItems)
             {
                 var fileUri = m_Session.XukSpineItems[i];
