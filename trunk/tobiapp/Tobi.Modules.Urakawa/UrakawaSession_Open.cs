@@ -18,6 +18,7 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
+using urakawa.data;
 using urakawa.exception;
 using urakawa.xuk;
 
@@ -380,7 +381,7 @@ namespace Tobi.Plugin.Urakawa
             else if (String.Equals(ext, ".mml", StringComparison.OrdinalIgnoreCase))
             {
                 string mathML = File.ReadAllText(fileUri.LocalPath, Encoding.UTF8);
-                string svgFileOutput = fileUri.LocalPath + ".svg";
+                string svgFileOutput = fileUri.LocalPath + DataProviderFactory.IMAGE_SVG_EXTENSION;
 
                 string svg = Convert_MathML_to_SVG(mathML, svgFileOutput);
 

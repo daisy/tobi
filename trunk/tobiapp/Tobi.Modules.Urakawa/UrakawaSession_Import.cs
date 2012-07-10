@@ -34,6 +34,8 @@ namespace Tobi.Plugin.Urakawa
                 {
                     return false;
                 }
+
+                FileDataProvider.DeleteDirectory(outputDirectory);
             }
 
 
