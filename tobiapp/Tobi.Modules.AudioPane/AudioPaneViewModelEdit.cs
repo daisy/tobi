@@ -472,7 +472,7 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            bool isWav = String.Equals(ext, DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase);
+            bool isWav = ext.Equals(DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase);
 
             AudioLibPCMFormat wavFormat = (pcmInfo != null ? pcmInfo.Copy().Data : null);
             if (isWav && wavFormat == null)

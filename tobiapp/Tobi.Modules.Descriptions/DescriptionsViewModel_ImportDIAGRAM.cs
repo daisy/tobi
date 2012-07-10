@@ -361,7 +361,7 @@ namespace Tobi.Plugin.Descriptions
                         {
                             string extension = Path.GetExtension(fullPath);
 
-                            bool isWav = String.Equals(extension, DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase);
+                            bool isWav = extension.Equals(DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase);
 
                             AudioLibPCMFormat wavFormat = null;
                             if (isWav)

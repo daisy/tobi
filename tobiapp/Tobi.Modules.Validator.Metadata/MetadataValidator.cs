@@ -179,8 +179,7 @@ namespace Tobi.Plugin.Validator.Metadata
         }
 
         //TODO: un-hardcode this
-        public MetadataDefinitionSet MetadataDefinitions =
-            SupportedMetadata_Z39862005.DefinitionSet;
+        public MetadataDefinitionSet MetadataDefinitions = SupportedMetadata_Z39862005.DefinitionSet;
 
         private MetadataDataTypeValidator m_DataTypeValidator;
         private MetadataOccurrenceValidator m_OccurrenceValidator;
@@ -291,7 +290,7 @@ namespace Tobi.Plugin.Validator.Metadata
                     bool found = false;
                     foreach (urakawa.metadata.Metadata item in m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                     {
-                        if (item.NameContentAttribute.Name.Equals(metadataDefinition.Name, StringComparison.OrdinalIgnoreCase))
+                        if (item.NameContentAttribute.Name.Equals(metadataDefinition.Name, StringComparison.Ordinal)) //OrdinalIgnoreCase
                         {
                             found = true;
                             break;
@@ -322,7 +321,7 @@ namespace Tobi.Plugin.Validator.Metadata
                     list.Clear();
                     foreach (urakawa.metadata.Metadata item in m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
                     {
-                        if (item.NameContentAttribute.Name.Equals(metadata.NameContentAttribute.Name, StringComparison.OrdinalIgnoreCase))
+                        if (item.NameContentAttribute.Name.Equals(metadata.NameContentAttribute.Name, StringComparison.Ordinal)) //OrdinalIgnoreCase
                         {
                             list.Add(item);
                         }
