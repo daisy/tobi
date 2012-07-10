@@ -282,6 +282,11 @@ namespace Tobi.Plugin.Validator.MissingAudio
                     }
                     return true;
                 }
+
+                if (localName.Equals("svg", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
             }
 
             if (node.GetTextMedia() != null)

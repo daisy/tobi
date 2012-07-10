@@ -633,6 +633,11 @@ namespace Tobi.Plugin.DocumentPane
                     }
                     return true;
                 }
+
+                if (localName.Equals("svg", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
             }
 
             if (node.GetTextMedia() != null)
@@ -1753,6 +1758,10 @@ namespace Tobi.Plugin.DocumentPane
             {
 #if DEBUG
                 XmlAttribute srcAttr = xmlProp.GetAttribute("src");
+                if (srcAttr == null)
+                {
+                    srcAttr = xmlProp.GetAttribute(DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.XLINK_Href), DiagramContentModelHelper.NS_URL_XLINK);
+                }
 
                 DebugFix.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == srcAttr.Value);
 #endif //DEBUG
@@ -1995,7 +2004,7 @@ namespace Tobi.Plugin.DocumentPane
                         //}
                         );
                 }
-                
+
                 return parent;
 
                 return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
@@ -2264,6 +2273,7 @@ namespace Tobi.Plugin.DocumentPane
                             });
                     }
                 case "img":
+                case "image":
                     {
                         return walkBookTreeAndGenerateFlowDocument_img(node, parent, textMedia);
                     }
