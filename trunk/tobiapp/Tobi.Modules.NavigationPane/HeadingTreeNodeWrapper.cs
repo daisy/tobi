@@ -76,7 +76,7 @@ namespace Tobi.Plugin.NavigationPane
                     TreeNode nd = level.Children.Get(0);
                     if (nd != null)
                     {
-                        localName = nd.HasXmlProperty ? node.GetXmlElementLocalName() : null;
+                        localName = nd.HasXmlProperty ? nd.GetXmlElementLocalName() : null;
 
                         if (localName != null && localName == "pagenum" && level.Children.Count > 1)
                         {
