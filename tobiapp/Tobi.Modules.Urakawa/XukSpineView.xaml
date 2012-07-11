@@ -141,11 +141,11 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 </UI:SortableGridViewColumn>
 
                 <UI:SortableGridViewColumn Header="{x:Static Urakawa:Tobi_Plugin_Urakawa_Lang.RecentFileLocation}"
-                        SortPropertyName="FullDescription"
+                        SortPropertyName="FilePath"
                         IsDefaultSortColumn="False">
                     <GridViewColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding FullDescription, Mode=OneWay}"
+                            <TextBlock Text="{Binding FilePath, Mode=OneWay}"
                          ToolTip="{StaticResource itemTooltip}"
                          Margin="2,2,2,2">
 

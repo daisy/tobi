@@ -32,42 +32,55 @@ namespace Tobi.Plugin.Urakawa
         //    private set;
         //}
 
-        public readonly Uri Uri;
+        public readonly XukSpineItemData Data;
 
-        public XukSpineItemWrapper(Uri uri)
+        public XukSpineItemWrapper(XukSpineItemData data)
         {
-            Uri = uri;
+            Data = data;
 
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
         }
 
-        public bool CheckFileExists()
-        {
-            m_FileFound = Uri.IsFile && File.Exists(Uri.LocalPath);
+        //public bool CheckFileExists()
+        //{
+        //    m_FileFound = Uri.IsFile && File.Exists(Uri.LocalPath);
 
-            //m_PropertyChangeHandler.RaisePropertyChanged(() => FileFound);
-            //m_PropertyChangeHandler.RaisePropertyChanged(() => FullDescription);
+        //    //m_PropertyChangeHandler.RaisePropertyChanged(() => FileFound);
+        //    //m_PropertyChangeHandler.RaisePropertyChanged(() => FullDescription);
 
-            return m_FileFound.Value;
-        }
+        //    return m_FileFound.Value;
+        //}
 
-        public void UpdateFileExists()
-        {
-            m_PropertyChangeHandler.RaisePropertyChanged(() => FileFound);
-            m_PropertyChangeHandler.RaisePropertyChanged(() => FullDescription);
-        }
+        //public void UpdateFileExists()
+        //{
+        //    m_PropertyChangeHandler.RaisePropertyChanged(() => FileFound);
+        //    m_PropertyChangeHandler.RaisePropertyChanged(() => FullDescription);
+        //}
 
         //[NotifyDependsOn("Uri")]
         public string FullDescription
         {
             get
             {
-                string str = Uri.IsFile ? Uri.LocalPath : Uri.ToString();
-                if (!FileFound)
-                {
-                    str = "[" + Tobi_Common_Lang.NotFound + "] " + str;
-                }
+                //string str = Uri.IsFile ? Uri.LocalPath : Uri.ToString();
+                //if (!FileFound)
+                //{
+                //    str = "[" + Tobi_Common_Lang.NotFound + "] " + str;
+                //}
+                return ShortDescription + " -- " + FilePath;
+            }
+        }
+
+        public string FilePath
+        {
+            get
+            {
+                string str = Data.Uri.IsFile ? Data.Uri.LocalPath : Data.Uri.ToString();
+                //if (!FileFound)
+                //{
+                //    str = "[" + Tobi_Common_Lang.NotFound + "] " + str;
+                //}
                 return str;
             }
         }
@@ -76,19 +89,26 @@ namespace Tobi.Plugin.Urakawa
         {
             get
             {
-                return Path.GetFileName(FullDescription);
+                if (!string.IsNullOrEmpty(Data.Title))
+                {
+                    return Data.Title + " (" + Path.GetFileName(FilePath).Replace(".xuk", "") + ")";
+                }
+                else
+                {
+                    return Path.GetFileName(FilePath);
+                }
             }
         }
 
-        private bool? m_FileFound = null;
-        //[NotifyDependsOn("Uri")]
-        public bool FileFound
-        {
-            get
-            {
-                return m_FileFound == null || m_FileFound.Value;
-            }
-        }
+        //private bool? m_FileFound = null;
+        ////[NotifyDependsOn("Uri")]
+        //public bool FileFound
+        //{
+        //    get
+        //    {
+        //        return m_FileFound == null || m_FileFound.Value;
+        //    }
+        //}
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void DispatchPropertyChangedEvent(PropertyChangedEventArgs e)
@@ -219,59 +239,59 @@ namespace Tobi.Plugin.Urakawa
             if (win is PopupModalWindow)
                 OwnerWindow = (PopupModalWindow)win;
 
-            m_interruptFileExistCheck = false;
+            //m_interruptFileExistCheck = false;
 
-            foreach (var rf in XukSpineItems)
-            {
-                if (m_interruptFileExistCheck) break;
+            //foreach (var rf in XukSpineItems)
+            //{
+            //    if (m_interruptFileExistCheck) break;
 
-                ThreadPool.QueueUserWorkItem(
-                    delegate(Object o) // or: (foo) => {} (LAMBDA)
-                    {
-                        var xukSpineItem = (XukSpineItemWrapper)o;
+            //    ThreadPool.QueueUserWorkItem(
+            //        delegate(Object o) // or: (foo) => {} (LAMBDA)
+            //        {
+            //            var xukSpineItem = (XukSpineItemWrapper)o;
 
-                        //m_Logger.Log("... " + xukSpineItem.Uri, Category.Debug, Priority.High);
+            //            //m_Logger.Log("... " + xukSpineItem.Uri, Category.Debug, Priority.High);
 
-                        bool exists = xukSpineItem.CheckFileExists(); // Can be time-consuming, because of network timeout.
+            //            bool exists = xukSpineItem.CheckFileExists(); // Can be time-consuming, because of network timeout.
 
-                        if (m_interruptFileExistCheck) return;
+            //            if (m_interruptFileExistCheck) return;
 
-                        //m_Logger.Log("EXISTS: " + exists, Category.Debug, Priority.High);
+            //            //m_Logger.Log("EXISTS: " + exists, Category.Debug, Priority.High);
 
-                        if (!exists)
-                        {
-                            Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
-                                (DispatcherOperationCallback)delegate(object recFile)
-                                {
-                                    if (m_interruptFileExistCheck) return null;
+            //            if (!exists)
+            //            {
+            //                Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
+            //                    (DispatcherOperationCallback)delegate(object recFile)
+            //                    {
+            //                        if (m_interruptFileExistCheck) return null;
 
-                                    var rec = (XukSpineItemWrapper)recFile;
+            //                        var rec = (XukSpineItemWrapper)recFile;
 
-                                    //m_Logger.Log("UPDATE: " + rec.Uri.ToString(), Category.Debug, Priority.High);
+            //                        //m_Logger.Log("UPDATE: " + rec.Uri.ToString(), Category.Debug, Priority.High);
 
-                                    rec.UpdateFileExists();
-                                    return null;
-                                }, xukSpineItem);
-                            //Dispatcher.BeginInvoke(
-                            //    DispatcherPriority.Background,
-                            //    (MethodInvoker)(() =>
-                            //                        {
+            //                        rec.UpdateFileExists();
+            //                        return null;
+            //                    }, xukSpineItem);
+            //                //Dispatcher.BeginInvoke(
+            //                //    DispatcherPriority.Background,
+            //                //    (MethodInvoker)(() =>
+            //                //                        {
 
-                            //                        })
-                            //    ); // new Action(LAMBDA)
-                        }
-                    }, rf);
-            }
+            //                //                        })
+            //                //    ); // new Action(LAMBDA)
+            //            }
+            //        }, rf);
+            //}
         }
 
         public RichDelegateCommand CmdFindNextGlobal { get; private set; }
         public RichDelegateCommand CmdFindPreviousGlobal { get; private set; }
 
-        private bool m_interruptFileExistCheck = false;
+        //private bool m_interruptFileExistCheck = false;
 
         private void OnUnloaded_Panel(object sender, RoutedEventArgs e)
         {
-            m_interruptFileExistCheck = true;
+            //m_interruptFileExistCheck = true;
 
             if (m_GlobalSearchCommand != null)
             {
@@ -297,8 +317,8 @@ namespace Tobi.Plugin.Urakawa
             for (int i = 0; i < m_Session.XukSpineItems.Count; i++)
             //foreach (var fileUri in m_Session.XukSpineItems)
             {
-                var fileUri = m_Session.XukSpineItems[i];
-                XukSpineItems.Add(new XukSpineItemWrapper(fileUri));
+                XukSpineItemData data = m_Session.XukSpineItems[i];
+                XukSpineItems.Add(new XukSpineItemWrapper(data));
             }
         }
 
