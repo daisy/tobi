@@ -127,10 +127,10 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                                                 <Setter Property="FontWeight" Value="Bold"/>
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding Path=FileFound, Mode=OneWay, TargetNullValue=True}" Value="False">
+                                            <!--<DataTrigger Binding="{Binding Path=FileFound, Mode=OneWay, TargetNullValue=True}" Value="False">
                                                 <Setter Property="FontStyle" Value="Italic"/>
                                                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                            </DataTrigger>
+                                            </DataTrigger>-->
                                         </Style.Triggers>
 
                                     </Style>
@@ -160,10 +160,10 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                                                 <Setter Property="FontWeight" Value="Bold"/>
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding Path=FileFound, Mode=OneWay, TargetNullValue=True}" Value="False">
+                                            <!--<DataTrigger Binding="{Binding Path=FileFound, Mode=OneWay, TargetNullValue=True}" Value="False">
                                                 <Setter Property="FontStyle" Value="Italic"/>
                                                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                            </DataTrigger>
+                                            </DataTrigger>-->
                                         </Style.Triggers>
 
                                     </Style>

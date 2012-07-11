@@ -307,11 +307,44 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     m_roots = new ObservableCollection<HeadingTreeNodeWrapper>();
                     TreeNode presentationRootNode = m_Project.Presentations.Get(0).RootNode;
+
+                    bool html5_outlining = presentationRootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
+
+                    int currentRank = -1; //-1 == N/A, 0 == sectioning, 1..6 == real heading rank
                     int n = GetChildCount(presentationRootNode);
                     for (int index = 0; index < n; index++)
                     {
                         TreeNode node = GetChild(presentationRootNode, index);
-                        m_roots.Add(new HeadingTreeNodeWrapper(this, node, null));
+
+                        if (html5_outlining)
+                        {
+                            string name = node.GetXmlElementLocalName();
+
+                            if (IsHeading(name) && name.Length == 2 && name[0] == 'h')
+                            {
+                                int rank;
+                                if (Int32.TryParse("" + name[1], out rank))
+                                {
+                                    if (currentRank > 0 && rank > currentRank)
+                                    {
+                                        continue;
+                                    }
+
+                                    currentRank = rank;
+                                }
+                            }
+
+                            if (IsLevel(name))
+                            {
+                                currentRank = 0;
+                            }
+
+                            m_roots.Add(new HeadingTreeNodeWrapper(this, node, null));
+                        }
+                        else
+                        {
+                            m_roots.Add(new HeadingTreeNodeWrapper(this, node, null));
+                        }
                     }
                 }
                 return m_roots;
@@ -326,7 +359,20 @@ namespace Tobi.Plugin.NavigationPane
                    || localXmlName == "level4"
                    || localXmlName == "level5"
                    || localXmlName == "level6"
-                   || localXmlName == "level";
+                   || localXmlName == "level"
+                   || localXmlName == "section"
+                   || localXmlName == "article"
+                   || localXmlName == "aside"
+                   || localXmlName == "nav"
+
+                   || localXmlName == "hgroup"
+
+                   //|| localXmlName == "blockquote"
+                //|| localXmlName == "figure"
+                //|| localXmlName == "details"
+                //|| localXmlName == "fieldset"
+                //|| localXmlName == "td"
+                   ;
         }
 
         public static bool IsHeading(string localXmlName)
