@@ -35,7 +35,7 @@ namespace Tobi.Plugin.Urakawa
 
         public RichDelegateCommand ShowXukSpineCommand { get; private set; }
 
-        public ObservableCollection<Uri> XukSpineItems
+        public ObservableCollection<XukSpineItemData> XukSpineItems
         {
             get;
             private set;
@@ -75,7 +75,7 @@ namespace Tobi.Plugin.Urakawa
                         {
                             try
                             {
-                                OpenFile(((XukSpineItemWrapper)view.XukSpineItemsList.SelectedItem).Uri.ToString());
+                                OpenFile(((XukSpineItemWrapper)view.XukSpineItemsList.SelectedItem).Data.Uri.ToString());
                             }
                             catch (Exception ex)
                             {

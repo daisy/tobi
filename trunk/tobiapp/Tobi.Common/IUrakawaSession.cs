@@ -9,6 +9,18 @@ using urakawa.core;
 
 namespace Tobi.Common
 {
+    public struct XukSpineItemData
+    {
+        public XukSpineItemData(Uri uri, string title)
+        {
+            Uri = uri;
+            Title = title;
+        }
+
+        public Uri Uri;
+        public string Title;
+    }
+
     ///<summary>
     /// The public facade for an authoring session based on the Urakawa SDK data model.
     ///</summary>
@@ -31,7 +43,7 @@ namespace Tobi.Common
         void SaveRecentFiles();
         ObservableCollection<Uri> RecentFiles { get; }
 
-        ObservableCollection<Uri> XukSpineItems { get; }
+        ObservableCollection<XukSpineItemData> XukSpineItems { get; }
 
         /// <summary>
         /// The Project instance for the currently active document.

@@ -437,7 +437,7 @@ namespace Tobi.Plugin.Urakawa
             string rootDir = Path.GetDirectoryName(projectPath);
             //string rootDir = Directory.GetParent(dir).Name;
 
-            XukSpineItems = new ObservableCollection<Uri>();
+            XukSpineItems = new ObservableCollection<XukSpineItemData>();
 
             Presentation presentation = project.Presentations.Get(0);
 
@@ -453,13 +453,18 @@ namespace Tobi.Plugin.Urakawa
                 string name = treeNode.GetXmlElementLocalName();
                 if (name != "metadata") continue;
 
+                string title = null;
                 bool hasXuk = false;
                 foreach (var xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
                 {
                     if (xmlAttr.LocalName == "xuk" && xmlAttr.Value == "true")
                     {
                         hasXuk = true;
-                        break;
+                    }
+
+                    if (xmlAttr.LocalName == "title")
+                    {
+                        title = xmlAttr.Value;
                     }
                 }
 
@@ -486,7 +491,7 @@ namespace Tobi.Plugin.Urakawa
                 else
                 {
                     Uri uri = new Uri(fullXukPath, UriKind.Absolute);
-                    XukSpineItems.Add(uri);
+                    XukSpineItems.Add(new XukSpineItemData(uri, title));
                 }
             }
 
