@@ -38,8 +38,10 @@ namespace Tobi.Plugin.Urakawa
                 FileDataProvider.DeleteDirectory(outputDirectory);
             }
 
-
-            var combo = new ComboBox();
+            var combo = new ComboBox
+            {
+                Margin = new Thickness(0, 0, 0, 12)
+            };
 
             ComboBoxItem item1 = new ComboBoxItem();
             item1.Content = AudioLib.SampleRate.Hz11025.ToString();
@@ -75,6 +77,34 @@ namespace Tobi.Plugin.Urakawa
                     }
             }
 
+            var checkBox = new CheckBox
+            {
+                IsThreeState = false,
+                IsChecked = Settings.Default.AudioProjectStereo,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            var label_ = new TextBlock
+            {
+                Text = Tobi_Plugin_Urakawa_Lang.Stereo,
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+
+            var panel__ = new StackPanel
+            {
+                Orientation = System.Windows.Controls.Orientation.Horizontal,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            panel__.Children.Add(label_);
+            panel__.Children.Add(checkBox);
+
             var panel = new StackPanel
             {
                 Orientation = Orientation.Vertical,
@@ -82,6 +112,8 @@ namespace Tobi.Plugin.Urakawa
                 VerticalAlignment = VerticalAlignment.Center,
             };
             panel.Children.Add(combo);
+            panel.Children.Add(panel__);
+            
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ProjectSampleRate),
@@ -98,6 +130,8 @@ namespace Tobi.Plugin.Urakawa
             {
                 return false;
             }
+
+            Settings.Default.AudioProjectStereo = checkBox.IsChecked.Value;
 
             if (combo.SelectedItem == item1)
             {
@@ -117,6 +151,7 @@ namespace Tobi.Plugin.Urakawa
             var converter = new Daisy3_Import(DocumentFilePath, outputDirectory,
                 IsAcmCodecsDisabled,
                 Settings.Default.AudioProjectSampleRate,
+                Settings.Default.AudioProjectStereo,
                 Settings.Default.XUK_PrettyFormat
                 ); //Directory.GetParent(bookfile).FullName
 
