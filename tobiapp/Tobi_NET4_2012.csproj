@@ -188,6 +188,9 @@
     <Content Include="desc2html.xsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="faad.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Obi-to-XUK2.xsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
