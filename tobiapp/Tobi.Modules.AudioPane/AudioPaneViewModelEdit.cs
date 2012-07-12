@@ -329,6 +329,20 @@ namespace Tobi.Plugin.AudioPane
                         next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, treeNode, out nested);
                         if (next != null)
                         {
+                            TreeNode math = next.GetFirstAncestorWithXmlElement("math");
+                            if (math != null)
+                            {
+                                next = math;
+                            }
+                            else
+                            {
+                                TreeNode svg = next.GetFirstAncestorWithXmlElement("svg");
+                                if (svg != null)
+                                {
+                                    next = svg;
+                                }
+                            }
+
                             if (Settings.Default.Audio_EnableSkippability && isTreeNodeSkippable(next))
                             {
                                 treeNode = next;
