@@ -1076,6 +1076,14 @@ namespace Tobi.Plugin.AudioPane
                                 {
                                     currentImageTile.m_nextItem.m_data.m_originalW -= overflow;
                                     currentImageTile.m_nextItem.m_data.m_originalX += overflow;
+
+                                    if (currentImageTile.m_nextItem.m_data.m_originalW <= 0)
+                                    {
+#if DEBUG
+                                        Debugger.Break();
+#endif //DEBUG
+                                        currentImageTile.m_nextItem.m_data.m_originalW = 1;
+                                    }
                                 }
 
                                 //#if DEBUG
@@ -1088,7 +1096,15 @@ namespace Tobi.Plugin.AudioPane
 
                                                        if (currentImageTile.m_nextItem != null)
                                                        {
-                                                           currentImageTile.m_nextItem.m_data.m_image.Width -= overflow;
+                                                           double newW = currentImageTile.m_nextItem.m_data.m_image.Width - overflow;
+                                                           if (newW <= 0)
+                                                           {
+#if DEBUG
+                                                               Debugger.Break();
+#endif //DEBUG
+                                                               newW = 1;
+                                                           }
+                                                           currentImageTile.m_nextItem.m_data.m_image.Width = newW;
 
                                                            double left =
                                                                (double)
@@ -1113,13 +1129,15 @@ namespace Tobi.Plugin.AudioPane
                                 }
                             }
 
+                            double wZoomed = currentImageTile.m_data.m_originalW * zoom;
+
                             drawWaveForm(
                                 currentImageTile.m_data,
                                 //audioStream,
                                 true,
                                 //sgcCh1, sgcCh2, geometryCh1, geometryCh2,
                                 listBottomPointsCh1, listBottomPointsCh2, listTopPointsCh1, listTopPointsCh2,
-                                heightMagnified, currentImageTile.m_data.m_originalW * zoom, // widthMagnified,
+                                heightMagnified, wZoomed, //wZoomed > 0 ? wZoomed : widthMagnified, // widthMagnified,
                                 dBMinHardCoded, dBMinReached, dBMaxReached, decibelDrawDelta, tolerance,
                                 bytesPerPixel_Magnified, zoom, treeNodeSelection);
                         }
@@ -1281,8 +1299,8 @@ namespace Tobi.Plugin.AudioPane
                                     break;
                                 }
 
-                                byte byte1 =bytes[index];
-                                byte byte2 =bytes[index + 1];
+                                byte byte1 = bytes[index];
+                                byte byte2 = bytes[index + 1];
                                 var sample =
                                     BitConverter.IsLittleEndian
                                     ? (short)(byte1 | (byte2 << 8))
@@ -2018,63 +2036,75 @@ namespace Tobi.Plugin.AudioPane
                                 //}
                             }
 
-                            var renderTargetBitmap = new RenderTargetBitmap((int)widthMagnified,
-                                                                            (int)heightMagnified, 96, 96,
-                                                                            PixelFormats.Pbgra32);
-
-                            renderTargetBitmap.Render(drawingVisual);
-
-                            BitmapSourceGC.Manage(renderTargetBitmap);
-                            renderTargetBitmap.Freeze();
-
-                            if (renderMethod == WaveFormRenderMethod.WriteableBitmap
-                                || renderMethod == WaveFormRenderMethod.BitmapSource)
+                            int wInt = (int)widthMagnified;
+                            if (wInt > 0)
                             {
-                                //FormatConvertedBitmap formatConv = new FormatConvertedBitmap();
-                                //formatConv.BeginInit();
-                                //formatConv.Source = myBitmapSource;
-                                //formatConv.DestinationFormat = PixelFormats.Rgb24;
-                                //formatConv.EndInit();  
+                                var renderTargetBitmap = new RenderTargetBitmap(wInt,
+                                                                                (int)heightMagnified, 96, 96,
+                                                                                PixelFormats.Pbgra32);
 
-                                uint[] arrBits =
-                                    new uint[renderTargetBitmap.PixelWidth * renderTargetBitmap.PixelHeight];
-                                // PixelFormats.Pbgra32 => 4 bytes per pixel, so a full line is:
-                                int stride = 4 * renderTargetBitmap.PixelWidth;
-                                renderTargetBitmap.CopyPixels(arrBits, stride, 0);
+                                renderTargetBitmap.Render(drawingVisual);
 
-                                if (renderMethod == WaveFormRenderMethod.BitmapSource)
+                                BitmapSourceGC.Manage(renderTargetBitmap);
+                                renderTargetBitmap.Freeze();
+
+                                if (renderMethod == WaveFormRenderMethod.WriteableBitmap
+                                    || renderMethod == WaveFormRenderMethod.BitmapSource)
                                 {
-                                    var bitmapSource = BitmapSource.Create((int)widthMagnified,
-                                                                           (int)heightMagnified, 96, 96,
-                                                                           PixelFormats.Pbgra32, null, arrBits,
-                                                                           stride);
-                                    BitmapSourceGC.Manage(bitmapSource);
-                                    bitmapSource.Freeze();
+                                    //FormatConvertedBitmap formatConv = new FormatConvertedBitmap();
+                                    //formatConv.BeginInit();
+                                    //formatConv.Source = myBitmapSource;
+                                    //formatConv.DestinationFormat = PixelFormats.Rgb24;
+                                    //formatConv.EndInit();  
 
-                                    imageAndDraw.m_image.Source = bitmapSource;
-                                    imageAndDraw.m_imageSourceLoaded = true;
+                                    uint[] arrBits =
+                                        new uint[renderTargetBitmap.PixelWidth * renderTargetBitmap.PixelHeight];
+                                    // PixelFormats.Pbgra32 => 4 bytes per pixel, so a full line is:
+                                    int stride = 4 * renderTargetBitmap.PixelWidth;
+                                    renderTargetBitmap.CopyPixels(arrBits, stride, 0);
+
+                                    if (renderMethod == WaveFormRenderMethod.BitmapSource)
+                                    {
+                                        var bitmapSource = BitmapSource.Create(wInt,
+                                                                               (int)heightMagnified, 96, 96,
+                                                                               PixelFormats.Pbgra32, null, arrBits,
+                                                                               stride);
+                                        BitmapSourceGC.Manage(bitmapSource);
+                                        bitmapSource.Freeze();
+
+                                        imageAndDraw.m_image.Source = bitmapSource;
+                                        imageAndDraw.m_imageSourceLoaded = true;
+                                    }
+                                    else
+                                    {
+                                        var writeableBitmap = new WriteableBitmap(renderTargetBitmap.PixelWidth,
+                                                                                  renderTargetBitmap.PixelHeight,
+                                                                                  96, 96, PixelFormats.Pbgra32,
+                                                                                  null);
+                                        writeableBitmap.WritePixels(
+                                            new Int32Rect(0, 0, renderTargetBitmap.PixelWidth,
+                                                          renderTargetBitmap.PixelHeight), arrBits, stride, 0);
+
+                                        BitmapSourceGC.Manage(writeableBitmap);
+                                        writeableBitmap.Freeze();
+
+                                        imageAndDraw.m_image.Source = writeableBitmap;
+                                        imageAndDraw.m_imageSourceLoaded = true;
+                                    }
                                 }
                                 else
                                 {
-                                    var writeableBitmap = new WriteableBitmap(renderTargetBitmap.PixelWidth,
-                                                                              renderTargetBitmap.PixelHeight,
-                                                                              96, 96, PixelFormats.Pbgra32,
-                                                                              null);
-                                    writeableBitmap.WritePixels(
-                                        new Int32Rect(0, 0, renderTargetBitmap.PixelWidth,
-                                                      renderTargetBitmap.PixelHeight), arrBits, stride, 0);
-
-                                    BitmapSourceGC.Manage(writeableBitmap);
-                                    writeableBitmap.Freeze();
-
-                                    imageAndDraw.m_image.Source = writeableBitmap;
+                                    imageAndDraw.m_image.Source = renderTargetBitmap;
                                     imageAndDraw.m_imageSourceLoaded = true;
                                 }
                             }
                             else
                             {
-                                imageAndDraw.m_image.Source = renderTargetBitmap;
-                                imageAndDraw.m_imageSourceLoaded = true;
+#if DEBUG
+                                Debugger.Break();
+#endif //DEBUG
+                                imageAndDraw.m_image.Source = null;
+                                imageAndDraw.m_imageSourceLoaded = false;
                             }
                         }
                     }
