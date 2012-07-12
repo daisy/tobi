@@ -25,7 +25,7 @@
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <PublishUrl>%3bz\</PublishUrl>
+    <PublishUrl>C:\Users\daniel\Desktop\daisy\tobi\trunk\tobiapp\TobiClickOnceNET3_1.7.9.0\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -44,7 +44,7 @@
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.7.3.0</ApplicationVersion>
+    <ApplicationVersion>1.7.9.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -432,7 +432,7 @@
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
-      <ProductName>.NET Framework Client Profile</ProductName>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -504,6 +504,12 @@
       <Visible>False</Visible>
       <Description>Tobi project file</Description>
       <Progid>Tobi.Document</Progid>
+      <DefaultIcon>Shortcut.ico</DefaultIcon>
+    </FileAssociation>
+    <FileAssociation Include=".xukspine">
+      <Visible>False</Visible>
+      <Description>Tobi project spine</Description>
+      <Progid>Tobi.DocumentSpine</Progid>
       <DefaultIcon>Shortcut.ico</DefaultIcon>
     </FileAssociation>
   </ItemGroup>
