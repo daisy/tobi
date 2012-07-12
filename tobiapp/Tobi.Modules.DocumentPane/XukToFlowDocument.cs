@@ -307,6 +307,27 @@ namespace Tobi.Plugin.DocumentPane
             SetBorderAndBackColorBasedOnTreeNodeTag(m_DocumentPaneView, data);
         }
 
+        public static bool isPageNumber(TreeNode treeNode)
+        {
+            string localName = treeNode.GetXmlElementLocalName();
+            if (!string.IsNullOrEmpty(localName))
+            {
+                if (localName == "pagenum")
+                {
+                    return true;
+                }
+
+                XmlProperty xmlProp = treeNode.GetXmlProperty();
+                //XmlAttribute xmlAttr = xmlProp.GetAttribute("type");
+                XmlAttribute xmlAttr = xmlProp.GetAttribute("epub:type", "http://www.idpf.org/2007/ops");
+                if (xmlAttr != null)
+                {
+                    return xmlAttr.Value == "pagebreak";
+                }
+            }
+            return false;
+        }
+
         public static void SetBorderAndBackColorBasedOnTreeNodeTag(DocumentPaneView documentPaneView, TextElement data)
         {
             data.Background = null; // Brushes.Transparent; // SystemColors.WindowBrush;
@@ -329,7 +350,7 @@ namespace Tobi.Plugin.DocumentPane
 
             string localName = treeNode.GetXmlElementLocalName();
 
-            if (localName == "pagenum")
+            if (isPageNumber(treeNode))
             {
                 data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_PageNum_Back);
             }
@@ -394,7 +415,7 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(data.Tag is TreeNode);
             DebugFix.Assert(node == data.Tag);
 
-            DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "pagenum");
+            DebugFix.Assert(isPageNumber(node));
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -420,7 +441,7 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(data.Tag is TreeNode);
             DebugFix.Assert(node == data.Tag);
 
-            DebugFix.Assert(node.HasXmlProperty && node.GetXmlElementLocalName() == "pagenum");
+            DebugFix.Assert(isPageNumber(node));
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
@@ -997,7 +1018,7 @@ namespace Tobi.Plugin.DocumentPane
 
                     string localName = node.GetXmlElementLocalName();
 
-                    if (localName == "pagenum")
+                    if (isPageNumber(node))
                     {
                         //data.Tag = null;
                         setTag(para, node);
@@ -1023,7 +1044,7 @@ namespace Tobi.Plugin.DocumentPane
                 string localName = node.GetXmlElementLocalName();
 
                 ((List)parent).ListItems.Add(data);
-                if (localName == "pagenum")
+                if (isPageNumber(node))
                 {
                     //data.Tag = null;
                     var para = new Paragraph();
@@ -1057,7 +1078,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (parent is Table)
                 {
-                    if ((localName == "pagenum" || localName == "caption")
+                    if ((isPageNumber(node) || localName == "caption")
                         && textMedia != null && !string.IsNullOrEmpty(textMedia))
                     {
                         m_currentTD = 0;
@@ -1112,7 +1133,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (parent is Table)
                 {
-                    if (localName == "pagenum" || localName == "caption")
+                    if (isPageNumber(node) || localName == "caption")
                     {
                         m_currentTD = 0;
 
@@ -2019,9 +2040,24 @@ namespace Tobi.Plugin.DocumentPane
                     );
             }
 
-            switch (localName)
+            string localNamez = localName;
+            if (isPageNumber(node))
+            {
+                localNamez = "pagenum";
+            }
+
+            switch (localNamez)
             {
                 case "p":
+                case "hgroup":
+                case "fieldset":
+                case "details":
+                case "svg":
+                case "figure":
+                case "nav":
+                case "aside":
+                case "article":
+                case "section":
                 case "level":
                 case "level1":
                 case "level2":
@@ -2442,6 +2478,7 @@ namespace Tobi.Plugin.DocumentPane
                 case "poem":
                 case "linegroup":
                 case "code":
+                case "pre":
                 case "book":
                 case "body":
                 case "address":
