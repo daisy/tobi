@@ -57,11 +57,11 @@ namespace Tobi.Plugin.Urakawa
                     var dlg = new OpenFileDialog
                     {
                         FileName = @"",
-                        DefaultExt = @".xml",
+                        DefaultExt = @".opf",
 #if DEBUG
-                        Filter = @"DTBook, OPF, OBI, XUK, EPUB or MML (*.xml, *.opf, *.obi, *" + OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION + ", *.epub, *.mml)|*.xml;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION + ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub;*.mml",
+                        Filter = @"DTBook, XHTML, OPF, OBI, XUK, EPUB, MML (*.xml, *.xhtml, *.html, *.opf, *.obi, *" + OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION + ", *.epub, *.mml)|*.xml;*.xhtml;*.html;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION + ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub;*.mml",
 #else
-                        Filter = @"DTBook, OPF, OBI or XUK (*.xml, *.opf, *.obi, *" + OpenXukAction.XUK_EXTENSION + ")|*.xml;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION,
+                        Filter = @"DTBook, XHTML, OPF, OBI, XUK, EPUB (*.xml, *.xhtml, *.html, *.opf, *.obi, *" + OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION + ", *.epub)|*.xml;*.xhtml;*.html;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION + ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub,
 #endif //DEBUG
                         CheckFileExists = false,
                         CheckPathExists = false,
