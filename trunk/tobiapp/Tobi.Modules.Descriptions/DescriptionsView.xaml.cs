@@ -485,7 +485,12 @@ namespace Tobi.Plugin.Descriptions
 
 
             ManagedImageMedia managedImage = (ManagedImageMedia)node.GetImageMedia();
-            string exportImageName = FileDataProvider.EliminateForbiddenFileNameCharacters(managedImage.ImageMediaData.OriginalRelativePath);
+            
+            string exportImageName =
+                //Path.GetFileName
+                FileDataProvider.EliminateForbiddenFileNameCharacters
+                (managedImage.ImageMediaData.OriginalRelativePath)
+                ;
             string imageDescriptionDirectoryPath = Daisy3_Export.GetAndCreateImageDescriptionDirectoryPath(false, exportImageName, dlg.SelectedPath);
 
             if (Directory.Exists(imageDescriptionDirectoryPath))
