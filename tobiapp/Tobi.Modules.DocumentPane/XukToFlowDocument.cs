@@ -1674,7 +1674,7 @@ namespace Tobi.Plugin.DocumentPane
                     Image image_ = (Image)o;
 
                     string xmlFragment = node.GetXmlFragment();
-                    
+
                     m_DocumentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
                             (DispatcherOperationCallback)delegate(object obj)
                             {
@@ -1683,7 +1683,7 @@ namespace Tobi.Plugin.DocumentPane
                                 ImageSource imageSource = svg == null ? null : AutoGreyableImage.GetSVGImageSource(svg);
                                 if (imageSource == null)
                                 {
-                                    Console.WriteLine(@"Problem trying to load MathML (svg): [" + xmlFragment + @"]");
+                                    Console.WriteLine(@"Problem trying to load inline SVG: [" + xmlFragment + @"]");
 #if DEBUG
                                     Debugger.Break();
 #endif //DEBUG
@@ -1852,6 +1852,93 @@ namespace Tobi.Plugin.DocumentPane
             }
 
 
+
+
+
+
+            AbstractImageMedia imgMedia = node.GetImageMedia();
+            var imgMedia_ext = imgMedia as ExternalImageMedia;
+            var imgMedia_man = imgMedia as ManagedImageMedia;
+
+            string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
+
+            string imagePath = null;
+
+            if (imgMedia_ext != null)
+            {
+
+#if DEBUG
+                bool debug = true;
+                //Debugger.Break();
+#endif //DEBUG
+
+                //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
+
+                imagePath = Path.Combine(dirPath, Uri.UnescapeDataString(imgMedia_ext.Src));
+            }
+            else if (imgMedia_man != null)
+            {
+#if DEBUG
+                XmlProperty xmlProp = node.GetXmlProperty();
+                XmlAttribute srcAttr = xmlProp.GetAttribute("altimg");
+                if (srcAttr != null)
+                {
+                    DebugFix.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == srcAttr.Value);
+                }
+#endif //DEBUG
+                var fileDataProv = imgMedia_man.ImageMediaData.DataProvider as FileDataProvider;
+
+                if (fileDataProv != null)
+                {
+                    imagePath = fileDataProv.DataFileFullPath;
+                }
+            }
+
+            if (imagePath == null || FileDataProvider.isHTTPFile(imagePath))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+            }
+            else
+            {
+                ImageSource imageSource = AutoGreyableImage.GetSVGOrBitmapImageSource(imagePath);
+                if (imageSource == null)
+                {
+                    Console.WriteLine(@"Problem trying to load MathML ALT image: [" + imagePath + @"]");
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+
+                    VisualBrush brush = ShellView.LoadGnomeNeuIcon("Neu_emblem-important");
+                    RenderTargetBitmap bitmap = AutoGreyableImage.CreateFromVectorGraphics(brush, 100, 100);
+
+                    image.Source = bitmap;
+                }
+                else
+                {
+                    image.Source = imageSource;
+                }
+
+                if (image.Source.CanFreeze)
+                {
+                    image.Source.Freeze();
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             ThreadPool.QueueUserWorkItem(
                 delegate(Object o) // or: (foo) => {} (LAMBDA)
                 {
@@ -1885,7 +1972,7 @@ namespace Tobi.Plugin.DocumentPane
                                 ImageSource imageSource = svg == null ? null : AutoGreyableImage.GetSVGImageSource(svg);
                                 if (imageSource == null)
                                 {
-                                    Console.WriteLine(@"Problem trying to load MathML (svg): [" + xmlFragment + @"]");
+                                    Console.WriteLine(@"Problem trying to load inline MathML (svg): [" + xmlFragment + @"]");
 #if DEBUG
                                     Debugger.Break();
 #endif //DEBUG
