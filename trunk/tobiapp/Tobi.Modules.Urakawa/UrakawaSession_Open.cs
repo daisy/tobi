@@ -435,6 +435,8 @@ namespace Tobi.Plugin.Urakawa
 
         private bool parseXukSpine(string projectPath, Project project, string xukFileToMatch)
         {
+            MessageBox.Show("EPUB support is experimental and incomplete, please use with caution!");
+
             string rootDir = Path.GetDirectoryName(projectPath);
             //string rootDir = Directory.GetParent(dir).Name;
 
