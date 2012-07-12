@@ -635,7 +635,7 @@ namespace Tobi.Plugin.DocumentPane
             if (node.HasXmlProperty)
             {
                 string localName = node.GetXmlElementLocalName();
-                bool isMath = localName.Equals("math", StringComparison.OrdinalIgnoreCase);
+                bool isMath = localName.Equals(DiagramContentModelHelper.Math, StringComparison.OrdinalIgnoreCase);
 
                 if (!isMath
                     && node.GetXmlNamespaceUri() == DiagramContentModelHelper.NS_URL_MATHML)
@@ -1541,6 +1541,190 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        private TextElement walkBookTreeAndGenerateFlowDocument_SVG(TreeNode node, TextElement parent, string textMedia
+            //, DelegateSectionInitializer initializer
+            )
+        {
+            //Section data = new Section();
+            //setTag(data, node);
+
+            //if (initializer != null)
+            //{
+            //    initializer(data);
+            //}
+
+            //if (String.IsNullOrEmpty(textMedia))
+            //{
+            //    data.Blocks.Add(new Paragraph(new LineBreak()));
+            //}
+            //else
+            //{
+            //    var run = new Run(textMedia);
+            //    setTextDirection(node, null, run, null);
+            //    data.Blocks.Add(new Paragraph(run));
+            //}
+
+            Image image = new Image();
+
+            image.HorizontalAlignment = HorizontalAlignment.Center;
+            image.VerticalAlignment = VerticalAlignment.Top;
+
+            image.Stretch = Stretch.Uniform;
+            image.StretchDirection = StretchDirection.DownOnly;
+
+            //image.MinWidth = image.Width;
+            //image.MinHeight = image.Height;
+            //image.MaxWidth = image.Width;
+            //image.MaxHeight = image.Height;
+
+            //Floater floater = new Floater();
+            //floater.Blocks.Add(img);
+            //floater.Width = image.Width;
+            //addInline(parent, floater);
+
+            //Figure figure = new Figure(img);
+            //figure.Width = image.Width;
+            //addInline(parent, figure);
+
+
+            if (!String.IsNullOrEmpty(textMedia))
+            {
+                image.ToolTip = textMedia;
+            }
+
+            bool parentHasBlocks = parent is TableCell
+                                   || parent is Section
+                                   || parent is Floater
+                                   || parent is Figure
+                                   || parent is ListItem;
+
+            var imagePanel = new StackPanel();
+            imagePanel.Orientation = Orientation.Vertical;
+            //imagePanel.LastChildFill = true;
+            if (!string.IsNullOrEmpty(textMedia))
+            {
+                var run = new Run(textMedia);
+                var tb = new TextBlock(run)
+                {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                setTextDirection(node, tb, run, null);
+                imagePanel.Children.Add(tb);
+            }
+            imagePanel.Children.Add(image);
+
+            imagePanel.HorizontalAlignment = HorizontalAlignment.Center;
+            imagePanel.VerticalAlignment = VerticalAlignment.Top;
+
+            //imagePanel.Width = image.Width;
+            //imagePanel.MaxWidth = image.Width;
+
+            //imagePanel.Height = image.Height;
+            //imagePanel.MaxHeight = image.Height;
+
+            if (parentHasBlocks)
+            {
+                var img = new BlockUIContainer(imagePanel);
+
+                //img.LineStackingStrategy = LineStackingStrategy.MaxHeight;
+
+                //img.BorderBrush = Brushes.RoyalBlue;
+                //img.BorderThickness = new Thickness(2.0);
+
+                setTag(img, node);
+
+                //if (initializer != null)
+                //{
+                //    initializer(img);
+                //}
+
+                //data.Blocks.Add(img);
+                addBlock(parent, img);
+
+                //if (!string.IsNullOrEmpty(imgAlt))
+                //{
+                //    Paragraph paraAlt = new Paragraph(new Run("(" + imgAlt + ")"));
+                //    paraAlt.BorderBrush = Brushes.CadetBlue;
+                //    paraAlt.BorderThickness = new Thickness(1.0);
+                //    paraAlt.FontSize = m_FlowDoc.FontSize / 1.2;
+                //    addBlock(parent, paraAlt);
+                //}
+            }
+            else
+            {
+                var img = new InlineUIContainer(imagePanel);
+
+                setTag(img, node);
+
+                //if (initializer != null)
+                //{
+                //    initializer(img);
+                //}
+
+                //data.Blocks.Add(img);
+                addInline(parent, img);
+            }
+
+
+            ThreadPool.QueueUserWorkItem(
+                delegate(Object o) // or: (foo) => {} (LAMBDA)
+                {
+                    Image image_ = (Image)o;
+
+                    string xmlFragment = node.GetXmlFragment();
+                    
+                    m_DocumentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
+                            (DispatcherOperationCallback)delegate(object obj)
+                            {
+                                var svg = (string)obj;
+
+                                ImageSource imageSource = svg == null ? null : AutoGreyableImage.GetSVGImageSource(svg);
+                                if (imageSource == null)
+                                {
+                                    Console.WriteLine(@"Problem trying to load MathML (svg): [" + xmlFragment + @"]");
+#if DEBUG
+                                    Debugger.Break();
+#endif //DEBUG
+
+                                    VisualBrush brush = ShellView.LoadGnomeNeuIcon("Neu_emblem-important");
+                                    RenderTargetBitmap bitmap = AutoGreyableImage.CreateFromVectorGraphics(brush, 100, 100);
+
+                                    image_.Source = bitmap;
+                                }
+                                else
+                                {
+                                    image_.Source = imageSource;
+                                }
+
+                                if (image_.Source.CanFreeze)
+                                {
+                                    image_.Source.Freeze();
+                                }
+
+                                if (image_.Source is BitmapSource)
+                                {
+                                    BitmapSource bitmap = (BitmapSource)image_.Source;
+                                    int ph = bitmap.PixelHeight;
+                                    int pw = bitmap.PixelWidth;
+                                    double dpix = bitmap.DpiX;
+                                    double dpiy = bitmap.DpiY;
+                                    //image.Width = pw;
+                                    //image.Height = ph;
+                                }
+
+                                return null;
+                            }, xmlFragment);
+                }, image);
+
+            return parent;
+
+            //addBlock(parent, data);
+            //return data;
+        }
+
+
         private TextElement walkBookTreeAndGenerateFlowDocument_MathML(TreeNode node, TextElement parent, string textMedia
             //, DelegateSectionInitializer initializer
             )
@@ -1983,6 +2167,27 @@ namespace Tobi.Plugin.DocumentPane
 
             string localName = node.GetXmlElementLocalName();
 
+            if (node.GetXmlNamespaceUri() == DiagramContentModelHelper.NS_URL_SVG)
+            {
+                if (localName == DiagramContentModelHelper.Svg)
+                {
+                    return walkBookTreeAndGenerateFlowDocument_SVG(node, parent, null
+                        //,
+                        //data =>
+                        //{
+                        //    //data.BorderBrush = Brushes.Green;
+                        //    //data.BorderThickness = new Thickness(2.0);
+                        //    //data.Padding = new Thickness(4.0);
+
+
+                        //    SetBorderAndBackColorBasedOnTreeNodeTag(data);
+                        //}
+                        );
+                }
+
+                return parent;
+            }
+
             if (node.GetXmlNamespaceUri() == DiagramContentModelHelper.NS_URL_MATHML)
             {
                 if (localName == DiagramContentModelHelper.Math)
@@ -2052,7 +2257,6 @@ namespace Tobi.Plugin.DocumentPane
                 case "hgroup":
                 case "fieldset":
                 case "details":
-                case "svg":
                 case "figure":
                 case "nav":
                 case "aside":

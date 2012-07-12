@@ -321,6 +321,20 @@ namespace Tobi.Plugin.AudioPane
                     return;
                 }
 
+                TreeNode math = treeNode.GetFirstAncestorWithXmlElement("math");
+                if (math != null)
+                {
+                    treeNode = math;
+                }
+                else
+                {
+                    TreeNode svg = treeNode.GetFirstAncestorWithXmlElement("svg");
+                    if (svg != null)
+                    {
+                        treeNode = svg;
+                    }
+                }
+
                 goto next;
             }
             catch (Exception ex)

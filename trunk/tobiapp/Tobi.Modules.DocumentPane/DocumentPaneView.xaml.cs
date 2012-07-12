@@ -1176,14 +1176,30 @@ namespace Tobi.Plugin.DocumentPane
                     TreeNode node = selection.Item2 ?? selection.Item1;
 
                     TreeNode nested;
-                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(true, node, out nested);
-                    if (next == null)
+                    TreeNode previous = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(true, node, out nested);
+                    if (previous == null)
                     {
                         AudioCues.PlayBeep();
                     }
                     else
                     {
-                        m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
+                        TreeNode math = previous.GetFirstAncestorWithXmlElement("math");
+                        if (math != null)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(math, false, null); //previous
+                        }
+                        else
+                        {
+                            TreeNode svg = previous.GetFirstAncestorWithXmlElement("svg");
+                            if (svg != null)
+                            {
+                                m_UrakawaSession.PerformTreeNodeSelection(svg, false, null); //previous
+                            }
+                            else
+                            {
+                                m_UrakawaSession.PerformTreeNodeSelection(previous, false, nested);
+                            }
+                        }
                     }
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)
@@ -1255,7 +1271,23 @@ namespace Tobi.Plugin.DocumentPane
                     }
                     else
                     {
-                        m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
+                        TreeNode math = next.GetFirstAncestorWithXmlElement("math");
+                        if (math != null)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(math, false, null); //next
+                        }
+                        else
+                        {
+                            TreeNode svg = next.GetFirstAncestorWithXmlElement("svg");
+                            if (svg != null)
+                            {
+                                m_UrakawaSession.PerformTreeNodeSelection(svg, false, null); //next
+                            }
+                            else
+                            {
+                                m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
+                            }
+                        }
                     }
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)

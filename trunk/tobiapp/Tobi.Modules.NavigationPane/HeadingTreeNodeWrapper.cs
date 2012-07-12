@@ -422,33 +422,154 @@ namespace Tobi.Plugin.NavigationPane
         }
         private bool CheckMatches(TreeNode baseNode)
         {
-            bool bResult = false;
-            int n = m_navigator.GetChildCount(baseNode);
-            for (int index = 0; index < n; index++)
-            {
-                TreeNode node = m_navigator.GetChild(baseNode, index);
-                if (WrappedTreeNode_LevelHeading != null && WrappedTreeNode_LevelHeading == node)
-                {
-                    continue;
-                }
-                var tuple = ComputeLevelNodes(node);
-                string sText = ComputeNodeText(tuple.Item1, tuple.Item2);
+            TreeNode nody = WrappedTreeNode_Level ?? WrappedTreeNode_LevelHeading;
+            bool html5_outlining = nody.Presentation.RootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
 
-                if (string.IsNullOrEmpty(sText))
+            if (html5_outlining)
+            {
+                if (HeadingsNavigator.IsLevel(baseNode.GetXmlElementLocalName()))
                 {
-                    continue;
+                    bool bResult = false;
+
+                    int n = m_navigator.GetChildCount(baseNode);
+                    int currentRank = -1; //-1 == N/A, 0 == sectioning, 1..6 == real heading rank
+                    for (int index = 0; index < n; index++)
+                    {
+                        TreeNode node = m_navigator.GetChild(baseNode, index);
+
+                        if (WrappedTreeNode_LevelHeading == node)
+                        {
+                            continue;
+                        }
+                        string name = node.GetXmlElementLocalName();
+
+                        if (HeadingsNavigator.IsHeading(name) && name.Length == 2 && name[0] == 'h')
+                        {
+                            int rank;
+                            if (Int32.TryParse("" + name[1], out rank))
+                            {
+                                if (currentRank > 0 && rank > currentRank)
+                                {
+                                    continue;
+                                }
+
+                                currentRank = rank;
+                            }
+                        }
+
+                        if (HeadingsNavigator.IsLevel(name))
+                        {
+                            currentRank = 0;
+                        }
+
+                        var tuple = ComputeLevelNodes(node);
+                        string sText = ComputeNodeText(tuple.Item1, tuple.Item2);
+
+                        if (string.IsNullOrEmpty(sText))
+                        {
+                            continue;
+                        }
+                        bResult |= sText.IndexOf(m_navigator.SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
+                        if (!bResult)
+                        {
+                            bResult |= CheckMatches(node);
+                        }
+                        if (bResult)
+                        {
+                            break;
+                        }
+                    }
+
+
+                    return bResult;
                 }
-                bResult |= sText.IndexOf(m_navigator.SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
-                if (!bResult)
+                else
                 {
-                    bResult |= CheckMatches(node);
-                }
-                if (bResult)
-                {
-                    break;
+                    bool bResult = false;
+
+
+                    string name = baseNode.GetXmlElementLocalName();
+                    if (name.Length == 2 && name[0] == 'h')
+                    {
+                        int rank;
+                        if (Int32.TryParse("" + name[1], out rank))
+                        {
+                            TreeNode next = baseNode;
+                            while ((next = m_navigator.GetNext(next)) != null)
+                            {
+                                string nameNext = next.GetXmlElementLocalName();
+
+                                if (HeadingsNavigator.IsLevel(nameNext))
+                                {
+                                    break;
+                                }
+
+                                if (nameNext.Length == 2 && nameNext[0] == 'h')
+                                {
+                                    int rankNext;
+                                    if (Int32.TryParse("" + nameNext[1], out rankNext))
+                                    {
+                                        if (rankNext <= rank)
+                                        {
+                                            break;
+                                        }
+
+                                        var tuple = ComputeLevelNodes(next);
+                                        string sText = ComputeNodeText(tuple.Item1, tuple.Item2);
+
+                                        if (string.IsNullOrEmpty(sText))
+                                        {
+                                            continue;
+                                        }
+                                        bResult |= sText.IndexOf(m_navigator.SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
+                                        if (!bResult)
+                                        {
+                                            bResult |= CheckMatches(next);
+                                        }
+                                        if (bResult)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    return bResult;
                 }
             }
-            return bResult;
+            else
+            {
+                bool bResult = false;
+                int n = m_navigator.GetChildCount(baseNode);
+                for (int index = 0; index < n; index++)
+                {
+                    TreeNode node = m_navigator.GetChild(baseNode, index);
+                    if (WrappedTreeNode_LevelHeading != null && WrappedTreeNode_LevelHeading == node)
+                    {
+                        continue;
+                    }
+                    var tuple = ComputeLevelNodes(node);
+                    string sText = ComputeNodeText(tuple.Item1, tuple.Item2);
+
+                    if (string.IsNullOrEmpty(sText))
+                    {
+                        continue;
+                    }
+                    bResult |= sText.IndexOf(m_navigator.SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
+                    if (!bResult)
+                    {
+                        bResult |= CheckMatches(node);
+                    }
+                    if (bResult)
+                    {
+                        break;
+                    }
+                }
+                return bResult;
+            }
         }
 
         private static string ComputeNodeText(TreeNode level, TreeNode heading)
