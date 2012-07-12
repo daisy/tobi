@@ -228,6 +228,9 @@ Do you want to continue ?</value>
   <data name="ExportEncodeMp3" xml:space="preserve">
     <value>Encode MP3: </value>
   </data>
+  <data name="Stereo" xml:space="preserve">
+    <value>Stereo: </value>
+  </data>
   <data name="UrakawaOpenAction_LongDesc" xml:space="preserve">
     <value>Parsing the XML content of the XUK file...</value>
   </data>

@@ -477,6 +477,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stereo: .
+        /// </summary>
+        public static string Stereo {
+            get {
+                return ResourceManager.GetString("Stereo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Save before close.
         /// </summary>
         public static string UnsavedChanges {
