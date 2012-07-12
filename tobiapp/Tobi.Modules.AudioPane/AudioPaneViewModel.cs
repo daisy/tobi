@@ -1191,7 +1191,8 @@ m_Stream.Length);
                     new AudioFormatConvertorSession(
                     //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
                     project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
-                project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat, m_UrakawaSession.IsAcmCodecsDisabled);
+                project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat,
+                m_UrakawaSession.IsAcmCodecsDisabled);
 
                 project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
