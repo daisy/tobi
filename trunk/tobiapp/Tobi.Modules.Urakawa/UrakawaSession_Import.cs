@@ -105,6 +105,38 @@ namespace Tobi.Plugin.Urakawa
             panel__.Children.Add(label_);
             panel__.Children.Add(checkBox);
 
+            var line = new Separator();
+            line.HorizontalAlignment = HorizontalAlignment.Stretch;
+            line.VerticalAlignment = VerticalAlignment.Center;
+
+
+            var checkAuto = new CheckBox
+            {
+                IsThreeState = false,
+                IsChecked = false,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            var label = new TextBlock
+            {
+                Text = "Detect source format",
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var panel_ = new StackPanel
+            {
+                Orientation = System.Windows.Controls.Orientation.Horizontal,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            panel_.Children.Add(label);
+            panel_.Children.Add(checkAuto);
+
             var panel = new StackPanel
             {
                 Orientation = Orientation.Vertical,
@@ -113,14 +145,16 @@ namespace Tobi.Plugin.Urakawa
             };
             panel.Children.Add(combo);
             panel.Children.Add(panel__);
-            
+            panel.Children.Add(line);
+            panel.Children.Add(panel_);
+
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ProjectSampleRate),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false, 300, 135, null, 40, null);
+                                                   false, 300, 180, null, 40, null);
 
             windowPopup.EnableEnterKeyDefault = true;
 
@@ -152,6 +186,7 @@ namespace Tobi.Plugin.Urakawa
                 IsAcmCodecsDisabled,
                 Settings.Default.AudioProjectSampleRate,
                 Settings.Default.AudioProjectStereo,
+                checkAuto.IsChecked.Value,
                 Settings.Default.XUK_PrettyFormat
                 ); //Directory.GetParent(bookfile).FullName
 
