@@ -769,7 +769,7 @@ m_Stream.Length);
             m_PeakMeterValues = new double[2];
 
             m_AudioFormatConvertorSession_NoProject =
-                new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY, null, m_UrakawaSession.IsAcmCodecsDisabled);
+                new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY, null, false, m_UrakawaSession.IsAcmCodecsDisabled);
         }
 
         #endregion Initialization
@@ -1192,6 +1192,7 @@ m_Stream.Length);
                     //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
                     project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath,
                 project.Presentations.Get(0).MediaDataManager.DefaultPCMFormat,
+                false,
                 m_UrakawaSession.IsAcmCodecsDisabled);
 
                 project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
