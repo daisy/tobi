@@ -216,8 +216,8 @@ Do you want to continue ?</value>
     <value>You are about to overwrite a folder.
 Do you want to continue ?</value>
   </data>
-  <data name="ProjectSampleRate" xml:space="preserve">
-    <value>Project sample rate</value>
+  <data name="ProjectAudioFormat" xml:space="preserve">
+    <value>Project audio format</value>
   </data>
   <data name="ExportSettings" xml:space="preserve">
     <value>Export settings</value>
@@ -230,6 +230,12 @@ Do you want to continue ?</value>
   </data>
   <data name="Stereo" xml:space="preserve">
     <value>Stereo: </value>
+  </data>
+  <data name="UseSourceAudioFormatTip" xml:space="preserve">
+    <value>If the imported source is a talking book with an existing narration, its original audio format can be preserved by ticking the above box.</value>
+  </data>
+  <data name="UseSourceAudioFormat" xml:space="preserve">
+    <value>Preserve source audio format: </value>
   </data>
   <data name="UrakawaOpenAction_LongDesc" xml:space="preserve">
     <value>Parsing the XML content of the XUK file...</value>

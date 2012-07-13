@@ -223,8 +223,8 @@ namespace Tobi.Plugin.Descriptions
                 string suffix = "--IMAGE_DESCRIPTIONS_TEMP_AUDIO";
                 //DebugFix.Assert(Path.GetFileName(pres.RootUri.LocalPath) == prefix);
                 presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(prefix + suffix);
-                presentation.MediaDataManager.DefaultPCMFormat = pres.MediaDataManager.DefaultPCMFormat.Copy();
-                presentation.MediaDataManager.EnforceSinglePCMFormat = true;
+                presentation.MediaDataManager.DefaultPCMFormat = pres.MediaDataManager.DefaultPCMFormat;//.Copy();
+                //presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
                 //DebugFix.Assert(presentation.DataProviderManager.DataFileDirectoryFullPath == pres.DataProviderManager.DataFileDirectoryFullPath + suffix);
 
