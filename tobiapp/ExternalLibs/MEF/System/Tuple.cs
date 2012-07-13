@@ -8,11 +8,19 @@ namespace System
 {
     // This is a very minimalistic implementation of Tuple'2 that allows us
     // to compile and work on versions of .Net eariler then 4.0.
-    public struct Tuple<TItem1, TItem2>
+    public class Tuple<TItem1, TItem2>
     {
+        public Tuple()
+        {
+        }
+
         public Tuple(TItem1 item1, TItem2 item2)
         {
-            this = new Tuple<TItem1, TItem2>();
+            // TODO: restore struct and the line below
+            // (VS 2012 RC CSC 5.0 fails, whereas VS 2012 CSC 4.0 successfully
+            // resolves the System.Tuple namespace conflict
+            // between .NET 3 and .NET 4)
+            //this = new Tuple<TItem1, TItem2>();
             this.Item1 = item1;
             this.Item2 = item2;
         }
