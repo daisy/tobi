@@ -394,7 +394,9 @@ namespace Tobi.Plugin.Descriptions
                                     new AudioFormatConvertorSession(
                                     //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY,
                                     treeNode.Presentation.DataProviderManager.DataFileDirectoryFullPath,
-                                treeNode.Presentation.MediaDataManager.DefaultPCMFormat, m_UrakawaSession.IsAcmCodecsDisabled);
+                                treeNode.Presentation.MediaDataManager.DefaultPCMFormat,
+                                false,
+                                m_UrakawaSession.IsAcmCodecsDisabled);
 
                                 //filePath = m_AudioFormatConvertorSession.ConvertAudioFileFormat(filePath);
 
