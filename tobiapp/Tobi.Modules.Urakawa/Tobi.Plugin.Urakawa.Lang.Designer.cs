@@ -432,11 +432,11 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project sample rate.
+        ///   Looks up a localized string similar to Project audio format.
         /// </summary>
-        public static string ProjectSampleRate {
+        public static string ProjectAudioFormat {
             get {
-                return ResourceManager.GetString("ProjectSampleRate", resourceCulture);
+                return ResourceManager.GetString("ProjectAudioFormat", resourceCulture);
             }
         }
         
@@ -583,6 +583,24 @@ namespace Tobi.Plugin.Urakawa {
         public static string UrakawaSession_SavePath {
             get {
                 return ResourceManager.GetString("UrakawaSession_SavePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preserve source audio format: .
+        /// </summary>
+        public static string UseSourceAudioFormat {
+            get {
+                return ResourceManager.GetString("UseSourceAudioFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If the imported source is a talking book with an existing narration, its original audio format can be preserved by ticking the above box..
+        /// </summary>
+        public static string UseSourceAudioFormatTip {
+            get {
+                return ResourceManager.GetString("UseSourceAudioFormatTip", resourceCulture);
             }
         }
         

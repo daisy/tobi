@@ -40,7 +40,9 @@ namespace Tobi.Plugin.Urakawa
 
             var combo = new ComboBox
             {
-                Margin = new Thickness(0, 0, 0, 12)
+                Margin = new Thickness(0, 0, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
             };
 
             ComboBoxItem item1 = new ComboBoxItem();
@@ -77,6 +79,16 @@ namespace Tobi.Plugin.Urakawa
                     }
             }
 
+            var label_ = new TextBlock
+            {
+                Text = Tobi_Plugin_Urakawa_Lang.Stereo,
+                Margin = new Thickness(0, 0, 8, 0),
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
             var checkBox = new CheckBox
             {
                 IsThreeState = false,
@@ -85,30 +97,27 @@ namespace Tobi.Plugin.Urakawa
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
-            var label_ = new TextBlock
-            {
-                Text = Tobi_Plugin_Urakawa_Lang.Stereo,
-                Margin = new Thickness(8, 0, 8, 0),
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Center,
-                Focusable = true,
-                TextWrapping = TextWrapping.Wrap
-            };
-
 
             var panel__ = new StackPanel
             {
                 Orientation = System.Windows.Controls.Orientation.Horizontal,
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 8, 0, 22),
             };
             panel__.Children.Add(label_);
             panel__.Children.Add(checkBox);
 
-            var line = new Separator();
-            line.HorizontalAlignment = HorizontalAlignment.Stretch;
-            line.VerticalAlignment = VerticalAlignment.Center;
 
+            var label = new TextBlock
+            {
+                Text = Tobi_Plugin_Urakawa_Lang.UseSourceAudioFormat,
+                Margin = new Thickness(0, 0, 8, 0),
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
 
             var checkAuto = new CheckBox
             {
@@ -118,21 +127,12 @@ namespace Tobi.Plugin.Urakawa
                 VerticalAlignment = VerticalAlignment.Center,
             };
 
-            var label = new TextBlock
-            {
-                Text = "Detect source format",
-                Margin = new Thickness(8, 0, 8, 0),
-                HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Center,
-                Focusable = true,
-                TextWrapping = TextWrapping.Wrap
-            };
-
             var panel_ = new StackPanel
             {
                 Orientation = System.Windows.Controls.Orientation.Horizontal,
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 0, 12),
             };
             panel_.Children.Add(label);
             panel_.Children.Add(checkAuto);
@@ -145,16 +145,34 @@ namespace Tobi.Plugin.Urakawa
             };
             panel.Children.Add(combo);
             panel.Children.Add(panel__);
-            panel.Children.Add(line);
             panel.Children.Add(panel_);
 
 
+            //var line = new Separator()
+            //{
+            //    Margin = new Thickness(0, 8, 0, 8),
+            //};
+            //line.HorizontalAlignment = HorizontalAlignment.Stretch;
+            //line.VerticalAlignment = VerticalAlignment.Center;
+
+            //panel.Children.Add(line);
+
+
+            var details = new TextBoxReadOnlyCaretVisible
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = Tobi_Plugin_Urakawa_Lang.UseSourceAudioFormatTip
+            };
+
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ProjectSampleRate),
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ProjectAudioFormat),
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false, 300, 180, null, 40, null);
+                                                   false, 320, 200, details, 40, null);
 
             windowPopup.EnableEnterKeyDefault = true;
 
