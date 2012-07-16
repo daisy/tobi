@@ -13,13 +13,17 @@ namespace Tobi.Plugin.AudioPane
     public partial class AudioPaneViewModel
     {
         [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoringAlways")]
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("IsWaveFormLoading")]
         public bool CanManipulateWaveForm
         {
             get
             {
-                return !IsMonitoring && !IsRecording && !IsWaveFormLoading && State.Audio.HasContent;
+                return (!IsMonitoring || IsMonitoringAlways)
+                    && !IsRecording
+                    && !IsWaveFormLoading
+                    && State.Audio.HasContent;
             }
         }
 
@@ -169,6 +173,14 @@ namespace Tobi.Plugin.AudioPane
                 set
                 {
                     if (m_PcmFormat == value) return;
+
+                    if (value == null
+                        && (m_viewModel.IsPlaying || m_viewModel.m_UrakawaSession.DocumentProject != null || m_viewModel.State.FilePath != null))
+                    {
+                        //Debugger.Break();
+                        bool debug = true;
+                    }
+
                     m_PcmFormat = value;
                     m_notifier.RaisePropertyChanged(() => PcmFormat);
                 }
@@ -185,6 +197,14 @@ namespace Tobi.Plugin.AudioPane
                 set
                 {
                     if (m_PcmFormatRecordingMonitoring == value) return;
+
+                    if (value == null
+                        && (m_viewModel.IsRecording || m_viewModel.IsMonitoring))
+                    {
+                        //Debugger.Break();
+                        bool debug = true;
+                    }
+
                     m_PcmFormatRecordingMonitoring = value;
                     m_notifier.RaisePropertyChanged(() => PcmFormatRecordingMonitoring);
                 }
@@ -193,7 +213,25 @@ namespace Tobi.Plugin.AudioPane
             public PCMFormatInfo GetCurrentPcmFormat()
             {
                 if (m_viewModel.IsRecording || m_viewModel.IsMonitoring)
+                {
+                    if (PcmFormatRecordingMonitoring == null)
+                    {
+                        PcmFormatRecordingMonitoring = new PCMFormatInfo(m_viewModel.m_Recorder.RecordingPCMFormat);
+                    }
                     return PcmFormatRecordingMonitoring;
+                }
+                if (m_viewModel.IsPlaying)
+                {
+                    if (PcmFormat == null)
+                    {
+                        PcmFormat = new PCMFormatInfo(m_viewModel.m_Player.CurrentAudioPCMFormat);
+                    }
+                }
+                //if (PcmFormat == null && m_viewModel.m_UrakawaSession.DocumentProject != null)
+                //{
+                //    PcmFormat = m_viewModel.m_UrakawaSession.DocumentProject
+                //        .Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
+                //}
                 return PcmFormat;
             }
 
@@ -259,8 +297,10 @@ namespace Tobi.Plugin.AudioPane
 
 #if !DISABLE_SINGLE_RECORD_FILE
                 //DebugFix.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                if (m_viewModel != null && m_viewModel.m_RecordAndContinue
-                    && m_viewModel.m_UrakawaSession != null && m_viewModel.m_UrakawaSession.DocumentProject != null)
+                if (m_viewModel != null
+                    && m_viewModel.m_RecordAndContinue
+                    && m_viewModel.m_UrakawaSession != null
+                    && m_viewModel.m_UrakawaSession.DocumentProject != null)
                 {
                     PcmFormatRecordingMonitoring = m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
                 }
@@ -271,6 +311,9 @@ namespace Tobi.Plugin.AudioPane
 #else
                 PcmFormatRecordingMonitoring = null;
 #endif
+
+
+
                 PlayStreamMarkers = null;
                 DataLength = -1;
 

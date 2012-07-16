@@ -167,7 +167,9 @@ namespace Tobi.Plugin.AudioPane
 
                     openFile(null, false, false, null);
                 },
-                () => !IsWaveFormLoading && !IsMonitoring && !IsRecording,
+                () => !IsWaveFormLoading
+                    && (!IsMonitoring || IsMonitoringAlways)
+                    && !IsRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_OpenFile));
 
@@ -219,7 +221,10 @@ namespace Tobi.Plugin.AudioPane
                             );
 
                     return okay
-                       && !IsMonitoring && !IsRecording && !IsWaveFormLoading && !IsPlaying
+                       && (!IsMonitoring || IsMonitoringAlways)
+                       && !IsRecording
+                       && !IsWaveFormLoading
+                       && !IsPlaying
                        && m_UrakawaSession.DocumentProject != null
                        && (IsSimpleMode || treeNodeSelection.Item1.HasXmlProperty)
                        && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
@@ -296,7 +301,10 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () =>
                 {
-                    return !IsWaveFormLoading && !IsPlaying && !IsMonitoring && !IsRecording
+                    return !IsWaveFormLoading
+                        && !IsPlaying
+                        && (!IsMonitoring || IsMonitoringAlways)
+                        && !IsRecording
                          && State.Audio.PlayStreamMarkers != null && IsSelectionSet && State.Audio.HasContent;
                 },
                 Settings_KeyGestures.Default,
@@ -397,7 +405,9 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () =>
                 {
-                    return !IsWaveFormLoading && !IsMonitoring && !IsRecording
+                    return !IsWaveFormLoading
+                        && (!IsMonitoring || IsMonitoringAlways)
+                        && !IsRecording
                          && State.Audio.PlayStreamMarkers != null && State.Audio.HasContent;
                     //IsSelectionSet   !IsPlaying
                 },

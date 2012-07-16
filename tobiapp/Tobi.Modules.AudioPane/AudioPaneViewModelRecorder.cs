@@ -81,7 +81,7 @@ namespace Tobi.Plugin.AudioPane
                     m_InterruptRecording = false;
 
 #if !DISABLE_SINGLE_RECORD_FILE
-                    m_RecordAndContinue_StopBytePos = m_Recorder.CurrentDurationBytePosition_BufferLookAhead;
+                    m_RecordAndContinue_StopBytePos = (long)m_Recorder.CurrentDurationBytePosition_BufferLookAhead;
                     OnAudioRecordingFinished(null,
                                               new AudioRecorder.AudioRecordingFinishEventArgs(
                                                   m_Recorder.RecordedFilePath));
@@ -136,6 +136,11 @@ namespace Tobi.Plugin.AudioPane
                     {
                         EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.RecordingStopped);
                     }
+
+                    if (IsMonitoringAlways)
+                    {
+                        CommandStartMonitor.Execute();
+                    }
                 },
                 () => !IsWaveFormLoading && IsRecording,
                 Settings_KeyGestures.Default,
@@ -158,6 +163,11 @@ namespace Tobi.Plugin.AudioPane
                     {
                         Console.WriteLine("stopWatchRecorder != null, skipping start record");
                         return;
+                    }
+                    
+                    if (IsMonitoring)
+                    {
+                        CommandStopMonitor.Execute();
                     }
 
                     IsAutoPlay = false;
@@ -226,7 +236,9 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () =>
                 {
-                    return !IsMonitoring && !IsRecording && !IsWaveFormLoading //!IsPlaying && 
+                    return (!IsMonitoring || IsMonitoringAlways)
+                        && !IsRecording
+                        && !IsWaveFormLoading //!IsPlaying && 
                         && canDeleteInsertReplaceAudio();
                 },
                 Settings_KeyGestures.Default,
@@ -255,9 +267,9 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     State.Audio.PcmFormatRecordingMonitoring = null;
-
                 },
-                () => !IsWaveFormLoading && IsMonitoring,
+                () => !IsWaveFormLoading
+                    && IsMonitoring,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopMonitor));
 
@@ -302,9 +314,11 @@ namespace Tobi.Plugin.AudioPane
                     {
                         EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Monitoring);
                     }
-
                 },
-                () => !IsWaveFormLoading && !IsPlaying && !IsRecording && !IsMonitoring,
+                () => !IsWaveFormLoading
+                    && !IsPlaying
+                    && !IsRecording
+                    && !IsMonitoring,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopMonitor));
 
@@ -330,6 +344,17 @@ namespace Tobi.Plugin.AudioPane
         }
 
         internal AudioRecorder m_Recorder;
+
+        [NotifyDependsOn("IsMonitoringAlways")]
+        [NotifyDependsOn("IsRecording")]
+        [NotifyDependsOn("IsMonitoring")]
+        public bool CanSwapInputDevice
+        {
+            get
+            {
+                return (!IsMonitoring || IsMonitoringAlways) && !IsRecording;
+            }
+        }
 
         private List<InputDevice> m_InputDevices;
         public List<InputDevice> InputDevices
@@ -625,6 +650,11 @@ namespace Tobi.Plugin.AudioPane
                 m_RecordAndContinue = false;
                 m_InterruptRecording = false;
                 checkAndAddDeferredRecordingDataItems();
+
+                if (IsMonitoringAlways)
+                {
+                    CommandStartMonitor.Execute();
+                }
                 return;
             }
 
@@ -726,6 +756,7 @@ namespace Tobi.Plugin.AudioPane
 #else
                                 CommandStartRecord.Execute();
 #endif
+                                return;
                             }
                             else
                             {
@@ -755,6 +786,10 @@ namespace Tobi.Plugin.AudioPane
 #endif
                         }
 
+                        if (IsMonitoringAlways && !IsMonitoring)
+                        {
+                            CommandStartMonitor.Execute();
+                        }
                         return;
                     }
                 }
@@ -768,6 +803,11 @@ namespace Tobi.Plugin.AudioPane
             m_RecordAndContinue = false;
             checkAndAddDeferredRecordingDataItems();
             State.Audio.PcmFormatRecordingMonitoring = null;
+
+            if (IsMonitoringAlways && !IsMonitoring)
+            {
+                CommandStartMonitor.Execute();
+            }
         }
 
 
@@ -859,8 +899,13 @@ namespace Tobi.Plugin.AudioPane
                 {
                     View.TimeMessageHide();
                 }
+
+                //if (e.OldState != AudioRecorder.State.Monitoring && IsMonitoringAlways)
+                //{
+                //    CommandStartMonitor.Execute();
+                //}
             }
-            if (m_Recorder.CurrentState == AudioRecorder.State.Recording || m_Recorder.CurrentState == AudioRecorder.State.Monitoring)
+            if (IsRecording || IsMonitoring)
             {
                 if (e.OldState == AudioRecorder.State.Stopped)
                 {
@@ -873,7 +918,7 @@ namespace Tobi.Plugin.AudioPane
                 //    View.StartPeakMeterTimer();
                 //}
 
-                if (View != null)
+                if (View != null && (!IsMonitoring || !IsMonitoringAlways))
                 {
                     View.TimeMessageShow();
                 }
@@ -897,6 +942,37 @@ namespace Tobi.Plugin.AudioPane
                 return m_Recorder.CurrentState == AudioRecorder.State.Monitoring;
             }
         }
+
+        public bool IsMonitoringAlways
+        {
+            get
+            {
+                return Settings.Default.Audio_AlwaysMonitor;
+            }
+            set
+            {
+                if (Settings.Default.Audio_AlwaysMonitor != value)
+                {
+                    Settings.Default.Audio_AlwaysMonitor = value;
+                    RaisePropertyChanged(() => IsMonitoringAlways);
+
+                    CommandManager.InvalidateRequerySuggested();
+                }
+
+                if (!Settings.Default.Audio_AlwaysMonitor)
+                {
+                    if (IsMonitoring)
+                    {
+                        CommandStopMonitor.Execute();
+                    }
+                }
+                else if (!IsPlaying && !IsRecording && !IsMonitoring)
+                {
+                    CommandStartMonitor.Execute();
+                }
+            }
+        }
+
 
         //private void OnRecorderResetVuMeter(object sender, UpdateVuMeterEventArgs e)
         //{

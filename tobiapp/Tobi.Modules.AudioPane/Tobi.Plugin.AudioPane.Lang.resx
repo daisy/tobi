@@ -159,6 +159,9 @@
   <data name="GeneratingTTSAudio" xml:space="preserve">
     <value>Generating TTS audio...</value>
   </data>
+  <data name="AudioAlwaysMonitor" xml:space="preserve">
+    <value>Always monitor audio input</value>
+  </data>
   <data name="AudioAutoPlay" xml:space="preserve">
     <value>Autoplay</value>
   </data>

@@ -164,6 +164,11 @@ namespace Tobi.Plugin.AudioPane
                     {
                         EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.PlaybackStopped);
                     }
+
+                    if (IsMonitoringAlways)
+                    {
+                        CommandStartMonitor.Execute();
+                    }
                 },
                 () => State.Audio.HasContent && IsPlaying
                 //&& !IsWaveFormLoading 
@@ -183,12 +188,20 @@ namespace Tobi.Plugin.AudioPane
                     Logger.Log("AudioPaneViewModel.CommandPlay", Category.Debug, Priority.Medium);
                     CommandPause.Execute();
 
+                    if (IsMonitoring)
+                    {
+                        CommandStopMonitor.Execute();
+                    }
+
 //#if DEBUG
 //                    Logger.Log("AudioPaneViewModel.CommandPlay (called PAUSE)", Category.Debug, Priority.Medium);
 //#endif
 
 
-                    if (PlayBytePosition < 0) m_LastSetPlayBytePosition = 0;
+                    if (PlayBytePosition < 0)
+                    {
+                        m_LastSetPlayBytePosition = 0;
+                    }
 
                     if (!IsSelectionSet)
                     {
@@ -223,7 +236,10 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
                 },
-                () => State.Audio.HasContent && !IsPlaying && !IsMonitoring && !IsRecording
+                () => State.Audio.HasContent
+                    && !IsPlaying
+                    && (!IsMonitoring || IsMonitoringAlways)
+                    && !IsRecording
                 //&& !IsWaveFormLoading 
                 ,
                 Settings_KeyGestures.Default,
@@ -303,25 +319,17 @@ namespace Tobi.Plugin.AudioPane
         private AudioPlayer.StreamProviderDelegate m_AudioStreamProvider_TreeNode;
         private AudioPlayer.StreamProviderDelegate m_AudioStreamProvider_File;
 
+        [NotifyDependsOn("IsMonitoringAlways")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOn("IsMonitoring")]
         public bool CanSwapOutputDevice
         {
             get
             {
-                return !IsMonitoring && !IsRecording;
+                return (!IsMonitoring || IsMonitoringAlways) && !IsRecording;
             }
         }
 
-        [NotifyDependsOn("IsRecording")]
-        [NotifyDependsOn("IsMonitoring")]
-        public bool CanSwapInputDevice
-        {
-            get
-            {
-                return !IsMonitoring && !IsRecording;
-            }
-        }
 
         private List<OutputDevice> m_OutputDevices;
         public List<OutputDevice> OutputDevices
@@ -1121,6 +1129,13 @@ namespace Tobi.Plugin.AudioPane
                     //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(nextNode);
                     m_UrakawaSession.PerformTreeNodeSelection(nextNode);
                 }
+                else
+                {
+                    if (IsMonitoringAlways)
+                    {
+                        CommandStartMonitor.Execute();
+                    }
+                }
             }
             else
             {
@@ -1132,6 +1147,11 @@ namespace Tobi.Plugin.AudioPane
                 else
                 {
                     OnAudioPlaybackFinished_RefreshStatus();
+
+                    if (IsMonitoringAlways)
+                    {
+                        CommandStartMonitor.Execute();
+                    }
                 }
             }
         }
@@ -1176,6 +1196,11 @@ namespace Tobi.Plugin.AudioPane
                     View.StopWaveFormTimer();
                     //View.StopPeakMeterTimer();
                 }
+
+                //if (IsMonitoringAlways)
+                //{
+                //    CommandStartMonitor.Execute();
+                //}
             }
 
             if (IsPlaying)
