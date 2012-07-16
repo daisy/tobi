@@ -26,6 +26,18 @@ namespace Tobi.Plugin.Urakawa {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableRecentFilesMenu {
+            get {
+                return ((bool)(this["EnableRecentFilesMenu"]));
+            }
+            set {
+                this["EnableRecentFilesMenu"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ExportIncludeImageDescriptions {
             get {
                 return ((bool)(this["ExportIncludeImageDescriptions"]));
@@ -61,13 +73,13 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool EnableRecentFilesMenu {
+        [global::System.Configuration.DefaultSettingValueAttribute("kbps_64")]
+        public global::AudioLib.BitRate AudioExportMp3Bitrate {
             get {
-                return ((bool)(this["EnableRecentFilesMenu"]));
+                return ((global::AudioLib.BitRate)(this["AudioExportMp3Bitrate"]));
             }
             set {
-                this["EnableRecentFilesMenu"] = value;
+                this["AudioExportMp3Bitrate"] = value;
             }
         }
         
@@ -80,6 +92,18 @@ namespace Tobi.Plugin.Urakawa {
             }
             set {
                 this["AudioExportSampleRate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AudioExportStereo {
+            get {
+                return ((bool)(this["AudioExportStereo"]));
+            }
+            set {
+                this["AudioExportStereo"] = value;
             }
         }
         
