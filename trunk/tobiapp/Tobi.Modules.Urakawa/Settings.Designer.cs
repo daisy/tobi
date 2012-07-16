@@ -74,9 +74,9 @@ namespace Tobi.Plugin.Urakawa {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("kbps_64")]
-        public global::AudioLib.BitRate AudioExportMp3Bitrate {
+        public global::AudioLib.Mp3BitRate AudioExportMp3Bitrate {
             get {
-                return ((global::AudioLib.BitRate)(this["AudioExportMp3Bitrate"]));
+                return ((global::AudioLib.Mp3BitRate)(this["AudioExportMp3Bitrate"]));
             }
             set {
                 this["AudioExportMp3Bitrate"] = value;

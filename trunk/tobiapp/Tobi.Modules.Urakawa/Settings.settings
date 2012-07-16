@@ -14,7 +14,7 @@
     <Setting Name="AudioExportEncodeToMp3" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="AudioExportMp3Bitrate" Type="AudioLib.BitRate" Scope="User">
+    <Setting Name="AudioExportMp3Bitrate" Type="AudioLib.Mp3BitRate" Scope="User">
       <Value Profile="(Default)">kbps_64</Value>
     </Setting>
     <Setting Name="AudioExportSampleRate" Type="AudioLib.SampleRate" Scope="User">
