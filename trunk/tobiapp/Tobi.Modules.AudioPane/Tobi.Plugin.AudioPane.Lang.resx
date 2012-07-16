@@ -166,10 +166,10 @@
     <value>Autoplay</value>
   </data>
   <data name="CmdAudioAutoPlay_ShortDesc" xml:space="preserve">
-    <value>_Toggle autoplay</value>
+    <value>_Toggle autoplay mode</value>
   </data>
   <data name="CmdAudioAutoPlay_LongDesc" xml:space="preserve">
-    <value>Switch autoplay on/off</value>
+    <value>Switch autoplay mode on/off</value>
   </data>
   <data name="CmdAudioBeginSelection_ShortDesc" xml:space="preserve">
     <value>_Begin selection</value>
@@ -241,13 +241,13 @@
     <value>_Import audio file</value>
   </data>
   <data name="CmdAudioInsertFile_LongDesc" xml:space="preserve">
-    <value>Import a local WAV or MP3 file</value>
+    <value>Import a local audio file</value>
   </data>
   <data name="CmdAudioOpenFile_ShortDesc" xml:space="preserve">
     <value>_Open audio file</value>
   </data>
   <data name="CmdAudioOpenFile_LongDesc" xml:space="preserve">
-    <value>Open a local WAV or MP3</value>
+    <value>Open a local audio file</value>
   </data>
   <data name="CmdAudioPause_ShortDesc" xml:space="preserve">
     <value>_Pause</value>
@@ -257,6 +257,12 @@
   </data>
   <data name="CmdAudioPlay_ShortDesc" xml:space="preserve">
     <value>_Play</value>
+  </data>
+  <data name="CmdAudioPlayAutoAdvance_ShortDesc" xml:space="preserve">
+    <value>Play _auto advance</value>
+  </data>
+  <data name="CmdAudioPlayAutoAdvance_LongDesc" xml:space="preserve">
+    <value>Automatically continue playing when reaching the end of an audio phrase</value>
   </data>
   <data name="CmdAudioPlayPreviewLeft_ShortDesc" xml:space="preserve">
     <value>Preview _before</value>

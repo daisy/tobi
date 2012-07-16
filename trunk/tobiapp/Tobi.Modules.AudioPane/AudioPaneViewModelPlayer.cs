@@ -26,6 +26,10 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandAutoPlay { get; private set; }
 
         public RichDelegateCommand CommandPlay { get; private set; }
+
+        private bool m_PlayAutoAdvance = false;
+        public RichDelegateCommand CommandPlayAutoAdvance { get; private set; }
+        
         public RichDelegateCommand CommandPlayPreviewLeft { get; private set; }
         public RichDelegateCommand CommandPlayPreviewRight { get; private set; }
         public RichDelegateCommand CommandPause { get; private set; }
@@ -138,7 +142,7 @@ namespace Tobi.Plugin.AudioPane
                 //&& !IsWaveFormLoading
                    ,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_AutoPlay));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ToggleAutoPlayMode));
 
             m_ShellView.RegisterRichCommand(CommandAutoPlay);
             //
@@ -151,6 +155,8 @@ namespace Tobi.Plugin.AudioPane
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandPause", Category.Debug, Priority.Medium);
+
+                    m_PlayAutoAdvance = false;
 
                     SetRecordAfterPlayOverwriteSelection(-1);
 
@@ -246,6 +252,24 @@ namespace Tobi.Plugin.AudioPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayPause));
 
             m_ShellView.RegisterRichCommand(CommandPlay);
+            //
+            CommandPlayAutoAdvance = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioPlayAutoAdvance_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioPlayAutoAdvance_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadGnomeGionIcon("applications-multimedia"),//emblem-system
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandPlayAutoAdvance", Category.Debug, Priority.Medium);
+
+                    m_PlayAutoAdvance = true;
+                    CommandPlay.Execute();
+                },
+                () => CommandPlay.CanExecute(),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlayAutoAdvance));
+
+            m_ShellView.RegisterRichCommand(CommandPlayAutoAdvance);
             //
             CommandPlayPreviewLeft = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdAudioPlayPreviewLeft_ShortDesc,
@@ -1086,7 +1110,7 @@ namespace Tobi.Plugin.AudioPane
         private void OnAudioPlaybackFinished_(object sender, AudioPlayer.AudioPlaybackFinishEventArgs e)
         {
             bool gotoNext = State.Audio.EndOffsetOfPlayStream == State.Audio.DataLength
-                            && IsAutoPlay
+                            && (IsAutoPlay || m_PlayAutoAdvance)
                             && !IsSelectionSet
                             && m_UrakawaSession.DocumentProject != null;
 
@@ -1139,6 +1163,8 @@ namespace Tobi.Plugin.AudioPane
             }
             else
             {
+                m_PlayAutoAdvance = false;
+
                 if (m_RecordAfterPlayOverwriteSelection > 0 && State.Selection.SelectionBeginBytePosition == m_RecordAfterPlayOverwriteSelection)
                 {
                     SetRecordAfterPlayOverwriteSelection(-1);

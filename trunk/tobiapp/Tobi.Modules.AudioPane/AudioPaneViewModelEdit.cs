@@ -254,7 +254,7 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Plugin_AudioPane_Lang.CmdAudioDelete_ShortDesc,
                 Tobi_Plugin_AudioPane_Lang.CmdAudioDelete_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("audio-volume-muted"),
+                m_ShellView.LoadTangoIcon("emblem-unreadable"), //edit-delete  audio-volume-muted
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandDeleteAudioSelection", Category.Debug, Priority.Medium);

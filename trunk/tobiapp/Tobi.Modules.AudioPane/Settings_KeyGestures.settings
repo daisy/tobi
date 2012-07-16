@@ -79,11 +79,14 @@
     <Setting Name="Keyboard_Audio_StartStopMonitor" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] M</Value>
     </Setting>
-    <Setting Name="Keyboard_Audio_AutoPlay" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ALT ] Space</Value>
+    <Setting Name="Keyboard_Audio_ToggleAutoPlayMode" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] P</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_PlayPause" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ NONE ] Space</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_PlayAutoAdvance" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] Space</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_PlayLeftPreview" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] P</Value>

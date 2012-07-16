@@ -984,9 +984,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <UI:ButtonRichCommand
         RichCommand="{Binding CommandInsertFile}"/>
 
-    <UI:ButtonRichCommand
+    <!-- UI:ButtonRichCommand
         RichCommand="{Binding CommandGenTTS}"
-        />
+        / -->
 
     <!-- 
         Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}" -->
@@ -1015,6 +1015,13 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                                  />
     <Separator/>
 
+    <UI:ButtonRichCommand RichCommand="{Binding CommandPlayAutoAdvance}"
+                          Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+                                 />
+    <Separator
+      Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+      />
+    
     <UI:ButtonRichCommand RichCommand="{Binding CommandGotoBegining}"
                                  />
 
@@ -1061,7 +1068,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
     <Separator/>
     <!--ToolTip="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.CmdAudioAutoPlay_LongDesc}"-->
-    <CheckBox
+    <!-- CheckBox
       FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
       Control.IsTabStop="true"
                 IsChecked="{Binding IsAutoPlay, Mode=TwoWay}"
@@ -1074,10 +1081,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
               Click="OnMouseClickCheckBox"
               />
 
-
     <Separator
       Visibility="{Binding Path=IsSimpleMode, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
-      />
+      / -->
     
     <!-- UI:ButtonRichCommand RichCommand="{Binding CommandOpenFile}"/ -->
 
