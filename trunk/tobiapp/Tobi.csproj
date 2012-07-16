@@ -192,6 +192,9 @@
     <Content Include="daisy_01.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="EPUB.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="desc2html.xsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
