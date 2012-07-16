@@ -279,13 +279,30 @@ m_Stream.Length);
             else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_InputDevice))
             {
                 if (m_Recorder.CurrentState == AudioRecorder.State.Stopped
-                    || m_Recorder.CurrentState == AudioRecorder.State.NotReady)
+                    || m_Recorder.CurrentState == AudioRecorder.State.NotReady
+                    || IsMonitoring // && IsMonitoringAlways
+                    )
                 {
+                    bool monitoring = false;
+                    if (IsMonitoring)
+                    {
+                        //DebugFix.Assert(IsMonitoringAlways);
+                        monitoring = true;
+                        CommandStopMonitor.Execute();
+                    }
+
                     m_Recorder.SetInputDevice(Settings.Default.Audio_InputDevice);
 
                     if (m_Recorder.InputDevice.Name != Settings.Default.Audio_InputDevice)
+                    {
                         Settings.Default.Audio_InputDevice = m_Recorder.InputDevice.Name; // will generate a call to OnSettingsPropertyChanged again
+                    }
                     //Settings.Default.Save();
+
+                    if (monitoring) // && IsMonitoringAlways)
+                    {
+                        CommandStartMonitor.Execute();
+                    }
                 }
             }
             else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_OutputDevice))
@@ -303,7 +320,9 @@ m_Stream.Length);
                 //m_Player.OutputDevice = value;
 
                 if (m_Player.OutputDevice.Name != Settings.Default.Audio_OutputDevice)
+                {
                     Settings.Default.Audio_OutputDevice = m_Player.OutputDevice.Name; // will generate a call to OnSettingsPropertyChanged again
+                }
                 //Settings.Default.Save();
 
                 if (paused) //time >= 0 && State.Audio.HasContent)
@@ -332,6 +351,10 @@ m_Stream.Length);
                     CommandRefresh.Execute();
                 }
                 //IsEnvelopeFilled = Settings.Default.AudioWaveForm_IsFilled;
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_AlwaysMonitor))
+            {
+                RaisePropertyChanged(() => IsMonitoringAlways);
             }
             //else if (e.PropertyName == GetMemberName(() => Settings.Default.AudioWaveForm_IsBordered))
             //{
@@ -946,6 +969,11 @@ m_Stream.Length);
 
                 if (m_CurrentAudioStreamProvider() == null)
                 {
+                    if (IsMonitoringAlways)
+                    {
+                        CommandStartMonitor.Execute();
+                    }
+
                     m_UpdatingTreeNodeSelection = false;
                     CommandManager.InvalidateRequerySuggested();
                     return;
@@ -979,6 +1007,11 @@ m_Stream.Length);
                 //            Logger.Log("CALLING AudioPlayer_LoadWaveForm (loadAndPlay)", Category.Debug, Priority.Medium);
                 //#endif
                 AudioPlayer_LoadWaveForm(false);
+
+                if (!IsAutoPlay && IsMonitoringAlways)
+                {
+                    CommandStartMonitor.Execute();
+                }
             }
             else
             {
@@ -1017,6 +1050,11 @@ m_Stream.Length);
                 m_UpdatingTreeNodeSelection = false;
 
                 CommandManager.InvalidateRequerySuggested();
+
+                if (IsMonitoringAlways)
+                {
+                    CommandStartMonitor.Execute();
+                }
 
                 //if (IsAutoPlay)
                 //{
@@ -1207,6 +1245,11 @@ m_Stream.Length);
                 {
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
                 }
+
+                if (IsMonitoringAlways)
+                {
+                    CommandStartMonitor.Execute();
+                }
             }
             else
             {
@@ -1371,10 +1414,10 @@ m_Stream.Length);
 #if !DISABLE_SINGLE_RECORD_FILE
                 if (m_RecordAndContinue_StopBytePos >= 0) //m_RecordAndContinue
                 {
-                    return m_Recorder.CurrentDurationBytePosition - m_RecordAndContinue_StopBytePos;
+                    return (long)m_Recorder.CurrentDurationBytePosition - m_RecordAndContinue_StopBytePos;
                 }
 #endif
-                return m_Recorder.CurrentDurationBytePosition;
+                return (long)m_Recorder.CurrentDurationBytePosition;
             }
         }
 
@@ -1419,6 +1462,7 @@ m_Stream.Length);
             }
         }
 
+        [NotifyDependsOn("IsMonitoringAlways")]
         [NotifyDependsOn("IsMonitoring")]
         [NotifyDependsOn("IsRecording")]
         [NotifyDependsOnEx("PlayStream", typeof(StreamStateData))]
@@ -1426,7 +1470,8 @@ m_Stream.Length);
         {
             get
             {
-                return State.Audio.HasContent || IsRecording || IsMonitoring;
+                return State.Audio.HasContent || IsRecording ||
+                    (IsMonitoring && !IsMonitoringAlways);
             }
         }
 
@@ -1444,8 +1489,14 @@ m_Stream.Length);
         {
             get
             {
-                if (IsRecording || IsMonitoring)
+                if (IsRecording
+                    || (IsMonitoring && !IsMonitoringAlways))
                 {
+                    //if ()
+                    //{
+                    //    return string.Empty; // @"...";
+                    //}
+
                     return FormatTimeSpan_Units(State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(RecorderCurrentDurationBytePosition));
                 }
 
@@ -1788,7 +1839,8 @@ m_Stream.Length);
             PCMFormatInfo pcmInfo = State.Audio.GetCurrentPcmFormat();
             if (pcmInfo == null) return;
 
-            if (IsRecording || IsMonitoring)
+            if (IsRecording ||
+                (IsMonitoring && !IsMonitoringAlways))
             {
                 if (View != null)
                 {

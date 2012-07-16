@@ -668,6 +668,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
 
     <TextBlock x:Name="PeakOverloadLabelCh1"
@@ -848,6 +849,30 @@ Value="{StaticResource DisabledForegroundBrush}"/>
         </Path.Stroke>
       </Path>
     </Canvas>
+
+    
+    <!--
+    Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.AudioAlwaysMonitor}"
+    ToolTip="{Binding Source={x:Static AudioPane:Settings_KeyGestures.Default}, Path=Keyboard_Audio_AlwaysMonitor, Mode=OneWay}"
+    -->
+    <CheckBox
+                  VerticalAlignment="Bottom"
+                  HorizontalAlignment="Center"
+                
+            Grid.Row="2" Grid.Column="0"
+            Grid.ColumnSpan="2"
+                  
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        Control.IsTabStop="true"
+                  IsChecked="{Binding IsMonitoringAlways, Mode=TwoWay}"
+                  
+                  IsThreeState="False"
+                ToolTip="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.AudioAlwaysMonitor}"
+
+      Margin="2,2,2,2"
+                Click="OnMouseClickCheckBox"
+              />
+  
   </Grid>
 
 

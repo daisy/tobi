@@ -44,7 +44,10 @@ namespace Tobi.Plugin.AudioPane
                            PlayBytePosition = 0;
                        }
                    },
-                   () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
+                   () => !IsWaveFormLoading
+                       && State.Audio.HasContent
+                       && !IsRecording
+                       && (!IsMonitoring || IsMonitoringAlways),
                    Settings_KeyGestures.Default,
                    PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GotoBegin));
 
@@ -75,7 +78,10 @@ namespace Tobi.Plugin.AudioPane
                         PlayBytePosition = State.Audio.DataLength;
                     }
                 },
-                () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
+                () => !IsWaveFormLoading
+                    && State.Audio.HasContent
+                    && !IsRecording
+                    && (!IsMonitoring || IsMonitoringAlways),
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GotoEnd));
 
@@ -129,7 +135,9 @@ namespace Tobi.Plugin.AudioPane
                         );
 
                 },
-                () => !IsWaveFormLoading && !IsRecording && !IsMonitoring
+                () => !IsWaveFormLoading
+                    && !IsRecording
+                    && (!IsMonitoring || IsMonitoringAlways)
                     && State.Audio.HasContent && State.Audio.PlayStreamMarkers != null && State.Audio.PlayStreamMarkers.Count > 1,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StepBack));
@@ -206,7 +214,10 @@ namespace Tobi.Plugin.AudioPane
 
                     PlayBytePosition = newBytesPosition;
                 },
-                () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
+                () => !IsWaveFormLoading
+                    && State.Audio.HasContent
+                    && (!IsMonitoring || IsMonitoringAlways)
+                    && !IsRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GoForward));
 
@@ -237,7 +248,10 @@ namespace Tobi.Plugin.AudioPane
 
                     PlayBytePosition = newTimeBytePosition;
                 },
-                () => !IsWaveFormLoading && State.Audio.HasContent && !IsRecording && !IsMonitoring,
+                () => !IsWaveFormLoading
+                    && State.Audio.HasContent
+                    && !IsRecording
+                    && (!IsMonitoring || IsMonitoringAlways),
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GoBack));
 
