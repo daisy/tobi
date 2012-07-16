@@ -199,7 +199,8 @@ namespace Tobi.Plugin.AudioPane
                 Tobi_Common_Lang.Menu_AudioPlayback, PreferredPosition.Last, true,
                 new object[]
                     {
-                        m_AudioPaneViewModel.CommandAutoPlay
+                        m_AudioPaneViewModel.CommandPlayAutoAdvance,
+                        //m_AudioPaneViewModel.CommandAutoPlay
                     });
 
             m_MenuBarId_8 = m_MenuBarView.AddMenuBarGroup(

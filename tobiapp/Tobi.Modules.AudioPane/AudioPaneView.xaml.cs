@@ -747,7 +747,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 FileName = "",
                 DefaultExt = DataProviderFactory.AUDIO_WAV_EXTENSION,
-                Filter = @"WAV, MP3 (*" + DataProviderFactory.AUDIO_WAV_EXTENSION + ", *" + DataProviderFactory.AUDIO_MP3_EXTENSION + ")|*" + DataProviderFactory.AUDIO_WAV_EXTENSION + ";*" + DataProviderFactory.AUDIO_MP3_EXTENSION,
+                Filter = @"WAV, MP3, MP4 (*" + DataProviderFactory.AUDIO_WAV_EXTENSION + ", *" + DataProviderFactory.AUDIO_MP3_EXTENSION + ", *" + DataProviderFactory.AUDIO_MP4_EXTENSION + ")|*" + DataProviderFactory.AUDIO_WAV_EXTENSION + ";*" + DataProviderFactory.AUDIO_MP3_EXTENSION + ";*" + DataProviderFactory.AUDIO_MP4_EXTENSION,
                 CheckFileExists = false,
                 CheckPathExists = false,
                 AddExtension = true,

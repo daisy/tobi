@@ -1008,7 +1008,11 @@ m_Stream.Length);
                 //#endif
                 AudioPlayer_LoadWaveForm(false);
 
-                if (!IsAutoPlay && IsMonitoringAlways)
+                if (m_PlayAutoAdvance)
+                {
+                    CommandPlayAutoAdvance.Execute();
+                }
+                else if (IsMonitoringAlways)
                 {
                     CommandStartMonitor.Execute();
                 }
@@ -1617,6 +1621,7 @@ m_Stream.Length);
                         View.RefreshUI_WaveFormPlayHead(false);
                     }
                     RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
+
                     if (IsAutoPlay)
                     {
                         CommandPlay.Execute();

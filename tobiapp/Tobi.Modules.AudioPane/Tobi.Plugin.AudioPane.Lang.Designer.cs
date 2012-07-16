@@ -106,7 +106,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switch autoplay on/off.
+        ///   Looks up a localized string similar to Switch autoplay mode on/off.
         /// </summary>
         public static string CmdAudioAutoPlay_LongDesc {
             get {
@@ -115,7 +115,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Toggle autoplay.
+        ///   Looks up a localized string similar to _Toggle autoplay mode.
         /// </summary>
         public static string CmdAudioAutoPlay_ShortDesc {
             get {
@@ -304,7 +304,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import a local WAV or MP3 file.
+        ///   Looks up a localized string similar to Import a local audio file.
         /// </summary>
         public static string CmdAudioInsertFile_LongDesc {
             get {
@@ -322,7 +322,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open a local WAV or MP3.
+        ///   Looks up a localized string similar to Open a local audio file.
         /// </summary>
         public static string CmdAudioOpenFile_LongDesc {
             get {
@@ -372,6 +372,24 @@ namespace Tobi.Plugin.AudioPane {
         public static string CmdAudioPlay_ShortDesc {
             get {
                 return ResourceManager.GetString("CmdAudioPlay_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically continue playing when reaching the end of an audio phrase.
+        /// </summary>
+        public static string CmdAudioPlayAutoAdvance_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioPlayAutoAdvance_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play _auto advance.
+        /// </summary>
+        public static string CmdAudioPlayAutoAdvance_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioPlayAutoAdvance_ShortDesc", resourceCulture);
             }
         }
         
