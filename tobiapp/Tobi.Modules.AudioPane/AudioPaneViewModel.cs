@@ -968,8 +968,8 @@ m_Stream.Length);
 
                 if (View != null)
                 {
-                    View.RefreshUI_PeakMeterBlackout(false);
-                    View.ResetPeakLines();
+                    View.RefreshUI_PeakMeterBlackout(true);
+                    //View.ResetPeakLines();
                 }
 
                 PeakOverloadCountCh1 = 0;
@@ -1727,12 +1727,13 @@ m_Stream.Length);
         public void UpdatePeakMeter()
         {
             if (!IsPlaying
-                && (m_Recorder.CurrentState != AudioRecorder.State.Recording && m_Recorder.CurrentState != AudioRecorder.State.Monitoring))
+                && !IsRecording
+                && !IsMonitoring)
             {
                 if (View != null)
                 {
                     View.RefreshUI_PeakMeterBlackout(true);
-                    View.ResetPeakLines();
+                    //View.ResetPeakLines();
                 }
                 return;
             }
@@ -1850,6 +1851,12 @@ m_Stream.Length);
                 {
                     PeakOverloadCountCh2++;
                 }
+#if DEBUG
+                else
+                {
+                    Debugger.Break();
+                }
+#endif //DEBUG
             }
         }
 
