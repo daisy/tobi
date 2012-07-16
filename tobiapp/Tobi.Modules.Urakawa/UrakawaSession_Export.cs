@@ -115,7 +115,7 @@ namespace Tobi.Plugin.Urakawa
 
                     var comboSampleRates = new ComboBox
                     {
-                        Margin = new Thickness(0, 0, 0, 12)
+                        Margin = new Thickness(0, 0, 0, 2)
                     };
 
                     ComboBoxItem item1 = new ComboBoxItem();
@@ -152,7 +152,62 @@ namespace Tobi.Plugin.Urakawa
                             }
                     }
 
+                    var labelStereo = new TextBlock
+                    {
+                        Text = Tobi_Plugin_Urakawa_Lang.Stereo,
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
 
+                    var checkBoxStereo = new CheckBox
+                    {
+                        IsThreeState = false,
+                        IsChecked = Settings.Default.AudioExportStereo,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+
+                    var panelStereo = new StackPanel
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Horizontal,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(0, 0, 0, 12),
+                    };
+                    panelStereo.Children.Add(labelStereo);
+                    panelStereo.Children.Add(checkBoxStereo);
+
+
+                    var labelEncodeMP3 = new TextBlock
+                    {
+                        Text = Tobi_Plugin_Urakawa_Lang.ExportEncodeMp3,
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var checkBoxEncodeMP3 = new CheckBox
+                    {
+                        IsThreeState = false,
+                        IsChecked = Settings.Default.AudioExportEncodeToMp3,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+
+                    var panelEncodeMP3 = new StackPanel
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Horizontal,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(0, 0, 0, 2)
+                    };
+                    panelEncodeMP3.Children.Add(labelEncodeMP3);
+                    panelEncodeMP3.Children.Add(checkBoxEncodeMP3);
 
                     var comboMp3BitRates = new ComboBox
                     {
@@ -224,52 +279,12 @@ namespace Tobi.Plugin.Urakawa
                             }
                     }
 
-                    var checkBoxEncodeMP3 = new CheckBox
-                    {
-                        IsThreeState = false,
-                        IsChecked = Settings.Default.AudioExportEncodeToMp3,
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-                        VerticalAlignment = VerticalAlignment.Center,
-                    };
-                    checkBoxEncodeMP3.Checked += (object sender, RoutedEventArgs e)=>
+                    comboMp3BitRates.IsEnabled = checkBoxEncodeMP3.IsChecked.Value;
+
+                    checkBoxEncodeMP3.Click += (object sender, RoutedEventArgs e) =>
                         {
-                            if (checkBoxEncodeMP3.IsChecked.Value)
-                            {
-                                comboMp3BitRates.IsEnabled = true;
-                            }
-                            else
-                            {
-                                comboMp3BitRates.IsEnabled = false;
-                            }
+                            comboMp3BitRates.IsEnabled = checkBoxEncodeMP3.IsChecked.Value;
                         };
-
-                    var labelEncodeMP3 = new TextBlock
-                    {
-                        Text = Tobi_Plugin_Urakawa_Lang.ExportEncodeMp3,
-                        Margin = new Thickness(8, 0, 8, 0),
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Focusable = true,
-                        TextWrapping = TextWrapping.Wrap
-                    };
-
-
-                    var panelEncodeMP3 = new StackPanel
-                    {
-                        Orientation = System.Windows.Controls.Orientation.Horizontal,
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-                        VerticalAlignment = VerticalAlignment.Center,
-                    };
-                    panelEncodeMP3.Children.Add(labelEncodeMP3);
-                    panelEncodeMP3.Children.Add(checkBoxEncodeMP3);
-
-                    var checkBoxIncludeImageDescriptions = new CheckBox
-                    {
-                        IsThreeState = false,
-                        IsChecked = Settings.Default.ExportIncludeImageDescriptions,
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-                        VerticalAlignment = VerticalAlignment.Center,
-                    };
 
                     var labelIncludeImageDescriptions = new TextBlock
                     {
@@ -281,7 +296,13 @@ namespace Tobi.Plugin.Urakawa
                         TextWrapping = TextWrapping.Wrap
                     };
 
-
+                    var checkBoxIncludeImageDescriptions = new CheckBox
+                    {
+                        IsThreeState = false,
+                        IsChecked = Settings.Default.ExportIncludeImageDescriptions,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
 
                     var panelIncludeImageDescriptions = new StackPanel
                     {
@@ -292,35 +313,6 @@ namespace Tobi.Plugin.Urakawa
                     panelIncludeImageDescriptions.Children.Add(labelIncludeImageDescriptions);
                     panelIncludeImageDescriptions.Children.Add(checkBoxIncludeImageDescriptions);
 
-
-                    var checkBoxStereo = new CheckBox
-                    {
-                        IsThreeState = false,
-                        IsChecked = Settings.Default.AudioExportStereo,
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-                        VerticalAlignment = VerticalAlignment.Center,
-                    };
-
-                    var labelStereo = new TextBlock
-                    {
-                        Text = Tobi_Plugin_Urakawa_Lang.Stereo,
-                        Margin = new Thickness(8, 0, 8, 0),
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Focusable = true,
-                        TextWrapping = TextWrapping.Wrap
-                    };
-
-
-
-                    var panelStereo = new StackPanel
-                    {
-                        Orientation = System.Windows.Controls.Orientation.Horizontal,
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
-                        VerticalAlignment = VerticalAlignment.Center,
-                    };
-                    panelStereo.Children.Add(labelStereo);
-                    panelStereo.Children.Add(checkBoxStereo);
 
                     var rootPanel = new StackPanel
                     {
@@ -339,7 +331,7 @@ namespace Tobi.Plugin.Urakawa
                                                            rootPanel,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           false, 300, 180, null, 40, null);
+                                                           false, 300, 220, null, 40, null);
 
                     windowPopup_.EnableEnterKeyDefault = true;
 
@@ -367,7 +359,7 @@ namespace Tobi.Plugin.Urakawa
                         Settings.Default.AudioExportSampleRate = SampleRate.Hz44100;
                     }
 
-                    
+
                     if (comboMp3BitRates.SelectedItem == itemBitRate1)
                     {
                         Settings.Default.AudioExportMp3Bitrate = Mp3BitRate.kbps_32;
