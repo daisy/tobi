@@ -188,6 +188,9 @@
     <Content Include="desc2html.xsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="EPUB.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="faad.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

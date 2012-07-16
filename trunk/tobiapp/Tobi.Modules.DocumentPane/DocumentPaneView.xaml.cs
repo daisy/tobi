@@ -1464,6 +1464,16 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }
 
+            string dirPathEPUB = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
+
+            string imgPathEPUB = Path.Combine(dirPath, "EPUB.svg");
+            ImageSource imageSourceEPUB = AutoGreyableImage.GetSVGOrBitmapImageSource(imgPathEPUB);
+            if (imageSourceEPUB == null)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+            }
 
             try
             {
@@ -1478,9 +1488,22 @@ namespace Tobi.Plugin.DocumentPane
                                     Stretch = Stretch.Uniform,
                                     StretchDirection = StretchDirection.DownOnly
                                 };
-                    image.MaxWidth = 240;
+                    image.MaxWidth = 150;
                 }
 
+                Image imageEPUB = null;
+                if (imageSourceEPUB != null)
+                {
+                    imageEPUB = new Image
+                    {
+                        Source = imageSourceEPUB,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Top,
+                        Stretch = Stretch.Uniform,
+                        StretchDirection = StretchDirection.DownOnly
+                    };
+                    imageEPUB.MaxWidth = 100;
+                }
                 //var block = new BlockUIContainer(image);
 
                 var block = new Paragraph();
@@ -1496,16 +1519,30 @@ namespace Tobi.Plugin.DocumentPane
 
                 var run2 = new Run(@"Open-Source DAISY Multimedia Authoring");
                 block.Inlines.Add(run2);
+
+                block.Inlines.Add(new LineBreak());
                 block.Inlines.Add(new LineBreak());
 
                 if (image != null)
                 {
                     var inline = new InlineUIContainer(image)
-                                     {
-                                         BaselineAlignment = BaselineAlignment.Top
-                                     };
+                    {
+                        BaselineAlignment = BaselineAlignment.Top
+                    };
 
                     block.Inlines.Add(inline);
+                }
+
+                block.Inlines.Add(new Run("    "));
+
+                if (imageEPUB != null)
+                {
+                    var inlineEPUB = new InlineUIContainer(imageEPUB)
+                    {
+                        BaselineAlignment = BaselineAlignment.Top
+                    };
+
+                    block.Inlines.Add(inlineEPUB);
                 }
 
                 return block;
