@@ -304,7 +304,8 @@ namespace Tobi.Plugin.Urakawa
             m_Logger.Log(String.Format(@"UrakawaSession.doExport() [{0}]", path), Category.Debug, Priority.Medium);
 
             var converter = new Daisy3_Export(DocumentProject.Presentations.Get(0), path, null,
-                Settings.Default.AudioExportEncodeToMp3, Settings.Default.AudioExportSampleRate,
+                Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
+                Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
                 IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions);
 
             m_ShellView.RunModalCancellableProgressTask(true,

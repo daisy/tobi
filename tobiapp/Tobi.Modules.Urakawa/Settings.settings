@@ -2,6 +2,9 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.Urakawa" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
+    <Setting Name="EnableRecentFilesMenu" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="ExportIncludeImageDescriptions" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -11,11 +14,14 @@
     <Setting Name="AudioExportEncodeToMp3" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="EnableRecentFilesMenu" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+    <Setting Name="AudioExportMp3Bitrate" Type="AudioLib.BitRate" Scope="User">
+      <Value Profile="(Default)">kbps_64</Value>
     </Setting>
     <Setting Name="AudioExportSampleRate" Type="AudioLib.SampleRate" Scope="User">
       <Value Profile="(Default)">Hz44100</Value>
+    </Setting>
+    <Setting Name="AudioExportStereo" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AudioProjectSampleRate" Type="AudioLib.SampleRate" Scope="User">
       <Value Profile="(Default)">Hz44100</Value>
