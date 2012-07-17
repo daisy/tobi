@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
 using AudioLib;
@@ -260,6 +261,8 @@ namespace Tobi.Plugin.Urakawa
                         }
 
                         tryParseXukSpine(DocumentFilePath);
+
+                        CommandManager.InvalidateRequerySuggested();
                     }
 
                     return true;
