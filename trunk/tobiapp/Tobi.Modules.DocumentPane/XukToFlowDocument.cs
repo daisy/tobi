@@ -890,7 +890,7 @@ namespace Tobi.Plugin.DocumentPane
             List data = new List();
             setTag(data, node);
 
-            
+
             addBlock(parent, data);
 
             return data;
@@ -929,7 +929,7 @@ namespace Tobi.Plugin.DocumentPane
             m_firstTR = false;
 
 
-            
+
             addBlock(parent, data);
 
             return data;
@@ -1547,15 +1547,15 @@ namespace Tobi.Plugin.DocumentPane
                     data.Blocks.Add(new Paragraph(run));
                 }
 
-                
+
                 addBlock(parent, data);
                 return parent;
             }
             //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
-            
-            
+
+
             addBlock(parent, data);
-            
+
             return data;
         }
 
@@ -2234,7 +2234,7 @@ namespace Tobi.Plugin.DocumentPane
             return parent;
         }
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_(TreeNode node, TextElement parent, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_(TreeNode node, TextElement parent, string nodeText)
         {
             bool canAddBlockToParent = canAddBlock(parent);
             bool canAddInlineToParent = canAddInline(parent);
@@ -2242,7 +2242,7 @@ namespace Tobi.Plugin.DocumentPane
             if (!node.HasXmlProperty)
             {
                 //assumption based on the caller: node.Children.Count == 0 && textMedia != null
-                if (string.IsNullOrEmpty(textMedia))
+                if (string.IsNullOrEmpty(nodeText))
                 {
 #if DEBUG
                     Debugger.Break();
@@ -2250,7 +2250,12 @@ namespace Tobi.Plugin.DocumentPane
                     return parent;
                 }
 
-                var data = new Run(textMedia);
+                if (nodeText == @" " && !canAddInlineToParent)
+                {
+                    return parent;
+                }
+
+                var data = new Run(nodeText);
                 setTextDirection(node, null, data, null);
                 setTag(data, node);
                 addInline(parent, data);
@@ -2367,12 +2372,12 @@ namespace Tobi.Plugin.DocumentPane
                 case "level6":
                 case "bodymatter":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia, null);
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText, null);
                     }
                 case "frontmatter":
                 case "rearmatter":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                             data =>
                             {
                                 //data.BorderBrush = Brushes.GreenYellow;
@@ -2383,7 +2388,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "blockquote":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                             data =>
                             {
                                 data.BorderThickness = new Thickness(2.0);
@@ -2440,20 +2445,20 @@ namespace Tobi.Plugin.DocumentPane
 
                         if (canAddBlockToParent)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                                 data =>
-                                   {
-                                       action(data);
-                                   });
+                                {
+                                    action(data);
+                                });
                         }
 
                         if (canAddInlineToParent)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, nodeText,
                                 data =>
-                                   {
-                                       action(data);
-                                   });
+                                {
+                                    action(data);
+                                });
                         }
 
                         Debug.Fail("WTF ?!");
@@ -2462,16 +2467,16 @@ namespace Tobi.Plugin.DocumentPane
                 case "noteref":
                 case "annoref":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_annoref_noteref(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_annoref_noteref(node, parent, nodeText);
                     }
                 case "caption":
                     {
                         if (parent is Table)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, textMedia);
+                            return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, nodeText);
                         }
 
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                                                     data =>
                                                     {
                                                         data.BorderThickness = new Thickness(1.0);
@@ -2501,10 +2506,10 @@ namespace Tobi.Plugin.DocumentPane
                         if (localName.Equals("hd", StringComparison.OrdinalIgnoreCase)
                             && parent is List)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, textMedia);
+                            return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, nodeText);
                         }
 
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                             data =>
                             {
                                 data.FontSize = m_FlowDoc.FontSize * 1.5;
@@ -2513,7 +2518,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "h2":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                             data =>
                             {
                                 data.FontSize = m_FlowDoc.FontSize * 1.25;
@@ -2525,7 +2530,7 @@ namespace Tobi.Plugin.DocumentPane
                 case "h5":
                 case "h6":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                             data =>
                             {
                                 data.FontSize = m_FlowDoc.FontSize * 1.15;
@@ -2536,7 +2541,7 @@ namespace Tobi.Plugin.DocumentPane
                 case "docauthor":
                 case "covertitle":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                             data =>
                             {
                                 data.BorderThickness = new Thickness(1.0);
@@ -2563,25 +2568,25 @@ namespace Tobi.Plugin.DocumentPane
                     {
                         if (parent is Table)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, textMedia);
+                            return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, nodeText);
                         }
                         if (parent is List)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, textMedia);
+                            return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, nodeText);
                         }
 
                         if (canAddBlockToParent)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                                 data =>
-                                    {
-                                        formatPageNumberAndSetId(node, data);
-                                    });
+                                {
+                                    formatPageNumberAndSetId(node, data);
+                                });
                         }
 
                         if (canAddInlineToParent)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, nodeText,
                                 data =>
                                 {
                                     formatPageNumberAndSetId(node, data);
@@ -2593,7 +2598,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "imggroup":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                             data =>
                             {
                                 data.BorderThickness = new Thickness(0.5);
@@ -2613,7 +2618,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "sidebar":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText,
                             data =>
                             {
                                 data.BorderThickness = new Thickness(2.0);
@@ -2634,16 +2639,16 @@ namespace Tobi.Plugin.DocumentPane
                 case "img":
                     // case "image": SHOULD BE HANDLED BY SVG (all the way above)
                     {
-                        return walkBookTreeAndGenerateFlowDocument_img(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_img(node, parent, nodeText);
                     }
                 case "video":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_video(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_video(node, parent, nodeText);
                     }
                 case "th":
                 case "td":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_th_td(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_th_td(node, parent, nodeText);
                     }
                 case "br":
                 case "hr":
@@ -2656,50 +2661,50 @@ namespace Tobi.Plugin.DocumentPane
                 case "em":
                 case "i":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_em_i(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_em_i(node, parent, nodeText);
                     }
                 case "strong":
                 case "b":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_strong_b(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_strong_b(node, parent, nodeText);
                     }
                 case "underline":
                 case "u":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_underline_u(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_underline_u(node, parent, nodeText);
                     }
                 case "anchor":
                 case "a":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_anchor_a(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_anchor_a(node, parent, nodeText);
                     }
                 case "table":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_table(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_table(node, parent, nodeText);
                     }
                 case "tr":
                 case "thead":
                 case "tfoot":
                 case "tbody":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_tr_tbody_thead_tfoot_caption_pagenum(node, parent, nodeText);
                     }
                 case "list":
                 case "ul":
                 case "ol":
                 case "dl":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_list_dl(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_list_dl(node, parent, nodeText);
                     }
                 case "dt":
                 case "dd":
                 case "li":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, textMedia);
+                        return walkBookTreeAndGenerateFlowDocument_li_dd_dt(node, parent, nodeText);
                     }
                 case "rb":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, nodeText,
                             data =>
                             {
                                 var run = new Run(" ");
@@ -2710,7 +2715,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "rt":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, nodeText,
                             data =>
                             {
                                 //var converter = new FontFamilyConverter();
@@ -2739,7 +2744,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 case "acronym":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia,
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, nodeText,
                             data =>
                             {
                                 XmlProperty xmlProp = node.GetXmlProperty();
@@ -2777,7 +2782,7 @@ namespace Tobi.Plugin.DocumentPane
                 case "sub":
                 case "ruby":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia, null);
+                        return walkBookTreeAndGenerateFlowDocument_Span(node, parent, nodeText, null);
                     }
                 case "cite":
                 case "author":
@@ -2802,11 +2807,11 @@ namespace Tobi.Plugin.DocumentPane
                     {
                         if (canAddBlockToParent)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia, null);
+                            return walkBookTreeAndGenerateFlowDocument_Section(node, parent, nodeText, null);
                         }
                         if (canAddInlineToParent)
                         {
-                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, textMedia, null);
+                            return walkBookTreeAndGenerateFlowDocument_Span(node, parent, nodeText, null);
                         }
 
                         Debug.Fail("WTF ?!");
