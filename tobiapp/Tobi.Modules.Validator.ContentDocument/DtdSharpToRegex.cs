@@ -150,12 +150,17 @@ namespace Tobi.Plugin.Validator.ContentDocument
             string nsUri = n.GetXmlNamespaceUri();
 
             bool isMath = nsUri == DiagramContentModelHelper.NS_URL_MATHML;
-            if (isMath || n.NeedsXmlNamespacePrefix())
+            bool isSVG = nsUri == DiagramContentModelHelper.NS_URL_SVG;
+            if (isMath || isSVG || n.NeedsXmlNamespacePrefix())
             {
                 string prefix = null;
                 if (isMath)
                 {
                     prefix = DiagramContentModelHelper.NS_PREFIX_MATHML;
+                }
+                else if (isSVG)
+                {
+                    prefix = DiagramContentModelHelper.NS_PREFIX_SVG;
                 }
                 else
                 {

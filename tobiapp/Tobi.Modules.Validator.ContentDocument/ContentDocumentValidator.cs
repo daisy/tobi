@@ -125,6 +125,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                     if (normalisedUri.Contains(key))
                     {
                         loadDTD(DTDs.DTDs.ENTITIES_MAPPING[key]);
+                        break;
                     }
                 }
             }
@@ -263,7 +264,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
 #endif // DEBUG
                     MissingDtdValidationError error = new MissingDtdValidationError()
                                                                {
-                                                                   DtdIdentifier = m_DtdIdentifier
+                                                                   DtdIdentifier = dtdIdentifier
                                                                };
                     addValidationItem(error);
                     return null;
