@@ -111,6 +111,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundTouch.Net_NET4", "..\.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFMediaKit_NET4", "ExternalLibs\WPFMediaKit\WPFMediaKit_NET4.csproj", "{6030628D-EE93-4D61-B6BE-8B6AE99F3935}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaxNET_NET4", "ExternalLibs\SaxNET\SaxNET_NET4.csproj", "{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +135,18 @@ Global
 		{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{0C5E9D1D-FC0F-4DC4-A4A5-32FEAF08349F}.test|Any CPU.Build.0 = Release|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.test|Any CPU.ActiveCfg = Release|Any CPU
+		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.test|Any CPU.Build.0 = Release|Any CPU
 		{17831F3B-6B82-4916-BD2B-2CE2071EA622}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{17831F3B-6B82-4916-BD2B-2CE2071EA622}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17831F3B-6B82-4916-BD2B-2CE2071EA622}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
