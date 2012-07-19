@@ -588,7 +588,7 @@ namespace Tobi.Plugin.Urakawa
 
             var xmlReader = XmlReader.Create(stream, settings, baseUri.ToString());
 
-            //TextReader xmlReader = new StreamReader(xslFilePath);
+            //TextReader xmlReader = new StreamReader(xslFilePath, Encoding.UTF8);
 
             XsltCompiler compiler = m_SaxonProcessor.NewXsltCompiler();
             compiler.BaseUri = baseUri;

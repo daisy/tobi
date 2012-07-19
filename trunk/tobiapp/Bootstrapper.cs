@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -210,7 +211,7 @@ namespace Tobi
                 StreamReader streamReader = null;
                 try
                 {
-                    streamReader = new StreamReader(webClient.OpenRead(url));
+                    streamReader = new StreamReader(webClient.OpenRead(url), Encoding.UTF8);
                     string str = streamReader.ReadToEnd();
                     m_Logger.Log(str, Category.Info, Priority.High);
                 }

@@ -220,7 +220,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
             {
                 try
                 {
-                    m_DtdRegex.ReadFromCache(new StreamReader(stream));
+                    m_DtdRegex.ReadFromCache(new StreamReader(stream, Encoding.UTF8));
                 }
                 finally
                 {
@@ -242,7 +242,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 Stream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
                 try
                 {
-                    m_DtdRegex.ReadFromCache(new StreamReader(stream));
+                    m_DtdRegex.ReadFromCache(new StreamReader(stream, Encoding.UTF8));
                 }
                 finally
                 {
@@ -271,7 +271,7 @@ namespace Tobi.Plugin.Validator.ContentDocument
                 }
 
                 // NOTE: the Stream is automatically closed by the parser, see Scanner.ReadNextChar()
-                DTDParser parser = new DTDParser(new StreamReader(dtdStream));
+                DTDParser parser = new DTDParser(new StreamReader(dtdStream, Encoding.UTF8));
                 DTD dtd = parser.Parse(true);
 
                 m_DtdRegex.ParseDtdIntoHashtable(dtd);
