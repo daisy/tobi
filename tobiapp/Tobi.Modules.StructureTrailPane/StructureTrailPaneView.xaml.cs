@@ -229,10 +229,12 @@ namespace Tobi.Plugin.StructureTrailPane
                 {
                     bool childIsInPath = PathToCurrentTreeNode.Contains(child);
 
-                    var menuItem = new MenuItem();
+                    MenuItem menuItem = null;
                     
                     if (child.HasXmlProperty)
                     {
+                        menuItem = new MenuItem();
+
                         string localName = child.GetXmlElementPrefixedLocalName();
                         if (childIsInPath)
                         {
@@ -248,21 +250,32 @@ namespace Tobi.Plugin.StructureTrailPane
                     }
                     else
                     {
-                        if (childIsInPath)
+                        TreeNode.StringChunk txtChunk = child.GetTextChunk();
+                        bool isWhiteSpace = txtChunk != null && txtChunk.Str == @" ";
+                        if (!isWhiteSpace)
                         {
-                            var runMenuItem = new Run("TXT") { FontWeight = FontWeights.ExtraBold };
-                            var textBlock = new TextBlock(runMenuItem);
-                            //textBlock.SetValue(AutomationProperties.NameProperty, "TXT");
-                            menuItem.Header = textBlock;
-                        }
-                        else
-                        {
-                            menuItem.Header = "TXT";
+                            menuItem = new MenuItem();
+
+                            if (childIsInPath)
+                            {
+                                var runMenuItem = new Run("TXT") {FontWeight = FontWeights.ExtraBold};
+                                var textBlock = new TextBlock(runMenuItem);
+                                //textBlock.SetValue(AutomationProperties.NameProperty, "TXT");
+                                menuItem.Header = textBlock;
+                            }
+                            else
+                            {
+                                menuItem.Header = "TXT";
+                            }
                         }
                     }
-                    menuItem.Tag = child;
-                    menuItem.Click += menuItem_Click;
-                    ui.ContextMenu.Items.Add(menuItem);
+
+                    if (menuItem != null)
+                    {
+                        menuItem.Tag = child;
+                        menuItem.Click += menuItem_Click;
+                        ui.ContextMenu.Items.Add(menuItem);
+                    }
                 }
             }
 

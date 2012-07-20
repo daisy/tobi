@@ -584,7 +584,7 @@ namespace Tobi.Plugin.Urakawa
 
             var baseUri = new Uri("file:///" + xslFilePath);
 
-            XmlReaderSettings settings = XmlReaderWriterHelper.GetDefaultXmlReaderConfiguration(false, false);
+            XmlReaderSettings settings = XmlReaderWriterHelper.GetDefaultXmlReaderConfiguration(false, false, false);
 
             var xmlReader = XmlReader.Create(stream, settings, baseUri.ToString());
 
