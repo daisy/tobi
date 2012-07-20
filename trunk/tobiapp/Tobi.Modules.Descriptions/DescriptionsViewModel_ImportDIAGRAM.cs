@@ -35,7 +35,7 @@ namespace Tobi.Plugin.Descriptions
 
 
 
-            XmlDocument diagramXML = XmlReaderWriterHelper.ParseXmlDocument(xmlFilePath, false);
+            XmlDocument diagramXML = XmlReaderWriterHelper.ParseXmlDocument(xmlFilePath, false, false);
 
             XmlNode description = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(diagramXML, false, "description", DiagramContentModelHelper.NS_URL_DIAGRAM);
             if (description == null)
