@@ -320,18 +320,15 @@ namespace Tobi.Plugin.NavigationPane
                         {
                             string name = node.GetXmlElementLocalName();
 
-                            if (IsHeading(name) && name.Length == 2 && name[0] == 'h')
+                            int rank = node.GetHeadingRank();
+                            if (rank >= 0)
                             {
-                                int rank;
-                                if (Int32.TryParse("" + name[1], out rank))
+                                if (currentRank > 0 && rank > currentRank)
                                 {
-                                    if (currentRank > 0 && rank > currentRank)
-                                    {
-                                        continue;
-                                    }
-
-                                    currentRank = rank;
+                                    continue;
                                 }
+
+                                currentRank = rank;
                             }
 
                             if (TreeNode.IsLevel(name))
@@ -352,56 +349,12 @@ namespace Tobi.Plugin.NavigationPane
         }
 
 
-        public static bool IsSectioningContent(string localXmlName)
-        {
-            if (string.IsNullOrEmpty(localXmlName))
-                return false;
-
-            return localXmlName.Equals("section", StringComparison.OrdinalIgnoreCase)
-                   || localXmlName.Equals("article", StringComparison.OrdinalIgnoreCase)
-                   || localXmlName.Equals("aside", StringComparison.OrdinalIgnoreCase)
-                   || localXmlName.Equals("nav", StringComparison.OrdinalIgnoreCase)
-                   ;
-        }
-
-        public static bool IsSectioningRoot(string localXmlName)
-        {
-            if (string.IsNullOrEmpty(localXmlName))
-                return false;
-
-            return localXmlName.Equals("blockquote", StringComparison.OrdinalIgnoreCase)
-                || localXmlName.Equals("figure", StringComparison.OrdinalIgnoreCase)
-                || localXmlName.Equals("details", StringComparison.OrdinalIgnoreCase)
-                || localXmlName.Equals("fieldset", StringComparison.OrdinalIgnoreCase)
-                || localXmlName.Equals("td", StringComparison.OrdinalIgnoreCase)
-                || localXmlName.Equals("body", StringComparison.OrdinalIgnoreCase)
-                   ;
-        }
-
-        public static bool IsHeading(string localXmlName)
-        {
-            if (string.IsNullOrEmpty(localXmlName))
-                return false;
-
-            return localXmlName.Equals("h1", StringComparison.OrdinalIgnoreCase)
-                   || localXmlName.Equals("h2", StringComparison.OrdinalIgnoreCase)
-                   || localXmlName.Equals("h3", StringComparison.OrdinalIgnoreCase)
-                   || localXmlName.Equals("h4", StringComparison.OrdinalIgnoreCase)
-                   || localXmlName.Equals("h5", StringComparison.OrdinalIgnoreCase)
-                   || localXmlName.Equals("h6", StringComparison.OrdinalIgnoreCase)
-
-                   || localXmlName.Equals("hd", StringComparison.OrdinalIgnoreCase)
-                   || localXmlName.Equals("levelhd", StringComparison.OrdinalIgnoreCase)
-                   || localXmlName.Equals("doctitle", StringComparison.OrdinalIgnoreCase)
-                   ;
-        }
-
         public override bool IsIncluded(TreeNode node)
         {
             if (!node.HasXmlProperty) return false;
 
             string localName = node.GetXmlElementLocalName();
-            return TreeNode.IsLevel(localName) || IsHeading(localName) || IsSectioningContent(localName) || IsSectioningRoot(localName);
+            return TreeNode.IsLevel(localName) || TreeNode.IsHeading(localName) || TreeNode.IsSectioningContent(localName) || TreeNode.IsSectioningRoot(localName);
         }
 
         private HeadingTreeNodeWrapper findTreeNodeWrapper(TreeNode node)
