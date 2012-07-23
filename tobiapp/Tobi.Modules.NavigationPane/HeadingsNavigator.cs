@@ -320,23 +320,26 @@ namespace Tobi.Plugin.NavigationPane
                         {
                             string name = node.GetXmlElementLocalName();
 
-                            int rank = node.GetHeadingRank();
-                            if (rank >= 0)
-                            {
-                                if (currentRank > 0 && rank > currentRank)
-                                {
-                                    continue;
-                                }
 
-                                currentRank = rank;
-                            }
-
-                            if (TreeNode.IsLevel(name))
+                            if (TreeNode.IsSectioningContent(name))
                             {
                                 currentRank = 0;
+                                m_roots.Add(new HeadingTreeNodeWrapper(this, node, null));
                             }
+                            else
+                            {
+                                int rank = node.GetHeadingRank();
+                                if (rank >= 0)
+                                {
+                                    if (currentRank > 0 && rank > currentRank)
+                                    {
+                                        continue;
+                                    }
 
-                            m_roots.Add(new HeadingTreeNodeWrapper(this, node, null));
+                                    currentRank = rank;
+                                    m_roots.Add(new HeadingTreeNodeWrapper(this, node, null));
+                                }
+                            }
                         }
                         else
                         {

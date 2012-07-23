@@ -72,7 +72,7 @@ namespace Tobi.Plugin.NavigationPane
                     return deeper;
                 }
 
-                if (TreeNode.IsLevel(name))
+                if (TreeNode.IsSectioningContent(name))
                 {
                     return null;
                 }
@@ -97,7 +97,7 @@ namespace Tobi.Plugin.NavigationPane
 
             string localName = node.GetXmlElementLocalName();
 
-            if (TreeNode.IsLevel(localName))
+            if (TreeNode.IsLevel(localName) || TreeNode.IsSectioningContent(localName))
             {
                 level = node;
 
@@ -196,8 +196,8 @@ namespace Tobi.Plugin.NavigationPane
 
                             currentRank = rank;
                         }
-                        
-                        if (TreeNode.IsLevel(name))
+
+                        if (TreeNode.IsSectioningContent(name))
                         {
                             currentRank = 0;
                         }
@@ -217,7 +217,7 @@ namespace Tobi.Plugin.NavigationPane
                         {
                             string nameNext = next.GetXmlElementLocalName();
 
-                            if (TreeNode.IsLevel(nameNext))
+                            if (TreeNode.IsSectioningContent(nameNext))
                             {
                                 break;
                             }
@@ -315,7 +315,7 @@ namespace Tobi.Plugin.NavigationPane
                                 currentRank = rank;
                             }
 
-                            if (TreeNode.IsLevel(name))
+                            if (TreeNode.IsSectioningContent(name))
                             {
                                 currentRank = 0;
                             }
@@ -339,7 +339,7 @@ namespace Tobi.Plugin.NavigationPane
                             {
                                 string nameNext = next.GetXmlElementLocalName();
 
-                                if (TreeNode.IsLevel(nameNext))
+                                if (TreeNode.IsSectioningContent(nameNext))
                                 {
                                     break;
                                 }
@@ -411,7 +411,7 @@ namespace Tobi.Plugin.NavigationPane
 
             if (html5_outlining)
             {
-                if (TreeNode.IsLevel(baseNode.GetXmlElementLocalName()))
+                if (TreeNode.IsSectioningContent(baseNode.GetXmlElementLocalName()))
                 {
                     bool bResult = false;
 
@@ -438,7 +438,7 @@ namespace Tobi.Plugin.NavigationPane
                             currentRank = rank;
                         }
 
-                        if (TreeNode.IsLevel(name))
+                        if (TreeNode.IsSectioningContent(name))
                         {
                             currentRank = 0;
                         }
@@ -478,7 +478,7 @@ namespace Tobi.Plugin.NavigationPane
                         {
                             string nameNext = next.GetXmlElementLocalName();
 
-                            if (TreeNode.IsLevel(nameNext))
+                            if (TreeNode.IsSectioningContent(nameNext))
                             {
                                 break;
                             }
