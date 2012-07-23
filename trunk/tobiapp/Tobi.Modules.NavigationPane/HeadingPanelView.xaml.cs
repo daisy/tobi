@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -132,18 +133,35 @@ namespace Tobi.Plugin.NavigationPane
             if (node == null) return;
 
             TreeNode nested;
-            TreeNode treeNode = (
-                node.WrappedTreeNode_LevelHeading ??
-                (
-                TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, node.WrappedTreeNode_Level, out nested)
-                ??
-                (
-                node.WrappedTreeNode_Level.GetFirstDescendantWithText()
-                ?? node.WrappedTreeNode_Level
-                )
-                )
-                );
-            if (treeNode == null) return;
+            TreeNode treeNode = null;
+
+            if (node.WrappedTreeNode_LevelHeading != null)
+            {
+                treeNode = node.WrappedTreeNode_LevelHeading;
+            }
+            else
+            {
+                treeNode = node.WrappedTreeNode_Level.GetFirstDescendantWithText();
+                if (treeNode != null && treeNode.GetXmlProperty() == null)
+                {
+                    treeNode = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false,
+                                                                                         treeNode,
+                                                                                         out nested);
+                }
+            }
+
+            if (treeNode == null)
+            {
+                treeNode = node.WrappedTreeNode_Level;
+            }
+
+            if (treeNode == null)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return;
+            }
 
             //if (m_ignoreHeadingSelected)
             //{
