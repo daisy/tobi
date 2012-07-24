@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
+using AudioLib;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using urakawa.core;
@@ -13,7 +14,22 @@ namespace Tobi.Plugin.NavigationPane
     public class HeadingTreeNodeWrapper : PropertyChangedNotifyBase
     {
         private TreeNode m_TreeNodeLevel;
+        public TreeNode WrappedTreeNode_Level
+        {
+            get
+            {
+                return m_TreeNodeLevel;
+            }
+        }
+
         private TreeNode m_TreeNodeHeading;
+        public TreeNode WrappedTreeNode_LevelHeading
+        {
+            get
+            {
+                return m_TreeNodeHeading;
+            }
+        }
 
         private HeadingTreeNodeWrapper m_parent;
 
@@ -28,7 +44,9 @@ namespace Tobi.Plugin.NavigationPane
         public RichDelegateCommand CommandExpandAll { get; private set; }
         public RichDelegateCommand CommandCollapseAll { get; private set; }
 
-        public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node, HeadingTreeNodeWrapper parent)
+        private TreeNode.Section m_Section = null;
+
+        public HeadingTreeNodeWrapper(HeadingsNavigator navigator, TreeNode node, TreeNode.Section section, HeadingTreeNodeWrapper parent)
         {
             m_parent = parent;
             m_navigator = navigator;
@@ -37,8 +55,10 @@ namespace Tobi.Plugin.NavigationPane
             m_TreeNodeHeading = null;
             m_TreeNodeLevel = null;
 
+            m_Section = section;
 
-            if (node == null || m_navigator == null)
+            if ((node == null && m_Section == null)
+                || m_navigator == null)
             {
                 return;
             }
@@ -46,69 +66,42 @@ namespace Tobi.Plugin.NavigationPane
             CommandExpandAll = m_navigator.ViewModel.CommandExpandAll;
             CommandCollapseAll = m_navigator.ViewModel.CommandCollapseAll;
 
-            Tuple<TreeNode, TreeNode> nodes = ComputeLevelNodes(node);
+            Tuple<TreeNode, TreeNode> nodes = ComputeLevelNodes(node, m_Section);
             m_TreeNodeLevel = nodes.Item1;
             m_TreeNodeHeading = nodes.Item2;
         }
 
-        private static TreeNode getDeepHeading(TreeNode root)
+        private static Tuple<TreeNode, TreeNode> ComputeLevelNodes(TreeNode node, TreeNode.Section section)
         {
-            foreach (TreeNode treeNode in root.Children.ContentsAs_Enumerable)
-            {
-                string name = treeNode.GetXmlElementLocalName();
-                if (string.IsNullOrEmpty(name))
-                {
-                    continue;
-                }
-
-                if (TreeNode.IsHeading(name))
-                {
-                    return treeNode;
-                }
-
-                TreeNode deeper = getDeepHeading(treeNode);
-                if (deeper != null)
-                {
-                    return deeper;
-                }
-
-                if (TreeNode.IsSectioningContent(name))
-                {
-                    return null;
-                }
-            }
-
-            return null;
-        }
-
-        private static Tuple<TreeNode, TreeNode> ComputeLevelNodes(TreeNode node)
-        {
-            if (!node.HasXmlProperty)
-            {
-#if NET40
-                return new Tuple<TreeNode, TreeNode>(null, null);
-#else
-                return new Tuple<TreeNode, TreeNode>();
-#endif
-            }
-
             TreeNode level = null;
             TreeNode heading = null;
 
-            string localName = node.GetXmlElementLocalName();
-
-            if (TreeNode.IsLevel(localName) || TreeNode.IsSectioningContent(localName))
+            if (section != null)
             {
-                level = node;
+                DebugFix.Assert(node == null);
 
-                bool html5_outlining = node.Presentation.RootNode.GetXmlElementLocalName().Equals(
-                    "body", StringComparison.OrdinalIgnoreCase);
-                if (html5_outlining)
+                level = section.RealSectioningRootOrContent;
+                heading = section.GetRealHeading();
+            }
+            else
+            {
+                DebugFix.Assert(node != null);
+
+                if (!node.HasXmlProperty)
                 {
-                    heading = getDeepHeading(node);
+#if NET40
+                    return new Tuple<TreeNode, TreeNode>(null, null);
+#else
+                return new Tuple<TreeNode, TreeNode>();
+#endif
                 }
-                else
+
+                string localName = node.GetXmlElementLocalName();
+
+                if (TreeNode.IsLevel(localName))
                 {
+                    level = node;
+
                     if (level.Children.Count > 0)
                     {
                         TreeNode nd = level.Children.Get(0);
@@ -132,10 +125,10 @@ namespace Tobi.Plugin.NavigationPane
                         }
                     }
                 }
-            }
-            else if (TreeNode.IsHeading(localName))
-            {
-                heading = node;
+                else if (TreeNode.IsHeading(localName))
+                {
+                    heading = node;
+                }
             }
 
             return new Tuple<TreeNode, TreeNode>(level, heading);
@@ -161,79 +154,21 @@ namespace Tobi.Plugin.NavigationPane
 
         private void LoadChildren()
         {
-            TreeNode nody = WrappedTreeNode_Level ?? WrappedTreeNode_LevelHeading;
-            bool html5_outlining = nody.Presentation.RootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
-
-            if (html5_outlining)
+            if (m_children != null)
             {
-                if (m_children != null)
-                {
-                    return;
-                }
+                return;
+            }
+
+            //TreeNode nody = WrappedTreeNode_Level ?? WrappedTreeNode_LevelHeading;
+            //bool html5_outlining = nody.Presentation.RootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
+
+            if (m_Section != null)
+            {
                 m_children = new ObservableCollection<HeadingTreeNodeWrapper>();
 
-                if (WrappedTreeNode_Level != null)
+                foreach (var section in m_Section.SubSections)
                 {
-                    int n = m_navigator.GetChildCount(WrappedTreeNode_Level);
-                    int currentRank = -1; //-1 == N/A, 0 == sectioning, 1..6 == real heading rank
-                    for (int index = 0; index < n; index++)
-                    {
-                        TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
-
-                        if (WrappedTreeNode_LevelHeading == node)
-                        {
-                            continue;
-                        }
-                        string name = node.GetXmlElementLocalName();
-
-                        int rank = node.GetHeadingRank();
-                        if (rank >= 0)
-                        {
-                            if (currentRank > 0 && rank > currentRank)
-                            {
-                                continue;
-                            }
-
-                            currentRank = rank;
-                        }
-
-                        if (TreeNode.IsSectioningContent(name))
-                        {
-                            currentRank = 0;
-                        }
-
-                        m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node, this));
-                    }
-                }
-                else
-                {
-                    string name = WrappedTreeNode_LevelHeading.GetXmlElementLocalName();
-
-                    int rank = WrappedTreeNode_LevelHeading.GetHeadingRank();
-                    if (rank >= 0)
-                    {
-                        TreeNode next = WrappedTreeNode_LevelHeading;
-                        while ((next = m_navigator.GetNext(next)) != null)
-                        {
-                            string nameNext = next.GetXmlElementLocalName();
-
-                            if (TreeNode.IsSectioningContent(nameNext))
-                            {
-                                break;
-                            }
-
-                            int rankNext = next.GetHeadingRank();
-                            if (rankNext >= 0)
-                            {
-                                if (rankNext <= rank)
-                                {
-                                    break;
-                                }
-
-                                m_children.Add(new HeadingTreeNodeWrapper(m_navigator, next, this));
-                            }
-                        }
-                    }
+                    m_children.Add(new HeadingTreeNodeWrapper(m_navigator, null, section, this));
                 }
             }
             else
@@ -242,37 +177,36 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     return;
                 }
-                if (m_children == null)
+
+                m_children = new ObservableCollection<HeadingTreeNodeWrapper>();
+
+                int n = m_navigator.GetChildCount(WrappedTreeNode_Level);
+
+                for (int index = 0; index < n; index++)
                 {
-                    m_children = new ObservableCollection<HeadingTreeNodeWrapper>();
+                    TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
 
-                    int n = m_navigator.GetChildCount(WrappedTreeNode_Level);
-
-                    for (int index = 0; index < n; index++)
+                    if (WrappedTreeNode_LevelHeading != null
+                        && (WrappedTreeNode_LevelHeading == node
+                        //|| HeadingsNavigator.IsHeading(node.GetXmlElementLocalName())
+                           )
+                        )
                     {
-                        TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
-
-                        if (WrappedTreeNode_LevelHeading != null
-                            && (WrappedTreeNode_LevelHeading == node
-                            //|| HeadingsNavigator.IsHeading(node.GetXmlElementLocalName())
-                               )
-                            )
-                        {
-                            continue;
-                        }
-
-                        m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node, this));
+                        continue;
                     }
 
-                    //if (m_children.Count == 0)
-                    //{
-                    //    m_children = null;
-                    //    return;
-                    //}
-
-                    RaisePropertyChanged(() => Children);
+                    m_children.Add(new HeadingTreeNodeWrapper(m_navigator, node, null, this));
                 }
+
+                //if (m_children.Count == 0)
+                //{
+                //    m_children = null;
+                //    return;
+                //}
             }
+
+            RaisePropertyChanged(() => Children);
+
             //if (m_children != null)
             //{
             //    m_navigator.FlagSearchMatches(m_children);
@@ -283,82 +217,12 @@ namespace Tobi.Plugin.NavigationPane
         {
             get
             {
-                TreeNode nody = WrappedTreeNode_Level ?? WrappedTreeNode_LevelHeading;
-                bool html5_outlining = nody.Presentation.RootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
+                //TreeNode nody = WrappedTreeNode_Level ?? WrappedTreeNode_LevelHeading;
+                //bool html5_outlining = nody.Presentation.RootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
 
-                if (html5_outlining)
+                if (m_Section != null)
                 {
-                    if (WrappedTreeNode_Level != null)
-                    {
-                        int childrenCount = 0;
-
-                        int n = m_navigator.GetChildCount(WrappedTreeNode_Level);
-                        int currentRank = -1; //-1 == N/A, 0 == sectioning, 1..6 == real heading rank
-                        for (int index = 0; index < n; index++)
-                        {
-                            TreeNode node = m_navigator.GetChild(WrappedTreeNode_Level, index);
-
-                            if (WrappedTreeNode_LevelHeading == node)
-                            {
-                                continue;
-                            }
-                            string name = node.GetXmlElementLocalName();
-
-                            int rank = node.GetHeadingRank();
-                            if (rank >= 0)
-                            {
-                                if (currentRank > 0 && rank > currentRank)
-                                {
-                                    continue;
-                                }
-
-                                currentRank = rank;
-                            }
-
-                            if (TreeNode.IsSectioningContent(name))
-                            {
-                                currentRank = 0;
-                            }
-
-                            childrenCount++;
-                        }
-
-                        return childrenCount;
-                    }
-                    else
-                    {
-                        int childrenCount = 0;
-
-                        string name = WrappedTreeNode_LevelHeading.GetXmlElementLocalName();
-
-                        int rank = WrappedTreeNode_LevelHeading.GetHeadingRank();
-                        if (rank >= 0)
-                        {
-                            TreeNode next = WrappedTreeNode_LevelHeading;
-                            while ((next = m_navigator.GetNext(next)) != null)
-                            {
-                                string nameNext = next.GetXmlElementLocalName();
-
-                                if (TreeNode.IsSectioningContent(nameNext))
-                                {
-                                    break;
-                                }
-
-                                int rankNext = next.GetHeadingRank();
-                                if (rankNext >= 0)
-                                {
-                                    if (rankNext <= rank)
-                                    {
-                                        break;
-                                    }
-
-                                    childrenCount++;
-                                }
-                            }
-                        }
-
-                        return childrenCount;
-                    }
+                    return m_Section.SubSections.Count;
                 }
                 else
                 {
@@ -393,139 +257,45 @@ namespace Tobi.Plugin.NavigationPane
                 return ChildrenCount > 0;
             }
         }
+
         public bool HasMatches
         {
             get
             {
-                if (string.IsNullOrEmpty(m_navigator.SearchTerm) || WrappedTreeNode_Level == null)
+                if (string.IsNullOrEmpty(m_navigator.SearchTerm))
                 {
                     return false;
                 }
-                return CheckMatches(WrappedTreeNode_Level);
-            }
-        }
-        private bool CheckMatches(TreeNode baseNode)
-        {
-            TreeNode nody = WrappedTreeNode_Level ?? WrappedTreeNode_LevelHeading;
-            bool html5_outlining = nody.Presentation.RootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
 
-            if (html5_outlining)
-            {
-                if (TreeNode.IsSectioningContent(baseNode.GetXmlElementLocalName()))
+                if (m_Section != null)
                 {
-                    bool bResult = false;
-
-                    int n = m_navigator.GetChildCount(baseNode);
-                    int currentRank = -1; //-1 == N/A, 0 == sectioning, 1..6 == real heading rank
-                    for (int index = 0; index < n; index++)
-                    {
-                        TreeNode node = m_navigator.GetChild(baseNode, index);
-
-                        if (WrappedTreeNode_LevelHeading == node)
-                        {
-                            continue;
-                        }
-                        string name = node.GetXmlElementLocalName();
-
-                        int rank = node.GetHeadingRank();
-                        if (rank >= 0)
-                        {
-                            if (currentRank > 0 && rank > currentRank)
-                            {
-                                continue;
-                            }
-
-                            currentRank = rank;
-                        }
-
-                        if (TreeNode.IsSectioningContent(name))
-                        {
-                            currentRank = 0;
-                        }
-
-                        var tuple = ComputeLevelNodes(node);
-                        string sText = ComputeNodeText(tuple.Item1, tuple.Item2);
-
-                        if (string.IsNullOrEmpty(sText))
-                        {
-                            continue;
-                        }
-                        bResult |= sText.IndexOf(m_navigator.SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
-                        if (!bResult)
-                        {
-                            bResult |= CheckMatches(node);
-                        }
-                        if (bResult)
-                        {
-                            break;
-                        }
-                    }
-
-
-                    return bResult;
+                    return CheckMatches(null, m_Section);
                 }
                 else
                 {
-                    bool bResult = false;
-
-                    string name = baseNode.GetXmlElementLocalName();
-
-                    int rank = baseNode.GetHeadingRank();
-                    if (rank >= 0)
+                    if (WrappedTreeNode_Level == null)
                     {
-                        TreeNode next = baseNode;
-                        while ((next = m_navigator.GetNext(next)) != null)
-                        {
-                            string nameNext = next.GetXmlElementLocalName();
-
-                            if (TreeNode.IsSectioningContent(nameNext))
-                            {
-                                break;
-                            }
-
-                            int rankNext = next.GetHeadingRank();
-                            if (rankNext >= 0)
-                            {
-                                if (rankNext <= rank)
-                                {
-                                    break;
-                                }
-
-                                var tuple = ComputeLevelNodes(next);
-                                string sText = ComputeNodeText(tuple.Item1, tuple.Item2);
-
-                                if (string.IsNullOrEmpty(sText))
-                                {
-                                    continue;
-                                }
-                                bResult |= sText.IndexOf(m_navigator.SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
-                                if (!bResult)
-                                {
-                                    bResult |= CheckMatches(next);
-                                }
-                                if (bResult)
-                                {
-                                    break;
-                                }
-                            }
-                        }
+                        return false;
                     }
-
-                    return bResult;
+                    return CheckMatches(WrappedTreeNode_Level, null);
                 }
             }
-            else
+        }
+
+        private bool CheckMatches(TreeNode baseNode, TreeNode.Section section)
+        {
+            //TreeNode nody = WrappedTreeNode_Level ?? WrappedTreeNode_LevelHeading;
+            //bool html5_outlining = nody.Presentation.RootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
+
+            bool bResult = false;
+
+            if (section != null)
             {
-                bool bResult = false;
-                int n = m_navigator.GetChildCount(baseNode);
-                for (int index = 0; index < n; index++)
+                DebugFix.Assert(baseNode == null);
+
+                foreach (var subSection in section.SubSections)
                 {
-                    TreeNode node = m_navigator.GetChild(baseNode, index);
-                    if (WrappedTreeNode_LevelHeading != null && WrappedTreeNode_LevelHeading == node)
-                    {
-                        continue;
-                    }
-                    var tuple = ComputeLevelNodes(node);
+                    var tuple = ComputeLevelNodes(null, subSection);
                     string sText = ComputeNodeText(tuple.Item1, tuple.Item2);
 
                     if (string.IsNullOrEmpty(sText))
@@ -535,15 +305,46 @@ namespace Tobi.Plugin.NavigationPane
                     bResult |= sText.IndexOf(m_navigator.SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
                     if (!bResult)
                     {
-                        bResult |= CheckMatches(node);
+                        bResult |= CheckMatches(null, subSection);
                     }
                     if (bResult)
                     {
                         break;
                     }
                 }
-                return bResult;
             }
+            else
+            {
+                DebugFix.Assert(baseNode != null);
+
+                int n = m_navigator.GetChildCount(baseNode);
+                for (int index = 0; index < n; index++)
+                {
+                    TreeNode node = m_navigator.GetChild(baseNode, index);
+                    if (WrappedTreeNode_LevelHeading != null && WrappedTreeNode_LevelHeading == node)
+                    {
+                        continue;
+                    }
+                    var tuple = ComputeLevelNodes(node, null);
+                    string sText = ComputeNodeText(tuple.Item1, tuple.Item2);
+
+                    if (string.IsNullOrEmpty(sText))
+                    {
+                        continue;
+                    }
+                    bResult |= sText.IndexOf(m_navigator.SearchTerm, StringComparison.OrdinalIgnoreCase) >= 0;
+                    if (!bResult)
+                    {
+                        bResult |= CheckMatches(node, null);
+                    }
+                    if (bResult)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return bResult;
         }
 
         private static string ComputeNodeText(TreeNode level, TreeNode heading)
@@ -616,6 +417,7 @@ namespace Tobi.Plugin.NavigationPane
             //}
             //return sResult;
         }
+
         public bool IsExpanded
         {
             get
@@ -713,6 +515,7 @@ namespace Tobi.Plugin.NavigationPane
             }
             return htnwResult;
         }
+
         internal HeadingTreeNodeWrapper GetPreviousChildMatch()
         {
             HeadingTreeNodeWrapper htnwResult = null;
@@ -735,20 +538,6 @@ namespace Tobi.Plugin.NavigationPane
                 break;
             }
             return htnwResult;
-        }
-        public TreeNode WrappedTreeNode_Level
-        {
-            get
-            {
-                return m_TreeNodeLevel;
-            }
-        }
-        public TreeNode WrappedTreeNode_LevelHeading
-        {
-            get
-            {
-                return m_TreeNodeHeading;
-            }
         }
 
         public void InvalidateTitle()
@@ -789,14 +578,15 @@ namespace Tobi.Plugin.NavigationPane
             //    RaisePropertyChanged(() => Title);
             //}
         }
+
         public ObservableCollection<HeadingTreeNodeWrapper> Children
         {
             get
             {
-                TreeNode nody = WrappedTreeNode_Level ?? WrappedTreeNode_LevelHeading;
-                bool html5_outlining = nody.Presentation.RootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
+                //TreeNode nody = WrappedTreeNode_Level ?? WrappedTreeNode_LevelHeading;
+                //bool html5_outlining = nody.Presentation.RootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
 
-                if (!html5_outlining && WrappedTreeNode_Level == null)
+                if (m_Section == null && WrappedTreeNode_Level == null)
                 {
                     return new ObservableCollection<HeadingTreeNodeWrapper>();
                 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -306,44 +307,25 @@ namespace Tobi.Plugin.NavigationPane
                 if (m_roots == null)
                 {
                     m_roots = new ObservableCollection<HeadingTreeNodeWrapper>();
+
                     TreeNode presentationRootNode = m_Project.Presentations.Get(0).RootNode;
 
                     bool html5_outlining = presentationRootNode.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase);
-
-                    int currentRank = -1; //-1 == N/A, 0 == sectioning, 1..6 == real heading rank
-                    int n = GetChildCount(presentationRootNode);
-                    for (int index = 0; index < n; index++)
+                    if (html5_outlining)
                     {
-                        TreeNode node = GetChild(presentationRootNode, index);
-
-                        if (html5_outlining)
+                        List<TreeNode.Section> outline = presentationRootNode.GetOrCreateOutline();
+                        foreach (var section in outline)
                         {
-                            string name = node.GetXmlElementLocalName();
-
-
-                            if (TreeNode.IsSectioningContent(name))
-                            {
-                                currentRank = 0;
-                                m_roots.Add(new HeadingTreeNodeWrapper(this, node, null));
-                            }
-                            else
-                            {
-                                int rank = node.GetHeadingRank();
-                                if (rank >= 0)
-                                {
-                                    if (currentRank > 0 && rank > currentRank)
-                                    {
-                                        continue;
-                                    }
-
-                                    currentRank = rank;
-                                    m_roots.Add(new HeadingTreeNodeWrapper(this, node, null));
-                                }
-                            }
+                            m_roots.Add(new HeadingTreeNodeWrapper(this, null, section, null));
                         }
-                        else
+                    }
+                    else
+                    {
+                        int n = GetChildCount(presentationRootNode);
+                        for (int index = 0; index < n; index++)
                         {
-                            m_roots.Add(new HeadingTreeNodeWrapper(this, node, null));
+                            TreeNode node = GetChild(presentationRootNode, index);
+                            m_roots.Add(new HeadingTreeNodeWrapper(this, node, null, null));
                         }
                     }
                 }
@@ -357,7 +339,7 @@ namespace Tobi.Plugin.NavigationPane
             if (!node.HasXmlProperty) return false;
 
             string localName = node.GetXmlElementLocalName();
-            return TreeNode.IsLevel(localName) || TreeNode.IsHeading(localName) || TreeNode.IsSectioningContent(localName) || TreeNode.IsSectioningRoot(localName);
+            return TreeNode.IsLevel(localName) || TreeNode.IsHeading(localName);
         }
 
         private HeadingTreeNodeWrapper findTreeNodeWrapper(TreeNode node)
@@ -379,7 +361,15 @@ namespace Tobi.Plugin.NavigationPane
 
         public HeadingTreeNodeWrapper GetAncestorContainer(TreeNode node)
         {
-            if (IsIncluded(node))
+            string localName = node.GetXmlElementLocalName();
+            if (IsIncluded(node)
+                ||
+                (
+                !string.IsNullOrEmpty(localName)
+                &&
+                (TreeNode.IsSectioningContent(localName) || TreeNode.IsSectioningRoot(localName))
+                )
+                )
             {
                 return findTreeNodeWrapper(node);
             }
