@@ -209,6 +209,8 @@ namespace Tobi.Plugin.Urakawa
                 ); //Directory.GetParent(bookfile).FullName
 
 
+            //converter.VerifyHtml5OutliningAlgorithmUsingPipelineTestSuite();
+
             bool cancelled = false;
 
             bool result = m_ShellView.RunModalCancellableProgressTask(true,
