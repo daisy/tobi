@@ -262,7 +262,8 @@ namespace Tobi.Plugin.Urakawa
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_user-trash-full"),
                 () => DataCleanup(true),
-                () => DocumentProject != null,
+                () => DocumentProject != null
+                && !IsXukSpine,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DataCleanup));
 
