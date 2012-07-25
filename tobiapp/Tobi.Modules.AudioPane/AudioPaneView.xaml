@@ -871,6 +871,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
       Margin="2,2,2,2"
                 Click="OnMouseClickCheckBox"
+                  
+    AutomationProperties.Name="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.AudioAlwaysMonitor}"
               />
   
   </Grid>
