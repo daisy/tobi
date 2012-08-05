@@ -1155,6 +1155,8 @@ namespace Tobi.Plugin.AudioPane
                 }
                 else
                 {
+                    m_PlayAutoAdvance = false;
+
                     if (IsMonitoringAlways)
                     {
                         CommandStartMonitor.Execute();
