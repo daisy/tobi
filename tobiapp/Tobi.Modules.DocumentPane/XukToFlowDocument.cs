@@ -281,7 +281,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 XmlProperty xmlProp = treeNode.GetXmlProperty();
                 //XmlAttribute xmlAttr = xmlProp.GetAttribute("type");
-                XmlAttribute xmlAttr = xmlProp.GetAttribute("epub:type", "http://www.idpf.org/2007/ops");
+                XmlAttribute xmlAttr = xmlProp.GetAttribute(DiagramContentModelHelper.NS_PREFIX_EPUB + ":type", DiagramContentModelHelper.NS_URL_EPUB);
                 if (xmlAttr != null)
                 {
                     return xmlAttr.Value.Equals("pagebreak", StringComparison.OrdinalIgnoreCase);
