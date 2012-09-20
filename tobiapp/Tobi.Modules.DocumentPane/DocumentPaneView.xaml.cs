@@ -1197,7 +1197,7 @@ namespace Tobi.Plugin.DocumentPane
                             }
                             else
                             {
-                                TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(previous);
+                                TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(previous, node);
                                 if (candidate != null)
                                 {
                                     m_UrakawaSession.PerformTreeNodeSelection(candidate, false, null);
@@ -1293,7 +1293,7 @@ namespace Tobi.Plugin.DocumentPane
                             }
                             else
                             {
-                                TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(next);
+                                TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(next, node);
                                 if (candidate != null)
                                 {
                                     m_UrakawaSession.PerformTreeNodeSelection(candidate, false, null);

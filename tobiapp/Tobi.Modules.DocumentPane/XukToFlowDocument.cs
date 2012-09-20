@@ -411,6 +411,20 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        private void resetMarginPadding(Block block)
+        {
+            if (block is List)
+            {
+                return; // otherwise we loose indentation :(
+            }
+
+            block.Margin = new Thickness(0, 4, 0, 0);
+            block.Padding = new Thickness(0);
+
+            //block.Margin = new Thickness(block.Margin.Left, 0, 0, 0);
+            //block.Padding = new Thickness(block.Padding.Left, 0, 0, 0);
+        }
+
         private void addInlineInBlocks(Inline data, BlockCollection blocks)
         {
             Block lastBlock = blocks.LastBlock;
@@ -434,9 +448,8 @@ namespace Tobi.Plugin.DocumentPane
                     var para = new Paragraph(data)
                         {
                             Tag = true,
-                            Margin = new Thickness(0),
-                            Padding = new Thickness(0)
                         };
+                    resetMarginPadding(para);
                     ((Section)lastBlock).Blocks.Add(para);
                 }
             }
@@ -453,15 +466,15 @@ namespace Tobi.Plugin.DocumentPane
                 var para = new Paragraph(data)
                 {
                     Tag = true,
-                    Margin = new Thickness(0),
-                    Padding = new Thickness(0)
                 };
+                resetMarginPadding(para);
+
                 var section = new Section(para)
                 {
                     Tag = true,
-                    Margin = new Thickness(0),
-                    Padding = new Thickness(0)
                 };
+                resetMarginPadding(section);
+
                 blocks.Add(section);
             }
         }
@@ -637,8 +650,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 setTextDirection(node, null, null, (Block)data);
 
-                ((Block)data).Margin = new Thickness(0);
-                ((Block)data).Padding = new Thickness(0);
+                resetMarginPadding((Block)data);
             }
 
             data.Tag = node;
@@ -754,9 +766,9 @@ namespace Tobi.Plugin.DocumentPane
                         setTextDirection(node, null, run, null);
                         var para = new Paragraph(run)
                         {
-                            Margin = new Thickness(0),
-                            Padding = new Thickness(0)
                         };
+                        resetMarginPadding(para);
+
                         data.Blocks.Add(para);
                     }
 
@@ -767,9 +779,9 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     var section = new Section()
                     {
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0)
                     };
+                    resetMarginPadding(section);
+
                     data.Blocks.Add(section);
                     return section;
                 }
@@ -1057,9 +1069,9 @@ namespace Tobi.Plugin.DocumentPane
                     setTextDirection(node, null, run, null);
                     var para = new Paragraph(run)
                     {
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0)
                     };
+                    resetMarginPadding(para);
+
                     data.Blocks.Add(para);
                     ((List)parent).ListItems.Add(data);
 
@@ -1096,9 +1108,9 @@ namespace Tobi.Plugin.DocumentPane
                     //data.Tag = null;
                     var para = new Paragraph()
                     {
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0)
                     };
+                    resetMarginPadding(para);
+
                     setTag(para, node);
                     formatPageNumberAndSetId(node, para);
                     data.Blocks.Add(para);
@@ -1109,9 +1121,9 @@ namespace Tobi.Plugin.DocumentPane
                     //data.Tag = null;
                     var para = new Paragraph()
                     {
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0)
                     };
+                    resetMarginPadding(para);
+
                     setTag(para, node);
                     formatListHeader(para);
                     data.Blocks.Add(para);
@@ -1149,9 +1161,9 @@ namespace Tobi.Plugin.DocumentPane
                         setTextDirection(node, null, run, null);
                         Paragraph para = new Paragraph(run)
                         {
-                            Margin = new Thickness(0),
-                            Padding = new Thickness(0)
                         };
+                        resetMarginPadding(para);
+
                         TableCell cell = new TableCell(para);
 
                         setTag(para, node);
@@ -1205,9 +1217,9 @@ namespace Tobi.Plugin.DocumentPane
                         ((Table)parent).RowGroups[m_currentROWGROUP].Rows.Add(row);
                         Paragraph para = new Paragraph()
                         {
-                            Margin = new Thickness(0),
-                            Padding = new Thickness(0)
                         };
+                        resetMarginPadding(para);
+
                         TableCell cell = new TableCell(para);
 
                         setTag(para, node);
@@ -1516,21 +1528,25 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
-                    data.Blocks.Add(new Paragraph(new LineBreak())
-                    {
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0)
-                    });
+                    var para = new Paragraph(new LineBreak())
+                        {
+
+                        };
+                    resetMarginPadding(para);
+
+                    data.Blocks.Add(para);
                 }
                 else
                 {
                     var run = new Run(textMedia);
                     setTextDirection(node, null, run, null);
-                    data.Blocks.Add(new Paragraph(run)
-                    {
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0)
-                    });
+
+                    var para = new Paragraph(run)
+                        {
+                        };
+                    resetMarginPadding(para);
+
+                    data.Blocks.Add(para);
                 }
 
                 addInline(parent, data);
@@ -1558,21 +1574,24 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
-                    data.Blocks.Add(new Paragraph(new LineBreak())
-                    {
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0)
-                    });
+                    var para = new Paragraph(new LineBreak())
+                        {
+                        };
+                    resetMarginPadding(para);
+
+                    data.Blocks.Add(para);
                 }
                 else
                 {
                     var run = new Run(textMedia);
                     setTextDirection(node, null, run, null);
-                    data.Blocks.Add(new Paragraph(run)
-                    {
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0)
-                    });
+
+                    var para = new Paragraph(run)
+                        {
+                        };
+                    resetMarginPadding(para);
+
+                    data.Blocks.Add(para);
                 }
 
                 addInline(parent, data);
@@ -1590,9 +1609,9 @@ namespace Tobi.Plugin.DocumentPane
         {
             Section data = new Section()
             {
-                Margin = new Thickness(0),
-                Padding = new Thickness(0)
             };
+            //resetMarginPadding(data);
+
             setTag(data, node);
 
             if (initializer != null)
@@ -1604,21 +1623,24 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (textMedia == null || String.IsNullOrEmpty(textMedia))
                 {
-                    data.Blocks.Add(new Paragraph(new LineBreak())
-                    {
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0)
-                    });
+                    var para = new Paragraph(new LineBreak())
+                        {
+                        };
+                    resetMarginPadding(para);
+
+                    data.Blocks.Add(para);
                 }
                 else
                 {
                     var run = new Run(textMedia);
                     setTextDirection(node, null, run, null);
-                    data.Blocks.Add(new Paragraph(run)
+
+                    var para = new Paragraph(run)
                         {
-                            Margin = new Thickness(0),
-                            Padding = new Thickness(0)
-                        });
+                        };
+                    resetMarginPadding(para);
+
+                    data.Blocks.Add(para);
                 }
 
 
@@ -2855,6 +2877,7 @@ namespace Tobi.Plugin.DocumentPane
                 case "sup":
                 case "sub":
                 case "ruby":
+                case "code":
                     {
                         return walkBookTreeAndGenerateFlowDocument_Span(node, parent, nodeText, null);
                     }
@@ -2871,7 +2894,6 @@ namespace Tobi.Plugin.DocumentPane
                 case "samp":
                 case "poem":
                 case "linegroup":
-                case "code":
                 case "pre":
                 case "book":
                 case "body":

@@ -27,7 +27,7 @@ namespace Tobi.Common
     public interface IUrakawaSession : IPropertyChangedNotifyBase
     {
         bool isTreeNodeSkippable(TreeNode node);
-        TreeNode AdjustTextSyncGranularity(TreeNode node);
+        TreeNode AdjustTextSyncGranularity(TreeNode node, TreeNode upperLimit);
 
         string Convert_MathML_to_SVG(string mathML, string svgFileOutput);
 

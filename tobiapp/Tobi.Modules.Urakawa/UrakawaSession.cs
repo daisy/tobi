@@ -71,6 +71,19 @@ namespace Tobi.Plugin.Urakawa
             InitializeCommands();
             InitializeRecentFiles();
             InitializeXukSpines();
+
+
+            Settings.Default.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.TextSyncGranularity))
+                {
+                    m_TextSyncGranularityElements = null;
+                }
+                else if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.Skippables))
+                {
+                    m_SkippableElements = null;
+                }
+            };
         }
 
         //#pragma warning disable 1591 // missing comments
@@ -621,7 +634,7 @@ namespace Tobi.Plugin.Urakawa
 
 
         private List<string> m_TextSyncGranularityElements;
-        public TreeNode AdjustTextSyncGranularity(TreeNode node)
+        public TreeNode AdjustTextSyncGranularity(TreeNode node, TreeNode upperLimit)
         {
             if (//!Settings.Default.EnableTextSyncGranularity ||
                 node == null || !node.HasXmlProperty)
@@ -646,7 +659,7 @@ namespace Tobi.Plugin.Urakawa
                 }
             }
 
-            if (m_TextSyncGranularityElements[0] == "*")
+            if (m_TextSyncGranularityElements.Count > 0 && m_TextSyncGranularityElements[0] == "*")
             {
                 return null;
             }
@@ -656,6 +669,11 @@ namespace Tobi.Plugin.Urakawa
                 TreeNode parent = node; //.Parent;
                 while (parent != null)
                 {
+                    if (parent.IsAncestorOf(upperLimit))
+                    {
+                        break;
+                    }
+
                     string name = parent.GetXmlElementLocalName();
                     if (str.Equals(name, StringComparison.OrdinalIgnoreCase))
                     {
