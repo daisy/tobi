@@ -418,8 +418,8 @@ namespace Tobi.Plugin.DocumentPane
                 return; // otherwise we loose indentation :(
             }
 
-            block.Margin = new Thickness(0, 4, 0, 0);
-            block.Padding = new Thickness(0);
+            block.Margin = new Thickness(0, 0, 0, 0);
+            block.Padding = new Thickness(2, 2, 2, 2);
 
             //block.Margin = new Thickness(block.Margin.Left, 0, 0, 0);
             //block.Padding = new Thickness(block.Padding.Left, 0, 0, 0);
