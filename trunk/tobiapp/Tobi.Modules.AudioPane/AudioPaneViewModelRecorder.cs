@@ -589,50 +589,6 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        private List<string> m_SkippableElements;
-        private bool isElementSkippable(string name)
-        {
-            if (m_SkippableElements == null)
-            {
-                string[] names = Settings.Default.Skippables.Split(new char[] { ',', ' ', ';', '/' });
-
-                //m_SkippableElements = new List<string>(names);
-                m_SkippableElements = new List<string>(names.Length);
-
-                foreach (string n in names)
-                {
-                    string n_ = n.Trim(); //.ToLower();
-                    if (!string.IsNullOrEmpty(n_))
-                    {
-                        m_SkippableElements.Add(n_);
-                    }
-                }
-            }
-
-            foreach (var str in m_SkippableElements)
-            {
-                if (str.Equals(name, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-            }
-            return false;
-
-            //return m_SkippableElements.Contains(name.ToLower());
-        }
-
-        private bool isTreeNodeSkippable(TreeNode node)
-        {
-            if (node.HasXmlProperty && isElementSkippable(node.GetXmlElementLocalName()))
-            {
-                return true;
-            }
-            if (node.Parent == null)
-            {
-                return false;
-            }
-            return isTreeNodeSkippable(node.Parent);
-        }
 
         private void OnAudioRecordingFinished_(object sender, AudioRecorder.AudioRecordingFinishEventArgs e)
         {
@@ -708,7 +664,7 @@ namespace Tobi.Plugin.AudioPane
                         }
 
 
-                        if (Settings.Default.Audio_EnableSkippability && isTreeNodeSkippable(next))
+                        if (Settings.Default.Audio_EnableSkippability && m_UrakawaSession.isTreeNodeSkippable(next))
                         {
                             treeNode = next;
                             goto tryNext;

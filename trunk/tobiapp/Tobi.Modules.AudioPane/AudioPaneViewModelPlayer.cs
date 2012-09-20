@@ -1134,7 +1134,7 @@ namespace Tobi.Plugin.AudioPane
             next:
                 if (nextNode != null)
                 {
-                    if (Settings.Default.Audio_EnableSkippability && isTreeNodeSkippable(nextNode))
+                    if (Settings.Default.Audio_EnableSkippability && m_UrakawaSession.isTreeNodeSkippable(nextNode))
                     {
                         nextNode = nextNode.GetNextSiblingWithManagedAudio();
                         goto next;

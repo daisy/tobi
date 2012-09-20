@@ -1197,7 +1197,15 @@ namespace Tobi.Plugin.DocumentPane
                             }
                             else
                             {
-                                m_UrakawaSession.PerformTreeNodeSelection(previous, false, nested);
+                                TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(previous);
+                                if (candidate != null)
+                                {
+                                    m_UrakawaSession.PerformTreeNodeSelection(candidate, false, null);
+                                }
+                                else
+                                {
+                                    m_UrakawaSession.PerformTreeNodeSelection(previous, false, nested);
+                                }
                             }
                         }
                     }
@@ -1285,7 +1293,15 @@ namespace Tobi.Plugin.DocumentPane
                             }
                             else
                             {
-                                m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
+                                TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(next);
+                                if (candidate != null)
+                                {
+                                    m_UrakawaSession.PerformTreeNodeSelection(candidate, false, null);
+                                }
+                                else
+                                {
+                                    m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
+                                }
                             }
                         }
                     }

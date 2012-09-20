@@ -351,7 +351,7 @@ namespace Tobi.Plugin.AudioPane
                                 }
                             }
 
-                            if (Settings.Default.Audio_EnableSkippability && isTreeNodeSkippable(next))
+                            if (Settings.Default.Audio_EnableSkippability && m_UrakawaSession.isTreeNodeSkippable(next))
                             {
                                 treeNode = next;
                                 goto tryNext;
