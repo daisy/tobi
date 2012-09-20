@@ -649,6 +649,8 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormMouseDown(object sender, MouseButtonEventArgs e)
         {
+            BringIntoFocus();
+
             if (e.LeftButton != MouseButtonState.Pressed
                 || e.ChangedButton != MouseButton.Left) return;
 

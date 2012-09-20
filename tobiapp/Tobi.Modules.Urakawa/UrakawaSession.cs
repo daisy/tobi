@@ -15,6 +15,7 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using Tobi.Common.Validation;
 using urakawa;
+using urakawa.core;
 using urakawa.data;
 using urakawa.events;
 
@@ -571,6 +572,101 @@ namespace Tobi.Plugin.Urakawa
             }
 
             return result;
+        }
+
+        private List<string> m_SkippableElements;
+        private bool isElementSkippable(string name)
+        {
+            if (m_SkippableElements == null)
+            {
+                string[] names = Settings.Default.Skippables.Split(new char[] { ',', ' ', ';', '/' });
+
+                //m_SkippableElements = new List<string>(names);
+                m_SkippableElements = new List<string>(names.Length);
+
+                foreach (string n in names)
+                {
+                    string n_ = n.Trim(); //.ToLower();
+                    if (!string.IsNullOrEmpty(n_))
+                    {
+                        m_SkippableElements.Add(n_);
+                    }
+                }
+            }
+
+            foreach (var str in m_SkippableElements)
+            {
+                if (str.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+
+            //return m_SkippableElements.Contains(name.ToLower());
+        }
+
+        public bool isTreeNodeSkippable(TreeNode node)
+        {
+            if (node.HasXmlProperty && isElementSkippable(node.GetXmlElementLocalName()))
+            {
+                return true;
+            }
+            if (node.Parent == null)
+            {
+                return false;
+            }
+            return isTreeNodeSkippable(node.Parent);
+        }
+
+
+        private List<string> m_TextSyncGranularityElements;
+        public TreeNode AdjustTextSyncGranularity(TreeNode node)
+        {
+            if (//!Settings.Default.EnableTextSyncGranularity ||
+                node == null || !node.HasXmlProperty)
+            {
+                return null;
+            }
+
+            if (m_TextSyncGranularityElements == null)
+            {
+                string[] names = Settings.Default.TextSyncGranularity.Split(new char[] { ',', ' ', ';', '/' });
+
+                //m_SkippableElements = new List<string>(names);
+                m_TextSyncGranularityElements = new List<string>(names.Length);
+
+                foreach (string n in names)
+                {
+                    string n_ = n.Trim(); //.ToLower();
+                    if (!string.IsNullOrEmpty(n_))
+                    {
+                        m_TextSyncGranularityElements.Add(n_);
+                    }
+                }
+            }
+
+            if (m_TextSyncGranularityElements[0] == "*")
+            {
+                return null;
+            }
+
+            foreach (var str in m_TextSyncGranularityElements)
+            {
+                TreeNode parent = node; //.Parent;
+                while (parent != null)
+                {
+                    string name = parent.GetXmlElementLocalName();
+                    if (str.Equals(name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return parent;
+                    }
+
+                    parent = parent.Parent;
+                }
+            }
+
+            return null;
         }
     }
 }

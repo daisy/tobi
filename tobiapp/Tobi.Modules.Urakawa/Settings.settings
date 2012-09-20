@@ -32,5 +32,11 @@
     <Setting Name="XUK_PrettyFormat" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="Skippables" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pagenum,linenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,note,noteref,</Value>
+    </Setting>
+    <Setting Name="TextSyncGranularity" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*,img,caption,video,li,doctitle,docauthor,pagenum,hd,h1,h2,h3,h4,h5,h6,p,td,a,sent,span</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

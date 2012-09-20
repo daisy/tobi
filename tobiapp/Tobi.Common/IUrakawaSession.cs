@@ -26,6 +26,9 @@ namespace Tobi.Common
     ///</summary>
     public interface IUrakawaSession : IPropertyChangedNotifyBase
     {
+        bool isTreeNodeSkippable(TreeNode node);
+        TreeNode AdjustTextSyncGranularity(TreeNode node);
+
         string Convert_MathML_to_SVG(string mathML, string svgFileOutput);
 
         bool askUserConfirmOverwriteFileFolder(string path, bool folder, Window owner);

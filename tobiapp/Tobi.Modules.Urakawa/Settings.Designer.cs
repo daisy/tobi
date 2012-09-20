@@ -142,5 +142,31 @@ namespace Tobi.Plugin.Urakawa {
                 this["XUK_PrettyFormat"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("pagenum,linenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,not" +
+            "e,noteref,")]
+        public string Skippables {
+            get {
+                return ((string)(this["Skippables"]));
+            }
+            set {
+                this["Skippables"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*,img,caption,video,li,doctitle,docauthor,pagenum,hd,h1,h2,h3,h4,h5,h6,p,td,a,sen" +
+            "t,span")]
+        public string TextSyncGranularity {
+            get {
+                return ((string)(this["TextSyncGranularity"]));
+            }
+            set {
+                this["TextSyncGranularity"] = value;
+            }
+        }
     }
 }
