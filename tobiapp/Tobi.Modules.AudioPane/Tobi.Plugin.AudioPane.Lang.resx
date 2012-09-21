@@ -165,6 +165,9 @@
   <data name="AudioAutoPlay" xml:space="preserve">
     <value>Autoplay</value>
   </data>
+  <data name="AudioRecordPlayPreview" xml:space="preserve">
+    <value>Preview before record</value>
+  </data>
   <data name="CmdAudioAutoPlay_ShortDesc" xml:space="preserve">
     <value>_Toggle autoplay mode</value>
   </data>

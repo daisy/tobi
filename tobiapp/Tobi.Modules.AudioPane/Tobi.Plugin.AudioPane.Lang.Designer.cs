@@ -106,6 +106,15 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preview before record.
+        /// </summary>
+        public static string AudioRecordPlayPreview {
+            get {
+                return ResourceManager.GetString("AudioRecordPlayPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Switch autoplay mode on/off.
         /// </summary>
         public static string CmdAudioAutoPlay_LongDesc {
