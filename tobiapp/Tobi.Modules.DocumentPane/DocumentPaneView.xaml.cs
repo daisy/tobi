@@ -813,7 +813,10 @@ namespace Tobi.Plugin.DocumentPane
 
         public RichDelegateCommand CommandFocus { get; private set; }
 
-        public RichDelegateCommand CommandToggleTextOnlyView { get; private set; }
+        public RichDelegateCommand CommandToggleSinglePhraseView { get; private set; }
+
+        public RichDelegateCommand CommandToggleTextSyncGranularity { get; private set; }
+
         public RichDelegateCommand CommandSwitchNarratorView { get; private set; }
 
         private readonly ILoggerFacade m_Logger;
@@ -880,20 +883,37 @@ namespace Tobi.Plugin.DocumentPane
 
             m_ShellView.RegisterRichCommand(CommandFocus);
             //
-            CommandToggleTextOnlyView = new RichDelegateCommand(
+            CommandToggleSinglePhraseView = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdTextOnlyViewToggle_ShortDesc,
                 Tobi_Plugin_DocumentPane_Lang.CmdTextOnlyViewToggle_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon("Neu_preferences-desktop-font"),
                 () =>
                 {
-                    Settings.Default.Document_ShowTextOnlyView = !Settings.Default.Document_ShowTextOnlyView;
+                    Settings.Default.Document_SinglePhraseView = !Settings.Default.Document_SinglePhraseView;
                 },
                 () => true,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ToggleTextOnly));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ToggleSinglePhraseView));
 
-            m_ShellView.RegisterRichCommand(CommandToggleTextOnlyView);
+            m_ShellView.RegisterRichCommand(CommandToggleSinglePhraseView);
+            //
+            CommandToggleTextSyncGranularity = new RichDelegateCommand(
+                Tobi.Common.Tobi_Common_Lang.CmdToggleTextSyncGranularity_ShortDesc,
+                Tobi.Common.Tobi_Common_Lang.CmdToggleTextSyncGranularity_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                //m_ShellView.LoadTangoIcon("internet-group-chat"),
+                //m_ShellView.LoadGnomeGionIcon("Gion_text-x-authors"),
+                m_ShellView.LoadGnomeGionIcon("Gion_text-x-script"),
+                () =>
+                {
+                    Tobi.Common.Settings.Default.EnableTextSyncGranularity = !Tobi.Common.Settings.Default.EnableTextSyncGranularity;
+                },
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ToggleTextSyncGranularity));
+
+            m_ShellView.RegisterRichCommand(CommandToggleTextSyncGranularity);
             //
             CommandSwitchNarratorView = new RichDelegateCommand(
                 Tobi_Plugin_DocumentPane_Lang.CmdSwitchNarratorView_ShortDesc,

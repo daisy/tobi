@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
@@ -72,18 +73,28 @@ namespace Tobi.Plugin.Urakawa
             InitializeRecentFiles();
             InitializeXukSpines();
 
+            Tobi.Common.Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
+            Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
+        }
 
-            Settings.Default.PropertyChanged += (sender, e) =>
+        ~UrakawaSession()
+        {
+            Tobi.Common.Settings.Default.PropertyChanged -= OnSettingsPropertyChanged;
+            Settings.Default.PropertyChanged -= OnSettingsPropertyChanged;
+        }
+
+        private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Tobi.Common.Settings.Default.TextSyncGranularity)
+                //|| e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Tobi.Common.Settings.Default.EnableTextSyncGranularity)
+                )
             {
-                if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.TextSyncGranularity))
-                {
-                    m_TextSyncGranularityElements = null;
-                }
-                else if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.Skippables))
-                {
-                    m_SkippableElements = null;
-                }
-            };
+                m_TextSyncGranularityElements = null;
+            }
+            else if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Settings.Default.Skippables))
+            {
+                m_SkippableElements = null;
+            }
         }
 
         //#pragma warning disable 1591 // missing comments
@@ -636,7 +647,7 @@ namespace Tobi.Plugin.Urakawa
         private List<string> m_TextSyncGranularityElements;
         public TreeNode AdjustTextSyncGranularity(TreeNode node, TreeNode upperLimit)
         {
-            if (//!Settings.Default.EnableTextSyncGranularity ||
+            if (!Tobi.Common.Settings.Default.EnableTextSyncGranularity ||
                 node == null || !node.HasXmlProperty)
             {
                 return null;
@@ -644,7 +655,7 @@ namespace Tobi.Plugin.Urakawa
 
             if (m_TextSyncGranularityElements == null)
             {
-                string[] names = Settings.Default.TextSyncGranularity.Split(new char[] { ',', ' ', ';', '/' });
+                string[] names = Tobi.Common.Settings.Default.TextSyncGranularity.Split(new char[] { ',', ' ', ';', '/' });
 
                 //m_SkippableElements = new List<string>(names);
                 m_TextSyncGranularityElements = new List<string>(names.Length);

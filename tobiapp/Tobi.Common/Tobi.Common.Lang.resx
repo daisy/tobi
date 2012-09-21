@@ -219,4 +219,13 @@
   <data name="Menu_Help" xml:space="preserve">
     <value>_Help</value>
   </data>
+  <data name="TextSyncGranularity" xml:space="preserve">
+    <value>Auto-adjust granularity</value>
+  </data>
+  <data name="CmdToggleTextSyncGranularity_ShortDesc" xml:space="preserve">
+    <value>Toggle text sync granularity</value>
+  </data>
+  <data name="CmdToggleTextSyncGranularity_LongDesc" xml:space="preserve">
+    <value>Enable/disable text sync granularity (when disabled, the finest granularity is used, otherwise the granularity is automatically adjusted depending on text content)</value>
+  </data>
 </root>
