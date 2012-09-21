@@ -29,7 +29,7 @@ namespace Tobi.Plugin.AudioPane
 
         private bool m_PlayAutoAdvance = false;
         public RichDelegateCommand CommandPlayAutoAdvance { get; private set; }
-        
+
         public RichDelegateCommand CommandPlayPreviewLeft { get; private set; }
         public RichDelegateCommand CommandPlayPreviewRight { get; private set; }
         public RichDelegateCommand CommandPause { get; private set; }
@@ -199,9 +199,9 @@ namespace Tobi.Plugin.AudioPane
                         CommandStopMonitor.Execute();
                     }
 
-//#if DEBUG
-//                    Logger.Log("AudioPaneViewModel.CommandPlay (called PAUSE)", Category.Debug, Priority.Medium);
-//#endif
+                    //#if DEBUG
+                    //                    Logger.Log("AudioPaneViewModel.CommandPlay (called PAUSE)", Category.Debug, Priority.Medium);
+                    //#endif
 
 
                     if (PlayBytePosition < 0)
@@ -400,6 +400,15 @@ namespace Tobi.Plugin.AudioPane
         //    }
         //}
 
+        
+      
+        
+        [NotifyDependsOn("IsAutoPlay")]
+        public string IsAutoPlayString
+        {
+            get { return Tobi_Plugin_AudioPane_Lang.AudioAutoPlay + (IsAutoPlay ? " [ON]" : " [OFF]"); }
+        }
+
         [NotifyDependsOn("PlaybackRate")]
         public string PlaybackRateString
         {
@@ -438,6 +447,11 @@ namespace Tobi.Plugin.AudioPane
             {
                 if (m_IsAutoPlay == value) return;
                 m_IsAutoPlay = value;
+
+                if (EventAggregator != null)
+                {
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.AudioAutoPlay + (m_IsAutoPlay ? " (ON)" : " (OFF)"));
+                }
 
                 RaisePropertyChanged(() => IsAutoPlay);
             }
@@ -579,82 +593,82 @@ namespace Tobi.Plugin.AudioPane
         }
 
 
-//        private DispatcherTimer m_WaveFormLoadTimer;
+        //        private DispatcherTimer m_WaveFormLoadTimer;
 
-//        private static readonly Object LOCK = new Object();
+        //        private static readonly Object LOCK = new Object();
 
-//        private void StartWaveFormLoadTimer(long delayMilliseconds)
-//        {
-//            if (IsWaveFormLoading)
-//            {
-//                return;
-//            }
+        //        private void StartWaveFormLoadTimer(long delayMilliseconds)
+        //        {
+        //            if (IsWaveFormLoading)
+        //            {
+        //                return;
+        //            }
 
-//            lock (LOCK)
-//            {
-//                if (false && View != null)
-//                {
-//                    View.ShowHideWaveFormLoadingMessage(true);
-//                }
-//                if (delayMilliseconds == 0)
-//                {
-////#if DEBUG
-////                    Logger.Log("CALLING AudioPlayer_LoadWaveForm (StartWaveFormLoadTimer)", Category.Debug, Priority.Medium);
-////#endif
-//                    AudioPlayer_LoadWaveForm(false);
-//                    return;
-//                }
-//                if (m_WaveFormLoadTimer == null)
-//                {
-//                    m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
-//                    m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
-//                    // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
-//                    if (delayMilliseconds == 0)
-//                    // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
-//                    {
-//                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);
-//                        //TODO: does this work ?? (immediate dispatch)
-//                    }
-//                    else
-//                    {
-//                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delayMilliseconds);
-//                    }
-//                }
-//                else if (m_WaveFormLoadTimer.IsEnabled)
-//                {
-//                    //Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
+        //            lock (LOCK)
+        //            {
+        //                if (false && View != null)
+        //                {
+        //                    View.ShowHideWaveFormLoadingMessage(true);
+        //                }
+        //                if (delayMilliseconds == 0)
+        //                {
+        ////#if DEBUG
+        ////                    Logger.Log("CALLING AudioPlayer_LoadWaveForm (StartWaveFormLoadTimer)", Category.Debug, Priority.Medium);
+        ////#endif
+        //                    AudioPlayer_LoadWaveForm(false);
+        //                    return;
+        //                }
+        //                if (m_WaveFormLoadTimer == null)
+        //                {
+        //                    m_WaveFormLoadTimer = new DispatcherTimer(DispatcherPriority.Normal);
+        //                    m_WaveFormLoadTimer.Tick += OnWaveFormLoadTimerTick;
+        //                    // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
+        //                    if (delayMilliseconds == 0)
+        //                    // ReSharper restore ConvertIfStatementToConditionalTernaryExpression
+        //                    {
+        //                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(0);
+        //                        //TODO: does this work ?? (immediate dispatch)
+        //                    }
+        //                    else
+        //                    {
+        //                        m_WaveFormLoadTimer.Interval = TimeSpan.FromMilliseconds(delayMilliseconds);
+        //                    }
+        //                }
+        //                else if (m_WaveFormLoadTimer.IsEnabled)
+        //                {
+        //                    //Logger.Log("m_WaveFormLoadTimer.Stop()", Category.Debug, Priority.Medium);
 
-//                    m_WaveFormLoadTimer.Stop();
-//                }
+        //                    m_WaveFormLoadTimer.Stop();
+        //                }
 
-//                //Logger.Log("m_WaveFormLoadTimer.Start()", Category.Debug, Priority.Medium);
+        //                //Logger.Log("m_WaveFormLoadTimer.Start()", Category.Debug, Priority.Medium);
 
-//                m_WaveFormLoadTimer.Start();
-//            }
-//        }
+        //                m_WaveFormLoadTimer.Start();
+        //            }
+        //        }
 
-//        private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
-//        {
-//            if (!TheDispatcher.CheckAccess())
-//            {
-//#if DEBUG
-//                Debugger.Break();
-//#endif
-//                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, EventArgs>)OnWaveFormLoadTimerTick, sender, e);
-//                return;
-//            }
+        //        private void OnWaveFormLoadTimerTick(object sender, EventArgs e)
+        //        {
+        //            if (!TheDispatcher.CheckAccess())
+        //            {
+        //#if DEBUG
+        //                Debugger.Break();
+        //#endif
+        //                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, EventArgs>)OnWaveFormLoadTimerTick, sender, e);
+        //                return;
+        //            }
 
-//            m_WaveFormLoadTimer.Stop();
+        //            m_WaveFormLoadTimer.Stop();
 
-//            if (IsWaveFormLoading)
-//            {
-//                return;
-//            }
-////#if DEBUG
-////            Logger.Log("CALLING AudioPlayer_LoadWaveForm (OnWaveFormLoadTimerTick)", Category.Debug, Priority.Medium);
-////#endif
-//            AudioPlayer_LoadWaveForm(false);
-//        }
+        //            if (IsWaveFormLoading)
+        //            {
+        //                return;
+        //            }
+        ////#if DEBUG
+        ////            Logger.Log("CALLING AudioPlayer_LoadWaveForm (OnWaveFormLoadTimerTick)", Category.Debug, Priority.Medium);
+        ////#endif
+        //            AudioPlayer_LoadWaveForm(false);
+        //        }
 
         public void AudioPlayer_LoadWaveForm(bool onlyUpdateTiles)
         {
@@ -671,18 +685,18 @@ namespace Tobi.Plugin.AudioPane
 
             bool wasPlaying = IsPlaying;
 
-//#if DEBUG
-//            Logger.Log("AudioPlayer_LoadWaveForm (calling PAUSE)", Category.Debug, Priority.Medium);
-//#endif
+            //#if DEBUG
+            //            Logger.Log("AudioPlayer_LoadWaveForm (calling PAUSE)", Category.Debug, Priority.Medium);
+            //#endif
 
             if (!onlyUpdateTiles)
             {
                 CommandPause.Execute();
             }
 
-//#if DEBUG
-//            Logger.Log("AudioPlayer_LoadWaveForm (called PAUSE)", Category.Debug, Priority.Medium);
-//#endif
+            //#if DEBUG
+            //            Logger.Log("AudioPlayer_LoadWaveForm (called PAUSE)", Category.Debug, Priority.Medium);
+            //#endif
 
             //if (wasPlaying)
             //{
@@ -780,9 +794,9 @@ namespace Tobi.Plugin.AudioPane
             if (wasPlaying)
             {
 
-//#if DEBUG
-//                Logger.Log("AudioPlayer_PlayAfterWaveFormLoaded (wasPlaying)", Category.Debug, Priority.Medium);
-//#endif
+                //#if DEBUG
+                //                Logger.Log("AudioPlayer_PlayAfterWaveFormLoaded (wasPlaying)", Category.Debug, Priority.Medium);
+                //#endif
 
                 //m_Player.Resume();
                 CommandPlay.Execute();
@@ -800,9 +814,9 @@ namespace Tobi.Plugin.AudioPane
 
             if (IsAutoPlay)
             {
-//#if DEBUG
-//                Logger.Log("AudioPlayer_PlayAfterWaveFormLoaded (IsAutoPlay)", Category.Debug, Priority.Medium);
-//#endif
+                //#if DEBUG
+                //                Logger.Log("AudioPlayer_PlayAfterWaveFormLoaded (IsAutoPlay)", Category.Debug, Priority.Medium);
+                //#endif
                 CommandPlay.Execute();
                 //OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_OutputDevice)));
                 //m_Player.PlayBytes(m_CurrentAudioStreamProvider,
