@@ -227,11 +227,11 @@ namespace Tobi.Plugin.AudioPane
                         PcmFormat = new PCMFormatInfo(m_viewModel.m_Player.CurrentAudioPCMFormat);
                     }
                 }
-                //if (PcmFormat == null && m_viewModel.m_UrakawaSession.DocumentProject != null)
-                //{
-                //    PcmFormat = m_viewModel.m_UrakawaSession.DocumentProject
-                //        .Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
-                //}
+                if (PcmFormat == null && m_viewModel.m_UrakawaSession.DocumentProject != null)
+                {
+                    PcmFormat = m_viewModel.m_UrakawaSession.DocumentProject
+                        .Presentations.Get(0).MediaDataManager.DefaultPCMFormat.Copy();
+                }
                 return PcmFormat;
             }
 

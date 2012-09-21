@@ -1275,6 +1275,8 @@ m_Stream.Length);
                     EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish("-"); // TODO Localize 
                 }
             }
+
+            RaisePropertyChanged(() => State.Audio.PcmFormat);
         }
 
         #endregion Event / Callbacks
