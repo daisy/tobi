@@ -348,6 +348,12 @@
   <data name="CmdAudioStepForward_LongDesc" xml:space="preserve">
     <value>Jumpd to the audio chunk following the cursor</value>
   </data>
+  <data name="CmdAudioTogglePlayPreviewBeforeRecord_ShortDesc" xml:space="preserve">
+    <value>Toggle record preview</value>
+  </data>
+  <data name="CmdAudioTogglePlayPreviewBeforeRecord_LongDesc" xml:space="preserve">
+    <value>Enable / disable playback preview before starting a recording</value>
+  </data>
   <data name="CmdAudioStopMonitor_ShortDesc" xml:space="preserve">
     <value>St_op monitoring</value>
   </data>

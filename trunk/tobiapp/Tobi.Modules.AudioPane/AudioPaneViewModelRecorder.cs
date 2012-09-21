@@ -40,6 +40,8 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandStopRecord { get; private set; }
         public RichDelegateCommand CommandStopRecordAndContinue { get; private set; }
 
+        public RichDelegateCommand CommandTogglePlayPreviewBeforeRecord { get; private set; }
+
         public RichDelegateCommand CommandStartMonitor { get; private set; }
         public RichDelegateCommand CommandStopMonitor { get; private set; }
 
@@ -164,7 +166,7 @@ namespace Tobi.Plugin.AudioPane
                         Console.WriteLine("stopWatchRecorder != null, skipping start record");
                         return;
                     }
-                    
+
                     if (IsMonitoring)
                     {
                         CommandStopMonitor.Execute();
@@ -172,11 +174,11 @@ namespace Tobi.Plugin.AudioPane
 
                     IsAutoPlay = false;
 
-                    SetRecordAfterPlayOverwriteSelection(-1);
-
                     bool punchIn = false;
                     if (IsPlaying) // Punch-in recording
                     {
+                        SetRecordAfterPlayOverwriteSelection(-1);
+
                         punchIn = true;
                         CommandPause.Execute();
                         CommandSelectRight.Execute();
@@ -191,6 +193,8 @@ namespace Tobi.Plugin.AudioPane
 
                     if (m_UrakawaSession.DocumentProject == null)
                     {
+                        SetRecordAfterPlayOverwriteSelection(-1);
+
                         State.ResetAll();
 
                         State.Audio.PcmFormatRecordingMonitoring = new PCMFormatInfo();
@@ -200,6 +204,8 @@ namespace Tobi.Plugin.AudioPane
                         Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
                         if (treeNodeSelection.Item1 == null)
                         {
+                            SetRecordAfterPlayOverwriteSelection(-1);
+
                             return;
                         }
 
@@ -216,6 +222,23 @@ namespace Tobi.Plugin.AudioPane
                                 SetRecordAfterPlayOverwriteSelection(State.Selection.SelectionBeginBytePosition);
                                 return;
                             }
+                            else if (Settings.Default.Audio_EnablePlayPreviewBeforeRecord && m_RecordAfterPlayOverwriteSelection < 0 && PlayBytePosition > 0)
+                            {
+                                var playbackStartBytePos =
+                                    m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.
+                                        Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStepPlayPreview * 2 * AudioLibPCMFormat.TIME_UNIT);
+                                playbackStartBytePos = PlayBytePosition - playbackStartBytePos;
+                                if (playbackStartBytePos < 0)
+                                {
+                                    playbackStartBytePos = 0;
+                                }
+
+                                SetRecordAfterPlayOverwriteSelection(State.Selection.SelectionBeginBytePosition > 0 ? State.Selection.SelectionBeginBytePosition : PlayBytePosition);
+                                AudioPlayer_PlayFromTo(playbackStartBytePos, PlayBytePosition);
+                                return;
+                            }
+
+                            SetRecordAfterPlayOverwriteSelection(-1);
                         }
 
                         DebugFix.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
@@ -284,7 +307,7 @@ namespace Tobi.Plugin.AudioPane
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartMonitor", Category.Debug, Priority.Medium);
-                    
+
                     m_RecordAndContinue_StopBytePos = -1; // to avoid display of m_RecordAndContinue time stamp
 
                     IsAutoPlay = false;
@@ -325,6 +348,23 @@ namespace Tobi.Plugin.AudioPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_StartStopMonitor));
 
             m_ShellView.RegisterRichCommand(CommandStartMonitor);
+            //
+
+            CommandTogglePlayPreviewBeforeRecord = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioTogglePlayPreviewBeforeRecord_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioTogglePlayPreviewBeforeRecord_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadGnomeGionIcon("Gion_music-player"),
+                () =>
+                {
+                    Settings.Default.Audio_EnablePlayPreviewBeforeRecord =
+                        !Settings.Default.Audio_EnablePlayPreviewBeforeRecord;
+                },
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_TogglePlayPreviewBeforeRecord));
+
+            m_ShellView.RegisterRichCommand(CommandTogglePlayPreviewBeforeRecord);
             //
         }
 

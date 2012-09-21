@@ -754,6 +754,24 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable / disable playback preview before starting a recording.
+        /// </summary>
+        public static string CmdAudioTogglePlayPreviewBeforeRecord_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioTogglePlayPreviewBeforeRecord_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle record preview.
+        /// </summary>
+        public static string CmdAudioTogglePlayPreviewBeforeRecord_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioTogglePlayPreviewBeforeRecord_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bring waveform selection into full view.
         /// </summary>
         public static string CmdAudioZoomSelection_LongDesc {

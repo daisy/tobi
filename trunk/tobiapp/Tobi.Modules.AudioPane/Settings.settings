@@ -5,6 +5,9 @@
     <Setting Name="Audio_PlayKeepPitch" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="Audio_EnablePlayPreviewBeforeRecord" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="Audio_OutputDevice" Type="System.String" Scope="User">
       <Value Profile="(Default)">default</Value>
     </Setting>
@@ -47,8 +50,8 @@
     <Setting Name="AudioWaveForm_DisableDraw" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="AudioWaveForm_TimeStep" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">400</Value>
+    <Setting Name="AudioWaveForm_TimeStepPlayPreview" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">500</Value>
     </Setting>
     <Setting Name="AudioWaveForm_RenderMethod" Type="Tobi.Plugin.AudioPane.WaveFormRenderMethod" Scope="User">
       <Value Profile="(Default)">RenderTargetBitmap</Value>
