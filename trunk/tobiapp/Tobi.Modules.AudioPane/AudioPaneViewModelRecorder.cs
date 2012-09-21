@@ -359,6 +359,13 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Settings.Default.Audio_EnablePlayPreviewBeforeRecord =
                         !Settings.Default.Audio_EnablePlayPreviewBeforeRecord;
+
+                    RaisePropertyChanged(() => RecordPlayPreviewString);
+
+                    if (EventAggregator != null)
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.AudioRecordPlayPreview + (Settings.Default.Audio_EnablePlayPreviewBeforeRecord ? " [ON]" : " [OFF]"));
+                    }
                 },
                 () => true,
                 Settings_KeyGestures.Default,

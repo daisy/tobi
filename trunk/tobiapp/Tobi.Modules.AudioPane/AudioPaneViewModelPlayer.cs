@@ -403,6 +403,12 @@ namespace Tobi.Plugin.AudioPane
         
       
         
+        public string RecordPlayPreviewString
+        {
+            get { return Tobi_Plugin_AudioPane_Lang.AudioRecordPlayPreview + (Settings.Default.Audio_EnablePlayPreviewBeforeRecord ? " [ON]" : " [OFF]"); }
+        }
+
+
         [NotifyDependsOn("IsAutoPlay")]
         public string IsAutoPlayString
         {
