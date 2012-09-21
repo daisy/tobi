@@ -404,7 +404,7 @@ namespace Tobi.Plugin.AudioPane
                     m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
 
                     // pasted audio should be selected at this point, so playback only this audio selection
-                    if (isAutoPlay)
+                    if (true || isAutoPlay) // FORCE AUTOPLAY!
                     {
                         OnInterruptAudioPlayerRecorder();
                         IsAutoPlay = true;
