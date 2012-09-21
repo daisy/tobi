@@ -661,6 +661,14 @@ namespace Tobi.Plugin.AudioPane
                             {
                                 next = svg;
                             }
+                            else
+                            {
+                                TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(next, treeNode);
+                                if (candidate != null)
+                                {
+                                    next = candidate;
+                                }
+                            }
                         }
 
 

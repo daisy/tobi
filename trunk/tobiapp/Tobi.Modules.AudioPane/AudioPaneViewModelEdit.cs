@@ -349,6 +349,14 @@ namespace Tobi.Plugin.AudioPane
                                 {
                                     next = svg;
                                 }
+                                else
+                                {
+                                    TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(next, treeNode);
+                                    if (candidate != null)
+                                    {
+                                        next = candidate;
+                                    }
+                                }
                             }
 
                             if (Settings.Default.Audio_EnableSkippability && m_UrakawaSession.isTreeNodeSkippable(next))

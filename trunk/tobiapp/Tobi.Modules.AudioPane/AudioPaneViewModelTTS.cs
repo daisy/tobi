@@ -333,6 +333,14 @@ namespace Tobi.Plugin.AudioPane
                     {
                         treeNode = svg;
                     }
+                    else
+                    {
+                        TreeNode candidate = m_viewModel.m_UrakawaSession.AdjustTextSyncGranularity(treeNode, adjustedNode);
+                        if (candidate != null)
+                        {
+                            treeNode = candidate;
+                        }
+                    }
                 }
 
                 goto next;
