@@ -171,7 +171,8 @@ namespace Tobi.Plugin.AudioPane
                 new object[]
                  {
                      dataRecord,
-                     m_AudioPaneViewModel.CommandStopRecordAndContinue
+                     m_AudioPaneViewModel.CommandStopRecordAndContinue,
+                     m_AudioPaneViewModel.CommandTogglePlayPreviewBeforeRecord
                  });
 
             m_MenuBarId_12 = m_MenuBarView.AddMenuBarGroup(

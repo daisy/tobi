@@ -37,6 +37,18 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Audio_EnablePlayPreviewBeforeRecord {
+            get {
+                return ((bool)(this["Audio_EnablePlayPreviewBeforeRecord"]));
+            }
+            set {
+                this["Audio_EnablePlayPreviewBeforeRecord"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("default")]
         public string Audio_OutputDevice {
             get {
@@ -205,13 +217,13 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("400")]
-        public double AudioWaveForm_TimeStep {
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public double AudioWaveForm_TimeStepPlayPreview {
             get {
-                return ((double)(this["AudioWaveForm_TimeStep"]));
+                return ((double)(this["AudioWaveForm_TimeStepPlayPreview"]));
             }
             set {
-                this["AudioWaveForm_TimeStep"] = value;
+                this["AudioWaveForm_TimeStepPlayPreview"] = value;
             }
         }
         

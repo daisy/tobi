@@ -313,6 +313,18 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] R")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_TogglePlayPreviewBeforeRecord {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_TogglePlayPreviewBeforeRecord"]));
+            }
+            set {
+                this["Keyboard_Audio_TogglePlayPreviewBeforeRecord"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] M")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_StartStopMonitor {
             get {

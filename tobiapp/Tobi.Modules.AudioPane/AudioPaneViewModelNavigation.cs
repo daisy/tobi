@@ -200,7 +200,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    long newBytesPosition = PlayBytePosition + State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStep * AudioLibPCMFormat.TIME_UNIT);
+                    long newBytesPosition = PlayBytePosition + State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStepPlayPreview * AudioLibPCMFormat.TIME_UNIT);
                     if (newBytesPosition > State.Audio.DataLength)
                     {
                         newBytesPosition = State.Audio.DataLength;
@@ -234,7 +234,7 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandPause.Execute();
 
-                    long newTimeBytePosition = PlayBytePosition - State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStep * AudioLibPCMFormat.TIME_UNIT);
+                    long newTimeBytePosition = PlayBytePosition - State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStepPlayPreview * AudioLibPCMFormat.TIME_UNIT);
                     if (newTimeBytePosition < 0)
                     {
                         newTimeBytePosition = 0;

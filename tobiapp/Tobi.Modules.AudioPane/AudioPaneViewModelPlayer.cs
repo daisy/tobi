@@ -308,13 +308,13 @@ namespace Tobi.Plugin.AudioPane
             long to = 0;
             if (left)
             {
-                from = Math.Max(0, PlayBytePosition - State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStep * AudioLibPCMFormat.TIME_UNIT));
+                from = Math.Max(0, PlayBytePosition - State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStepPlayPreview * 2 * AudioLibPCMFormat.TIME_UNIT));
                 to = PlayBytePosition;
             }
             else
             {
                 from = PlayBytePosition;
-                to = Math.Min(State.Audio.DataLength, PlayBytePosition + State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStep * AudioLibPCMFormat.TIME_UNIT));
+                to = Math.Min(State.Audio.DataLength, PlayBytePosition + State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStepPlayPreview * 2 * AudioLibPCMFormat.TIME_UNIT));
             }
 
             if (from == to)
@@ -1181,10 +1181,12 @@ namespace Tobi.Plugin.AudioPane
             {
                 m_PlayAutoAdvance = false;
 
-                if (m_RecordAfterPlayOverwriteSelection > 0 && State.Selection.SelectionBeginBytePosition == m_RecordAfterPlayOverwriteSelection)
+                if (m_RecordAfterPlayOverwriteSelection > 0) // && State.Selection.SelectionBeginBytePosition == m_RecordAfterPlayOverwriteSelection)
                 {
                     SetRecordAfterPlayOverwriteSelection(-1);
+                    m_RecordAfterPlayOverwriteSelection = 1; // hack
                     CommandStartRecord.Execute();
+                    m_RecordAfterPlayOverwriteSelection = -1; // hack
                 }
                 else
                 {
