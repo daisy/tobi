@@ -89,7 +89,7 @@ namespace Tobi.Plugin.DocumentPane
                 Tobi_Common_Lang.Menu_Text, PreferredPosition.First, true,
                 null, //Tobi_Common_Lang.Menu_Navigation,
                 PreferredPosition.First, true,
-                new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext });
+                new[] { m_DocView.CommandSwitchPhrasePrevious, m_DocView.CommandSwitchPhraseNext, m_DocView.CommandToggleTextSyncGranularity });
 
             m_MenuBarId_5 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_Text, PreferredPosition.Last, true,
@@ -101,7 +101,7 @@ namespace Tobi.Plugin.DocumentPane
                 Tobi_Common_Lang.Menu_View, PreferredPosition.Last, true,
                 null, //Tobi_Common_Lang.Menu_Navigation,
                 PreferredPosition.First, true,
-                new[] { m_DocView.CommandToggleTextOnlyView, m_DocView.CommandSwitchNarratorView });
+                new[] { m_DocView.CommandToggleSinglePhraseView, m_DocView.CommandSwitchNarratorView });
 
             m_MenuBarId_3 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_View, PreferredPosition.First, true,

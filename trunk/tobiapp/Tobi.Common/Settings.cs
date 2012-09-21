@@ -64,9 +64,9 @@ namespace Tobi.Common
 
     }
 
-    public sealed partial class Settings_KeyGestures
+    public sealed partial class Settings_KeyGesture // TODO: fix naming! (should have "s" at the end, like all other classes)
     {
-        public Settings_KeyGestures()
+        public Settings_KeyGesture()
         {
             //PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Settings_PropertyChanged);
         }

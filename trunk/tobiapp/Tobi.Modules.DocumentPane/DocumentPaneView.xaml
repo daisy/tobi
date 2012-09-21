@@ -272,7 +272,7 @@ Background="Transparent"
     AllowDrop="True"
                                            x:Name="FlowDocReaderSimple"
                             HorizontalScrollBarVisibility="Disabled"
-   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
+   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_SinglePhraseView,
               Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}"
          
           Margin="0,0,0,0"
@@ -508,19 +508,32 @@ Background="{Binding
         RichCommand="{Binding CommandSwitchPhraseNext}"
                                  />
 
+      
+      <CheckBox
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        Content="{x:Static Common:Tobi_Common_Lang.TextSyncGranularity}"
+                ToolTip="{Binding Source={x:Static DocumentPane:Settings_KeyGestures.Default}, Path=Keyboard_ToggleTextSyncGranularity, Mode=OneWay}"
+                Margin="3"
+                 VerticalAlignment="Center"
+   IsChecked="{Binding Source={x:Static Common:Settings.Default}, Path=EnableTextSyncGranularity, Mode=TwoWay}"
+        Click="OnMouseClickCheckBox"
+        />
+      
+      <!--ToolTip="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.CmdTextOnlyViewToggle_LongDesc}"-->
+      <!--
 
       <Separator
                  />
-      <!--ToolTip="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.CmdTextOnlyViewToggle_LongDesc}"-->
+      
       <CheckBox
         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
         Content="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.TextOnly}"
-                ToolTip="{Binding Source={x:Static DocumentPane:Settings_KeyGestures.Default}, Path=Keyboard_ToggleTextOnly, Mode=OneWay}"
+                ToolTip="{Binding Source={x:Static DocumentPane:Settings_KeyGestures.Default}, Path=Keyboard_ToggleSinglePhraseView, Mode=OneWay}"
                 Margin="3"
                  VerticalAlignment="Center"
-   IsChecked="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView, Mode=TwoWay}"
+   IsChecked="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_SinglePhraseView, Mode=TwoWay}"
         Click="OnMouseClickCheckBox"
-        />
+        />-->
 
       <!--<Separator/>
       <CheckBox Content="Narrator view"

@@ -82,5 +82,30 @@ namespace Tobi.Common {
                 this["WpfSoftwareRender"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("img,caption,video,doctitle,docauthor,pagenum,hd,h1,h2,h3,h4,h5,h6,p,lic,li,dd,dt," +
+            "quote,td,th,a,sent,span,")]
+        public string TextSyncGranularity {
+            get {
+                return ((string)(this["TextSyncGranularity"]));
+            }
+            set {
+                this["TextSyncGranularity"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool EnableTextSyncGranularity {
+            get {
+                return ((bool)(this["EnableTextSyncGranularity"]));
+            }
+            set {
+                this["EnableTextSyncGranularity"] = value;
+            }
+        }
     }
 }

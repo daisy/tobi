@@ -35,8 +35,5 @@
     <Setting Name="Skippables" Type="System.String" Scope="User">
       <Value Profile="(Default)">pagenum,linenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,note,noteref,</Value>
     </Setting>
-    <Setting Name="TextSyncGranularity" Type="System.String" Scope="User">
-      <Value Profile="(Default)">img,caption,video,doctitle,docauthor,pagenum,hd,h1,h2,h3,h4,h5,h6,p,lic,li,dd,dt,quote,td,th,a,sent,span,</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

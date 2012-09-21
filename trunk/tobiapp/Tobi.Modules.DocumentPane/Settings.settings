@@ -25,7 +25,7 @@
     <Setting Name="Document_UseDottedSelect" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="Document_ShowTextOnlyView" Type="System.Boolean" Scope="User">
+    <Setting Name="Document_SinglePhraseView" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Document_TextOnlyAlign" Type="System.Windows.TextAlignment" Scope="User">
