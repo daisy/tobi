@@ -527,9 +527,38 @@ m_Stream.Length);
                                                                                     TreeNodeSelectionChangedEvent.
                                                                                         THREAD_OPTION);
 
-                EventAggregator.GetEvent<EscapeEvent>().Subscribe(OnEscape, EscapeEvent.THREAD_OPTION);
+                EventAggregator.GetEvent<EscapeEvent>().Subscribe(
+                    OnEscape,
+                    EscapeEvent.THREAD_OPTION);
             }
         }
+
+        private void OnEscape(object obj)
+        {
+            OnStopPlayMonitorRecord();
+        }
+
+        private void OnInterruptAudioPlayerRecorder()
+        {
+            if (!TheDispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action)OnInterruptAudioPlayerRecorder);
+                return;
+            }
+
+            IsAutoPlay = false;
+
+            if (View != null)
+            {
+                View.CancelWaveFormLoad(false);
+            }
+
+            InterruptAudioPlayerRecorder();
+        }
+
 
         private void OnStopPlayMonitorRecord()
         {
@@ -569,27 +598,6 @@ m_Stream.Length);
             }
         }
 
-        private void OnEscape(object obj)
-        {
-            if (!TheDispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object>)OnEscape, obj);
-                return;
-            }
-
-            IsAutoPlay = false;
-
-            if (View != null)
-            {
-                View.CancelWaveFormLoad(false);
-            }
-
-            InterruptAudioPlayerRecorder();
-        }
-
         private bool m_InterruptRecording;
         public void InterruptAudioPlayerRecorder()
         {
@@ -613,6 +621,7 @@ m_Stream.Length);
 #endif
                 m_RecordAndContinue = false;
                 m_InterruptRecording = true;
+
                 CommandStopRecord.Execute();
                 return;
             }

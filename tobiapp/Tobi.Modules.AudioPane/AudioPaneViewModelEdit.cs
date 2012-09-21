@@ -323,7 +323,7 @@ namespace Tobi.Plugin.AudioPane
 
                     bool isAutoPlay = IsAutoPlay;
 
-                    OnEscape(null); //  CHANGES IsAutoPlay to FALSE
+                    OnInterruptAudioPlayerRecorder(); //  CHANGES IsAutoPlay to FALSE
                     //CommandPause.Execute();
 
                     TreeNode nested;
@@ -381,10 +381,10 @@ namespace Tobi.Plugin.AudioPane
 
                     CommandDeleteAudioSelection.Execute();
                     //CutCommand.Execute();
-                    OnEscape(null);
+                    OnInterruptAudioPlayerRecorder();
 
                     m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
-                    OnEscape(null);
+                    OnInterruptAudioPlayerRecorder();
 
                     Tuple<TreeNode, TreeNode> treeNodeSelectionNew = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode treeNodeNew = treeNodeSelectionNew.Item2 ?? treeNodeSelectionNew.Item1;
@@ -406,7 +406,7 @@ namespace Tobi.Plugin.AudioPane
                     // pasted audio should be selected at this point, so playback only this audio selection
                     if (isAutoPlay)
                     {
-                        OnEscape(null);
+                        OnInterruptAudioPlayerRecorder();
                         IsAutoPlay = true;
                         CommandPlay.Execute();
                     }
