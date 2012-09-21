@@ -284,6 +284,8 @@ namespace Tobi.Plugin.AudioPane
                 () =>
                 {
                     Logger.Log("AudioPaneViewModel.CommandStartMonitor", Category.Debug, Priority.Medium);
+                    
+                    m_RecordAndContinue_StopBytePos = -1; // to avoid display of m_RecordAndContinue time stamp
 
                     IsAutoPlay = false;
 

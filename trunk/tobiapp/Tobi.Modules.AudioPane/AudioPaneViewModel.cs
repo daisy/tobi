@@ -1425,7 +1425,7 @@ m_Stream.Length);
             get
             {
 #if !DISABLE_SINGLE_RECORD_FILE
-                if (m_RecordAndContinue_StopBytePos >= 0) //m_RecordAndContinue
+                if (m_RecordAndContinue_StopBytePos >= 0) // m_RecordAndContinue && 
                 {
                     return (long)m_Recorder.CurrentDurationBytePosition - m_RecordAndContinue_StopBytePos;
                 }
