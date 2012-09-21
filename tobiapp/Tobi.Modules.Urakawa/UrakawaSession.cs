@@ -647,8 +647,10 @@ namespace Tobi.Plugin.Urakawa
         private List<string> m_TextSyncGranularityElements;
         public TreeNode AdjustTextSyncGranularity(TreeNode node, TreeNode upperLimit)
         {
-            if (!Tobi.Common.Settings.Default.EnableTextSyncGranularity ||
-                node == null || !node.HasXmlProperty)
+            if (!Tobi.Common.Settings.Default.EnableTextSyncGranularity
+                || node == null
+                || !node.HasXmlProperty
+                || node.GetAudioMedia() != null)
             {
                 return null;
             }
