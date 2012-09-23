@@ -158,7 +158,7 @@
     AllowDrop="True"
     HorizontalScrollBarVisibility="Disabled"
                                           KeyboardNavigation.TabNavigation="Continue"
-   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ShowTextOnlyView,
+   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_SinglePhraseView,
               Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
          
           Margin="0,0,0,0"
