@@ -124,7 +124,10 @@ namespace Tobi.Plugin.AudioPane
                                                            PopupModalWindow.DialogButton.Close,
                                                            true, 420, 180, null, 0,null);
                     windowPopup.EnableEnterKeyDefault = true;
-                    windowPopup.ShowFloating(null);
+                    windowPopup.ShowFloating(()=>
+                        {
+                            m_SpeechSynthesizer.SpeakAsyncCancelAll();
+                        });
                 },
                 () => true,
                 Settings_KeyGestures.Default,

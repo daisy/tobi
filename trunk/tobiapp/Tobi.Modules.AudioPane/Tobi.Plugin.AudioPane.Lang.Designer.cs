@@ -1060,6 +1060,24 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Speak.
+        /// </summary>
+        public static string Speak {
+            get {
+                return ResourceManager.GetString("Speak", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is text to speech, the name of this synthetic voice is: .
+        /// </summary>
+        public static string Speak_SampleText {
+            get {
+                return ResourceManager.GetString("Speak_SampleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total: .
         /// </summary>
         public static string TotalDuration {

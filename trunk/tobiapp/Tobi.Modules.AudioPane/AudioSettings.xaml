@@ -14,6 +14,7 @@
   <Grid.ColumnDefinitions>
     <ColumnDefinition Width="Auto"/>
     <ColumnDefinition Width="*"/>
+    <ColumnDefinition Width="Auto"/>
   </Grid.ColumnDefinitions>
   
   <Grid.RowDefinitions>
@@ -27,9 +28,9 @@
                  Grid.Row="0" Grid.Column="0"
                  Focusable="True" Margin="6, 0, 6, 0"
                Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Playback}"/>
-  <ComboBox
-                  VerticalAlignment="Top"  HorizontalAlignment="Stretch"
-    Grid.Row="0" Grid.Column="1"
+      <ComboBox
+                      VerticalAlignment="Top"  HorizontalAlignment="Stretch"
+        Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
     ItemsSource="{Binding OutputDevices, Mode=OneWay}"
             SelectedItem="{Binding OutputDevice, Mode=TwoWay}"
             
@@ -84,7 +85,7 @@
                Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Recording}"/>
   <ComboBox
                   VerticalAlignment="Top"  HorizontalAlignment="Stretch"
-    Grid.Row="1" Grid.Column="1"
+    Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
     ItemsSource="{Binding InputDevices, Mode=OneWay}"
               SelectedItem="{Binding InputDevice, Mode=TwoWay}"
               SelectedValuePath="Name"
@@ -133,6 +134,7 @@
              Focusable="True"  Margin="6, 0, 6, 0" 
              Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_TTS}"/>
   <ComboBox
+    x:Name="ComboTTSVoices"
                   VerticalAlignment="Top"  HorizontalAlignment="Stretch"
     Grid.Row="2" Grid.Column="1"
     ItemsSource="{Binding TTSVoices, Mode=OneWay}"
@@ -176,5 +178,15 @@
   </ComboBox>
 
 
+  <Button
+    x:Name="ButtonTTSVoices"
+                VerticalAlignment="Center"  HorizontalAlignment="Right"
+  Grid.Row="2" Grid.Column="2"
+                Focusable="True"  Margin="6, 0, 0, 0"
+                Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.Speak}"
+                Click="OnClick_ButtonSpeak"
+                >
+    
+  </Button>
 
 </Grid>

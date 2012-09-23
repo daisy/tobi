@@ -549,6 +549,13 @@ namespace Tobi.Common.UI
             {
                 ContentPlaceHolder.Content = null;
                 DetailsPlaceHolder.Content = null;
+
+                if (m_whenDoneAction != null)
+                {
+                    m_whenDoneAction.Invoke();
+                    m_whenDoneAction = null;
+                }
+
                 return;
             }
 
