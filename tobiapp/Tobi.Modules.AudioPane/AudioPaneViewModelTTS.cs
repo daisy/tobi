@@ -26,6 +26,11 @@ namespace Tobi.Plugin.AudioPane
             PcmFormat = pcmFormat;
             OutputDirectory = outputDirectory;
             SpeechSynthesizer = speechSynthesizer;
+
+            {
+                var currentSpeechSynthesizer = new SpeechSynthesizer();
+                SpeechSynthesizer.Rate = currentSpeechSynthesizer.Rate;
+            }
         }
 
         public string GeneratedAudioFilePath
@@ -158,7 +163,7 @@ namespace Tobi.Plugin.AudioPane
                 manualResetEvent = null;
 
                 SpeechSynthesizer.SetOutputToNull(); // TTS flush buffers
-                SpeechSynthesizer.Speak("null"); // TTS flush buffers
+                //SpeechSynthesizer.Speak("null"); // TTS flush buffers
                 //manualResetEvent.WaitOne();
 
                 GeneratedAudioFilePath = filePath;
