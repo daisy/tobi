@@ -131,7 +131,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
                 updateTreeNodeAudioStatus(childTreeNode);
             }
 
-            if (!bTreeNodeNeedsAudio(node))
+            if (!NoAudioContentFoundByFlowDocumentParserEvent.TreeNodeNeedsAudio(node))
             {
                 return;
             }
@@ -221,6 +221,11 @@ namespace Tobi.Plugin.Validator.MissingAudio
                 var command = (TreeNodeAudioStreamDeleteCommand)cmd;
                 updateTreeNodeAudioStatus(command.SelectionData.m_TreeNode);
             }
+            else if (cmd is TreeNodeChangeTextCommand)
+            {
+                var command = (TreeNodeChangeTextCommand)cmd;
+                updateTreeNodeAudioStatus(command.TreeNode);
+            }
             else if (cmd is CompositeCommand)
             {
                 foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_Enumerable)
@@ -242,7 +247,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
         private void OnNoAudioContentFoundByFlowDocumentParserEvent(TreeNode treeNode)
         {
-            DebugFix.Assert(bTreeNodeNeedsAudio(treeNode));
+            DebugFix.Assert(NoAudioContentFoundByFlowDocumentParserEvent.TreeNodeNeedsAudio(treeNode));
             DebugFix.Assert(!treeNode.HasOrInheritsAudio());
 
             var error = new MissingAudioValidationError(m_Session)
@@ -256,46 +261,6 @@ namespace Tobi.Plugin.Validator.MissingAudio
         public override bool Validate()
         {
             return IsValid;
-        }
-
-        private static bool bTreeNodeNeedsAudio(TreeNode node)
-        {
-            if (node.HasXmlProperty)
-            {
-                string localName = node.GetXmlElementLocalName();
-                bool isMath = localName.Equals("math", StringComparison.OrdinalIgnoreCase);
-
-                if (!isMath
-                    && node.GetXmlNamespaceUri() == DiagramContentModelHelper.NS_URL_MATHML)
-                {
-                    return false;
-                }
-
-                if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
-                     || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
-                     || isMath
-                    )
-                {
-                    if (!isMath)
-                    {
-                        DebugFix.Assert(node.Children.Count == 0);
-                    }
-                    return true;
-                }
-
-                if (localName.Equals("svg", StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-            }
-
-            if (node.GetTextMedia() != null)
-            {
-                DebugFix.Assert(node.Children.Count == 0);
-                return true;
-            }
-
-            return false;
         }
     }
 }
