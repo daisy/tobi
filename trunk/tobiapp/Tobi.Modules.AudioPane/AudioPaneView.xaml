@@ -1186,7 +1186,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <TextBlock
                  Focusable="True" VerticalAlignment="Center"
                  Text="{Binding RecordPlayPreviewString, Mode=OneWay}"
-
+MouseUp="OnMouseUp_RecordPlayPreview"
+KeyUp="OnKeyUp_RecordPlayPreview"
                  />
 
       <TextBlock
@@ -1197,7 +1198,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <TextBlock
                  Focusable="True" VerticalAlignment="Center"
                  Text="{Binding IsAutoPlayString, Mode=OneWay}"
-
+MouseUp="OnMouseUp_AutoPlay"
+KeyUp="OnKeyUp_AutoPlay"
                  />
 
       <TextBlock
@@ -1274,7 +1276,10 @@ Value="{StaticResource DisabledForegroundBrush}"/>
       <TextBlock
                  Focusable="True"
         FontWeight="Normal"
-        VerticalAlignment="Center" Text="{Binding TotalSessionAudioDurationString, Mode=OneWay}"/>
+        VerticalAlignment="Center" Text="{Binding TotalSessionAudioDurationString, Mode=OneWay}"
+      MouseUp="OnMouseUp_TotalSession"
+KeyUp="OnKeyUp_TotalSession"
+      />
     
     </StackPanel>
       
