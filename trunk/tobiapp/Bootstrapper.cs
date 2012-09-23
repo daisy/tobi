@@ -542,13 +542,16 @@ namespace Tobi
             {
                 ExceptionHandler.Handle(ex, false, shell);
             }
-            try
+            if (false)
             {
-                Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(ContentDocumentValidatorPlugin))));
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler.Handle(ex, false, shell);
+                try
+                {
+                    Container.RegisterFallbackCatalog(new AssemblyCatalog(Assembly.GetAssembly(typeof(ContentDocumentValidatorPlugin))));
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Handle(ex, false, shell);
+                }
             }
             try
             {
