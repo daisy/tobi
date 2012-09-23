@@ -1774,5 +1774,55 @@ namespace Tobi.Plugin.AudioPane
         {
             BringIntoFocus();
         }
+
+        private void OnMouseUp_RecordPlayPreview(object sender, MouseButtonEventArgs e)
+        {
+            //Settings.Default.Audio_EnablePlayPreviewBeforeRecord = !Settings.Default.Audio_EnablePlayPreviewBeforeRecord;
+            m_ViewModel.CommandTogglePlayPreviewBeforeRecord.Execute();
+        }
+
+        private void OnKeyUp_RecordPlayPreview(object sender, KeyEventArgs e)
+        {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            if (key == Key.Return)
+            {
+                OnMouseUp_RecordPlayPreview(null, null);
+            }
+        }
+
+
+        private void OnMouseUp_AutoPlay(object sender, MouseButtonEventArgs e)
+        {
+            //m_ViewModel.IsAutoPlay = !m_ViewModel.IsAutoPlay;
+            m_ViewModel.CommandAutoPlay.Execute();
+        }
+
+        private void OnKeyUp_AutoPlay(object sender, KeyEventArgs e)
+        {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            if (key == Key.Return)
+            {
+                OnMouseUp_AutoPlay(null, null);
+            }
+        }
+
+
+        private void OnMouseUp_TotalSession(object sender, MouseButtonEventArgs e)
+        {
+            //m_ViewModel.TotalSessionAudioDurationInLocalUnits = 0;
+            m_ViewModel.CommandResetSessionCounter.Execute();
+        }
+
+        private void OnKeyUp_TotalSession(object sender, KeyEventArgs e)
+        {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            if (key == Key.Return)
+            {
+                OnMouseUp_TotalSession(null, null);
+            }
+        }
     }
 }
