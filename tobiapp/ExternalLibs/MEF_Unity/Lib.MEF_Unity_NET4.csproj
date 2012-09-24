@@ -95,8 +95,8 @@
       <Name>Lib.Unity2_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\MEF\Lib.MEF_NET4.csproj">
-      <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
-      <Name>Lib.MEF</Name>
+      <Project>{a36aef66-2411-4225-b68e-f2d29368a31b}</Project>
+      <Name>Lib.MEF_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\ServiceLocation\Lib.ServiceLocation_NET4.csproj">
       <Project>{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}</Project>

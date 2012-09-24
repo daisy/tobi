@@ -95,12 +95,12 @@
       <Name>Lib.ServiceLocation_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\Composite.Presentation\Lib.Composite.Presentation_NET4.csproj">
-      <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
-      <Name>Lib.Composite.Presentation</Name>
+      <Project>{a957d686-369a-4ffd-b8ec-0611741c9e41}</Project>
+      <Name>Lib.Composite.Presentation_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\Composite\Lib.Composite_NET4.csproj">
-      <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
-      <Name>Lib.Composite</Name>
+      <Project>{77138947-1d13-4e22-aee0-5d0dd046ca34}</Project>
+      <Name>Lib.Composite_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\Unity2\Lib.Unity2_NET4.csproj">
       <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
