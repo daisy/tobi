@@ -131,7 +131,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
                 updateTreeNodeAudioStatus(childTreeNode);
             }
 
-            if (!NoAudioContentFoundByFlowDocumentParserEvent.TreeNodeNeedsAudio(node))
+            if (!node.NeedsAudio())
             {
                 return;
             }
@@ -247,7 +247,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
         private void OnNoAudioContentFoundByFlowDocumentParserEvent(TreeNode treeNode)
         {
-            DebugFix.Assert(NoAudioContentFoundByFlowDocumentParserEvent.TreeNodeNeedsAudio(treeNode));
+            DebugFix.Assert(treeNode.NeedsAudio());
             DebugFix.Assert(!treeNode.HasOrInheritsAudio());
 
             var error = new MissingAudioValidationError(m_Session)

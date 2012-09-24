@@ -2151,7 +2151,7 @@ namespace Tobi.Plugin.DocumentPane
                 findAndUpdateTreeNodeAudioStatus(childTreeNode);
             }
 
-            if (!NoAudioContentFoundByFlowDocumentParserEvent.TreeNodeNeedsAudio(node))
+            if (!node.NeedsAudio())
             {
                 return;
             }

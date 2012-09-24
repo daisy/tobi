@@ -222,7 +222,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         if (initial
                             && treeNodeSelection.Item1 != null && treeNodeSelection.Item1.Parent != null
-                            && !TreeNode.atLeastOneSiblingIsSignificantTextOnly(treeNodeSelection.Item1.Parent))
+                            && !treeNodeSelection.Item1.Parent.AtLeastOneSiblingIsSignificantTextOnly())
                         {
                             adjustedNode = treeNodeSelection.Item1;
                         }
