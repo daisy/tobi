@@ -589,7 +589,7 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            if (NoAudioContentFoundByFlowDocumentParserEvent.TreeNodeNeedsAudio(node))
+            if (node.NeedsAudio())
             {
                 DebugFix.Assert(!node.HasOrInheritsAudio());
 
@@ -632,7 +632,7 @@ namespace Tobi.Plugin.DocumentPane
 
             SetForegroundColorAndCursorBasedOnTreeNodeTag(data, true);
 
-            if (NoAudioContentFoundByFlowDocumentParserEvent.TreeNodeNeedsAudio(node))
+            if (node.NeedsAudio())
             {
                 if (!node.HasOrInheritsAudio())
                 {
