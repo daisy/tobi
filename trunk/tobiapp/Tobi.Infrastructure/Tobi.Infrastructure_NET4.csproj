@@ -76,12 +76,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tobi.Common\Tobi.Common_NET4.csproj">
-      <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
-      <Name>Tobi.Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="xaml-icons\Add.xaml">
       <SubType>Designer</SubType>
     </Resource>
@@ -2119,6 +2113,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tobi.Common\Tobi.Common_NET4.csproj">
+      <Project>{3c21bb69-0f81-47d2-88e6-e4c08ad1460b}</Project>
+      <Name>Tobi.Common_NET4</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

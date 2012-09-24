@@ -132,36 +132,36 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib_NET4.csproj">
-      <Project>{6EE8E00A-DB7C-41A7-BC66-527CB4C08D83}</Project>
-      <Name>AudioLib</Name>
+      <Project>{6ee8e00a-db7c-41a7-bc66-527cb4c08d83}</Project>
+      <Name>AudioLib_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\audio\NAudio\NAudio_NET4.csproj">
-      <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
-      <Name>NAudio</Name>
+      <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
+      <Name>NAudio_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core_NET4.csproj">
-      <Project>{7CCD52F9-C801-4C2B-AA9D-B7E217F307A0}</Project>
-      <Name>UrakawaSDK.core</Name>
+      <Project>{7ccd52f9-c801-4c2b-aa9d-b7e217f307a0}</Project>
+      <Name>UrakawaSDK.core_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy_NET4.csproj">
-      <Project>{69E083B4-AC97-4416-B7D4-61DEBA8A910D}</Project>
-      <Name>UrakawaSDK.daisy</Name>
+      <Project>{69e083b4-ac97-4416-b7d4-61deba8a910d}</Project>
+      <Name>UrakawaSDK.daisy_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation_NET4.csproj">
-      <Project>{A957D686-369A-4FFD-B8EC-0611741C9E41}</Project>
-      <Name>Lib.Composite.Presentation</Name>
+      <Project>{a957d686-369a-4ffd-b8ec-0611741c9e41}</Project>
+      <Name>Lib.Composite.Presentation_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite_NET4.csproj">
-      <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
-      <Name>Lib.Composite</Name>
+      <Project>{77138947-1d13-4e22-aee0-5d0dd046ca34}</Project>
+      <Name>Lib.Composite_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\ExternalLibs\MEF\Lib.MEF_NET4.csproj">
-      <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
-      <Name>Lib.MEF</Name>
+      <Project>{a36aef66-2411-4225-b68e-f2d29368a31b}</Project>
+      <Name>Lib.MEF_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tobi.Common\Tobi.Common_NET4.csproj">
-      <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
-      <Name>Tobi.Common</Name>
+      <Project>{3c21bb69-0f81-47d2-88e6-e4c08ad1460b}</Project>
+      <Name>Tobi.Common_NET4</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

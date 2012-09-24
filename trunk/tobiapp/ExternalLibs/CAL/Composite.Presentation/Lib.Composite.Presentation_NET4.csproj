@@ -177,8 +177,8 @@
       <Name>Lib.ServiceLocation_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\Composite\Lib.Composite_NET4.csproj">
-      <Project>{77138947-1D13-4E22-AEE0-5D0DD046CA34}</Project>
-      <Name>Lib.Composite</Name>
+      <Project>{77138947-1d13-4e22-aee0-5d0dd046ca34}</Project>
+      <Name>Lib.Composite_NET4</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
