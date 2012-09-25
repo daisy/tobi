@@ -197,6 +197,9 @@
     <Content Include="libexpatw.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="mathml-fallback-transform.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Obi-to-XUK2.xsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
