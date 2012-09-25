@@ -480,7 +480,7 @@ namespace Tobi.Plugin.AudioPane
 #endif
 
 
-        internal void openFile(String str, bool insert, bool deleteAfterInsert, PCMFormatInfo pcmInfo)
+        internal bool? openFile(String str, bool insert, bool deleteAfterInsert, PCMFormatInfo pcmInfo)
         {
             Logger.Log("AudioPaneViewModel.OpenFile", Category.Debug, Priority.Medium);
 
@@ -490,18 +490,67 @@ namespace Tobi.Plugin.AudioPane
 
             if (String.IsNullOrEmpty(filePath) && View != null)
             {
-                filePath = View.OpenFileDialog();
+                string[] filePaths = View.OpenFileDialog();
+
+                if (filePaths == null || filePaths.Length == 0)
+                {
+                    filePath = null;
+                }
+                else if (filePaths.Length == 1 || !insert)
+                {
+                    filePath = filePaths[0];
+                }
+                else
+                {
+                    DebugFix.Assert(insert);
+
+                    bool? ok = true;
+
+                    if (false) // reverse insert
+                    {
+                        for (int i = filePaths.Length - 1; i >= 0; i--)
+                        {
+                            string path = filePaths[i];
+
+                            ok = openFile(path, insert, deleteAfterInsert, pcmInfo);
+                            if (ok == null) // cancelled
+                            {
+                                break;
+                            }
+
+                            CommandClearSelection.Execute();
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < filePaths.Length; i++)
+                        {
+                            string path = filePaths[i];
+
+                            ok = openFile(path, insert, deleteAfterInsert, pcmInfo);
+                            if (ok == null) // cancelled
+                            {
+                                break;
+                            }
+
+                            CommandClearSelection.Execute();
+                            CommandGotoEnd.Execute();
+                        }
+                    }
+
+                    return ok;
+                }
             }
 
             if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
             {
-                return;
+                return false;
             }
 
             string ext = Path.GetExtension(filePath);
             if (string.IsNullOrEmpty(ext))
             {
-                return;
+                return false;
             }
 
             bool isWav = ext.Equals(DataProviderFactory.AUDIO_WAV_EXTENSION, StringComparison.OrdinalIgnoreCase);
@@ -572,13 +621,13 @@ namespace Tobi.Plugin.AudioPane
                     if (cancelled)
                     {
                         DebugFix.Assert(!result);
-                        return;
+                        return null;
                     }
 
                     filePath = converter.ConvertedFilePath;
                     if (string.IsNullOrEmpty(filePath))
                     {
-                        return;
+                        return false;
                     }
 
                     Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, filePath),
@@ -635,14 +684,18 @@ namespace Tobi.Plugin.AudioPane
                 if (managedAudioMedia.Duration.AsTimeSpan.TotalMilliseconds > 140)
                 {
                     insertAudioAtCursorOrSelectionReplace(managedAudioMedia);
+
+                    return true;
                 }
                 else
                 {
                     Console.WriteLine(@"audio clip too short to be inserted ! " + managedAudioMedia.Duration.AsLocalUnits / AudioLibPCMFormat.TIME_UNIT + @"ms");
-                }
 
-                return;
+                    return false;
+                }
             }
+
+
 
             if (AudioPlaybackStreamKeepAlive)
             {
@@ -676,13 +729,13 @@ namespace Tobi.Plugin.AudioPane
                 if (cancelled)
                 {
                     DebugFix.Assert(!result);
-                    return;
+                    return null;
                 }
 
                 filePath = converter.ConvertedFilePath;
                 if (string.IsNullOrEmpty(filePath))
                 {
-                    return;
+                    return false;
                 }
 
                 Logger.Log(string.Format("Converted audio {0} to {1}", originalFilePath, filePath),
@@ -704,6 +757,8 @@ namespace Tobi.Plugin.AudioPane
             //RaisePropertyChanged(() => State.Audio.PcmFormat);
 
             AudioPlayer_LoadAndPlayFromFile(filePath);
+
+            return true;
         }
 
         private void insertAudioAtCursorOrSelectionReplace(ManagedAudioMedia manMedia)

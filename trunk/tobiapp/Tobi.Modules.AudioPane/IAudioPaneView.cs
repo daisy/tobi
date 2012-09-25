@@ -25,7 +25,7 @@
         void TimeMessageShow();
         void ShowHideWaveFormLoadingMessage(bool visible);
         void ResetWaveFormEmpty();
-        string OpenFileDialog();
+        string[] OpenFileDialog();
         double BytesPerPixel { get; set; }
         void StopWaveFormTimer();
         void StartWaveFormTimer();
