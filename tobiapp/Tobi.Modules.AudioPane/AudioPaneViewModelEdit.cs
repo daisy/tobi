@@ -504,6 +504,12 @@ namespace Tobi.Plugin.AudioPane
                 {
                     DebugFix.Assert(insert);
 
+                    bool audioCues = Tobi.Common.Settings.Default.EnableAudioCues;
+                    Tobi.Common.Settings.Default.EnableAudioCues = false;
+
+                    long selectionBegin = -1;
+                    long selectionEnd = -1;
+
                     bool? ok = true;
 
                     if (false) // reverse insert
@@ -518,11 +524,13 @@ namespace Tobi.Plugin.AudioPane
                                 break;
                             }
 
-                            CommandClearSelection.Execute();
+                            //TODO adjust selection and playback cursor
                         }
                     }
                     else
                     {
+                        IsAutoPlay = false;
+
                         for (int i = 0; i < filePaths.Length; i++)
                         {
                             string path = filePaths[i];
@@ -533,11 +541,50 @@ namespace Tobi.Plugin.AudioPane
                                 break;
                             }
 
+                            if (selectionBegin == -1)
+                            {
+                                if (State.Selection.SelectionBeginBytePosition >= 0)
+                                {
+                                    selectionBegin = State.Selection.SelectionBeginBytePosition;
+                                }
+                                else
+                                {
+                                    selectionBegin = 0;
+                                }
+                            }
+
+                            if (State.Selection.SelectionBeginBytePosition >= 0 && State.Selection.SelectionEndBytePosition > 0)
+                            {
+                                PlayBytePosition = State.Selection.SelectionEndBytePosition;
+                            }
+                            else
+                            {
+                                DebugFix.Assert(false);
+                                CommandGotoEnd.Execute();
+                            }
+
+                            selectionEnd = PlayBytePosition;
+
                             CommandClearSelection.Execute();
-                            CommandGotoEnd.Execute();
                         }
                     }
 
+                    if (selectionBegin >= 0 && selectionEnd > 0)
+                    {
+                        State.Selection.SetSelectionBytes(selectionBegin, selectionEnd);
+                    }
+                    else
+                    {
+                        DebugFix.Assert(false);
+                        CommandSelectAll.Execute();
+                    }
+
+                    if (State.Selection.SelectionBeginBytePosition >= 0 && State.Selection.SelectionEndBytePosition > 0)
+                    {
+                        PlayBytePosition = State.Selection.SelectionEndBytePosition;
+                    }
+
+                    Tobi.Common.Settings.Default.EnableAudioCues = audioCues;
                     return ok;
                 }
             }
@@ -684,6 +731,18 @@ namespace Tobi.Plugin.AudioPane
                 if (managedAudioMedia.Duration.AsTimeSpan.TotalMilliseconds > 140)
                 {
                     insertAudioAtCursorOrSelectionReplace(managedAudioMedia);
+
+                    IsAutoPlay = false;
+
+                    if (State.Selection.SelectionBeginBytePosition >= 0 && State.Selection.SelectionEndBytePosition > 0)
+                    {
+                        PlayBytePosition = State.Selection.SelectionEndBytePosition;
+                    }
+                    else
+                    {
+                        DebugFix.Assert(false);
+                        CommandGotoEnd.Execute();
+                    }
 
                     return true;
                 }
