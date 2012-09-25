@@ -181,6 +181,7 @@ namespace Tobi.Plugin.AudioPane
                 new[]
                  {
                      m_AudioPaneViewModel.CommandInsertFile,
+                     m_AudioPaneViewModel.CommandEditWavExternally,
                      m_AudioPaneViewModel.CommandGenTTS,
                      m_AudioPaneViewModel.CommandResetSessionCounter
                  });

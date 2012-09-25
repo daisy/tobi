@@ -192,6 +192,15 @@
   <data name="CmdSplit_LongDesc" xml:space="preserve">
     <value>Split the audio at the playback cursor</value>
   </data>
+  <data name="OpenFileExplorer" xml:space="preserve">
+    <value>Open file explorer</value>
+  </data>
+  <data name="CmdAudioEditExternally_ShortDesc" xml:space="preserve">
+    <value>Edit audio externally</value>
+  </data>
+  <data name="CmdAudioEditExternally_LongDesc" xml:space="preserve">
+    <value>Extract the selected audio waveform into a single WAV file, so you can edit with an external tool (just press 'ok' to re-import into the Tobi project).</value>
+  </data>
   <data name="CmdAudioDelete_ShortDesc" xml:space="preserve">
     <value>_Delete selected audio</value>
   </data>
@@ -241,10 +250,10 @@
     <value>Create audio for the selected text using a Text To Speech synthesizer</value>
   </data>
   <data name="CmdAudioInsertFile_ShortDesc" xml:space="preserve">
-    <value>_Import audio file</value>
+    <value>_Import audio file(s)</value>
   </data>
   <data name="CmdAudioInsertFile_LongDesc" xml:space="preserve">
-    <value>Import a local audio file</value>
+    <value>Import local audio file(s)</value>
   </data>
   <data name="CmdAudioOpenFile_ShortDesc" xml:space="preserve">
     <value>_Open audio file</value>

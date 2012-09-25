@@ -187,6 +187,24 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Extract the selected audio waveform into a single WAV file, so you can edit with an external tool (just press &apos;ok&apos; to re-import into the Tobi project)..
+        /// </summary>
+        public static string CmdAudioEditExternally_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioEditExternally_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit audio externally.
+        /// </summary>
+        public static string CmdAudioEditExternally_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioEditExternally_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to End audio waveform selection.
         /// </summary>
         public static string CmdAudioEndSelection_LongDesc {
@@ -313,7 +331,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import a local audio file.
+        ///   Looks up a localized string similar to Import local audio file(s).
         /// </summary>
         public static string CmdAudioInsertFile_LongDesc {
             get {
@@ -322,7 +340,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Import audio file.
+        ///   Looks up a localized string similar to _Import audio file(s).
         /// </summary>
         public static string CmdAudioInsertFile_ShortDesc {
             get {
@@ -975,6 +993,15 @@ namespace Tobi.Plugin.AudioPane {
         public static string NoDocument {
             get {
                 return ResourceManager.GetString("NoDocument", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open file explorer.
+        /// </summary>
+        public static string OpenFileExplorer {
+            get {
+                return ResourceManager.GetString("OpenFileExplorer", resourceCulture);
             }
         }
         

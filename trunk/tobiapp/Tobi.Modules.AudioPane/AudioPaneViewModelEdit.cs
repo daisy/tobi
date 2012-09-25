@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
+using System.Windows.Controls;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
+using Tobi.Common.UI;
 using urakawa.command;
 using urakawa.core;
 using urakawa.daisy.import;
@@ -22,6 +25,8 @@ namespace Tobi.Plugin.AudioPane
     {
         // non-public feature, unless you know the keyboard shortcut
         public RichDelegateCommand CommandOpenFile { get; private set; }
+
+        public RichDelegateCommand CommandEditWavExternally { get; private set; }
 
         public RichDelegateCommand CommandInsertFile { get; private set; }
         public RichDelegateCommand CommandGenTTS { get; private set; }
@@ -311,6 +316,168 @@ namespace Tobi.Plugin.AudioPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Delete));
 
             m_ShellView.RegisterRichCommand(CommandDeleteAudioSelection);
+            //
+            //
+            CommandEditWavExternally = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioEditExternally_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioEditExternally_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("software-update-available"), //mail-send-receive
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandEditWavExternally", Category.Debug, Priority.Medium);
+
+                    IsAutoPlay = false;
+
+                    if (!IsSelectionSet)
+                    {
+                        CommandSelectAll.Execute();
+                    }
+
+                    ManagedAudioMedia clipboard = AudioClipboard; // backup
+
+                    CopyCommand.Execute();
+
+                    ManagedAudioMedia selectedAudio = AudioClipboard;
+
+                    AudioClipboard = clipboard; // restore
+
+                    if (selectedAudio == null || !selectedAudio.HasActualAudioMediaData)
+                    {
+                        return;
+                    }
+
+                    DataProvider dataProvider = ((WavAudioMediaData)selectedAudio.AudioMediaData).ForceSingleDataProvider(false);
+                    //foreach (var dataProvider in selectedAudio.AudioMediaData.UsedDataProviders)
+                    //{
+
+
+                    //dataProvider.ExportDataStreamToFile(destinationPath, true);
+                    //File.Copy(fullPath, destinationPath);
+
+                    var dataFolderPath = selectedAudio.Presentation.DataProviderManager.DataFileDirectoryFullPath;
+
+                    string fullPath = ((FileDataProvider)dataProvider).DataFileFullPath;
+
+                    string destinationFolder = Path.Combine(dataFolderPath, Path.GetFileNameWithoutExtension(fullPath) + Path.DirectorySeparatorChar);
+                    if (!Directory.Exists(destinationFolder))
+                    {
+                        FileDataProvider.CreateDirectory(destinationFolder);
+                    }
+
+                    string destinationFile = Path.Combine(destinationFolder, Path.GetFileName(fullPath));
+                    if (File.Exists(destinationFile))
+                    {
+                        File.Delete(destinationFile);
+                    }
+
+                    ((FileDataProvider)dataProvider).DeleteByMovingToFolder(destinationFolder);
+
+
+
+                    var details = new TextBoxReadOnlyCaretVisible
+                    {
+                        FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                        BorderThickness = new Thickness(1),
+                        Padding = new Thickness(6),
+                        TextReadOnly = Tobi_Plugin_AudioPane_Lang.CmdAudioEditExternally_LongDesc
+                    };
+
+                    var label = new TextBlock
+                    {
+                        Text = Path.GetFileName(destinationFile),
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("software-update-available"), m_ShellView.MagnificationLevel);
+
+                    var panel = new StackPanel
+                    {
+                        Orientation = Orientation.Horizontal,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                    };
+                    panel.Children.Add(iconProvider.IconLarge);
+                    panel.Children.Add(label);
+                    panel.Margin = new Thickness(0, 0, 0, 16);
+
+                    var button = new Button()
+                        {
+                            Content = Tobi_Plugin_AudioPane_Lang.OpenFileExplorer
+                        };
+                    //button.FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"];
+                    button.Click += (s, e) =>
+                    {
+                        m_ShellView.ExecuteShellProcess(destinationFolder);
+                    };
+
+                    var panel2 = new StackPanel
+                    {
+                        Orientation = Orientation.Vertical,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Top,
+                    };
+                    panel2.Children.Add(panel);
+                    panel2.Children.Add(button);
+
+                    //var details = new TextBoxReadOnlyCaretVisible
+                    //                  {
+                    //    TextReadOnly = Tobi_Lang.ExitConfirm
+                    //};
+
+                    var windowPopup = new PopupModalWindow(m_ShellView,
+                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_AudioPane_Lang.CmdAudioEditExternally_ShortDesc),
+                                                           panel2,
+                                                           PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                           PopupModalWindow.DialogButton.Ok,
+                                                           true, 300, 180, details, 40, null);
+
+                    windowPopup.ShowModal();
+
+                    if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+                    {
+                        if (File.Exists(destinationFile))
+                        {
+                            //var pcmFormat = m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+                            //pcmFormat = selectedAudio.AudioMediaData.PCMFormat;
+                            openFile(destinationFile, true, false, null);
+                        }
+                    }
+
+                    if (false) // will be cleaned-up at cleanup stage.
+                    {
+                        if (File.Exists(destinationFile))
+                        {
+                            File.Delete(destinationFile);
+                        }
+                        if (Directory.Exists(destinationFolder))
+                        {
+                            FileDataProvider.DeleteDirectory(destinationFolder);
+                        }
+                    }
+
+                    //    break;
+                    //}
+                },
+                () =>
+                {
+                    return !IsWaveFormLoading
+                        && !IsPlaying
+                        && (!IsMonitoring || IsMonitoringAlways)
+                        && !IsRecording
+                         && State.Audio.PlayStreamMarkers != null
+                        //&& IsSelectionSet
+                         && State.Audio.HasContent;
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Edit_Audio_Externally));
+
+            m_ShellView.RegisterRichCommand(CommandEditWavExternally);
             //
             CommandSplitShift = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdSplit_ShortDesc,

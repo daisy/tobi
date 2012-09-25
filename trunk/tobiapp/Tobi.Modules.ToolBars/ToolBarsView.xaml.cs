@@ -74,7 +74,7 @@ namespace Tobi.Plugin.ToolBars
                 Tobi_Plugin_ToolBars_Lang.CmdToolbarFocus_ShortDesc,
                 null,
                 null, // KeyGesture obtained from settings (see last parameters below)
-                m_ShellView.LoadTangoIcon("applications-accessories"),
+                m_ShellView.LoadTangoIcon("applications-other"),
                 () =>
                 {
                     if (FocusCollapsed.IsVisible)

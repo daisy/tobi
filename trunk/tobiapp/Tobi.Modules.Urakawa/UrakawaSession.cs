@@ -319,7 +319,9 @@ namespace Tobi.Plugin.Urakawa
 
             var dataFolderPath = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
 
-            var deletedDataFolderPath = Path.Combine(dataFolderPath, "__DELETED" + Path.DirectorySeparatorChar);
+            const string DELETED = "__DELETED";
+
+            var deletedDataFolderPath = Path.Combine(dataFolderPath, DELETED + Path.DirectorySeparatorChar);
             if (!Directory.Exists(deletedDataFolderPath))
             {
                 FileDataProvider.CreateDirectory(deletedDataFolderPath);
@@ -394,7 +396,7 @@ namespace Tobi.Plugin.Urakawa
 
                 if (interactive)
                 {
-                    if (Directory.GetFiles(deletedDataFolderPath).Length != 0)
+                    if (Directory.GetFiles(deletedDataFolderPath).Length != 0 || Directory.GetDirectories(deletedDataFolderPath).Length != 0)
                     {
                         folderIsShowing = true;
 
@@ -416,9 +418,39 @@ namespace Tobi.Plugin.Urakawa
                     }
                 }
 
+                string normalised_deletedDataFolderPath = Path.GetFullPath(deletedDataFolderPath);
+
+                foreach (string dirPath in Directory.GetDirectories(dataFolderPath
+                    //, "*", SearchOption.TopDirectoryOnly
+                    ))
+                {
+                    string normalised_dirPath = Path.GetFullPath(dirPath) + Path.DirectorySeparatorChar;
+
+                    if (normalised_dirPath == normalised_deletedDataFolderPath
+                        || dirPath.EndsWith(DELETED))
+                    {
+                        continue;
+                    }
+                    var dirPathDest = Path.Combine(deletedDataFolderPath, Path.GetFileName(dirPath));
+                    DebugFix.Assert(!File.Exists(dirPathDest));
+                    if (!File.Exists(dirPathDest))
+                    {
+                        Directory.Move(normalised_dirPath, dirPathDest);
+                    }
+
+                    //try
+                    //{
+                    //    FileDataProvider.DeleteDirectory(dirPath);
+                    //}
+                    //catch
+                    //{
+                    //    m_Logger.Log(@"FileDataProvider.DeleteDirectory!!" + dirPath, Category.Debug, Priority.Medium);
+                    //}
+                }
+
                 if (interactive)
                 {
-                    if (!folderIsShowing && Directory.GetFiles(deletedDataFolderPath).Length != 0)
+                    if (!folderIsShowing && (Directory.GetFiles(deletedDataFolderPath).Length != 0 || Directory.GetDirectories(deletedDataFolderPath).Length != 0))
                     {
                         m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
                     }
