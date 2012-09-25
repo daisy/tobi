@@ -502,6 +502,9 @@ Value="{StaticResource DisabledForegroundBrush}"/>
             <UI:MenuItemRichCommand RichCommand="{Binding CommandZoomFitFull}" x:Name="CommandZoomFitFull"/>
             <UI:MenuItemRichCommand RichCommand="{Binding CommandZoomSelection}" x:Name="CommandZoomSelection"/>
             
+            <Separator/>
+            <UI:MenuItemRichCommand RichCommand="{Binding CommandEditWavExternally}" x:Name="CommandEditWavExternally"/>
+            
             <!--<Separator/>
             <UI:MenuItemRichCommand RichCommand="{Binding CommandRefresh}"/>-->
 

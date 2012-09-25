@@ -457,6 +457,10 @@ namespace Tobi.Plugin.AudioPane
             InvalidateVisual();
         }
 
+        private const int MOUSE_GRAB_OFFSET = 2;
+        public TreeNodeAndStreamDataLength m_markerLeftMouseGrab = null;
+        public TreeNodeAndStreamDataLength m_markerRightMouseGrab = null;
+
         public void drawChunkInfos(DrawingContext drawingContext,
             double hoffset, double heightAvailable, double widthAvailable, double bytesPerPixel
             , ScaleTransform trans)
@@ -473,6 +477,10 @@ namespace Tobi.Plugin.AudioPane
                 double pixelsLeft = 0;
                 double pixelsRight = 0;
                 double widthChunk = 0;
+
+                m_markerLeftMouseGrab = null;
+                m_markerRightMouseGrab = null;
+
 #if USE_NORMAL_LIST
                 foreach (TreeNodeAndStreamDataLength marker in m_AudioPaneViewModel.State.Audio.PlayStreamMarkers)
                 {
@@ -487,6 +495,25 @@ namespace Tobi.Plugin.AudioPane
                         break;
                     }
 
+
+                    //if (m_MousePosX >= 0)
+                    //{
+                    //    //long timeInLocalUnits = m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.
+                    //    //    ConvertBytesToTime(
+                    //    //        m_AudioPaneViewModel.State.Audio.GetCurrentPcmFormat().Data.
+                    //    //            AdjustByteToBlockAlignFrameSize(
+                    //    //                (long) Math.Round(m_AudioPaneView.BytesPerPixel*(hoffset + m_MousePosX))));
+
+
+                    //    m_point1.X = m_MousePosX;
+                    //    m_point1.Y = 0;
+
+                    //    m_point2.X = m_MousePosX;
+                    //    m_point2.Y = heightAvailable;
+
+                    //    drawingContext.DrawLine(m_penTick, m_point1, m_point2);
+                    //}
+
                     if (pixelsLeft > hoffset)
                     {
                         m_point1.X = pixelsLeft - hoffset;
@@ -494,6 +521,23 @@ namespace Tobi.Plugin.AudioPane
                         m_point1.Y = 0;
                         m_point2.Y = heightAvailable;
                         drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+
+                        if (m_MousePosX > 0
+                            && m_MousePosX > m_point1.X - MOUSE_GRAB_OFFSET
+                            && m_MousePosX < m_point1.X + MOUSE_GRAB_OFFSET)
+                        {
+                            m_markerLeftMouseGrab = marker;
+
+                            double p1X = m_point1.X;
+
+                            m_point1.X = p1X - MOUSE_GRAB_OFFSET;
+                            m_point2.X = m_point1.X;
+                            drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+
+                            m_point1.X = p1X + MOUSE_GRAB_OFFSET;
+                            m_point2.X = m_point1.X;
+                            drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+                        }
                     }
 
                     pixelsRight = (sumData + marker.m_LocalStreamDataLength) / bytesPerPixel;
@@ -505,6 +549,23 @@ namespace Tobi.Plugin.AudioPane
                         m_point1.Y = 0;
                         m_point2.Y = heightAvailable;
                         drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+
+                        if (m_MousePosX > 0
+                            && m_MousePosX > m_point1.X - MOUSE_GRAB_OFFSET
+                            && m_MousePosX < m_point1.X + MOUSE_GRAB_OFFSET)
+                        {
+                            m_markerRightMouseGrab = marker;
+
+                            double p1X = m_point1.X;
+
+                            m_point1.X = p1X - MOUSE_GRAB_OFFSET;
+                            m_point2.X = m_point1.X;
+                            drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+
+                            m_point1.X = p1X + MOUSE_GRAB_OFFSET;
+                            m_point2.X = m_point1.X;
+                            drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+                        }
                     }
 
 
