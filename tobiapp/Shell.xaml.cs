@@ -496,6 +496,8 @@ namespace Tobi
 
         public void DimBackgroundWhile(Action action, Window owner)
         {
+            RaiseEscapeEvent();
+
             var aLayer = AdornerLayer.GetAdornerLayer((Visual)owner.Content);
 
             var theAdorner = new DimAdorner((UIElement)owner.Content);

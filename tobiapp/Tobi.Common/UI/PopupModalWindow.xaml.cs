@@ -204,10 +204,10 @@ namespace Tobi.Common.UI
                 this.Cursor = Cursors.Wait;
             }
 
-            if (ShellView != null)
-            {
-                ShellView.RaiseEscapeEvent();
-            }
+            //if (ShellView != null)
+            //{
+            //    ShellView.RaiseEscapeEvent();
+            //}
 
             ensureVisible();
 

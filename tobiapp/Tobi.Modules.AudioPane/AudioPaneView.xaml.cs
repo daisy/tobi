@@ -741,12 +741,13 @@ namespace Tobi.Plugin.AudioPane
 
         public double BytesPerPixel { get; set; }
 
-        public string OpenFileDialog()
+        public string[] OpenFileDialog()
         {
             m_Logger.Log("AudioPaneView.OpenFileDialog", Category.Debug, Priority.Medium);
 
             var dlg = new OpenFileDialog
             {
+                Multiselect = true,
                 FileName = "",
                 DefaultExt = DataProviderFactory.AUDIO_WAV_EXTENSION,
                 Filter = @"WAV, MP3, MP4 (*" + DataProviderFactory.AUDIO_WAV_EXTENSION + ", *" + DataProviderFactory.AUDIO_MP3_EXTENSION + ", *" + DataProviderFactory.AUDIO_MP4_EXTENSION + ")|*" + DataProviderFactory.AUDIO_WAV_EXTENSION + ";*" + DataProviderFactory.AUDIO_MP3_EXTENSION + ";*" + DataProviderFactory.AUDIO_MP4_EXTENSION,
@@ -766,7 +767,7 @@ namespace Tobi.Plugin.AudioPane
                 return null;
             }
 
-            return dlg.FileName;
+            return dlg.FileNames;
         }
 
 #if DRAW_EMPTY_IMAGE
