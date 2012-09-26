@@ -532,11 +532,11 @@ namespace Tobi.Plugin.AudioPane
 
                             m_point1.X = p1X - MOUSE_GRAB_OFFSET;
                             m_point2.X = m_point1.X;
-                            drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+                            drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
                             m_point1.X = p1X + MOUSE_GRAB_OFFSET;
                             m_point2.X = m_point1.X;
-                            drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+                            drawingContext.DrawLine(m_penTick, m_point1, m_point2);
                         }
                     }
 
@@ -560,11 +560,11 @@ namespace Tobi.Plugin.AudioPane
 
                             m_point1.X = p1X - MOUSE_GRAB_OFFSET;
                             m_point2.X = m_point1.X;
-                            drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+                            drawingContext.DrawLine(m_penTick, m_point1, m_point2);
 
                             m_point1.X = p1X + MOUSE_GRAB_OFFSET;
                             m_point2.X = m_point1.X;
-                            drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
+                            drawingContext.DrawLine(m_penTick, m_point1, m_point2);
                         }
                     }
 

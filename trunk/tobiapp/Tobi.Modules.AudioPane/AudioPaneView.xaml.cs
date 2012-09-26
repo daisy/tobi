@@ -490,17 +490,17 @@ namespace Tobi.Plugin.AudioPane
                 if (m_WaveFormTimeTicksAdorner.m_markerLeftMouseGrab != null
                     || m_WaveFormTimeTicksAdorner.m_markerRightMouseGrab != null)
                 {
-                    if (e.LeftButton == MouseButtonState.Pressed)
-                    {
-                        WaveFormCanvas.Cursor = Cursors.SizeWE;
-                    }
-                    else
-                    {
-                        WaveFormCanvas.Cursor = Cursors.ScrollWE;
-                    }
+                    //if (e.LeftButton == MouseButtonState.Pressed)
+                    //{
+                    //    WaveFormCanvas.Cursor = Cursors.SizeWE;
+                    //}
+                    //else
+                    //{
+                    //    WaveFormCanvas.Cursor = Cursors.ScrollWE;
+                    //}
 
-                    m_ControlKeyWasDownAtLastMouseMove = isControlKeyDown();
-                    return;
+                    //m_ControlKeyWasDownAtLastMouseMove = isControlKeyDown();
+                    //return;
                 }
                 else
                 {
