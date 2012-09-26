@@ -228,10 +228,9 @@ namespace Tobi.Common.UI
             return renderBitmap; //renderBitmap.GetAsFrozen();
         }
 
-        public static ImageSource GetSVGImageSource(string svgXml)
+        public static ImageSource GetSVGImageSource(string svgXml, out Exception svgException)
         {
             ImageSource imageSource = null;
-
             try
             {
                 WpfDrawingSettings settings = new WpfDrawingSettings();
@@ -248,6 +247,7 @@ namespace Tobi.Common.UI
 
                         if (drawGroup != null)
                         {
+                            svgException = null;
                             return new DrawingImage(drawGroup);
                         }
                     }
@@ -255,8 +255,11 @@ namespace Tobi.Common.UI
             }
             catch (Exception e1)
             {
+                svgException = e1;
                 return null;
             }
+
+            svgException = null;
             return imageSource;
         }
 

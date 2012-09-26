@@ -599,9 +599,12 @@ namespace Tobi.Plugin.Urakawa
                 XsltExecutable exe = compiler.Compile(xmlReader);
                 xlstTransformer = exe.Load();
             }
-            catch
+            catch (Exception ex)
             {
                 xmlReader.Close();
+
+                consoleWrite(ex);
+
                 foreach (StaticError error in compiler.ErrorList)
                 {
                     Console.WriteLine("At line " + error.LineNumber + ": " + error.Message);
@@ -654,6 +657,22 @@ namespace Tobi.Plugin.Urakawa
 
                     initSaxonXslt(xslFilePath, out m_SaxonXslt_MathML_SVG);
                 }
+            }
+        }
+
+        private void consoleWrite(Exception ex)
+        {
+            if (ex.Message != null)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            if (ex.StackTrace != null)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            if (ex.InnerException != null)
+            {
+                consoleWrite(ex.InnerException);
             }
         }
 

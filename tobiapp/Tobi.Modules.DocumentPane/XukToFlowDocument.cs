@@ -1752,10 +1752,22 @@ namespace Tobi.Plugin.DocumentPane
                             {
                                 var svg = (string)obj;
 
-                                ImageSource imageSource = svg == null ? null : AutoGreyableImage.GetSVGImageSource(svg);
+                                Exception svgException = null;
+                                ImageSource imageSource = svg == null ? null : AutoGreyableImage.GetSVGImageSource(svg, out svgException);
                                 if (imageSource == null)
                                 {
+                                    //if (svg != null)
+                                    //{
+                                    //    Console.WriteLine(svg);
+                                    //}
+                                    //DebugFix.Assert(svg == xmlFragment);
+
                                     Console.WriteLine(@"Problem trying to load inline SVG: [" + xmlFragment + @"]");
+                                    if (svgException != null)
+                                    {
+                                        consoleWrite(svgException);
+                                    }
+
 #if DEBUG
                                     Debugger.Break();
 #endif //DEBUG
@@ -1796,6 +1808,21 @@ namespace Tobi.Plugin.DocumentPane
             //return data;
         }
 
+        private void consoleWrite(Exception ex)
+        {
+            if (ex.Message != null)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            if (ex.StackTrace != null)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            if (ex.InnerException != null)
+            {
+                consoleWrite(ex.InnerException);
+            }
+        }
 
         private TextElement walkBookTreeAndGenerateFlowDocument_MathML(TreeNode node, TextElement parent, string textMedia
             //, DelegateSectionInitializer initializer
@@ -2025,6 +2052,7 @@ namespace Tobi.Plugin.DocumentPane
                     catch (Exception ex)
                     {
                         svg_ = null;
+                        consoleWrite(ex);
                         //m_DocumentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
                         //                                          (DispatcherOperationCallback)delegate(object obj)
                         //                                                                           {
@@ -2037,10 +2065,22 @@ namespace Tobi.Plugin.DocumentPane
                             {
                                 var svg = (string)obj;
 
-                                ImageSource imageSource = svg == null ? null : AutoGreyableImage.GetSVGImageSource(svg);
+                                Exception svgException = null;
+                                ImageSource imageSource = svg == null ? null : AutoGreyableImage.GetSVGImageSource(svg, out svgException);
                                 if (imageSource == null)
                                 {
                                     Console.WriteLine(@"Problem trying to load inline MathML (svg): [" + xmlFragment + @"]");
+
+                                    if (svg != null)
+                                    {
+                                        Console.WriteLine(svg);
+                                    }
+
+                                    if (svgException != null)
+                                    {
+                                        consoleWrite(svgException);
+                                    }
+
 #if DEBUG
                                     Debugger.Break();
 #endif //DEBUG
