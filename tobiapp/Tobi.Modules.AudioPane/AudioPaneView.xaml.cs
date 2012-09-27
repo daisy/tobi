@@ -486,32 +486,31 @@ namespace Tobi.Plugin.AudioPane
             if (m_WaveFormTimeTicksAdorner != null)
             {
                 m_WaveFormTimeTicksAdorner.OnAdornerMouseMove(sender, e);
+            }
 
-                if (m_WaveFormTimeTicksAdorner.m_markerLeftMouseGrab != null
-                    || m_WaveFormTimeTicksAdorner.m_markerRightMouseGrab != null)
+            if (e.LeftButton != MouseButtonState.Pressed
+                && e.MiddleButton != MouseButtonState.Pressed
+                && e.RightButton != MouseButtonState.Pressed)
+            {
+                m_ControlKeyWasDownAtLastMouseMove = isControlKeyDown();
+                if (m_ControlKeyWasDownAtLastMouseMove)
                 {
-                    //if (e.LeftButton == MouseButtonState.Pressed)
-                    //{
-                    //    WaveFormCanvas.Cursor = Cursors.SizeWE;
-                    //}
-                    //else
-                    //{
-                    //    WaveFormCanvas.Cursor = Cursors.ScrollWE;
-                    //}
-
-                    //m_ControlKeyWasDownAtLastMouseMove = isControlKeyDown();
-                    //return;
+                    WaveFormCanvas.Cursor = m_WaveFormDragMoveCursor;
                 }
                 else
                 {
-                    //WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+                    if (m_WaveFormTimeTicksAdorner != null
+                        && (m_WaveFormTimeTicksAdorner.m_markerLeftMouseGrab != null
+                    || m_WaveFormTimeTicksAdorner.m_markerRightMouseGrab != null))
+                    {
+                        WaveFormCanvas.Cursor = Cursors.ScrollWE; //Cursors.SizeWE
+                    }
+                    else
+                    {
+                        WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
+                    }
                 }
-            }
-
-            if (e.LeftButton != MouseButtonState.Pressed && e.MiddleButton != MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
-            {
-                m_ControlKeyWasDownAtLastMouseMove = isControlKeyDown();
-                WaveFormCanvas.Cursor = m_ControlKeyWasDownAtLastMouseMove ? m_WaveFormDragMoveCursor : m_WaveFormDefaultCursor;
+                
                 return;
             }
 
