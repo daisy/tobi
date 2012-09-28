@@ -18,9 +18,11 @@ using Microsoft.Win32;
 using Tobi.Common;
 using Tobi.Common.UI;
 using Tobi.Common.UI.XAML;
+using urakawa.command;
 using urakawa.core;
 using urakawa.data;
 using urakawa.media.data.audio;
+using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -718,6 +720,9 @@ namespace Tobi.Plugin.AudioPane
 
                     if (pixelsGap > minGap)
                     {
+                        Tuple<TreeNode, TreeNode> treeNodeSelection = m_ViewModel.m_UrakawaSession.GetTreeNodeSelection();
+                        //TreeNode treeNode = (treeNodeSelection.Item2 ?? treeNodeSelection.Item1);
+
                         if (bytes_Grab < bytes_Mouse)
                         {
                             m_ViewModel.State.Selection.SetSelectionBytes(bytes_Grab, bytes_Mouse);
@@ -731,11 +736,60 @@ namespace Tobi.Plugin.AudioPane
                                 minGap = 10;
                                 if (pixelsGap > minGap)
                                 {
-                                    m_ViewModel.CutCommand.Execute();
-                                    long byteOffset =
-                                        m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(5 * AudioLibPCMFormat.TIME_UNIT);
-                                    m_ViewModel.PlayBytePosition = bytes_Grab - byteOffset;
-                                    m_ViewModel.PasteCommand.Execute();
+                                    if (false)
+                                    {
+                                        m_ViewModel.CutCommand.Execute();
+
+                                        long byteOffset =
+                                            m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(5 * AudioLibPCMFormat.TIME_UNIT);
+                                        m_ViewModel.PlayBytePosition = bytes_Grab - byteOffset;
+
+                                        m_ViewModel.PasteCommand.Execute();
+                                    }
+                                    else
+                                    {
+                                        m_ViewModel.CopyCommand.Execute();
+
+                                        var treeNodeTarget = m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right.m_TreeNode;
+
+                                        //m_ViewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0)
+                                        treeNodeTarget.Presentation.UndoRedoManager.StartTransaction("waveform re-sync", "mouse sync of waveform chunk");
+
+                                        m_ViewModel.CommandDeleteAudioSelection.Execute();
+
+                                        //OnInterruptAudioPlayerRecorder();
+                                        //m_ViewModel.CommandRefresh.Execute();
+
+
+                                        //long byteOffset = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(5 * AudioLibPCMFormat.TIME_UNIT);
+                                        //m_ViewModel.PlayBytePosition = bytes_Grab - byteOffset;
+
+                                        var manMedia = treeNodeTarget.GetAudioMedia() as ManagedAudioMedia;
+                                        DebugFix.Assert(manMedia != null);
+
+                                        Time dur = manMedia.AudioMediaData.AudioDuration;
+                                        long bytesDur = m_ViewModel.AudioClipboard.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(dur.AsLocalUnits);
+
+                                        Command command = treeNodeTarget.Presentation.CommandFactory.
+                                               CreateManagedAudioMediaInsertDataCommand(
+                                                   treeNodeTarget, m_ViewModel.AudioClipboard.Copy(),
+                                                   bytesDur,
+                                                   treeNodeSelection.Item1);
+
+                                        //if (m_ViewModel.AudioPlaybackStreamKeepAlive)
+                                        //{
+                                        //    m_ViewModel.ensurePlaybackStreamIsDead();
+                                        //}
+
+                                        treeNodeTarget.Presentation.UndoRedoManager.Execute(command);
+
+                                        //m_ViewModel.PasteCommand.Execute();
+
+                                        treeNodeTarget.Presentation.UndoRedoManager.EndTransaction();
+
+                                        m_ViewModel.PlayBytePosition = bytes_Grab;
+                                    }
+
                                     m_ViewModel.CommandClearSelection.Execute();
                                 }
                             }
@@ -753,9 +807,55 @@ namespace Tobi.Plugin.AudioPane
                                 minGap = 10;
                                 if (pixelsGap > minGap)
                                 {
-                                    m_ViewModel.CutCommand.Execute();
-                                    m_ViewModel.PlayBytePosition = bytes_Mouse;
-                                    m_ViewModel.PasteCommand.Execute();
+                                    if (false)
+                                    {
+                                        m_ViewModel.CutCommand.Execute();
+
+                                        m_ViewModel.PlayBytePosition = bytes_Mouse;
+
+                                        m_ViewModel.PasteCommand.Execute();
+                                    }
+                                    else
+                                    {
+                                        m_ViewModel.CopyCommand.Execute();
+                                        var treeNodeTarget = m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left.m_TreeNode;
+
+                                        //m_ViewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0)
+                                        treeNodeTarget.Presentation.UndoRedoManager.StartTransaction("waveform re-sync", "mouse sync of waveform chunk");
+
+                                        m_ViewModel.CommandDeleteAudioSelection.Execute();
+
+                                        //OnInterruptAudioPlayerRecorder();
+                                        //m_ViewModel.CommandRefresh.Execute();
+
+                                        //m_ViewModel.PlayBytePosition = bytes_Mouse;
+
+                                        var manMedia = treeNodeTarget.GetAudioMedia() as ManagedAudioMedia;
+                                        DebugFix.Assert(manMedia != null);
+
+                                        //Time dur = manMedia.AudioMediaData.AudioDuration;
+                                        //long bytesDur = m_ViewModel.AudioClipboard.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(dur.AsLocalUnits);
+
+                                        Command command = treeNodeTarget.Presentation.CommandFactory.
+                                               CreateManagedAudioMediaInsertDataCommand(
+                                                   treeNodeTarget, m_ViewModel.AudioClipboard.Copy(),
+                                                   0,
+                                                   treeNodeSelection.Item1);
+
+                                        //if (m_ViewModel.AudioPlaybackStreamKeepAlive)
+                                        //{
+                                        //    m_ViewModel.ensurePlaybackStreamIsDead();
+                                        //}
+
+                                        treeNodeTarget.Presentation.UndoRedoManager.Execute(command);
+
+                                        //m_ViewModel.PasteCommand.Execute();
+
+                                        treeNodeTarget.Presentation.UndoRedoManager.EndTransaction();
+
+                                        m_ViewModel.PlayBytePosition = bytes_Mouse;
+                                    }
+
                                     m_ViewModel.CommandClearSelection.Execute();
                                 }
                             }
