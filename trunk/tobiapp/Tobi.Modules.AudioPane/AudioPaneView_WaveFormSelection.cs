@@ -135,7 +135,7 @@ namespace Tobi.Plugin.AudioPane
             return WaveFormTimeSelectionRect.Width;
         }
 
-        private const double MIN_SELECTION_PIXELS = 6;
+        private const double MIN_SELECTION_PIXELS = 3;
 
         private void selectionFinished(double x)
         {

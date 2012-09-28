@@ -500,21 +500,26 @@ namespace Tobi.Plugin.AudioPane
                 else
                 {
                     if (m_WaveFormTimeTicksAdorner != null
-                        && (m_WaveFormTimeTicksAdorner.m_markerLeftMouseGrab != null
-                    || m_WaveFormTimeTicksAdorner.m_markerRightMouseGrab != null))
+                        && (m_WaveFormTimeTicksAdorner.m_marker_MouseOver_Left != null || m_WaveFormTimeTicksAdorner.m_marker_MouseOver_Right != null))
                     {
-                        WaveFormCanvas.Cursor = Cursors.ScrollWE; //Cursors.SizeWE
+                        WaveFormCanvas.Cursor = Cursors.ScrollWE;
                     }
                     else
                     {
                         WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
                     }
                 }
-                
+
                 return;
             }
 
             m_ControlKeyWasDownAtLastMouseMove = m_ControlKeyWasDownAtLastMouseMove || isControlKeyDown();
+
+            if (m_WaveFormTimeTicksAdorner != null
+                && (m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left != null || m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right != null))
+            {
+                return;
+            }
 
             Point p = e.GetPosition(WaveFormCanvas);
 
@@ -575,6 +580,8 @@ namespace Tobi.Plugin.AudioPane
 
             if (m_WaveFormTimeTicksAdorner != null)
             {
+                m_WaveFormTimeTicksAdorner.m_marker_MouseOver_Left = null;
+                m_WaveFormTimeTicksAdorner.m_marker_MouseOver_Right = null;
                 m_WaveFormTimeTicksAdorner.OnAdornerMouseLeave(sender, e);
             }
 
@@ -583,7 +590,14 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-            if (!m_ControlKeyWasDownAtLastMouseMove)
+            if (m_WaveFormTimeTicksAdorner != null
+                && (m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left != null || m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right != null))
+            {
+                m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left = null;
+                m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right = null;
+                m_WaveFormTimeTicksAdorner.OnAdornerMouseLeave(sender, e);
+            }
+            else if (!m_ControlKeyWasDownAtLastMouseMove)
             {
                 Point p = e.GetPosition(WaveFormCanvas);
 
@@ -602,11 +616,13 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnWaveFormMouseUp(object sender, MouseButtonEventArgs e)
         {
+            Point p = e.GetPosition(WaveFormCanvas);
+
             if (e.ChangedButton == MouseButton.Right)
             {
                 WaveFormCanvas.ContextMenu.PlacementTarget = WaveFormCanvas;
                 WaveFormCanvas.ContextMenu.Placement = PlacementMode.Bottom;
-                var p = e.GetPosition(WaveFormCanvas);
+
                 WaveFormCanvas.ContextMenu.PlacementRectangle = new Rect(p.X, p.Y, 2, 2);
                 WaveFormCanvas.ContextMenu.IsOpen = true;
                 return;
@@ -619,10 +635,140 @@ namespace Tobi.Plugin.AudioPane
             WaveFormCanvas.Cursor = m_WaveFormDefaultCursor;
             m_WaveFormDragX = -1;
 
-            if (!m_ControlKeyWasDownAtLastMouseMove)
-            {
-                Point p = e.GetPosition(WaveFormCanvas);
 
+            if (m_WaveFormTimeTicksAdorner != null &&
+                (m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left != null && m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right != null))
+            {
+                m_ViewModel.IsAutoPlay = false;
+
+                m_ViewModel.CommandClearSelection.Execute();
+
+                DebugFix.Assert(m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left_X == m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right_X);
+
+                long bytes_Mouse = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.AdjustByteToBlockAlignFrameSize((long)Math.Round(p.X * BytesPerPixel));
+
+                long bytes_Grab = -1;
+
+                //long bytes_LimitLeft = -1;
+                //long bytes_LimitRight = -1;
+
+                long bytesRight = 0;
+                long bytesLeft = 0;
+                int index = 0;
+
+#if USE_NORMAL_LIST
+                foreach (TreeNodeAndStreamDataLength marker in m_ViewModel.State.Audio.PlayStreamMarkers)
+                {
+#else
+                LightLinkedList<TreeNodeAndStreamDataLength>.Item current = m_ViewModel.State.Audio.PlayStreamMarkers.m_First;
+                while (current != null)
+                {
+                    TreeNodeAndStreamDataLength marker = current.m_data;
+#endif //USE_NORMAL_LIST
+
+                    index++;
+                    bytesRight += marker.m_LocalStreamDataLength;
+
+                    //if (byteOffset < bytesRight
+                    //|| index == (m_ViewModel.State.Audio.PlayStreamMarkers.Count - 1) && byteOffset >= bytesRight)
+                    //{
+                    //    treeNode = marker.m_TreeNode;
+
+                    //    return true;
+                    //}
+
+                    if (marker == m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right)
+                    {
+                        bytes_Grab = bytesRight;
+                        //bytes_LimitLeft = bytesLeft;
+#if !DEBUG
+                        break;
+#endif
+                    }
+
+#if DEBUG
+                    if (marker == m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left)
+                    {
+                        DebugFix.Assert(bytes_Grab >= 0);
+                        DebugFix.Assert(bytes_Grab == bytesLeft);
+
+                        //bytes_LimitRight = bytesRight;
+                    }
+#endif
+
+                    bytesLeft = bytesRight;
+
+#if USE_NORMAL_LIST
+                }
+#else
+                    current = current.m_nextItem;
+                }
+#endif //USE_NORMAL_LIST
+
+                if (bytes_Grab >= 0)
+                {
+                    long byteGap = Math.Abs(bytes_Grab - bytes_Mouse);
+
+                    double pixelsGap = (double)byteGap / BytesPerPixel;
+                    double minGap = 5; // *m_ShellView.MagnificationLevel;
+
+                    //long timeGap = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertBytesToTime(byteGap);
+                    ////double timeGapMS = (double)timeGap/AudioLibPCMFormat.TIME_UNIT;
+                    //long minGap = 200 * AudioLibPCMFormat.TIME_UNIT; //200ms
+
+                    if (pixelsGap > minGap)
+                    {
+                        if (bytes_Grab < bytes_Mouse)
+                        {
+                            m_ViewModel.State.Selection.SetSelectionBytes(bytes_Grab, bytes_Mouse);
+
+                            long bytesLimit = bytes_Grab +
+                                              m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left.m_LocalStreamDataLength;
+                            if (bytes_Mouse < bytesLimit)
+                            {
+                                byteGap = bytesLimit - bytes_Mouse;
+                                pixelsGap = (double)byteGap / BytesPerPixel;
+                                minGap = 10;
+                                if (pixelsGap > minGap)
+                                {
+                                    m_ViewModel.CutCommand.Execute();
+                                    long byteOffset =
+                                        m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(5 * AudioLibPCMFormat.TIME_UNIT);
+                                    m_ViewModel.PlayBytePosition = bytes_Grab - byteOffset;
+                                    m_ViewModel.PasteCommand.Execute();
+                                    m_ViewModel.CommandClearSelection.Execute();
+                                }
+                            }
+                        }
+                        else if (bytes_Grab > bytes_Mouse)
+                        {
+                            m_ViewModel.State.Selection.SetSelectionBytes(bytes_Mouse, bytes_Grab);
+
+                            long bytesLimit = bytes_Grab -
+                                              m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right.m_LocalStreamDataLength;
+                            if (bytes_Mouse > bytesLimit)
+                            {
+                                byteGap = bytes_Mouse - bytesLimit;
+                                pixelsGap = (double)byteGap / BytesPerPixel;
+                                minGap = 10;
+                                if (pixelsGap > minGap)
+                                {
+                                    m_ViewModel.CutCommand.Execute();
+                                    m_ViewModel.PlayBytePosition = bytes_Mouse;
+                                    m_ViewModel.PasteCommand.Execute();
+                                    m_ViewModel.CommandClearSelection.Execute();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left = null;
+                m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right = null;
+                m_WaveFormTimeTicksAdorner.OnAdornerMouseMove(sender, e);
+            }
+            else if (!m_ControlKeyWasDownAtLastMouseMove)
+            {
                 if (m_MouseClicks == 2)
                 {
                     Tuple<TreeNode, TreeNode> treeNodeSelection = m_ViewModel.m_UrakawaSession.GetTreeNodeSelection();
@@ -666,8 +812,16 @@ namespace Tobi.Plugin.AudioPane
 
         private uint m_MouseClicks = 0;
 
+
         private void OnWaveFormMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (m_WaveFormTimeTicksAdorner != null)
+            {
+                m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left = null;
+                m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right = null;
+                m_WaveFormTimeTicksAdorner.OnAdornerMouseMove(sender, e);
+            }
+
             BringIntoFocus();
 
             if (e.LeftButton != MouseButtonState.Pressed
@@ -696,9 +850,18 @@ namespace Tobi.Plugin.AudioPane
 
             m_ControlKeyWasDownAtLastMouseMove = m_ControlKeyWasDownAtLastMouseMove || isControlKeyDown();
 
-            WaveFormCanvas.Cursor = m_ControlKeyWasDownAtLastMouseMove ? m_WaveFormDragMoveCursor : m_WaveFormDefaultCursor;
+            WaveFormCanvas.Cursor =
+                (m_WaveFormTimeTicksAdorner != null && (m_WaveFormTimeTicksAdorner.m_marker_MouseOver_Left != null || m_WaveFormTimeTicksAdorner.m_marker_MouseOver_Right != null)) ?
+                Cursors.SizeWE :
+                (m_ControlKeyWasDownAtLastMouseMove ? m_WaveFormDragMoveCursor : m_WaveFormDefaultCursor);
 
-            if (m_ControlKeyWasDownAtLastMouseMove)
+            if (m_WaveFormTimeTicksAdorner != null && (m_WaveFormTimeTicksAdorner.m_marker_MouseOver_Left != null || m_WaveFormTimeTicksAdorner.m_marker_MouseOver_Right != null))
+            {
+                m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left = m_WaveFormTimeTicksAdorner.m_marker_MouseOver_Left;
+                m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right = m_WaveFormTimeTicksAdorner.m_marker_MouseOver_Right;
+                m_WaveFormTimeTicksAdorner.OnAdornerMouseMove(sender, e);
+            }
+            else if (m_ControlKeyWasDownAtLastMouseMove)
             {
                 m_WaveFormDragX = p.X;
             }

@@ -458,8 +458,15 @@ namespace Tobi.Plugin.AudioPane
         }
 
         private const int MOUSE_GRAB_OFFSET = 2;
-        public TreeNodeAndStreamDataLength m_markerLeftMouseGrab = null;
-        public TreeNodeAndStreamDataLength m_markerRightMouseGrab = null;
+
+        public TreeNodeAndStreamDataLength m_marker_MouseOver_Left = null;
+        public TreeNodeAndStreamDataLength m_marker_MouseOver_Right = null;
+
+        public TreeNodeAndStreamDataLength m_marker_MouseGrab_Left = null;
+        public TreeNodeAndStreamDataLength m_marker_MouseGrab_Right = null;
+
+        public double m_marker_MouseGrab_Left_X = -1;
+        public double m_marker_MouseGrab_Right_X = -1;
 
         public void drawChunkInfos(DrawingContext drawingContext,
             double hoffset, double heightAvailable, double widthAvailable, double bytesPerPixel
@@ -478,8 +485,8 @@ namespace Tobi.Plugin.AudioPane
                 double pixelsRight = 0;
                 double widthChunk = 0;
 
-                m_markerLeftMouseGrab = null;
-                m_markerRightMouseGrab = null;
+                m_marker_MouseOver_Left = null;
+                m_marker_MouseOver_Right = null;
 
 #if USE_NORMAL_LIST
                 foreach (TreeNodeAndStreamDataLength marker in m_AudioPaneViewModel.State.Audio.PlayStreamMarkers)
@@ -522,21 +529,41 @@ namespace Tobi.Plugin.AudioPane
                         m_point2.Y = heightAvailable;
                         drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
 
-                        if (m_MousePosX > 0
-                            && m_MousePosX > m_point1.X - MOUSE_GRAB_OFFSET
-                            && m_MousePosX < m_point1.X + MOUSE_GRAB_OFFSET)
+                        if (marker == m_marker_MouseGrab_Left)
                         {
-                            m_markerLeftMouseGrab = marker;
+                            m_marker_MouseGrab_Left_X = m_point1.X;
+                        }
 
-                            double p1X = m_point1.X;
+                        bool mouseMatch = m_MousePosX > 0
+                                          && m_MousePosX > m_point1.X - MOUSE_GRAB_OFFSET
+                                          && m_MousePosX < m_point1.X + MOUSE_GRAB_OFFSET;
+
+                        bool highlightMark = mouseMatch || marker == m_marker_MouseGrab_Left;
+                        if (highlightMark)
+                        {
+                            if (mouseMatch)
+                            {
+                                m_marker_MouseOver_Left = marker;
+                            }
+
+                            double pt1x = m_point1.X;
+
+                        highlightMark_1:
+                            double p1X = highlightMark ? pt1x : m_MousePosX;
 
                             m_point1.X = p1X - MOUSE_GRAB_OFFSET;
                             m_point2.X = m_point1.X;
-                            drawingContext.DrawLine(m_penTick, m_point1, m_point2);
+                            drawingContext.DrawLine(!highlightMark ? m_penPhrases : m_penTick, m_point1, m_point2);
 
                             m_point1.X = p1X + MOUSE_GRAB_OFFSET;
                             m_point2.X = m_point1.X;
-                            drawingContext.DrawLine(m_penTick, m_point1, m_point2);
+                            drawingContext.DrawLine(!highlightMark ? m_penPhrases : m_penTick, m_point1, m_point2);
+
+                            if (highlightMark && marker == m_marker_MouseGrab_Left)
+                            {
+                                highlightMark = false;
+                                goto highlightMark_1;
+                            }
                         }
                     }
 
@@ -550,21 +577,42 @@ namespace Tobi.Plugin.AudioPane
                         m_point2.Y = heightAvailable;
                         drawingContext.DrawLine(m_penPhrases, m_point1, m_point2);
 
-                        if (m_MousePosX > 0
-                            && m_MousePosX > m_point1.X - MOUSE_GRAB_OFFSET
-                            && m_MousePosX < m_point1.X + MOUSE_GRAB_OFFSET)
+                        if (marker == m_marker_MouseGrab_Right)
                         {
-                            m_markerRightMouseGrab = marker;
+                            m_marker_MouseGrab_Right_X = m_point1.X;
+                        }
 
-                            double p1X = m_point1.X;
+                        bool mouseMatch = m_MousePosX > 0
+                           && m_MousePosX > m_point1.X - MOUSE_GRAB_OFFSET
+                           && m_MousePosX < m_point1.X + MOUSE_GRAB_OFFSET;
+
+                        bool highlightMark = mouseMatch || marker == m_marker_MouseGrab_Right;
+
+                        if (highlightMark)
+                        {
+                            if (mouseMatch)
+                            {
+                                m_marker_MouseOver_Right = marker;
+                            }
+
+                            double pt1x = m_point1.X;
+
+                        highlightMark_2:
+                            double p1X = highlightMark ? pt1x : m_MousePosX;
 
                             m_point1.X = p1X - MOUSE_GRAB_OFFSET;
                             m_point2.X = m_point1.X;
-                            drawingContext.DrawLine(m_penTick, m_point1, m_point2);
+                            drawingContext.DrawLine(!highlightMark ? m_penPhrases : m_penTick, m_point1, m_point2);
 
                             m_point1.X = p1X + MOUSE_GRAB_OFFSET;
                             m_point2.X = m_point1.X;
-                            drawingContext.DrawLine(m_penTick, m_point1, m_point2);
+                            drawingContext.DrawLine(!highlightMark ? m_penPhrases : m_penTick, m_point1, m_point2);
+
+                            if (highlightMark && marker == m_marker_MouseGrab_Right)
+                            {
+                                highlightMark = false;
+                                goto highlightMark_2;
+                            }
                         }
                     }
 
