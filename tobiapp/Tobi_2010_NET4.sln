@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi_NET4", "Tobi_NET4.csproj", "{64F90229-5944-4DBB-96A0-0E09E6BF5997}"
 	ProjectSection(ProjectDependencies) = postProject
 		{17831F3B-6B82-4916-BD2B-2CE2071EA622} = {17831F3B-6B82-4916-BD2B-2CE2071EA622}
