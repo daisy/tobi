@@ -609,7 +609,7 @@ namespace Tobi.Plugin.AudioPane
                    ;
         }
 
-#if !DISABLE_SINGLE_RECORD_FILE
+
         internal void openFile(TreeNode treeNode, FileDataProvider dataProv, long byteBegin, long byteEnd, AudioLibPCMFormat pcmInfo, long pcmDataLength)
         {
             Logger.Log("AudioPaneViewModel.OpenFile_FileDataProvider", Category.Debug, Priority.Medium);
@@ -644,7 +644,7 @@ namespace Tobi.Plugin.AudioPane
                 Console.WriteLine(@"audio clip too short to be inserted ! " + managedAudioMedia.Duration.AsLocalUnits / AudioLibPCMFormat.TIME_UNIT + @"ms");
 
         }
-#endif
+
 
 
         internal bool? openFile(String str, bool insert, bool deleteAfterInsert, PCMFormatInfo pcmInfo)

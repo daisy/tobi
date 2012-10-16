@@ -613,12 +613,14 @@ m_Stream.Length);
             }
             if (IsRecording)
             {
-#if !DISABLE_SINGLE_RECORD_FILE
-                if (m_RecordAndContinue)
+                if (!Settings.Default.Audio_DisableSingleWavFileRecord)
                 {
-                    return;
+                    if (m_RecordAndContinue)
+                    {
+                        return;
+                    }
                 }
-#endif
+
                 m_RecordAndContinue = false;
                 m_InterruptRecording = true;
 
@@ -1426,12 +1428,14 @@ m_Stream.Length);
         {
             get
             {
-#if !DISABLE_SINGLE_RECORD_FILE
-                if (m_RecordAndContinue_StopBytePos >= 0) // m_RecordAndContinue && 
+                if (!Settings.Default.Audio_DisableSingleWavFileRecord)
                 {
-                    return (long)m_Recorder.CurrentDurationBytePosition - m_RecordAndContinue_StopBytePos;
+                    if (m_RecordAndContinue_StopBytePos >= 0) // m_RecordAndContinue && 
+                    {
+                        return (long)m_Recorder.CurrentDurationBytePosition - m_RecordAndContinue_StopBytePos;
+                    }
                 }
-#endif
+
                 return (long)m_Recorder.CurrentDurationBytePosition;
             }
         }
