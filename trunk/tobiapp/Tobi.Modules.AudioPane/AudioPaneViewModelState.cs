@@ -295,22 +295,26 @@ namespace Tobi.Plugin.AudioPane
                 EndOffsetOfPlayStream = -1;
                 PcmFormat = null;
 
-#if !DISABLE_SINGLE_RECORD_FILE
-                //DebugFix.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
-                if (m_viewModel != null
-                    && m_viewModel.m_RecordAndContinue
-                    && m_viewModel.m_UrakawaSession != null
-                    && m_viewModel.m_UrakawaSession.DocumentProject != null)
+                if (!Settings.Default.Audio_DisableSingleWavFileRecord)
                 {
-                    PcmFormatRecordingMonitoring = m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+                    //DebugFix.Assert(m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.EnforceSinglePCMFormat);
+                    if (m_viewModel != null
+                        && m_viewModel.m_RecordAndContinue
+                        && m_viewModel.m_UrakawaSession != null
+                        && m_viewModel.m_UrakawaSession.DocumentProject != null)
+                    {
+                        PcmFormatRecordingMonitoring =
+                            m_viewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat;
+                    }
+                    else
+                    {
+                        PcmFormatRecordingMonitoring = null;
+                    }
                 }
                 else
                 {
                     PcmFormatRecordingMonitoring = null;
                 }
-#else
-                PcmFormatRecordingMonitoring = null;
-#endif
 
 
 

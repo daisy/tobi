@@ -113,8 +113,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFMediaKit_NET4", "Externa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaxNET_NET4", "ExternalLibs\SaxNET\SaxNET_NET4.csproj", "{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpDX.DirectSound_NET4", "..\..\..\urakawa-sdk\trunk\csharp\audio\SharpDX.DirectSound\SharpDX.DirectSound_NET4.csproj", "{E927F2D5-8E27-462A-8687-CB207EE01164}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -629,18 +627,6 @@ Global
 		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.test|Any CPU.Build.0 = Release|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.Documentation|Any CPU.Build.0 = Debug|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.test|Any CPU.ActiveCfg = Release|Any CPU
-		{E927F2D5-8E27-462A-8687-CB207EE01164}.test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
