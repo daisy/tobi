@@ -86,7 +86,7 @@ namespace Tobi.Plugin.AudioPane
                     long begin = m_SelectionBeginTmpBytePosition;
                     long end = PlayBytePosition;
 
-                    //AudioCues.PlayTockTock();
+                    AudioCues.PlayTockTock();
 
                     if (begin == end)
                     {
@@ -149,7 +149,7 @@ namespace Tobi.Plugin.AudioPane
 
                     m_SelectionBeginTmpBytePosition = PlayBytePosition;
 
-                    //AudioCues.PlayTock();
+                    AudioCues.PlayTock();
                 },
                 () => CommandSelectLeft.CanExecute(),
                 //CommandSelectAll.CanExecute()

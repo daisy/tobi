@@ -1910,7 +1910,7 @@ m_Stream.Length);
         {
             if (e != null)
             {
-                if (false && !IsRecording)
+                if (IsMonitoring)
                 {
                     AudioCues.PlayHi();
                 }
