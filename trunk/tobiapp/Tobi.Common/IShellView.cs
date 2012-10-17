@@ -171,6 +171,12 @@ namespace Tobi.Common
             {
                 OSArch = getOSArchitectureLegacy();
             }
+            else
+            {
+#if NET40
+                DebugFix.Assert((OSArch == 64) == Environment.Is64BitOperatingSystem);
+#endif
+            }
             return os + " " + OSArch.ToString() + "-bit";
         }
 
@@ -281,12 +287,21 @@ namespace Tobi.Common
         private static int getOSArchitectureLegacy()
         {
             string pa = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
-            return ((String.IsNullOrEmpty(pa) || String.Compare(pa, 0, "x86", 0, 3, true) == 0) ? 32 : 64);
+
+            int bits = ((String.IsNullOrEmpty(pa) || String.Compare(pa, 0, "x86", 0, 3, true) == 0) ? 32 : 64);
+#if NET40
+            DebugFix.Assert((bits == 64) == Environment.Is64BitOperatingSystem);
+#endif
+            return bits;
         }
 
         private static bool IsRunning64()
         {
-            return IntPtr.Size == 8; //4 in x86 / 32 bits arch
+            bool is64 = IntPtr.Size == 8;
+#if NET40
+            DebugFix.Assert(is64 == Environment.Is64BitProcess);
+#endif
+            return is64; //4 in x86 / 32 bits arch
         }
     }
 
