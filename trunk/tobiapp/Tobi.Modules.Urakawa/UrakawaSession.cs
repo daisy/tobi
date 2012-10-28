@@ -418,13 +418,13 @@ namespace Tobi.Plugin.Urakawa
                     }
                 }
 
-                string normalised_deletedDataFolderPath = Path.GetFullPath(deletedDataFolderPath);
+                string normalised_deletedDataFolderPath = FileDataProvider.NormaliseFullFilePath(deletedDataFolderPath);
 
                 foreach (string dirPath in Directory.GetDirectories(dataFolderPath
                     //, "*", SearchOption.TopDirectoryOnly
                     ))
                 {
-                    string normalised_dirPath = Path.GetFullPath(dirPath) + Path.DirectorySeparatorChar;
+                    string normalised_dirPath = FileDataProvider.NormaliseFullFilePath(dirPath);
 
                     if (normalised_dirPath == normalised_deletedDataFolderPath
                         || dirPath.EndsWith(DELETED))
@@ -435,7 +435,7 @@ namespace Tobi.Plugin.Urakawa
                     DebugFix.Assert(!File.Exists(dirPathDest));
                     if (!File.Exists(dirPathDest))
                     {
-                        Directory.Move(normalised_dirPath, dirPathDest);
+                        Directory.Move(normalised_dirPath.Replace('/', '\\'), dirPathDest);
                     }
 
                     //try
