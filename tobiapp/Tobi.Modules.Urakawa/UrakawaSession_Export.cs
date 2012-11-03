@@ -9,6 +9,7 @@ using AudioLib;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI;
 using Tobi.Common.Validation;
+using urakawa;
 using urakawa.daisy.export;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -438,10 +439,22 @@ namespace Tobi.Plugin.Urakawa
         {
             m_Logger.Log(String.Format(@"UrakawaSession.doExport() [{0}]", path), Category.Debug, Priority.Medium);
 
-            var converter = new Daisy3_Export(DocumentProject.Presentations.Get(0), path, null,
-                Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
-                Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
-                IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions);
+            IDualCancellableProgressReporter converter = null;
+            Presentation pres = DocumentProject.Presentations.Get(0);
+            if (@"body".Equals(pres.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase))
+            {
+                converter = new Epub3_Export(pres, path,
+                     Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
+                     Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
+                     IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions);
+            }
+            else
+            {
+                converter = new Daisy3_Export(pres, path, null,
+                 Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
+                 Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
+                 IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions);
+            }
 
             m_ShellView.RunModalCancellableProgressTask(true,
                 Tobi_Plugin_Urakawa_Lang.Exporting,

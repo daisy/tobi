@@ -14,23 +14,19 @@ namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
-        private const string XUK_DIR = "_XUK"; // prepend with '_' so it appears at the top of the alphabetical sorting in the file explorer window
-
         private bool doImport()
         {
             m_Logger.Log(String.Format(@"UrakawaSession.doImport() [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
 
-            string outputDirectory = Path.Combine(Path.GetDirectoryName(DocumentFilePath),
-                                                    XUK_DIR
-                                                    + Path.DirectorySeparatorChar
-                                                    + Path.GetFileName(DocumentFilePath)
-                                                    + XUK_DIR);
+            string outputDirectory = Path.Combine(
+                Path.GetDirectoryName(DocumentFilePath),
+                Daisy3_Import.GetXukDirectory(DocumentFilePath));
 
             //string xukPath = Daisy3_Import.GetXukFilePath(outputDirectory, DocumentFilePath);
             //if (File.Exists(xukPath))
             if (Directory.Exists(outputDirectory))
             {
-                if (!askUserConfirmOverwriteFileFolder(outputDirectory, false, null))
+                if (!askUserConfirmOverwriteFileFolder(outputDirectory, true, null))
                 {
                     return false;
                 }
@@ -240,13 +236,74 @@ namespace Tobi.Plugin.Urakawa
             {
                 DebugFix.Assert(!cancelled);
 
-                if (string.IsNullOrEmpty(converter.XukPath)) return false;
+                string xukPath = converter.XukPath;
+
+                if (string.IsNullOrEmpty(xukPath))
+                {
+                    return false;
+                }
+
+                string projectDir = Path.GetDirectoryName(xukPath);
+                DebugFix.Assert(outputDirectory == projectDir);
+
+                string title = converter.GetTitle();
+                if (!string.IsNullOrEmpty(title))
+                {
+                    string fileName = Daisy3_Import.GetXukFilePath(projectDir, DocumentFilePath, title, false);
+                    fileName = Path.GetFileNameWithoutExtension(fileName);
+
+                    string parent = Path.GetDirectoryName(projectDir);
+
+                    //string fileName = Path.GetFileNameWithoutExtension(xukPath);
+
+                    ////while (fileName.StartsWith("_"))
+                    ////{
+                    ////    fileName = fileName.Substring(1, fileName.Length - 1);
+                    ////}
+
+                    //char[] chars = new char[] { '_' };
+                    //fileName = fileName.TrimStart(chars);
+
+
+                    string newProjectDir = Path.Combine(parent, fileName + Daisy3_Import.XUK_DIR);
+
+                    if (newProjectDir != projectDir)
+                    {
+                        bool okay = true;
+
+                        if (Directory.Exists(newProjectDir))
+                        {
+                            if (askUserConfirmOverwriteFileFolder(newProjectDir, true, null))
+                            {
+                                try
+                                {
+                                    FileDataProvider.DeleteDirectory(newProjectDir);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex.Message);
+                                    okay = false;
+                                }
+                            }
+                            else
+                            {
+                                okay = false;
+                            }
+                        }
+
+                        if (okay)
+                        {
+                            Directory.Move(projectDir, newProjectDir);
+                            xukPath = Path.Combine(newProjectDir, Path.GetFileName(xukPath));
+                        }
+                    }
+                }
 
                 DocumentFilePath = null;
                 DocumentProject = null;
                 try
                 {
-                    OpenFile(converter.XukPath);
+                    OpenFile(xukPath);
                 }
                 catch (Exception ex)
                 {
