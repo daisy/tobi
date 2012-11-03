@@ -479,7 +479,10 @@ namespace Tobi.Plugin.Urakawa
 
                 if (!hasXuk) continue;
 
-                string fullXukPath = Daisy3_Import.GetXukFilePath(rootDir, path, false);
+                //string title_ = Daisy3_Import.GetTitle(presentation);
+                //DebugFix.Assert(title_ == title);
+
+                string fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title);
                 if (!File.Exists(fullXukPath))
                 {
 #if DEBUG
