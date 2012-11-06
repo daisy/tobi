@@ -451,7 +451,7 @@ Background="{Binding
 
 
       <WrapPanel.Resources>
-        <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
+        <CollectionViewSource Source="{Binding Source={x:Static UI:FontsFix.SystemFontFamilies}}" x:Key="familyCollection"/>
       </WrapPanel.Resources>
 
       <TextBlock

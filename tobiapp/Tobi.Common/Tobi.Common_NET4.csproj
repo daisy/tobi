@@ -186,6 +186,7 @@
     <Compile Include="UI\FocusOutlineAdorner.cs" />
     <Compile Include="UI\DimAdorner.cs" />
     <Compile Include="UI\FocusHelper.cs" />
+    <Compile Include="UI\FontsFix.cs" />
     <Compile Include="UI\KeyGestureSinkBox.xaml.cs">
       <DependentUpon>KeyGestureSinkBox.xaml</DependentUpon>
     </Compile>
