@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -189,14 +190,32 @@ namespace Tobi.Plugin.Validator.Metadata
         {
             bool isValid = true;
 
-            //validate each item by itself
-            foreach (urakawa.metadata.Metadata metadata in m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
+            string name = m_Session.DocumentProject.Presentations.Get(0).RootNode.GetXmlElementLocalName();
+            bool isHTML = @"body".EndsWith(name, StringComparison.OrdinalIgnoreCase);
+
+#if DEBUG
+            bool isXukSpine = @"spine".EndsWith(name, StringComparison.OrdinalIgnoreCase);
+            DebugFix.Assert(isXukSpine == m_Session.IsXukSpine);
+
+            if (isHTML)
             {
-                if (!_validateItem(metadata))
-                    isValid = false;
+                DebugFix.Assert(m_Session.HasXukSpine);
             }
-            bool val = _validateAsSet();
-            isValid = isValid && val; //metadatas);
+#endif
+
+            if (!isHTML && !m_Session.IsXukSpine)
+            {
+                //validate each item by itself
+                foreach (
+                    urakawa.metadata.Metadata metadata in
+                        m_Session.DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
+                {
+                    if (!_validateItem(metadata))
+                        isValid = false;
+                }
+                bool val = _validateAsSet();
+                isValid = isValid && val; //metadatas);
+            }
 
             return isValid;
         }

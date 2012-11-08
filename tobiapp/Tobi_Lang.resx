@@ -211,7 +211,7 @@
     <value>Search for the previous item</value>
   </data>
   <data name="WindowsTitleKey_UrakawaSessionIsNotNull" xml:space="preserve">
-    <value>Tobi {{{0}}} {1}[{2}]</value>
+    <value>Tobi {{{0}}} {1} {2}</value>
   </data>
   <data name="WindowsTitleKey_UrakawaSessionIsNull" xml:space="preserve">
     <value>Tobi {{{{{{0}}}}}} - {0}</value>
