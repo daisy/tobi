@@ -515,8 +515,11 @@ namespace Tobi.Plugin.Urakawa
             string fileOnly = Path.GetFileName(currentProjectPath);
 
             string dir = Path.GetDirectoryName(currentProjectPath);
-            string[] files = Directory.GetFiles(dir, "*.xukspine");
-
+            string[] files = Directory.GetFiles(dir, "*.xukspine"
+#if NET40
+, SearchOption.TopDirectoryOnly
+#endif
+);
             foreach (var projectPath in files)
             {
                 Uri uri = new Uri(projectPath, UriKind.Absolute);
@@ -535,23 +538,23 @@ namespace Tobi.Plugin.Urakawa
                                                                           Tobi_Plugin_Urakawa_Lang.
                                                                               UrakawaOpenAction_ShortDesc, action,
                                                                           () =>
-                                                                              {
-                                                                                  cancelled = true;
-                                                                                  project = null;
-                                                                              },
+                                                                          {
+                                                                              cancelled = true;
+                                                                              project = null;
+                                                                          },
                                                                           () =>
-                                                                              {
-                                                                                  cancelled = false;
+                                                                          {
+                                                                              cancelled = false;
 
-                                                                                  if (project.Presentations.Count == 0)
-                                                                                  {
-                                                                                      Debug.Fail(
-                                                                                          "Project does not contain a Presentation !" +
-                                                                                          Environment.NewLine +
-                                                                                          uri.ToString());
-                                                                                      //workException = new XukException()
-                                                                                  }
+                                                                              if (project.Presentations.Count == 0)
+                                                                              {
+                                                                                  Debug.Fail(
+                                                                                      "Project does not contain a Presentation !" +
+                                                                                      Environment.NewLine +
+                                                                                      uri.ToString());
+                                                                                  //workException = new XukException()
                                                                               }
+                                                                          }
                     );
 
                 if (!result)

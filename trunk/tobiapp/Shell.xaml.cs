@@ -606,6 +606,8 @@ namespace Tobi
                 {
                     return String.Format(String.Format(Tobi_Lang.WindowsTitleKey_UrakawaSessionIsNull, Tobi_Lang.PleaseWait), ApplicationConstants.APP_VERSION);
                 }
+
+
                 return String.Format(Tobi_Lang.WindowsTitleKey_UrakawaSessionIsNotNull,
                     ApplicationConstants.APP_VERSION + ApplicationConstants.DOTNET_INFO
 #if DEBUG

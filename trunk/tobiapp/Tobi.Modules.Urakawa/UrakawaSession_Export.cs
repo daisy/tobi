@@ -14,6 +14,7 @@ using urakawa.daisy.export;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
+using urakawa.daisy.import;
 using urakawa.data;
 using CheckBox = System.Windows.Controls.CheckBox;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -410,7 +411,14 @@ namespace Tobi.Plugin.Urakawa
                         return;
                     }
 
-                    string exportFolderName = Path.GetFileName(DocumentFilePath) + "__EXPORT";
+                    string path = DocumentFilePath;
+                    //string title = Daisy3_Import.GetTitle(DocumentProject.Presentations.Get(0));
+                    //if (!string.IsNullOrEmpty(title))
+                    //{
+                    //    path = Daisy3_Import.GetXukFilePath(dlg.SelectedPath, DocumentFilePath, title, IsXukSpine);
+                    //}
+                    string exportFolderName = Path.GetFileName(path) + "_EXPORT";
+
                     string exportDir = Path.Combine(dlg.SelectedPath, exportFolderName);
 
                     if (Directory.Exists(exportDir))
@@ -428,29 +436,44 @@ namespace Tobi.Plugin.Urakawa
                     doExport(exportDir);
                 },
                 () => DocumentProject != null
-                && !IsXukSpine,
+                //&& !IsXukSpine
+                ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Export));
 
             m_ShellView.RegisterRichCommand(ExportCommand);
         }
 
-        private void doExport(string path)
+        private void doExport(string exportDirectory)
         {
-            m_Logger.Log(String.Format(@"UrakawaSession.doExport() [{0}]", path), Category.Debug, Priority.Medium);
+            m_Logger.Log(String.Format(@"UrakawaSession.doExport() [{0}]", exportDirectory), Category.Debug, Priority.Medium);
 
             IDualCancellableProgressReporter converter = null;
             Presentation pres = DocumentProject.Presentations.Get(0);
-            if (@"body".Equals(pres.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase))
+
+            bool isEPUB = IsXukSpine
+                          || @"body".Equals(pres.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase);
+
+            if (isEPUB)
             {
-                converter = new Epub3_Export(pres, path,
+#if DEBUG
+                if (IsXukSpine)
+                {
+                    DebugFix.Assert(@"spine".Equals(pres.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase));
+                }
+                else
+                {
+                    DebugFix.Assert(HasXukSpine);
+                }
+#endif
+                converter = new Epub3_Export(DocumentFilePath, pres, exportDirectory,
                      Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                      Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
                      IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions);
             }
             else
             {
-                converter = new Daisy3_Export(pres, path, null,
+                converter = new Daisy3_Export(pres, exportDirectory, null,
                  Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                  Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
                  IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions);
@@ -463,13 +486,20 @@ namespace Tobi.Plugin.Urakawa
                 {
                     m_Logger.Log(@"UrakawaSession-Daisy3_Export-CANCELED-ShowFolder", Category.Debug, Priority.Medium);
 
-                    m_ShellView.ExecuteShellProcess(path);
+                    m_ShellView.ExecuteShellProcess(exportDirectory);
                 },
                 () =>
                 {
                     m_Logger.Log(@"UrakawaSession-Daisy3_Export-DONE-ShowFolder", Category.Debug, Priority.Medium);
 
-                    m_ShellView.ExecuteShellProcess(path);
+                    if (false && isEPUB)
+                    {
+                        m_ShellView.ExecuteShellProcess(Path.GetDirectoryName(exportDirectory));
+                    }
+                    else
+                    {
+                        m_ShellView.ExecuteShellProcess(exportDirectory);
+                    }
                 });
         }
     }
