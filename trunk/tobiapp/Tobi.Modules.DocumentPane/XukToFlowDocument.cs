@@ -1745,7 +1745,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     Image image_ = (Image)o;
 
-                    string xmlFragment = node.GetXmlFragment();
+                    string xmlFragment = node.GetXmlFragment(true);
 
                     m_DocumentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
                             (DispatcherOperationCallback)delegate(object obj)
@@ -2043,7 +2043,7 @@ namespace Tobi.Plugin.DocumentPane
                     string svg_ = null;
                     try
                     {
-                        xmlFragment = node.GetXmlFragment();
+                        xmlFragment = node.GetXmlFragment(true);
                         //MessageBox.Show(xmlFragment);
 
                         svg_ = m_UrakawaSession.Convert_MathML_to_SVG(xmlFragment, null);
