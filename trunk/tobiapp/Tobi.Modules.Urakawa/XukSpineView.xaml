@@ -65,6 +65,8 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
         </DockPanel>
     </Border>
 
+  <Button DockPanel.Dock="Bottom" Content="Export full EPUB" Click="OnExportClick"></Button>
+  
     <!--"{Binding Source={StaticResource sortedSettings}}"-->
     <UI:SortableListView2
     Loaded="OnLoaded_ListView"

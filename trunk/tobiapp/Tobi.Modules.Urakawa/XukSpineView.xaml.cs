@@ -620,5 +620,10 @@ namespace Tobi.Plugin.Urakawa
 
             OwnerWindow.ForceClose(PopupModalWindow.DialogButton.Ok);
         }
+
+        private void OnExportClick(object sender, RoutedEventArgs e)
+        {
+            OwnerWindow.ForceClose(PopupModalWindow.DialogButton.Apply);
+        }
     }
 }

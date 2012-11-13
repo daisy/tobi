@@ -436,7 +436,7 @@ namespace Tobi.Plugin.Urakawa
                     doExport(exportDir);
                 },
                 () => DocumentProject != null
-                //&& !IsXukSpine
+                && (IsXukSpine || !HasXukSpine)
                 ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Export));

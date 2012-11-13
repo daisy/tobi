@@ -199,7 +199,7 @@ namespace Tobi.Plugin.Validator.Metadata
 
             if (isHTML)
             {
-                DebugFix.Assert(m_Session.HasXukSpine);
+                //DebugFix.Assert(m_Session.HasXukSpine); too early
             }
 #endif
 
