@@ -56,20 +56,27 @@ namespace Tobi.Plugin.Urakawa
                 () =>
                 {
                     var dlg = new OpenFileDialog
-                    {
-                        FileName = @"",
-                        DefaultExt = @".opf",
+                        {
+                            FileName = @"",
+                            DefaultExt = @".opf",
 #if DEBUG
-                        Filter = @"DTBook, XHTML, OPF, OBI, XUK, EPUB, MML (*.xml, *.xhtml, *.html, *.opf, *.obi, *" + OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION + ", *.epub, *.mml)|*.xml;*.xhtml;*.html;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION + ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub;*.mml",
+                            Filter =
+                                @"DTBook, XHTML, OPF, OBI, XUK, EPUB, MML (*.xml, *.xhtml, *.html, *.opf, *.obi, *" +
+                                OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION +
+                                ", *.epub, *.mml)|*.xml;*.xhtml;*.html;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION +
+                                ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub;*.mml",
 #else
                         Filter = @"DTBook, XHTML, OPF, OBI, XUK, EPUB (*.xml, *.xhtml, *.html, *.opf, *.obi, *" + OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION + ", *.epub)|*.xml;*.xhtml;*.html;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION + ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub",
-#endif //DEBUG
-                        CheckFileExists = false,
-                        CheckPathExists = false,
-                        AddExtension = true,
-                        DereferenceLinks = true,
-                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdOpen_ShortDesc)
-                    };
+#endif
+                            //DEBUG
+                            CheckFileExists = false,
+                            CheckPathExists = false,
+                            AddExtension = true,
+                            DereferenceLinks = true,
+                            Title =
+                                @"Tobi: " +
+                                UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdOpen_ShortDesc)
+                        };
 
                     bool? result = false;
 
@@ -104,6 +111,11 @@ namespace Tobi.Plugin.Urakawa
         }
 
         public bool OpenFile(string filename)
+        {
+            return OpenFile(filename, true);
+        }
+
+        public bool OpenFile(string filename, bool doShowXukSpineCommand)
         {
             var fileUri = new Uri(filename, UriKind.Absolute);
             AddRecentFile(fileUri);
@@ -244,7 +256,8 @@ namespace Tobi.Plugin.Urakawa
                     {
                         parseXukSpine(DocumentFilePath, DocumentProject, null);
 
-                        if (ShowXukSpineCommand.CanExecute())
+                        if (doShowXukSpineCommand
+                            && ShowXukSpineCommand.CanExecute())
                         {
                             Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() => ShowXukSpineCommand.Execute()));
                         }
@@ -566,6 +579,7 @@ namespace Tobi.Plugin.Urakawa
                 bool ok = parseXukSpine(projectPath, project, fileOnly);
                 if (ok)
                 {
+                    XukSpineProjectPath = projectPath;
                     parseXukSpine(projectPath, project, null);
                     return;
                 }

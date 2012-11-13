@@ -15,6 +15,8 @@ namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
+        public string XukSpineProjectPath { get; set; }
+
         public bool IsXukSpine
         {
             get
@@ -81,6 +83,29 @@ namespace Tobi.Plugin.Urakawa
                             {
                                 ExceptionHandler.Handle(ex, false, m_ShellView);
                             }
+                        }
+                    }
+                    else if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Apply)
+                    {
+                        // IsXukSpine ? DocumentFilePath : XukSpineProjectPath
+
+                        bool opened = true;
+                        if (!IsXukSpine)
+                        {
+                            opened = false;
+                            try
+                            {
+                                opened = OpenFile(XukSpineProjectPath, false);
+                            }
+                            catch (Exception ex)
+                            {
+                                ExceptionHandler.Handle(ex, false, m_ShellView);
+                            }
+                        }
+
+                        if (opened)
+                        {
+                            ExportCommand.Execute();
                         }
                     }
                 },
