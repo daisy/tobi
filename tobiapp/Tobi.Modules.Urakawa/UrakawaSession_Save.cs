@@ -308,6 +308,51 @@ namespace Tobi.Plugin.Urakawa
             return notCancelled;
         }
 
+        public bool messageBoxAlert(string message, Window owner)
+        {
+            m_Logger.Log(@"UrakawaSession_Save.askUserConfirmOverwriteFileFolder", Category.Debug, Priority.Medium);
+
+
+            var label = new TextBlock
+            {
+                Text = message,
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon(@"dialog-warning"),
+                                                                 m_ShellView.MagnificationLevel);
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            panel.Children.Add(iconProvider.IconLarge);
+            panel.Children.Add(label);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   "Warning",
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.Ok,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   false, 600, 160, null, 40, owner);
+
+            windowPopup.ShowModal();
+
+            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public bool askUserConfirmOverwriteFileFolder(string path, bool folder, Window owner)
         {
             m_Logger.Log(@"UrakawaSession_Save.askUserConfirmOverwriteFileFolder", Category.Debug, Priority.Medium);

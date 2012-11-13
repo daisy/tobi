@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using AudioLib;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI;
@@ -16,9 +17,11 @@ using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using urakawa.daisy.import;
 using urakawa.data;
+using Application = System.Windows.Application;
 using CheckBox = System.Windows.Controls.CheckBox;
 using ComboBox = System.Windows.Controls.ComboBox;
 using HorizontalAlignment = System.Windows.Forms.HorizontalAlignment;
+using MessageBox = System.Windows.Forms.MessageBox;
 using Orientation = System.Windows.Forms.Orientation;
 
 namespace Tobi.Plugin.Urakawa
@@ -26,6 +29,8 @@ namespace Tobi.Plugin.Urakawa
     public partial class UrakawaSession
     {
         public RichDelegateCommand ExportCommand { get; private set; }
+
+        private string m_ExportSpineItemProjectPath = null;
 
         private void initCommands_Export()
         {
@@ -46,8 +51,39 @@ namespace Tobi.Plugin.Urakawa
 
                     m_Logger.Log(@"UrakawaSession.Export", Category.Debug, Priority.Medium);
 
+                    string exportSpineItemProjectPath = m_ExportSpineItemProjectPath;
+                    m_ExportSpineItemProjectPath = null;
 
+                    if (!IsXukSpine && HasXukSpine)
+                    {
+                        m_ExportSpineItemProjectPath = DocumentFilePath;
 
+                        //MessageBox.Show
+                        messageBoxAlert("WARNING: single chapter export is an experimental and incomplete EPUB feature!", null);
+
+                        Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                            (Action)(() =>
+                            {
+                                bool opened = false;
+                                try
+                                {
+                                    opened = OpenFile(XukSpineProjectPath, false);
+                                }
+                                catch (Exception ex)
+                                {
+                                    ExceptionHandler.Handle(ex, false, m_ShellView);
+                                }
+
+                                if (opened)
+                                {
+                                    ExportCommand.Execute();
+                                }
+
+                                m_ExportSpineItemProjectPath = null;
+                            }
+                            ));
+                        return;
+                    }
 
 
 
@@ -433,10 +469,10 @@ namespace Tobi.Plugin.Urakawa
 
                     FileDataProvider.CreateDirectory(exportDir);
 
-                    doExport(exportDir);
+                    doExport(exportDir, exportSpineItemProjectPath);
                 },
                 () => DocumentProject != null
-                && (IsXukSpine || !HasXukSpine)
+                //&& (IsXukSpine || !HasXukSpine)
                 ,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Export));
@@ -444,7 +480,7 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(ExportCommand);
         }
 
-        private void doExport(string exportDirectory)
+        private void doExport(string exportDirectory, string exportSpineItemProjectPath)
         {
             m_Logger.Log(String.Format(@"UrakawaSession.doExport() [{0}]", exportDirectory), Category.Debug, Priority.Medium);
 
@@ -463,16 +499,20 @@ namespace Tobi.Plugin.Urakawa
                 }
                 else
                 {
+                    Debugger.Break();
+                    
                     DebugFix.Assert(HasXukSpine);
                 }
 #endif
                 converter = new Epub3_Export(DocumentFilePath, pres, exportDirectory,
                      Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                      Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
-                     IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions);
+                     IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, exportSpineItemProjectPath);
             }
             else
             {
+                DebugFix.Assert(string.IsNullOrEmpty(exportSpineItemProjectPath));
+
                 converter = new Daisy3_Export(pres, exportDirectory, null,
                  Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                  Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
