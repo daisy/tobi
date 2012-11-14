@@ -16,6 +16,10 @@ using urakawa.metadata.daisy;
 using urakawa.metadata;
 using System;
 
+#if DEBUG
+using AudioLib;
+#endif
+
 namespace Tobi.Plugin.Validator.Metadata
 {
     /// <summary>
