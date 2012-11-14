@@ -453,7 +453,7 @@ namespace Tobi.Plugin.Urakawa
                     //{
                     //    path = Daisy3_Import.GetXukFilePath(dlg.SelectedPath, DocumentFilePath, title, IsXukSpine);
                     //}
-                    string exportFolderName = Path.GetFileName(path) + "_EXPORT";
+                    string exportFolderName = Path.GetFileName(path) + "_EX";
 
                     string exportDir = Path.Combine(dlg.SelectedPath, exportFolderName);
 
