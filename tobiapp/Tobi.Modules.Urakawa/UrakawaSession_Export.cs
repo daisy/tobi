@@ -342,6 +342,12 @@ namespace Tobi.Plugin.Urakawa
                         VerticalAlignment = VerticalAlignment.Center,
                     };
 
+                    //TODO: DIAGRAM export with EPUB 3
+                    if (IsXukSpine || HasXukSpine)
+                    {
+                        checkBoxIncludeImageDescriptions.IsEnabled = false;
+                    }
+
                     var panelIncludeImageDescriptions = new StackPanel
                     {
                         Orientation = System.Windows.Controls.Orientation.Horizontal,
