@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Tobi")]
-[assembly: AssemblyDescription("Tobi, Accessible DAISY Multimedia Authoring")]
+[assembly: AssemblyDescription("Tobi, Authoring Tool for Talking Books")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("DAISY Consortium")]
 [assembly: AssemblyProduct("Tobi")]
