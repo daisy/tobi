@@ -1,4 +1,5 @@
-﻿using Microsoft.Practices.Composite.Presentation.Events;
+﻿using System;
+using Microsoft.Practices.Composite.Presentation.Events;
 using urakawa;
 
 namespace Tobi.Common
@@ -12,4 +13,9 @@ namespace Tobi.Common
     {
         public static ThreadOption THREAD_OPTION = ProjectLoadedEvent.THREAD_OPTION;
     }
+
+    //public class OpenFileRequestEvent : CompositePresentationEvent<String>
+    //{
+    //    public static ThreadOption THREAD_OPTION = ThreadOption.PublisherThread;
+    //}
 }

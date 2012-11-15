@@ -75,6 +75,8 @@ namespace Tobi.Plugin.Urakawa
 
             Tobi.Common.Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
+
+            //m_EventAggregator.GetEvent<OpenFileRequestEvent>().Subscribe((string path) => TryOpenFile(path));
         }
 
         ~UrakawaSession()

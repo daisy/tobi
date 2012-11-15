@@ -36,9 +36,12 @@ using urakawa;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.events.undo;
+using urakawa.media;
 using urakawa.property.alt;
+using urakawa.property.xml;
 using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
 
@@ -1479,6 +1482,111 @@ namespace Tobi.Plugin.DocumentPane
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
         }
 
+        private Block createXukSpineEmptyFlowDoc(Project project)
+        {
+            try
+            {
+                Presentation pres = project.Presentations.Get(0);
+                string titleMain = Daisy3_Import.GetTitle(pres);
+
+
+                var block = new Paragraph();
+                block.TextAlignment = TextAlignment.Center;
+
+                var run1 = new Run(titleMain)
+                {
+                    FontWeight = FontWeights.Heavy
+                };
+                run1.FontSize *= 2;
+                block.Inlines.Add(run1);
+
+                block.Inlines.Add(new LineBreak());
+
+                var run2 = new Run(@"(" + pres.RootNode.Children.Count + " spine items)");
+                block.Inlines.Add(run2);
+
+                //block.Inlines.Add(new LineBreak());
+                //block.Inlines.Add(new LineBreak());
+
+                foreach (var treeNode in pres.RootNode.Children.ContentsAs_Enumerable)
+                {
+                    TextMedia txtMedia = treeNode.GetTextMedia() as TextMedia;
+                    if (txtMedia == null) continue;
+                    string path = txtMedia.Text;
+
+                    XmlProperty xmlProp = treeNode.GetXmlProperty();
+                    if (xmlProp == null) continue;
+
+                    string name = treeNode.GetXmlElementLocalName();
+                    if (name != "metadata") continue;
+
+                    string title = null;
+                    bool hasXuk = false;
+                    foreach (var xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
+                    {
+                        if (xmlAttr.LocalName == "xuk" && xmlAttr.Value == "true")
+                        {
+                            hasXuk = true;
+                        }
+
+                        if (xmlAttr.LocalName == "title")
+                        {
+                            title = xmlAttr.Value;
+                        }
+                    }
+
+                    if (!hasXuk) continue;
+
+                    //string title_ = Daisy3_Import.GetTitle(presentation);
+                    //DebugFix.Assert(title_ == title);
+
+                    string rootDir = Path.GetDirectoryName(m_UrakawaSession.DocumentFilePath);
+                    string fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title);
+                    if (!File.Exists(fullXukPath))
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif //DEBUG
+                        continue;
+                    }
+
+                    var runA = new Run(!string.IsNullOrEmpty(title) ? title : "NO TITLE");
+                    runA.FontWeight = FontWeights.Heavy;
+                    runA.FontSize *= 1.5;
+
+                    Uri uri = new Uri(fullXukPath, UriKind.Absolute);
+
+                    var link = new Hyperlink(runA);
+                    link.Focusable = false;
+                    link.NavigateUri = uri;
+                    link.ToolTip = link.NavigateUri.ToString();
+
+                    link.RequestNavigate +=
+                        (object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+                            =>
+                        {
+                            //m_EventAggregator.GetEvent<OpenFileRequestEvent>().Publish(link.NavigateUri.LocalPath);
+                            m_UrakawaSession.TryOpenFile(link.NavigateUri.LocalPath);
+                        };
+
+                    var runB = new Run("(" + Path.GetFileName(fullXukPath).Replace(".xuk", "") + ")");
+                    //runB.FontSize *= 0.85;
+
+                    block.Inlines.Add(new LineBreak());
+                    block.Inlines.Add(new LineBreak());
+                    block.Inlines.Add(link);
+                    block.Inlines.Add(new LineBreak());
+                    block.Inlines.Add(runB);
+                }
+
+                return block;
+            }
+            catch
+            {
+                return new Paragraph(new Run(" "));
+            }
+        }
+
         private Block createWelcomeEmptyFlowDoc()
         {
             string dirPath = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
@@ -1553,7 +1661,7 @@ namespace Tobi.Plugin.DocumentPane
                 block.Inlines.Add(run1);
                 block.Inlines.Add(new LineBreak());
 
-                var run2 = new Run(@"Open-Source DAISY Multimedia Authoring");
+                var run2 = new Run(@"Authoring Tool for Talking Books");
                 block.Inlines.Add(run2);
 
                 block.Inlines.Add(new LineBreak());
@@ -2228,11 +2336,6 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            if (m_UrakawaSession.IsXukSpine)
-            {
-                return;
-            }
-
             m_FindAndReplaceManager = null;
 
             m_PathToTreeNode = null;
@@ -2286,6 +2389,13 @@ namespace Tobi.Plugin.DocumentPane
             }
             else
             {
+                if (m_UrakawaSession.IsXukSpine)
+                {
+                    TheFlowDocument.Blocks.Add(createXukSpineEmptyFlowDoc(project));
+                    TheFlowDocumentSimple.Blocks.Add(createXukSpineEmptyFlowDoc(project));
+                    return;
+                }
+
                 project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
                 project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
