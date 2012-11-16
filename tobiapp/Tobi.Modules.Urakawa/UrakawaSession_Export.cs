@@ -490,12 +490,13 @@ namespace Tobi.Plugin.Urakawa
         {
             m_Logger.Log(String.Format(@"UrakawaSession.doExport() [{0}]", exportDirectory), Category.Debug, Priority.Medium);
 
-            IDualCancellableProgressReporter converter = null;
             Presentation pres = DocumentProject.Presentations.Get(0);
 
             bool isEPUB = IsXukSpine
                           || @"body".Equals(pres.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase);
 
+
+            IDualCancellableProgressReporter converter = null;
             if (isEPUB)
             {
 #if DEBUG
@@ -506,7 +507,7 @@ namespace Tobi.Plugin.Urakawa
                 else
                 {
                     Debugger.Break();
-                    
+
                     DebugFix.Assert(HasXukSpine);
                 }
 #endif
@@ -539,14 +540,90 @@ namespace Tobi.Plugin.Urakawa
                 {
                     m_Logger.Log(@"UrakawaSession-Daisy3_Export-DONE-ShowFolder", Category.Debug, Priority.Medium);
 
-                    if (false && isEPUB)
-                    {
-                        m_ShellView.ExecuteShellProcess(Path.GetDirectoryName(exportDirectory));
-                    }
-                    else
-                    {
-                        m_ShellView.ExecuteShellProcess(exportDirectory);
-                    }
+                    Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                        (Action)(() =>
+                        {
+                            try
+                            {
+                                if (isEPUB)
+                                {
+                                    string epub = ((Epub3_Export)converter).EpubFilePath;
+                                    if (!string.IsNullOrEmpty(epub) && askUser("EPUB-Check?", epub))
+                                    {
+                                        string workingDir =
+                                            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+                                        string jar = Path.Combine(workingDir, "epubcheck.jar");
+
+                                        Process process = new Process();
+
+                                        process.StartInfo.WorkingDirectory = workingDir;
+                                        process.StartInfo.FileName = @"java.exe";
+                                        process.StartInfo.Arguments = "-jar \"" + jar + "\" \"" + epub + "\"";
+
+                                        process.StartInfo.RedirectStandardOutput = true;
+                                        process.StartInfo.RedirectStandardError = true;
+                                        process.StartInfo.UseShellExecute = false;
+                                        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                                        process.StartInfo.CreateNoWindow = false;
+                                        process.StartInfo.ErrorDialog = false;
+
+
+
+                                        process.Start();
+                                        process.WaitForExit();
+
+                                        string report = null;
+                                        string text = null;
+                                        if (process.ExitCode != 0)
+                                        {
+                                            StreamReader stdErr = process.StandardError;
+                                            if (!stdErr.EndOfStream)
+                                            {
+                                                report = stdErr.ReadToEnd();
+                                                text = "Error!";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            StreamReader stdOut = process.StandardOutput;
+                                            if (!stdOut.EndOfStream)
+                                            {
+                                                report = stdOut.ReadToEnd();
+                                            }
+                                        }
+
+                                        if (!string.IsNullOrEmpty(report))
+                                        {
+                                            Console.Write(report);
+
+                                            if (text == null)
+                                            {
+                                                if (report.IndexOf("No errors", StringComparison.OrdinalIgnoreCase) >= 0)
+                                                {
+                                                    text = "Success.";
+                                                }
+                                                else
+                                                {
+                                                    text = "There are errors or warnings!";
+                                                }
+                                            }
+
+                                            messageBoxText("EPUB Check", text, report);
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                messageBoxText("Oops :(", "Problem running EPUB Check!", ex.Message + Environment.NewLine + ex.StackTrace);
+                            }
+                            finally
+                            {
+                                m_ShellView.ExecuteShellProcess(exportDirectory);
+                            }
+                        }
+                        ));
                 });
         }
     }
