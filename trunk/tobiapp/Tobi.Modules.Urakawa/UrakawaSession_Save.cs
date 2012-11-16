@@ -26,11 +26,18 @@ namespace Tobi.Plugin.Urakawa
 
         private bool askUserCleanup()
         {
+            return askUser(
+                UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ShortDesc) + @"?",
+                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_LongDesc);
+        }
+
+        private bool askUser(string message, string info)
+        {
             m_Logger.Log("ShellView.askUserCleanup", Category.Debug, Priority.Medium);
 
             var label = new TextBlock
             {
-                Text = UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ShortDesc) + @"?",
+                Text = message,
                 Margin = new Thickness(8, 0, 8, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -59,11 +66,11 @@ namespace Tobi.Plugin.Urakawa
 
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(6),
-                TextReadOnly = Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_LongDesc
+                TextReadOnly = info
             };
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ShortDesc) + @"?",
+                                                   message,
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
@@ -308,9 +315,69 @@ namespace Tobi.Plugin.Urakawa
             return notCancelled;
         }
 
-        public bool messageBoxAlert(string message, Window owner)
+        public void messageBoxText(string title, string text, string info)
         {
-            m_Logger.Log(@"UrakawaSession_Save.askUserConfirmOverwriteFileFolder", Category.Debug, Priority.Medium);
+            m_Logger.Log(@"UrakawaSession_Save.messageBoxText", Category.Debug, Priority.Medium);
+
+
+            var label = new TextBlock
+            {
+                Text = text,
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap,
+                FontWeight = FontWeights.Bold,
+            };
+
+
+            var textArea = new TextBoxReadOnlyCaretVisible()
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                TextReadOnly = info,
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var scroll = new ScrollViewer
+            {
+                Content = textArea,
+
+                Margin = new Thickness(6),
+                VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+            };
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            panel.Children.Add(label);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   title,
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.Ok,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 400, 140, scroll, 300, null);
+
+            windowPopup.ShowModal();
+        }
+
+        public void messageBoxAlert(string message, Window owner)
+        {
+            m_Logger.Log(@"UrakawaSession_Save.messageBoxAlert", Category.Debug, Priority.Medium);
 
 
             var label = new TextBlock
@@ -341,16 +408,9 @@ namespace Tobi.Plugin.Urakawa
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   false, 600, 160, null, 40, owner);
+                                                   true, 600, 160, null, 40, owner);
 
             windowPopup.ShowModal();
-
-            if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
-            {
-                return true;
-            }
-
-            return false;
         }
 
         public bool askUserConfirmOverwriteFileFolder(string path, bool folder, Window owner)
