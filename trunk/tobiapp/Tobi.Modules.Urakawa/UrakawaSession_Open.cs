@@ -227,11 +227,14 @@ namespace Tobi.Plugin.Urakawa
 
                         if (project.Presentations.Count == 0)
                         {
-                            Debug.Fail("Project does not contain a Presentation !" + Environment.NewLine + fileUri.ToString());
+                            Debug.Fail("Project does not contain a Presentation !" + Environment.NewLine +
+                                       fileUri.ToString());
                             //workException = new XukException()
                         }
                         else
+                        {
                             DocumentProject = project;
+                        }
                     }
                     );
 
@@ -531,64 +534,72 @@ namespace Tobi.Plugin.Urakawa
 
         private void tryParseXukSpine(string currentProjectPath)
         {
-            string fileOnly = Path.GetFileName(currentProjectPath);
+            try
+            {
+                string fileOnly = Path.GetFileName(currentProjectPath);
 
-            string dir = Path.GetDirectoryName(currentProjectPath);
-            string[] files = Directory.GetFiles(dir, "*.xukspine"
+                string dir = Path.GetDirectoryName(currentProjectPath);
+                string[] files = Directory.GetFiles(dir, "*.xukspine"
 #if NET40
 , SearchOption.TopDirectoryOnly
 #endif
 );
-            foreach (var projectPath in files)
-            {
-                Uri uri = new Uri(projectPath, UriKind.Absolute);
+                foreach (var projectPath in files)
+                {
+                    Uri uri = new Uri(projectPath, UriKind.Absolute);
 
-                var project = new Project();
+                    var project = new Project();
 
-                var action = new OpenXukAction(project, uri)
-                    {
-                        ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc,
-                        LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_LongDesc
-                    };
+                    var action = new OpenXukAction(project, uri)
+                        {
+                            ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc,
+                            LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_LongDesc
+                        };
 
-                bool cancelled = false;
+                    bool cancelled = false;
 
-                bool result = m_ShellView.RunModalCancellableProgressTask(true,
-                                                                          Tobi_Plugin_Urakawa_Lang.
-                                                                              UrakawaOpenAction_ShortDesc, action,
-                                                                          () =>
-                                                                          {
-                                                                              cancelled = true;
-                                                                              project = null;
-                                                                          },
-                                                                          () =>
-                                                                          {
-                                                                              cancelled = false;
-
-                                                                              if (project.Presentations.Count == 0)
+                    bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                                                                              Tobi_Plugin_Urakawa_Lang.
+                                                                                  UrakawaOpenAction_ShortDesc, action,
+                                                                              () =>
                                                                               {
-                                                                                  Debug.Fail(
-                                                                                      "Project does not contain a Presentation !" +
-                                                                                      Environment.NewLine +
-                                                                                      uri.ToString());
-                                                                                  //workException = new XukException()
+                                                                                  cancelled = true;
+                                                                                  project = null;
+                                                                              },
+                                                                              () =>
+                                                                              {
+                                                                                  cancelled = false;
+
+                                                                                  if (project.Presentations.Count == 0)
+                                                                                  {
+                                                                                      Debug.Fail(
+                                                                                          "Project does not contain a Presentation !" +
+                                                                                          Environment.NewLine +
+                                                                                          uri.ToString());
+                                                                                      //workException = new XukException()
+                                                                                  }
                                                                               }
-                                                                          }
-                    );
+                        );
 
-                if (!result)
-                {
-                    DebugFix.Assert(cancelled);
-                    return;
-                }
+                    if (!result)
+                    {
+                        DebugFix.Assert(cancelled);
+                        return;
+                    }
 
-                bool ok = parseXukSpine(projectPath, project, fileOnly);
-                if (ok)
-                {
-                    XukSpineProjectPath = projectPath;
-                    parseXukSpine(projectPath, project, null);
-                    return;
+                    bool ok = parseXukSpine(projectPath, project, fileOnly);
+                    if (ok)
+                    {
+                        XukSpineProjectPath = projectPath;
+                        parseXukSpine(projectPath, project, null);
+                        return;
+                    }
                 }
+            }
+            finally
+            {
+                // XukStrings maintains a pointer to the last-created Project instance!
+                XukStrings.RelocateProjectReference(DocumentProject);
             }
         }
 

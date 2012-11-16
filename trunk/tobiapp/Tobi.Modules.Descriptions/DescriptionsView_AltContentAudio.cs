@@ -31,6 +31,7 @@ using System.Diagnostics;
 
 #if ENABLE_WPF_MEDIAKIT
 using WPFMediaKit.DirectShow.Controls;
+using urakawa.xuk;
 using MediaState = System.Windows.Controls.MediaState;
 using WPFMediaKit.DirectShow.MediaPlayers;
 #endif //ENABLE_WPF_MEDIAKIT
@@ -486,6 +487,9 @@ namespace Tobi.Plugin.Descriptions
             }
             finally
             {
+                // XukStrings maintains a pointer to the last-created Project instance!
+                XukStrings.RelocateProjectReference(m_Session.DocumentProject);
+
                 Application.Current.MainWindow.Cursor = Cursors.Arrow;
                 this.Cursor = Cursors.Arrow; //m_ShellView
             }
