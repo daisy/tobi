@@ -35,5 +35,8 @@
     <Setting Name="Skippables" Type="System.String" Scope="User">
       <Value Profile="(Default)">pagenum,linenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,note,noteref,</Value>
     </Setting>
+    <Setting Name="MediaOverlayActiveCSS" Type="System.String" Scope="User">
+      <Value Profile="(Default)">background-color: #FF0000; color: white; font-weight: bold;</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

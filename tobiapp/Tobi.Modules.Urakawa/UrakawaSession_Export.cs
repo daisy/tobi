@@ -513,7 +513,8 @@ namespace Tobi.Plugin.Urakawa
                 converter = new Epub3_Export(DocumentFilePath, pres, exportDirectory,
                      Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                      Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
-                     IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, exportSpineItemProjectPath);
+                     IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, exportSpineItemProjectPath,
+                     Settings.Default.MediaOverlayActiveCSS);
             }
             else
             {
