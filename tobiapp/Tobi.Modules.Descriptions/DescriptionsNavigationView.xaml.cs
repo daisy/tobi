@@ -174,7 +174,12 @@ namespace Tobi.Plugin.Descriptions
             if (key == Key.Escape)
             {
                 SearchBox.Text = "";
-                FocusHelper.FocusBeginInvoke(FocusableItem);
+
+                var item = FocusableItem;
+                if (item != null)
+                {
+                    FocusHelper.FocusBeginInvoke(item);
+                }
             }
         }
 

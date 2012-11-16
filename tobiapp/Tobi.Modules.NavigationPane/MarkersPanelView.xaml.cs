@@ -109,16 +109,21 @@ namespace Tobi.Plugin.NavigationPane
 
         private void OnMouseClickCheckBox(object sender, RoutedEventArgs e)
         {
-            ((UIElement)sender).Dispatcher.BeginInvoke(
-                new Action(() =>
-                {
-                    UIElement ui = FocusableItem;
-                    if (ui != null && ui.Focusable)
-                    {
-                        FocusHelper.Focus(FocusableItem);
-                    }
-                }),
-                DispatcherPriority.Background);
+            var item = FocusableItem;
+            if (item != null)
+            {
+                FocusHelper.FocusBeginInvoke(item, DispatcherPriority.Background);
+            }
+            //((UIElement)sender).Dispatcher.BeginInvoke(
+            //    new Action(() =>
+            //    {
+            //        UIElement ui = FocusableItem;
+            //        if (ui != null && ui.Focusable)
+            //        {
+            //            FocusHelper.Focus(FocusableItem);
+            //        }
+            //    }),
+            //    DispatcherPriority.Background);
         }
 
         public UIElement FocusableItem
@@ -206,7 +211,12 @@ namespace Tobi.Plugin.NavigationPane
             if (key == Key.Escape)
             {
                 SearchBox.Text = "";
-                FocusHelper.FocusBeginInvoke(FocusableItem);
+
+                var item = FocusableItem;
+                if (item != null)
+                {
+                    FocusHelper.FocusBeginInvoke(item);
+                }
             }
         }
 

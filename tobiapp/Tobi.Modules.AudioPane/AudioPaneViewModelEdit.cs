@@ -901,14 +901,17 @@ namespace Tobi.Plugin.AudioPane
 
                     IsAutoPlay = false;
 
-                    if (State.Selection.SelectionBeginBytePosition >= 0 && State.Selection.SelectionEndBytePosition > 0)
+                    if (State.Audio.HasContent)
                     {
-                        PlayBytePosition = State.Selection.SelectionEndBytePosition;
-                    }
-                    else
-                    {
-                        DebugFix.Assert(false);
-                        CommandGotoEnd.Execute();
+                        if (State.Selection.SelectionBeginBytePosition >= 0 && State.Selection.SelectionEndBytePosition > 0)
+                        {
+                            PlayBytePosition = State.Selection.SelectionEndBytePosition;
+                        }
+                        else
+                        {
+                            DebugFix.Assert(false);
+                            CommandGotoEnd.Execute();
+                        }
                     }
 
                     return true;
