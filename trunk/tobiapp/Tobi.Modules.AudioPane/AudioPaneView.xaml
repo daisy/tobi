@@ -858,7 +858,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.AudioAlwaysMonitor}"
     ToolTip="{Binding Source={x:Static AudioPane:Settings_KeyGestures.Default}, Path=Keyboard_Audio_AlwaysMonitor, Mode=OneWay}"
     -->
-    <CheckBox
+    <!--<CheckBox
                   VerticalAlignment="Bottom"
                   HorizontalAlignment="Center"
                 
@@ -876,7 +876,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                 Click="OnMouseClickCheckBox"
                   
     AutomationProperties.Name="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.AudioAlwaysMonitor}"
-              />
+              />-->
   
   </Grid>
 
