@@ -19,6 +19,7 @@ using urakawa;
 using urakawa.core;
 using urakawa.data;
 using urakawa.events;
+using urakawa.xuk;
 
 
 namespace Tobi.Plugin.Urakawa
@@ -153,6 +154,12 @@ namespace Tobi.Plugin.Urakawa
                 }
                 RaisePropertyChanged(() => DocumentProject);
                 RaisePropertyChanged(() => IsDirty);
+
+                if (m_DocumentProject == null)
+                {
+                    // XukStrings maintains a pointer to the last-created Project instance!
+                    XukStrings.NullifyProjectReference();
+                }
             }
         }
 
