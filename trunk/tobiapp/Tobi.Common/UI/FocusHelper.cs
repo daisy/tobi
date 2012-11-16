@@ -29,7 +29,8 @@ namespace Tobi.Common.UI
 
         public static void Focus(UIElement ui)
         {
-            if (ui.Focusable
+            if (ui != null
+                && ui.Focusable
                 &&
                 (!ui.IsFocused || !ui.IsKeyboardFocused || Keyboard.FocusedElement != ui)
                 )
@@ -41,10 +42,15 @@ namespace Tobi.Common.UI
             //FocusManager.SetFocusedElement(obj, ui);
             //Keyboard.Focus(ui);
         }
+            
+        public static void FocusBeginInvoke(UIElement ui, DispatcherPriority priority)
+        {
+            ui.Dispatcher.BeginInvoke(new Action(() => Focus(ui)), priority);
+        }
 
         public static void FocusBeginInvoke(UIElement ui)
         {
-            ui.Dispatcher.BeginInvoke(new Action(() => Focus(ui)), DispatcherPriority.Normal);
+            FocusBeginInvoke(ui, DispatcherPriority.Normal);
         }
 
         public static void FocusInvoke(UIElement ui)
