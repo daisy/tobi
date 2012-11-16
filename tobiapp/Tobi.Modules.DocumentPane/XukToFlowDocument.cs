@@ -1989,11 +1989,16 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }
 
-            if (imagePath == null || FileDataProvider.isHTTPFile(imagePath))
+            if (imagePath == null)
+            {
+                // NOP
+            }
+            else if (FileDataProvider.isHTTPFile(imagePath))
             {
 #if DEBUG
                 Debugger.Break();
-#endif //DEBUG
+#endif
+                //DEBUG
             }
             else
             {
@@ -2003,7 +2008,8 @@ namespace Tobi.Plugin.DocumentPane
                     Console.WriteLine(@"Problem trying to load MathML ALT image: [" + imagePath + @"]");
 #if DEBUG
                     Debugger.Break();
-#endif //DEBUG
+#endif
+                    //DEBUG
 
                     VisualBrush brush = ShellView.LoadGnomeNeuIcon("Neu_emblem-important");
                     RenderTargetBitmap bitmap = AutoGreyableImage.CreateFromVectorGraphics(brush, 100, 100);
