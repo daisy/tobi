@@ -85,8 +85,12 @@ namespace Tobi.Plugin.StructureTrailPane
                 // instead we use the Tag property which contains a reference to a TreeNode, 
                 // so we can use the Click event)
 
-                bool withMedia = n.GetManagedAudioMediaOrSequenceMedia() != null;
 
+#if ENABLE_SEQ_MEDIA
+                bool withMedia = n.GetManagedAudioMediaOrSequenceMedia() != null;
+#else
+                bool withMedia = n.GetManagedAudioMedia() != null;
+#endif
                 var butt = new Button
                 {
                     Tag = n,
@@ -654,7 +658,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
             strBuilder.Insert(0, " *** ");
 
-            string audioInfo = treeNode.GetAudioMedia() != null ||
+            string audioInfo = treeNode.GetManagedAudioMedia() != null ||
                                treeNode.GetFirstAncestorWithManagedAudio() != null
                                    ? Tobi_Plugin_StructureTrailPane_Lang.Audio
                                    : Tobi_Plugin_StructureTrailPane_Lang.NoAudio;

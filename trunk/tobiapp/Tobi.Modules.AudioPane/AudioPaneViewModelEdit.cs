@@ -1009,7 +1009,12 @@ namespace Tobi.Plugin.AudioPane
                 }
 
                 //DebugFix.Assert(State.Audio.PlayStream == null);
+
+#if ENABLE_SEQ_MEDIA
                 var media = treeNode.GetManagedAudioMediaOrSequenceMedia();
+#else
+                var media = treeNode.GetManagedAudioMedia();
+#endif
                 if (media != null)
                 {
 #if DEBUG
@@ -1048,7 +1053,11 @@ namespace Tobi.Plugin.AudioPane
                     bool atLeastOneWasNotDeleted = false;
                     foreach (var treeNodeAndStreamSelection in selData)
                     {
+#if ENABLE_SEQ_MEDIA
                         bool deleted = treeNodeAndStreamSelection.m_TreeNode.GetManagedAudioMediaOrSequenceMedia() == null;
+#else
+                        bool deleted = treeNodeAndStreamSelection.m_TreeNode.GetManagedAudioMedia() == null;
+#endif
                         if (!deleted)
                         {
                             atLeastOneWasNotDeleted = true;
@@ -1109,7 +1118,11 @@ namespace Tobi.Plugin.AudioPane
                         ensurePlaybackStreamIsDead();
                     }
 
+#if ENABLE_SEQ_MEDIA
                     var media = treeNode.GetManagedAudioMediaOrSequenceMedia();
+#else
+                    var media = treeNode.GetManagedAudioMedia();
+#endif
                     if (media != null)
                     {
 #if DEBUG

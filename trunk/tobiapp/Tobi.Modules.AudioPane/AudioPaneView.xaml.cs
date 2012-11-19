@@ -764,7 +764,7 @@ namespace Tobi.Plugin.AudioPane
                                         //long byteOffset = m_ViewModel.State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes(5 * AudioLibPCMFormat.TIME_UNIT);
                                         //m_ViewModel.PlayBytePosition = bytes_Grab - byteOffset;
 
-                                        var manMedia = treeNodeTarget.GetAudioMedia() as ManagedAudioMedia;
+                                        var manMedia = treeNodeTarget.GetManagedAudioMedia();
                                         DebugFix.Assert(manMedia != null);
 
                                         Time dur = manMedia.AudioMediaData.AudioDuration;
@@ -830,7 +830,7 @@ namespace Tobi.Plugin.AudioPane
 
                                         //m_ViewModel.PlayBytePosition = bytes_Mouse;
 
-                                        var manMedia = treeNodeTarget.GetAudioMedia() as ManagedAudioMedia;
+                                        var manMedia = treeNodeTarget.GetManagedAudioMedia();
                                         DebugFix.Assert(manMedia != null);
 
                                         //Time dur = manMedia.AudioMediaData.AudioDuration;
