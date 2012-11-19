@@ -106,6 +106,13 @@ namespace Tobi.Plugin.DocumentPane
             {
                 return;
             }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                throw ex;
+            }
             //finally
             //{
             //    if (m_StopWatch != null) m_StopWatch.Stop();
