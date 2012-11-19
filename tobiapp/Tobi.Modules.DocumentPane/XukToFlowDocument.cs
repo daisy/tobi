@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Threading;
 using System.Windows;
-using System.Windows.Automation;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
@@ -30,10 +24,8 @@ using urakawa.exception;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.data.image;
-using urakawa.media.data.video;
 using urakawa.media.timing;
 using urakawa.property.xml;
-using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
 
 namespace Tobi.Plugin.DocumentPane
@@ -2753,8 +2745,10 @@ namespace Tobi.Plugin.DocumentPane
                         return walkBookTreeAndGenerateFlowDocument_img(node, parent, nodeText);
                     }
                 case "video":
+                case "audio":
+                case "source":
                     {
-                        return walkBookTreeAndGenerateFlowDocument_video(node, parent, nodeText);
+                        return walkBookTreeAndGenerateFlowDocument_audio_video(node, parent, nodeText);
                     }
                 case "th":
                 case "td":

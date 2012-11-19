@@ -1,37 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
-using System.Text;
 using System.Windows;
-using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Threading;
 using AudioLib;
-using Microsoft.Practices.Composite.Events;
-using Microsoft.Practices.Composite.Logging;
-using Tobi.Common;
-using Tobi.Common.UI;
 using Tobi.Common.UI.XAML;
 using urakawa.core;
 using urakawa.data;
-using urakawa.exception;
 using urakawa.media;
 using urakawa.media.data.audio;
-using urakawa.media.data.image;
 using urakawa.media.data.video;
 using urakawa.media.timing;
+using urakawa.property.channel;
 using urakawa.property.xml;
-using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
 
 #if ENABLE_WPF_MEDIAKIT
@@ -47,21 +35,37 @@ namespace Tobi.Plugin.DocumentPane
         public List<Action<object, RoutedEventArgs>> FlowDocumentLoadedEvents = new List<Action<object, RoutedEventArgs>>();
         public List<Action<object, RoutedEventArgs>> FlowDocumentUnLoadedEvents = new List<Action<object, RoutedEventArgs>>();
 
-        private TextElement walkBookTreeAndGenerateFlowDocument_video(TreeNode node, TextElement parent, string textMedia)
+        private TextElement walkBookTreeAndGenerateFlowDocument_audio_video(TreeNode node, TextElement parent, string textMedia)
         {
-            if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia))
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                throw new Exception("Node has children or text exists when processing video ??");
-            }
+            //            if (node.Children.Count != 0 || textMedia != null && !String.IsNullOrEmpty(textMedia))
+            //            {
+            //#if DEBUG
+            //                Debugger.Break();
+            //#endif
+            //                throw new Exception("Node has children or text exists when processing video ??");
+            //            }
 
             XmlProperty xmlProp = node.GetXmlProperty();
+
+            bool isSource = "source".Equals(xmlProp.LocalName, StringComparison.OrdinalIgnoreCase);
+
+            XmlProperty xmlProp_ = xmlProp;
+            if (isSource && node.Parent != null)
+            {
+                xmlProp_ = node.Parent.GetXmlProperty();
+            }
+
 
             AbstractVideoMedia videoMedia = node.GetVideoMedia();
             var videoMedia_ext = videoMedia as ExternalVideoMedia;
             var videoMedia_man = videoMedia as ManagedVideoMedia;
+
+
+            Media audioMedia = node.GetMediaInChannel<AudioXChannel>(); // as AbstractAudioMedia;
+            var audioMedia_ext = audioMedia as ExternalAudioMedia;
+            var audioMedia_man = audioMedia as ManagedAudioMedia;
+
+
 
             string dirPath = Path.GetDirectoryName(m_TreeNode.Presentation.RootUri.LocalPath);
 
@@ -93,22 +97,60 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }
 
-            if (videoPath == null || FileDataProvider.isHTTPFile(videoPath))
+
+            string audioPath = null;
+
+            if (audioMedia_ext != null)
+            {
+
+#if DEBUG
+                Debugger.Break();
+#endif //DEBUG
+
+                //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
+
+                audioPath = Path.Combine(dirPath, Uri.UnescapeDataString(audioMedia_ext.Src));
+            }
+            else if (audioMedia_man != null)
+            {
+#if DEBUG
+                XmlAttribute srcAttr = xmlProp.GetAttribute("src");
+
+                DebugFix.Assert(audioMedia_man.AudioMediaData.OriginalRelativePath == srcAttr.Value);
+#endif //DEBUG
+                var fileDataProv = audioMedia_man.AudioMediaData.DataProvider as FileDataProvider;
+
+                if (fileDataProv != null)
+                {
+                    audioPath = fileDataProv.DataFileFullPath;
+                }
+            }
+
+            if (
+                (videoPath == null || FileDataProvider.isHTTPFile(videoPath))
+                &&
+                (audioPath == null || FileDataProvider.isHTTPFile(audioPath))
+                )
             {
 #if DEBUG
                 Debugger.Break();
 #endif //DEBUG
-                return parent;
+
+                return walkBookTreeAndGenerateFlowDocument_Section(node, parent, textMedia, null);
             }
 
-            var uri = new Uri(videoPath, UriKind.Absolute);
+            string path = string.IsNullOrEmpty(videoPath) ? audioPath : videoPath;
+
+            var uri = new Uri(path, UriKind.Absolute);
 
 
-            string videoAlt = null;
-            XmlAttribute altAttr = xmlProp.GetAttribute("alt");
+            string videoAudioAlt = null;
+
+
+            XmlAttribute altAttr = xmlProp_.GetAttribute("alt");
             if (altAttr != null)
             {
-                videoAlt = altAttr.Value;
+                videoAudioAlt = altAttr.Value;
             }
 
 
@@ -119,17 +161,17 @@ namespace Tobi.Plugin.DocumentPane
                                    || parent is Figure
                                    || parent is ListItem;
 
-            var videoPanel = new StackPanel();
-            videoPanel.Orientation = Orientation.Vertical;
+            var videoAudioPanel = new StackPanel();
+            videoAudioPanel.Orientation = Orientation.Vertical;
             //videoPanel.LastChildFill = true;
-            if (!string.IsNullOrEmpty(videoAlt))
+            if (!string.IsNullOrEmpty(videoAudioAlt))
             {
-                var tb = new TextBlock(new Run(videoAlt))
+                var tb = new TextBlock(new Run(videoAudioAlt))
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
                     TextWrapping = TextWrapping.Wrap
                 };
-                videoPanel.Children.Add(tb);
+                videoAudioPanel.Children.Add(tb);
             }
             //videoPanel.Children.Add(mediaElement);
 
@@ -142,7 +184,7 @@ namespace Tobi.Plugin.DocumentPane
             slider.Maximum = 100;
             slider.Visibility = Visibility.Hidden;
 
-            videoPanel.Children.Add(slider);
+            videoAudioPanel.Children.Add(slider);
 
 
             var timeLabel = new TextBlock();
@@ -154,13 +196,13 @@ namespace Tobi.Plugin.DocumentPane
             timeLabel.TextAlignment = TextAlignment.Center;
             timeLabel.Visibility = Visibility.Hidden;
 
-            videoPanel.Children.Add(timeLabel);
+            videoAudioPanel.Children.Add(timeLabel);
 
-            videoPanel.HorizontalAlignment = HorizontalAlignment.Center;
-            videoPanel.VerticalAlignment = VerticalAlignment.Top;
+            videoAudioPanel.HorizontalAlignment = HorizontalAlignment.Center;
+            videoAudioPanel.VerticalAlignment = VerticalAlignment.Top;
 
             var panelBorder = new Border();
-            panelBorder.Child = videoPanel;
+            panelBorder.Child = videoAudioPanel;
             panelBorder.Padding = new Thickness(4);
             panelBorder.BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
             panelBorder.BorderThickness = new Thickness(2.0);
@@ -244,15 +286,13 @@ namespace Tobi.Plugin.DocumentPane
 
                     mediaElement.Focusable = false;
 
-
-
-                    XmlAttribute srcW = xmlProp.GetAttribute("width");
+                    XmlAttribute srcW = xmlProp_.GetAttribute("width");
                     if (srcW != null)
                     {
                         double ww = Double.Parse(srcW.Value);
                         mediaElement.Width = ww;
                     }
-                    XmlAttribute srcH = xmlProp.GetAttribute("height");
+                    XmlAttribute srcH = xmlProp_.GetAttribute("height");
                     if (srcH != null)
                     {
                         double hh = Double.Parse(srcH.Value);
@@ -262,12 +302,12 @@ namespace Tobi.Plugin.DocumentPane
                     mediaElement.HorizontalAlignment = HorizontalAlignment.Center;
                     mediaElement.VerticalAlignment = VerticalAlignment.Top;
 
-                    if (!string.IsNullOrEmpty(videoAlt))
+                    if (!string.IsNullOrEmpty(videoAudioAlt))
                     {
-                        mediaElement.ToolTip = videoAlt;
+                        mediaElement.ToolTip = videoAudioAlt;
                     }
 
-                    videoPanel.Children.Insert(1, mediaElement);
+                    videoAudioPanel.Children.Insert(1, mediaElement);
 
                     var actionMediaFailed = new Action<string>(
                         (str) =>
@@ -285,7 +325,7 @@ namespace Tobi.Plugin.DocumentPane
                                     border.BorderBrush = ColorBrushCache.Get(Colors.Red);
                                     border.BorderThickness = new Thickness(2.0);
 
-                                    videoPanel.Children.Insert(1, border);
+                                    videoAudioPanel.Children.Insert(1, border);
 
                                     slider.Visibility = Visibility.Hidden;
                                     timeLabel.Visibility = Visibility.Hidden;
@@ -926,7 +966,7 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (thereWasOne)
                     {
-                        videoPanel.Children.RemoveAt(1);
+                        videoAudioPanel.Children.RemoveAt(1);
                     }
                 });
 
