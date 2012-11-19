@@ -88,7 +88,7 @@ namespace Tobi.Plugin.Urakawa
 
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Tobi.Common.Settings.Default.TextSyncGranularity)
+            if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Tobi.Common.Settings.Default.TextAudioSyncGranularity)
                 //|| e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Tobi.Common.Settings.Default.EnableTextSyncGranularity)
                 )
             {
@@ -698,7 +698,7 @@ namespace Tobi.Plugin.Urakawa
 
             if (m_TextSyncGranularityElements == null)
             {
-                string[] names = Tobi.Common.Settings.Default.TextSyncGranularity.Split(new char[] { ',', ' ', ';', '/' });
+                string[] names = Tobi.Common.Settings.Default.TextAudioSyncGranularity.Split(new char[] { ',', ' ', ';', '/' });
 
                 //m_SkippableElements = new List<string>(names);
                 m_TextSyncGranularityElements = new List<string>(names.Length);
