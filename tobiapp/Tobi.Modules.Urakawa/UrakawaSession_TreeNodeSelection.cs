@@ -40,11 +40,23 @@ namespace Tobi.Plugin.Urakawa
                 //verifyTreeNodeSelection();
 #endif
                 // performing a valid selection is based on branch logic, it depends on the position of the audio, if any
+                
+
+#if ENABLE_SEQ_MEDIA
                 bool clickedHasDirectAudio = clickedNode.GetManagedAudioMediaOrSequenceMedia() != null;
+#else
+                bool clickedHasDirectAudio = clickedNode.GetManagedAudioMedia() != null;
+#endif
                 TreeNode clickedDescendantAudio = clickedNode.GetFirstDescendantWithManagedAudio();
                 TreeNode clickedAncestorAudio = clickedNode.GetFirstAncestorWithManagedAudio();
 
+                
+#if ENABLE_SEQ_MEDIA
                 bool subClickedHasDirectAudio = subClickedNode != null && subClickedNode.GetManagedAudioMediaOrSequenceMedia() != null;
+#else
+                bool subClickedHasDirectAudio = subClickedNode != null && subClickedNode.GetManagedAudioMedia() != null;
+#endif
+
                 TreeNode subClickedDescendantAudio = subClickedNode != null ? subClickedNode.GetFirstDescendantWithManagedAudio() : null;
                 TreeNode subClickedAncestorAudio = subClickedNode != null ? subClickedNode.GetFirstAncestorWithManagedAudio() : null;
 
@@ -99,12 +111,25 @@ namespace Tobi.Plugin.Urakawa
                 }
                 else // we know that: m_TreeNode != null 
                 {
-                    bool treenodeHasDirectAudio = m_TreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
+                    
+#if ENABLE_SEQ_MEDIA
+                bool treenodeHasDirectAudio = m_TreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
+#else
+                    bool treenodeHasDirectAudio = m_TreeNode.GetManagedAudioMedia() != null;
+#endif
+
                     TreeNode treenodeDescendantAudio = m_TreeNode.GetFirstDescendantWithManagedAudio();
                     TreeNode treenodeAncestorAudio = m_TreeNode.GetFirstAncestorWithManagedAudio();
 
-                    bool subtreenodeHasDirectAudio = m_SubTreeNode != null &&
+                    
+#if ENABLE_SEQ_MEDIA
+                bool subtreenodeHasDirectAudio = m_SubTreeNode != null &&
                                                      m_SubTreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
+#else
+                    bool subtreenodeHasDirectAudio = m_SubTreeNode != null &&
+                                                     m_SubTreeNode.GetManagedAudioMedia() != null;
+#endif
+
                     TreeNode subtreenodeDescendantAudio = m_SubTreeNode == null
                                                               ? null
                                                               : m_SubTreeNode.GetFirstDescendantWithManagedAudio();
@@ -329,7 +354,14 @@ namespace Tobi.Plugin.Urakawa
             }
 
             TreeNode nodeAncestorAudio = m_TreeNode.GetFirstAncestorWithManagedAudio();
+            
+
+#if ENABLE_SEQ_MEDIA
             bool nodeHasDirectAudio = m_TreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
+#else
+            bool nodeHasDirectAudio = m_TreeNode.GetManagedAudioMedia() != null;
+#endif
+
             TreeNode nodeDescendantAudio = m_TreeNode.GetFirstDescendantWithManagedAudio();
 
             DebugFix.Assert(nodeAncestorAudio == null);
@@ -354,7 +386,13 @@ namespace Tobi.Plugin.Urakawa
                 DebugFix.Assert(m_TreeNode.IsAncestorOf(m_SubTreeNode)); // nodes cannot be equal
 
                 TreeNode subnodeAncestorAudio = m_SubTreeNode.GetFirstAncestorWithManagedAudio();
-                bool subnodeHasDirectAudio = m_SubTreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
+                
+#if ENABLE_SEQ_MEDIA
+            bool subnodeHasDirectAudio = m_SubTreeNode.GetManagedAudioMediaOrSequenceMedia() != null;
+#else
+                bool subnodeHasDirectAudio = m_SubTreeNode.GetManagedAudioMedia() != null;
+#endif
+
                 TreeNode subnodeDescendantAudio = m_SubTreeNode.GetFirstDescendantWithManagedAudio();
 
                 DebugFix.Assert(subnodeAncestorAudio == null);
