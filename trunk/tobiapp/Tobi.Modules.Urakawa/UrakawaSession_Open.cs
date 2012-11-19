@@ -433,15 +433,19 @@ namespace Tobi.Plugin.Urakawa
             }
             else
             {
-                if (".html".Equals(ext, StringComparison.OrdinalIgnoreCase) || ".xhtml".Equals(ext, StringComparison.OrdinalIgnoreCase))
+                //todo: should we implement HTTP import ?
+                if (!fileUri.IsFile)
+                    throw new InvalidUriException("The import URI must point to a local file!" + Environment.NewLine + fileUri.ToString());
+
+                if (".epub".Equals(ext, StringComparison.OrdinalIgnoreCase))
+                {
+                    checkEpub(fileUri.LocalPath);
+                }
+                else if (".html".Equals(ext, StringComparison.OrdinalIgnoreCase) || ".xhtml".Equals(ext, StringComparison.OrdinalIgnoreCase))
                 {
                     //MessageBox.Show
                     messageBoxAlert("WARNING: single HTML import is an experimental and incomplete EPUB feature!", null);
                 }
-
-                //todo: should we implement HTTP import ?
-                if (!fileUri.IsFile)
-                    throw new InvalidUriException("The import URI must point to a local file!" + Environment.NewLine + fileUri.ToString());
 
                 //fileUri.Scheme.ToLower() == "file"
                 DocumentFilePath = fileUri.IsFile ? fileUri.LocalPath : filename;
