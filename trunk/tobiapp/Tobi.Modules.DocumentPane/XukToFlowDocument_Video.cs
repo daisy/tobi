@@ -163,6 +163,7 @@ namespace Tobi.Plugin.DocumentPane
 
             var videoAudioPanel = new StackPanel();
             videoAudioPanel.Orientation = Orientation.Vertical;
+
             //videoPanel.LastChildFill = true;
             if (!string.IsNullOrEmpty(videoAudioAlt))
             {
@@ -198,10 +199,27 @@ namespace Tobi.Plugin.DocumentPane
 
             videoAudioPanel.Children.Add(timeLabel);
 
-            videoAudioPanel.HorizontalAlignment = HorizontalAlignment.Center;
+            var playPause = new Button()
+                {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    FontWeight = FontWeights.Heavy,
+                    Content = new Run("Play / Pause")
+                };
+            //var border_ = new Border()
+            //    {
+            //        BorderThickness = new Thickness(2.0),
+            //        BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio),
+            //        Padding = new Thickness(4),
+            //        Child = playPause
+            //    };
+            videoAudioPanel.Children.Add(playPause);
+
+            videoAudioPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
             videoAudioPanel.VerticalAlignment = VerticalAlignment.Top;
 
             var panelBorder = new Border();
+            panelBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
+            panelBorder.VerticalAlignment = VerticalAlignment.Top;
             panelBorder.Child = videoAudioPanel;
             panelBorder.Padding = new Thickness(4);
             panelBorder.BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_Audio);
@@ -211,6 +229,7 @@ namespace Tobi.Plugin.DocumentPane
             if (parentHasBlocks)
             {
                 Block vidContainer = new BlockUIContainer(panelBorder);
+                vidContainer.TextAlignment = TextAlignment.Center;
 
                 setTag(vidContainer, node);
 
@@ -232,7 +251,7 @@ namespace Tobi.Plugin.DocumentPane
 #endif //ENABLE_WPF_MEDIAKIT
 
             var reh = (Action<object, RoutedEventArgs>)(
-                (object o, RoutedEventArgs e) =>
+                (object obj, RoutedEventArgs rev) =>
                 {
 #if ENABLE_WPF_MEDIAKIT
                     if (Common.Settings.Default.EnableMediaKit)
@@ -307,7 +326,7 @@ namespace Tobi.Plugin.DocumentPane
                         mediaElement.ToolTip = videoAudioAlt;
                     }
 
-                    videoAudioPanel.Children.Insert(1, mediaElement);
+                    videoAudioPanel.Children.Insert(0, mediaElement);
 
                     var actionMediaFailed = new Action<string>(
                         (str) =>
@@ -325,7 +344,7 @@ namespace Tobi.Plugin.DocumentPane
                                     border.BorderBrush = ColorBrushCache.Get(Colors.Red);
                                     border.BorderThickness = new Thickness(2.0);
 
-                                    videoAudioPanel.Children.Insert(1, border);
+                                    videoAudioPanel.Children.Insert(0, border);
 
                                     slider.Visibility = Visibility.Hidden;
                                     timeLabel.Visibility = Visibility.Hidden;
@@ -429,71 +448,71 @@ namespace Tobi.Plugin.DocumentPane
                             }
                             );
 
-
-                        medElement_WINDOWS_MEDIA_PLAYER.MouseDown += new MouseButtonEventHandler(
-                                (oo, ee) =>
+                        var mouseButtonEventHandler_WINDOWS_MEDIA_PLAYER = new Action(
+                                () =>
                                 {
                                     if (medElement_WINDOWS_MEDIA_PLAYER.LoadedBehavior != MediaState.Manual)
                                     {
                                         return;
                                     }
 
-                                    if (ee.ChangedButton == MouseButton.Left)
+                                    bool wasPlaying = false;
+                                    bool wasStopped = false;
+
+                                    //Is Active
+                                    if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Active)
                                     {
-                                        bool wasPlaying = false;
-                                        bool wasStopped = false;
-
-                                        //Is Active
-                                        if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Active)
+                                        //Is Paused
+                                        if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentGlobalSpeed == 0.0)
                                         {
-                                            //Is Paused
-                                            if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentGlobalSpeed == 0.0)
-                                            {
-                                            }
-                                            else //Is Playing
-                                            {
-                                                wasPlaying = true;
-                                                medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
-                                            }
                                         }
-                                        else if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Stopped)
+                                        else //Is Playing
                                         {
-                                            wasStopped = true;
-                                            //medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Begin();
-                                            //medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                                            wasPlaying = true;
+                                            medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
                                         }
+                                    }
+                                    else if (medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentState == ClockState.Stopped)
+                                    {
+                                        wasStopped = true;
+                                        //medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Begin();
+                                        //medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                                    }
 
-                                        double durationMS = medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
-                                        double timeMS =
-                                            medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime == null
-                                            || !medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime.HasValue
-                                            ? -1.0
-                                            : medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime.Value.TotalMilliseconds;
+                                    double durationMS = medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
+                                    double timeMS =
+                                        medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime == null
+                                        || !medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime.HasValue
+                                        ? -1.0
+                                        : medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime.Value.TotalMilliseconds;
 
-                                        if (timeMS == -1.0 || timeMS >= durationMS)
+                                    if (timeMS == -1.0 || timeMS >= durationMS)
+                                    {
+                                        slider.Value = 0.100;
+                                    }
+
+                                    if (!wasPlaying)
+                                    {
+                                        _timer.Start();
+                                        if (wasStopped)
                                         {
-                                            slider.Value = 0.100;
-                                        }
-
-                                        if (!wasPlaying)
-                                        {
-                                            _timer.Start();
-                                            if (wasStopped)
-                                            {
-                                                medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Begin();
-                                            }
-                                            else
-                                            {
-                                                medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Resume();
-                                            }
+                                            medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Begin();
                                         }
                                         else
                                         {
-                                            _timer.Stop();
-                                            medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
-                                            actionUpdateSliderFromVideoTime.Invoke();
+                                            medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Resume();
                                         }
                                     }
+                                    else
+                                    {
+                                        _timer.Stop();
+                                        medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
+                                        actionUpdateSliderFromVideoTime.Invoke();
+                                    }
+
+                                    //if (ee.ChangedButton == MouseButton.Left)
+                                    //{
+                                    //}
                                     //else if (ee.ChangedButton == MouseButton.Right)
                                     //{
                                     //    _timer.Stop();
@@ -522,6 +541,9 @@ namespace Tobi.Plugin.DocumentPane
                                     //}
                                 }
                                 );
+                        medElement_WINDOWS_MEDIA_PLAYER.MouseDown +=
+                            new MouseButtonEventHandler((oo, ee) => mouseButtonEventHandler_WINDOWS_MEDIA_PLAYER());
+                        playPause.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) => mouseButtonEventHandler_WINDOWS_MEDIA_PLAYER());
 
                         slider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(
                             (oo, ee) =>
@@ -751,37 +773,38 @@ namespace Tobi.Plugin.DocumentPane
                             }
                             );
 
-                        medElement_MEDIAKIT_DIRECTSHOW.MouseDown += new MouseButtonEventHandler(
-                                (oo, ee) =>
+                        var mouseButtonEventHandler_MEDIAKIT_DIRECTSHOW = new Action(
+                                () =>
                                 {
                                     if (medElement_MEDIAKIT_DIRECTSHOW.LoadedBehavior != WPFMediaKit.DirectShow.MediaPlayers.MediaState.Manual)
                                     {
                                         return;
                                     }
 
-                                    if (ee.ChangedButton == MouseButton.Left)
+                                    if (medElement_MEDIAKIT_DIRECTSHOW.IsPlaying)
                                     {
-                                        if (medElement_MEDIAKIT_DIRECTSHOW.IsPlaying)
-                                        {
-                                            _timer.Stop();
-                                            medElement_MEDIAKIT_DIRECTSHOW.Pause();
-                                            actionUpdateSliderFromVideoTime.Invoke();
-                                        }
-                                        else
-                                        {
-                                            _timer.Start();
-                                            medElement_MEDIAKIT_DIRECTSHOW.Play();
-                                        }
-
-
-                                        double durationMS = medElement_MEDIAKIT_DIRECTSHOW.MediaDuration / 10000.0;
-                                        double timeMS = medElement_MEDIAKIT_DIRECTSHOW.MediaPosition / 10000.0;
-
-                                        if (timeMS >= durationMS)
-                                        {
-                                            slider.Value = 0.100;
-                                        }
+                                        _timer.Stop();
+                                        medElement_MEDIAKIT_DIRECTSHOW.Pause();
+                                        actionUpdateSliderFromVideoTime.Invoke();
                                     }
+                                    else
+                                    {
+                                        _timer.Start();
+                                        medElement_MEDIAKIT_DIRECTSHOW.Play();
+                                    }
+
+
+                                    double durationMS = medElement_MEDIAKIT_DIRECTSHOW.MediaDuration / 10000.0;
+                                    double timeMS = medElement_MEDIAKIT_DIRECTSHOW.MediaPosition / 10000.0;
+
+                                    if (timeMS >= durationMS)
+                                    {
+                                        slider.Value = 0.100;
+                                    }
+
+                                    //if (ee.ChangedButton == MouseButton.Left)
+                                    //{
+                                    //}
                                     //else if (ee.ChangedButton == MouseButton.Right)
                                     //{
                                     //    _timer.Stop();
@@ -791,7 +814,9 @@ namespace Tobi.Plugin.DocumentPane
                                     //}
                                 }
                                 );
-
+                        medElement_MEDIAKIT_DIRECTSHOW.MouseDown +=
+                            new MouseButtonEventHandler((oo, ee) => mouseButtonEventHandler_MEDIAKIT_DIRECTSHOW());
+                        playPause.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) => mouseButtonEventHandler_MEDIAKIT_DIRECTSHOW());
 
                         slider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(
                             (oo, ee) =>
@@ -966,7 +991,7 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (thereWasOne)
                     {
-                        videoAudioPanel.Children.RemoveAt(1);
+                        videoAudioPanel.Children.RemoveAt(0);
                     }
                 });
 
