@@ -59,7 +59,7 @@ namespace Tobi.Plugin.Urakawa
                         m_ExportSpineItemProjectPath = DocumentFilePath;
 
                         //MessageBox.Show
-                        messageBoxAlert("WARNING: single chapter export is an experimental and incomplete EPUB feature!", null);
+                        //messageBoxAlert("WARNING: single chapter export is an experimental and incomplete EPUB feature!", null);
 
                         Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                             (Action)(() =>
