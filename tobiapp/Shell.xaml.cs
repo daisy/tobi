@@ -1269,7 +1269,7 @@ namespace Tobi
 #endif
                 backWorker = null;
 
-                if (reporter.RequestCancellation || args.Cancelled)
+                if (workException != null || reporter.RequestCancellation || args.Cancelled)
                 {
                     actionCancelled();
                     windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
