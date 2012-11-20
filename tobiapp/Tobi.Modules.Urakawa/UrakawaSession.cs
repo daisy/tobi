@@ -160,6 +160,11 @@ namespace Tobi.Plugin.Urakawa
                     // XukStrings maintains a pointer to the last-created Project instance!
                     XukStrings.NullifyProjectReference();
                 }
+                else
+                {
+                    // XukStrings maintains a pointer to the last-created Project instance!
+                    XukStrings.RelocateProjectReference(m_DocumentProject);
+                }
             }
         }
 
@@ -320,6 +325,8 @@ namespace Tobi.Plugin.Urakawa
                     return null;
                 }
             }
+
+            XukStrings.RelocateProjectReference(project);
 
             project.Presentations.Get(0).UndoRedoManager.FlushCommands();
             //RaisePropertyChanged(()=>IsDirty);
