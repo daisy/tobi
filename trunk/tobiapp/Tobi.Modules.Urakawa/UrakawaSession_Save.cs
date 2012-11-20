@@ -284,7 +284,9 @@ namespace Tobi.Plugin.Urakawa
                 {
                     if (DocumentFilePath == m_SaveAsDocumentFilePath)
                     {
+                        SaveXukAction.Backup(DocumentFilePath);
                         File.Delete(DocumentFilePath);
+
                         File.Move(DocumentFilePath + SAVING_EXT, DocumentFilePath);
 
                         //File.Copy(DocumentFilePath + SAVING_EXT, DocumentFilePath);
@@ -296,8 +298,10 @@ namespace Tobi.Plugin.Urakawa
                     {
                         if (File.Exists(m_SaveAsDocumentFilePath))
                         {
+                            SaveXukAction.Backup(m_SaveAsDocumentFilePath);
                             File.Delete(m_SaveAsDocumentFilePath);
                         }
+
                         File.Move(m_SaveAsDocumentFilePath + SAVING_EXT, m_SaveAsDocumentFilePath);
                     }
 
