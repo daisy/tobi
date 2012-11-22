@@ -49,7 +49,7 @@ namespace Tobi
         public RichDelegateCommand OpenTobiIsolatedStorageCommand { get; private set; }
 
         public RichDelegateCommand OpenUserManualCommand { get; private set; }
-        public RichDelegateCommand OpenImageDescriptionsManualCommand { get; private set; }
+        //public RichDelegateCommand OpenImageDescriptionsManualCommand { get; private set; }
 
         private void initCommands()
         {
@@ -64,7 +64,7 @@ namespace Tobi
                 {
                     m_Logger.Log(@"ShellView.OpenUserManualCommand", Category.Debug, Priority.Medium);
 
-                    ExecuteShellProcess("http://www.daisy.org/tobi/user-manual");
+                    ExecuteShellProcess("http://www.daisy.org/tobi/tobi-user-reference-manual");
                 },
                  () => true,
                 Settings_KeyGestures.Default,
@@ -73,23 +73,23 @@ namespace Tobi
 
             RegisterRichCommand(OpenUserManualCommand);
 
-            OpenImageDescriptionsManualCommand = new RichDelegateCommand(
-                Tobi_Lang.CmdOpenImageDescriptionsManual_ShortDesc,
-                Tobi_Lang.CmdOpenImageDescriptionsManual_LongDesc,
-                null, // KeyGesture obtained from settings (see last parameters below)
-                null,
-                () =>
-                {
-                    m_Logger.Log(@"ShellView.OpenImageDescriptionsManualCommand", Category.Debug, Priority.Medium);
+            //OpenImageDescriptionsManualCommand = new RichDelegateCommand(
+            //    Tobi_Lang.CmdOpenImageDescriptionsManual_ShortDesc,
+            //    Tobi_Lang.CmdOpenImageDescriptionsManual_LongDesc,
+            //    null, // KeyGesture obtained from settings (see last parameters below)
+            //    null,
+            //    () =>
+            //    {
+            //        m_Logger.Log(@"ShellView.OpenImageDescriptionsManualCommand", Category.Debug, Priority.Medium);
 
-                    ExecuteShellProcess("http://www.daisy.org/tobi/image-description-manual");
-                },
-                 () => true,
-                Settings_KeyGestures.Default,
-                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
-                );
+            //        ExecuteShellProcess("http://www.daisy.org/tobi/image-description-manual");
+            //    },
+            //     () => true,
+            //    Settings_KeyGestures.Default,
+            //    null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
+            //    );
 
-            RegisterRichCommand(OpenImageDescriptionsManualCommand);
+            //RegisterRichCommand(OpenImageDescriptionsManualCommand);
             //
             ExitCommand = new RichDelegateCommand(
                 Tobi_Lang.CmdMenuExit_ShortDesc,

@@ -242,7 +242,9 @@ namespace Tobi
                 int uid5 = m_MenuBarView.AddMenuBarGroup(
                         Tobi_Common_Lang.Menu_Help, PreferredPosition.Last, false,
                         null, PreferredPosition.First, false,
-                        new[] { OpenUserManualCommand, OpenImageDescriptionsManualCommand });
+                        new[] { OpenUserManualCommand
+                            //, OpenImageDescriptionsManualCommand
+                        });
 
                 int uid2 = m_MenuBarView.AddMenuBarGroup(
                     Tobi_Common_Lang.Menu_View, PreferredPosition.First, true,
