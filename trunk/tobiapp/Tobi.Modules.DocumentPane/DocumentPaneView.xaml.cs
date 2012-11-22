@@ -36,6 +36,7 @@ using urakawa;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.daisy;
 using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.events.undo;
@@ -1988,6 +1989,21 @@ namespace Tobi.Plugin.DocumentPane
             {
                 return treeNode;
             }
+
+            XmlProperty xmlProp = treeNode.GetXmlProperty();
+
+            XmlAttribute attrEpubType = xmlProp.GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
+            bool isNote = attrEpubType != null &&
+                        (
+                        "note".Equals(attrEpubType.Value, StringComparison.OrdinalIgnoreCase)
+                        || "rearnote".Equals(attrEpubType.Value, StringComparison.OrdinalIgnoreCase)
+                        || "footnote".Equals(attrEpubType.Value, StringComparison.OrdinalIgnoreCase)
+                        );
+            if (isNote)
+            {
+                return treeNode;
+            }
+
             return ensureTreeNodeIsNoteAnnotation(treeNode.Parent);
         }
 

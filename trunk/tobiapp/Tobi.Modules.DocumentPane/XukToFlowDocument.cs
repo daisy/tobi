@@ -605,6 +605,34 @@ namespace Tobi.Plugin.DocumentPane
 
         private void setTag(TextElement data, TreeNode node)
         {
+            XmlProperty xmlProp = node.GetXmlProperty();
+
+            string id = node.GetXmlElementId();
+            if (!string.IsNullOrEmpty(id))
+            {
+                XmlAttribute attrEpubType = xmlProp.GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
+                bool isNote = attrEpubType != null &&
+                            (
+                            "note".Equals(attrEpubType.Value, StringComparison.OrdinalIgnoreCase)
+                            || "rearnote".Equals(attrEpubType.Value, StringComparison.OrdinalIgnoreCase)
+                            || "footnote".Equals(attrEpubType.Value, StringComparison.OrdinalIgnoreCase)
+                            );
+
+                bool okay = isNote
+                || node.GetXmlElementLocalName().Equals("annotation", StringComparison.OrdinalIgnoreCase)
+                || node.GetXmlElementLocalName().Equals("note", StringComparison.OrdinalIgnoreCase)
+                ;
+
+                if (okay)
+                {
+                    //string name = IdToName(attr.Value);
+                    data.ToolTip = id;
+
+                    m_DocumentPaneView.AddIdLinkTarget(id, data);
+                }
+            }
+
+
             DebugFix.Assert(data.Tag == null);
 
             if (data is Block)
@@ -1262,9 +1290,14 @@ namespace Tobi.Plugin.DocumentPane
 
         private TextElement walkBookTreeAndGenerateFlowDocument_anchor_a(TreeNode node, TextElement parent, string textMedia)
         {
-            //Hyperlink data = new Hyperlink();
-            var data = new Underline();
+            var data = new Hyperlink(); //Underline();
             setTag(data, node);
+
+            data.Focusable = false;
+            //data.PreviewGotKeyboardFocus += new KeyboardFocusChangedEventHandler((o, e) => e.Handled = true);
+
+            data.FontSize = m_FlowDoc.FontSize / 1.2;
+            data.FontWeight = FontWeights.Bold;
 #if DEBUG
             DebugFix.Assert(data.Tag != null);
             DebugFix.Assert(data.Tag is TreeNode);
@@ -1282,9 +1315,30 @@ namespace Tobi.Plugin.DocumentPane
 
             XmlProperty xmlProp = node.GetXmlProperty();
             XmlAttribute attr = xmlProp.GetAttribute("href");
-            if (attr != null)
+
+            if (attr != null && !String.IsNullOrEmpty(attr.Value) && attr.Value.Length > 1)
             {
-                if (!String.IsNullOrEmpty(attr.Value))
+                XmlAttribute attrEpubType = xmlProp.GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
+                bool isNoteref = attrEpubType != null
+                    && "noteref".Equals(attrEpubType.Value, StringComparison.OrdinalIgnoreCase);
+
+                if (isNoteref)
+                {
+                    string id = attr.Value.StartsWith("#") ? attr.Value.Substring(1) : attr.Value;
+                    data.NavigateUri = new Uri("#" + id, UriKind.Relative);
+
+                    //// Now using LostMouseCapture data.RequestNavigate += m_DocumentPaneView.OnTextElementRequestNavigate;
+
+                    //data.MouseDown += m_DocumentPaneView.OnTextElementHyperLinkMouseDown;
+
+                    data.ToolTip = data.NavigateUri.ToString();
+                    //string name = IdToName(id);
+
+                    data.GotKeyboardFocus += m_DocumentPaneView.OnHyperLinkGotKeyboardFocus;
+
+                    m_DocumentPaneView.AddIdLinkSource(id, data);
+                }
+                else
                 {
                     var uri = new Uri(attr.Value, UriKind.RelativeOrAbsolute);
                     //removed to avoid swallowing the mouse click
@@ -1366,7 +1420,8 @@ namespace Tobi.Plugin.DocumentPane
 
             DebugFix.Assert(node.HasXmlProperty &&
                 (node.GetXmlElementLocalName().Equals("annoref", StringComparison.OrdinalIgnoreCase)
-                || node.GetXmlElementLocalName().Equals("noteref", StringComparison.OrdinalIgnoreCase))
+                || node.GetXmlElementLocalName().Equals("noteref", StringComparison.OrdinalIgnoreCase)
+                )
                 );
 #endif
             SetBorderAndBackColorBasedOnTreeNodeTag(data);
@@ -2536,14 +2591,6 @@ namespace Tobi.Plugin.DocumentPane
 #endif
                             SetBorderAndBackColorBasedOnTreeNodeTag(data);
 
-                            string id = node.GetXmlElementId();
-                            if (!string.IsNullOrEmpty(id))
-                            {
-                                //string name = IdToName(attr.Value);
-                                data.ToolTip = id;
-
-                                m_DocumentPaneView.AddIdLinkTarget(id, data);
-                            }
                         };
 
                         if (canAddBlockToParent)
