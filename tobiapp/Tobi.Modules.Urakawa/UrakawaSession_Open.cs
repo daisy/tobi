@@ -431,7 +431,12 @@ namespace Tobi.Plugin.Urakawa
 
                 OpenFile(outputFileName);
             }
-            else
+            else if (
+                ".xhtml".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || ".html".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || ".xml".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || ".opf".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                )
             {
                 //todo: should we implement HTTP import ?
                 if (!fileUri.IsFile)
