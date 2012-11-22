@@ -548,7 +548,7 @@ namespace Tobi.Plugin.Urakawa
                                 if (isEPUB)
                                 {
                                     string epub = ((Epub3_Export)converter).EpubFilePath;
-                                    checkEpub(epub);
+                                    checkEpub(epub, null);
                                 }
                             }
                             finally
@@ -560,13 +560,13 @@ namespace Tobi.Plugin.Urakawa
                 });
         }
 
-        private void checkEpub(string epub)
+        private void checkEpub(string path, string mode)
         {
             try
             {
-                if (!string.IsNullOrEmpty(epub)
-                    && File.Exists(epub)
-                    && askUser("EPUB-Check?", epub))
+                if (!string.IsNullOrEmpty(path)
+                    && (mode == "exp" ? Directory.Exists(path) : File.Exists(path))
+                    && askUser("EPUB-Check?", path))
                 {
                     string workingDir =
                         Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -577,7 +577,9 @@ namespace Tobi.Plugin.Urakawa
 
                     process.StartInfo.WorkingDirectory = workingDir;
                     process.StartInfo.FileName = @"java.exe";
-                    process.StartInfo.Arguments = "-jar \"" + jar + "\" \"" + epub + "\"";
+                    process.StartInfo.Arguments = "-jar \"" + jar + "\""
+                        + (!string.IsNullOrEmpty(mode) ? " -mode " + mode + " -v 3.0" : "")
+                         + " \"" + path + "\"";
 
                     process.StartInfo.RedirectStandardOutput = true;
                     process.StartInfo.RedirectStandardError = true;

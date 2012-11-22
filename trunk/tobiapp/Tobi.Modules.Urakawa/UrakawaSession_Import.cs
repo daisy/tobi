@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -17,6 +18,85 @@ namespace Tobi.Plugin.Urakawa
         private bool doImport()
         {
             m_Logger.Log(String.Format(@"UrakawaSession.doImport() [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
+
+            string ext = Path.GetExtension(DocumentFilePath);
+
+            if (".opf".Equals(ext, StringComparison.OrdinalIgnoreCase))
+            {
+                int levelsUp = 0;
+
+                string parentDir = Path.GetDirectoryName(DocumentFilePath);
+
+                DirectoryInfo parentDirInfo = new DirectoryInfo(parentDir);
+
+            tryAgain:
+                levelsUp++;
+
+#if NET40
+            IEnumerable<DirectoryInfo> metaInfDirs = parentDirInfo.EnumerateDirectories("META-INF", SearchOption.TopDirectoryOnly);
+#else
+                DirectoryInfo[] metaInfDirs = dirInfo.GetDirectories("META-INF", SearchOption.TopDirectoryOnly);
+#endif
+
+                bool found = false;
+
+                foreach (DirectoryInfo dirInfo in metaInfDirs)
+                {
+                    string containerXml = Path.Combine(dirInfo.FullName, "container.xml");
+                    if (File.Exists(containerXml))
+                    {
+                        DocumentFilePath = containerXml;
+                        ext = Path.GetExtension(DocumentFilePath);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found && levelsUp <= 2 && parentDirInfo.Parent != null)
+                {
+                    parentDirInfo = parentDirInfo.Parent;
+                    goto tryAgain;
+                }
+            }
+
+            if (".epub".Equals(ext, StringComparison.OrdinalIgnoreCase))
+            {
+                checkEpub(DocumentFilePath, null);
+            }
+            else if (".xml".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                &&
+                FileDataProvider.NormaliseFullFilePath(DocumentFilePath).IndexOf(
+                        @"META-INF"
+                //+ Path.DirectorySeparatorChar
+                        + '/'
+                        + @"container.xml"
+                        , StringComparison.OrdinalIgnoreCase) >= 0
+                //DocumentFilePath.IndexOf("container.xml", StringComparison.OrdinalIgnoreCase) >= 0
+            )
+            {
+                string parentDir = Path.GetDirectoryName(DocumentFilePath);
+                DirectoryInfo dirInfo = new DirectoryInfo(parentDir);
+                if (dirInfo.Parent != null)
+                {
+                    string checkEpubPath = dirInfo.Parent.FullName;
+                    checkEpub(checkEpubPath, "exp");
+                }
+            }
+            else if (".opf".Equals(ext, StringComparison.OrdinalIgnoreCase))
+            {
+                checkEpub(DocumentFilePath, "opf");
+            }
+            else if (".html".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || ".xhtml".Equals(ext, StringComparison.OrdinalIgnoreCase))
+            {
+                //MessageBox.Show
+                messageBoxAlert("WARNING: single HTML import is an experimental and incomplete EPUB feature!", null);
+
+                checkEpub(DocumentFilePath, "xhtml");
+            }
+
+
+
 
             string outputDirectory = Path.Combine(
                 Path.GetDirectoryName(DocumentFilePath),
