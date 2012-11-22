@@ -293,7 +293,8 @@ m_Stream.Length);
 
                     m_Recorder.SetInputDevice(Settings.Default.Audio_InputDevice);
 
-                    if (m_Recorder.InputDevice.Name != Settings.Default.Audio_InputDevice)
+                    if (m_Recorder.InputDevice != null
+                        && m_Recorder.InputDevice.Name != Settings.Default.Audio_InputDevice)
                     {
                         Settings.Default.Audio_InputDevice = m_Recorder.InputDevice.Name; // will generate a call to OnSettingsPropertyChanged again
                     }
@@ -319,7 +320,8 @@ m_Stream.Length);
                 m_Player.SetOutputDevice(GetWindowsFormsHookControl(), Settings.Default.Audio_OutputDevice);
                 //m_Player.OutputDevice = value;
 
-                if (m_Player.OutputDevice.Name != Settings.Default.Audio_OutputDevice)
+                if (m_Player.OutputDevice != null
+                    && m_Player.OutputDevice.Name != Settings.Default.Audio_OutputDevice)
                 {
                     Settings.Default.Audio_OutputDevice = m_Player.OutputDevice.Name; // will generate a call to OnSettingsPropertyChanged again
                 }
