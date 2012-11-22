@@ -35,7 +35,7 @@ namespace Tobi.Plugin.Urakawa
 #if NET40
             IEnumerable<DirectoryInfo> metaInfDirs = parentDirInfo.EnumerateDirectories("META-INF", SearchOption.TopDirectoryOnly);
 #else
-                DirectoryInfo[] metaInfDirs = dirInfo.GetDirectories("META-INF", SearchOption.TopDirectoryOnly);
+            DirectoryInfo[] metaInfDirs = parentDirInfo.GetDirectories("META-INF", SearchOption.TopDirectoryOnly);
 #endif
 
                 bool found = false;
