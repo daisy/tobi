@@ -20,6 +20,7 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
+using urakawa.daisy.export;
 using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.exception;
@@ -107,6 +108,39 @@ namespace Tobi.Plugin.Urakawa
             if (OpenCommand.CanExecute() && File.Exists(filename))
             {
                 OpenFile(filename);
+            }
+            else if (Directory.Exists(filename) && askUser("Create EPUB3 archive?", filename))
+            {
+                string mimeTypePath = Path.Combine(filename, "mimetype");
+                if (!File.Exists(mimeTypePath))
+                {
+                    StreamWriter mimeTypeWriter = File.CreateText(mimeTypePath);
+                    try
+                    {
+                        mimeTypeWriter.Write("application/epub+zip");
+                    }
+                    finally
+                    {
+                        mimeTypeWriter.Close();
+                    }
+                }
+
+                var dirInfo = new DirectoryInfo(filename).Parent;
+                string addon = "";
+                int index = 0;
+            tryAgain:
+                string epubFilePath = Path.Combine(dirInfo.FullName, Path.GetFileName(filename) + addon + ".epub");
+                if (File.Exists(epubFilePath))
+                {
+                    addon = "_" + index;
+                    goto tryAgain;
+                }
+                Epub3_Export.ZipEpub(epubFilePath, filename);
+
+                if (File.Exists(epubFilePath))
+                {
+                    checkEpub(epubFilePath, null);
+                }
             }
         }
 
