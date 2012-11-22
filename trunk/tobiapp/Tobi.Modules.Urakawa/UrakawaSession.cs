@@ -347,7 +347,7 @@ namespace Tobi.Plugin.Urakawa
 
             if (interactive)
             {
-                bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                bool error = m_ShellView.RunModalCancellableProgressTask(true,
                                                                           Tobi_Plugin_Urakawa_Lang.CleaningUpDataFiles,
                                                                           new Cleaner(project.Presentations.Get(0),
                                                                                       deletedDataFolderPath),
@@ -369,7 +369,7 @@ namespace Tobi.Plugin.Urakawa
                                                                           });
                 if (cancelled)
                 {
-                    DebugFix.Assert(!result);
+                    //DebugFix.Assert(!result);
                 }
             }
             else

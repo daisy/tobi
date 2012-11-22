@@ -163,7 +163,7 @@ namespace Tobi.Plugin.Urakawa
 
                         bool cancelled = false;
 
-                        bool outcome = m_ShellView.RunModalCancellableProgressTask(true,
+                        bool error = m_ShellView.RunModalCancellableProgressTask(true,
                             Tobi_Plugin_Urakawa_Lang.CopyingDataFiles,
                             new DataFolderCopier(DocumentProject.Presentations.Get(0), dirPath, prefix),
                             () =>
@@ -177,7 +177,7 @@ namespace Tobi.Plugin.Urakawa
                                 cancelled = false;
                             });
 
-                        DebugFix.Assert(outcome == !cancelled);
+                        //DebugFix.Assert(outcome == !cancelled);
 
                         if (askUserOpenSavedAs(dlg.FileName))
                         {
@@ -266,14 +266,12 @@ namespace Tobi.Plugin.Urakawa
                 LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_LongDesc
             };
 
-            bool notCancelled = m_ShellView.RunModalCancellableProgressTask(true,
+            bool cancelled = false;
+            bool error = m_ShellView.RunModalCancellableProgressTask(true,
                 Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_ShortDesc, action,
                 () =>
                 {
-                    if (File.Exists(m_SaveAsDocumentFilePath + SAVING_EXT))
-                    {
-                        File.Delete(m_SaveAsDocumentFilePath + SAVING_EXT);
-                    }
+                    cancelled = true;
 
                     RaisePropertyChanged(() => IsDirty);
                     //IsDirty = true;
@@ -282,6 +280,8 @@ namespace Tobi.Plugin.Urakawa
                 },
                 () =>
                 {
+                    cancelled = false;
+
                     if (DocumentFilePath == m_SaveAsDocumentFilePath)
                     {
                         SaveXukAction.Backup(DocumentFilePath);
@@ -316,7 +316,21 @@ namespace Tobi.Plugin.Urakawa
                 }
                 );
 
-            return notCancelled;
+            string savingFile = m_SaveAsDocumentFilePath + SAVING_EXT;
+            if (File.Exists(savingFile))
+            {
+                if (cancelled && !error)
+                {
+                    File.Delete(savingFile);
+                }
+
+                if (error)
+                {
+                    m_ShellView.ExecuteShellProcess(Path.GetDirectoryName(savingFile));
+                }
+            }
+
+            return !cancelled;
         }
 
         public void messageBoxText(string title, string text, string info)

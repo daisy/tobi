@@ -397,7 +397,7 @@ namespace Tobi.Plugin.AudioPane
 
                 var converter = new AudioTTSGeneratorAutoAdvance(this);
 
-                bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                bool error = m_ShellView.RunModalCancellableProgressTask(true,
                     Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio,
                     converter,
                     () =>
@@ -413,7 +413,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (cancelled)
                 {
-                    DebugFix.Assert(!result);
+                    //DebugFix.Assert(!result);
                 }
 
                 if (converter.RequestCancellation) // Exception, not user-triggered

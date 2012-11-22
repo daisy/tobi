@@ -209,7 +209,7 @@ namespace Tobi.Plugin.Urakawa
 
             bool cancelled = false;
 
-            bool result = m_ShellView.RunModalCancellableProgressTask(true,
+            bool error = m_ShellView.RunModalCancellableProgressTask(true,
                 Tobi_Plugin_Urakawa_Lang.Importing,
                 converter,
                 () =>
@@ -232,9 +232,9 @@ namespace Tobi.Plugin.Urakawa
                     //AddRecentFile(new Uri(DocumentFilePath, UriKind.Absolute));
                 });
 
-            if (result) //NOT cancelled
+            if (!cancelled)
             {
-                DebugFix.Assert(!cancelled);
+                //DebugFix.Assert(!report);
 
                 string xukPath = converter.XukPath;
 
@@ -312,7 +312,7 @@ namespace Tobi.Plugin.Urakawa
                 }
             }
 
-            return result;
+            return !cancelled;
         }
     }
 }

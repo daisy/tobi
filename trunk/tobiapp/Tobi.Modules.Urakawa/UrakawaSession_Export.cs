@@ -527,7 +527,7 @@ namespace Tobi.Plugin.Urakawa
                  IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions);
             }
 
-            m_ShellView.RunModalCancellableProgressTask(true,
+            bool error = m_ShellView.RunModalCancellableProgressTask(true,
                 Tobi_Plugin_Urakawa_Lang.Exporting,
                 converter,
                 () =>
