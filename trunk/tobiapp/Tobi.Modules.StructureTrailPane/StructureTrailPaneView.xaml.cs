@@ -23,33 +23,38 @@ using urakawa;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.daisy;
 using urakawa.events.undo;
 using urakawa.property.xml;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.StructureTrailPane
 {
-    internal class TreeNodeWrapper
-    {
-        public TreeNode TreeNode;
-        //public Popup Popup;
-
-        public override string ToString()
-        {
-            if (TreeNode.HasXmlProperty)
-            {
-                return TreeNode.GetXmlElementPrefixedLocalName();
-            }
-            return "TEXT";
-        }
-    }
-
     /// <summary>
     /// Interaction logic for StructureTrailPaneView.xaml
     /// </summary>
     [Export(typeof(StructureTrailPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
     public partial class StructureTrailPaneView // : INotifyPropertyChangedEx
     {
+        public static string getTreeNodeLabel(TreeNode node)
+        {
+            string txt = "TXT";
+            if (node.HasXmlProperty)
+            {
+                txt = node.GetXmlElementPrefixedLocalName();
+
+                XmlProperty xmlProp = node.GetXmlProperty();
+
+                XmlAttribute attrEpubType = xmlProp.GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
+
+                if (attrEpubType != null && !string.IsNullOrEmpty(attrEpubType.Value))
+                {
+                    txt += (" (" + attrEpubType.Value + ")");
+                }
+            }
+            return txt;
+        }
+
         Style m_ButtonStyle = (Style)Application.Current.FindResource("ToolBarButtonBaseStyle");
 
         private List<TreeNode> PathToCurrentTreeNode;
@@ -78,8 +83,6 @@ namespace Tobi.Plugin.StructureTrailPane
             int counter = 0;
             foreach (TreeNode n in PathToCurrentTreeNode)
             {
-                string localName = n.HasXmlProperty ? n.GetXmlElementPrefixedLocalName() : null;
-
                 //TODO: could use Label+Hyperlink+TextBlock instead of button
                 // (not with NavigateUri+RequestNavigate, because it requires a valid URI.
                 // instead we use the Tag property which contains a reference to a TreeNode, 
@@ -102,8 +105,9 @@ namespace Tobi.Plugin.StructureTrailPane
                     Style = m_ButtonStyle
                 };
 
-                string str = (localName != null ? localName : "TEXT");
-                var run = new Run(str)
+                string label = getTreeNodeLabel(n);
+
+                var run = new Run(label)
                 {
                     TextDecorations = TextDecorations.Underline
                 };
@@ -185,7 +189,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 }
 
                 butt.SetValue(AutomationProperties.NameProperty,
-                    (localName != null ? localName : Tobi_Plugin_StructureTrailPane_Lang.NoXMLFound)
+                    (n.HasXmlProperty ? label : Tobi_Plugin_StructureTrailPane_Lang.NoXMLFound)
                     + (selected ? Tobi_Plugin_StructureTrailPane_Lang.Selected : "")
                     + (withMedia ? Tobi_Plugin_StructureTrailPane_Lang.Audio : ""));
 
@@ -234,22 +238,22 @@ namespace Tobi.Plugin.StructureTrailPane
                     bool childIsInPath = PathToCurrentTreeNode.Contains(child);
 
                     MenuItem menuItem = null;
-                    
+
+                    string label = getTreeNodeLabel(child);
                     if (child.HasXmlProperty)
                     {
                         menuItem = new MenuItem();
 
-                        string localName = child.GetXmlElementPrefixedLocalName();
                         if (childIsInPath)
                         {
-                            var runMenuItem = new Run(localName) { FontWeight = FontWeights.ExtraBold };
+                            var runMenuItem = new Run(label) { FontWeight = FontWeights.ExtraBold };
                             var textBlock = new TextBlock(runMenuItem);
                             //textBlock.SetValue(AutomationProperties.NameProperty, qnameChild.LocalName);
                             menuItem.Header = textBlock;
                         }
                         else
                         {
-                            menuItem.Header = localName;
+                            menuItem.Header = label;
                         }
                     }
                     else
@@ -262,14 +266,14 @@ namespace Tobi.Plugin.StructureTrailPane
 
                             if (childIsInPath)
                             {
-                                var runMenuItem = new Run("TXT") {FontWeight = FontWeights.ExtraBold};
+                                var runMenuItem = new Run(label) { FontWeight = FontWeights.ExtraBold };
                                 var textBlock = new TextBlock(runMenuItem);
                                 //textBlock.SetValue(AutomationProperties.NameProperty, "TXT");
                                 menuItem.Header = textBlock;
                             }
                             else
                             {
-                                menuItem.Header = "TXT";
+                                menuItem.Header = label;
                             }
                         }
                     }
@@ -666,11 +670,11 @@ namespace Tobi.Plugin.StructureTrailPane
             strBuilder.Insert(0, audioInfo);
             strBuilder.Insert(0, " ");
 
-            string localName = treeNode.HasXmlProperty ? treeNode.GetXmlElementPrefixedLocalName() : null;
+            string label =  getTreeNodeLabel(treeNode);
 
-            string qNameStr = (localName == null
+            string qNameStr = (!treeNode.HasXmlProperty
                                   ? Tobi_Plugin_StructureTrailPane_Lang.NoXML
-                                  : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, localName)
+                                  : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, label)
                              );
 
             strBuilder.Insert(0, qNameStr);
