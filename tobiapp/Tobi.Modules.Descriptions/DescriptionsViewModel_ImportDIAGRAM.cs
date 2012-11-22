@@ -404,7 +404,7 @@ namespace Tobi.Plugin.Descriptions
 
                                 var converter = new AudioClipConverter(audioFormatConvertorSession, fullPath);
 
-                                bool result = ShellView.RunModalCancellableProgressTask(true,
+                                bool error = ShellView.RunModalCancellableProgressTask(true,
                                     "Converting audio...",
                                     converter,
                                     () =>
@@ -420,7 +420,7 @@ namespace Tobi.Plugin.Descriptions
 
                                 if (cancelled)
                                 {
-                                    DebugFix.Assert(!result);
+                                    //DebugFix.Assert(!result);
                                     break;
                                 }
 

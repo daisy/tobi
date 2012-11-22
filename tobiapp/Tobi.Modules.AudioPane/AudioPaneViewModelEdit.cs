@@ -818,7 +818,7 @@ namespace Tobi.Plugin.AudioPane
 
                     var converter = new AudioClipConverter(m_AudioFormatConvertorSession, filePath);
 
-                    bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                    bool error = m_ShellView.RunModalCancellableProgressTask(true,
                         Tobi_Plugin_AudioPane_Lang.ProcessingAudioClip,
                         converter,
                         () =>
@@ -834,7 +834,7 @@ namespace Tobi.Plugin.AudioPane
 
                     if (cancelled)
                     {
-                        DebugFix.Assert(!result);
+                        //DebugFix.Assert(!result);
                         return null;
                     }
 
@@ -941,7 +941,7 @@ namespace Tobi.Plugin.AudioPane
 
                 var converter = new AudioClipConverter(m_AudioFormatConvertorSession_NoProject, filePath);
 
-                bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                bool error = m_ShellView.RunModalCancellableProgressTask(true,
                     Tobi_Plugin_AudioPane_Lang.ProcessingAudioClip,
                     converter,
                     () =>
@@ -957,7 +957,7 @@ namespace Tobi.Plugin.AudioPane
 
                 if (cancelled)
                 {
-                    DebugFix.Assert(!result);
+                    //DebugFix.Assert(!result);
                     return null;
                 }
 

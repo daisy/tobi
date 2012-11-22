@@ -3554,7 +3554,7 @@ namespace Tobi.Plugin.DocumentPane
 
 
             // WE CAN'T USE A THREAD BECAUSE FLOWDOCUMENT CANNOT BE FROZEN FOR INTER-THREAD INSTANCE EXCHANGE !! :(
-            m_ShellView.RunModalCancellableProgressTask(false,
+            bool error = m_ShellView.RunModalCancellableProgressTask(false,
                 Tobi_Plugin_DocumentPane_Lang.CreatingFlowDocument,
                 converter,
                 action,

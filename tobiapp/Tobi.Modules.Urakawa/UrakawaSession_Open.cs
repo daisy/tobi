@@ -210,7 +210,7 @@ namespace Tobi.Plugin.Urakawa
 
                 bool cancelled = false;
 
-                bool result = m_ShellView.RunModalCancellableProgressTask(true,
+                bool error = m_ShellView.RunModalCancellableProgressTask(true,
                     Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc, action,
                     () =>
                     {
@@ -238,9 +238,9 @@ namespace Tobi.Plugin.Urakawa
                     }
                     );
 
-                if (!result)
+                if (cancelled)
                 {
-                    DebugFix.Assert(cancelled);
+                    //DebugFix.Assert(!report);
                     return false;
                 }
 
@@ -562,32 +562,31 @@ namespace Tobi.Plugin.Urakawa
 
                     bool cancelled = false;
 
-                    bool result = m_ShellView.RunModalCancellableProgressTask(true,
-                                                                              Tobi_Plugin_Urakawa_Lang.
-                                                                                  UrakawaOpenAction_ShortDesc, action,
-                                                                              () =>
-                                                                              {
-                                                                                  cancelled = true;
-                                                                                  project = null;
-                                                                              },
-                                                                              () =>
-                                                                              {
-                                                                                  cancelled = false;
+                    bool error = m_ShellView.RunModalCancellableProgressTask(true,
+                        Tobi_Plugin_Urakawa_Lang.UrakawaOpenAction_ShortDesc, action,
+                        () =>
+                        {
+                            cancelled = true;
+                            project = null;
+                        },
+                        () =>
+                        {
+                            cancelled = false;
 
-                                                                                  if (project.Presentations.Count == 0)
-                                                                                  {
-                                                                                      Debug.Fail(
-                                                                                          "Project does not contain a Presentation !" +
-                                                                                          Environment.NewLine +
-                                                                                          uri.ToString());
-                                                                                      //workException = new XukException()
-                                                                                  }
-                                                                              }
+                            if (project.Presentations.Count == 0)
+                            {
+                                Debug.Fail(
+                                    "Project does not contain a Presentation !" +
+                                    Environment.NewLine +
+                                    uri.ToString());
+                                //workException = new XukException()
+                            }
+                        }
                         );
 
-                    if (!result)
+                    if (cancelled)
                     {
-                        DebugFix.Assert(cancelled);
+                        //DebugFix.Assert(!report);
                         return;
                     }
 

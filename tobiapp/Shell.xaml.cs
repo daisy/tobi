@@ -1294,14 +1294,17 @@ namespace Tobi
             if (workException != null)
             {
                 ExceptionHandler.Handle(workException, false, this);
-                return false;
+                return true;
                 //throw workException;
             }
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel
                 || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.ESC)
             {
-                if (backWorker == null) return false;
+                if (backWorker == null)
+                {
+                    return false;
+                }
 
                 progressBar.IsIndeterminate = true;
 
@@ -1336,7 +1339,7 @@ namespace Tobi
                 return false;
             }
 
-            return true;
+            return false;
         }
 
         // DoEvent() equivalent
