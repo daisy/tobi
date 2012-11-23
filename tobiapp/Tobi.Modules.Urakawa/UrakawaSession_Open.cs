@@ -480,6 +480,7 @@ namespace Tobi.Plugin.Urakawa
                 || ".html".Equals(ext, StringComparison.OrdinalIgnoreCase)
                 || ".xml".Equals(ext, StringComparison.OrdinalIgnoreCase)
                 || ".opf".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || ".epub".Equals(ext, StringComparison.OrdinalIgnoreCase)
                 )
             {
                 //todo: should we implement HTTP import ?
