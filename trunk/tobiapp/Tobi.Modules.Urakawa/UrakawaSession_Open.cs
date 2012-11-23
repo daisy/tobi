@@ -103,44 +103,54 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(OpenCommand);
         }
 
+        public void OpenDirectory(string filename)
+        {
+            if (!askUser("Create EPUB3 archive?", filename))
+            {
+                return;
+            }
+
+            string mimeTypePath = Path.Combine(filename, "mimetype");
+            if (!File.Exists(mimeTypePath))
+            {
+                StreamWriter mimeTypeWriter = File.CreateText(mimeTypePath);
+                try
+                {
+                    mimeTypeWriter.Write("application/epub+zip");
+                }
+                finally
+                {
+                    mimeTypeWriter.Close();
+                }
+            }
+
+            var dirInfo = new DirectoryInfo(filename).Parent;
+            string addon = "";
+            int index = 0;
+        tryAgain:
+            string epubFilePath = Path.Combine(dirInfo.FullName, Path.GetFileName(filename) + addon + ".epub");
+            if (File.Exists(epubFilePath))
+            {
+                addon = "_" + index;
+                goto tryAgain;
+            }
+            Epub3_Export.ZipEpub(epubFilePath, filename);
+
+            if (File.Exists(epubFilePath))
+            {
+                checkEpub(epubFilePath, null);
+            }
+        }
+
         public void TryOpenFile(string filename)
         {
             if (OpenCommand.CanExecute() && File.Exists(filename))
             {
                 OpenFile(filename);
             }
-            else if (Directory.Exists(filename) && askUser("Create EPUB3 archive?", filename))
+            else if (Directory.Exists(filename))
             {
-                string mimeTypePath = Path.Combine(filename, "mimetype");
-                if (!File.Exists(mimeTypePath))
-                {
-                    StreamWriter mimeTypeWriter = File.CreateText(mimeTypePath);
-                    try
-                    {
-                        mimeTypeWriter.Write("application/epub+zip");
-                    }
-                    finally
-                    {
-                        mimeTypeWriter.Close();
-                    }
-                }
-
-                var dirInfo = new DirectoryInfo(filename).Parent;
-                string addon = "";
-                int index = 0;
-            tryAgain:
-                string epubFilePath = Path.Combine(dirInfo.FullName, Path.GetFileName(filename) + addon + ".epub");
-                if (File.Exists(epubFilePath))
-                {
-                    addon = "_" + index;
-                    goto tryAgain;
-                }
-                Epub3_Export.ZipEpub(epubFilePath, filename);
-
-                if (File.Exists(epubFilePath))
-                {
-                    checkEpub(epubFilePath, null);
-                }
+                OpenDirectory(filename);
             }
         }
 
