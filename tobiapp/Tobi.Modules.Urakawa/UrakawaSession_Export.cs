@@ -1,22 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using System.Xml;
 using AudioLib;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI;
 using Tobi.Common.Validation;
 using urakawa;
+using urakawa.daisy;
 using urakawa.daisy.export;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using urakawa.daisy.import;
 using urakawa.data;
+using urakawa.xuk;
 using Application = System.Windows.Application;
 using CheckBox = System.Windows.Controls.CheckBox;
 using ComboBox = System.Windows.Controls.ComboBox;
@@ -550,6 +555,11 @@ namespace Tobi.Plugin.Urakawa
                                     string epub = ((Epub3_Export)converter).EpubFilePath;
                                     checkEpub(epub, null);
                                 }
+                                else
+                                {
+                                    string opf = ((Daisy3_Export)converter).OpfFilePath;
+                                    checkDAISY(opf);
+                                }
                             }
                             finally
                             {
@@ -558,6 +568,269 @@ namespace Tobi.Plugin.Urakawa
                         }
                         ));
                 });
+        }
+
+        private void executeProcess(string workingDir, string title, string exe, string args,
+            Func<String, String> checkErrorsOrWarning)
+        {
+            using (Process process = new Process())
+            {
+                process.StartInfo.WorkingDirectory = workingDir;
+                process.StartInfo.FileName = exe;
+                process.StartInfo.Arguments = args;
+
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+                process.StartInfo.CreateNoWindow = false;
+                process.StartInfo.ErrorDialog = false;
+
+                StringBuilder output = new StringBuilder();
+                StringBuilder error = new StringBuilder();
+
+                process.Disposed += (object sender, EventArgs e) =>
+                {
+                    Console.WriteLine("process.Disposed");
+                };
+
+                process.Exited += (object sender, EventArgs e) =>
+                {
+                    Console.WriteLine("process.Exited");
+                };
+
+                using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+                using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+                {
+                    process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
+                    {
+                        Console.WriteLine("process.ErrorDataReceived: " + e.Data);
+
+                        if (e.Data == null)
+                        {
+                            errorWaitHandle.Set();
+                        }
+                        else
+                        {
+                            error.AppendLine(e.Data);
+                        }
+                    };
+
+                    process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
+                    {
+                        Console.WriteLine("process.OutputDataReceived: " + e.Data);
+
+                        if (e.Data == null)
+                        {
+                            outputWaitHandle.Set();
+                        }
+                        else
+                        {
+                            output.AppendLine(e.Data);
+                        }
+                    };
+
+                    process.EnableRaisingEvents = true;
+
+                    process.Start();
+
+                    process.PriorityBoostEnabled = true;
+                    process.PriorityClass = ProcessPriorityClass.AboveNormal;
+
+                    process.BeginErrorReadLine();
+                    process.BeginOutputReadLine();
+
+                    const int timeout = 1000 * 60 * 2; // 2 minutes
+
+                    if (process.WaitForExit(timeout)
+                        && outputWaitHandle.WaitOne(timeout)
+                        && errorWaitHandle.WaitOne(timeout))
+                    {
+                        if (process.ExitCode != 0)
+                        {
+                            messageBoxText(title, "Error!", error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
+                        }
+                        else
+                        {
+                            string report = output.ToString();
+                            string text = "Success.";
+
+                            string errorWarningReport = checkErrorsOrWarning(report);
+                            if (!string.IsNullOrEmpty(errorWarningReport))
+                            {
+                                text = "There are errors or warnings!";
+
+                                report = errorWarningReport + Environment.NewLine + Environment.NewLine + report;
+                            }
+
+                            messageBoxText(title, text, report + Environment.NewLine + Environment.NewLine + error.ToString());
+                        }
+
+                        //if (process.StartInfo.RedirectStandardOutput && process.StartInfo.RedirectStandardError)
+                        //{
+                        //    if (process.ExitCode != 0)
+                        //    {
+                        //        StreamReader stdErr = process.StandardError;
+                        //        if (!stdErr.EndOfStream)
+                        //        {
+                        //            report = stdErr.ReadToEnd();
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        StreamReader stdOut = process.StandardOutput;
+                        //        if (!stdOut.EndOfStream)
+                        //        {
+                        //            report = stdOut.ReadToEnd();
+                        //        }
+                        //    }
+                        //}
+                    }
+                    else
+                    {
+                        messageBoxText(title, "Process timeout!", output.ToString() + Environment.NewLine + error.ToString());
+                    }
+                }
+            }
+        }
+
+        private bool checkDAISY(string path)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(path)
+                    && File.Exists(path))
+                {
+                    if (!askUser("DAISY Check?", path))
+                    {
+                        return false;
+                    }
+
+                    string workingDir =
+                        Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+                    workingDir = Path.Combine(workingDir, "ZedVal");
+
+                    var dirInfo = new DirectoryInfo(workingDir);
+
+#if NET40
+                    IEnumerable<FileInfo> jars = dirInfo.EnumerateFiles("*.jar", SearchOption.TopDirectoryOnly);
+#else
+                    FileInfo[] jars = dirInfo.GetFiles("*.jar", SearchOption.TopDirectoryOnly);
+#endif
+                    string classpath = "";
+                    foreach (FileInfo jarInfo in jars)
+                    {
+                        classpath += (jarInfo.FullName + ";");
+                    }
+
+                    //classpath = workingDir + Path.DirectorySeparatorChar + "zedval-2.1.jar;";
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "batik-css-1.6-1.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "batik-util-1.6-1.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "commons-cli-1.1.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "daisy-util-20100125.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "jing-20091111.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "jlayer-1.0.1.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "sac-1.3.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "Saxon-HE-9.4.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "stax-api-1.0.1.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "wstx-lgpl-3.2.9.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "xercesImpl-2.9.1.jar;");
+                    //classpath += (workingDir + Path.DirectorySeparatorChar + "xml-apis-1.0.b2.jar;");
+
+                    Func<String, String> checkErrorsOrWarning =
+                        (string report) =>
+                        {
+                            if (report.IndexOf("<message", StringComparison.OrdinalIgnoreCase) >= 0)
+                            {
+                                string xmlInfo = "";
+
+                                XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocumentFromString(report, false,
+                                                                                                      false);
+
+                                IEnumerable<XmlNode> messages = XmlDocumentHelper.GetChildrenElementsOrSelfWithName(
+                                    xmlDoc.DocumentElement,
+                                    true,
+                                    "message",
+                                    null,
+                                    false);
+
+                                foreach (XmlNode message in messages)
+                                {
+                                    XmlNode file = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(
+                                        message,
+                                        false,
+                                        "file",
+                                        null);
+
+                                    if (file != null && file.Attributes != null)
+                                    {
+                                        XmlNode nameAttr = file.Attributes.GetNamedItem("name");
+                                        string name = null;
+                                        if (nameAttr != null)
+                                        {
+                                            name = nameAttr.Value;
+                                        }
+
+                                        XmlNode lineAttr = file.Attributes.GetNamedItem("line");
+                                        string line = null;
+                                        if (lineAttr != null)
+                                        {
+                                            line = lineAttr.Value;
+                                        }
+
+                                        XmlNode columnAttr = file.Attributes.GetNamedItem("column");
+                                        string column = null;
+                                        if (columnAttr != null)
+                                        {
+                                            column = columnAttr.Value;
+                                        }
+
+                                        xmlInfo += "\n----------------------------------";
+                                        xmlInfo += ("\nPATH: " + name);
+                                        xmlInfo += ("\nLINE: " + line);
+                                        xmlInfo += ("\nCOLUMN: " + column);
+                                    }
+
+                                    XmlNode detail = XmlDocumentHelper.GetFirstChildElementOrSelfWithName(
+                                        message,
+                                        false,
+                                        "detail",
+                                        null);
+
+                                    if (detail != null)
+                                    {
+                                        xmlInfo += "\n";
+                                        xmlInfo += detail.InnerText;
+                                        xmlInfo += "\n----------------------------------";
+                                    }
+                                }
+
+                                return xmlInfo;
+                            }
+
+                            return null;
+                        };
+
+                    executeProcess(
+                        workingDir,
+                        "DAISY Check",
+                        "java.exe",
+                        "-classpath \""
+                        + classpath
+                        + "\" org.daisy.zedval.ZedVal"
+                        + " -timeTolerance 50"
+                        + " \"" + path + "\"",
+                        checkErrorsOrWarning);
+                }
+            }
+            catch (Exception ex)
+            {
+                messageBoxText("Oops :(", "Problem running DAISY Check! (ZedVal)", ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+
+            return true;
         }
 
         private void checkEpub(string path, string mode)
@@ -573,64 +846,27 @@ namespace Tobi.Plugin.Urakawa
 
                     string jar = Path.Combine(workingDir, "epubcheck.jar");
 
-                    Process process = new Process();
-
-                    process.StartInfo.WorkingDirectory = workingDir;
-                    process.StartInfo.FileName = @"java.exe";
-                    process.StartInfo.Arguments = "-jar \"" + jar + "\""
-                        + (!string.IsNullOrEmpty(mode) ? " -mode " + mode + " -v 3.0" : "")
-                         + " \"" + path + "\"";
-
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.StartInfo.RedirectStandardError = true;
-                    process.StartInfo.UseShellExecute = false;
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    process.StartInfo.CreateNoWindow = false;
-                    process.StartInfo.ErrorDialog = false;
-
-
-
-                    process.Start();
-                    process.WaitForExit();
-
-                    string report = null;
-                    string text = null;
-                    if (process.ExitCode != 0)
-                    {
-                        StreamReader stdErr = process.StandardError;
-                        if (!stdErr.EndOfStream)
-                        {
-                            report = stdErr.ReadToEnd();
-                            text = "Error!";
-                        }
-                    }
-                    else
-                    {
-                        StreamReader stdOut = process.StandardOutput;
-                        if (!stdOut.EndOfStream)
-                        {
-                            report = stdOut.ReadToEnd();
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(report))
-                    {
-                        Console.Write(report);
-
-                        if (text == null)
+                    Func<String, String> checkErrorsOrWarning = (string report) =>
                         {
                             if (report.IndexOf("No errors", StringComparison.OrdinalIgnoreCase) >= 0)
                             {
-                                text = "Success.";
+                                return null;
                             }
-                            else
-                            {
-                                text = "There are errors or warnings!";
-                            }
-                        }
+                            return string.Empty;
+                        };
 
-                        messageBoxText("EPUB Check", text, report);
-                    }
+                    executeProcess(
+                        workingDir,
+                        "EPUB Check",
+                        "java.exe",
+                        "-jar \""
+                        + jar
+                        + "\""
+                        + (!string.IsNullOrEmpty(mode) ? " -mode " + mode + " -v 3.0" : "")
+                         + " \""
+                         + path
+                         + "\"",
+                        checkErrorsOrWarning);
                 }
             }
             catch (Exception ex)
