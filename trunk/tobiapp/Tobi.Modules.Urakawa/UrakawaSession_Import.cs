@@ -84,7 +84,10 @@ namespace Tobi.Plugin.Urakawa
             }
             else if (".opf".Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
-                checkEpub(DocumentFilePath, "opf");
+                if (!checkDAISY(DocumentFilePath))
+                {
+                    checkEpub(DocumentFilePath, "opf");
+                }
             }
             else if (".html".Equals(ext, StringComparison.OrdinalIgnoreCase)
                 || ".xhtml".Equals(ext, StringComparison.OrdinalIgnoreCase))
@@ -93,6 +96,11 @@ namespace Tobi.Plugin.Urakawa
                 messageBoxAlert("WARNING: single HTML import is an experimental and incomplete EPUB feature!", null);
 
                 checkEpub(DocumentFilePath, "xhtml");
+            }
+            else if (".xml".Equals(ext, StringComparison.OrdinalIgnoreCase))
+            {
+                //checkDAISY(DocumentFilePath);
+                //TODO: ZedVal support for XML DTBOOK?
             }
 
 
