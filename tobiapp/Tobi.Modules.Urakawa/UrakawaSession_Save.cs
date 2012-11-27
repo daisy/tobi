@@ -150,7 +150,7 @@ namespace Tobi.Plugin.Urakawa
                     DocumentProject.Presentations.Get(0).DataProviderManager.SetDataFileDirectoryWithPrefix(prefix);
                     DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
 
-                    if (saveAs(dlg.FileName))
+                    if (saveAs(dlg.FileName, false))
                     {
                         DocumentProject.Presentations.Get(0).RootUri = oldUri;
 
@@ -224,18 +224,34 @@ namespace Tobi.Plugin.Urakawa
 
         private const string SAVING_EXT = ".SAVING";
 
+        private bool saveAuto()
+        {
+            if (DocumentProject == null)
+            {
+                return false;
+            }
+            string autoSaveFilePath = Path.Combine(
+                Path.GetDirectoryName(DocumentFilePath),
+                Path.GetFileName(DocumentFilePath) + ".AUTOSAVE"
+                );
+
+            m_Logger.Log(String.Format(@"UrakawaSession.saveAuto() [{0}]", autoSaveFilePath), Category.Debug, Priority.Medium);
+
+            return saveAs(autoSaveFilePath, true);
+        }
+
         private bool save()
         {
             if (DocumentProject == null)
             {
                 return false;
             }
-            return saveAs(DocumentFilePath);
+            return saveAs(DocumentFilePath, false);
         }
 
         private string m_SaveAsDocumentFilePath;
 
-        private bool saveAs(string filePath)
+        private bool saveAs(string filePath, bool autoSave)
         {
             if (DocumentProject == null)
             {
@@ -284,25 +300,56 @@ namespace Tobi.Plugin.Urakawa
 
                     if (DocumentFilePath == m_SaveAsDocumentFilePath)
                     {
-                        SaveXukAction.Backup(DocumentFilePath);
-                        File.Delete(DocumentFilePath);
+                        DebugFix.Assert(!autoSave);
+                        
+                        string saving = DocumentFilePath + SAVING_EXT;
 
-                        File.Move(DocumentFilePath + SAVING_EXT, DocumentFilePath);
+                        if (File.Exists(saving))
+                        {
+                            SaveXukAction.Backup(DocumentFilePath);
+                            File.Delete(DocumentFilePath);
 
-                        //File.Copy(DocumentFilePath + SAVING_EXT, DocumentFilePath);
-                        //File.Delete(DocumentFilePath + SAVING_EXT);
+                            File.Move(saving, DocumentFilePath);
 
-                        DocumentProject.Presentations.Get(0).UndoRedoManager.SetDirtyMarker();
+                            //File.Copy(DocumentFilePath + SAVING_EXT, DocumentFilePath);
+                            //File.Delete(DocumentFilePath + SAVING_EXT);
+
+                            DocumentProject.Presentations.Get(0).UndoRedoManager.SetDirtyMarker();
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+
+                            m_Logger.Log(@"UrakawaSession_Save SAVING NOT EXIST!!?? => " + saving, Category.Debug, Priority.Medium);
+                        }
                     }
                     else
                     {
-                        if (File.Exists(m_SaveAsDocumentFilePath))
-                        {
-                            SaveXukAction.Backup(m_SaveAsDocumentFilePath);
-                            File.Delete(m_SaveAsDocumentFilePath);
-                        }
+                        string saving = m_SaveAsDocumentFilePath + SAVING_EXT;
 
-                        File.Move(m_SaveAsDocumentFilePath + SAVING_EXT, m_SaveAsDocumentFilePath);
+                        if (File.Exists(saving))
+                        {
+                            if (File.Exists(m_SaveAsDocumentFilePath))
+                            {
+                                if (!autoSave)
+                                {
+                                    SaveXukAction.Backup(m_SaveAsDocumentFilePath);
+                                }
+                                File.Delete(m_SaveAsDocumentFilePath);
+                            }
+
+                            File.Move(saving, m_SaveAsDocumentFilePath);
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+
+                            m_Logger.Log(@"UrakawaSession_SaveAs SAVING NOT EXIST!!?? => " + saving, Category.Debug, Priority.Medium);
+                        }
                     }
 
 
