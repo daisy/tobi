@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -213,8 +214,39 @@ namespace Tobi.Plugin.Urakawa
         }
 
 
+        private DispatcherTimer m_undoAutoSaveIntervalTimer = null;
         private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)
         {
+            if (m_undoAutoSaveIntervalTimer == null)
+            {
+                m_undoAutoSaveIntervalTimer = new DispatcherTimer(DispatcherPriority.Normal);
+                m_undoAutoSaveIntervalTimer.Interval = TimeSpan.FromMilliseconds(500);
+                m_undoAutoSaveIntervalTimer.Tick += (oo, ee) =>
+                {
+                    m_undoAutoSaveIntervalTimer.Stop();
+                    //m_scrollRefreshIntervalTimer = null;
+
+                    // TODO auto save backup
+                    //Application.Current.MainWindow.Dispatcher.BeginInvoke(
+                    //    DispatcherPriority.ApplicationIdle,
+                    //    (Action)(() =>
+                    //    {
+                    //        saveAuto();
+                    //    }));
+                };
+                m_undoAutoSaveIntervalTimer.Start();
+            }
+            else if (m_undoAutoSaveIntervalTimer.IsEnabled)
+            {
+                //restart
+                m_undoAutoSaveIntervalTimer.Stop();
+                m_undoAutoSaveIntervalTimer.Start();
+            }
+            else
+            {
+                m_undoAutoSaveIntervalTimer.Start();
+            }
+
             RaisePropertyChanged(() => IsDirty);
             //IsDirty = m_DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo;
         }
