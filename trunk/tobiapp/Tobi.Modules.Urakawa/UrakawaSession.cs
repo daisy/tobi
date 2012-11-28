@@ -484,6 +484,30 @@ namespace Tobi.Plugin.Urakawa
                     }
                 }
 
+                string projectDirRoot = Path.GetDirectoryName(docPath);
+                string projectFileName = Path.GetFileName(docPath);
+
+                foreach (string filePath in Directory.GetFiles(projectDirRoot))
+                {
+                    var fileName = Path.GetFileName(filePath);
+
+                    if (projectFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    if (fileName.StartsWith(projectFileName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
+                        
+                        if (File.Exists(filePathDest))
+                        {
+                            File.Delete(filePathDest);
+                        }
+                        File.Move(filePath, filePathDest);
+                    }
+                }
+
                 string normalised_deletedDataFolderPath = FileDataProvider.NormaliseFullFilePath(deletedDataFolderPath);
 
                 foreach (string dirPath in Directory.GetDirectories(dataFolderPath

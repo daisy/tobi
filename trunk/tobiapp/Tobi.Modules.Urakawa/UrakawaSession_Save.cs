@@ -401,8 +401,10 @@ namespace Tobi.Plugin.Urakawa
 #if DEBUG
                     Debugger.Break();
 #endif
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.StackTrace);
+                    //Console.WriteLine(ex.Message);
+                    //Console.WriteLine(ex.StackTrace);
+
+                    ExceptionHandler.Handle(ex, false, m_ShellView);
 
                     error = true;
                 }
