@@ -228,7 +228,21 @@ namespace Tobi.Plugin.Urakawa
 
                     if (Settings.Default.EnableAutoSave)
                     {
-                        saveAuto();
+                        // The "OnUndoRedoManagerChanged" event is not broadcasted when 
+                        // Command.Execute() or Command.UnExecute() fails,
+                        // so we never auto-save a corrupted project.
+                        try
+                        {
+                            saveAuto();
+                        }
+                        catch (Exception ex)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                            Console.WriteLine(ex.Message);
+                            Console.WriteLine(ex.StackTrace);
+                        }
 
                         //Application.Current.MainWindow.Dispatcher.BeginInvoke(
                         //DispatcherPriority.Background,
