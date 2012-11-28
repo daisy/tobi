@@ -219,20 +219,24 @@ namespace Tobi.Plugin.Urakawa
         {
             if (m_undoAutoSaveIntervalTimer == null)
             {
-                m_undoAutoSaveIntervalTimer = new DispatcherTimer(DispatcherPriority.Normal);
-                m_undoAutoSaveIntervalTimer.Interval = TimeSpan.FromMilliseconds(500);
+                m_undoAutoSaveIntervalTimer = new DispatcherTimer(DispatcherPriority.Background);
+                m_undoAutoSaveIntervalTimer.Interval = TimeSpan.FromMilliseconds(1000);
                 m_undoAutoSaveIntervalTimer.Tick += (oo, ee) =>
                 {
                     m_undoAutoSaveIntervalTimer.Stop();
                     //m_scrollRefreshIntervalTimer = null;
 
-                    // TODO auto save backup
-                    //Application.Current.MainWindow.Dispatcher.BeginInvoke(
-                    //    DispatcherPriority.ApplicationIdle,
-                    //    (Action)(() =>
-                    //    {
-                    //        saveAuto();
-                    //    }));
+                    if (Settings.Default.EnableAutoSave)
+                    {
+                        saveAuto();
+
+                        //Application.Current.MainWindow.Dispatcher.BeginInvoke(
+                        //DispatcherPriority.Background,
+                        //(Action)(() =>
+                        //{
+                        ///// SAVE HERE
+                        //}));
+                    }
                 };
                 m_undoAutoSaveIntervalTimer.Start();
             }

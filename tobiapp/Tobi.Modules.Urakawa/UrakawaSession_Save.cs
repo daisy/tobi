@@ -11,6 +11,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa.data;
+using urakawa.events.progress;
 using urakawa.xuk;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Orientation = System.Windows.Controls.Orientation;
@@ -283,8 +284,10 @@ namespace Tobi.Plugin.Urakawa
             };
 
             bool cancelled = false;
-            bool error = m_ShellView.RunModalCancellableProgressTask(true,
-                Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_ShortDesc, action,
+            bool error = false;
+
+
+            Action cancelledCallback =
                 () =>
                 {
                     cancelled = true;
@@ -293,7 +296,9 @@ namespace Tobi.Plugin.Urakawa
                     //IsDirty = true;
 
                     //backWorker.CancelAsync();
-                },
+                };
+
+            Action finishedCallback =
                 () =>
                 {
                     cancelled = false;
@@ -301,7 +306,7 @@ namespace Tobi.Plugin.Urakawa
                     if (DocumentFilePath == m_SaveAsDocumentFilePath)
                     {
                         DebugFix.Assert(!autoSave);
-                        
+
                         string saving = DocumentFilePath + SAVING_EXT;
 
                         if (File.Exists(saving))
@@ -322,7 +327,8 @@ namespace Tobi.Plugin.Urakawa
                             Debugger.Break();
 #endif
 
-                            m_Logger.Log(@"UrakawaSession_Save SAVING NOT EXIST!!?? => " + saving, Category.Debug, Priority.Medium);
+                            m_Logger.Log(@"UrakawaSession_Save SAVING NOT EXIST!!?? => " + saving, Category.Debug,
+                                         Priority.Medium);
                         }
                     }
                     else
@@ -348,20 +354,67 @@ namespace Tobi.Plugin.Urakawa
                             Debugger.Break();
 #endif
 
-                            m_Logger.Log(@"UrakawaSession_SaveAs SAVING NOT EXIST!!?? => " + saving, Category.Debug, Priority.Medium);
+                            m_Logger.Log(@"UrakawaSession_SaveAs SAVING NOT EXIST!!?? => " + saving, Category.Debug,
+                                         Priority.Medium);
                         }
                     }
 
 
                     if (m_EventAggregator != null)
                     {
-                        m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_Urakawa_Lang.Saved);
+                        m_EventAggregator.GetEvent<StatusBarMessageUpdateEvent>()
+                                         .Publish(Tobi_Plugin_Urakawa_Lang.Saved);
                     }
 
                     RaisePropertyChanged(() => IsDirty);
                     //IsDirty = false;
+                };
+
+            if (autoSave)
+            {
+                action.Progress += new EventHandler<ProgressEventArgs>(
+                    delegate(object sender, ProgressEventArgs e)
+                    {
+                    }
+                    );
+
+                action.Finished += new EventHandler<FinishedEventArgs>(
+                    delegate(object sender, FinishedEventArgs e)
+                    {
+                        finishedCallback();
+                    }
+                    );
+
+                action.Cancelled += new EventHandler<CancelledEventArgs>(
+                    delegate(object sender, CancelledEventArgs e)
+                    {
+                        cancelledCallback();
+                    }
+                    );
+
+                try
+                {
+                    action.DoWork();
                 }
-                );
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+
+                    error = true;
+                }
+            }
+            else
+            {
+                error = m_ShellView.RunModalCancellableProgressTask(true,
+                    Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_ShortDesc, action,
+                    cancelledCallback,
+                    finishedCallback
+                    );
+            }
 
             string savingFile = m_SaveAsDocumentFilePath + SAVING_EXT;
             if (File.Exists(savingFile))
