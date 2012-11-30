@@ -236,7 +236,8 @@ namespace Tobi.Plugin.Urakawa
                 Path.GetFileName(DocumentFilePath) + ".AUTOSAVE"
                 );
 
-            m_Logger.Log(String.Format(@"UrakawaSession.saveAuto() [{0}]", autoSaveFilePath), Category.Debug, Priority.Medium);
+            //m_Logger.Log(String.Format(@"UrakawaSession.saveAuto() [{0}]", autoSaveFilePath), Category.Debug, Priority.Medium);
+            m_Logger.Log(@"UrakawaSession.saveAuto()", Category.Debug, Priority.Medium);
 
             return saveAs(autoSaveFilePath, true);
         }
@@ -277,7 +278,7 @@ namespace Tobi.Plugin.Urakawa
 
             DocumentProject.SetPrettyFormat(Settings.Default.XUK_PrettyFormat);
 
-            var action = new SaveXukAction(DocumentProject, DocumentProject, uri)
+            var action = new SaveXukAction(DocumentProject, DocumentProject, uri, !Settings.Default.EnableAutoSave)
             {
                 ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_ShortDesc,
                 LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_LongDesc
@@ -311,7 +312,10 @@ namespace Tobi.Plugin.Urakawa
 
                         if (File.Exists(saving))
                         {
-                            SaveXukAction.Backup(DocumentFilePath);
+                            if (Settings.Default.EnableAutoSave)
+                            {
+                                SaveXukAction.Backup(DocumentFilePath);
+                            }
                             File.Delete(DocumentFilePath);
 
                             File.Move(saving, DocumentFilePath);
@@ -339,7 +343,7 @@ namespace Tobi.Plugin.Urakawa
                         {
                             if (File.Exists(m_SaveAsDocumentFilePath))
                             {
-                                if (!autoSave)
+                                if (Settings.Default.EnableAutoSave && !autoSave)
                                 {
                                     SaveXukAction.Backup(m_SaveAsDocumentFilePath);
                                 }
