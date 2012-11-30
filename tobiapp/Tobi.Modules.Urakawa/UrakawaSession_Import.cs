@@ -378,6 +378,10 @@ namespace Tobi.Plugin.Urakawa
                                     okay = false;
                                 }
                             }
+                            else
+                            {
+                                okay = false;
+                            }
                         }
 
                         if (okay)
