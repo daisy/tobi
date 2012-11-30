@@ -119,7 +119,7 @@ namespace Tobi.Plugin.Urakawa
                     return false;
                 }
 
-                FileDataProvider.DeleteDirectory(outputDirectory);
+                FileDataProvider.TryDeleteDirectory(outputDirectory, true);
             }
 
             var combo = new ComboBox
@@ -365,17 +365,18 @@ namespace Tobi.Plugin.Urakawa
                             {
                                 try
                                 {
-                                    FileDataProvider.DeleteDirectory(newProjectDir);
+                                    FileDataProvider.TryDeleteDirectory(newProjectDir, false);
                                 }
                                 catch (Exception ex)
                                 {
+#if DEBUG
+                                    Debugger.Break();
+#endif // DEBUG
                                     Console.WriteLine(ex.Message);
+                                    Console.WriteLine(ex.StackTrace);
+
                                     okay = false;
                                 }
-                            }
-                            else
-                            {
-                                okay = false;
                             }
                         }
 

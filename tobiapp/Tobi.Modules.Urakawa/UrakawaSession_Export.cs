@@ -475,7 +475,7 @@ namespace Tobi.Plugin.Urakawa
                             return;
                         }
 
-                        FileDataProvider.DeleteDirectory(exportDir);
+                        FileDataProvider.TryDeleteDirectory(exportDir, true);
                     }
 
                     FileDataProvider.CreateDirectory(exportDir);

@@ -500,7 +500,7 @@ namespace Tobi.Plugin.Descriptions
                     return;
                 }
 
-                FileDataProvider.DeleteDirectory(imageDescriptionDirectoryPath);
+                FileDataProvider.TryDeleteDirectory(imageDescriptionDirectoryPath, true);
             }
 
             FileDataProvider.CreateDirectory(imageDescriptionDirectoryPath);
