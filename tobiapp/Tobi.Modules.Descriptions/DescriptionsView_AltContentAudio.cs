@@ -213,8 +213,8 @@ namespace Tobi.Plugin.Descriptions
                 var pres = m_Session.DocumentProject.Presentations.Get(0);
 
                 var project = new Project();
-                bool pretty = m_Session.DocumentProject.IsPrettyFormat();
-                project.SetPrettyFormat(pretty);
+                bool pretty = m_Session.DocumentProject.PrettyFormat;
+                project.PrettyFormat = pretty;
 
                 // a proxy project/presentation/treenode (and UrakawaSession wrapper) to bridge the standard audio recording feature, without altering the main document.
                 var presentation = new Presentation();
