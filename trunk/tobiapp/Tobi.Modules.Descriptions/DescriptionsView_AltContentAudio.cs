@@ -213,7 +213,8 @@ namespace Tobi.Plugin.Descriptions
                 var pres = m_Session.DocumentProject.Presentations.Get(0);
 
                 var project = new Project();
-                project.SetPrettyFormat(m_Session.DocumentProject.IsPrettyFormat());
+                bool pretty = m_Session.DocumentProject.IsPrettyFormat();
+                project.SetPrettyFormat(pretty);
 
                 // a proxy project/presentation/treenode (and UrakawaSession wrapper) to bridge the standard audio recording feature, without altering the main document.
                 var presentation = new Presentation();
@@ -221,7 +222,7 @@ namespace Tobi.Plugin.Descriptions
                 presentation.RootUri = pres.RootUri;
                 int index = pres.DataProviderManager.DataFileDirectory.IndexOf(DataProviderManager.DefaultDataFileDirectorySeparator + DataProviderManager.DefaultDataFileDirectory);
                 string prefix = pres.DataProviderManager.DataFileDirectory.Substring(0, index);
-                string suffix = "--IMAGE_DESCRIPTIONS_TEMP_AUDIO";
+                string suffix = "_IMG_DESC";
                 //DebugFix.Assert(Path.GetFileName(pres.RootUri.LocalPath) == prefix);
                 presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(prefix + suffix);
                 presentation.MediaDataManager.DefaultPCMFormat = pres.MediaDataManager.DefaultPCMFormat;//.Copy();
@@ -487,8 +488,8 @@ namespace Tobi.Plugin.Descriptions
             }
             finally
             {
-                // XukStrings maintains a pointer to the last-created Project instance!
-                XukStrings.RelocateProjectReference(m_Session.DocumentProject);
+                //// XukStrings maintains a pointer to the last-created Project instance!
+                //XukStrings.RelocateProjectReference(m_Session.DocumentProject);
 
                 Application.Current.MainWindow.Cursor = Cursors.Arrow;
                 this.Cursor = Cursors.Arrow; //m_ShellView
