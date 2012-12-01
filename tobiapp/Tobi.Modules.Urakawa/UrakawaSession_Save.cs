@@ -227,10 +227,11 @@ namespace Tobi.Plugin.Urakawa
 
         private bool saveAuto()
         {
-            if (DocumentProject == null)
+            if (DocumentProject == null || string.IsNullOrEmpty(DocumentFilePath))
             {
                 return false;
             }
+
             string autoSaveFilePath = Path.Combine(
                 Path.GetDirectoryName(DocumentFilePath),
                 Path.GetFileName(DocumentFilePath) + ".AUTOSAVE"

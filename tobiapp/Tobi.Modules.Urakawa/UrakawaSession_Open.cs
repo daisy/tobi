@@ -642,7 +642,7 @@ namespace Tobi.Plugin.Urakawa
             finally
             {
                 // XukStrings maintains a pointer to the last-created Project instance!
-                XukStrings.RelocateProjectReference(DocumentProject);
+                //XukStrings.RelocateProjectReference(DocumentProject);
             }
         }
 

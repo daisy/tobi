@@ -156,16 +156,16 @@ namespace Tobi.Plugin.Urakawa
                 RaisePropertyChanged(() => DocumentProject);
                 RaisePropertyChanged(() => IsDirty);
 
-                if (m_DocumentProject == null)
-                {
-                    // XukStrings maintains a pointer to the last-created Project instance!
-                    XukStrings.NullifyProjectReference();
-                }
-                else
-                {
-                    // XukStrings maintains a pointer to the last-created Project instance!
-                    XukStrings.RelocateProjectReference(m_DocumentProject);
-                }
+                //if (m_DocumentProject == null)
+                //{
+                //    // XukStrings maintains a pointer to the last-created Project instance!
+                //    XukStrings.NullifyProjectReference();
+                //}
+                //else
+                //{
+                //    // XukStrings maintains a pointer to the last-created Project instance!
+                //    XukStrings.RelocateProjectReference(m_DocumentProject);
+                //}
             }
         }
 
@@ -226,7 +226,7 @@ namespace Tobi.Plugin.Urakawa
                     m_undoAutoSaveIntervalTimer.Stop();
                     //m_scrollRefreshIntervalTimer = null;
 
-                    if (Settings.Default.EnableAutoSave)
+                    if (Settings.Default.EnableAutoSave && !string.IsNullOrEmpty(DocumentFilePath))
                     {
                         // The "OnUndoRedoManagerChanged" event is not broadcasted when 
                         // Command.Execute() or Command.UnExecute() fails,
@@ -365,6 +365,8 @@ namespace Tobi.Plugin.Urakawa
             string docPath = DocumentFilePath;
             Project project = DocumentProject;
 
+            DebugFix.Assert(interactive == string.IsNullOrEmpty(docPath));
+
             if (interactive)
             {
                 // Closing is REQUIRED ! 
@@ -376,7 +378,9 @@ namespace Tobi.Plugin.Urakawa
                 }
             }
 
-            XukStrings.RelocateProjectReference(project);
+            //// XukStrings maintains a pointer to the last-created Project instance!
+            //// (which was closed / reset to null with CheckSaveDirtyAndClose)
+            //XukStrings.RelocateProjectReference(project);
 
             project.Presentations.Get(0).UndoRedoManager.FlushCommands();
             //RaisePropertyChanged(()=>IsDirty);
@@ -436,6 +440,7 @@ namespace Tobi.Plugin.Urakawa
 
                 DocumentFilePath = null;
                 DocumentProject = null;
+                //XukStrings.NullifyProjectReference();
 
                 try
                 {
@@ -484,27 +489,30 @@ namespace Tobi.Plugin.Urakawa
                     }
                 }
 
-                string projectDirRoot = Path.GetDirectoryName(docPath);
-                string projectFileName = Path.GetFileName(docPath);
-
-                foreach (string filePath in Directory.GetFiles(projectDirRoot))
+                if (!string.IsNullOrEmpty(docPath))
                 {
-                    var fileName = Path.GetFileName(filePath);
+                    string projectDirRoot = Path.GetDirectoryName(docPath);
+                    string projectFileName = Path.GetFileName(docPath);
 
-                    if (projectFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
+                    foreach (string filePath in Directory.GetFiles(projectDirRoot))
                     {
-                        continue;
-                    }
+                        var fileName = Path.GetFileName(filePath);
 
-                    if (fileName.StartsWith(projectFileName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
-                        
-                        if (File.Exists(filePathDest))
+                        if (projectFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
                         {
-                            File.Delete(filePathDest);
+                            continue;
                         }
-                        File.Move(filePath, filePathDest);
+
+                        if (fileName.StartsWith(projectFileName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
+
+                            if (File.Exists(filePathDest))
+                            {
+                                File.Delete(filePathDest);
+                            }
+                            File.Move(filePath, filePathDest);
+                        }
                     }
                 }
 
@@ -549,11 +557,13 @@ namespace Tobi.Plugin.Urakawa
 
                     DocumentFilePath = docPath;
                     DocumentProject = project;
+                    //XukStrings.RelocateProjectReference(DocumentProject);
 
                     if (save())
                     {
                         DocumentFilePath = null;
                         DocumentProject = null;
+                        //XukStrings.NullifyProjectReference();
 
                         try
                         {
