@@ -6,6 +6,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using Tobi.Common.MVVM;
 using urakawa.core;
+using urakawa.data;
 using urakawa.property.alt;
 using urakawa.property.xml;
 using urakawa.xuk;
@@ -110,7 +111,7 @@ namespace Tobi.Plugin.Descriptions
                 string localName = treeNode.GetXmlElementLocalName();
 
                 if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
-                    || localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                    //|| localName.Equals("video", StringComparison.OrdinalIgnoreCase)
                     )
                 {
                     XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("src");
@@ -126,6 +127,8 @@ namespace Tobi.Plugin.Descriptions
 
                         strBuilder.Append("  --> [");
                         string strAttr = xmlAttr.Value.TrimEnd('/');
+                        strAttr = FileDataProvider.UriDecode(strAttr);
+
                         int index = strAttr.LastIndexOf('/');
                         if (index >= 0)
                         {
