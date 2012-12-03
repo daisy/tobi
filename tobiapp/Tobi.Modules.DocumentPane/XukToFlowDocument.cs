@@ -2021,9 +2021,7 @@ namespace Tobi.Plugin.DocumentPane
                 //Debugger.Break();
 #endif //DEBUG
 
-                //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
-
-                imagePath = Path.Combine(dirPath, Uri.UnescapeDataString(imgMedia_ext.Src));
+                imagePath = Path.Combine(dirPath, imgMedia_ext.Src);
             }
             else if (imgMedia_man != null)
             {
@@ -2212,7 +2210,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
 
-                imagePath = Path.Combine(dirPath, Uri.UnescapeDataString(imgMedia_ext.Src));
+                imagePath = Path.Combine(dirPath, imgMedia_ext.Src);
             }
             else if (imgMedia_man != null)
             {

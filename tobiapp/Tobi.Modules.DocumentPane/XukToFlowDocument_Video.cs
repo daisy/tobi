@@ -78,9 +78,7 @@ namespace Tobi.Plugin.DocumentPane
                 Debugger.Break();
 #endif //DEBUG
 
-                //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
-
-                videoPath = Path.Combine(dirPath, Uri.UnescapeDataString(videoMedia_ext.Src));
+                videoPath = Path.Combine(dirPath, videoMedia_ext.Src);
             }
             else if (videoMedia_man != null)
             {
@@ -107,9 +105,7 @@ namespace Tobi.Plugin.DocumentPane
                 Debugger.Break();
 #endif //DEBUG
 
-                //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
-
-                audioPath = Path.Combine(dirPath, Uri.UnescapeDataString(audioMedia_ext.Src));
+                audioPath = Path.Combine(dirPath, audioMedia_ext.Src);
             }
             else if (audioMedia_man != null)
             {
