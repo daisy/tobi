@@ -85,7 +85,7 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                 XmlAttribute srcAttr = xmlProp.GetAttribute("src");
 
-                DebugFix.Assert(videoMedia_man.VideoMediaData.OriginalRelativePath == srcAttr.Value);
+                DebugFix.Assert(videoMedia_man.VideoMediaData.OriginalRelativePath == FileDataProvider.UriDecode(srcAttr.Value));
 #endif //DEBUG
                 var fileDataProv = videoMedia_man.VideoMediaData.DataProvider as FileDataProvider;
 
@@ -112,7 +112,7 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                 XmlAttribute srcAttr = xmlProp.GetAttribute("src");
 
-                DebugFix.Assert(audioMedia_man.AudioMediaData.OriginalRelativePath == srcAttr.Value);
+                DebugFix.Assert(audioMedia_man.AudioMediaData.OriginalRelativePath == FileDataProvider.UriDecode(srcAttr.Value));
 #endif //DEBUG
                 var fileDataProv = audioMedia_man.AudioMediaData.DataProvider as FileDataProvider;
 

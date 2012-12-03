@@ -2030,7 +2030,7 @@ namespace Tobi.Plugin.DocumentPane
                 XmlAttribute srcAttr = xmlProp.GetAttribute("altimg");
                 if (srcAttr != null)
                 {
-                    DebugFix.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == srcAttr.Value);
+                    DebugFix.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == FileDataProvider.UriDecode(srcAttr.Value));
                 }
 #endif //DEBUG
                 var fileDataProv = imgMedia_man.ImageMediaData.DataProvider as FileDataProvider;
@@ -2221,7 +2221,7 @@ namespace Tobi.Plugin.DocumentPane
                     srcAttr = xmlProp.GetAttribute(DiagramContentModelHelper.StripNSPrefix(DiagramContentModelHelper.XLINK_Href), DiagramContentModelHelper.NS_URL_XLINK);
                 }
 
-                DebugFix.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == srcAttr.Value);
+                DebugFix.Assert(imgMedia_man.ImageMediaData.OriginalRelativePath == FileDataProvider.UriDecode(srcAttr.Value));
 #endif //DEBUG
                 var fileDataProv = imgMedia_man.ImageMediaData.DataProvider as FileDataProvider;
 
