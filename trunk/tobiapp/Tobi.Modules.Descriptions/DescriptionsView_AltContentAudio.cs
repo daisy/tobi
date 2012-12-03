@@ -477,12 +477,25 @@ namespace Tobi.Plugin.Descriptions
                 {
                     //m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
 
-                    //TODO: delete containing folder(s) ?
                     foreach (var file in files)
                     {
                         File.Delete(file);
                     }
                 }
+
+                files = Directory.GetFiles(deletedDataFolderPath);
+                if (files.Length == 0)
+                {
+                    FileDataProvider.DeleteDirectory(deletedDataFolderPath);
+                }
+
+                string dir = presentation.DataProviderManager.DataFileDirectoryFullPath;
+                files = Directory.GetFiles(dir);
+                if (files.Length == 0)
+                {
+                    FileDataProvider.DeleteDirectory(dir);
+                }
+
 
                 resetAudioPlayer();
             }

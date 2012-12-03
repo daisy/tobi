@@ -365,7 +365,7 @@ namespace Tobi.Plugin.Urakawa
             string docPath = DocumentFilePath;
             Project project = DocumentProject;
 
-            DebugFix.Assert(interactive == string.IsNullOrEmpty(docPath));
+            DebugFix.Assert(!interactive == string.IsNullOrEmpty(docPath));
 
             if (interactive)
             {
