@@ -161,6 +161,8 @@ namespace Tobi.Plugin.Urakawa
 
         public bool OpenFile(string filename, bool doShowXukSpineCommand)
         {
+            m_Logger.Log(String.Format(@"UrakawaSession.openFile({0})", filename), Category.Debug, Priority.Medium);
+
             var fileUri = new Uri(filename, UriKind.Absolute);
             AddRecentFile(fileUri);
 
@@ -227,10 +229,10 @@ namespace Tobi.Plugin.Urakawa
                 if (!fileUri.IsFile)
                     throw new InvalidUriException("The URI to open must point to a local file! " + Environment.NewLine + fileUri.ToString());
 
-                m_Logger.Log(String.Format(@"UrakawaSession.openFile(XUK) [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
-
                 //fileUri.Scheme.ToLower() == "file"
                 DocumentFilePath = fileUri.IsFile ? fileUri.LocalPath : filename;
+
+                m_Logger.Log(String.Format(@"UrakawaSession.openFile(XUK) [{0}]", DocumentFilePath), Category.Debug, Priority.Medium);
 
                 if (!File.Exists(DocumentFilePath))
                     throw new InvalidUriException("The import URI must point to an existing file! " + Environment.NewLine + fileUri.ToString());
