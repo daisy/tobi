@@ -179,5 +179,41 @@ namespace Tobi.Plugin.Urakawa {
                 this["MediaOverlayActiveCSS"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\daisy-pipeline\\cli\\dp2.exe")]
+        public string Pipeline_ExePath {
+            get {
+                return ((string)(this["Pipeline_ExePath"]));
+            }
+            set {
+                this["Pipeline_ExePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("dtbook-to-html")]
+        public string Pipeline_Script {
+            get {
+                return ((string)(this["Pipeline_Script"]));
+            }
+            set {
+                this["Pipeline_Script"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public double ProcessTimeout_Minutes {
+            get {
+                return ((double)(this["ProcessTimeout_Minutes"]));
+            }
+            set {
+                this["ProcessTimeout_Minutes"] = value;
+            }
+        }
     }
 }

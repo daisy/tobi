@@ -33,6 +33,7 @@ namespace Tobi.Plugin.Urakawa
     public partial class UrakawaSession
     {
         public RichDelegateCommand OpenCommand { get; private set; }
+        public RichDelegateCommand OpenConvertCommand { get; private set; }
 
         private void initCommands_Open()
         {
@@ -60,16 +61,24 @@ namespace Tobi.Plugin.Urakawa
                         {
                             FileName = @"",
                             DefaultExt = @".opf",
-#if DEBUG
+
                             Filter =
-                                @"DTBook, XHTML, OPF, OBI, XUK, EPUB, MML (*.xml, *.xhtml, *.html, *.opf, *.obi, *" +
-                                OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION +
-                                ", *.epub, *.mml)|*.xml;*.xhtml;*.html;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION +
-                                ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub;*.mml",
-#else
-                        Filter = @"DTBook, XHTML, OPF, OBI, XUK, EPUB (*.xml, *.xhtml, *.html, *.opf, *.obi, *" + OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION + ", *.epub)|*.xml;*.xhtml;*.html;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION + ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub",
+                                @"DTBook, XHTML, OPF, OBI, XUK, EPUB"
+#if DEBUG
+ + ", MML"
 #endif
-                            //DEBUG
+ + " (*.xml, *.xhtml, *.html, *.opf, *.obi, *" +
+                                OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION +
+                                ", *.epub"
+#if DEBUG
+ + ", *.mml"
+#endif
+ + ")|*.xml;*.xhtml;*.html;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION +
+                                ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub"
+#if DEBUG
+ + ";*.mml"
+#endif
+,
                             CheckFileExists = false,
                             CheckPathExists = false,
                             AddExtension = true,
@@ -101,6 +110,137 @@ namespace Tobi.Plugin.Urakawa
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Open));
 
             m_ShellView.RegisterRichCommand(OpenCommand);
+            //
+
+            OpenConvertCommand = new RichDelegateCommand(
+                Tobi_Plugin_Urakawa_Lang.CmdOpenConvert_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdOpenConvert_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon(@"applications-games"),
+                () =>
+                {
+                    string pipeline_ExePath = Settings.Default.Pipeline_ExePath;
+                    while (!File.Exists(pipeline_ExePath))
+                    {
+                        var dlg_ = new OpenFileDialog
+                        {
+                            FileName = @"dp2.exe",
+                            DefaultExt = @".exe",
+
+                            Filter = @"Executable (*.exe)|*.exe",
+                            CheckFileExists = false,
+                            CheckPathExists = false,
+                            AddExtension = true,
+                            DereferenceLinks = true,
+                            Title =
+                                @"Tobi: " +
+                                "Pipeline (dp2.exe)"
+                        };
+
+                        bool? result_ = false;
+
+                        m_ShellView.DimBackgroundWhile(() => { result_ = dlg_.ShowDialog(); });
+
+                        if (result_ == false)
+                        {
+                            return;
+                        }
+
+                        pipeline_ExePath = dlg_.FileName;
+                    }
+
+                    Settings.Default.Pipeline_ExePath = pipeline_ExePath;
+
+                    string workingDir = Path.GetDirectoryName(pipeline_ExePath);
+                    //Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+                    var dlg = new OpenFileDialog
+                    {
+                        FileName = @"",
+                        DefaultExt = @".xml",
+
+                        Filter = @"DTBook (*.xml)|*.xml",
+                        CheckFileExists = false,
+                        CheckPathExists = false,
+                        AddExtension = true,
+                        DereferenceLinks = true,
+                        Title =
+                            @"Tobi: " +
+                            UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdOpenConvert_ShortDesc)
+                    };
+
+                    bool? result = false;
+
+                    m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
+                    if (result == false)
+                    {
+                        return;
+                    }
+
+                    string outdir = Path.GetDirectoryName(dlg.FileName);
+                    outdir = Path.Combine(outdir, "_PIPELINE");
+
+                    bool success = false;
+                    Func<String, String> checkErrorsOrWarning =
+                        (string report) =>
+                        {
+                            if (report.IndexOf("[DP2] DONE", StringComparison.Ordinal) < 0)
+                            {
+                                return "Pipeline job doesn't appear to have completed?";
+                            }
+
+                            success = true;
+                            return null;
+                        };
+                    try
+                    {
+                        executeProcess(
+                            workingDir,
+                            "DAISY Pipeline",
+                            "\"" + pipeline_ExePath + "\"",
+                            Settings.Default.Pipeline_Script
+                            + " --i-source \"" + dlg.FileName
+                            + "\" --x-output-dir \"" + outdir + "\"",
+                            checkErrorsOrWarning);
+                    }
+                    catch (Exception ex)
+                    {
+                        messageBoxText("Oops :(", "Problem running DAISY Pipeline!", ex.Message + Environment.NewLine + ex.StackTrace);
+                    }
+
+                    if (Directory.Exists(outdir))
+                    {
+                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileName);
+                        string outFile = Path.Combine(outdir, fileName + ".epub");
+                        if (!File.Exists(outFile))
+                        {
+                            outFile = Path.Combine(outdir, fileName + ".html");
+                        }
+                        if (!success || !File.Exists(outFile))
+                        {
+                            m_ShellView.ExecuteShellProcess(outdir);
+                        }
+                        else
+                        {
+                            try
+                            {
+                                OpenFile(outFile);
+                            }
+                            catch (Exception ex)
+                            {
+                                m_ShellView.ExecuteShellProcess(outdir);
+                                ExceptionHandler.Handle(ex, false, m_ShellView);
+                            }
+                        }
+                    }
+                },
+                () => true,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_OpenConvert)
+                );
+
+            m_ShellView.RegisterRichCommand(OpenConvertCommand);
         }
 
         public void OpenDirectory(string filename)

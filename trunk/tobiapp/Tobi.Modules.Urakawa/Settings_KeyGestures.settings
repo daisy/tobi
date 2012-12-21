@@ -10,6 +10,9 @@
     <Setting Name="Keyboard_Open" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] O</Value>
     </Setting>
+    <Setting Name="Keyboard_OpenConvert" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] C</Value>
+    </Setting>
     <Setting Name="Keyboard_OpenRecent" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] O</Value>
     </Setting>

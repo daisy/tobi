@@ -575,6 +575,8 @@ namespace Tobi.Plugin.Urakawa
         {
             using (Process process = new Process())
             {
+                bool gone = false;
+
                 process.StartInfo.WorkingDirectory = workingDir;
                 process.StartInfo.FileName = exe;
                 process.StartInfo.Arguments = args;
@@ -609,7 +611,10 @@ namespace Tobi.Plugin.Urakawa
 
                         if (e.Data == null)
                         {
-                            errorWaitHandle.Set();
+                            if (!gone)
+                            {
+                                errorWaitHandle.Set();
+                            }
                         }
                         else
                         {
@@ -623,11 +628,26 @@ namespace Tobi.Plugin.Urakawa
 
                         if (e.Data == null)
                         {
-                            outputWaitHandle.Set();
+                            if (!gone)
+                            {
+                                outputWaitHandle.Set();
+                            }
                         }
                         else
                         {
                             output.AppendLine(e.Data);
+
+                            // Hack for dp2.exe
+                            if (e.Data.IndexOf("[DP2] DONE", StringComparison.Ordinal) >= 0
+                                || e.Data.IndexOf("[DP2] ERROR", StringComparison.Ordinal) >= 0
+                                )
+                            {
+                                if (!gone)
+                                {
+                                    outputWaitHandle.Set();
+                                    errorWaitHandle.Set();
+                                }
+                            }
                         }
                     };
 
@@ -641,9 +661,15 @@ namespace Tobi.Plugin.Urakawa
                     process.BeginErrorReadLine();
                     process.BeginOutputReadLine();
 
-                    const int timeout = 1000 * 60 * 2; // 2 minutes
+                    int timeout = (int)(1000 * 60 * Math.Abs(Settings.Default.ProcessTimeout_Minutes));
+                    if (timeout <= 0)
+                    {
+                        timeout = 1000 * 60 * 2; // 2 minutes
+                    }
 
-                    if (process.WaitForExit(timeout)
+                    bool notTimeout = process.WaitForExit(timeout);
+
+                    if (notTimeout
                         && outputWaitHandle.WaitOne(timeout)
                         && errorWaitHandle.WaitOne(timeout))
                     {
@@ -691,6 +717,13 @@ namespace Tobi.Plugin.Urakawa
                     {
                         messageBoxText(title, "Process timeout!", output.ToString() + Environment.NewLine + error.ToString());
                     }
+
+                    //if (exe.IndexOf("dp2.exe") >= 0)
+                    //{
+                    //    process.Kill();
+                    //}
+
+                    gone = true;
                 }
             }
         }
