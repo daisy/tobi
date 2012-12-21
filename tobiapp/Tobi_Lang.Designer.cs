@@ -178,24 +178,6 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open image description guide in web browser.
-        /// </summary>
-        public static string CmdOpenImageDescriptionsManual_LongDesc {
-            get {
-                return ResourceManager.GetString("CmdOpenImageDescriptionsManual_LongDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Image description guide (online).
-        /// </summary>
-        public static string CmdOpenImageDescriptionsManual_ShortDesc {
-            get {
-                return ResourceManager.GetString("CmdOpenImageDescriptionsManual_ShortDesc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open a file browser where the Tobi.exe application is run from (and where Tobi.log resides)..
         /// </summary>
         public static string CmdOpenTobiFolder_LongDesc {
@@ -250,7 +232,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open user manual in web browser.
+        ///   Looks up a localized string similar to Open documentation in web browser.
         /// </summary>
         public static string CmdOpenUserManual_LongDesc {
             get {
@@ -259,7 +241,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _User manual (online).
+        ///   Looks up a localized string similar to _Documentation (online).
         /// </summary>
         public static string CmdOpenUserManual_ShortDesc {
             get {

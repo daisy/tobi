@@ -64,7 +64,7 @@ namespace Tobi
                 {
                     m_Logger.Log(@"ShellView.OpenUserManualCommand", Category.Debug, Priority.Medium);
 
-                    ExecuteShellProcess("http://www.daisy.org/tobi/tobi-user-reference-manual");
+                    ExecuteShellProcess("http://www.daisy.org/tobi/doc");
                 },
                  () => true,
                 Settings_KeyGestures.Default,

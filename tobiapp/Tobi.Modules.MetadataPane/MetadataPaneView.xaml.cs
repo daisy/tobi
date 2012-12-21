@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Microsoft.Practices.Composite.Logging;
@@ -32,7 +33,7 @@ namespace Tobi.Plugin.MetadataPane
         private readonly IUrakawaSession m_UrakawaSession;
         private readonly IShellView m_ShellView;
 
-        public ValidationItem ErrorWithFocus { get; set;}
+        public ValidationItem ErrorWithFocus { get; set; }
 
         ///<summary>
         /// Dependency-Injected constructor
@@ -60,7 +61,7 @@ namespace Tobi.Plugin.MetadataPane
             InitializeComponent();
         }
 
- 
+
         public void Popup()
         {
             var windowPopup = new PopupModalWindow(m_ShellView,
@@ -68,14 +69,14 @@ namespace Tobi.Plugin.MetadataPane
                                                    this,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 700, 400, null, 0,null);
+                                                   true, 700, 400, null, 0, null);
             windowPopup.IgnoreEscape = true;
 
             m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
                 (Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_ShortDesc, Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_LongDesc);
 
             windowPopup.ShowModal();
-            
+
 
             //if the user presses "Ok", then save the changes.  otherwise, don't save them.
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Ok)
@@ -87,6 +88,40 @@ namespace Tobi.Plugin.MetadataPane
             {
                 m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
             }
+        }
+
+        private void ComboBoxLostFocus(object sender, RoutedEventArgs e)
+        {
+            var comboBox = (ComboBox)sender;
+
+            //if (comboBox.SelectedItem == null)
+            //{
+            //    return;
+            //}
+
+            var newItem = comboBox.Text;
+            if (string.IsNullOrEmpty(newItem))
+            {
+                return;
+            }
+
+            NotifyingMetadataItem mdItem = comboBox.DataContext as NotifyingMetadataItem;
+            if (mdItem == null)
+            {
+                return;
+            }
+
+            if (mdItem.Name != newItem)
+            {
+                mdItem.Name = newItem; // triggers ItemsSource binding refresh
+            }
+
+#if DEBUG
+            if (!comboBox.Items.Contains(newItem))
+            {
+                Debugger.Break();
+            }
+#endif
         }
 
         //Sometimes the metadata dialog will be launched with the intention of highlighting a specific error
@@ -143,20 +178,20 @@ namespace Tobi.Plugin.MetadataPane
             if (selection != null) SetSelectedListItem(selection);
 
         }
-        
+
         //this works for adding new items, but not for adding missing items or highlighting existing ones.  why?
         private void SetSelectedListItem(NotifyingMetadataItem selection)
-        {   
+        {
             if (selection != null)
             {
-               CollectionViewSource cvs = (CollectionViewSource)FindResource("MetadatasCVS");
-               if (cvs != null) cvs.View.MoveCurrentTo(selection);
+                CollectionViewSource cvs = (CollectionViewSource)FindResource("MetadatasCVS");
+                if (cvs != null) cvs.View.MoveCurrentTo(selection);
 
-               //MetadataList.SelectedItem = selection;
-               
-               MetadataList.ScrollIntoView(selection);
+                //MetadataList.SelectedItem = selection;
 
-               FocusHelper.Focus(FocusableItem);
+                MetadataList.ScrollIntoView(selection);
+
+                FocusHelper.Focus(FocusableItem);
             }
         }
 
@@ -190,7 +225,7 @@ namespace Tobi.Plugin.MetadataPane
         private void AddButton_OnClick(object sender, RoutedEventArgs e)
         {
             m_ViewModel.AddEmptyMetadata();
-            
+
             ObservableCollection<NotifyingMetadataItem> metadataItems =
                 m_ViewModel.MetadataCollection.Metadatas;
             if (metadataItems.Count > 0)
@@ -198,7 +233,7 @@ namespace Tobi.Plugin.MetadataPane
                 NotifyingMetadataItem metadata = metadataItems[metadataItems.Count - 1];
                 SetSelectedListItem(metadata);
             }
-             
+
         }
 
         private void OnContentGotFocus(object sender, EventArgs e)
