@@ -122,7 +122,8 @@ namespace Tobi.Plugin.MetadataPane
 
             foreach (Metadata m in presentation.Metadatas.ContentsAs_Enumerable)
             {
-                if (string.IsNullOrEmpty(m.NameContentAttribute.Name))
+                if (string.IsNullOrEmpty(m.NameContentAttribute.Name)
+                    || m.NameContentAttribute.Name == SupportedMetadata_Z39862005.MagicStringEmpty)
                 {
                     MetadataRemoveCommand cmd = presentation.CommandFactory.CreateMetadataRemoveCommand(m);
                     removalsList.Add(cmd);
@@ -177,7 +178,7 @@ namespace Tobi.Plugin.MetadataPane
             Metadata metadata = presentation.MetadataFactory.CreateMetadata();
             metadata.NameContentAttribute = new MetadataAttribute
             {
-                Name = "",
+                Name = SupportedMetadata_Z39862005.MagicStringEmpty, //"",
                 NamespaceUri = "",
                 Value = SupportedMetadata_Z39862005.MagicStringEmpty
             };
@@ -275,7 +276,7 @@ namespace Tobi.Plugin.MetadataPane
 
         internal void SelectionChanged()
         {
-            RaisePropertyChanged(() => AvailableMetadataNames);
+            RaisePropertyChanged(() => AvailableMetadataNames); // triggers ComboBox ItemsSource data binding refresh
         }
 
         /*
