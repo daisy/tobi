@@ -41,5 +41,14 @@
     <Setting Name="MediaOverlayActiveCSS" Type="System.String" Scope="User">
       <Value Profile="(Default)">background-color: #FF0000; color: white; font-weight: bold;</Value>
     </Setting>
+    <Setting Name="Pipeline_ExePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\daisy-pipeline\cli\dp2.exe</Value>
+    </Setting>
+    <Setting Name="Pipeline_Script" Type="System.String" Scope="User">
+      <Value Profile="(Default)">dtbook-to-html</Value>
+    </Setting>
+    <Setting Name="ProcessTimeout_Minutes" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

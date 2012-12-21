@@ -205,6 +205,12 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="CmdOpen_LongDesc" xml:space="preserve">
     <value>Open or import a document to create a new project</value>
   </data>
+  <data name="CmdOpenConvert_ShortDesc" xml:space="preserve">
+    <value>DAISY to EPUB3</value>
+  </data>
+  <data name="CmdOpenConvert_LongDesc" xml:space="preserve">
+    <value>Convert from DAISY to EPUB3</value>
+  </data>
   <data name="Overwrite" xml:space="preserve">
     <value>_Overwrite</value>
   </data>
