@@ -86,7 +86,7 @@ namespace Tobi.Plugin.Urakawa
             {
                 if (!checkDAISY(DocumentFilePath))
                 {
-                    checkEpub(DocumentFilePath, "opf");
+                    //checkEpub(DocumentFilePath, "opf"); assume container.xml was found (see above)
                 }
             }
             else if (".html".Equals(ext, StringComparison.OrdinalIgnoreCase)
