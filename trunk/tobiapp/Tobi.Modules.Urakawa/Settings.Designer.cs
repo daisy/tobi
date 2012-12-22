@@ -206,6 +206,30 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("--i-source")]
+        public string Pipeline_InParam {
+            get {
+                return ((string)(this["Pipeline_InParam"]));
+            }
+            set {
+                this["Pipeline_InParam"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("--x-output-dir")]
+        public string Pipeline_OutParam {
+            get {
+                return ((string)(this["Pipeline_OutParam"]));
+            }
+            set {
+                this["Pipeline_OutParam"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2")]
         public double ProcessTimeout_Minutes {
             get {
