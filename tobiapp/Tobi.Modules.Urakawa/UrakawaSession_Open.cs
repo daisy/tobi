@@ -198,10 +198,15 @@ namespace Tobi.Plugin.Urakawa
                         executeProcess(
                             workingDir,
                             "DAISY Pipeline",
-                            "\"" + pipeline_ExePath + "\"",
+                            //"\"" +
+                            pipeline_ExePath
+                            //+ "\""
+                            ,
                             Settings.Default.Pipeline_Script
-                            + " --i-source \"" + dlg.FileName
-                            + "\" --x-output-dir \"" + outdir + "\"",
+                            + " " + Settings.Default.Pipeline_InParam + " "
+                            + "\"" + dlg.FileName + "\""
+                            + " " + Settings.Default.Pipeline_OutParam + " "
+                            + "\"" + outdir + "\"",
                             checkErrorsOrWarning);
                     }
                     catch (Exception ex)

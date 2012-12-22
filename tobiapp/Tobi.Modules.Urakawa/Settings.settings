@@ -47,6 +47,12 @@
     <Setting Name="Pipeline_Script" Type="System.String" Scope="User">
       <Value Profile="(Default)">dtbook-to-html</Value>
     </Setting>
+    <Setting Name="Pipeline_InParam" Type="System.String" Scope="User">
+      <Value Profile="(Default)">--i-source</Value>
+    </Setting>
+    <Setting Name="Pipeline_OutParam" Type="System.String" Scope="User">
+      <Value Profile="(Default)">--x-output-dir</Value>
+    </Setting>
     <Setting Name="ProcessTimeout_Minutes" Type="System.Double" Scope="User">
       <Value Profile="(Default)">2</Value>
     </Setting>
