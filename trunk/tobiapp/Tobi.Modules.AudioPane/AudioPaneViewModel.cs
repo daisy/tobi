@@ -43,7 +43,7 @@ namespace Tobi.Plugin.AudioPane
         private readonly ILoggerFacade Logger;
         private readonly IEventAggregator EventAggregator;
 
-        private readonly IShellView m_ShellView;
+        public readonly IShellView m_ShellView;
 
         internal readonly IUrakawaSession m_UrakawaSession;
         public IUrakawaSession UrakawaSession
@@ -931,9 +931,14 @@ m_Stream.Length);
             }
         }
 
+        private bool m_TTSGen;
         private bool m_UpdatingTreeNodeSelection;
         public void OnTreeNodeSelectionChanged(Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>> oldAndNewTreeNodeSelection)
         {
+            if (m_TTSGen)
+            {
+                return;
+            }
             //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
 
             if (!TheDispatcher.CheckAccess())

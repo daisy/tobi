@@ -625,6 +625,11 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
+            if (m_TTSGen)
+            {
+                return;
+            }
+
             if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG

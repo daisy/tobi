@@ -776,6 +776,8 @@ namespace Tobi.Plugin.Urakawa
 
         private string obtainPipelineExe()
         {
+            messageBoxAlert("WARNING: Pipeline 2 support is experimental!", null);
+
             string pipeline_ExePath = Settings.Default.Pipeline_ExePath;
             while (!File.Exists(pipeline_ExePath))
             {
