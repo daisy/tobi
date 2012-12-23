@@ -157,9 +157,9 @@ namespace Tobi.Plugin.Urakawa
                     var dlg = new OpenFileDialog
                     {
                         FileName = @"",
-                        DefaultExt = @".xml",
-
-                        Filter = @"DTBook (*.xml)|*.xml",
+                        DefaultExt = @".opf",
+                        Multiselect = true,
+                        Filter = @"OPF, DTBook, NCC (*.opf, *.xml, *.ncc)|*.opf;*.xml;*.ncc",
                         CheckFileExists = false,
                         CheckPathExists = false,
                         AddExtension = true,
@@ -178,9 +178,60 @@ namespace Tobi.Plugin.Urakawa
                         return;
                     }
 
-                    string outdir = Path.GetDirectoryName(dlg.FileName);
-                    outdir = Path.Combine(outdir, "_PIPELINE");
+                    if (dlg.FileNames == null || dlg.FileNames.Length < 1)
+                    {
+                        return;
+                    }
 
+                    string ext = Path.GetExtension(dlg.FileNames[0]);
+
+                    if (string.IsNullOrEmpty(ext)
+                        || (
+                        !ext.Equals(".xml", StringComparison.OrdinalIgnoreCase)
+                        &&
+                        !ext.Equals(".opf", StringComparison.OrdinalIgnoreCase)
+                        &&
+                        !ext.Equals(".ncc", StringComparison.OrdinalIgnoreCase)
+                        ))
+                    {
+                        return;
+                    }
+
+                    string filename = Path.GetFileName(dlg.FileNames[0]);
+                    string outdir = Path.GetDirectoryName(dlg.FileNames[0]);
+                    outdir = Path.Combine(outdir, filename + "_PIPE");
+
+                    string script = "";
+                    string inParam = "--i-source";
+                    string outParam = "--x-output-dir";
+                    string extra = "";
+                    string filenames = dlg.FileNames[0];
+
+                    if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+                    {
+                        script = "dtbook-to-epub3";
+
+                        filenames = "";
+                        foreach (string fileName in dlg.FileNames)
+                        {
+                            filenames += "\"" + fileName + "\" ";
+                        }
+                    }
+                    else if (ext.Equals(".opf", StringComparison.OrdinalIgnoreCase))
+                    {
+                        script = "daisy3-to-epub3";
+
+                        extra = "--x-mediaoverlays true";
+                    }
+                    else if (ext.Equals(".ncc", StringComparison.OrdinalIgnoreCase))
+                    {
+                        script = "daisy202-to-epub3";
+                        inParam = "--x-href";
+                        outParam = "--x-output";
+                        
+                        extra = "--x-mediaoverlay true --x-compatibility-mode false";
+                    }
+                    
                     bool success = false;
                     Func<String, String> checkErrorsOrWarning =
                         (string report) =>
@@ -193,6 +244,7 @@ namespace Tobi.Plugin.Urakawa
                             success = true;
                             return null;
                         };
+                    
                     try
                     {
                         executeProcess(
@@ -202,11 +254,10 @@ namespace Tobi.Plugin.Urakawa
                             pipeline_ExePath
                             //+ "\""
                             ,
-                            Settings.Default.Pipeline_Script
-                            + " " + Settings.Default.Pipeline_InParam + " "
-                            + "\"" + dlg.FileName + "\""
-                            + " " + Settings.Default.Pipeline_OutParam + " "
-                            + "\"" + outdir + "\"",
+                            script + " " +
+                            inParam + " " + filenames + " " +
+                            outParam + " " + "\"" + outdir + "\" " +
+                            extra,
                             checkErrorsOrWarning);
                     }
                     catch (Exception ex)
@@ -216,12 +267,12 @@ namespace Tobi.Plugin.Urakawa
 
                     if (Directory.Exists(outdir))
                     {
-                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileName);
+                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileNames[0]);
                         string outFile = Path.Combine(outdir, fileName + ".epub");
-                        if (!File.Exists(outFile))
-                        {
-                            outFile = Path.Combine(outdir, fileName + ".html");
-                        }
+                        //if (!File.Exists(outFile))
+                        //{
+                        //    outFile = Path.Combine(outdir, fileName + ".html");
+                        //}
                         if (!success || !File.Exists(outFile))
                         {
                             m_ShellView.ExecuteShellProcess(outdir);

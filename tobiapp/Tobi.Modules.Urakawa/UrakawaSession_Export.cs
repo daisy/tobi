@@ -573,6 +573,8 @@ namespace Tobi.Plugin.Urakawa
         private void executeProcess(string workingDir, string title, string exe, string args,
             Func<String, String> checkErrorsOrWarning)
         {
+            bool isPipeline = exe.IndexOf("dp2.exe", StringComparison.OrdinalIgnoreCase) >= 0;
+
             using (Process process = new Process())
             {
                 bool gone = false;
@@ -591,6 +593,12 @@ namespace Tobi.Plugin.Urakawa
 
                 StringBuilder output = new StringBuilder();
                 StringBuilder error = new StringBuilder();
+
+                output.AppendLine(exe + " " + args);
+                output.AppendLine("========================");
+
+                error.AppendLine(exe + " " + args);
+                error.AppendLine("========================");
 
                 process.Disposed += (object sender, EventArgs e) =>
                 {
@@ -619,6 +627,23 @@ namespace Tobi.Plugin.Urakawa
                         else
                         {
                             error.AppendLine(e.Data);
+
+                            // Hack for dp2.exe
+                            if (e.Data.IndexOf("[DP2] DONE", StringComparison.Ordinal) >= 0
+                                || e.Data.IndexOf("[DP2] ERROR", StringComparison.Ordinal) >= 0
+                                )
+                            {
+                                if (!gone)
+                                {
+                                    outputWaitHandle.Set();
+                                    errorWaitHandle.Set();
+
+                                    if (!process.HasExited)
+                                    {
+                                        process.Kill();
+                                    }
+                                }
+                            }
                         }
                     };
 
@@ -646,6 +671,11 @@ namespace Tobi.Plugin.Urakawa
                                 {
                                     outputWaitHandle.Set();
                                     errorWaitHandle.Set();
+
+                                    if (!process.HasExited)
+                                    {
+                                        process.Kill();
+                                    }
                                 }
                             }
                         }
@@ -667,12 +697,13 @@ namespace Tobi.Plugin.Urakawa
                         timeout = 1000 * 60 * 2; // 2 minutes
                     }
 
-                    bool notTimeout = process.WaitForExit(timeout);
+                    bool notTimeout = isPipeline ? true : process.WaitForExit(timeout);
 
-                    if (notTimeout
-                        && outputWaitHandle.WaitOne(timeout)
-                        && errorWaitHandle.WaitOne(timeout))
+                    if (notTimeout)
                     {
+                        outputWaitHandle.WaitOne(timeout);
+                        errorWaitHandle.WaitOne(timeout);
+
                         if (process.ExitCode != 0)
                         {
                             messageBoxText(title, "Error!", error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
@@ -715,6 +746,8 @@ namespace Tobi.Plugin.Urakawa
                     }
                     else
                     {
+                        outputWaitHandle.WaitOne(timeout);
+                        errorWaitHandle.WaitOne(timeout);
                         messageBoxText(title, "Process timeout!", output.ToString() + Environment.NewLine + error.ToString());
                     }
 
