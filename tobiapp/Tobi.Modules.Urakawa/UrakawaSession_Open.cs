@@ -307,6 +307,25 @@ namespace Tobi.Plugin.Urakawa
                                 if (".epub".Equals(Path.GetExtension(fileInfo.FullName)))
                                 {
                                     fileName = Path.GetFileName(fileInfo.FullName);
+
+                                    int index = fileName.IndexOf(" - ");
+                                    if (index > 0)
+                                    {
+                                        string renameFileName = fileName.Substring(index + 3);
+                                        try
+                                        {
+                                            string renamed = Path.Combine(outdir, renameFileName);
+                                            File.Move(fileInfo.FullName, renamed);
+                                            fileName = renameFileName;
+                                        }
+                                        catch (Exception ex)
+                                        {
+#if DEBUG
+                                            Debugger.Break();
+#endif
+                                        }
+                                    }
+
                                     break;
                                 }
                             }
