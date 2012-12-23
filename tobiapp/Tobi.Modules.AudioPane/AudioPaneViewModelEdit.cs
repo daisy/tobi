@@ -1001,7 +1001,8 @@ namespace Tobi.Plugin.AudioPane
                 View.ResetAll();
             }
 
-            if (State.Audio.PlayStreamMarkers == null)
+            if (State.Audio.PlayStreamMarkers == null
+                || m_TTSGen)
             {
                 if (AudioPlaybackStreamKeepAlive)
                 {

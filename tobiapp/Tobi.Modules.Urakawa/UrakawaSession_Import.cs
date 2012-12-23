@@ -103,7 +103,8 @@ namespace Tobi.Plugin.Urakawa
             else if (".xml".Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 //checkDAISY(DocumentFilePath);
-                if (askUser("DAISY Check?", DocumentFilePath))
+                if (false && // TODO: Pipeline 2 with better support for DTBOOK validation (currently skips metadata values)
+                    askUser("DAISY Check?", DocumentFilePath))
                 {
                     string pipeline_ExePath = obtainPipelineExe();
                     if (!string.IsNullOrEmpty(pipeline_ExePath))

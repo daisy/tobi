@@ -222,7 +222,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         if (initial
                             && treeNodeSelection.Item1 != null && treeNodeSelection.Item1.Parent != null
-                            && !treeNodeSelection.Item1.Parent.AtLeastOneSiblingIsSignificantTextOnly())
+                            && !treeNodeSelection.Item1.Parent.AtLeastOneChildSiblingIsSignificantTextOnly())
                         {
                             adjustedNode = treeNodeSelection.Item1;
                         }
@@ -281,7 +281,7 @@ namespace Tobi.Plugin.AudioPane
                     RequestCancellation = true;
                     return;
                 }
-
+                
                 //var manualResetEvent = new ManualResetEvent(false);
                 m_viewModel.TheDispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
                {
@@ -307,6 +307,19 @@ namespace Tobi.Plugin.AudioPane
                        return;
                    }
 
+#if DEBUG
+                   Tuple<TreeNode, TreeNode> treeNodeSelectionCheck = m_viewModel.m_UrakawaSession.GetTreeNodeSelection();
+                   if (newSelection.Item1 != treeNodeSelectionCheck.Item1)
+                   {
+                       Debugger.Break();
+                   }
+                   if (newSelection.Item2 != treeNodeSelectionCheck.Item2)
+                   {
+                       Debugger.Break();
+                   }
+#endif
+
+
                    m_viewModel.openFile(converter.GeneratedAudioFilePath, true, true, pcmFormat);
 
                    needsRefresh = true;
@@ -317,6 +330,23 @@ namespace Tobi.Plugin.AudioPane
                    //    m_viewModel.View.CancelWaveFormLoad(true);
                    //}
                }));
+
+#if DEBUG
+                if (m_viewModel.TheDispatcher.CheckAccess())
+                {
+                    Debugger.Break();
+                }
+#endif
+
+                //Thread.Sleep(100);
+
+                ////Action EmptyDelegate = delegate() { };
+                //m_viewModel.TheDispatcher.Invoke(DispatcherPriority.Background, (Action)(() =>
+                //{
+                //    //nop
+                //}));
+                ////m_viewModel.m_ShellView.PumpDispatcherFrames(DispatcherPriority.Background);
+                
 
                 if (RequestCancellation)
                 {
@@ -394,7 +424,9 @@ namespace Tobi.Plugin.AudioPane
                 CommandSelectAll.Execute();
                 CommandDeleteAudioSelection.Execute();
                 CommandRefresh.Execute();
-
+                
+                m_TTSGen = true;
+                
                 var converter = new AudioTTSGeneratorAutoAdvance(this);
 
                 bool error = m_ShellView.RunModalCancellableProgressTask(true,
@@ -430,6 +462,7 @@ namespace Tobi.Plugin.AudioPane
             }
             finally
             {
+                m_TTSGen = false;
                 if (cancelled)
                 {
                     m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();
