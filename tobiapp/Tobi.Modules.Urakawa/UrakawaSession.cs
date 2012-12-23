@@ -782,7 +782,8 @@ namespace Tobi.Plugin.Urakawa
             if (!Tobi.Common.Settings.Default.EnableTextSyncGranularity
                 || node == null
                 || !node.HasXmlProperty
-                || node.GetManagedAudioMedia() != null)
+                //|| node.GetManagedAudioMedia() != null
+                )
             {
                 return null;
             }
