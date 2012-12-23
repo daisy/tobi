@@ -159,7 +159,7 @@ namespace Tobi.Plugin.Urakawa
                         FileName = @"",
                         DefaultExt = @".opf",
                         Multiselect = true,
-                        Filter = @"OPF, DTBook, NCC (*.opf, *.xml, *.ncc)|*.opf;*.xml;*.ncc",
+                        Filter = @"OPF, DTBook, NCC (*.opf, *.xml, *.html)|*.opf;*.xml;*.html",
                         CheckFileExists = false,
                         CheckPathExists = false,
                         AddExtension = true,
@@ -191,7 +191,7 @@ namespace Tobi.Plugin.Urakawa
                         &&
                         !ext.Equals(".opf", StringComparison.OrdinalIgnoreCase)
                         &&
-                        !ext.Equals(".ncc", StringComparison.OrdinalIgnoreCase)
+                        !ext.Equals(".html", StringComparison.OrdinalIgnoreCase)
                         ))
                     {
                         return;
@@ -201,37 +201,54 @@ namespace Tobi.Plugin.Urakawa
                     string outdir = Path.GetDirectoryName(dlg.FileNames[0]);
                     outdir = Path.Combine(outdir, filename + "_PIPE");
 
+                    if (Directory.Exists(outdir))
+                    {
+                        FileDataProvider.TryDeleteDirectory(outdir, false);
+                    }
+
                     string script = "";
                     string inParam = "--i-source";
                     string outParam = "--x-output-dir";
                     string extra = "";
-                    string filenames = dlg.FileNames[0];
+                    string filenames = "";
 
                     if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
                     {
                         script = "dtbook-to-epub3";
 
-                        filenames = "";
                         foreach (string fileName in dlg.FileNames)
                         {
-                            filenames += "\"" + fileName + "\" ";
+                            if (".xml".Equals(Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
+                            {
+                                //filenames += (inParam + " " + "\"" + fileName + "\" ");
+                                filenames += ("\"" + fileName + "\";");
+                            }
                         }
+
+                        char[] chars = new char[1] { ';' };
+                        filenames = filenames.TrimEnd(chars);
+
+                        filenames = inParam + " " + filenames;
                     }
                     else if (ext.Equals(".opf", StringComparison.OrdinalIgnoreCase))
                     {
                         script = "daisy3-to-epub3";
 
                         extra = "--x-mediaoverlays true";
+
+                        filenames = inParam + " " + dlg.FileNames[0];
                     }
-                    else if (ext.Equals(".ncc", StringComparison.OrdinalIgnoreCase))
+                    else if (ext.Equals(".html", StringComparison.OrdinalIgnoreCase))
                     {
                         script = "daisy202-to-epub3";
                         inParam = "--x-href";
                         outParam = "--x-output";
-                        
+
                         extra = "--x-mediaoverlay true --x-compatibility-mode false";
+
+                        filenames = inParam + " " + dlg.FileNames[0];
                     }
-                    
+
                     bool success = false;
                     Func<String, String> checkErrorsOrWarning =
                         (string report) =>
@@ -244,7 +261,7 @@ namespace Tobi.Plugin.Urakawa
                             success = true;
                             return null;
                         };
-                    
+
                     try
                     {
                         executeProcess(
@@ -255,7 +272,7 @@ namespace Tobi.Plugin.Urakawa
                             //+ "\""
                             ,
                             script + " " +
-                            inParam + " " + filenames + " " +
+                            filenames + " " +
                             outParam + " " + "\"" + outdir + "\" " +
                             extra,
                             checkErrorsOrWarning);
@@ -267,8 +284,34 @@ namespace Tobi.Plugin.Urakawa
 
                     if (Directory.Exists(outdir))
                     {
-                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileNames[0]);
-                        string outFile = Path.Combine(outdir, fileName + ".epub");
+                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileNames[dlg.FileNames.Length - 1]);
+                        if (ext.Equals(".opf", StringComparison.OrdinalIgnoreCase))
+                        {
+                            fileName = "result.epub";
+                        }
+                        else if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+                        {
+                            fileName = fileName + ".epub";
+                        }
+                        else if (ext.Equals(".html", StringComparison.OrdinalIgnoreCase))
+                        {
+                            DirectoryInfo dirInfo = new DirectoryInfo(outdir);
+#if NET40
+                            IEnumerable<FileInfo> allFiles = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
+#else
+            FileInfo[] allFiles = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
+#endif
+                            foreach (FileInfo fileInfo in allFiles)
+                            {
+                                if (".epub".Equals(Path.GetExtension(fileInfo.FullName)))
+                                {
+                                    fileName = Path.GetFileName(fileInfo.FullName);
+                                    break;
+                                }
+                            }
+                        }
+
+                        string outFile = Path.Combine(outdir, fileName);
                         //if (!File.Exists(outFile))
                         //{
                         //    outFile = Path.Combine(outdir, fileName + ".html");

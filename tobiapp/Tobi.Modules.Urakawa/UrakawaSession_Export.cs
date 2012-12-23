@@ -591,6 +591,8 @@ namespace Tobi.Plugin.Urakawa
                 process.StartInfo.CreateNoWindow = false;
                 process.StartInfo.ErrorDialog = false;
 
+                Console.WriteLine("process: " + exe + " " + args);
+
                 StringBuilder output = new StringBuilder();
                 StringBuilder error = new StringBuilder();
 
@@ -631,6 +633,7 @@ namespace Tobi.Plugin.Urakawa
                             // Hack for dp2.exe
                             if (e.Data.IndexOf("[DP2] DONE", StringComparison.Ordinal) >= 0
                                 || e.Data.IndexOf("[DP2] ERROR", StringComparison.Ordinal) >= 0
+                                || (isPipeline && e.Data.IndexOf("ERROR", StringComparison.OrdinalIgnoreCase) >= 0)
                                 )
                             {
                                 if (!gone)
@@ -665,6 +668,7 @@ namespace Tobi.Plugin.Urakawa
                             // Hack for dp2.exe
                             if (e.Data.IndexOf("[DP2] DONE", StringComparison.Ordinal) >= 0
                                 || e.Data.IndexOf("[DP2] ERROR", StringComparison.Ordinal) >= 0
+                                || (isPipeline && e.Data.IndexOf("ERROR", StringComparison.OrdinalIgnoreCase) >= 0)
                                 )
                             {
                                 if (!gone)
@@ -701,10 +705,17 @@ namespace Tobi.Plugin.Urakawa
 
                     if (notTimeout)
                     {
-                        outputWaitHandle.WaitOne(timeout);
-                        errorWaitHandle.WaitOne(timeout);
+                        notTimeout = outputWaitHandle.WaitOne(timeout);
+                        if (notTimeout)
+                        {
+                            notTimeout = errorWaitHandle.WaitOne(timeout);
+                        }
 
-                        if (process.ExitCode != 0)
+                        if (!notTimeout || !process.HasExited)
+                        {
+                            messageBoxText(title, "Timeout?", error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
+                        }
+                        else if (process.ExitCode != 0)
                         {
                             messageBoxText(title, "Error!", error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
                         }
