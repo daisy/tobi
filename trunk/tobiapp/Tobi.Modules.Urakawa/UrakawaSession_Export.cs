@@ -774,6 +774,46 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
+        private string obtainPipelineExe()
+        {
+            string pipeline_ExePath = Settings.Default.Pipeline_ExePath;
+            while (!File.Exists(pipeline_ExePath))
+            {
+                var dlg_ = new Microsoft.Win32.OpenFileDialog
+                {
+                    FileName = @"dp2.exe",
+                    DefaultExt = @".exe",
+
+                    Filter = @"Executable (*.exe)|*.exe",
+                    CheckFileExists = false,
+                    CheckPathExists = false,
+                    AddExtension = true,
+                    DereferenceLinks = true,
+                    Title =
+                        @"Tobi: " +
+                        "Pipeline (dp2.exe)"
+                };
+
+                bool? result_ = false;
+
+                m_ShellView.DimBackgroundWhile(() => { result_ = dlg_.ShowDialog(); });
+
+                if (result_ == false)
+                {
+                    return null;
+                }
+
+                pipeline_ExePath = dlg_.FileName;
+            }
+
+            if (!string.IsNullOrEmpty(pipeline_ExePath))
+            {
+                Settings.Default.Pipeline_ExePath = pipeline_ExePath;
+            }
+
+            return pipeline_ExePath;
+        }
+
         private bool checkDAISY(string path)
         {
             try

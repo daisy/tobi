@@ -120,37 +120,11 @@ namespace Tobi.Plugin.Urakawa
                 m_ShellView.LoadTangoIcon(@"applications-games"),
                 () =>
                 {
-                    string pipeline_ExePath = Settings.Default.Pipeline_ExePath;
-                    while (!File.Exists(pipeline_ExePath))
+                    string pipeline_ExePath = obtainPipelineExe();
+                    if (string.IsNullOrEmpty(pipeline_ExePath))
                     {
-                        var dlg_ = new OpenFileDialog
-                        {
-                            FileName = @"dp2.exe",
-                            DefaultExt = @".exe",
-
-                            Filter = @"Executable (*.exe)|*.exe",
-                            CheckFileExists = false,
-                            CheckPathExists = false,
-                            AddExtension = true,
-                            DereferenceLinks = true,
-                            Title =
-                                @"Tobi: " +
-                                "Pipeline (dp2.exe)"
-                        };
-
-                        bool? result_ = false;
-
-                        m_ShellView.DimBackgroundWhile(() => { result_ = dlg_.ShowDialog(); });
-
-                        if (result_ == false)
-                        {
-                            return;
-                        }
-
-                        pipeline_ExePath = dlg_.FileName;
+                        return;
                     }
-
-                    Settings.Default.Pipeline_ExePath = pipeline_ExePath;
 
                     string workingDir = Path.GetDirectoryName(pipeline_ExePath);
                     //Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);

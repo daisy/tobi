@@ -10,6 +10,9 @@ using Tobi.Common;
 using Tobi.Common.UI;
 using urakawa.daisy.import;
 using urakawa.data;
+using System.Xml;
+using urakawa.daisy;
+using urakawa.xuk;
 
 namespace Tobi.Plugin.Urakawa
 {
@@ -33,7 +36,7 @@ namespace Tobi.Plugin.Urakawa
                 levelsUp++;
 
 #if NET40
-            IEnumerable<DirectoryInfo> metaInfDirs = parentDirInfo.EnumerateDirectories("META-INF", SearchOption.TopDirectoryOnly);
+                IEnumerable<DirectoryInfo> metaInfDirs = parentDirInfo.EnumerateDirectories("META-INF", SearchOption.TopDirectoryOnly);
 #else
             DirectoryInfo[] metaInfDirs = parentDirInfo.GetDirectories("META-INF", SearchOption.TopDirectoryOnly);
 #endif
@@ -100,7 +103,101 @@ namespace Tobi.Plugin.Urakawa
             else if (".xml".Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 //checkDAISY(DocumentFilePath);
-                //TODO: ZedVal support for XML DTBOOK?
+                if (askUser("DAISY Check?", DocumentFilePath))
+                {
+                    string pipeline_ExePath = obtainPipelineExe();
+                    if (!string.IsNullOrEmpty(pipeline_ExePath))
+                    {
+                        string outDir = Path.GetDirectoryName(DocumentFilePath);
+                        outDir = Path.Combine(outDir, Path.GetFileName(DocumentFilePath) + "_PIPEVAL");
+
+
+                        bool success = false;
+                        Func<String, String> checkErrorsOrWarning =
+                            (string report) =>
+                            {
+                                if (report.IndexOf("[DP2] DONE", StringComparison.Ordinal) < 0)
+                                {
+                                    return "Pipeline job doesn't appear to have completed?";
+                                }
+
+                                string reportFile = Path.Combine(outDir, "report.xhtml");
+                                if (File.Exists(reportFile))
+                                {
+                                    string reportXmlSource = File.ReadAllText(reportFile);
+                                    if (!string.IsNullOrEmpty(reportXmlSource))
+                                    {
+                                        string xmlInfo = "";
+
+                                        XmlDocument xmlDoc = XmlReaderWriterHelper.ParseXmlDocumentFromString(reportXmlSource, false,
+                                                                                                              false);
+
+                                        IEnumerable<XmlNode> lis = XmlDocumentHelper.GetChildrenElementsOrSelfWithName(
+                                            xmlDoc.DocumentElement,
+                                            true,
+                                            "li",
+                                            null,
+                                            false);
+
+                                        foreach (XmlNode li in lis)
+                                        {
+                                            if (li.Attributes == null)
+                                            {
+                                                continue;
+                                            }
+                                            XmlNode classAttr = li.Attributes.GetNamedItem("class");
+                                            if (classAttr == null || classAttr.Value != "error")
+                                            {
+                                                continue;
+                                            }
+                                            xmlInfo += li.InnerText;
+                                            xmlInfo += Environment.NewLine;
+                                        }
+
+                                        if (string.IsNullOrEmpty(xmlInfo))
+                                        {
+                                            success = true;
+                                            return null;
+                                        }
+
+                                        return xmlInfo;
+                                    }
+                                }
+
+                                success = true;
+                                return null;
+                            };
+
+                        try
+                        {
+                            string workingDir = Path.GetDirectoryName(pipeline_ExePath);
+                            //Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+                            executeProcess(
+                                workingDir,
+                                "DAISY Pipeline (validation)",
+                                //"\"" +
+                                pipeline_ExePath
+                                //+ "\""
+                                ,
+                                "dtbook-validator " +
+                                "--i-source \"" + DocumentFilePath + "\" " +
+                                "--x-output-dir \"" + outDir + "\" ",
+                                checkErrorsOrWarning);
+                        }
+                        catch (Exception ex)
+                        {
+                            messageBoxText("Oops :(", "Problem running DAISY Pipeline (validation)!",
+                                           ex.Message + Environment.NewLine + ex.StackTrace);
+                        }
+
+                        if (Directory.Exists(outDir))
+                        {
+                            //m_ShellView.ExecuteShellProcess(outDir);
+                            FileDataProvider.TryDeleteDirectory(outDir, false);
+                        }
+                    }
+                }
             }
 
 
