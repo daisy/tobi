@@ -697,7 +697,7 @@ namespace Tobi.Plugin.Urakawa
                     process.BeginErrorReadLine();
                     process.BeginOutputReadLine();
 
-                    int timeout = (int)(1000 * 60 * Math.Abs(Settings.Default.ProcessTimeout_Minutes));
+                    int timeout = (int)(1000 * 60 * Math.Abs(Settings.Default.ProcessTimeoutMinutes));
                     if (timeout <= 0)
                     {
                         timeout = 1000 * 60 * 2; // 2 minutes

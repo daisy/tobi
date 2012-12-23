@@ -194,13 +194,13 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2")]
-        public double ProcessTimeout_Minutes {
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public double ProcessTimeoutMinutes {
             get {
-                return ((double)(this["ProcessTimeout_Minutes"]));
+                return ((double)(this["ProcessTimeoutMinutes"]));
             }
             set {
-                this["ProcessTimeout_Minutes"] = value;
+                this["ProcessTimeoutMinutes"] = value;
             }
         }
     }

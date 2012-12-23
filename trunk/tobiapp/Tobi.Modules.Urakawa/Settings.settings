@@ -44,8 +44,8 @@
     <Setting Name="Pipeline_ExePath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\daisy-pipeline\cli\dp2.exe</Value>
     </Setting>
-    <Setting Name="ProcessTimeout_Minutes" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">2</Value>
+    <Setting Name="ProcessTimeoutMinutes" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">5</Value>
     </Setting>
   </Settings>
 </SettingsFile>
