@@ -634,6 +634,7 @@ namespace Tobi.Plugin.Urakawa
                             if (e.Data.IndexOf("[DP2] DONE", StringComparison.Ordinal) >= 0
                                 || e.Data.IndexOf("[DP2] ERROR", StringComparison.Ordinal) >= 0
                                 || (isPipeline && e.Data.IndexOf("ERROR", StringComparison.OrdinalIgnoreCase) >= 0)
+                                || e.Data.IndexOf("dp2 help COMMAND", StringComparison.OrdinalIgnoreCase) >= 0
                                 )
                             {
                                 if (!gone)
@@ -669,6 +670,7 @@ namespace Tobi.Plugin.Urakawa
                             if (e.Data.IndexOf("[DP2] DONE", StringComparison.Ordinal) >= 0
                                 || e.Data.IndexOf("[DP2] ERROR", StringComparison.Ordinal) >= 0
                                 || (isPipeline && e.Data.IndexOf("ERROR", StringComparison.OrdinalIgnoreCase) >= 0)
+                                || e.Data.IndexOf("dp2 help COMMAND", StringComparison.OrdinalIgnoreCase) >= 0
                                 )
                             {
                                 if (!gone)
