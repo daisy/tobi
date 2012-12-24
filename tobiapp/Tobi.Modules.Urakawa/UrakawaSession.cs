@@ -836,24 +836,31 @@ namespace Tobi.Plugin.Urakawa
                         TreeNode withText = parent.GetFirstDescendantWithText();
                         while (withText != null && withText.IsDescendantOf(parent))
                         {
-                            if (withText.HasXmlProperty && !TreeNode.TextOnlyContainsPunctuation(withText.GetText()))
+                            if (!TreeNode.TextOnlyContainsPunctuation(withText.GetText()))
                             {
-                                string name_ = withText.GetXmlElementLocalName();
-                                int nodeRank = -1;
-                                for (int i = 0; i < m_TextSyncGranularityElements.Count; i++)
+                                TreeNode adjusted = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, parent,
+                                                                                                   withText);
+                                if (adjusted != null && adjusted != parent && adjusted.HasXmlProperty)
                                 {
-                                    if (m_TextSyncGranularityElements[i].Equals(name_,
-                                                                                StringComparison.OrdinalIgnoreCase))
+                                    string name_ = adjusted.GetXmlElementLocalName();
+                                    int nodeRank = -1;
+                                    for (int i = 0; i < m_TextSyncGranularityElements.Count; i++)
                                     {
-                                        nodeRank = i;
-                                        break;
+                                        if (m_TextSyncGranularityElements[i].Equals(name_,
+                                                                                    StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            nodeRank = i;
+                                            break;
+                                        }
                                     }
-                                }
 
 
-                                if (nodeRank >= 0 && nodeRank <= parentRank)
-                                {
-                                    return null;
+                                    if (nodeRank >= 0 && nodeRank <= parentRank)
+                                    {
+                                        return null;
+                                    }
+
+                                    withText = adjusted;
                                 }
                             }
 
