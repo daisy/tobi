@@ -823,6 +823,43 @@ namespace Tobi.Plugin.Urakawa
                     string name = parent.GetXmlElementLocalName();
                     if (str.Equals(name, StringComparison.OrdinalIgnoreCase))
                     {
+                        int parentRank = -1;
+                        for (int i = 0; i < m_TextSyncGranularityElements.Count; i++)
+                        {
+                            if (m_TextSyncGranularityElements[i].Equals(name, StringComparison.OrdinalIgnoreCase))
+                            {
+                                parentRank = i;
+                                break;
+                            }
+                        }
+
+                        TreeNode withText = parent.GetFirstDescendantWithText();
+                        while (withText != null && withText.IsDescendantOf(parent))
+                        {
+                            if (withText.HasXmlProperty && !TreeNode.TextOnlyContainsPunctuation(withText.GetText()))
+                            {
+                                string name_ = withText.GetXmlElementLocalName();
+                                int nodeRank = -1;
+                                for (int i = 0; i < m_TextSyncGranularityElements.Count; i++)
+                                {
+                                    if (m_TextSyncGranularityElements[i].Equals(name_,
+                                                                                StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        nodeRank = i;
+                                        break;
+                                    }
+                                }
+
+
+                                if (nodeRank >= 0 && nodeRank <= parentRank)
+                                {
+                                    return null;
+                                }
+                            }
+
+                            withText = withText.GetNextSiblingWithText();
+                        }
+
                         return parent;
                     }
 
