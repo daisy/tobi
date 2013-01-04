@@ -252,8 +252,6 @@ namespace Tobi.Plugin.Urakawa
             return saveAs(DocumentFilePath, false);
         }
 
-        private string m_SaveAsDocumentFilePath;
-
         private bool saveAs(string filePath, bool autoSave)
         {
             if (DocumentProject == null)
@@ -261,9 +259,9 @@ namespace Tobi.Plugin.Urakawa
                 return false;
             }
 
-            m_SaveAsDocumentFilePath = filePath;
+            string saveAsDocumentFilePath = filePath;
 
-            m_Logger.Log(String.Format(@"UrakawaSession.saveas() [{0}]", m_SaveAsDocumentFilePath), Category.Debug, Priority.Medium);
+            m_Logger.Log(String.Format(@"UrakawaSession.saveas() [{0}]", saveAsDocumentFilePath), Category.Debug, Priority.Medium);
 
             //var backWorker = new BackgroundWorker
             //    {
@@ -274,7 +272,7 @@ namespace Tobi.Plugin.Urakawa
             //bool cancelFlag = false;
             //int currentPercentage = 0;
 
-            var uri = new Uri(m_SaveAsDocumentFilePath + SAVING_EXT, UriKind.Absolute);
+            var uri = new Uri(saveAsDocumentFilePath + SAVING_EXT, UriKind.Absolute);
             //DocumentProject.OpenXuk(uri);
 
             DocumentProject.PrettyFormat = Settings.Default.XUK_PrettyFormat;
@@ -305,7 +303,7 @@ namespace Tobi.Plugin.Urakawa
                 {
                     cancelled = false;
 
-                    if (DocumentFilePath == m_SaveAsDocumentFilePath)
+                    if (DocumentFilePath == saveAsDocumentFilePath)
                     {
                         DebugFix.Assert(!autoSave);
 
@@ -338,20 +336,20 @@ namespace Tobi.Plugin.Urakawa
                     }
                     else
                     {
-                        string saving = m_SaveAsDocumentFilePath + SAVING_EXT;
+                        string saving = saveAsDocumentFilePath + SAVING_EXT;
 
                         if (File.Exists(saving))
                         {
-                            if (File.Exists(m_SaveAsDocumentFilePath))
+                            if (File.Exists(saveAsDocumentFilePath))
                             {
                                 if (Settings.Default.EnableAutoSave && !autoSave)
                                 {
-                                    SaveXukAction.Backup(m_SaveAsDocumentFilePath);
+                                    SaveXukAction.Backup(saveAsDocumentFilePath);
                                 }
-                                File.Delete(m_SaveAsDocumentFilePath);
+                                File.Delete(saveAsDocumentFilePath);
                             }
 
-                            File.Move(saving, m_SaveAsDocumentFilePath);
+                            File.Move(saving, saveAsDocumentFilePath);
                         }
                         else
                         {
@@ -423,7 +421,7 @@ namespace Tobi.Plugin.Urakawa
                     );
             }
 
-            string savingFile = m_SaveAsDocumentFilePath + SAVING_EXT;
+            string savingFile = saveAsDocumentFilePath + SAVING_EXT;
             if (File.Exists(savingFile))
             {
                 if (cancelled && !error)

@@ -596,12 +596,6 @@ namespace Tobi.Plugin.Urakawa
                 StringBuilder output = new StringBuilder();
                 StringBuilder error = new StringBuilder();
 
-                output.AppendLine(exe + " " + args);
-                output.AppendLine("========================");
-
-                error.AppendLine(exe + " " + args);
-                error.AppendLine("========================");
-
                 process.Disposed += (object sender, EventArgs e) =>
                 {
                     Console.WriteLine("process.Disposed");
@@ -705,6 +699,8 @@ namespace Tobi.Plugin.Urakawa
 
                     bool notTimeout = isPipeline ? true : process.WaitForExit(timeout);
 
+                    string EXEC = exe + " " + args + Environment.NewLine + "========================" + Environment.NewLine + Environment.NewLine;
+
                     if (notTimeout)
                     {
                         notTimeout = outputWaitHandle.WaitOne(timeout);
@@ -715,11 +711,11 @@ namespace Tobi.Plugin.Urakawa
 
                         if (!notTimeout || !process.HasExited)
                         {
-                            messageBoxText(title, "Timeout?", error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
+                            messageBoxText(title, "Timeout?", EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
                         }
                         else if (process.ExitCode != 0)
                         {
-                            messageBoxText(title, "Error!", error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
+                            messageBoxText(title, "Error!", EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
                         }
                         else
                         {
@@ -727,6 +723,9 @@ namespace Tobi.Plugin.Urakawa
                             string text = "Success.";
 
                             string errorWarningReport = checkErrorsOrWarning(report);
+
+                            report = EXEC + report;
+
                             if (!string.IsNullOrEmpty(errorWarningReport))
                             {
                                 text = "There are errors or warnings!";
@@ -761,7 +760,7 @@ namespace Tobi.Plugin.Urakawa
                     {
                         outputWaitHandle.WaitOne(timeout);
                         errorWaitHandle.WaitOne(timeout);
-                        messageBoxText(title, "Process timeout!", output.ToString() + Environment.NewLine + error.ToString());
+                        messageBoxText(title, "Process timeout!", EXEC + output.ToString() + Environment.NewLine + error.ToString());
                     }
 
                     //if (exe.IndexOf("dp2.exe") >= 0)
