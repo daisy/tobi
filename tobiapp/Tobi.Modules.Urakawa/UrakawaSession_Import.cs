@@ -451,7 +451,7 @@ namespace Tobi.Plugin.Urakawa
                     //fileName = fileName.TrimStart(chars);
 
 
-                    string newProjectDir = Path.Combine(parent, fileName + Daisy3_Import.XUK_DIR);
+                    string newProjectDir = Path.Combine(parent, fileName); // + Daisy3_Import.XUK_DIR
 
                     if (newProjectDir != projectDir)
                     {
