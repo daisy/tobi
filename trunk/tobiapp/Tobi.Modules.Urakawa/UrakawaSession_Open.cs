@@ -34,6 +34,7 @@ namespace Tobi.Plugin.Urakawa
     public partial class UrakawaSession
     {
         public RichDelegateCommand OpenCommand { get; private set; }
+        public RichDelegateCommand ImportCommand { get; private set; }
         public RichDelegateCommand OpenConvertCommand { get; private set; }
 
         private void initCommands_Open()
@@ -59,35 +60,23 @@ namespace Tobi.Plugin.Urakawa
                 () =>
                 {
                     var dlg = new OpenFileDialog
-                        {
-                            FileName = @"",
-                            DefaultExt = @".opf",
+                    {
+                        FileName = @"",
+                        DefaultExt = @".opf",
 
-                            Filter =
-                                @"DTBook, XHTML, OPF, OBI, XUK, EPUB"
-#if DEBUG
- + ", MML"
-#endif
- + " (*.xml, *.xhtml, *.html, *.opf, *.obi, *" +
-                                OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION +
-                                ", *.epub"
-#if DEBUG
- + ", *.mml"
-#endif
- + ")|*.xml;*.xhtml;*.html;*.opf;*.obi;*" + OpenXukAction.XUK_EXTENSION +
-                                ";*" + OpenXukAction.XUK_SPINE_EXTENSION + ";*.epub"
-#if DEBUG
- + ";*.mml"
-#endif
+                        Filter =
+                            @"OBI, XUK, XUKSPINE"
+ + " (*.obi, *" + OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION 
+ + ")|*.obi;*" + OpenXukAction.XUK_EXTENSION + ";*" + OpenXukAction.XUK_SPINE_EXTENSION
 ,
-                            CheckFileExists = false,
-                            CheckPathExists = false,
-                            AddExtension = true,
-                            DereferenceLinks = true,
-                            Title =
-                                @"Tobi: " +
-                                UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdOpen_ShortDesc)
-                        };
+                        CheckFileExists = false,
+                        CheckPathExists = false,
+                        AddExtension = true,
+                        DereferenceLinks = true,
+                        Title =
+                            @"Tobi: " +
+                            UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdOpen_ShortDesc)
+                    };
 
                     bool? result = false;
 
@@ -111,6 +100,64 @@ namespace Tobi.Plugin.Urakawa
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Open));
 
             m_ShellView.RegisterRichCommand(OpenCommand);
+            //
+            ImportCommand = new RichDelegateCommand(
+                            Tobi_Plugin_Urakawa_Lang.CmdImport_ShortDesc,
+                            Tobi_Plugin_Urakawa_Lang.CmdImport_LongDesc,
+                            null, // KeyGesture obtained from settings (see last parameters below)
+                            m_ShellView.LoadTangoIcon(@"document-open"),
+                            () =>
+                            {
+                                var dlg = new OpenFileDialog
+                                {
+                                    FileName = @"",
+                                    DefaultExt = @".opf",
+
+                                    Filter =
+                                        @"DTBook, XHTML, OPF, EPUB"
+#if DEBUG
+ + ", MML"
+#endif
+ + " (*.xml, *.xhtml, *.html, *.opf, *.epub"
+#if DEBUG
+ + ", *.mml"
+#endif
+ + ")|*.xml;*.xhtml;*.html;*.opf;*.epub"
+#if DEBUG
+ + ";*.mml"
+#endif
+,
+                                    CheckFileExists = false,
+                                    CheckPathExists = false,
+                                    AddExtension = true,
+                                    DereferenceLinks = true,
+                                    Title =
+                                        @"Tobi: " +
+                                        UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdImport_ShortDesc)
+                                };
+
+                                bool? result = false;
+
+                                m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
+                                if (result == false)
+                                {
+                                    return;
+                                }
+                                try
+                                {
+                                    OpenFile(dlg.FileName);
+                                }
+                                catch (Exception ex)
+                                {
+                                    ExceptionHandler.Handle(ex, false, m_ShellView);
+                                }
+                            },
+                            () => true,
+                            Settings_KeyGestures.Default,
+                            PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Import));
+
+            m_ShellView.RegisterRichCommand(ImportCommand);
             //
 
             OpenConvertCommand = new RichDelegateCommand(

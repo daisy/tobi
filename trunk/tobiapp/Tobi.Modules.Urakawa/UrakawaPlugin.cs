@@ -72,6 +72,7 @@ namespace Tobi.Plugin.Urakawa
                 new[]
                     {
                         m_UrakawaSession.OpenCommand,
+                        m_UrakawaSession.ImportCommand,
                         m_UrakawaSession.OpenConvertCommand,
                         m_UrakawaSession.OpenRecentCommand
                     });

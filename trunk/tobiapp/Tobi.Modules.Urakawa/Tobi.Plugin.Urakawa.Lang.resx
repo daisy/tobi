@@ -191,7 +191,7 @@ Press OK to ignore, or CANCEL to see the issues.</value>
     <value>Open the recent files dialog</value>
   </data>
   <data name="CmdShowXukSpine_ShortDesc" xml:space="preserve">
-    <value>Project sp_ine...</value>
+    <value>_Project spine...</value>
   </data>
   <data name="CmdShowXukSpine_LongDesc" xml:space="preserve">
     <value>Open the project spine dialog</value>
@@ -200,10 +200,16 @@ Press OK to ignore, or CANCEL to see the issues.</value>
     <value>Opening XUK file...</value>
   </data>
   <data name="CmdOpen_ShortDesc" xml:space="preserve">
-    <value>_Open / import</value>
+    <value>_Open</value>
   </data>
   <data name="CmdOpen_LongDesc" xml:space="preserve">
-    <value>Open or import a document to create a new project</value>
+    <value>Open an existing project</value>
+  </data>
+  <data name="CmdImport_ShortDesc" xml:space="preserve">
+    <value>_Import</value>
+  </data>
+  <data name="CmdImport_LongDesc" xml:space="preserve">
+    <value>Import a document to create a new project</value>
   </data>
   <data name="CmdOpenConvert_ShortDesc" xml:space="preserve">
     <value>DAISY to EPUB3</value>
