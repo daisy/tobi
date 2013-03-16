@@ -198,7 +198,7 @@ namespace Tobi.Plugin.AudioPane
                 //&& IsAudioLoaded
                       ,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_InsertFile));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_FileInsert));
 
             m_ShellView.RegisterRichCommand(CommandInsertFile);
             //
