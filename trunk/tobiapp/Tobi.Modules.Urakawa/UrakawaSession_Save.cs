@@ -111,11 +111,13 @@ namespace Tobi.Plugin.Urakawa
                         DataCleanup(true);
                     }
 
+                    string ext = IsXukSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION;
+
                     var dlg = new SaveFileDialog
                     {
-                        FileName = @"tobi_doc",
-                        DefaultExt = OpenXukAction.XUK_EXTENSION,
-                        Filter = @"XUK (*" + OpenXukAction.XUK_EXTENSION + ")|*" + OpenXukAction.XUK_EXTENSION,
+                        FileName = @"tobi_project",
+                        DefaultExt = ext,
+                        Filter = @"XUK (*" + ext + ")|*" + ext,
                         CheckFileExists = false,
                         CheckPathExists = false,
                         AddExtension = true,
@@ -148,11 +150,14 @@ namespace Tobi.Plugin.Urakawa
                     string dirPath = Path.GetDirectoryName(dlg.FileName);
                     string prefix = Path.GetFileNameWithoutExtension(dlg.FileName);
 
-                    DocumentProject.Presentations.Get(0).DataProviderManager.SetDataFileDirectoryWithPrefix(prefix);
+                    DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix);
                     DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
 
                     if (saveAs(dlg.FileName, false))
                     {
+                        string destinationFolder =
+                            DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+
                         DocumentProject.Presentations.Get(0).RootUri = oldUri;
 
                         //string datafolderPathSavedAs = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
@@ -166,7 +171,10 @@ namespace Tobi.Plugin.Urakawa
 
                         bool error = m_ShellView.RunModalCancellableProgressTask(true,
                             Tobi_Plugin_Urakawa_Lang.CopyingDataFiles,
-                            new DataFolderCopier(DocumentProject.Presentations.Get(0), dirPath, prefix),
+                            new DataFolderCopier(DocumentProject.Presentations.Get(0),
+                                //dirPath, prefix
+                                destinationFolder
+                                ),
                             () =>
                             {
                                 m_Logger.Log(@"CANCELED", Category.Debug, Priority.Medium);
@@ -203,7 +211,7 @@ namespace Tobi.Plugin.Urakawa
                     //var fileDialog = Container.Resolve<IFileDialogService>();
                     //return fileDialog.SaveAs();
                 },
-                () => DocumentProject != null,
+                () => DocumentProject != null && !IsXukSpine,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_SaveAs));
 

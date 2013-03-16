@@ -220,11 +220,22 @@ namespace Tobi.Plugin.Descriptions
                 var presentation = new Presentation();
                 presentation.Project = project;
                 presentation.RootUri = pres.RootUri;
+
                 int index = pres.DataProviderManager.DataFileDirectory.IndexOf(DataProviderManager.DefaultDataFileDirectorySeparator + DataProviderManager.DefaultDataFileDirectory);
-                string prefix = pres.DataProviderManager.DataFileDirectory.Substring(0, index);
-                string suffix = "_IMG_DESC";
+
+                string prefix = null;
+                if (index <= 0)
+                {
+                    prefix = pres.DataProviderManager.DataFileDirectory;
+                }
+                else
+                {
+                    prefix = pres.DataProviderManager.DataFileDirectory.Substring(0, index);
+                }
+
+                string suffix = "_Img";
                 //DebugFix.Assert(Path.GetFileName(pres.RootUri.LocalPath) == prefix);
-                presentation.DataProviderManager.SetDataFileDirectoryWithPrefix(prefix + suffix);
+                presentation.DataProviderManager.SetCustomDataFileDirectory(prefix + suffix);
                 presentation.MediaDataManager.DefaultPCMFormat = pres.MediaDataManager.DefaultPCMFormat;//.Copy();
                 //presentation.MediaDataManager.EnforceSinglePCMFormat = true;
 
