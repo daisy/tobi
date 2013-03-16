@@ -115,7 +115,7 @@ namespace Tobi.Plugin.Urakawa
 
                     var dlg = new SaveFileDialog
                     {
-                        FileName = @"tobi_project",
+                        FileName = Path.GetFileNameWithoutExtension(DocumentFilePath), //@"tobi_project",
                         DefaultExt = ext,
                         Filter = @"XUK (*" + ext + ")|*" + ext,
                         CheckFileExists = false,
@@ -133,6 +133,15 @@ namespace Tobi.Plugin.Urakawa
 
                     if (result == false)
                     {
+                        return;
+                    }
+
+                    if (FileDataProvider.NormaliseFullFilePath(dlg.FileName)
+                        == FileDataProvider.NormaliseFullFilePath(DocumentFilePath))
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
                         return;
                     }
 
