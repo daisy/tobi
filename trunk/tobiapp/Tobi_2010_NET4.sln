@@ -113,8 +113,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFMediaKit_NET4", "Externa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaxNET_NET4", "ExternalLibs\SaxNET\SaxNET_NET4.csproj", "{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Tobi_Install", "Tobi_Install\Tobi_Install.vdproj", "{C01DD6EA-E334-41B9-BAA3-956F94E9EC06}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

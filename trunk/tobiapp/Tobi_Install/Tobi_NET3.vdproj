@@ -3,7 +3,7 @@
 "VSVersion" = "3:800"
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
-"ProjectName" = "8:Tobi_Install"
+"ProjectName" = "8:Tobi (NET3)"
 "LanguageId" = "3:1033"
 "CodePage" = "3:1252"
 "UILanguageId" = "3:1033"
@@ -16,13 +16,31 @@
         "Entry"
         {
         "MsmKey" = "8:_02DF5E2491466ED65D2999A24BEE10D0"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_049F391E1F8649CD8510A5E247B5A2EC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_06ACCC09B3C94D7895C7B4CE151BD4EE"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_08BEBF2E9D7654E1B57590B74FEAF4C8"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -34,7 +52,31 @@
         "Entry"
         {
         "MsmKey" = "8:_0A8CD9CD53859BFBE11F69799C4978A7"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0DC0DEBD0A994402B3CAC2E486EF7306"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0E27409689BA4928898A3FC4FFDFD1BE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_111F692DDC064FEDA66267F4D8833FDE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_11F4AE9F29F347969C9652B12312D9DE"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -112,7 +154,7 @@
         "Entry"
         {
         "MsmKey" = "8:_13FDF30CD5BAB7EC03DD65A12699B046"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -130,7 +172,37 @@
         "Entry"
         {
         "MsmKey" = "8:_1736B2383C461E03BA258EC55C3D9538"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_19F9EB7AE1A543F5AED0F36A822E8A46"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1C57C13D096D43C6B00C5DF6AFE7D962"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1CE710C5901C4902A95F1C6A8D9BA174"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1ED2A8DE29094A2AAB55F68017FD1363"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_26A5E150636A4A7E93B105B2A9C117B7"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -142,7 +214,7 @@
         "Entry"
         {
         "MsmKey" = "8:_28E1494BEE52DC31605457729B1D9B1C"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -183,20 +255,26 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_31E8B6D21610499E96415EF134409474"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_38F86A491C26A1885FF9C7FE098AF3AB"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_39DF4BD46623151050AC1C159DCDB958"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_3A3110742A62F106A4580D8AED4DD0AE"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -207,14 +285,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
-        "OwnerKey" = "8:_C8CDE90FF5A2F08D5C66645C251478B0"
+        "MsmKey" = "8:_3B2B603B2F6F4926839554AA5FDC9095"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
+        "OwnerKey" = "8:_C8CDE90FF5A2F08D5C66645C251478B0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -231,8 +315,26 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3D432FA5299D4517AD16159184996D6A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3F446313EB9949159630EBABD80F27F0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_423DEAA511D6450BAED1A354D28244D5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_48FE9CD2C8346149AEE1C5D1E6CD1388"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -244,7 +346,7 @@
         "Entry"
         {
         "MsmKey" = "8:_4954B96F17B05BF739BCB552F112B421"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -256,7 +358,43 @@
         "Entry"
         {
         "MsmKey" = "8:_4998B9D8FAD536FE376E65942B828F81"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4B0CDBD77ABE400BB00A18BC4CE5025E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4C90ED3DF1C649A6860ACA27E16A9696"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5101BA46DBDA493D9B04050909ACBAEB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_51CC7885B7C24DC5848178A0954381CE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_520291B5EB30480B954E4BCFD4659866"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_56BDF97D90ED304104A638828023496F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -267,8 +405,26 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_56BDF97D90ED304104A638828023496F"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "MsmKey" = "8:_5908C90FA7D6427890C77DE068A6C56B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5B0D056341F24364BDC59D8362A2119A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5C1F193FBA7C43D79942F42D9DD65B65"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5C2D112749154FC4A9A6E85537784683"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -280,7 +436,7 @@
         "Entry"
         {
         "MsmKey" = "8:_5CF8898C1E28EF3972BB5C998A401BC1"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -322,31 +478,79 @@
         "Entry"
         {
         "MsmKey" = "8:_5D48D47469D8D62D757B333F085ADA70"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5DDCBB4752DA42E6BA503EBAD55A697D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_60A2A43BA6EC4E8F8544134239F8ED89"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_644EB5E9F39B46B09E2E029854BEB242"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_65560808AE464B77908DE60F3370755A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_692CD037FC96419BB6FB70768B2A2EA2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6A1951344BFC4BBE8D54E11D08239FE7"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_6B54BEBBAA02A8E8CD2AE95652F97D2F"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "MsmKey" = "8:_6E0EF123C9D44A418868986D26A39228"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7178064146F84E75844E2201051217C0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_71B95F06B72DBED00EE9C502A94EC942"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_71B95F06B72DBED00EE9C502A94EC942"
         "OwnerKey" = "8:_02DF5E2491466ED65D2999A24BEE10D0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_71C962F7B8AC4400BC5B14FE1692022C"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -424,7 +628,7 @@
         "Entry"
         {
         "MsmKey" = "8:_743E35C06A4EB06541997EF3316D7E6C"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -441,6 +645,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_757E9AD7750245CA9D84A2C35F5CBD87"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_79CACAB8F26C803CD22F89EB8D3B2B19"
         "OwnerKey" = "8:_FB0533B6322EAA7A6ADDD9C78512DA32"
         "MsmSig" = "8:_UNDEFINED"
@@ -448,7 +658,7 @@
         "Entry"
         {
         "MsmKey" = "8:_79CACAB8F26C803CD22F89EB8D3B2B19"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -460,7 +670,19 @@
         "Entry"
         {
         "MsmKey" = "8:_7AF9293ACCC17C3ABB2210CD9719F63A"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7C050527E6BD4305997CD435BC64AADE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7C30CAD38A8A48DA9B6747627987C2D7"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -472,7 +694,37 @@
         "Entry"
         {
         "MsmKey" = "8:_7C7FAE93F368167A77F2283D8BA59F03"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7D283D3C7BD140E987A792A0C7608F5D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_812848BDE14B45EDAB84CDEEA3DB7FFE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_81AB93F7A6094E3CB036A8CB2796B05F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8598EFE00AEC467DBC8835FC4CC51D68"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_85D836C1365F4398AC5151A8925FCF54"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -484,13 +736,19 @@
         "Entry"
         {
         "MsmKey" = "8:_87A0FF02F9C18C812508AEEDC67FCE31"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_87A0FF02F9C18C812508AEEDC67FCE31"
         "OwnerKey" = "8:_4954B96F17B05BF739BCB552F112B421"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_884D15AD99D9423F8226F08A591CBF8E"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -502,7 +760,37 @@
         "Entry"
         {
         "MsmKey" = "8:_8A091E13F450C46D084AE9D2D0ABDD0A"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8A464603E3534ED0B92BFC3A1D223441"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8A6CFDCCA75E407C97F9486F96A47913"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8CB07D3905FF4A41B4B17DAC11AD3B88"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8D29748B6FA44CBCA2D17080525D7AA9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8E84038EB392418E9A327D2260DCF4AD"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -520,7 +808,7 @@
         "Entry"
         {
         "MsmKey" = "8:_8FCF28CB7A3917D47594D4B24B348B6C"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -532,7 +820,7 @@
         "Entry"
         {
         "MsmKey" = "8:_91970C02154C2A843938F7A3B9A665F0"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -549,6 +837,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_94F24954ECC748F7BAF1F252FD72A858"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_97EDA63F2505A118A4232C1E15E32AEB"
         "OwnerKey" = "8:_13FDF30CD5BAB7EC03DD65A12699B046"
         "MsmSig" = "8:_UNDEFINED"
@@ -556,7 +850,7 @@
         "Entry"
         {
         "MsmKey" = "8:_97EDA63F2505A118A4232C1E15E32AEB"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -568,7 +862,7 @@
         "Entry"
         {
         "MsmKey" = "8:_99C419437651E55F98581E5EF6077D6B"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -597,6 +891,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9A84FC09F9D74CA6B72C558B9ED9FCDA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9BA494CB51070696CDE0D1DA0CFBB8F8"
         "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
         "MsmSig" = "8:_UNDEFINED"
@@ -604,7 +904,7 @@
         "Entry"
         {
         "MsmKey" = "8:_9BA494CB51070696CDE0D1DA0CFBB8F8"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -615,20 +915,68 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9C4ED28DE58044009D5BF362663DDA37"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9F3B4E8D75DD48BAA6E4281D66D25F67"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A53DA1FAF2FC4455ABB153FAC4C58706"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A68E06DB591742300DC9886AB88CDABF"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_AB082A6055ECD48EB1B57756DB345128"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_AB082A6055ECD48EB1B57756DB345128"
         "OwnerKey" = "8:_5D48D47469D8D62D757B333F085ADA70"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AB5C992973244594876AF0EF7658F7C1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B1FB9EA166004892B8035FA54EF9F619"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B5B5E3429BFE4A22874777E1DC483C93"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B6FBB0297B8D486E8DD48C90207B7132"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B70C6F17F1A14C7491E30FC44E18CA90"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -640,7 +988,7 @@
         "Entry"
         {
         "MsmKey" = "8:_B74E810AF14A830E92ABA5D6082692F4"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -669,8 +1017,14 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B913CE76805E492588AA11AF2A3AFC19"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_BB55BCB333CAC1C73941DD9BBF451A6F"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -682,7 +1036,7 @@
         "Entry"
         {
         "MsmKey" = "8:_BBA10E5709B72FF460C8117A837212CD"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -693,6 +1047,30 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_BBA41557C63A4CB99A8E74190BC116D6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BCEB40ED33ED47909C55454C1ABC5FCE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BD4F4FADD52040A19B9E5570050C2351"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BDF0A14D829C40FD8420E0402E9628BF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C5491D60648305DF387911299E585ECE"
         "OwnerKey" = "8:_28E1494BEE52DC31605457729B1D9B1C"
         "MsmSig" = "8:_UNDEFINED"
@@ -700,7 +1078,7 @@
         "Entry"
         {
         "MsmKey" = "8:_C5491D60648305DF387911299E585ECE"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -712,7 +1090,13 @@
         "Entry"
         {
         "MsmKey" = "8:_C63A34E740AD61311CC02851AF31139B"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C6D5A7B20C3E422293C4F5385481284B"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -724,7 +1108,7 @@
         "Entry"
         {
         "MsmKey" = "8:_C8CDE90FF5A2F08D5C66645C251478B0"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -736,7 +1120,7 @@
         "Entry"
         {
         "MsmKey" = "8:_C9906D7BA669D312F0811AED86725548"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -754,7 +1138,7 @@
         "Entry"
         {
         "MsmKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -790,13 +1174,19 @@
         "Entry"
         {
         "MsmKey" = "8:_CF8A39D9577A5FE851D03123A467AA28"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_CF8A39D9577A5FE851D03123A467AA28"
         "OwnerKey" = "8:_39DF4BD46623151050AC1C159DCDB958"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D08650B65FCC4B848E70902A4D911296"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -808,13 +1198,19 @@
         "Entry"
         {
         "MsmKey" = "8:_DBBEABF275F7E5CCD1A07E9EF91324EF"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E0DAE16C5478465FB70482CD96CB0B76"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_E3A1B7F5173B74FE2F7594F9CF860FA4"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -826,13 +1222,13 @@
         "Entry"
         {
         "MsmKey" = "8:_E461733F294FA8620FC476E199DA392B"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_E732B857D502DD968FA4AC4230B2D034"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -844,7 +1240,7 @@
         "Entry"
         {
         "MsmKey" = "8:_E7822C1B33879E36A4E5DDDA4F4E4278"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -862,7 +1258,13 @@
         "Entry"
         {
         "MsmKey" = "8:_E9AAA3B64DEEE6EAF8FFE2B55586295E"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_C8CDE90FF5A2F08D5C66645C251478B0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E9AAA3B64DEEE6EAF8FFE2B55586295E"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -874,13 +1276,25 @@
         "Entry"
         {
         "MsmKey" = "8:_E9AAA3B64DEEE6EAF8FFE2B55586295E"
-        "OwnerKey" = "8:_C8CDE90FF5A2F08D5C66645C251478B0"
+        "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_E9AAA3B64DEEE6EAF8FFE2B55586295E"
-        "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
+        "MsmKey" = "8:_EDF4BB337AFF460BB653132BE755A4FC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F70B6CFBB051475683ADC02D463542C6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F7968C33A53A417590CA181A094B68B1"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -916,7 +1330,7 @@
         "Entry"
         {
         "MsmKey" = "8:_F93A180942BD2E0DFFF54751AE0C20F5"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -928,7 +1342,7 @@
         "Entry"
         {
         "MsmKey" = "8:_F9C1217872C8111AF951ECA4CA3DCF92"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -940,7 +1354,7 @@
         "Entry"
         {
         "MsmKey" = "8:_FB0533B6322EAA7A6ADDD9C78512DA32"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1090,7 +1504,7 @@
         "Entry"
         {
         "MsmKey" = "8:_FB1697D93F5B141651A15BB1B387D1F7"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1125,6 +1539,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_FD97A6F68DBC42E980E9E2BD313E4617"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_FDB8DC8325E439D00908CD68D5E2FD8C"
         "OwnerKey" = "8:_E732B857D502DD968FA4AC4230B2D034"
         "MsmSig" = "8:_UNDEFINED"
@@ -1204,7 +1624,7 @@
         "Entry"
         {
         "MsmKey" = "8:_FDB8DC8325E439D00908CD68D5E2FD8C"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1227,14 +1647,56 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_3A3110742A62F106A4580D8AED4DD0AE"
+        "MsmKey" = "8:_FEC4448643E54ECE94AD26FB4FD1C951"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+        "OwnerKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_E9AAA3B64DEEE6EAF8FFE2B55586295E"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DBBEABF275F7E5CCD1A07E9EF91324EF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9BA494CB51070696CDE0D1DA0CFBB8F8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_91970C02154C2A843938F7A3B9A665F0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_56BDF97D90ED304104A638828023496F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1301,48 +1763,6 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_C8CDE90FF5A2F08D5C66645C251478B0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_56BDF97D90ED304104A638828023496F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DBBEABF275F7E5CCD1A07E9EF91324EF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9BA494CB51070696CDE0D1DA0CFBB8F8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_91970C02154C2A843938F7A3B9A665F0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_E9AAA3B64DEEE6EAF8FFE2B55586295E"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1537,6 +1957,12 @@
         "OwnerKey" = "8:_99C419437651E55F98581E5EF6077D6B"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_3A3110742A62F106A4580D8AED4DD0AE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -1545,7 +1971,7 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:Debug\\Tobi_Install.msi"
+        "OutputFilename" = "8:Debug\\Tobi_NET3.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -1555,13 +1981,34 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
         }
         "Release"
         {
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\Tobi_Install.msi"
+        "OutputFilename" = "8:Release\\Tobi_NET3.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -1571,6 +2018,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Client.3.5"
+                    {
+                    "Name" = "8:.NET Framework 3.5 SP1 Client Profile"
+                    "ProductCode" = "8:Microsoft.Net.Client.3.5"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -1629,6 +2092,46 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_049F391E1F8649CD8510A5E247B5A2EC"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXGeneral-Italic.xml"
+            "TargetName" = "8:STIXGeneral-Italic.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_06ACCC09B3C94D7895C7B4CE151BD4EE"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\fontMetrics.xsl"
+            "TargetName" = "8:fontMetrics.xsl"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_08BEBF2E9D7654E1B57590B74FEAF4C8"
@@ -1693,6 +2196,86 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0DC0DEBD0A994402B3CAC2E486EF7306"
+            {
+            "SourcePath" = "8:..\\hi.wav"
+            "TargetName" = "8:hi.wav"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0E27409689BA4928898A3FC4FFDFD1BE"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXIntegralsUpSm-Regular.xml"
+            "TargetName" = "8:STIXIntegralsUpSm-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_111F692DDC064FEDA66267F4D8833FDE"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXIntegralsSm-Bold.xml"
+            "TargetName" = "8:STIXIntegralsSm-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_11F4AE9F29F347969C9652B12312D9DE"
+            {
+            "SourcePath" = "8:..\\tocktock.wav"
+            "TargetName" = "8:tocktock.wav"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_13FDF30CD5BAB7EC03DD65A12699B046"
             {
             "AssemblyRegister" = "3:1"
@@ -1755,6 +2338,106 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_19F9EB7AE1A543F5AED0F36A822E8A46"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXIntegralsUp-Bold.xml"
+            "TargetName" = "8:STIXIntegralsUp-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1C57C13D096D43C6B00C5DF6AFE7D962"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXGeneral-Regular.xml"
+            "TargetName" = "8:STIXGeneral-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1CE710C5901C4902A95F1C6A8D9BA174"
+            {
+            "SourcePath" = "8:..\\ZedVal\\zedval-2.1.jar"
+            "TargetName" = "8:zedval-2.1.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1ED2A8DE29094A2AAB55F68017FD1363"
+            {
+            "SourcePath" = "8:..\\EPUB.svg"
+            "TargetName" = "8:EPUB.svg"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_26A5E150636A4A7E93B105B2A9C117B7"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXSizeTwoSym-Regular.xml"
+            "TargetName" = "8:STIXSizeTwoSym-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_28E1494BEE52DC31605457729B1D9B1C"
             {
             "AssemblyRegister" = "3:1"
@@ -1784,6 +2467,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_31E8B6D21610499E96415EF134409474"
+            {
+            "SourcePath" = "8:..\\ZedVal\\xml-apis-1.0.b2.jar"
+            "TargetName" = "8:xml-apis-1.0.b2.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_38F86A491C26A1885FF9C7FE098AF3AB"
@@ -1879,6 +2582,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3B2B603B2F6F4926839554AA5FDC9095"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\pmml2svg.xsl"
+            "TargetName" = "8:pmml2svg.xsl"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3B46411D370BAF1233EC250C7EB7B67C"
             {
             "AssemblyRegister" = "3:1"
@@ -1906,8 +2629,68 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3D432FA5299D4517AD16159184996D6A"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXSizeThreeSym-Regular.xml"
+            "TargetName" = "8:STIXSizeThreeSym-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3F446313EB9949159630EBABD80F27F0"
+            {
+            "SourcePath" = "8:..\\paper_tile_texture.jpg"
+            "TargetName" = "8:paper_tile_texture.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_423DEAA511D6450BAED1A354D28244D5"
+            {
+            "SourcePath" = "8:..\\ZedVal\\jing-20091111.jar"
+            "TargetName" = "8:jing-20091111.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_48FE9CD2C8346149AEE1C5D1E6CD1388"
@@ -2003,6 +2786,106 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4B0CDBD77ABE400BB00A18BC4CE5025E"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXIntegralsSm-Regular.xml"
+            "TargetName" = "8:STIXIntegralsSm-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4C90ED3DF1C649A6860ACA27E16A9696"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXNonUnicode-Italic.xml"
+            "TargetName" = "8:STIXNonUnicode-Italic.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5101BA46DBDA493D9B04050909ACBAEB"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXSizeOneSym-Bold.xml"
+            "TargetName" = "8:STIXSizeOneSym-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_51CC7885B7C24DC5848178A0954381CE"
+            {
+            "SourcePath" = "8:..\\lib\\commons-compress-1.4.1.jar"
+            "TargetName" = "8:commons-compress-1.4.1.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_3DE6270A8FE64012B57B3F9F5AEFF4FE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_520291B5EB30480B954E4BCFD4659866"
+            {
+            "SourcePath" = "8:..\\desc2html.xsl"
+            "TargetName" = "8:desc2html.xsl"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_56BDF97D90ED304104A638828023496F"
             {
             "AssemblyRegister" = "3:1"
@@ -2032,6 +2915,86 @@
             "Register" = "3:1"
             "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5908C90FA7D6427890C77DE068A6C56B"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXSizeFourSym-Regular.xml"
+            "TargetName" = "8:STIXSizeFourSym-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5B0D056341F24364BDC59D8362A2119A"
+            {
+            "SourcePath" = "8:..\\ZedVal\\commons-cli-1.1.jar"
+            "TargetName" = "8:commons-cli-1.1.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5C1F193FBA7C43D79942F42D9DD65B65"
+            {
+            "SourcePath" = "8:..\\Tobi.ico"
+            "TargetName" = "8:Tobi.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5C2D112749154FC4A9A6E85537784683"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXNonUnicode-Regular.xml"
+            "TargetName" = "8:STIXNonUnicode-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5CF8898C1E28EF3972BB5C998A401BC1"
@@ -2096,6 +3059,126 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5DDCBB4752DA42E6BA503EBAD55A697D"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\formattingMode.xsl"
+            "TargetName" = "8:formattingMode.xsl"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_60A2A43BA6EC4E8F8544134239F8ED89"
+            {
+            "SourcePath" = "8:..\\ZedVal\\stax-api-1.0.1.jar"
+            "TargetName" = "8:stax-api-1.0.1.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_644EB5E9F39B46B09E2E029854BEB242"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXIntegralsD-Bold.xml"
+            "TargetName" = "8:STIXIntegralsD-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_65560808AE464B77908DE60F3370755A"
+            {
+            "SourcePath" = "8:..\\faad.exe"
+            "TargetName" = "8:faad.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_692CD037FC96419BB6FB70768B2A2EA2"
+            {
+            "SourcePath" = "8:..\\ZedVal\\sac-1.3.jar"
+            "TargetName" = "8:sac-1.3.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6A1951344BFC4BBE8D54E11D08239FE7"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXIntegralsUpD-Bold.xml"
+            "TargetName" = "8:STIXIntegralsUpD-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6B54BEBBAA02A8E8CD2AE95652F97D2F"
             {
             "AssemblyRegister" = "3:1"
@@ -2125,6 +3208,46 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6E0EF123C9D44A418868986D26A39228"
+            {
+            "SourcePath" = "8:..\\mathml-fallback-transform.xslt"
+            "TargetName" = "8:mathml-fallback-transform.xslt"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7178064146F84E75844E2201051217C0"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXGeneral.xml"
+            "TargetName" = "8:STIXGeneral.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_71B95F06B72DBED00EE9C502A94EC942"
@@ -2158,6 +3281,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_71C962F7B8AC4400BC5B14FE1692022C"
+            {
+            "SourcePath" = "8:..\\lame.exe"
+            "TargetName" = "8:lame.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_743E35C06A4EB06541997EF3316D7E6C"
             {
             "AssemblyRegister" = "3:1"
@@ -2187,6 +3330,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_757E9AD7750245CA9D84A2C35F5CBD87"
+            {
+            "SourcePath" = "8:..\\ZedVal\\batik-util-1.6-1.jar"
+            "TargetName" = "8:batik-util-1.6-1.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_79CACAB8F26C803CD22F89EB8D3B2B19"
@@ -2251,6 +3414,46 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7C050527E6BD4305997CD435BC64AADE"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXSizeOneSym-Regular.xml"
+            "TargetName" = "8:STIXSizeOneSym-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7C30CAD38A8A48DA9B6747627987C2D7"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXNonUnicode-Bold.xml"
+            "TargetName" = "8:STIXNonUnicode-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7C7FAE93F368167A77F2283D8BA59F03"
             {
             "AssemblyRegister" = "3:1"
@@ -2280,6 +3483,106 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7D283D3C7BD140E987A792A0C7608F5D"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXNonUnicode-BoldItalic.xml"
+            "TargetName" = "8:STIXNonUnicode-BoldItalic.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_812848BDE14B45EDAB84CDEEA3DB7FFE"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXVariants-Regular.xml"
+            "TargetName" = "8:STIXVariants-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_81AB93F7A6094E3CB036A8CB2796B05F"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXVariants-Bold.xml"
+            "TargetName" = "8:STIXVariants-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8598EFE00AEC467DBC8835FC4CC51D68"
+            {
+            "SourcePath" = "8:..\\lib\\guava-13.0.1.jar"
+            "TargetName" = "8:guava-13.0.1.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_3DE6270A8FE64012B57B3F9F5AEFF4FE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_85D836C1365F4398AC5151A8925FCF54"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXIntegralsUp-Regular.xml"
+            "TargetName" = "8:STIXIntegralsUp-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_87A0FF02F9C18C812508AEEDC67FCE31"
@@ -2313,6 +3616,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_884D15AD99D9423F8226F08A591CBF8E"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\operator-dictionary.xml"
+            "TargetName" = "8:operator-dictionary.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_8A091E13F450C46D084AE9D2D0ABDD0A"
             {
             "AssemblyRegister" = "3:1"
@@ -2342,6 +3665,106 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A464603E3534ED0B92BFC3A1D223441"
+            {
+            "SourcePath" = "8:..\\ZedVal\\xercesImpl-2.9.1.jar"
+            "TargetName" = "8:xercesImpl-2.9.1.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A6CFDCCA75E407C97F9486F96A47913"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXIntegralsUpSm-Bold.xml"
+            "TargetName" = "8:STIXIntegralsUpSm-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8CB07D3905FF4A41B4B17DAC11AD3B88"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXSizeTwoSym-Bold.xml"
+            "TargetName" = "8:STIXSizeTwoSym-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8D29748B6FA44CBCA2D17080525D7AA9"
+            {
+            "SourcePath" = "8:..\\epubcheck.jar"
+            "TargetName" = "8:epubcheck.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8E84038EB392418E9A327D2260DCF4AD"
+            {
+            "SourcePath" = "8:..\\ZedVal\\daisy-util-20100125.jar"
+            "TargetName" = "8:daisy-util-20100125.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_8FCF28CB7A3917D47594D4B24B348B6C"
@@ -2402,8 +3825,28 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94F24954ECC748F7BAF1F252FD72A858"
+            {
+            "SourcePath" = "8:..\\ZedVal\\Saxon-HE-9.4.jar"
+            "TargetName" = "8:Saxon-HE-9.4.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_97EDA63F2505A118A4232C1E15E32AEB"
@@ -2468,6 +3911,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9A84FC09F9D74CA6B72C558B9ED9FCDA"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXGeneral-Bold.xml"
+            "TargetName" = "8:STIXGeneral-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9BA494CB51070696CDE0D1DA0CFBB8F8"
             {
             "AssemblyRegister" = "3:1"
@@ -2495,8 +3958,68 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9C4ED28DE58044009D5BF362663DDA37"
+            {
+            "SourcePath" = "8:..\\lib\\sac-1.3.jar"
+            "TargetName" = "8:sac-1.3.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_3DE6270A8FE64012B57B3F9F5AEFF4FE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9F3B4E8D75DD48BAA6E4281D66D25F67"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXSizeFiveSym-Regular.xml"
+            "TargetName" = "8:STIXSizeFiveSym-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A53DA1FAF2FC4455ABB153FAC4C58706"
+            {
+            "SourcePath" = "8:..\\tock.wav"
+            "TargetName" = "8:tock.wav"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A68E06DB591742300DC9886AB88CDABF"
@@ -2561,6 +4084,106 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AB5C992973244594876AF0EF7658F7C1"
+            {
+            "SourcePath" = "8:..\\Obi-to-XUK2.xsl"
+            "TargetName" = "8:Obi-to-XUK2.xsl"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B1FB9EA166004892B8035FA54EF9F619"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXGeneral-BoldItalic.xml"
+            "TargetName" = "8:STIXGeneral-BoldItalic.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B5B5E3429BFE4A22874777E1DC483C93"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXIntegralsD-Regular.xml"
+            "TargetName" = "8:STIXIntegralsD-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B6FBB0297B8D486E8DD48C90207B7132"
+            {
+            "SourcePath" = "8:..\\lib\\saxon-9.1.0.8.jar"
+            "TargetName" = "8:saxon-9.1.0.8.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_3DE6270A8FE64012B57B3F9F5AEFF4FE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B70C6F17F1A14C7491E30FC44E18CA90"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXSizeThreeSym-Bold.xml"
+            "TargetName" = "8:STIXSizeThreeSym-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B74E810AF14A830E92ABA5D6082692F4"
             {
             "AssemblyRegister" = "3:1"
@@ -2590,6 +4213,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B913CE76805E492588AA11AF2A3AFC19"
+            {
+            "SourcePath" = "8:..\\tpbnarrator_res.mp3"
+            "TargetName" = "8:tpbnarrator_res.mp3"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BB55BCB333CAC1C73941DD9BBF451A6F"
@@ -2654,6 +4297,86 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BBA41557C63A4CB99A8E74190BC116D6"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXSizeFourSym-Bold.xml"
+            "TargetName" = "8:STIXSizeFourSym-Bold.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BCEB40ED33ED47909C55454C1ABC5FCE"
+            {
+            "SourcePath" = "8:..\\daisy_01.png"
+            "TargetName" = "8:daisy_01.png"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BD4F4FADD52040A19B9E5570050C2351"
+            {
+            "SourcePath" = "8:..\\libexpatw.dll"
+            "TargetName" = "8:libexpatw.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BDF0A14D829C40FD8420E0402E9628BF"
+            {
+            "SourcePath" = "8:..\\tpbnarrator.res"
+            "TargetName" = "8:tpbnarrator.res"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C5491D60648305DF387911299E585ECE"
             {
             "AssemblyRegister" = "3:1"
@@ -2714,6 +4437,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C6D5A7B20C3E422293C4F5385481284B"
+            {
+            "SourcePath" = "8:..\\daisy.svg"
+            "TargetName" = "8:daisy.svg"
+            "Tag" = "8:"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C8CDE90FF5A2F08D5C66645C251478B0"
@@ -2805,7 +4548,7 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -2840,6 +4583,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D08650B65FCC4B848E70902A4D911296"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXSizeOneSym.xml"
+            "TargetName" = "8:STIXSizeOneSym.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DBBEABF275F7E5CCD1A07E9EF91324EF"
             {
             "AssemblyRegister" = "3:1"
@@ -2867,8 +4630,28 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E0DAE16C5478465FB70482CD96CB0B76"
+            {
+            "SourcePath" = "8:..\\ZedVal\\batik-css-1.6-1.jar"
+            "TargetName" = "8:batik-css-1.6-1.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E3A1B7F5173B74FE2F7594F9CF860FA4"
@@ -3022,8 +4805,68 @@
             "SharedLegacy" = "11:FALSE"
             "PackageAs" = "3:1"
             "Register" = "3:1"
-            "Exclude" = "11:FALSE"
+            "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EDF4BB337AFF460BB653132BE755A4FC"
+            {
+            "SourcePath" = "8:..\\ZedVal\\jlayer-1.0.1.jar"
+            "TargetName" = "8:jlayer-1.0.1.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F70B6CFBB051475683ADC02D463542C6"
+            {
+            "SourcePath" = "8:..\\lib\\jing-20120724.0.0.jar"
+            "TargetName" = "8:jing-20120724.0.0.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_3DE6270A8FE64012B57B3F9F5AEFF4FE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F7968C33A53A417590CA181A094B68B1"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\drawingMode.xsl"
+            "TargetName" = "8:drawingMode.xsl"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F93A180942BD2E0DFFF54751AE0C20F5"
@@ -3150,6 +4993,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FD97A6F68DBC42E980E9E2BD313E4617"
+            {
+            "SourcePath" = "8:..\\ZedVal\\wstx-lgpl-3.2.9.jar"
+            "TargetName" = "8:wstx-lgpl-3.2.9.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_2A7BD466E7CA499C9107C9BF5DD1050B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FDB8DC8325E439D00908CD68D5E2FD8C"
             {
             "AssemblyRegister" = "3:1"
@@ -3181,6 +5044,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FEC4448643E54ECE94AD26FB4FD1C951"
+            {
+            "SourcePath" = "8:..\\pmml2svg_XSLT2\\STIXIntegralsUpD-Regular.xml"
+            "TargetName" = "8:STIXIntegralsUpD-Regular.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -3191,12 +5074,45 @@
             {
             "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
             "Name" = "8:#1925"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_2A7BD466E7CA499C9107C9BF5DD1050B"
+                    {
+                    "Name" = "8:ZedVal"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_CCCF956302434D23BACB4CEDE402050D"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_3DE6270A8FE64012B57B3F9F5AEFF4FE"
+                    {
+                    "Name" = "8:lib"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_BBA738ECD3E14B39AD82391683E1205F"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_96329469070D415BAEA86DB78941FD12"
+                    {
+                    "Name" = "8:pmml2svg_XSLT2"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_17815D1632FB4F78BF161AE3C492001A"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
             "{1525181F-901A-416C-8A58-119130FE478E}:_64B42B05D89B41F28A7E1ECD655F6849"
@@ -3208,6 +5124,17 @@
             "Property" = "8:ProgramMenuFolder"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_8102AA5621844E03B2B3C85D33C89C5C"
+                    {
+                    "Name" = "8:DAISY Consortium"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_D8DC6E222AE54D78B342009470A3ACBA"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
             "{1525181F-901A-416C-8A58-119130FE478E}:_B7378EE85D7D4063AA67CEAD49D03108"
@@ -3236,26 +5163,26 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:Tobi_Install"
-        "ProductCode" = "8:{0A97E92A-AD1F-4DF5-8541-9956403D3B7E}"
-        "PackageCode" = "8:{829B769B-BFA2-47EE-B2D1-51F47E222BB0}"
+        "ProductName" = "8:Tobi (NET3)"
+        "ProductCode" = "8:{2CDAAE05-8FEA-4A63-9D76-A9F0DC44A78F}"
+        "PackageCode" = "8:{2388752B-5157-4503-A546-57D99E01C6AD}"
         "UpgradeCode" = "8:{1F5EA56E-A940-4B5D-9362-2309A907FA11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
-        "DetectNewerInstalledVersion" = "11:TRUE"
+        "RemovePreviousVersions" = "11:TRUE"
+        "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:Default Company Name"
+        "ProductVersion" = "8:00.00.2010"
+        "Manufacturer" = "8:DAISY Consortium"
         "ARPHELPTELEPHONE" = "8:"
-        "ARPHELPLINK" = "8:"
-        "Title" = "8:Tobi_Install"
+        "ARPHELPLINK" = "8:http://daisy.org"
+        "Title" = "8:Tobi (NET3)"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Default Company Name"
+        "ARPCONTACT" = "8:DAISY Consortium"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
-        "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:"
+        "ARPURLINFOABOUT" = "8:http://daisy.org"
+        "ARPPRODUCTICON" = "8:_5C1F193FBA7C43D79942F42D9DD65B65"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -3358,6 +5285,48 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2699327728A24D7DA4BFFDFB49F801F3"
+            {
+            "Name" = "8:Tobi (NET3)"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+            "Folder" = "8:_8102AA5621844E03B2B3C85D33C89C5C"
+            "WorkingFolder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Icon" = "8:_5C1F193FBA7C43D79942F42D9DD65B65"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B25819459A914BE68678DB74EADC6EC0"
+            {
+            "Name" = "8:Tobi Application Folder"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "WorkingFolder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E3092FED607840EA8896FAA0FA09D9F5"
+            {
+            "Name" = "8:Tobi (NET3)"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+            "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "WorkingFolder" = "8:_604749D0A56B40C1875B60180ED327F2"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {
@@ -3757,9 +5726,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_6E8E68C2AAAD4DEEA97A2A6995696D2F"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
             {
-            "SourcePath" = "8:..\\tobiapp\\obj\\Release\\Tobi_NET3.exe"
+            "SourcePath" = "8:..\\obj\\Release\\Tobi_NET3.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
