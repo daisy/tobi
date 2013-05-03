@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi_NET4", "Tobi_NET4.csproj", "{64F90229-5944-4DBB-96A0-0E09E6BF5997}"
 	ProjectSection(ProjectDependencies) = postProject
 		{17831F3B-6B82-4916-BD2B-2CE2071EA622} = {17831F3B-6B82-4916-BD2B-2CE2071EA622}
@@ -112,6 +112,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFMediaKit_NET4", "ExternalLibs\WPFMediaKit\WPFMediaKit_NET4.csproj", "{6030628D-EE93-4D61-B6BE-8B6AE99F3935}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaxNET_NET4", "ExternalLibs\SaxNET\SaxNET_NET4.csproj", "{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Tobi (NET4)", "Tobi_Install\Tobi_NET4_Installer.vdproj", "{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -627,6 +629,18 @@ Global
 		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.test|Any CPU.Build.0 = Release|Any CPU
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.Debug|Any CPU.ActiveCfg = Debug
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.Debug|Any CPU.Build.0 = Debug
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.Documentation|Any CPU.ActiveCfg = Debug
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.Documentation|Any CPU.Build.0 = Debug
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.Minimal Debug|Any CPU.ActiveCfg = Debug
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.Minimal Debug|Any CPU.Build.0 = Debug
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.Release with Code Analysis|Any CPU.ActiveCfg = Release
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.Release with Code Analysis|Any CPU.Build.0 = Release
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.Release|Any CPU.ActiveCfg = Release
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.Release|Any CPU.Build.0 = Release
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.test|Any CPU.ActiveCfg = Release
+		{B8BB8BC9-0032-4CA3-AD65-6061B9EA038C}.test|Any CPU.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
