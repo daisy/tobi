@@ -31,5 +31,8 @@
     <Setting Name="Lang" Type="System.String" Scope="User">
       <Value Profile="(Default)">en</Value>
     </Setting>
+    <Setting Name="UpdateRejected" Type="System.String" Scope="User">
+      <Value Profile="(Default)">xxx</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

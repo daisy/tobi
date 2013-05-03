@@ -67,7 +67,7 @@ namespace Tobi.Common
         }
 
         public static readonly string APP_VERSION;
-        private static string GetVersion()
+        public static string GetVersion()
         {
             if (ApplicationDeployment.IsNetworkDeployed)
             {

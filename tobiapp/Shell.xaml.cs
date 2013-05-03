@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Deployment.Application;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
@@ -426,7 +429,7 @@ namespace Tobi
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
-                                                   true, 300, 160, null, 40,null);
+                                                   true, 300, 160, null, 40, null);
 
             windowPopup.ShowModal();
 
@@ -593,6 +596,9 @@ namespace Tobi
                             BitmapCreateOptions.None, BitmapCacheOption.Default);
             Icon = ibd.Frames[0];
             */
+
+
+
         }
 
         //public static PropertyPath GetPropertyPath<T>(System.Linq.Expressions.Expression<Func<T>> expression)
@@ -814,7 +820,7 @@ namespace Tobi
                                                    PopupModalWindow.DialogButton.ESC,
                 //PopupModalWindow.DialogButtonsSet.Cancel,
                 //PopupModalWindow.DialogButton.Cancel,
-                                                   false, 500, 120, details, 80,null);
+                                                   false, 500, 120, details, 80, null);
 #if SKIP_EVENT_ON_INTERVAL
             Stopwatch m_StopWatch = null;
             Stopwatch m_StopWatch2 = null;
@@ -992,7 +998,7 @@ namespace Tobi
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.None,
                                                        PopupModalWindow.DialogButton.ESC,
-                                                       false, 500, 150, null, 80,null);
+                                                       false, 500, 150, null, 80, null);
 
                 reporter.RequestCancellation = true;
 
@@ -1109,7 +1115,7 @@ namespace Tobi
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Cancel,
                                                    PopupModalWindow.DialogButton.Cancel,
-                                                   true, 500, 150, details, 80,null);
+                                                   true, 500, 150, details, 80, null);
 
             //windowPopup.EnableEnterKeyDefault = true;
             //windowPopup.IgnoreEscape = true;
@@ -1208,9 +1214,9 @@ namespace Tobi
                 try
                 {
 #endif
-                reporter.RunTask();
+                    reporter.RunTask();
 
-                args.Result = @"dummy result";
+                    args.Result = @"dummy result";
 #if DEBUG
                 }
                 catch (Exception ex)
@@ -1327,7 +1333,7 @@ namespace Tobi
                                                        panel,
                                                        PopupModalWindow.DialogButtonsSet.None,
                                                        PopupModalWindow.DialogButton.ESC,
-                                                       false, 500, 150, null, 80,null);
+                                                       false, 500, 150, null, 80, null);
 
                 //m_OpenXukActionWorker.CancelAsync();
                 reporter.RequestCancellation = true;
