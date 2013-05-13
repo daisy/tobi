@@ -616,12 +616,12 @@ namespace Tobi
                 }
 
 
-                return String.Format(Tobi_Lang.WindowsTitleKey_UrakawaSessionIsNotNull,
-                    ApplicationConstants.APP_VERSION + ApplicationConstants.DOTNET_INFO
+                return
 #if DEBUG
- + " (DEBUG) "
+ "(DEBUG) " +
 #endif
-,
+ String.Format(Tobi_Lang.WindowsTitleKey_UrakawaSessionIsNotNull,
+                    ApplicationConstants.APP_VERSION + ApplicationConstants.DOTNET_INFO,
                     (m_UrakawaSession.IsDirty ? @"* " : @""),
                     (m_UrakawaSession.DocumentProject == null ? Tobi_Lang.NoDocument : m_UrakawaSession.DocumentFilePath)
                     );

@@ -876,5 +876,55 @@ namespace Tobi.Plugin.Urakawa
 
             return null;
         }
+
+        private void warningFilePathLength(string filePath)
+        {
+            m_Logger.Log("UrakawaSession warningFilePathLength", Category.Debug, Priority.Medium);
+
+            var label = new TextBlock
+            {
+                Text = String.Format(Tobi_Plugin_Urakawa_Lang.WarningFilePathLength, Settings.Default.FilePathMax),
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var iconProvider = new ScalableGreyableImageProvider(m_ShellView.LoadTangoIcon("dialog-warning"), m_ShellView.MagnificationLevel);
+
+            var panel = new StackPanel
+            {
+                Orientation = System.Windows.Controls.Orientation.Horizontal,
+                HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            panel.Children.Add(iconProvider.IconLarge);
+            panel.Children.Add(label);
+
+            var details = new TextBoxReadOnlyCaretVisible
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = filePath
+            };
+
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.WarningFilePathLength_Title),
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.Ok,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 440, 160, details, 40, null);
+
+            windowPopup.ShowModal();
+
+            //if (PopupModalWindow.IsButtonEscCancel(windowPopup.ClickedDialogButton))
+            //{
+            //    return;
+            //}
+        }
     }
 }

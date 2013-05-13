@@ -453,6 +453,14 @@ namespace Tobi.Plugin.Urakawa
                     {
                         return;
                     }
+
+
+                    if (dlg.SelectedPath.Length > Settings.Default.FilePathMax)
+                    {
+                        warningFilePathLength(dlg.SelectedPath);
+                        return;
+                    }
+
                     if (!Directory.Exists(dlg.SelectedPath))
                     {
                         return;

@@ -47,5 +47,8 @@
     <Setting Name="ProcessTimeoutMinutes" Type="System.Double" Scope="User">
       <Value Profile="(Default)">5</Value>
     </Setting>
+    <Setting Name="FilePathMax" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">120</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
