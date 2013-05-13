@@ -145,6 +145,12 @@ namespace Tobi.Plugin.Urakawa
                         return;
                     }
 
+                    if (dlg.FileName.Length > Settings.Default.FilePathMax)
+                    {
+                        warningFilePathLength(dlg.FileName);
+                        return;
+                    }
+
                     if (File.Exists(dlg.FileName))
                     {
                         if (!askUserConfirmOverwriteFileFolder(dlg.FileName, false, null))

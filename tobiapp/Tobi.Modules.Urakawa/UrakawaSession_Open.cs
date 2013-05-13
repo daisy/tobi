@@ -66,7 +66,7 @@ namespace Tobi.Plugin.Urakawa
 
                         Filter =
                             @"OBI, XUK, XUKSPINE"
- + " (*.obi, *" + OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION 
+ + " (*.obi, *" + OpenXukAction.XUK_EXTENSION + ", *" + OpenXukAction.XUK_SPINE_EXTENSION
  + ")|*.obi;*" + OpenXukAction.XUK_EXTENSION + ";*" + OpenXukAction.XUK_SPINE_EXTENSION
 ,
                         CheckFileExists = false,
@@ -442,6 +442,12 @@ namespace Tobi.Plugin.Urakawa
         public bool OpenFile(string filename, bool doShowXukSpineCommand)
         {
             m_Logger.Log(String.Format(@"UrakawaSession.openFile({0})", filename), Category.Debug, Priority.Medium);
+
+            if (filename.Length > Settings.Default.FilePathMax)
+            {
+                warningFilePathLength(filename);
+                return false;
+            }
 
             var fileUri = new Uri(filename, UriKind.Absolute);
             AddRecentFile(fileUri);

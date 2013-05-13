@@ -658,5 +658,23 @@ namespace Tobi.Plugin.Urakawa {
                 return ResourceManager.GetString("ValidationIssuesConfirmExport_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please choose a shorter file path ({0} characters maximum)..
+        /// </summary>
+        public static string WarningFilePathLength {
+            get {
+                return ResourceManager.GetString("WarningFilePathLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File path too long!.
+        /// </summary>
+        public static string WarningFilePathLength_Title {
+            get {
+                return ResourceManager.GetString("WarningFilePathLength_Title", resourceCulture);
+            }
+        }
     }
 }

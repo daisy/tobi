@@ -320,4 +320,10 @@ any changes will be lost !</value>
   <data name="UrakawaSession_SavePath" xml:space="preserve">
     <value>File path: {0}</value>
   </data>
+  <data name="WarningFilePathLength_Title" xml:space="preserve">
+    <value>File path too long!</value>
+  </data>
+  <data name="WarningFilePathLength" xml:space="preserve">
+    <value>Please choose a shorter file path ({0} characters maximum).</value>
+  </data>
 </root>
