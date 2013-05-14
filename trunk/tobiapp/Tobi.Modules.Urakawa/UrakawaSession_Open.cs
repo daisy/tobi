@@ -410,7 +410,7 @@ namespace Tobi.Plugin.Urakawa
                         string outputDir = "file:///" + outdir.Replace('\\', '/');
                         outputDir = FileDataProvider.UriEncode(outputDir);
 
-                        string jobRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><jobRequest xmlns=\"http://www.daisy.org/ns/pipeline/data\"><script href=\"http://localhost:8182/ws/scripts/" + script + "\"/><input name=\"source\"><item value=\"" + filenames + "\"/></input><option name=\"output-dir\">" + outputDir + "</option>" + options + "</jobRequest>";
+                        string jobRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><jobRequest xmlns=\"http://www.daisy.org/ns/pipeline/data\"><script href=\"" + Resources.baseUri + "/scripts/" + script + "\"/><input name=\"source\"><item value=\"" + filenames + "\"/></input><option name=\"output-dir\">" + outputDir + "</option>" + options + "</jobRequest>";
 
                         XmlDocument jobDoc = null;
                         try
