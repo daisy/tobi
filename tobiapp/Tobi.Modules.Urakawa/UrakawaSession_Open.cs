@@ -299,7 +299,7 @@ namespace Tobi.Plugin.Urakawa
 
                     string filename = Path.GetFileName(dlg.FileNames[0]);
                     string outdir = Path.GetDirectoryName(dlg.FileNames[0]);
-                    outdir = Path.Combine(outdir, filename + "_PIPE");
+                    outdir = Path.Combine(outdir, filename.Replace('.', '_') + "_PIPE");
 
                     if (Directory.Exists(outdir))
                     {
@@ -312,9 +312,8 @@ namespace Tobi.Plugin.Urakawa
                     string extra = "";
 
                     string filenames = dlg.FileNames[0];
-                    //filenames = filenames.Replace("file://", "");
                     filenames = filenames.Replace('\\', '/');
-                    filenames = "file:///" + filenames;
+                    filenames = "file:/" + filenames;
                     filenames = FileDataProvider.UriEncode(filenames);
 
                     string options = "";
@@ -409,7 +408,9 @@ namespace Tobi.Plugin.Urakawa
                     }
                     else
                     {
-                        string outputDir = "file:///" + outdir.Replace('\\', '/');
+                        string outputDir = outdir.Replace('\\', '/');
+                        outputDir = "file:/" + outputDir;
+                        //outputDir = "/" + outputDir;
                         outputDir = FileDataProvider.UriEncode(outputDir);
 
                         string jobRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><jobRequest xmlns=\"http://www.daisy.org/ns/pipeline/data\"><script href=\"" + Resources.baseUri + "/scripts/" + script + "\"/>"
