@@ -319,6 +319,8 @@ namespace Tobi.Plugin.Urakawa
 
                     string options = "";
 
+                    bool isNCC = ext.Equals(".html", StringComparison.OrdinalIgnoreCase);
+
                     if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
                     {
                         script = "dtbook-to-epub3";
@@ -353,7 +355,7 @@ namespace Tobi.Plugin.Urakawa
                             filenames = inParam + " " + dlg.FileNames[0];
                         }
                     }
-                    else if (ext.Equals(".html", StringComparison.OrdinalIgnoreCase))
+                    else if (isNCC)
                     {
                         script = "daisy202-to-epub3";
                         inParam = "--x-href";
@@ -410,7 +412,18 @@ namespace Tobi.Plugin.Urakawa
                         string outputDir = "file:///" + outdir.Replace('\\', '/');
                         outputDir = FileDataProvider.UriEncode(outputDir);
 
-                        string jobRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><jobRequest xmlns=\"http://www.daisy.org/ns/pipeline/data\"><script href=\"" + Resources.baseUri + "/scripts/" + script + "\"/><input name=\"source\"><item value=\"" + filenames + "\"/></input><option name=\"output-dir\">" + outputDir + "</option>" + options + "</jobRequest>";
+                        string jobRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><jobRequest xmlns=\"http://www.daisy.org/ns/pipeline/data\"><script href=\"" + Resources.baseUri + "/scripts/" + script + "\"/>"
+                            + (
+                            isNCC
+                            ? ("<option name=\"href\">" + filenames + "</option>"
+                            + "<option name=\"temp-dir\">" + outputDir + "</option>")
+                            : "<input name=\"source\"><item value=\"" + filenames + "\"/></input>"
+                            )
+                            + "<option name=\""
+                            + (isNCC ? "output" : "output-dir")
+                            + "\">" + outputDir + "</option>"
+                            + options
+                            + "</jobRequest>";
 
                         XmlDocument jobDoc = null;
                         try
@@ -520,7 +533,7 @@ namespace Tobi.Plugin.Urakawa
                         {
                             fileName = fileName + ".epub";
                         }
-                        else if (ext.Equals(".html", StringComparison.OrdinalIgnoreCase))
+                        else if (isNCC)
                         {
                             DirectoryInfo dirInfo = new DirectoryInfo(outdir);
 #if NET40
