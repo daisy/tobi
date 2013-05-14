@@ -477,7 +477,7 @@ namespace Tobi.Plugin.Urakawa
                             {
                                 try
                                 {
-                                    bool status = Resources.DeleteJob(id);
+                                    bool done = Resources.DeleteJob(id);
                                 }
                                 catch (Exception ex)
                                 {
