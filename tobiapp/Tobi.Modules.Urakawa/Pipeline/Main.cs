@@ -13,7 +13,7 @@ namespace PipelineWSClient
 	 */ 
 	class MainClass
 	{
-		private static List<string> commands = new List<string>{"scripts", "script", "jobs", "job", "log", "result", "delete", "new"};
+		private static List<string> commands = new List<string>{"scripts", "script", "jobs", "job", "log", "result", "delete-job", "new-job"};
 		public static void Main (string[] args)
 		{
 			string id = null;
@@ -28,7 +28,10 @@ namespace PipelineWSClient
 				
 			};
    			List<string> cmds = opts.Parse(args);
-			
+
+			//PostJob ("/Users/marisa/Projects/pipeline2/pipeline-framework/webservice/samples/clients/testdata/job3.request.localmode.xml", null);
+			//return;
+
 			if (help || cmds.Count == 0)
 			{
 				ShowUsage(opts);
@@ -38,14 +41,14 @@ namespace PipelineWSClient
 			string command = cmds[0];
 			
 			if (id == null && 
-				(command == "script" || command == "job" || command == "log" || command == "result" || command == "delete"))
+				(command == "script" || command == "job" || command == "log" || command == "result" || command == "delete-job"))
 			{
 				Console.WriteLine(String.Format("The command {0} must have an id parameter.", command));
 				ShowUsage(opts);
 				return;
 			}
 			
-			if (jobRequestFile == null && command == "new")
+			if (jobRequestFile == null && command == "new-job")
 			{
 				Console.WriteLine(String.Format("The command {0} must have a job-request parameter, and may also have a job-data parameter.", command));
 				ShowUsage(opts);
@@ -77,11 +80,11 @@ namespace PipelineWSClient
 			{
 				GetResult(id);
 			}
-			else if (command == "delete")
+			else if (command == "delete-job")
 			{
 				DeleteJob(id);
 			}
-			else if (command == "new")
+			else if (command == "new-job")
 			{
 				if (jobDataFile == null)
 				{
@@ -91,6 +94,14 @@ namespace PipelineWSClient
 				{
 					PostJob(jobRequestFile, jobDataFile);
 				}
+			}
+			else if (command == "alive") 
+			{
+				Alive();
+			}
+			else if (command == "halt")
+			{
+				Halt();
 			}
 			else
 			{
@@ -118,31 +129,21 @@ namespace PipelineWSClient
 			Console.WriteLine("Show all scripts: \n\tPipelineWSClient.exe scripts");
 			Console.WriteLine("Show a specific script: \n\tPipelineWSClient.exe script --id=http://www.daisy.org/pipeline/modules/dtbook-to-zedai/dtbook-to-zedai.xpl");
 			Console.WriteLine("Show a specific job: \n\tPipelineWSClient.exe job --id=873ce8d7-0b92-42f6-a2ed-b5e6a13b8cd7");
-			Console.WriteLine("Create a job: \n\tPipelineWSClient.exe new --job-request=../../../testdata/job1.request.xml");
-			Console.WriteLine("Create a job: \n\tPipelineWSClient.exe new --job-request=../../../testdata/job2.request.xml --job-data=../../../testdata/job2.data.zip");
+			Console.WriteLine("Create a job: \n\tPipelineWSClient.exe new-job --job-request=../../../testdata/job1.request.xml");
+			Console.WriteLine("Create a job: \n\tPipelineWSClient.exe new-job --job-request=../../../testdata/job2.request.xml --job-data=../../../testdata/job2.data.zip");
 		}
 		
 		
 		public static void GetScripts()
 		{
 			XmlDocument doc = Resources.GetScripts();
-			if (doc == null)
-			{
-				Console.WriteLine("No data returned.");
-				return;
-			}
-			PrettyPrint(doc);
+			PrintDoc (doc);
 		}
 		
 		public static void GetScript(string id)
 		{
 			XmlDocument doc = Resources.GetScript(id);
-			if (doc == null)
-			{
-				Console.WriteLine("No data returned.");
-				return;
-			}
-			PrettyPrint(doc);
+			PrintDoc (doc);
 		}
 		
 		public static void PostJob(string jobRequestFilepath, string jobDataFilepath = null)
@@ -150,43 +151,33 @@ namespace PipelineWSClient
 			StreamReader reader = new StreamReader(jobRequestFilepath);
 			string doc = reader.ReadToEnd();
 			reader.Close();
-			
-			string jobId = "";
+
 			FileInfo data = null;
 			if (jobDataFilepath !=  null)
 			{
 				data = new FileInfo(jobDataFilepath);
 			}
-			jobId = Resources.PostJob (doc, data);
-			
-			if (jobId.Length == 0)
+			XmlDocument jobDoc = Resources.PostJob (doc, data);
+
+			if (jobDoc == null)
 			{
 				Console.WriteLine("Job not created.");
 				return;
 			}
-			Console.WriteLine(String.Format("Job created: {0}", jobId));
+			Console.WriteLine("Job created:");
+			PrettyPrint (jobDoc);
 		}
 		
 		public static void GetJobs()
 		{
 			XmlDocument doc = Resources.GetJobs();
-			if (doc == null)
-			{
-				Console.WriteLine("No data returned.");
-				return;
-			}
-			PrettyPrint(doc);			
+			PrintDoc (doc);			
 		}
 		
 		public static void GetJob(string id)
 		{
 			XmlDocument doc = Resources.GetJob(id);
-			if (doc == null)
-			{
-				Console.WriteLine("No data returned.");
-				return;
-			}
-			PrettyPrint(doc);
+			PrintDoc(doc);
 		}
 		
 		public static void GetLog(string id)
@@ -240,7 +231,24 @@ namespace PipelineWSClient
 				Console.WriteLine ("Job deleted.");
 			}
 		}
-		
+		public static void Halt() 
+		{
+			Resources.Halt();
+		}
+		public static void Alive() 
+		{
+			XmlDocument doc = Resources.Alive ();
+			PrintDoc (doc);
+		}
+		public static void PrintDoc(XmlDocument doc)
+		{
+			if (doc == null)
+			{
+				Console.WriteLine("No data.");
+				return;
+			}
+			PrettyPrint(doc);
+		}
 		public static void PrettyPrint(XmlDocument doc)
 		{
 			using (StringWriter stringWriter = new StringWriter())

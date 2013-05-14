@@ -589,7 +589,10 @@ namespace Tobi.Plugin.Urakawa
 
                 process.StartInfo.WorkingDirectory = workingDir;
                 process.StartInfo.FileName = exe;
-                process.StartInfo.Arguments = args;
+                if (!string.IsNullOrEmpty(args))
+                {
+                    process.StartInfo.Arguments = args;
+                }
 
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
@@ -599,7 +602,7 @@ namespace Tobi.Plugin.Urakawa
                 process.StartInfo.CreateNoWindow = false;
                 process.StartInfo.ErrorDialog = false;
 
-                Console.WriteLine("process: " + exe + " " + args);
+                Console.WriteLine("process: " + exe + " " + (!string.IsNullOrEmpty(args) ? args : "no-args"));
 
                 StringBuilder output = new StringBuilder();
                 StringBuilder error = new StringBuilder();
@@ -707,7 +710,7 @@ namespace Tobi.Plugin.Urakawa
 
                     bool notTimeout = isPipeline ? true : process.WaitForExit(timeout);
 
-                    string EXEC = exe + " " + args + Environment.NewLine + "========================" + Environment.NewLine + Environment.NewLine;
+                    string EXEC = exe + " " + (!string.IsNullOrEmpty(args) ? args : "no-args") + Environment.NewLine + "========================" + Environment.NewLine + Environment.NewLine;
 
                     if (notTimeout)
                     {
@@ -725,7 +728,7 @@ namespace Tobi.Plugin.Urakawa
                         {
                             messageBoxText(title, "Error!", EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
                         }
-                        else
+                        else if (checkErrorsOrWarning != null)
                         {
                             string report = output.ToString();
                             string text = "Success.";
@@ -783,24 +786,34 @@ namespace Tobi.Plugin.Urakawa
 
         private string obtainPipelineExe()
         {
-            messageBoxAlert("WARNING: Pipeline 2 support is experimental!", null);
+            //messageBoxAlert("WARNING: Pipeline 2 support is experimental!", null);
+
+            string ext = @".exe";
+            string exeOrBat = @"dp2.exe";
+            if (!Settings.Default.EnableOldPipeline2)
+            {
+                ext = @".bat";
+                exeOrBat = @"pipeline2.bat";
+            }
 
             string pipeline_ExePath = Settings.Default.Pipeline_ExePath;
-            while (!File.Exists(pipeline_ExePath))
+            while (!File.Exists(pipeline_ExePath) || pipeline_ExePath.IndexOf(exeOrBat, StringComparison.OrdinalIgnoreCase) < 0)
             {
+                messageBoxText("Pipeline2", "Please specify the location of [" + exeOrBat + "]...", exeOrBat);
+
                 var dlg_ = new Microsoft.Win32.OpenFileDialog
                 {
-                    FileName = @"dp2.exe",
-                    DefaultExt = @".exe",
+                    FileName = exeOrBat,
+                    DefaultExt = ext,
 
-                    Filter = @"Executable (*.exe)|*.exe",
+                    Filter = @"Executable (*" + ext + ")|*" + ext + "",
                     CheckFileExists = false,
                     CheckPathExists = false,
                     AddExtension = true,
                     DereferenceLinks = true,
                     Title =
                         @"Tobi: " +
-                        "Pipeline (dp2.exe)"
+                        "Pipeline2 (" + exeOrBat + ")"
                 };
 
                 bool? result_ = false;
