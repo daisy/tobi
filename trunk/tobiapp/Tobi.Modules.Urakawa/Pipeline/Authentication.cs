@@ -27,10 +27,7 @@ namespace PipelineWSClient
 			}
 		
 			string hash = GenerateHash(uristring);
-  			string generatedUri = String.Format("{0}&sign={1}", uristring,
-                FileDataProvider.UriEncode(hash)
-                //HttpUtility.UrlEncode(hash)
-                );
+            string generatedUri = String.Format("{0}&sign={1}", uristring, FileDataProvider.UriEncode(hash));
 			return generatedUri;
 		}
 		
@@ -54,4 +51,3 @@ namespace PipelineWSClient
 		}
 	}
 }
-

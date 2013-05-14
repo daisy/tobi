@@ -56,12 +56,12 @@ namespace PipelineWSClient
 		// success: return the location of the new resource
 		// failure: return empty string
 		// use this to post non-mulitpart data (all data in one string)
-		public static string PostResource(string uri, string postData)
+		public static XmlDocument PostResource(string uri, string postData)
 		{
 			string authUri = Authentication.PrepareAuthenticatedUri(uri);
 			
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes(postData);
-			
+
 			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(authUri);
   			request.Method = "POST";
   			request.KeepAlive = true;
@@ -70,33 +70,39 @@ namespace PipelineWSClient
   			Stream requestStream = request.GetRequestStream();
 			requestStream.Write(bytes, 0, bytes.Length);
 			requestStream.Close();
-			
+
 			HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
 			System.Diagnostics.Debug.Print(String.Format("Received status code: {0}", response.StatusCode.ToString()));
 			
 		  	// 201
 			if (response.StatusCode == HttpStatusCode.Created)
 			{
-				return response.Headers.Get("content-location");
+				//return response.Headers.Get("content-location");
+				Stream receiveStream = response.GetResponseStream();
+				string s = NormalizeData(receiveStream);
+				XmlDocument doc = new XmlDocument();
+				doc.LoadXml(s);
+				return doc;
 			}
 			// 400
 			else if (response.StatusCode == HttpStatusCode.BadRequest)
 			{
-				return "";
+				return null;
 			}
 			else 
 			{
-				return "";
+				return null;
 			}
 			
 		}
-		
+
 		// success: return the location of the new resource
 		// failure: return empty string
 		// use this function to post multipart data, where postData contains each segment
 		// and fileToUpload is the file to upload
 		// TODO make one POST function instead of two
-		public static string PostResource(string uri, Dictionary<string, string> postData,
+		public static XmlDocument PostResource(string uri, Dictionary<string, string> postData,
 			FileInfo fileToUpload, string fileMimeType, string fileFormKey)
 		{
 			string authUri = Authentication.PrepareAuthenticatedUri(uri);
@@ -118,20 +124,24 @@ namespace PipelineWSClient
 		    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 			
 			System.Diagnostics.Debug.Print(String.Format("Received status code: {0}", response.StatusCode.ToString()));
-			
-		  	// 201
+
+  			// 201
 			if (response.StatusCode == HttpStatusCode.Created)
 			{
-				return response.Headers.Get("content-location");
+				Stream receiveStream = response.GetResponseStream();
+				string s = NormalizeData(receiveStream);
+				XmlDocument doc = new XmlDocument();
+				doc.LoadXml(s);
+				return doc;
 			}
 			// 400
 			else if (response.StatusCode == HttpStatusCode.BadRequest)
 			{
-				return "";
+				return null;
 			}
 			else 
 			{
-				return "";
+				return null;
 			}
 			
 		}

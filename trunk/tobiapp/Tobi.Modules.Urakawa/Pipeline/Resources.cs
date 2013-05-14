@@ -11,7 +11,7 @@ namespace PipelineWSClient
 		private static string JOB_REQUEST = "job-request";
 		private static string JOB_DATA = "job-data";
 		
-		public static string baseUri = "http://localhost:8182/ws";
+		public static string baseUri = "http://localhost:8181/ws";
 		
 		public static XmlDocument GetScript(string id)
 		{
@@ -59,7 +59,7 @@ namespace PipelineWSClient
 			return Rest.DeleteResource(uri);
 		}
 		
-		public static string PostJob(string request, FileInfo data = null)
+		public static XmlDocument PostJob(string request, FileInfo data = null)
 		{
 			string uri = String.Format("{0}/jobs", baseUri);
 			if (data == null)
@@ -75,7 +75,21 @@ namespace PipelineWSClient
 				return Rest.PostResource(uri, postData, data, fileMimeType, fileFormKey);			
 			}
 		}	
-		
+		public static XmlDocument Alive()
+		{
+			string uri = String.Format("{0}/alive", baseUri);
+			return Rest.GetResourceAsXml(uri);
+		}
+
+		public static void Halt()
+		{
+			string path = String.Format ("{0}dp2key.txt", GetTempDir());
+			string key = File.ReadAllText(path);
+			string uri = String.Format("{0}/admin/halt/{1}", baseUri, key);
+			Rest.GetResource(uri);
+		}
+
+
 		// returns "DONE", "IDLE", or "RUNNING"
 		// status isn't a core pipeline resource, but it's useful nonetheless
 		public static string GetJobStatus(string id)
@@ -97,6 +111,26 @@ namespace PipelineWSClient
 			string retval = stringWriter.ToString();
 			return retval;
 		}
+
+		private static string GetTempDir()
+		{
+            String dir;
+			int p = (int) Environment.OSVersion.Platform;
+			if ((p == 4) || (p == 6) || (p == 128)) 
+			{
+				// Running on Unix
+				dir = System.Environment.GetEnvironmentVariable("TMPDIR");
+			} 
+			else 
+			{
+				// NOT running on Unix
+				dir = System.Environment.GetEnvironmentVariable("TEMP");
+			}
+            if (!dir.EndsWith("/"))
+            {
+                dir += "/";
+            }
+            return dir;
+		}
 	}
 }
-

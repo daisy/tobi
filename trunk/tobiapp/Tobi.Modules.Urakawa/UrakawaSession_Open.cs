@@ -6,12 +6,14 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
 using AudioLib;
+using PipelineWSClient;
 using Saxon.Api;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Win32;
@@ -176,20 +178,96 @@ namespace Tobi.Plugin.Urakawa
                     string workingDir = Path.GetDirectoryName(pipeline_ExePath);
                     //Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
-                    var dlg = new OpenFileDialog
+                    if (!Settings.Default.EnableOldPipeline2)
                     {
-                        FileName = @"",
-                        DefaultExt = @".opf",
-                        Multiselect = true,
-                        Filter = @"OPF, DTBook, NCC (*.opf, *.xml, *.html)|*.opf;*.xml;*.html",
-                        CheckFileExists = false,
-                        CheckPathExists = false,
-                        AddExtension = true,
-                        DereferenceLinks = true,
-                        Title =
-                            @"Tobi: " +
-                            UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdOpenConvert_ShortDesc)
-                    };
+                        //workingDir = Path.GetDirectoryName(workingDir);
+                        //workingDir = Path.Combine(workingDir, "bin");
+                        //pipeline_ExePath = Path.Combine(workingDir, "pipeline2.bat");
+
+                        XmlDocument xmlDoc = null;
+                        try
+                        {
+                            xmlDoc = Resources.Alive();
+                        }
+                        catch (Exception ex1)
+                        {
+                            m_Logger.Log(ex1.Message, Category.Debug, Priority.Medium);
+
+                            if (true)
+                            {
+                                messageBoxText("Pipeline2", "Please launch [pipeline2.bat] (double click), then try again.", pipeline_ExePath);
+
+                                m_ShellView.ExecuteShellProcess(workingDir);
+
+                                return;
+                            }
+                            else
+                            {
+                                m_Logger.Log(
+                                    String.Format(@"Attempt to start Pipeline2 server ({0})", pipeline_ExePath),
+                                    Category.Debug, Priority.Medium);
+
+                                executeProcess(
+                                    workingDir,
+                                    "DAISY Pipeline Server",
+                                    pipeline_ExePath,
+                                    null,
+                                    null);
+
+                                try
+                                {
+                                    xmlDoc = Resources.Alive();
+                                }
+                                catch (Exception ex2)
+                                {
+                                    m_Logger.Log(ex2.Message, Category.Debug, Priority.Medium);
+
+                                    m_Logger.Log(
+                                        String.Format(@"Pipeline2 server not started! ({0})", pipeline_ExePath),
+                                        Category.Debug, Priority.Medium);
+
+                                    messageBoxText("Pipeline2", "Please run pipeline2.bat (double click).",
+                                                   ex2.Message + Environment.NewLine + ex2.StackTrace);
+
+                                    m_ShellView.ExecuteShellProcess(workingDir);
+
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                }
+                            }
+                        }
+                        if (xmlDoc != null)
+                        {
+                            m_Logger.Log(String.Format(@"Pipeline2 server alive. ({0})", Resources.baseUri),
+                                         Category.Debug, Priority.Medium);
+
+                            MainClass.PrettyPrint(xmlDoc);
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+
+
+                    messageBoxText("Pipeline2", "Please choose a source file...", "OPF, DTBook, NCC (*.opf, *.xml, *.html)");
+
+                    var dlg = new OpenFileDialog
+                        {
+                            FileName = @"",
+                            DefaultExt = @".opf",
+                            Multiselect = true,
+                            Filter = @"OPF, DTBook, NCC (*.opf, *.xml, *.html)|*.opf;*.xml;*.html",
+                            CheckFileExists = false,
+                            CheckPathExists = false,
+                            AddExtension = true,
+                            DereferenceLinks = true,
+                            Title =
+                                @"Tobi: " +
+                                UserInterfaceStrings.EscapeMnemonic(
+                                    Tobi_Plugin_Urakawa_Lang.CmdOpenConvert_ShortDesc)
+                        };
 
                     bool? result = false;
 
@@ -209,12 +287,12 @@ namespace Tobi.Plugin.Urakawa
 
                     if (string.IsNullOrEmpty(ext)
                         || (
-                        !ext.Equals(".xml", StringComparison.OrdinalIgnoreCase)
-                        &&
-                        !ext.Equals(".opf", StringComparison.OrdinalIgnoreCase)
-                        &&
-                        !ext.Equals(".html", StringComparison.OrdinalIgnoreCase)
-                        ))
+                               !ext.Equals(".xml", StringComparison.OrdinalIgnoreCase)
+                               &&
+                               !ext.Equals(".opf", StringComparison.OrdinalIgnoreCase)
+                               &&
+                               !ext.Equals(".html", StringComparison.OrdinalIgnoreCase)
+                           ))
                     {
                         return;
                     }
@@ -232,33 +310,48 @@ namespace Tobi.Plugin.Urakawa
                     string inParam = "--i-source";
                     string outParam = "--x-output-dir";
                     string extra = "";
-                    string filenames = "";
+
+                    string filenames = dlg.FileNames[0];
+                    //filenames = filenames.Replace("file://", "");
+                    filenames = filenames.Replace('\\', '/');
+                    filenames = "file:///" + filenames;
+                    filenames = FileDataProvider.UriEncode(filenames);
+
+                    string options = "";
 
                     if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
                     {
                         script = "dtbook-to-epub3";
 
-                        foreach (string fileName in dlg.FileNames)
+                        if (Settings.Default.EnableOldPipeline2)
                         {
-                            if (".xml".Equals(Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
+                            foreach (string fileName in dlg.FileNames)
                             {
-                                //filenames += (inParam + " " + "\"" + fileName + "\" ");
-                                filenames += ("\"" + fileName + "\";");
+                                if (".xml".Equals(Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
+                                {
+                                    //filenames += (inParam + " " + "\"" + fileName + "\" ");
+                                    filenames += ("\"" + fileName + "\";");
+                                }
                             }
+
+                            char[] chars = new char[1] { ';' };
+                            filenames = filenames.TrimEnd(chars);
+
+
+                            filenames = inParam + " " + filenames;
                         }
-
-                        char[] chars = new char[1] { ';' };
-                        filenames = filenames.TrimEnd(chars);
-
-                        filenames = inParam + " " + filenames;
                     }
                     else if (ext.Equals(".opf", StringComparison.OrdinalIgnoreCase))
                     {
                         script = "daisy3-to-epub3";
 
                         extra = "--x-mediaoverlays true";
+                        options = "<option name=\"mediaoverlays\">true</option>";
 
-                        filenames = inParam + " " + dlg.FileNames[0];
+                        if (Settings.Default.EnableOldPipeline2)
+                        {
+                            filenames = inParam + " " + dlg.FileNames[0];
+                        }
                     }
                     else if (ext.Equals(".html", StringComparison.OrdinalIgnoreCase))
                     {
@@ -267,41 +360,153 @@ namespace Tobi.Plugin.Urakawa
                         outParam = "--x-output";
 
                         extra = "--x-mediaoverlay true --x-compatibility-mode false";
+                        options = "<option name=\"mediaoverlays\">true</option><option name=\"compatibility-mode\">false</option>";
 
-                        filenames = inParam + " " + dlg.FileNames[0];
+                        if (Settings.Default.EnableOldPipeline2)
+                        {
+                            filenames = inParam + " " + dlg.FileNames[0];
+                        }
                     }
 
                     bool success = false;
-                    Func<String, String> checkErrorsOrWarning =
-                        (string report) =>
-                        {
-                            if (report.IndexOf("[DP2] DONE", StringComparison.Ordinal) < 0)
+
+                    if (Settings.Default.EnableOldPipeline2)
+                    {
+                        Func<String, String> checkErrorsOrWarning =
+                            (string report) =>
                             {
-                                return "Pipeline job doesn't appear to have completed?";
+                                if (report.IndexOf("[DP2] DONE", StringComparison.Ordinal) < 0)
+                                {
+                                    return "Pipeline job doesn't appear to have completed?";
+                                }
+
+                                success = true;
+                                return null;
+                            };
+
+                        try
+                        {
+                            executeProcess(
+                                workingDir,
+                                "DAISY Pipeline",
+                                //"\"" +
+                                pipeline_ExePath
+                                //+ "\""
+                                ,
+                                script + " " +
+                                filenames + " " +
+                                outParam + " " + "\"" + outdir + "\" " +
+                                extra,
+                                checkErrorsOrWarning);
+                        }
+                        catch (Exception ex)
+                        {
+                            messageBoxText("Oops :(", "Problem running DAISY Pipeline!",
+                                           ex.Message + Environment.NewLine + ex.StackTrace);
+                        }
+                    }
+                    else
+                    {
+                        string outputDir = "file:///" + outdir.Replace('\\', '/');
+                        outputDir = FileDataProvider.UriEncode(outputDir);
+
+                        string jobRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><jobRequest xmlns=\"http://www.daisy.org/ns/pipeline/data\"><script href=\"http://localhost:8182/ws/scripts/" + script + "\"/><input name=\"source\"><item value=\"" + filenames + "\"/></input><option name=\"output-dir\">" + outputDir + "</option>" + options + "</jobRequest>";
+
+                        XmlDocument jobDoc = null;
+                        try
+                        {
+                            jobDoc = Resources.PostJob(jobRequest, null);
+                        }
+                        catch (Exception ex)
+                        {
+                            messageBoxText("Pipeline2", "Problem running DAISY Pipeline job!",
+                                            jobRequest + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace);
+                        }
+
+                        if (jobDoc == null)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                            m_Logger.Log(String.Format(@"Pipeline2 job failed ({0})", jobRequest),
+                                         Category.Debug, Priority.Medium);
+
+                            messageBoxText("Pipeline2", "Pipeline2 job failed!", jobRequest);
+
+                            return;
+                        }
+
+                        m_Logger.Log(String.Format(@"Pipeline2 job launched ({0})", jobRequest),
+                                     Category.Debug, Priority.Medium);
+
+                        //messageBoxText("Pipeline2", "Pipeline2 job launched :)", jobRequest);
+
+                        MainClass.PrettyPrint(jobDoc);
+
+                        success = false;
+
+                        string id = jobDoc.DocumentElement.GetAttribute("id");
+                        if (!string.IsNullOrEmpty(id))
+                        {
+                            bool cancelled = false;
+                            var actionCancelled = (Action)(() =>
+                            {
+                                cancelled = true;
+                            });
+
+                            var actionCompleted = (Action)(() =>
+                            {
+                            });
+
+                            bool error = m_ShellView.RunModalCancellableProgressTask(true,
+            "Pipeline2",
+            new PipelineListener(id),
+            actionCancelled,
+            actionCompleted
+            );
+                            if (cancelled)
+                            {
+                                return;
                             }
 
-                            success = true;
-                            return null;
-                        };
+                            string status = Resources.GetJobStatus(id);
 
-                    try
-                    {
-                        executeProcess(
-                            workingDir,
-                            "DAISY Pipeline",
-                            //"\"" +
-                            pipeline_ExePath
-                            //+ "\""
-                            ,
-                            script + " " +
-                            filenames + " " +
-                            outParam + " " + "\"" + outdir + "\" " +
-                            extra,
-                            checkErrorsOrWarning);
-                    }
-                    catch (Exception ex)
-                    {
-                        messageBoxText("Oops :(", "Problem running DAISY Pipeline!", ex.Message + Environment.NewLine + ex.StackTrace);
+                            success = !cancelled && !error && status == "DONE"; // "ERROR"
+
+                            if (success)
+                            {
+                                try
+                                {
+                                    bool status = Resources.DeleteJob(id);
+                                }
+                                catch (Exception ex)
+                                {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                                    m_Logger.Log(String.Format(@"Pipeline2 DeleteJob ({0})", ex.Message),
+                                                 Category.Debug, Priority.Medium);
+                                }
+                            }
+                            else
+                            {
+                                string msg = null;
+                                try
+                                {
+                                    msg = Resources.GetLog(id);
+                                }
+                                catch (Exception ex)
+                                {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                                    m_Logger.Log(String.Format(@"Pipeline2 GetLog ({0})", ex.Message),
+                                                 Category.Debug, Priority.Medium);
+                                }
+
+                                messageBoxText("Pipeline2", "Pipeline2 job failed!", !string.IsNullOrEmpty(msg)?msg:jobRequest));
+                            }
+                        }
                     }
 
                     if (Directory.Exists(outdir))
@@ -383,6 +588,36 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(OpenConvertCommand);
         }
 
+        private class PipelineListener : DualCancellableProgressReporter
+        {
+            private string m_id = null;
+            public PipelineListener(string id)
+            {
+                m_id = id;
+            }
+
+            private int m_percentageProgress = 0;
+            public override void DoWork()
+            {
+                m_percentageProgress = -1;
+
+                int tick = 0;
+                string status = null;
+                while ((status = Resources.GetJobStatus(m_id)) == "RUNNING" || status == "IDLE")
+                {
+                    if (RequestCancellation)
+                    {
+                        return;
+                    }
+
+                    Thread.Sleep(1000);
+                    tick++;
+
+                    reportProgress(m_percentageProgress, "[" + status + "] " + tick);
+                }
+            }
+        }
+
         public void OpenDirectory(string filename)
         {
             if (!askUser("Create EPUB3 archive?", filename))
@@ -443,13 +678,14 @@ namespace Tobi.Plugin.Urakawa
         {
             m_Logger.Log(String.Format(@"UrakawaSession.openFile({0})", filename), Category.Debug, Priority.Medium);
 
-            if (filename.Length > Settings.Default.FilePathMax)
+            var fileUri = new Uri(filename, UriKind.Absolute);
+
+            if (fileUri.LocalPath.Length > Settings.Default.FilePathMax)
             {
-                warningFilePathLength(filename);
+                warningFilePathLength(fileUri.LocalPath);
                 return false;
             }
 
-            var fileUri = new Uri(filename, UriKind.Absolute);
             AddRecentFile(fileUri);
 
             if (!File.Exists(fileUri.LocalPath)

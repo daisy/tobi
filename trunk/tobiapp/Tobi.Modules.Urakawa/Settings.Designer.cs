@@ -25,6 +25,18 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableOldPipeline2 {
+            get {
+                return ((bool)(this["EnableOldPipeline2"]));
+            }
+            set {
+                this["EnableOldPipeline2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool EnableAutoSave {
             get {
