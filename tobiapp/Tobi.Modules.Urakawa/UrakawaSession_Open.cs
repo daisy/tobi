@@ -482,7 +482,7 @@ namespace Tobi.Plugin.Urakawa
                                 catch (Exception ex)
                                 {
 #if DEBUG
-                            Debugger.Break();
+                                    Debugger.Break();
 #endif
                                     m_Logger.Log(String.Format(@"Pipeline2 DeleteJob ({0})", ex.Message),
                                                  Category.Debug, Priority.Medium);
@@ -498,13 +498,13 @@ namespace Tobi.Plugin.Urakawa
                                 catch (Exception ex)
                                 {
 #if DEBUG
-                            Debugger.Break();
+                                    Debugger.Break();
 #endif
                                     m_Logger.Log(String.Format(@"Pipeline2 GetLog ({0})", ex.Message),
                                                  Category.Debug, Priority.Medium);
                                 }
 
-                                messageBoxText("Pipeline2", "Pipeline2 job failed!", !string.IsNullOrEmpty(msg)?msg:jobRequest));
+                                messageBoxText("Pipeline2", "Pipeline2 job failed!", !string.IsNullOrEmpty(msg) ? msg : jobRequest);
                             }
                         }
                     }
