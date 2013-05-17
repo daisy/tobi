@@ -790,7 +790,7 @@ namespace Tobi.Plugin.Urakawa
 
             string ext = @".exe";
             string exeOrBat = @"dp2.exe";
-            if (!Settings.Default.EnableOldPipeline2)
+            if (!Settings.Default.Pipeline2OldExe)
             {
                 ext = @".bat";
                 exeOrBat = @"pipeline2.bat";
