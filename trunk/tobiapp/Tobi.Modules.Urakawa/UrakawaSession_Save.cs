@@ -516,7 +516,7 @@ namespace Tobi.Plugin.Urakawa
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.Ok,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 400, 140, scroll, 300, null);
+                                                   true, 500, 160, scroll, 300, null);
 
             windowPopup.ShowModal();
         }

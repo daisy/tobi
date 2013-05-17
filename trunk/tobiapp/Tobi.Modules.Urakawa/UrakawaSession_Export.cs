@@ -363,6 +363,42 @@ namespace Tobi.Plugin.Urakawa
                     panelIncludeImageDescriptions.Children.Add(checkBoxIncludeImageDescriptions);
 
 
+                    var labelGenSmilNote = new TextBlock
+                    {
+                        Text = Tobi_Plugin_Urakawa_Lang.ExportGenerateSmilNotes,
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var checkBoxGenSmilNote = new CheckBox
+                    {
+                        IsThreeState = false,
+                        IsChecked = Settings.Default.ExportGenerateSmilNotes,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+
+                    //TODO: noteref SMIL export with EPUB 3?
+                    if (IsXukSpine || HasXukSpine)
+                    {
+                        checkBoxGenSmilNote.IsEnabled = false;
+                    }
+
+                    var panelGenSmilNote = new StackPanel
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Horizontal,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+                    panelGenSmilNote.Children.Add(labelGenSmilNote);
+                    panelGenSmilNote.Children.Add(checkBoxGenSmilNote);
+
+
+
+
                     var rootPanel = new StackPanel
                     {
                         Orientation = System.Windows.Controls.Orientation.Vertical,
@@ -374,13 +410,14 @@ namespace Tobi.Plugin.Urakawa
                     rootPanel.Children.Add(panelEncodeMP3);
                     rootPanel.Children.Add(comboMp3BitRates);
                     rootPanel.Children.Add(panelIncludeImageDescriptions);
+                    rootPanel.Children.Add(panelGenSmilNote);
 
                     var windowPopup_ = new PopupModalWindow(m_ShellView,
                                                            UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ExportSettings),
                                                            rootPanel,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           false, 300, 220, null, 40, null);
+                                                           false, 300, 250, null, 40, null);
 
                     windowPopup_.EnableEnterKeyDefault = true;
 
@@ -394,6 +431,7 @@ namespace Tobi.Plugin.Urakawa
                     Settings.Default.AudioExportStereo = checkBoxStereo.IsChecked.Value;
                     Settings.Default.AudioExportEncodeToMp3 = checkBoxEncodeMP3.IsChecked.Value;
                     Settings.Default.ExportIncludeImageDescriptions = checkBoxIncludeImageDescriptions.IsChecked.Value;
+                    Settings.Default.ExportGenerateSmilNotes = checkBoxGenSmilNote.IsChecked.Value;
 
                     if (comboSampleRates.SelectedItem == item1)
                     {
@@ -537,7 +575,7 @@ namespace Tobi.Plugin.Urakawa
                 converter = new Daisy3_Export(pres, exportDirectory, null,
                  Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                  Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
-                 IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions);
+                 IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, Settings.Default.ExportGenerateSmilNotes);
             }
 
             bool error = m_ShellView.RunModalCancellableProgressTask(true,
