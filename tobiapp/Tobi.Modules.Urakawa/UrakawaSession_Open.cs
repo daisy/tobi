@@ -198,9 +198,9 @@ namespace Tobi.Plugin.Urakawa
                         {
                             m_Logger.Log(ex1.Message, Category.Debug, Priority.Medium);
 
-                            if (askUser("Start Pipeline2 manually?", pipeline_ExePath))
+                            if (true || askUser("Start Pipeline2 manually?", pipeline_ExePath))
                             {
-                                //messageBoxText("Pipeline2", "Please launch [pipeline2.bat] (double click), then try again.", pipeline_ExePath);
+                                messageBoxText("Pipeline2 start", "Please run [pipeline2.bat] as administrator (shift + right-click popup menu).", pipeline_ExePath);
 
                                 m_ShellView.ExecuteShellProcess(workingDir);
                             }
