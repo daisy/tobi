@@ -796,10 +796,10 @@ namespace Tobi.Plugin.Urakawa
                 exeOrBat = @"pipeline2.bat";
             }
 
-            string pipeline_ExePath = Settings.Default.Pipeline_ExePath;
+            string pipeline_ExePath = Settings.Default.Pipeline2Path;
             while (!File.Exists(pipeline_ExePath) || pipeline_ExePath.IndexOf(exeOrBat, StringComparison.OrdinalIgnoreCase) < 0)
             {
-                messageBoxText("Pipeline2", "Please specify the location of [" + exeOrBat + "]...", exeOrBat);
+                messageBoxText("Pipeline2 configuration", "Please specify the location of [" + exeOrBat + "]...", exeOrBat);
 
                 var dlg_ = new Microsoft.Win32.OpenFileDialog
                 {
@@ -830,7 +830,7 @@ namespace Tobi.Plugin.Urakawa
 
             if (!string.IsNullOrEmpty(pipeline_ExePath))
             {
-                Settings.Default.Pipeline_ExePath = pipeline_ExePath;
+                Settings.Default.Pipeline2Path = pipeline_ExePath;
             }
 
             return pipeline_ExePath;

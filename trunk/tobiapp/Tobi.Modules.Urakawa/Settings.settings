@@ -2,6 +2,9 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.Urakawa" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
+    <Setting Name="Pipeline2Path" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\daisy\bin\pipeline2.bat</Value>
+    </Setting>
     <Setting Name="Pipeline2Url" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://localhost:8181</Value>
     </Setting>
@@ -46,9 +49,6 @@
     </Setting>
     <Setting Name="MediaOverlayActiveCSS" Type="System.String" Scope="User">
       <Value Profile="(Default)">background-color: #FF0000; color: white; font-weight: bold;</Value>
-    </Setting>
-    <Setting Name="Pipeline_ExePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\daisy-pipeline\cli\dp2.exe</Value>
     </Setting>
     <Setting Name="ProcessTimeoutMinutes" Type="System.Double" Scope="User">
       <Value Profile="(Default)">5</Value>

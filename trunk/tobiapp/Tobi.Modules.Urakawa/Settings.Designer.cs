@@ -25,6 +25,18 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\daisy\\bin\\pipeline2.bat")]
+        public string Pipeline2Path {
+            get {
+                return ((string)(this["Pipeline2Path"]));
+            }
+            set {
+                this["Pipeline2Path"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:8181")]
         public string Pipeline2Url {
             get {
@@ -201,18 +213,6 @@ namespace Tobi.Plugin.Urakawa {
             }
             set {
                 this["MediaOverlayActiveCSS"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\daisy-pipeline\\cli\\dp2.exe")]
-        public string Pipeline_ExePath {
-            get {
-                return ((string)(this["Pipeline_ExePath"]));
-            }
-            set {
-                this["Pipeline_ExePath"] = value;
             }
         }
         
