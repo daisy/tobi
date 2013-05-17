@@ -237,6 +237,9 @@ Do you want to continue ?</value>
   <data name="ExportIncludeImageDescriptions" xml:space="preserve">
     <value>Include/merge image descriptions: </value>
   </data>
+  <data name="ExportGenerateSmilNotes" xml:space="preserve">
+    <value>Generate SMIL note references: </value>
+  </data>
   <data name="ExportEncodeMp3" xml:space="preserve">
     <value>Encode MP3: </value>
   </data>

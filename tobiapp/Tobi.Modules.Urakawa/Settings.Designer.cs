@@ -86,6 +86,18 @@ namespace Tobi.Plugin.Urakawa {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ExportGenerateSmilNotes {
+            get {
+                return ((bool)(this["ExportGenerateSmilNotes"]));
+            }
+            set {
+                this["ExportGenerateSmilNotes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ExportIncludeImageDescriptions {
             get {
                 return ((bool)(this["ExportIncludeImageDescriptions"]));
