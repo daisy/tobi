@@ -156,4 +156,7 @@
   <data name="EditAdvanced" xml:space="preserve">
     <value>Edit in advanced mode...</value>
   </data>
+  <data name="FilterEmptyAlt" xml:space="preserve">
+    <value>Show empty alt</value>
+  </data>
 </root>

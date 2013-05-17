@@ -20,6 +20,52 @@
     <BooleanToVisibilityConverter x:Key="boolToVisConverter"/>
   </DockPanel.Resources>-->
 
+  
+
+    <CheckBox
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+      DockPanel.Dock="Top"
+               VerticalAlignment="Center"
+                IsChecked="{Binding Path=ShowEmptyAlt, Mode=TwoWay}"
+                Content="{x:Static local:Tobi_Plugin_Descriptions_Lang.FilterEmptyAlt}"
+               ToolTip="{x:Static local:Tobi_Plugin_Descriptions_Lang.FilterEmptyAlt}"
+                IsThreeState="False"
+    Margin="4,4,4,4"
+               Click="OnMouseClickCheckBox"
+        Control.TabIndex="1"/>
+
+<!--
+  <DockPanel  DockPanel.Dock="Top"
+              LastChildFill="True"
+              Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+
+    <CheckBox
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+      DockPanel.Dock="Right"
+               VerticalAlignment="Center"
+                IsChecked="{Binding Path=CurrentTreeNodeIsMarked, Mode=TwoWay}"
+                Content="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Marked}"
+               ToolTip="{Binding Source={x:Static local:Settings_KeyGestures.Default}, Path=Keyboard_ToggleDocMark, Mode=OneWay}"
+                IsThreeState="False"
+    Margin="4,4,4,4"
+               Click="OnMouseClickCheckBox"
+        Control.TabIndex="2"/>
+
+    <TextBlock 
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+               Focusable="True"
+               VerticalAlignment="Center"
+               TextTrimming="CharacterEllipsis"
+               FontWeight="Bold"
+         Padding="4,4,4,4"
+               Text="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"
+               ToolTip="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"
+               
+        KeyboardNavigation.TabIndex="1"/>
+
+  </DockPanel>
+-->
+  
   <Border
            DockPanel.Dock="Top"
              

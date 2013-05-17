@@ -107,6 +107,31 @@ namespace Tobi.Plugin.Descriptions
         //    get { return ListView; }
         //}
 
+        private void OnMouseClickCheckBox(object sender, RoutedEventArgs e)
+        {
+            //var item = FocusableItem;
+            //if (item != null)
+            //{
+            //    FocusHelper.FocusBeginInvoke(item, DispatcherPriority.Background);
+            //}
+
+
+
+
+
+
+            //((UIElement)sender).Dispatcher.BeginInvoke(
+            //    new Action(() =>
+            //    {
+            //        UIElement ui = FocusableItem;
+            //        if (ui != null && ui.Focusable)
+            //        {
+            //            FocusHelper.Focus(FocusableItem);
+            //        }
+            //    }),
+            //    DispatcherPriority.Background);
+        }
+
 
 
         private void OnClick_ButtonAddEdit(object sender, RoutedEventArgs e)
