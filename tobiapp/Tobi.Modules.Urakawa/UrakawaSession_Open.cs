@@ -169,6 +169,11 @@ namespace Tobi.Plugin.Urakawa
                 m_ShellView.LoadTangoIcon(@"applications-games"),
                 () =>
                 {
+                    if (!String.IsNullOrEmpty(Settings.Default.Pipeline2Url))
+                    {
+                        Resources.baseUri = Settings.Default.Pipeline2Url + "/ws";
+                    }
+
                     string pipeline_ExePath = obtainPipelineExe();
                     if (string.IsNullOrEmpty(pipeline_ExePath))
                     {
@@ -178,7 +183,7 @@ namespace Tobi.Plugin.Urakawa
                     string workingDir = Path.GetDirectoryName(pipeline_ExePath);
                     //Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
-                    if (!Settings.Default.EnableOldPipeline2)
+                    if (!Settings.Default.Pipeline2OldExe)
                     {
                         //workingDir = Path.GetDirectoryName(workingDir);
                         //workingDir = Path.Combine(workingDir, "bin");
@@ -193,50 +198,74 @@ namespace Tobi.Plugin.Urakawa
                         {
                             m_Logger.Log(ex1.Message, Category.Debug, Priority.Medium);
 
-                            if (true)
+                            if (askUser("Start Pipeline2 manually?", pipeline_ExePath))
                             {
-                                messageBoxText("Pipeline2", "Please launch [pipeline2.bat] (double click), then try again.", pipeline_ExePath);
+                                //messageBoxText("Pipeline2", "Please launch [pipeline2.bat] (double click), then try again.", pipeline_ExePath);
 
                                 m_ShellView.ExecuteShellProcess(workingDir);
-
-                                return;
                             }
                             else
                             {
                                 m_Logger.Log(
-                                    String.Format(@"Attempt to start Pipeline2 server ({0})", pipeline_ExePath),
+                                    String.Format(@"Starting Pipeline2 server ({0})", pipeline_ExePath),
                                     Category.Debug, Priority.Medium);
 
-                                executeProcess(
-                                    workingDir,
-                                    "DAISY Pipeline Server",
-                                    pipeline_ExePath,
-                                    null,
-                                    null);
+                                m_ShellView.ExecuteShellProcess(pipeline_ExePath);
 
-                                try
-                                {
-                                    xmlDoc = Resources.Alive();
-                                }
-                                catch (Exception ex2)
-                                {
-                                    m_Logger.Log(ex2.Message, Category.Debug, Priority.Medium);
+                                //executeProcess(
+                                //    workingDir,
+                                //    "DAISY Pipeline Server",
+                                //    pipeline_ExePath,
+                                //    null,
+                                //    null);
+                            }
 
-                                    m_Logger.Log(
-                                        String.Format(@"Pipeline2 server not started! ({0})", pipeline_ExePath),
-                                        Category.Debug, Priority.Medium);
+                            bool cancelled = false;
+                            var actionCancelled = (Action)(() =>
+                            {
+                                cancelled = true;
+                            });
 
-                                    messageBoxText("Pipeline2", "Please run pipeline2.bat (double click).",
-                                                   ex2.Message + Environment.NewLine + ex2.StackTrace);
+                            var actionCompleted = (Action)(() =>
+                            {
+                            });
 
-                                    m_ShellView.ExecuteShellProcess(workingDir);
+                            bool error = m_ShellView.RunModalCancellableProgressTask(true,
+            "Pipeline2 start",
+            new PipelineAlive(),
+            actionCancelled,
+            actionCompleted
+            );
+                            if (cancelled)
+                            {
+                                return;
+                            }
+
+                            try
+                            {
+                                xmlDoc = Resources.Alive();
+                            }
+                            catch (Exception ex2)
+                            {
+                                m_Logger.Log(ex2.Message, Category.Debug, Priority.Medium);
+
+                                m_Logger.Log(
+                                    String.Format(@"Pipeline2 server not started! ({0})", pipeline_ExePath),
+                                    Category.Debug, Priority.Medium);
+
+                                //messageBoxText("Pipeline2", "Please run pipeline2.bat (double click).",
+                                //               ex2.Message + Environment.NewLine + ex2.StackTrace);
+
+                                m_ShellView.ExecuteShellProcess(workingDir);
 
 #if DEBUG
-                                    Debugger.Break();
+                                Debugger.Break();
 #endif
-                                }
+
+                                return;
                             }
                         }
+
                         if (xmlDoc != null)
                         {
                             m_Logger.Log(String.Format(@"Pipeline2 server alive. ({0})", Resources.baseUri),
@@ -251,7 +280,7 @@ namespace Tobi.Plugin.Urakawa
                     }
 
 
-                    messageBoxText("Pipeline2", "Please choose a source file...", "OPF, DTBook, NCC (*.opf, *.xml, *.html)");
+                    //messageBoxText("Pipeline2", "Please choose a source file...", "OPF, DTBook, NCC (*.opf, *.xml, *.html)");
 
                     var dlg = new OpenFileDialog
                         {
@@ -324,7 +353,7 @@ namespace Tobi.Plugin.Urakawa
                     {
                         script = "dtbook-to-epub3";
 
-                        if (Settings.Default.EnableOldPipeline2)
+                        if (Settings.Default.Pipeline2OldExe)
                         {
                             foreach (string fileName in dlg.FileNames)
                             {
@@ -349,7 +378,7 @@ namespace Tobi.Plugin.Urakawa
                         extra = "--x-mediaoverlays true";
                         options = "<option name=\"mediaoverlays\">true</option>";
 
-                        if (Settings.Default.EnableOldPipeline2)
+                        if (Settings.Default.Pipeline2OldExe)
                         {
                             filenames = inParam + " " + dlg.FileNames[0];
                         }
@@ -363,7 +392,7 @@ namespace Tobi.Plugin.Urakawa
                         extra = "--x-mediaoverlay true --x-compatibility-mode false";
                         options = "<option name=\"mediaoverlays\">true</option><option name=\"compatibility-mode\">false</option>";
 
-                        if (Settings.Default.EnableOldPipeline2)
+                        if (Settings.Default.Pipeline2OldExe)
                         {
                             filenames = inParam + " " + dlg.FileNames[0];
                         }
@@ -371,7 +400,7 @@ namespace Tobi.Plugin.Urakawa
 
                     bool success = false;
 
-                    if (Settings.Default.EnableOldPipeline2)
+                    if (Settings.Default.Pipeline2OldExe)
                     {
                         Func<String, String> checkErrorsOrWarning =
                             (string report) =>
@@ -389,7 +418,7 @@ namespace Tobi.Plugin.Urakawa
                         {
                             executeProcess(
                                 workingDir,
-                                "DAISY Pipeline",
+                                "DAISY Pipeline EXE",
                                 //"\"" +
                                 pipeline_ExePath
                                 //+ "\""
@@ -632,9 +661,45 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
+
+
+        private class PipelineAlive : DualCancellableProgressReporter
+        {
+            private int m_percentageProgress = 0;
+            public override void DoWork()
+            {
+                m_percentageProgress = -1;
+
+                int tick = 0;
+                XmlDocument xmlDoc = null;
+                while (xmlDoc == null)
+                {
+                    if (RequestCancellation)
+                    {
+                        return;
+                    }
+
+                    Thread.Sleep(1000);
+                    tick++;
+
+                    reportProgress(m_percentageProgress, "Waiting... (" + tick + ")");
+
+                    try
+                    {
+                        xmlDoc = Resources.Alive();
+                    }
+                    catch (Exception ex1)
+                    {
+                        Console.WriteLine(ex1.Message);
+                    }
+                }
+            }
+        }
+
+
         public void OpenDirectory(string filename)
         {
-            if (!askUser("Create EPUB3 archive?", filename))
+            if (!askUser("Zip EPUB3?", filename))
             {
                 return;
             }

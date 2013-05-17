@@ -34,7 +34,7 @@ namespace Tobi.Plugin.Urakawa
 
         private bool askUser(string message, string info)
         {
-            m_Logger.Log("ShellView.askUserCleanup", Category.Debug, Priority.Medium);
+            m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
 
             var label = new TextBlock
             {
