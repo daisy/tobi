@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -15,6 +16,7 @@ using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
+using urakawa.property.xml;
 
 namespace Tobi.Plugin.Descriptions
 {
@@ -245,6 +247,24 @@ namespace Tobi.Plugin.Descriptions
             CommandFindPrevDescription.IsActive = m_ShellView.ActiveAware.IsActive && ActiveAware.IsActive;
         }
 
+
+        private bool m_ShowEmptyAlt = true;
+        //[NotifyDependsOn("SelectedTreeNode")]
+        public bool ShowEmptyAlt
+        {
+            get { return m_ShowEmptyAlt; }
+            set
+            {
+                m_ShowEmptyAlt = value;
+
+                if (DescriptionsNavigator == null) return;
+
+                DescriptionsNavigator.InitWithBackupTreeNodes(m_ShowEmptyAlt);
+
+                RaisePropertyChanged(() => DescriptionsNavigator);
+            }
+        }
+
         //private void ActiveAwareIsActiveChanged(object sender, EventArgs e)
         //{
         //    IActiveAware activeAware = (sender as IActiveAware);
@@ -328,6 +348,7 @@ namespace Tobi.Plugin.Descriptions
                     if (node == describableTreeNode.TreeNode
                         || node.IsDescendantOf(describableTreeNode.TreeNode))
                     {
+                        describableTreeNode.RaiseHasDescriptionChanged();
                         describableTreeNode.InvalidateDescription();
                     }
                 }

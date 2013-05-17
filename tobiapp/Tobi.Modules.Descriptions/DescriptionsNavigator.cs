@@ -1,19 +1,56 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Tobi.Common;
 using Tobi.Common.UI;
 using urakawa.core;
+using urakawa.property.xml;
 
 namespace Tobi.Plugin.Descriptions
 {
     public class DescriptionsNavigator
     {
-        private ObservableCollection<DescribableTreeNode> _mDescribableTreeNodes = new ObservableCollection<DescribableTreeNode>();
+        private ObservableCollection<DescribableTreeNode> m_DescribableTreeNodes = new ObservableCollection<DescribableTreeNode>();
         private string m_searchString = string.Empty;
 
         private readonly DescriptionsNavigationView m_view;
+
+        private List<DescribableTreeNode> m_BackupTreeNodes = new List<DescribableTreeNode>();
+
+        public void InitWithBackupTreeNodes(bool showEmptyAlt)
+        {
+            DescribableTreeNodes.Clear();
+
+            foreach (DescribableTreeNode describedTreeNode in m_BackupTreeNodes)
+            {
+                if (showEmptyAlt)
+                {
+                    DescribableTreeNodes.Add(describedTreeNode);
+                }
+                else
+                {
+                    TreeNode treeNode = describedTreeNode.TreeNode;
+
+                    if (treeNode.HasXmlProperty)
+                    {
+                        string localName = treeNode.GetXmlElementLocalName();
+
+                        if (localName.Equals("img", StringComparison.OrdinalIgnoreCase)
+                            //|| localName.Equals("video", StringComparison.OrdinalIgnoreCase)
+                            )
+                        {
+                            XmlAttribute xmlAttr = treeNode.GetXmlProperty().GetAttribute("alt");
+                            if (xmlAttr != null && !String.IsNullOrEmpty(xmlAttr.Value))
+                            {
+                                DescribableTreeNodes.Add(describedTreeNode);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         public DescriptionsNavigator(DescriptionsNavigationView view)
         {
@@ -23,7 +60,15 @@ namespace Tobi.Plugin.Descriptions
         public void AddDescribableTreeNode(TreeNode node)
         {
             RemoveDescribableTreeNode(node); // ensure no duplicate
-            DescribableTreeNodes.Add(new DescribableTreeNode(node));
+
+            var describedTreeNode = new DescribableTreeNode(node);
+
+            if (!m_BackupTreeNodes.Contains(describedTreeNode))
+            {
+                m_BackupTreeNodes.Add(describedTreeNode);
+            }
+
+            DescribableTreeNodes.Add(describedTreeNode);
         }
 
         public void RemoveDescribableTreeNode(TreeNode node)
@@ -38,12 +83,19 @@ namespace Tobi.Plugin.Descriptions
                 }
             }
             if (toRemove != null)
+            {
+                if (m_BackupTreeNodes.Contains(toRemove))
+                {
+                    m_BackupTreeNodes.Remove(toRemove);
+                }
+
                 DescribableTreeNodes.Remove(toRemove);
+            }
         }
 
         public ObservableCollection<DescribableTreeNode> DescribableTreeNodes
         {
-            get { return _mDescribableTreeNodes; }
+            get { return m_DescribableTreeNodes; }
         }
 
         public string SearchTerm
@@ -91,7 +143,7 @@ namespace Tobi.Plugin.Descriptions
 
         public DescribableTreeNode FindNext(bool select)
         {
-            DescribableTreeNode nextMatch = FindNextDescription(_mDescribableTreeNodes);
+            DescribableTreeNode nextMatch = FindNextDescription(m_DescribableTreeNodes);
             if (nextMatch != null)
             {
                 var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
@@ -125,7 +177,7 @@ namespace Tobi.Plugin.Descriptions
         }
         public DescribableTreeNode FindPrevious(bool select)
         {
-            DescribableTreeNode previousMatch = FindPrevDescription(_mDescribableTreeNodes);
+            DescribableTreeNode previousMatch = FindPrevDescription(m_DescribableTreeNodes);
             if (previousMatch != null)
             {
                 var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
