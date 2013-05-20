@@ -826,44 +826,59 @@ namespace Tobi.Plugin.Urakawa
         {
             //messageBoxAlert("WARNING: Pipeline 2 support is experimental!", null);
 
-            string ext = @".exe";
+            //string ext = @".exe";
             string exeOrBat = @"dp2.exe";
             if (!Settings.Default.Pipeline2OldExe)
             {
-                ext = @".bat";
+                //ext = @".bat";
                 exeOrBat = @"pipeline2.bat";
             }
 
             string pipeline_ExePath = Settings.Default.Pipeline2Path;
             while (!File.Exists(pipeline_ExePath) || pipeline_ExePath.IndexOf(exeOrBat, StringComparison.OrdinalIgnoreCase) < 0)
             {
-                messageBoxText("Pipeline2 configuration", "Please specify the location of [" + exeOrBat + "]...", exeOrBat);
-
-                var dlg_ = new Microsoft.Win32.OpenFileDialog
+                if (true)
                 {
-                    FileName = exeOrBat,
-                    DefaultExt = ext,
+                    pipeline_ExePath =
+                    messageBoxFilePick("Pipeline2 configuration", exeOrBat);
 
-                    Filter = @"Executable (*" + ext + ")|*" + ext + "",
-                    CheckFileExists = false,
-                    CheckPathExists = false,
-                    AddExtension = true,
-                    DereferenceLinks = true,
-                    Title =
-                        @"Tobi: " +
-                        "Pipeline2 (" + exeOrBat + ")"
-                };
-
-                bool? result_ = false;
-
-                m_ShellView.DimBackgroundWhile(() => { result_ = dlg_.ShowDialog(); });
-
-                if (result_ == false)
-                {
-                    return null;
+                    if (string.IsNullOrEmpty(pipeline_ExePath))
+                    {
+                        return null;
+                    }
                 }
+                else
+                {
+                    messageBoxText("Pipeline2 configuration", "Please specify the location of [" + exeOrBat + "]...", exeOrBat);
 
-                pipeline_ExePath = dlg_.FileName;
+                    string ext = Path.GetExtension(exeOrBat);
+
+                    var dlg_ = new Microsoft.Win32.OpenFileDialog
+                        {
+                            FileName = exeOrBat,
+                            DefaultExt = ext,
+
+                            Filter = @"Executable (*" + ext + ")|*" + ext + "",
+                            CheckFileExists = false,
+                            CheckPathExists = false,
+                            AddExtension = true,
+                            DereferenceLinks = true,
+                            Title =
+                                @"Tobi: " +
+                                "Pipeline2 (" + exeOrBat + ")"
+                        };
+
+                    bool? result_ = false;
+
+                    m_ShellView.DimBackgroundWhile(() => { result_ = dlg_.ShowDialog(); });
+
+                    if (result_ == false)
+                    {
+                        return null;
+                    }
+
+                    pipeline_ExePath = dlg_.FileName;
+                }
             }
 
             if (!string.IsNullOrEmpty(pipeline_ExePath))

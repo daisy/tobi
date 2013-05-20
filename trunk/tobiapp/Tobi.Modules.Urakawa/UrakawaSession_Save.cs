@@ -187,7 +187,7 @@ namespace Tobi.Plugin.Urakawa
                         bool error = m_ShellView.RunModalCancellableProgressTask(true,
                             Tobi_Plugin_Urakawa_Lang.CopyingDataFiles,
                             new DataFolderCopier(DocumentProject.Presentations.Get(0),
-                                //dirPath, prefix
+                            //dirPath, prefix
                                 destinationFolder
                                 ),
                             () =>
@@ -461,6 +461,149 @@ namespace Tobi.Plugin.Urakawa
             return !cancelled;
         }
 
+        public string messageBoxFilePick(string title, string exeOrBat)
+        {
+            m_Logger.Log(@"UrakawaSession_Save.messageBoxFilePick", Category.Debug, Priority.Medium);
+
+            string ext = Path.GetExtension(exeOrBat);
+
+            PopupModalWindow windowPopup = null;
+
+
+            //var textArea = new TextBoxReadOnlyCaretVisible()
+            //{
+            //    FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+            //    TextReadOnly = info,
+
+            //    BorderThickness = new Thickness(1),
+            //    Padding = new Thickness(6),
+
+            //    HorizontalAlignment = HorizontalAlignment.Stretch,
+            //    VerticalAlignment = VerticalAlignment.Stretch,
+            //    Focusable = true,
+            //    TextWrapping = TextWrapping.Wrap
+            //};
+
+            //var scroll = new ScrollViewer
+            //{
+            //    Content = textArea,
+
+            //    Margin = new Thickness(6),
+            //    VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+            //    HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+            //};
+
+            var label = new TextBlock
+            {
+                Text = "Please locate [" + exeOrBat + "]",
+                Margin = new Thickness(0, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap,
+                FontWeight = FontWeights.Bold,
+            };
+
+            var fileText = new TextBoxReadOnlyCaretVisible
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                BorderBrush = SystemColors.ControlDarkDarkBrush,
+                //Padding = new Thickness(6),
+                TextReadOnly = " ",
+                //IsReadOnly = true,
+                Width = 300,
+
+                Margin = new Thickness(0, 8, 0, 0),
+                Padding = new Thickness(4),
+
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+            
+            var fileButton = new Button()
+                {
+                    Content = "Browse...",
+                    Margin = new Thickness(0, 0, 0, 0),
+                    Padding = new Thickness(8, 0, 8, 0),
+                };
+            fileButton.Click += (sender, e) =>
+                {
+                    var dlg_ = new Microsoft.Win32.OpenFileDialog
+                        {
+                            FileName = exeOrBat,
+                            DefaultExt = ext,
+
+                            Filter = @"Executable (*" + ext + ")|*" + ext + "",
+                            CheckFileExists = false,
+                            CheckPathExists = false,
+                            AddExtension = true,
+                            DereferenceLinks = true,
+                            Title =
+                                @"Tobi: " +
+                                "Pipeline2 (" + exeOrBat + ")"
+                        };
+
+                    bool? result_ = false;
+
+                    m_ShellView.DimBackgroundWhile(
+                        () => { result_ = dlg_.ShowDialog(); }
+                        , windowPopup
+                        );
+
+                    if (result_ == true)
+                    {
+                        fileText.TextReadOnly = dlg_.FileName;
+                    }
+                };
+
+            var filePanel = new DockPanel
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+
+                LastChildFill = true
+            };
+
+            //fileButton.SetValue(DockPanel.DockProperty, Dock.Right);
+            DockPanel.SetDock(fileButton, Dock.Right);
+
+            filePanel.Children.Add(fileButton);
+            filePanel.Children.Add(label);
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            panel.Children.Add(filePanel);
+            panel.Children.Add(fileText);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+            windowPopup = new PopupModalWindow(m_ShellView,
+                                                   title,
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 380, 200,
+                                                   null,//scroll,
+                                                   300, null);
+
+            windowPopup.ShowModal();
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                return fileText.TextReadOnly;
+            }
+
+            return null;
+        }
+
         public void messageBoxText(string title, string text, string info)
         {
             m_Logger.Log(@"UrakawaSession_Save.messageBoxText", Category.Debug, Priority.Medium);
@@ -482,6 +625,7 @@ namespace Tobi.Plugin.Urakawa
             {
                 FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
 
+                IsReadOnly = true,
                 TextReadOnly = info,
 
                 BorderThickness = new Thickness(1),
