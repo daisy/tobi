@@ -1136,7 +1136,11 @@ namespace Tobi.Plugin.DocumentPane
 
                     string oldTxt = TreeNodeChangeTextCommand.GetText(node);
 
-                    if (string.IsNullOrEmpty(oldTxt)) return;
+                    if (string.IsNullOrEmpty(oldTxt))
+                    {
+                        oldTxt = "";
+                        //return;
+                    }
 
                     string txt = showDialogTextEdit(oldTxt);
 
