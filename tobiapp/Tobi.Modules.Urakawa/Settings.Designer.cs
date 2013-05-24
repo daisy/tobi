@@ -25,6 +25,30 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-Xmx1G -XX:MaxPermSize=256M -Dcom.sun.management.jmxremote")]
+        public string Pipeline2JavaOpt {
+            get {
+                return ((string)(this["Pipeline2JavaOpt"]));
+            }
+            set {
+                this["Pipeline2JavaOpt"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public double Pipeline2Timeout {
+            get {
+                return ((double)(this["Pipeline2Timeout"]));
+            }
+            set {
+                this["Pipeline2Timeout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("C:\\daisy\\bin\\pipeline2.bat")]
         public string Pipeline2Path {
             get {

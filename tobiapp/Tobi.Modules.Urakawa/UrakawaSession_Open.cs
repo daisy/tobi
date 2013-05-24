@@ -236,6 +236,23 @@ namespace Tobi.Plugin.Urakawa
                                 String.Format(@"Starting Pipeline2 server ({0})", pipeline_ExePath),
                                 Category.Debug, Priority.Medium);
 
+                            try
+                            {
+                                string env = Environment.GetEnvironmentVariable("JAVA_OPTS", EnvironmentVariableTarget.Process);
+
+                                if (string.IsNullOrEmpty(env) || env != Settings.Default.Pipeline2JavaOpt)
+                                {
+                                    Environment.SetEnvironmentVariable("JAVA_OPTS", Settings.Default.Pipeline2JavaOpt,
+                                                                   EnvironmentVariableTarget.Process);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                m_Logger.Log(
+                                    String.Format(@"JAVA_OPTS failed ({0})", ex.Message),
+                                    Category.Debug, Priority.Medium);
+                            }
+
                             Thread thread = new Thread(new ThreadStart(() =>
                             {
                                 m_ShellView.ExecuteShellProcess(pipeline_ExePath);
@@ -252,7 +269,7 @@ namespace Tobi.Plugin.Urakawa
                             thread.IsBackground = true;
                             thread.Start();
 
-                            int timeout = 60;
+                            int timeout = (int)Settings.Default.Pipeline2Timeout;
                             bool? waitResult = waitForPipelineAlive(timeout);
                             if (waitResult == null)
                             {
