@@ -2,6 +2,12 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.Urakawa" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
+    <Setting Name="Pipeline2JavaOpt" Type="System.String" Scope="User">
+      <Value Profile="(Default)">-Xmx1G -XX:MaxPermSize=256M -Dcom.sun.management.jmxremote</Value>
+    </Setting>
+    <Setting Name="Pipeline2Timeout" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
     <Setting Name="Pipeline2Path" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\daisy\bin\pipeline2.bat</Value>
     </Setting>
