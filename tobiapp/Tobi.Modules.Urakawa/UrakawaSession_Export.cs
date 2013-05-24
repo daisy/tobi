@@ -834,13 +834,26 @@ namespace Tobi.Plugin.Urakawa
                 exeOrBat = @"pipeline2.bat";
             }
 
+            bool registryChecked = false;
+
             string pipeline_ExePath = Settings.Default.Pipeline2Path;
-            while (!File.Exists(pipeline_ExePath) || pipeline_ExePath.IndexOf(exeOrBat, StringComparison.OrdinalIgnoreCase) < 0)
+            while (string.IsNullOrEmpty(pipeline_ExePath)
+                || !File.Exists(pipeline_ExePath)
+                || pipeline_ExePath.IndexOf(exeOrBat, StringComparison.OrdinalIgnoreCase) < 0)
             {
+                //TODO
+                if (!registryChecked)
+                {
+                    registryChecked = true;
+
+                    //pipeline_ExePath = registryCheck();
+
+                    //continue;
+                }
+
                 if (true)
                 {
-                    pipeline_ExePath =
-                    messageBoxFilePick("Pipeline2 configuration", exeOrBat);
+                    pipeline_ExePath = messageBoxFilePick("Pipeline2 configuration", exeOrBat);
 
                     if (string.IsNullOrEmpty(pipeline_ExePath))
                     {

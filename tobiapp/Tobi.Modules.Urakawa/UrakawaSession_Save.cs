@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using AudioLib;
 using Tobi.Common.MVVM;
 using Microsoft.Practices.Composite.Logging;
@@ -494,17 +495,6 @@ namespace Tobi.Plugin.Urakawa
             //    HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
             //};
 
-            var label = new TextBlock
-            {
-                Text = "Please locate [" + exeOrBat + "]",
-                Margin = new Thickness(0, 0, 8, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center,
-                Focusable = true,
-                TextWrapping = TextWrapping.Wrap,
-                FontWeight = FontWeights.Bold,
-            };
-
             var fileText = new TextBoxReadOnlyCaretVisible
             {
                 FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
@@ -524,13 +514,33 @@ namespace Tobi.Plugin.Urakawa
                 Focusable = true,
                 TextWrapping = TextWrapping.Wrap
             };
-            
+            //fileText.SetValue(KeyboardNavigation.TabIndexProperty, 12);
+            KeyboardNavigation.SetTabIndex(fileText, 12);
+
+            var label = new TextBlock
+            {
+                Text = "Please locate [" + exeOrBat + "]",
+                Margin = new Thickness(0, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap,
+                FontWeight = FontWeights.Bold,
+            };
+            //label.SetValue(KeyboardNavigation.TabIndexProperty, 10);
+            KeyboardNavigation.SetTabIndex(label, 10);
+
+
             var fileButton = new Button()
                 {
                     Content = "Browse...",
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(8, 0, 8, 0),
                 };
+
+            //fileButton.SetValue(KeyboardNavigation.TabIndexProperty, 11);
+            KeyboardNavigation.SetTabIndex(fileButton, 11);
+
             fileButton.Click += (sender, e) =>
                 {
                     var dlg_ = new Microsoft.Win32.OpenFileDialog
