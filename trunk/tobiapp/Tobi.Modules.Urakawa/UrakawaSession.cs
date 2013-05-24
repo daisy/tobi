@@ -11,6 +11,7 @@ using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Microsoft.Practices.Unity;
+using PipelineWSClient;
 using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
@@ -81,10 +82,28 @@ namespace Tobi.Plugin.Urakawa
             //m_EventAggregator.GetEvent<OpenFileRequestEvent>().Subscribe((string path) => TryOpenFile(path));
         }
 
+        private bool m_PipelineWasStarted = false;
         ~UrakawaSession()
         {
             Tobi.Common.Settings.Default.PropertyChanged -= OnSettingsPropertyChanged;
             Settings.Default.PropertyChanged -= OnSettingsPropertyChanged;
+
+            if (m_PipelineWasStarted)
+            {
+                try
+                {
+                    Resources.Halt();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    m_Logger.Log(
+                        String.Format(@"Pipeline2 server not halted! ({0})", ex.Message),
+                        Category.Debug, Priority.Medium);
+                }
+            }
         }
 
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)

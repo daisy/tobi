@@ -35,6 +35,39 @@ namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
+        private bool? waitForPipelineAlive(int timeout)
+        {
+            bool cancelled = false;
+            var actionCancelled = (Action)(() =>
+                {
+                    cancelled = true;
+                });
+
+            var actionCompleted = (Action)(() =>
+                {
+                });
+
+            var pipeAlive = new PipelineAlive(timeout);
+            bool error = m_ShellView.RunModalCancellableProgressTask(true,
+                                                                     "Pipeline2 start",
+                                                                     pipeAlive,
+                                                                     actionCancelled,
+                                                                     actionCompleted
+                );
+
+            if (pipeAlive.TimedOut)
+            {
+                return false;
+            }
+
+            if (cancelled)
+            {
+                return null;
+            }
+
+            return true;
+        }
+
         public RichDelegateCommand OpenCommand { get; private set; }
         public RichDelegateCommand ImportCommand { get; private set; }
         public RichDelegateCommand OpenConvertCommand { get; private set; }
@@ -198,18 +231,13 @@ namespace Tobi.Plugin.Urakawa
                         {
                             m_Logger.Log(ex1.Message, Category.Debug, Priority.Medium);
 
-                            if (true || askUser("Start Pipeline2 manually?", pipeline_ExePath))
-                            {
-                                messageBoxText("Pipeline2 start", "Please run [pipeline2.bat] as administrator (shift + right-click popup menu).", pipeline_ExePath);
 
-                                m_ShellView.ExecuteShellProcess(workingDir);
-                            }
-                            else
-                            {
-                                m_Logger.Log(
-                                    String.Format(@"Starting Pipeline2 server ({0})", pipeline_ExePath),
-                                    Category.Debug, Priority.Medium);
+                            m_Logger.Log(
+                                String.Format(@"Starting Pipeline2 server ({0})", pipeline_ExePath),
+                                Category.Debug, Priority.Medium);
 
+                            Thread thread = new Thread(new ThreadStart(() =>
+                            {
                                 m_ShellView.ExecuteShellProcess(pipeline_ExePath);
 
                                 //executeProcess(
@@ -218,27 +246,38 @@ namespace Tobi.Plugin.Urakawa
                                 //    pipeline_ExePath,
                                 //    null,
                                 //    null);
+                            }));
+                            thread.Name = "Pipeline2 BAT execute";
+                            thread.Priority = ThreadPriority.Normal;
+                            thread.IsBackground = true;
+                            thread.Start();
+
+                            int timeout = 60;
+                            bool? waitResult = waitForPipelineAlive(timeout);
+                            if (waitResult == null)
+                            {
+                                return; // cancelled
                             }
 
-                            bool cancelled = false;
-                            var actionCancelled = (Action)(() =>
+                            if (waitResult == false) // timeout
                             {
-                                cancelled = true;
-                            });
+                            tryAgain:
+                                //if (true || askUser("Start Pipeline2 manually?", pipeline_ExePath))
+                                {
+                                    messageBoxText("Pipeline2 timeout", "Please try again later, or run [pipeline2.bat] manually.", pipeline_ExePath);
 
-                            var actionCompleted = (Action)(() =>
-                            {
-                            });
+                                    m_ShellView.ExecuteShellProcess(workingDir);
+                                }
 
-                            bool error = m_ShellView.RunModalCancellableProgressTask(true,
-            "Pipeline2 start",
-            new PipelineAlive(),
-            actionCancelled,
-            actionCompleted
-            );
-                            if (cancelled)
-                            {
-                                return;
+                                waitResult = waitForPipelineAlive(timeout);
+                                if (waitResult == null)
+                                {
+                                    return; // cancelled
+                                }
+                                if (waitResult == false) // timeout
+                                {
+                                    goto tryAgain;
+                                }
                             }
 
                             try
@@ -268,6 +307,8 @@ namespace Tobi.Plugin.Urakawa
 
                         if (xmlDoc != null)
                         {
+                            m_PipelineWasStarted = true;
+
                             m_Logger.Log(String.Format(@"Pipeline2 server alive. ({0})", Resources.baseUri),
                                          Category.Debug, Priority.Medium);
 
@@ -665,9 +706,24 @@ namespace Tobi.Plugin.Urakawa
 
         private class PipelineAlive : DualCancellableProgressReporter
         {
+            private int m_timeout = -1;
+            public PipelineAlive(int timeout)
+            {
+                m_timeout = timeout;
+                TimedOut = false;
+            }
+
+            public bool TimedOut { get; set; }
+
             private int m_percentageProgress = 0;
             public override void DoWork()
             {
+                Stopwatch stopWatch = null;
+                if (m_timeout > 0)
+                {
+                    stopWatch = Stopwatch.StartNew();
+                }
+
                 m_percentageProgress = -1;
 
                 int tick = 0;
@@ -676,6 +732,12 @@ namespace Tobi.Plugin.Urakawa
                 {
                     if (RequestCancellation)
                     {
+                        return;
+                    }
+
+                    if (stopWatch != null && stopWatch.ElapsedMilliseconds >= m_timeout * 1000)
+                    {
+                        TimedOut = true;
                         return;
                     }
 
