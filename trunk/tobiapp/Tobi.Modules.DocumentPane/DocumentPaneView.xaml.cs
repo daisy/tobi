@@ -2628,6 +2628,7 @@ namespace Tobi.Plugin.DocumentPane
             m_TextOnlyViewRun.Text = str;
         }
 
+        private Stopwatch m_ScrollToViewStopwatch = null;
         private void scrollToView(TextElement textElement)
         {
             if (FlowDocReader.ScrollViewer == null)
@@ -2638,7 +2639,36 @@ namespace Tobi.Plugin.DocumentPane
             {
                 Dispatcher.Invoke(DispatcherPriority.Render, (Action)(textElement.BringIntoView));
 
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action<TextElement>)(scrollToView_), textElement);
+
+                //if (m_ScrollToViewStopwatch == null)
+                //{
+                //    m_ScrollToViewStopwatch = new Stopwatch();
+                //}
+                //else
+                //{
+                //    m_ScrollToViewStopwatch.Reset();
+                //}
+                //m_ScrollToViewStopwatch.Start();
+
+
+                if (m_ScrollToViewStopwatch == null)
+                {
+                    m_ScrollToViewStopwatch = new Stopwatch(); //Stopwatch.StartNew();
+                }
+                else
+                {
+                    DebugFix.Assert(m_ScrollToViewStopwatch.IsRunning);
+
+                    if (m_ScrollToViewStopwatch.ElapsedMilliseconds > 1000)
+                    {
+                        m_ScrollToViewStopwatch.Stop();
+
+                        Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action<TextElement>)(scrollToView_), textElement);
+                    }
+                }
+
+                m_ScrollToViewStopwatch.Reset();
+                m_ScrollToViewStopwatch.Start();
             }
         }
 

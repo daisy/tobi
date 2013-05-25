@@ -26,6 +26,9 @@ namespace Tobi.Common
     ///</summary>
     public interface IUrakawaSession : IPropertyChangedNotifyBase
     {
+        void AutoSave_OFF();
+        void AutoSave_ON();
+
         bool isTreeNodeSkippable(TreeNode node);
         TreeNode AdjustTextSyncGranularity(TreeNode node, TreeNode upperLimit);
 

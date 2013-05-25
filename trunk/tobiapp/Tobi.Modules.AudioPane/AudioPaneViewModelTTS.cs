@@ -457,6 +457,8 @@ namespace Tobi.Plugin.AudioPane
         {
             bool cancelled = false;
 
+            m_UrakawaSession.AutoSave_OFF();
+
             m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio, Tobi_Plugin_AudioPane_Lang.CmdAudioGenTTS_LongDesc);
             try
             {
@@ -502,6 +504,8 @@ namespace Tobi.Plugin.AudioPane
             finally
             {
                 m_TTSGen = false;
+                m_UrakawaSession.AutoSave_ON();
+
                 if (cancelled)
                 {
                     m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.CancelTransaction();

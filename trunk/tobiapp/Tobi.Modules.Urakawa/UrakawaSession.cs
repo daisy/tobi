@@ -232,6 +232,15 @@ namespace Tobi.Plugin.Urakawa
             //}
         }
 
+        private bool m_AutoSave_OFF = false;
+        public void AutoSave_OFF()
+        {
+            m_AutoSave_OFF = true;
+        }
+        public void AutoSave_ON()
+        {
+            m_AutoSave_OFF = false;
+        }
 
         private DispatcherTimer m_undoAutoSaveIntervalTimer = null;
         private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)
@@ -245,7 +254,9 @@ namespace Tobi.Plugin.Urakawa
                     m_undoAutoSaveIntervalTimer.Stop();
                     //m_scrollRefreshIntervalTimer = null;
 
-                    if (Settings.Default.EnableAutoSave && !string.IsNullOrEmpty(DocumentFilePath))
+                    if (!m_AutoSave_OFF
+                        && Settings.Default.EnableAutoSave
+                        && !string.IsNullOrEmpty(DocumentFilePath))
                     {
                         // The "OnUndoRedoManagerChanged" event is not broadcasted when 
                         // Command.Execute() or Command.UnExecute() fails,
