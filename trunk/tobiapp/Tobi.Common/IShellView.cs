@@ -338,6 +338,7 @@ namespace Tobi.Common
         bool IsUIAutomationDisabled { get; }
 
         void Show();
+        bool Activate();
 
         bool SplitterDrag { get; }
 

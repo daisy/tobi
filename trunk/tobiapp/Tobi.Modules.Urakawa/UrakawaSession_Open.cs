@@ -269,6 +269,10 @@ namespace Tobi.Plugin.Urakawa
                             thread.IsBackground = true;
                             thread.Start();
 
+                            Thread.Sleep(1000);
+
+                            m_ShellView.Activate();
+
                             int timeout = (int)Settings.Default.Pipeline2Timeout;
                             bool? waitResult = waitForPipelineAlive(timeout);
                             if (waitResult == null)
@@ -663,20 +667,28 @@ namespace Tobi.Plugin.Urakawa
                         //{
                         //    outFile = Path.Combine(outdir, fileName + ".html");
                         //}
+
                         if (!success || !File.Exists(outFile))
                         {
                             m_ShellView.ExecuteShellProcess(outdir);
                         }
                         else
                         {
-                            try
+                            if (askUser("Create EPUB Tobi project?", outFile))
                             {
-                                OpenFile(outFile);
+                                try
+                                {
+                                    OpenFile(outFile);
+                                }
+                                catch (Exception ex)
+                                {
+                                    m_ShellView.ExecuteShellProcess(outdir);
+                                    ExceptionHandler.Handle(ex, false, m_ShellView);
+                                }
                             }
-                            catch (Exception ex)
+                            else
                             {
                                 m_ShellView.ExecuteShellProcess(outdir);
-                                ExceptionHandler.Handle(ex, false, m_ShellView);
                             }
                         }
                     }
