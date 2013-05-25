@@ -25,13 +25,13 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-Xmx1G -XX:MaxPermSize=256M -Dcom.sun.management.jmxremote")]
-        public string Pipeline2JavaOpt {
+        [global::System.Configuration.DefaultSettingValueAttribute("1G")]
+        public string Pipeline2JavaMem {
             get {
-                return ((string)(this["Pipeline2JavaOpt"]));
+                return ((string)(this["Pipeline2JavaMem"]));
             }
             set {
-                this["Pipeline2JavaOpt"] = value;
+                this["Pipeline2JavaMem"] = value;
             }
         }
         
