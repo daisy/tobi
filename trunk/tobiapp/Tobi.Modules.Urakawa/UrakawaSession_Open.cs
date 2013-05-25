@@ -238,12 +238,12 @@ namespace Tobi.Plugin.Urakawa
 
                             try
                             {
-                                string env = Environment.GetEnvironmentVariable("JAVA_OPTS", EnvironmentVariableTarget.Process);
+                                string javaOpts = "-Xmx" + Settings.Default.Pipeline2JavaMem + " -XX:MaxPermSize=256M -Dcom.sun.management.jmxremote";
+                                string envJavaOpts = Environment.GetEnvironmentVariable("JAVA_OPTS", EnvironmentVariableTarget.Process);
 
-                                if (string.IsNullOrEmpty(env) || env != Settings.Default.Pipeline2JavaOpt)
+                                if (string.IsNullOrEmpty(envJavaOpts) || envJavaOpts != javaOpts)
                                 {
-                                    Environment.SetEnvironmentVariable("JAVA_OPTS", Settings.Default.Pipeline2JavaOpt,
-                                                                   EnvironmentVariableTarget.Process);
+                                    Environment.SetEnvironmentVariable("JAVA_OPTS", javaOpts, EnvironmentVariableTarget.Process);
                                 }
                             }
                             catch (Exception ex)
