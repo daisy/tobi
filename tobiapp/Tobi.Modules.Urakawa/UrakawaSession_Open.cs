@@ -388,12 +388,20 @@ namespace Tobi.Plugin.Urakawa
                         return;
                     }
 
+                    string nowDateTimeStr = DateTime.UtcNow.ToString("yyyy-MM-dd_HH-mm-ss");
+                    nowDateTimeStr = FileDataProvider.EliminateForbiddenFileNameCharacters(nowDateTimeStr).Replace(' ', '_');
+
                     string filename = Path.GetFileName(dlg.FileNames[0]);
                     string outdir = Path.GetDirectoryName(dlg.FileNames[0]);
-                    outdir = Path.Combine(outdir, filename.Replace('.', '_') + "_PIPE");
+                    outdir = Path.Combine(outdir, filename.Replace('.', '_') + "_Pipe" + nowDateTimeStr);
 
                     if (Directory.Exists(outdir))
                     {
+                        if (!askUserConfirmOverwriteFileFolder(outdir, true, null))
+                        {
+                            return;
+                        }
+
                         FileDataProvider.TryDeleteDirectory(outdir, false);
                     }
 
@@ -723,8 +731,8 @@ namespace Tobi.Plugin.Urakawa
                         return;
                     }
 
-                    Thread.Sleep(1000);
-                    tick++;
+                    Thread.Sleep(2000);
+                    tick += 2;
 
                     reportProgress(m_percentageProgress, "[" + status + "] " + tick);
                 }
