@@ -574,6 +574,11 @@ namespace Tobi.Plugin.Descriptions
             m_ShellView.Show();
         }
 
+        public bool Activate()
+        {
+            return m_ShellView.Activate();
+        }
+
         public bool SplitterDrag
         {
             get { return m_ShellView.SplitterDrag; }
