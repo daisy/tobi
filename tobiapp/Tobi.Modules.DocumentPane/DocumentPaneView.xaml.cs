@@ -2628,52 +2628,72 @@ namespace Tobi.Plugin.DocumentPane
             m_TextOnlyViewRun.Text = str;
         }
 
-        private Stopwatch m_ScrollToViewStopwatch = null;
+        //private Stopwatch m_ScrollToViewStopwatch = null;
+        private DispatcherTimer m_scrollRefreshIntervalTimer = null;
+        private TextElement m_scrollTextElement = null;
         private void scrollToView(TextElement textElement)
         {
+            m_scrollTextElement = textElement;
+
             if (FlowDocReader.ScrollViewer == null)
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
             }
             else
             {
-                Dispatcher.Invoke(DispatcherPriority.Render, (Action)(textElement.BringIntoView));
-
-
                 //if (m_ScrollToViewStopwatch == null)
                 //{
-                //    m_ScrollToViewStopwatch = new Stopwatch();
+                //    m_ScrollToViewStopwatch = Stopwatch.StartNew(); // new Stopwatch();
                 //}
-                //else
+                //DebugFix.Assert(m_ScrollToViewStopwatch.IsRunning);
+
+                //if (m_ScrollToViewStopwatch.ElapsedMilliseconds > 1000)
                 //{
-                //    m_ScrollToViewStopwatch.Reset();
+                //    m_ScrollToViewStopwatch.Stop();
+
                 //}
+
+                //m_ScrollToViewStopwatch.Reset();
                 //m_ScrollToViewStopwatch.Start();
 
+                Dispatcher.Invoke(DispatcherPriority.Render, (Action)(m_scrollTextElement.BringIntoView));
 
-                if (m_ScrollToViewStopwatch == null)
+                if (m_scrollRefreshIntervalTimer == null)
                 {
-                    m_ScrollToViewStopwatch = new Stopwatch(); //Stopwatch.StartNew();
+                    m_scrollRefreshIntervalTimer = new DispatcherTimer(DispatcherPriority.Background);
+                    m_scrollRefreshIntervalTimer.Interval = TimeSpan.FromMilliseconds(350);
+                    m_scrollRefreshIntervalTimer.Tick += (oo, ee) =>
+                    {
+                        m_scrollRefreshIntervalTimer.Stop();
+                        //m_scrollRefreshIntervalTimer = null;
+
+                        //textElement.BringIntoView();
+                        //Dispatcher.Invoke(DispatcherPriority.Render, (Action)(textElement.BringIntoView));
+
+                        if (m_scrollTextElement != null)
+                        {
+                            scrollToView_(m_scrollTextElement);
+                        }
+                        //Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action<TextElement>)(scrollToView_), textElement);
+                    };
+                    m_scrollRefreshIntervalTimer.Start();
+                }
+                else if (m_scrollRefreshIntervalTimer.IsEnabled)
+                {
+                    //restart
+                    m_scrollRefreshIntervalTimer.Stop();
+                    m_scrollRefreshIntervalTimer.Start();
                 }
                 else
                 {
-                    DebugFix.Assert(m_ScrollToViewStopwatch.IsRunning);
-
-                    if (m_ScrollToViewStopwatch.ElapsedMilliseconds > 1000)
-                    {
-                        m_ScrollToViewStopwatch.Stop();
-
-                        Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action<TextElement>)(scrollToView_), textElement);
-                    }
+                    m_scrollRefreshIntervalTimer.Start();
                 }
-
-                m_ScrollToViewStopwatch.Reset();
-                m_ScrollToViewStopwatch.Start();
             }
         }
 
         private void scrollToView_(TextElement textElement)
         {
+            m_Logger.Log("@@@@@@@@@ SCROLL", Category.Debug, Priority.Medium);
             //DebugFix.Assert(FlowDocReader.ScrollViewer.ScrollableHeight == FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight);
             if (FlowDocReader.ScrollViewer.ScrollableHeight !=
                          FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight)
