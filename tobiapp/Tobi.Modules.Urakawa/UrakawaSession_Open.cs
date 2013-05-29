@@ -238,7 +238,10 @@ namespace Tobi.Plugin.Urakawa
 
                             try
                             {
-                                string javaOpts = "-Xmx" + Settings.Default.Pipeline2JavaMem + " -XX:MaxPermSize=256M -Dcom.sun.management.jmxremote";
+                                JavaXmx mem_ = Settings.Default.Pipeline2JavaMaxMem;
+                                var mem = (ushort) mem_;
+                                string xmx = mem == 1024 ? "1G" : (mem == 512 ? "512M" : "1G");
+                                string javaOpts = "-Xmx" + xmx + " -XX:MaxPermSize=256M -Dcom.sun.management.jmxremote";
                                 string envJavaOpts = Environment.GetEnvironmentVariable("JAVA_OPTS", EnvironmentVariableTarget.Process);
 
                                 if (string.IsNullOrEmpty(envJavaOpts) || envJavaOpts != javaOpts)

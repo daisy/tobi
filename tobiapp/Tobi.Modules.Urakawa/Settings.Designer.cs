@@ -25,13 +25,13 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1G")]
-        public string Pipeline2JavaMem {
+        [global::System.Configuration.DefaultSettingValueAttribute("_1G")]
+        public global::Tobi.Plugin.Urakawa.JavaXmx Pipeline2JavaMaxMem {
             get {
-                return ((string)(this["Pipeline2JavaMem"]));
+                return ((global::Tobi.Plugin.Urakawa.JavaXmx)(this["Pipeline2JavaMaxMem"]));
             }
             set {
-                this["Pipeline2JavaMem"] = value;
+                this["Pipeline2JavaMaxMem"] = value;
             }
         }
         
