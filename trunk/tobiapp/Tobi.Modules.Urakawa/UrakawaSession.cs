@@ -26,6 +26,12 @@ using urakawa.xuk;
 
 namespace Tobi.Plugin.Urakawa
 {
+    public enum JavaXmx : ushort
+    {
+        _1G = 1024,
+        _512M = 512
+    }
+
     ///<summary>
     /// Single shared instance (singleton) of a session to host the Urakawa SDK aurthoring data model.
     ///</summary>
