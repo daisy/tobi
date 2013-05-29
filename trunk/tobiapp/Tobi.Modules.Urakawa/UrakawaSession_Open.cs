@@ -863,9 +863,8 @@ namespace Tobi.Plugin.Urakawa
 
             var fileUri = new Uri(filename, UriKind.Absolute);
 
-            if (fileUri.LocalPath.Length > Settings.Default.FilePathMax)
+            if (checkWarningFilePathLength(fileUri.LocalPath))
             {
-                warningFilePathLength(fileUri.LocalPath);
                 return false;
             }
 
