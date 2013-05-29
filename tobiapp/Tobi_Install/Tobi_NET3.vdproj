@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_01889C64F0764CBBBC22A4BC521B7038"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_02DF5E2491466ED65D2999A24BEE10D0"
         "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
@@ -970,12 +976,6 @@
         "Entry"
         {
         "MsmKey" = "8:_B5B5E3429BFE4A22874777E1DC483C93"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B6FBB0297B8D486E8DD48C90207B7132"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2074,6 +2074,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_01889C64F0764CBBBC22A4BC521B7038"
+            {
+            "SourcePath" = "8:..\\lib\\Saxon-HE-9.4.0.6.jar"
+            "TargetName" = "8:Saxon-HE-9.4.0.6.jar"
+            "Tag" = "8:"
+            "Folder" = "8:_3DE6270A8FE64012B57B3F9F5AEFF4FE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_02DF5E2491466ED65D2999A24BEE10D0"
             {
             "AssemblyRegister" = "3:1"
@@ -4026,26 +4046,6 @@
             "TargetName" = "8:STIXIntegralsD-Regular.xml"
             "Tag" = "8:"
             "Folder" = "8:_96329469070D415BAEA86DB78941FD12"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B6FBB0297B8D486E8DD48C90207B7132"
-            {
-            "SourcePath" = "8:..\\lib\\saxon-9.1.0.8.jar"
-            "TargetName" = "8:saxon-9.1.0.8.jar"
-            "Tag" = "8:"
-            "Folder" = "8:_3DE6270A8FE64012B57B3F9F5AEFF4FE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
