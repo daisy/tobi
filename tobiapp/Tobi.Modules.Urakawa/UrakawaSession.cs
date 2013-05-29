@@ -913,8 +913,13 @@ namespace Tobi.Plugin.Urakawa
             return null;
         }
 
-        private void warningFilePathLength(string filePath)
+        private bool checkWarningFilePathLength(string filePath)
         {
+            if (filePath.Length <= Settings.Default.FilePathMax)
+            {
+                return false;
+            }
+
             m_Logger.Log("UrakawaSession warningFilePathLength", Category.Debug, Priority.Medium);
 
             var label = new TextBlock
@@ -963,6 +968,8 @@ namespace Tobi.Plugin.Urakawa
             //}
 
             m_ShellView.ExecuteShellProcess(Path.GetDirectoryName(filePath));
+
+            return true;
         }
     }
 }

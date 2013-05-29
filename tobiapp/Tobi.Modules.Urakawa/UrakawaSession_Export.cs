@@ -493,9 +493,8 @@ namespace Tobi.Plugin.Urakawa
                     }
 
 
-                    if (dlg.SelectedPath.Length > Settings.Default.FilePathMax)
+                    if (checkWarningFilePathLength(dlg.SelectedPath))
                     {
-                        warningFilePathLength(dlg.SelectedPath);
                         return;
                     }
 
