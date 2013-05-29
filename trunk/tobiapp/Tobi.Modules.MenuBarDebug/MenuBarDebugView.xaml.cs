@@ -19,7 +19,9 @@ namespace Tobi.Plugin.MenuBarDebug
             ILoggerFacade logger,
             IRegionManager regionManager)
         {
+#if DEBUG
             Debugger.Break();
+#endif
 
             PreferredPositionRegion.MARK_PREFERRED_POS = true;
 

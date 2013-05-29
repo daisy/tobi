@@ -20,8 +20,9 @@ namespace Tobi.Plugin.MenuBarDebug
             //MenuBarDebugView menuBarsView
             )
         {
+#if DEBUG
             Debugger.Break();
-
+#endif
             m_Logger = logger;
             m_RegionManager = regionManager;
 
