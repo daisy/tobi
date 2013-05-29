@@ -682,7 +682,7 @@ namespace Tobi.Plugin.Urakawa
                         }
                         else
                         {
-                            if (askUser("Create EPUB Tobi project?", outFile))
+                            if (askUser("Import EPUB to create Tobi project?", outFile))
                             {
                                 try
                                 {
@@ -696,6 +696,8 @@ namespace Tobi.Plugin.Urakawa
                             }
                             else
                             {
+                                checkEpub(outFile, null);
+
                                 m_ShellView.ExecuteShellProcess(outdir);
                             }
                         }
