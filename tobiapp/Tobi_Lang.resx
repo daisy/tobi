@@ -222,10 +222,16 @@
   <data name="WindowsTitleKey_UrakawaSessionIsNull" xml:space="preserve">
     <value>Tobi {{{{{{0}}}}}} - {0}</value>
   </data>
-  <data name="CmdOpenUserManual_LongDesc" xml:space="preserve">
-    <value>Open documentation in web browser</value>
+  <data name="CmdDocOnline_LongDesc" xml:space="preserve">
+    <value>View documentation in web browser</value>
   </data>
-  <data name="CmdOpenUserManual_ShortDesc" xml:space="preserve">
-    <value>_Documentation (online)</value>
+  <data name="CmdDocOnline_ShortDesc" xml:space="preserve">
+    <value>Web / _online documentation</value>
+  </data>
+  <data name="CmdDocLocal_LongDesc" xml:space="preserve">
+    <value>Open built-in documentation</value>
+  </data>
+  <data name="CmdDocLocal_ShortDesc" xml:space="preserve">
+    <value>_Local documentation</value>
   </data>
 </root>

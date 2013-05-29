@@ -48,21 +48,22 @@ namespace Tobi
         public RichDelegateCommand OpenTobiSettingsFolderCommand { get; private set; }
         public RichDelegateCommand OpenTobiIsolatedStorageCommand { get; private set; }
 
-        public RichDelegateCommand OpenUserManualCommand { get; private set; }
+        public RichDelegateCommand OpenOnlineDocCommand { get; private set; }
+        public RichDelegateCommand OpenLocalDocCommand { get; private set; }
         //public RichDelegateCommand OpenImageDescriptionsManualCommand { get; private set; }
 
         private void initCommands()
         {
             m_Logger.Log(@"ShellView.initCommands", Category.Debug, Priority.Medium);
 
-            OpenUserManualCommand = new RichDelegateCommand(
-                Tobi_Lang.CmdOpenUserManual_ShortDesc,
-                Tobi_Lang.CmdOpenUserManual_LongDesc,
+            OpenOnlineDocCommand = new RichDelegateCommand(
+                Tobi_Lang.CmdDocOnline_ShortDesc,
+                Tobi_Lang.CmdDocOnline_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                null,
                 () =>
                 {
-                    m_Logger.Log(@"ShellView.OpenUserManualCommand", Category.Debug, Priority.Medium);
+                    m_Logger.Log(@"ShellView.OpenOnlineDocCommand", Category.Debug, Priority.Medium);
 
                     ExecuteShellProcess("http://www.daisy.org/tobi/doc");
                 },
@@ -71,7 +72,29 @@ namespace Tobi
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Help)
                 );
 
-            RegisterRichCommand(OpenUserManualCommand);
+            RegisterRichCommand(OpenOnlineDocCommand);
+
+
+            OpenLocalDocCommand = new RichDelegateCommand(
+                Tobi_Lang.CmdDocLocal_ShortDesc,
+                Tobi_Lang.CmdDocLocal_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+               null,
+                () =>
+                {
+                    m_Logger.Log(@"ShellView.OpenLocalDocCommand", Category.Debug, Priority.Medium);
+
+                    string appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    string chmPath = Path.Combine(appFolder, "TobiHelp.chm");
+
+                    ExecuteShellProcess(chmPath);
+                },
+                 () => true,
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Help)
+                );
+
+            RegisterRichCommand(OpenLocalDocCommand);
 
             //OpenImageDescriptionsManualCommand = new RichDelegateCommand(
             //    Tobi_Lang.CmdOpenImageDescriptionsManual_ShortDesc,
@@ -195,7 +218,7 @@ namespace Tobi
                                                            new KeyboardShortcuts(this),
                                                            PopupModalWindow.DialogButtonsSet.Ok,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           true, 500, 600, null, 0,null);
+                                                           true, 500, 600, null, 0, null);
 
                     windowPopup.ShowFloating(null);
                 },
