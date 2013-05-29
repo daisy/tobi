@@ -224,6 +224,9 @@
       <SubType>
       </SubType>
     </None>
+    <Content Include="TobiHelp.chm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Tobi_TemporaryKey.pfx" />
     <AppDesigner Include="Properties\" />
     <Content Include="daisy.svg">
