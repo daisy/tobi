@@ -391,12 +391,12 @@ namespace Tobi.Plugin.Urakawa
                         return;
                     }
 
-                    string nowDateTimeStr = DateTime.UtcNow.ToString("yyyy-MM-dd_HH-mm-ss");
+                    string nowDateTimeStr = DateTime.UtcNow.ToString("MMdd_HHmmss");
                     nowDateTimeStr = FileDataProvider.EliminateForbiddenFileNameCharacters(nowDateTimeStr).Replace(' ', '_');
 
                     string filename = Path.GetFileName(dlg.FileNames[0]);
                     string outdir = Path.GetDirectoryName(dlg.FileNames[0]);
-                    outdir = Path.Combine(outdir, filename.Replace('.', '_') + "_Pipe" + nowDateTimeStr);
+                    outdir = Path.Combine(outdir, filename.Replace('.', '_') + "_" + nowDateTimeStr);
 
                     if (Directory.Exists(outdir))
                     {
