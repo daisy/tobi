@@ -961,6 +961,8 @@ namespace Tobi.Plugin.Urakawa
             //{
             //    return;
             //}
+
+            m_ShellView.ExecuteShellProcess(Path.GetDirectoryName(filePath));
         }
     }
 }
