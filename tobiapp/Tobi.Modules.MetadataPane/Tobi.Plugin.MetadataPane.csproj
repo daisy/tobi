@@ -37,7 +37,8 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
     <DocumentationFile>bin\Debug\Tobi.Plugin.MetadataPane.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -46,7 +47,8 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel><NoWarn>1591</NoWarn>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore">
@@ -165,6 +167,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Tobi.Plugin.MetadataPane.Lang.fr.resx" />
     <EmbeddedResource Include="Tobi.Plugin.MetadataPane.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.MetadataPane.Lang.Designer.cs</LastGenOutput>

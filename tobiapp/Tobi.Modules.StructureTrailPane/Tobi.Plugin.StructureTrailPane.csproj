@@ -164,6 +164,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Tobi.Plugin.StructureTrailPane.Lang.fr.resx" />
     <EmbeddedResource Include="Tobi.Plugin.StructureTrailPane.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.StructureTrailPane.Lang.Designer.cs</LastGenOutput>
