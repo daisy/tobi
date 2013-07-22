@@ -117,109 +117,86 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExitConfirm" xml:space="preserve">
-    <value>Etes-vous sûr de vouloir quitter Tobi ?</value>
+  <data name="MetadataPanePlugin_Description" xml:space="preserve">
+    <value>L'éditeur des métadonnées de publication</value>
   </data>
-  <data name="CmdHelp_ShortDesc" xml:space="preserve">
-    <value>_Aide</value>
+  <data name="MetadataPanePlugin_Name" xml:space="preserve">
+    <value>Panneau d'édition des métadonnées</value>
   </data>
-  <data name="CmdHelp_LongDesc" xml:space="preserve">
-    <value>Obtenir de l'aide</value>
+  <data name="Content" xml:space="preserve">
+    <value>Contenu</value>
   </data>
-  <data name="LangStringKey1" xml:space="preserve">
-    <value>Bonjour</value>
+  <data name="Description" xml:space="preserve">
+    <value>Description :</value>
   </data>
-  <data name="CmdManageShortcuts_ShortDesc" xml:space="preserve">
-    <value>_Raccourcis clavier (DEBUG)</value>
+  <data name="Name" xml:space="preserve">
+    <value>Nom</value>
   </data>
-  <data name="CmdManageShortcuts_LongDesc" xml:space="preserve">
-    <value>Afficher les raccourcis clavier (MODE DEBUG UNIQUEMENT)</value>
+  <data name="Metadata_Occurence" xml:space="preserve">
+    <value>Occurrence :</value>
   </data>
-  <data name="CmdMenuExit_ShortDesc" xml:space="preserve">
-    <value>_Quitter</value>
+  <data name="TransactionMetadataEdit_ShortDesc" xml:space="preserve">
+    <value>Éditeur de métadonnées</value>
   </data>
-  <data name="CmdMenuExit_LongDesc" xml:space="preserve">
-    <value>Fermez l'application</value>
+  <data name="TransactionMetadataEdit_LongDesc" xml:space="preserve">
+    <value>Modifications des métadonnées</value>
   </data>
-  <data name="CmdOpenTobiFolder_ShortDesc" xml:space="preserve">
-    <value>_Exécutable Tobi et journal</value>
+  <data name="Optional" xml:space="preserve">
+    <value>Optionnel</value>
   </data>
-  <data name="CmdOpenTobiFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement de l'exécutable (et où se trouve Tobi.log).</value>
+  <data name="PrimaryIdentifier" xml:space="preserve">
+    <value>ID</value>
   </data>
-  <data name="CmdOpenTobiIsolatedStorage_ShortDesc" xml:space="preserve">
-    <value>Espace de _stockage personnel</value>
+  <data name="Recommended" xml:space="preserve">
+    <value>Recommandé</value>
   </data>
-  <data name="CmdOpenTobiIsolatedStorage_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement des fichiers systèmes de Tobi.</value>
+  <data name="Required" xml:space="preserve">
+    <value>Requis</value>
   </data>
-  <data name="CmdOpenTobiSettingsFolder_ShortDesc" xml:space="preserve">
-    <value>_Paramètres utilisateur</value>
+  <data name="CmdShowMetadata_ShortDesc" xml:space="preserve">
+    <value>Modifier les _métadonnées...</value>
   </data>
-  <data name="CmdOpenTobiSettingsFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement des paramètres utilisateur de Tobi.</value>
+  <data name="CmdShowMetadata_LongDesc" xml:space="preserve">
+    <value>Ouvrir l'éditeur de métadonnées</value>
   </data>
-  <data name="CmdUIDecreaseMagnification_ShortDesc" xml:space="preserve">
-    <value>_Diminuer l'agrandissement</value>
+  <data name="SummaryOfErrors" xml:space="preserve">
+    <value>Résumé des erreurs</value>
   </data>
-  <data name="CmdUIDecreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Diminuer le niveau de zoom de l'IU</value>
+  <data name="Add_new" xml:space="preserve">
+    <value>Ajouter un nouvel élément</value>
   </data>
-  <data name="CmdUIIncreaseMagnification_ShortDesc" xml:space="preserve">
-    <value>_Augmenter l'agrandissement</value>
+  <data name="Delete" xml:space="preserve">
+    <value>Supprimer</value>
   </data>
-  <data name="CmdUIIncreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Augmenter le niveau de zoom de l'IU</value>
+  <data name="Delete_Tooltip" xml:space="preserve">
+    <value>Supprimer cet élément</value>
   </data>
-  <data name="CmdUIResetMagnification_ShortDesc" xml:space="preserve">
-    <value>_Réinitialiser l'agrandissement</value>
+  <data name="Delete_Tooltip2" xml:space="preserve">
+    <value>Impossible de supprimer cet élément requis (sauf si doublons)</value>
   </data>
-  <data name="CmdUIResetMagnification_LongDesc" xml:space="preserve">
-    <value>Réinitialiser le niveau de zoom de l'IU</value>
+  <data name="Errors" xml:space="preserve">
+    <value>Erreurs</value>
   </data>
-  <data name="Menu_Find" xml:space="preserve">
-    <value>_Rechercher</value>
+  <data name="Synonyms" xml:space="preserve">
+    <value>Synonymes: {0}</value>
+    <comment>{0} = a comma-separated list of synonyms</comment>
   </data>
-  <data name="NoDocument" xml:space="preserve">
-    <value>Aucun document</value>
+  <data name="NameAndDescription" xml:space="preserve">
+    <value>{0}: {1}</value>
+    <comment>{0} = Name  {1} = Description</comment>
   </data>
-  <data name="PleaseWait" xml:space="preserve">
-    <value>Veuillez patienter...</value>
+  <data name="CompleteSummary" xml:space="preserve">
+    <value>{0} = {1}.  {2} {3}.  {4}. Définition de {0}: {5}. {6}. {7}.</value>
+    <comment>{0} = name, {1} = content, {2} = errors, {3} = is primary identifier or not, {4} = can delete or not, {5} = definition description, {6} = synonyms, {7} = occurrence</comment>
   </data>
-  <data name="CancellingTask" xml:space="preserve">
-    <value>Annulation en cours...</value>
+  <data name="ErrorItem" xml:space="preserve">
+    <value>Erreur : {0}</value>
+    <comment>{0} = error description</comment>
   </data>
-  <data name="IconsDebug" xml:space="preserve">
-    <value>Aperçu des icônes (vue de débogage)</value>
+  <data name="IsPrimaryIdentifier" xml:space="preserve">
+    <value>Est l'identifiant primaire.</value>
   </data>
-  <data name="CmdFocus_ShortDesc_Find" xml:space="preserve">
-    <value>_Rechercher...</value>
-  </data>
-  <data name="Cmd_ShortDesc_FindNext" xml:space="preserve">
-    <value>Recherche _suivante</value>
-  </data>
-  <data name="Cmd_ShortDesc_FindPrevious" xml:space="preserve">
-    <value>Recherche _précédente</value>
-  </data>
-  <data name="CmdFocus_LongDesc_Find" xml:space="preserve">
-    <value>Entrez le texte à rechercher...</value>
-  </data>
-  <data name="Cmd_LongDesc_FindNext" xml:space="preserve">
-    <value>Recherche de l'élément suivant</value>
-  </data>
-  <data name="Cmd_LongDesc_FindPrevious" xml:space="preserve">
-    <value>Recherche de l'élément précédent</value>
-  </data>
-  <data name="WindowsTitleKey_UrakawaSessionIsNotNull" xml:space="preserve">
-    <value>Tobi {{{0}}} {1} {2}</value>
-  </data>
-  <data name="WindowsTitleKey_UrakawaSessionIsNull" xml:space="preserve">
-    <value>Tobi {{{{{{0}}}}}} - {0}</value>
-  </data>
-  <data name="CmdOpenUserManual_LongDesc" xml:space="preserve">
-    <value>Ouvrir la documentation dans le navigateur Web</value>
-  </data>
-  <data name="CmdOpenUserManual_ShortDesc" xml:space="preserve">
-    <value>_Documentation (en ligne)</value>
+  <data name="NoErrors" xml:space="preserve">
+    <value>Aucune erreur.</value>
   </data>
 </root>

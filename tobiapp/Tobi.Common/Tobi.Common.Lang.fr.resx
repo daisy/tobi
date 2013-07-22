@@ -117,109 +117,115 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExitConfirm" xml:space="preserve">
-    <value>Etes-vous sûr de vouloir quitter Tobi ?</value>
+  <data name="CheckUnCheckAll" xml:space="preserve">
+    <value>Cocher / décocher tout</value>
   </data>
-  <data name="CmdHelp_ShortDesc" xml:space="preserve">
-    <value>_Aide</value>
+  <data name="ToggleVisibility" xml:space="preserve">
+    <value>Afficher/masquer</value>
   </data>
-  <data name="CmdHelp_LongDesc" xml:space="preserve">
-    <value>Obtenir de l'aide</value>
+  <data name="Apply" xml:space="preserve">
+    <value>_Appliquer</value>
   </data>
-  <data name="LangStringKey1" xml:space="preserve">
-    <value>Bonjour</value>
+  <data name="UnhandledException" xml:space="preserve">
+    <value>Une erreur s'est produite.{0}Le message d'erreur est affiché ci-dessous.{0}Vous pouvez également ouvrir le fichier '{1}' situé ici: [ {2} ].</value>
   </data>
-  <data name="CmdManageShortcuts_ShortDesc" xml:space="preserve">
-    <value>_Raccourcis clavier (DEBUG)</value>
+  <data name="SearchKeywords" xml:space="preserve">
+    <value>rechercher des mots-clés</value>
   </data>
-  <data name="CmdManageShortcuts_LongDesc" xml:space="preserve">
-    <value>Afficher les raccourcis clavier (MODE DEBUG UNIQUEMENT)</value>
-  </data>
-  <data name="CmdMenuExit_ShortDesc" xml:space="preserve">
-    <value>_Quitter</value>
-  </data>
-  <data name="CmdMenuExit_LongDesc" xml:space="preserve">
-    <value>Fermez l'application</value>
-  </data>
-  <data name="CmdOpenTobiFolder_ShortDesc" xml:space="preserve">
-    <value>_Exécutable Tobi et journal</value>
-  </data>
-  <data name="CmdOpenTobiFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement de l'exécutable (et où se trouve Tobi.log).</value>
-  </data>
-  <data name="CmdOpenTobiIsolatedStorage_ShortDesc" xml:space="preserve">
-    <value>Espace de _stockage personnel</value>
-  </data>
-  <data name="CmdOpenTobiIsolatedStorage_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement des fichiers systèmes de Tobi.</value>
-  </data>
-  <data name="CmdOpenTobiSettingsFolder_ShortDesc" xml:space="preserve">
-    <value>_Paramètres utilisateur</value>
-  </data>
-  <data name="CmdOpenTobiSettingsFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement des paramètres utilisateur de Tobi.</value>
-  </data>
-  <data name="CmdUIDecreaseMagnification_ShortDesc" xml:space="preserve">
-    <value>_Diminuer l'agrandissement</value>
-  </data>
-  <data name="CmdUIDecreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Diminuer le niveau de zoom de l'IU</value>
-  </data>
-  <data name="CmdUIIncreaseMagnification_ShortDesc" xml:space="preserve">
-    <value>_Augmenter l'agrandissement</value>
-  </data>
-  <data name="CmdUIIncreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Augmenter le niveau de zoom de l'IU</value>
-  </data>
-  <data name="CmdUIResetMagnification_ShortDesc" xml:space="preserve">
-    <value>_Réinitialiser l'agrandissement</value>
-  </data>
-  <data name="CmdUIResetMagnification_LongDesc" xml:space="preserve">
-    <value>Réinitialiser le niveau de zoom de l'IU</value>
+  <data name="Find" xml:space="preserve">
+    <value>Rechercher : </value>
   </data>
   <data name="Menu_Find" xml:space="preserve">
-    <value>_Rechercher</value>
+    <value>Re_chercher</value>
   </data>
-  <data name="NoDocument" xml:space="preserve">
-    <value>Aucun document</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>_Annuler</value>
   </data>
-  <data name="PleaseWait" xml:space="preserve">
-    <value>Veuillez patienter...</value>
+  <data name="CloseDialog" xml:space="preserve">
+    <value>_Fermer</value>
   </data>
-  <data name="CancellingTask" xml:space="preserve">
-    <value>Annulation en cours...</value>
+  <data name="CmdDetailsCollapse_ShortDesc" xml:space="preserve">
+    <value>Cac_her les détails</value>
   </data>
-  <data name="IconsDebug" xml:space="preserve">
-    <value>Aperçu des icônes (vue de débogage)</value>
+  <data name="CmdDetailsCollapse_LongDesc" xml:space="preserve">
+    <value>Cacher le détail des informations</value>
   </data>
-  <data name="CmdFocus_ShortDesc_Find" xml:space="preserve">
-    <value>_Rechercher...</value>
+  <data name="CmdDetailsExpand_ShortDesc" xml:space="preserve">
+    <value>_Afficher les détails</value>
   </data>
-  <data name="Cmd_ShortDesc_FindNext" xml:space="preserve">
-    <value>Recherche _suivante</value>
+  <data name="CmdDetailsExpand_LongDesc" xml:space="preserve">
+    <value>Afficher le détail des informations</value>
   </data>
-  <data name="Cmd_ShortDesc_FindPrevious" xml:space="preserve">
-    <value>Recherche _précédente</value>
+  <data name="Menu_Audio" xml:space="preserve">
+    <value>_Audio</value>
   </data>
-  <data name="CmdFocus_LongDesc_Find" xml:space="preserve">
-    <value>Entrez le texte à rechercher...</value>
+  <data name="Menu_AudioPlayback" xml:space="preserve">
+    <value>_Lecture</value>
   </data>
-  <data name="Cmd_LongDesc_FindNext" xml:space="preserve">
-    <value>Recherche de l'élément suivant</value>
+  <data name="Menu_AudioRecording" xml:space="preserve">
+    <value>_Enregistrement</value>
   </data>
-  <data name="Cmd_LongDesc_FindPrevious" xml:space="preserve">
-    <value>Recherche de l'élément précédent</value>
+  <data name="NotFound" xml:space="preserve">
+    <value>Non trouvé</value>
   </data>
-  <data name="WindowsTitleKey_UrakawaSessionIsNotNull" xml:space="preserve">
-    <value>Tobi {{{0}}} {1} {2}</value>
+  <data name="Menu_AudioSelection" xml:space="preserve">
+    <value>_Sélection</value>
   </data>
-  <data name="WindowsTitleKey_UrakawaSessionIsNull" xml:space="preserve">
-    <value>Tobi {{{{{{0}}}}}} - {0}</value>
+  <data name="Menu_AudioTransport" xml:space="preserve">
+    <value>_Navigation</value>
   </data>
-  <data name="CmdOpenUserManual_LongDesc" xml:space="preserve">
-    <value>Ouvrir la documentation dans le navigateur Web</value>
+  <data name="Menu_AudioZoom" xml:space="preserve">
+    <value>_Zoom</value>
   </data>
-  <data name="CmdOpenUserManual_ShortDesc" xml:space="preserve">
-    <value>_Documentation (en ligne)</value>
+  <data name="Menu_Edit" xml:space="preserve">
+    <value>_Edition</value>
+  </data>
+  <data name="Menu_File" xml:space="preserve">
+    <value>_Fichier</value>
+  </data>
+  <data name="Menu_Focus" xml:space="preserve">
+    <value>_Focus</value>
+  </data>
+  <data name="Menu_Magnification" xml:space="preserve">
+    <value>A_grandissement</value>
+  </data>
+  <data name="Menu_Navigation" xml:space="preserve">
+    <value>_Navigation</value>
+  </data>
+  <data name="Menu_Text" xml:space="preserve">
+    <value>_Texte</value>
+  </data>
+  <data name="Menu_BrowseFolder" xml:space="preserve">
+    <value>_Parcourir les dossiers</value>
+  </data>
+  <data name="Menu_Tools" xml:space="preserve">
+    <value>_Outils</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>_Affichage</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>_Non</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>_Ok</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Erreur inattendue !</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>_Oui</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>_Aide</value>
+  </data>
+  <data name="TextSyncGranularity" xml:space="preserve">
+    <value>Ajustement automatique du détail</value>
+  </data>
+  <data name="CmdToggleTextSyncGranularity_ShortDesc" xml:space="preserve">
+    <value>Sync du detail de texte on/off</value>
+  </data>
+  <data name="CmdToggleTextSyncGranularity_LongDesc" xml:space="preserve">
+    <value>Activer / désactiver la synchronisation du détail de texte (quand désactiver, le détail le plus fin est utiliser, sinon le détail est automatiquement ajusté en fonction du contexte)</value>
   </data>
 </root>

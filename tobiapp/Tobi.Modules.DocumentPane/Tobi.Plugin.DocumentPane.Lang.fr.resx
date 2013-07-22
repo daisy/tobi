@@ -112,114 +112,93 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExitConfirm" xml:space="preserve">
-    <value>Etes-vous sûr de vouloir quitter Tobi ?</value>
+  <data name="CmdSwitchNarratorView_ShortDesc" xml:space="preserve">
+    <value>Fenêtre du _narrateur</value>
   </data>
-  <data name="CmdHelp_ShortDesc" xml:space="preserve">
-    <value>_Aide</value>
+  <data name="CmdSwitchNarratorView_LongDesc" xml:space="preserve">
+    <value>Ouvrir / fermer la fenêtre du narrateur audio</value>
   </data>
-  <data name="CmdHelp_LongDesc" xml:space="preserve">
-    <value>Obtenir de l'aide</value>
+  <data name="CmdTextOnlyViewToggle_ShortDesc" xml:space="preserve">
+    <value>Une seule _phrase de texte</value>
   </data>
-  <data name="LangStringKey1" xml:space="preserve">
-    <value>Bonjour</value>
+  <data name="CmdTextOnlyViewToggle_LongDesc" xml:space="preserve">
+    <value>Mode de visualisation du texte on/off</value>
   </data>
-  <data name="CmdManageShortcuts_ShortDesc" xml:space="preserve">
-    <value>_Raccourcis clavier (DEBUG)</value>
+  <data name="CmdStructureDown_ShortDesc" xml:space="preserve">
+    <value>_Réduire la sélection</value>
   </data>
-  <data name="CmdManageShortcuts_LongDesc" xml:space="preserve">
-    <value>Afficher les raccourcis clavier (MODE DEBUG UNIQUEMENT)</value>
+  <data name="CmdStructureDown_LongDesc" xml:space="preserve">
+    <value>Réduire la sélection un niveau plus bas dans la structure du document</value>
   </data>
-  <data name="CmdMenuExit_ShortDesc" xml:space="preserve">
-    <value>_Quitter</value>
+  <data name="CmdStructureUp_ShortDesc" xml:space="preserve">
+    <value>D_évelopper la sélection</value>
   </data>
-  <data name="CmdMenuExit_LongDesc" xml:space="preserve">
-    <value>Fermez l'application</value>
+  <data name="CmdStructureUp_LongDesc" xml:space="preserve">
+    <value>Augmenter la sélection un niveau plus haut dans la structure du document</value>
   </data>
-  <data name="CmdOpenTobiFolder_ShortDesc" xml:space="preserve">
-    <value>_Exécutable Tobi et journal</value>
+  <data name="NarratorView" xml:space="preserve">
+    <value>Vue du Narrateur</value>
   </data>
-  <data name="CmdOpenTobiFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement de l'exécutable (et où se trouve Tobi.log).</value>
+  <data name="TextOnly" xml:space="preserve">
+    <value>Une seule phrase</value>
   </data>
-  <data name="CmdOpenTobiIsolatedStorage_ShortDesc" xml:space="preserve">
-    <value>Espace de _stockage personnel</value>
+  <data name="CmdEditText_ShortDesc" xml:space="preserve">
+    <value>Modifier le _texte</value>
   </data>
-  <data name="CmdOpenTobiIsolatedStorage_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement des fichiers systèmes de Tobi.</value>
+  <data name="CmdEditText_LongDesc" xml:space="preserve">
+    <value>Modifier le texte de la phrase sélectionnée dans le document</value>
   </data>
-  <data name="CmdOpenTobiSettingsFolder_ShortDesc" xml:space="preserve">
-    <value>_Paramètres utilisateur</value>
+  <data name="CmdFollowLink_ShortDesc" xml:space="preserve">
+    <value>Suivre le _lien</value>
   </data>
-  <data name="CmdOpenTobiSettingsFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement des paramètres utilisateur de Tobi.</value>
+  <data name="CmdFollowLink_LongDesc" xml:space="preserve">
+    <value>Suivre le lien hypertexte dans le document</value>
   </data>
-  <data name="CmdUIDecreaseMagnification_ShortDesc" xml:space="preserve">
-    <value>_Diminuer l'agrandissement</value>
+  <data name="CmdUnfollowLink_ShortDesc" xml:space="preserve">
+    <value>_Retour au lien</value>
   </data>
-  <data name="CmdUIDecreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Diminuer le niveau de zoom de l'IU</value>
+  <data name="CmdUnfollowLink_LongDesc" xml:space="preserve">
+    <value>Revenir au lien hypertexte qui pointe vers l'emplacement actuel dans le document</value>
   </data>
-  <data name="CmdUIIncreaseMagnification_ShortDesc" xml:space="preserve">
-    <value>_Augmenter l'agrandissement</value>
+  <data name="DocumentPanePlugin_Name" xml:space="preserve">
+    <value>Volet document.</value>
   </data>
-  <data name="CmdUIIncreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Augmenter le niveau de zoom de l'IU</value>
+  <data name="CmdEventSwitchNext_ShortDesc" xml:space="preserve">
+    <value>Sélectionner la phrase _suivante</value>
   </data>
-  <data name="CmdUIResetMagnification_ShortDesc" xml:space="preserve">
-    <value>_Réinitialiser l'agrandissement</value>
+  <data name="CmdEventSwitchNext_LongDesc" xml:space="preserve">
+    <value>Sélectionner le morceau de texte suivant dans le document</value>
   </data>
-  <data name="CmdUIResetMagnification_LongDesc" xml:space="preserve">
-    <value>Réinitialiser le niveau de zoom de l'IU</value>
+  <data name="CmdEventSwitchPrevious_ShortDesc" xml:space="preserve">
+    <value>Sélectionner la phrase _précédente</value>
   </data>
-  <data name="Menu_Find" xml:space="preserve">
-    <value>_Rechercher</value>
+  <data name="CmdEventSwitchPrevious_LongDesc" xml:space="preserve">
+    <value>Sélectionner le morceau de texte précédent dans le document</value>
   </data>
-  <data name="NoDocument" xml:space="preserve">
-    <value>Aucun document</value>
+  <data name="Feature_Not_Available" xml:space="preserve">
+    <value>Cette fonction n'est pas disponible.</value>
   </data>
-  <data name="PleaseWait" xml:space="preserve">
-    <value>Veuillez patienter...</value>
+  <data name="LOG_FILE_PATH" xml:space="preserve">
+    <value>[0]</value>
   </data>
-  <data name="CancellingTask" xml:space="preserve">
-    <value>Annulation en cours...</value>
+  <data name="No_Document" xml:space="preserve">
+    <value>Aucun document.</value>
   </data>
-  <data name="IconsDebug" xml:space="preserve">
-    <value>Aperçu des icônes (vue de débogage)</value>
+  <data name="DocumentPanePlugin_Description" xml:space="preserve">
+    <value>La visionneuse de document</value>
   </data>
-  <data name="CmdFocus_ShortDesc_Find" xml:space="preserve">
-    <value>_Rechercher...</value>
+  <data name="CreatingFlowDocument" xml:space="preserve">
+    <value>Interprétation du document...</value>
   </data>
-  <data name="Cmd_ShortDesc_FindNext" xml:space="preserve">
-    <value>Recherche _suivante</value>
+  <data name="ConvertingXukToFlowDocument" xml:space="preserve">
+    <value>Conversion du balisage XUK en cours...</value>
   </data>
-  <data name="Cmd_ShortDesc_FindPrevious" xml:space="preserve">
-    <value>Recherche _précédente</value>
-  </data>
-  <data name="CmdFocus_LongDesc_Find" xml:space="preserve">
-    <value>Entrez le texte à rechercher...</value>
-  </data>
-  <data name="Cmd_LongDesc_FindNext" xml:space="preserve">
-    <value>Recherche de l'élément suivant</value>
-  </data>
-  <data name="Cmd_LongDesc_FindPrevious" xml:space="preserve">
-    <value>Recherche de l'élément précédent</value>
-  </data>
-  <data name="WindowsTitleKey_UrakawaSessionIsNotNull" xml:space="preserve">
-    <value>Tobi {{{0}}} {1} {2}</value>
-  </data>
-  <data name="WindowsTitleKey_UrakawaSessionIsNull" xml:space="preserve">
-    <value>Tobi {{{{{{0}}}}}} - {0}</value>
-  </data>
-  <data name="CmdOpenUserManual_LongDesc" xml:space="preserve">
-    <value>Ouvrir la documentation dans le navigateur Web</value>
-  </data>
-  <data name="CmdOpenUserManual_ShortDesc" xml:space="preserve">
-    <value>_Documentation (en ligne)</value>
+  <data name="CmdTxtFocus_ShortDesc" xml:space="preserve">
+    <value>Barre d'outils _document</value>
   </data>
 </root>
