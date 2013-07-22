@@ -148,6 +148,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Tobi.Plugin.ToolBars.Lang.fr.resx" />
     <EmbeddedResource Include="Tobi.Plugin.ToolBars.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.ToolBars.Lang.Designer.cs</LastGenOutput>

@@ -117,109 +117,76 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExitConfirm" xml:space="preserve">
-    <value>Etes-vous sûr de vouloir quitter Tobi ?</value>
+  <data name="ResetItems_Short" xml:space="preserve">
+    <value>RAZ des sélections</value>
   </data>
-  <data name="CmdHelp_ShortDesc" xml:space="preserve">
-    <value>_Aide</value>
+  <data name="ResetItems_Long" xml:space="preserve">
+    <value>Restaurer la valeur par défaut des éléments sélectionnés</value>
   </data>
-  <data name="CmdHelp_LongDesc" xml:space="preserve">
-    <value>Obtenir de l'aide</value>
+  <data name="Cmd_ApplicationPref" xml:space="preserve">
+    <value>_Préférences</value>
   </data>
-  <data name="LangStringKey1" xml:space="preserve">
-    <value>Bonjour</value>
+  <data name="Cmd_DisplayEditor" xml:space="preserve">
+    <value>Ouvrir la boîte de dialogue des paramètres d'application</value>
   </data>
-  <data name="CmdManageShortcuts_ShortDesc" xml:space="preserve">
-    <value>_Raccourcis clavier (DEBUG)</value>
+  <data name="Find" xml:space="preserve">
+    <value>Rechercher :</value>
   </data>
-  <data name="CmdManageShortcuts_LongDesc" xml:space="preserve">
-    <value>Afficher les raccourcis clavier (MODE DEBUG UNIQUEMENT)</value>
+  <data name="InvalidKeyboardShortcut" xml:space="preserve">
+    <value>Raccourci clavier non valide.</value>
   </data>
-  <data name="CmdMenuExit_ShortDesc" xml:space="preserve">
-    <value>_Quitter</value>
+  <data name="InvalidEnumValue" xml:space="preserve">
+    <value>Valeur d'énumération non valide, devrait être : ({0})</value>
   </data>
-  <data name="CmdMenuExit_LongDesc" xml:space="preserve">
-    <value>Fermez l'application</value>
+  <data name="InvalidTextAlignment" xml:space="preserve">
+    <value>Alignement du texte non valide (devrait être : Centrer, Gauche, Droit, Justifier).</value>
   </data>
-  <data name="CmdOpenTobiFolder_ShortDesc" xml:space="preserve">
-    <value>_Exécutable Tobi et journal</value>
+  <data name="InvalidNumericValue" xml:space="preserve">
+    <value>Valeur numérique non valide.</value>
   </data>
-  <data name="CmdOpenTobiFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement de l'exécutable (et où se trouve Tobi.log).</value>
+  <data name="NumericValueOutOfRange" xml:space="preserve">
+    <value>Valeur numérique hors champ [0, 999999999].</value>
   </data>
-  <data name="CmdOpenTobiIsolatedStorage_ShortDesc" xml:space="preserve">
-    <value>Espace de _stockage personnel</value>
+  <data name="NumericValueOutOfRange9999" xml:space="preserve">
+    <value>Valeur numérique hors champ [-999999999, 999999999].</value>
   </data>
-  <data name="CmdOpenTobiIsolatedStorage_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement des fichiers systèmes de Tobi.</value>
+  <data name="Preferences" xml:space="preserve">
+    <value>_Préférences</value>
   </data>
-  <data name="CmdOpenTobiSettingsFolder_ShortDesc" xml:space="preserve">
-    <value>_Paramètres utilisateur</value>
+  <data name="Preferences_" xml:space="preserve">
+    <value>Options configurables de l'application</value>
   </data>
-  <data name="CmdOpenTobiSettingsFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement des paramètres utilisateur de Tobi.</value>
+  <data name="SettingsPlugin_Description" xml:space="preserve">
+    <value>Gestionnaire et éditeur de l'interface utilisateur pour les préférences de l'application.</value>
   </data>
-  <data name="CmdUIDecreaseMagnification_ShortDesc" xml:space="preserve">
-    <value>_Diminuer l'agrandissement</value>
+  <data name="SettingsPlugin_Name" xml:space="preserve">
+    <value>Préférences de l'application.</value>
   </data>
-  <data name="CmdUIDecreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Diminuer le niveau de zoom de l'IU</value>
+  <data name="Settings_OriginalValue" xml:space="preserve">
+    <value>Original: {0}</value>
   </data>
-  <data name="CmdUIIncreaseMagnification_ShortDesc" xml:space="preserve">
-    <value>_Augmenter l'agrandissement</value>
+  <data name="ShortcutAlreadyUsed" xml:space="preserve">
+    <value>Raccourci déjà utilisé par : {0}</value>
   </data>
-  <data name="CmdUIIncreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Augmenter le niveau de zoom de l'IU</value>
+  <data name="StringCannotBeEmpty" xml:space="preserve">
+    <value>La chaîne ne peut pas être vide.</value>
   </data>
-  <data name="CmdUIResetMagnification_ShortDesc" xml:space="preserve">
-    <value>_Réinitialiser l'agrandissement</value>
+  <data name="StringCannotJustBeSeparators" xml:space="preserve">
+    <value>La chaîne ne peut pas être simplement constituée de séparateurs (par exemple des espaces).</value>
   </data>
-  <data name="CmdUIResetMagnification_LongDesc" xml:space="preserve">
-    <value>Réinitialiser le niveau de zoom de l'IU</value>
+  <data name="ValueNotEmpty" xml:space="preserve">
+    <value>La valeur ne peut être vide.</value>
   </data>
-  <data name="Menu_Find" xml:space="preserve">
-    <value>_Rechercher</value>
+  <data name="Default" xml:space="preserve">
+    <value>Défaut</value>
   </data>
-  <data name="NoDocument" xml:space="preserve">
-    <value>Aucun document</value>
+  <data name="Name" xml:space="preserve">
+    <value>Nom</value>
   </data>
-  <data name="PleaseWait" xml:space="preserve">
-    <value>Veuillez patienter...</value>
+  <data name="Value" xml:space="preserve">
+    <value>Valeur</value>
   </data>
-  <data name="CancellingTask" xml:space="preserve">
-    <value>Annulation en cours...</value>
-  </data>
-  <data name="IconsDebug" xml:space="preserve">
-    <value>Aperçu des icônes (vue de débogage)</value>
-  </data>
-  <data name="CmdFocus_ShortDesc_Find" xml:space="preserve">
-    <value>_Rechercher...</value>
-  </data>
-  <data name="Cmd_ShortDesc_FindNext" xml:space="preserve">
-    <value>Recherche _suivante</value>
-  </data>
-  <data name="Cmd_ShortDesc_FindPrevious" xml:space="preserve">
-    <value>Recherche _précédente</value>
-  </data>
-  <data name="CmdFocus_LongDesc_Find" xml:space="preserve">
-    <value>Entrez le texte à rechercher...</value>
-  </data>
-  <data name="Cmd_LongDesc_FindNext" xml:space="preserve">
-    <value>Recherche de l'élément suivant</value>
-  </data>
-  <data name="Cmd_LongDesc_FindPrevious" xml:space="preserve">
-    <value>Recherche de l'élément précédent</value>
-  </data>
-  <data name="WindowsTitleKey_UrakawaSessionIsNotNull" xml:space="preserve">
-    <value>Tobi {{{0}}} {1} {2}</value>
-  </data>
-  <data name="WindowsTitleKey_UrakawaSessionIsNull" xml:space="preserve">
-    <value>Tobi {{{{{{0}}}}}} - {0}</value>
-  </data>
-  <data name="CmdOpenUserManual_LongDesc" xml:space="preserve">
-    <value>Ouvrir la documentation dans le navigateur Web</value>
-  </data>
-  <data name="CmdOpenUserManual_ShortDesc" xml:space="preserve">
-    <value>_Documentation (en ligne)</value>
+  <data name="Info" xml:space="preserve">
+    <value>Info</value>
   </data>
 </root>

@@ -117,109 +117,139 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExitConfirm" xml:space="preserve">
-    <value>Etes-vous sûr de vouloir quitter Tobi ?</value>
+  <data name="ClickToAddAndEdit" xml:space="preserve">
+    <value>Cliquez pour ajouter et modifier</value>
   </data>
-  <data name="CmdHelp_ShortDesc" xml:space="preserve">
-    <value>_Aide</value>
+  <data name="ClickToEdit" xml:space="preserve">
+    <value>Cliquez pour éditer les métadonnées</value>
   </data>
-  <data name="CmdHelp_LongDesc" xml:space="preserve">
-    <value>Obtenir de l'aide</value>
+  <data name="DateHint" xml:space="preserve">
+    <value>format en AAAA-MM-JJ, AAAA-MM, ou AAAA</value>
   </data>
-  <data name="LangStringKey1" xml:space="preserve">
-    <value>Bonjour</value>
+  <data name="DefinitionSummary" xml:space="preserve">
+    <value>{0}
+Doit être un(e) {1}
+Est {2}
+{3}</value>
+    <comment>{0} = definition, {1} = data type, {2} = occurrence, {3} = synonyms (if any)</comment>
   </data>
-  <data name="CmdManageShortcuts_ShortDesc" xml:space="preserve">
-    <value>_Raccourcis clavier (DEBUG)</value>
+  <data name="DefNameMustBeHint" xml:space="preserve">
+    <value>{0} doit être {1}.</value>
   </data>
-  <data name="CmdManageShortcuts_LongDesc" xml:space="preserve">
-    <value>Afficher les raccourcis clavier (MODE DEBUG UNIQUEMENT)</value>
+  <data name="DuplicateErrorCompleteSummary" xml:space="preserve">
+    <value>Erreur de métadonnées : doublons détectés
+Ce champ de métadonnée ne peut avoir plus d'une instance.
+{0}</value>
+    <comment>{0} = metadata definition</comment>
   </data>
-  <data name="CmdMenuExit_ShortDesc" xml:space="preserve">
-    <value>_Quitter</value>
+  <data name="DuplicateItemsDetected" xml:space="preserve">
+    <value>Erreur de métadonnée : doublons détectés</value>
   </data>
-  <data name="CmdMenuExit_LongDesc" xml:space="preserve">
-    <value>Fermez l'application</value>
+  <data name="DuplicateNotAllowed" xml:space="preserve">
+    <value>Dupliquer {0} n'est pas autorisé.</value>
   </data>
-  <data name="CmdOpenTobiFolder_ShortDesc" xml:space="preserve">
-    <value>_Exécutable Tobi et journal</value>
+  <data name="EntryNotFound" xml:space="preserve">
+    <value>Une entrée pour {0} n'a pas été trouvée.</value>
   </data>
-  <data name="CmdOpenTobiFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement de l'exécutable (et où se trouve Tobi.log).</value>
+  <data name="FormatError" xml:space="preserve">
+    <value>La valeur de l'émément n'est pas valide :
+{0} = {1}
+Conseil : {0} doit être {2}</value>
+    <comment>{0} = name, {1} = value, {2} = hint</comment>
   </data>
-  <data name="CmdOpenTobiIsolatedStorage_ShortDesc" xml:space="preserve">
-    <value>Espace de _stockage personnel</value>
+  <data name="FormatErrorCompleteSummary" xml:space="preserve">
+    <value>Erreur de métadonnée : formatage invalide
+La valeur de l'élément n'est pas valide.
+{0} = {1}
+Conseil : {0} doit être {2}
+{3}</value>
+    <comment>{0} = metadata name, {1} = metadata value, {2} = hint, {3} = metadata definition</comment>
   </data>
-  <data name="CmdOpenTobiIsolatedStorage_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement des fichiers systèmes de Tobi.</value>
+  <data name="InvalidFormatting" xml:space="preserve">
+    <value>Erreur de métadonnée : formatage invalide</value>
   </data>
-  <data name="CmdOpenTobiSettingsFolder_ShortDesc" xml:space="preserve">
-    <value>_Paramètres utilisateur</value>
+  <data name="InvalidValue" xml:space="preserve">
+    <value>La valeur de l'élément n'est pas valide :</value>
   </data>
-  <data name="CmdOpenTobiSettingsFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement des paramètres utilisateur de Tobi.</value>
+  <data name="MetadataDefinitionSummary" xml:space="preserve">
+    <value>Règles pour {0}
+      {1}
+      Doit être un(e) {2}
+      Est {3}
+      {4}</value>
+    <comment>{0} = metadata name, {1} = metadata description, {2} = data type, {3} = occurrence, {4} = is repeatable or not</comment>
   </data>
-  <data name="CmdUIDecreaseMagnification_ShortDesc" xml:space="preserve">
-    <value>_Diminuer l'agrandissement</value>
+  <data name="MetadataFormatError_Hint" xml:space="preserve">
+    <value>Conseil : {0} doit être {1}</value>
   </data>
-  <data name="CmdUIDecreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Diminuer le niveau de zoom de l'IU</value>
+  <data name="MetadataMayBeRepeated" xml:space="preserve">
+    <value>Peut être répété</value>
   </data>
-  <data name="CmdUIIncreaseMagnification_ShortDesc" xml:space="preserve">
-    <value>_Augmenter l'agrandissement</value>
+  <data name="MetadataMayNotBeRepeated" xml:space="preserve">
+    <value>Ne peut être répété</value>
   </data>
-  <data name="CmdUIIncreaseMagnification_LongDesc" xml:space="preserve">
-    <value>Augmenter le niveau de zoom de l'IU</value>
+  <data name="MetadataNameValue" xml:space="preserve">
+    <value>{0} = {1}</value>
+    <comment>{0} = name, {1} = value</comment>
   </data>
-  <data name="CmdUIResetMagnification_ShortDesc" xml:space="preserve">
-    <value>_Réinitialiser l'agrandissement</value>
+  <data name="MetadataSynonyms" xml:space="preserve">
+    <value>
+      Synonymes: {0}</value>
+    <comment>{0} = list of synonyms</comment>
   </data>
-  <data name="CmdUIResetMagnification_LongDesc" xml:space="preserve">
-    <value>Réinitialiser le niveau de zoom de l'IU</value>
+  <data name="MetadataSynonyms2" xml:space="preserve">
+    <value>Synonymes: {0}</value>
+    <comment>{0} = list of synonyms</comment>
   </data>
-  <data name="Menu_Find" xml:space="preserve">
-    <value>_Rechercher</value>
+  <data name="MetadataValidator_Description" xml:space="preserve">
+    <value>Vérification des métadonnées de publication</value>
   </data>
-  <data name="NoDocument" xml:space="preserve">
-    <value>Aucun document</value>
+  <data name="MetadataValidator_Name" xml:space="preserve">
+    <value>Problèmes de métadonnées</value>
   </data>
-  <data name="PleaseWait" xml:space="preserve">
-    <value>Veuillez patienter...</value>
+  <data name="Metadata_Optional" xml:space="preserve">
+    <value>Optionnel</value>
   </data>
-  <data name="CancellingTask" xml:space="preserve">
-    <value>Annulation en cours...</value>
+  <data name="Metadata_Recommended" xml:space="preserve">
+    <value>Requis</value>
   </data>
-  <data name="IconsDebug" xml:space="preserve">
-    <value>Aperçu des icônes (vue de débogage)</value>
+  <data name="Metadata_Required" xml:space="preserve">
+    <value>Obligatoire</value>
   </data>
-  <data name="CmdFocus_ShortDesc_Find" xml:space="preserve">
-    <value>_Rechercher...</value>
+  <data name="Missing" xml:space="preserve">
+    <value>Manquant {0}</value>
   </data>
-  <data name="Cmd_ShortDesc_FindNext" xml:space="preserve">
-    <value>Recherche _suivante</value>
+  <data name="MissingItemErrorCompleteSummary" xml:space="preserve">
+    <value>Erreur de métadonnée : élément requis absent
+Une entrée pour {0} n'a pas été trouvée.
+{1}</value>
+    <comment>{0} = metadata name, {1} = metadata definition</comment>
   </data>
-  <data name="Cmd_ShortDesc_FindPrevious" xml:space="preserve">
-    <value>Recherche _précédente</value>
+  <data name="MissingRequiredItem" xml:space="preserve">
+    <value>Erreur de métadonnée : élément requis manquant</value>
   </data>
-  <data name="CmdFocus_LongDesc_Find" xml:space="preserve">
-    <value>Entrez le texte à rechercher...</value>
+  <data name="MustBe" xml:space="preserve">
+    <value>Doit être un(e) {0}</value>
+    <comment>{0} = data type</comment>
   </data>
-  <data name="Cmd_LongDesc_FindNext" xml:space="preserve">
-    <value>Recherche de l'élément suivant</value>
+  <data name="NonEmptyHint" xml:space="preserve">
+    <value>non-vide</value>
   </data>
-  <data name="Cmd_LongDesc_FindPrevious" xml:space="preserve">
-    <value>Recherche de l'élément précédent</value>
+  <data name="NotMoreThanOneInstance" xml:space="preserve">
+    <value>Ce champ de métadonnée ne peut contenir plus d'une instance.</value>
   </data>
-  <data name="WindowsTitleKey_UrakawaSessionIsNotNull" xml:space="preserve">
-    <value>Tobi {{{0}}} {1} {2}</value>
+  <data name="NumericValueHint" xml:space="preserve">
+    <value>une valeur numérique</value>
   </data>
-  <data name="WindowsTitleKey_UrakawaSessionIsNull" xml:space="preserve">
-    <value>Tobi {{{{{{0}}}}}} - {0}</value>
+  <data name="LanguageValueHint" xml:space="preserve">
+    <value>un code de langue</value>
   </data>
-  <data name="CmdOpenUserManual_LongDesc" xml:space="preserve">
-    <value>Ouvrir la documentation dans le navigateur Web</value>
+  <data name="Occurrence" xml:space="preserve">
+    <value>Est {0}</value>
+    <comment>{0} = required, optional, or recommended</comment>
   </data>
-  <data name="CmdOpenUserManual_ShortDesc" xml:space="preserve">
-    <value>_Documentation (en ligne)</value>
+  <data name="RulesFor" xml:space="preserve">
+    <value>Règles pour {0}</value>
+    <comment>{0} = name</comment>
   </data>
 </root>
