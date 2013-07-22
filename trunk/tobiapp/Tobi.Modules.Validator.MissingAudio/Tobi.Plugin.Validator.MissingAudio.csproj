@@ -109,6 +109,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Tobi.Plugin.Validator.MissingAudio.Lang.fr.resx" />
     <EmbeddedResource Include="Tobi.Plugin.Validator.MissingAudio.Lang.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.Validator.MissingAudio.Lang.Designer.cs</LastGenOutput>
