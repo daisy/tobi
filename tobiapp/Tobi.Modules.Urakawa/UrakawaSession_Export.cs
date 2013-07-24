@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Xml;
 using AudioLib;
+using Microsoft.Win32;
 using Tobi.Common.MVVM;
 using Tobi.Common.UI;
 using Tobi.Common.Validation;
@@ -837,17 +838,28 @@ namespace Tobi.Plugin.Urakawa
 
             string pipeline_ExePath = Settings.Default.Pipeline2Path;
             while (string.IsNullOrEmpty(pipeline_ExePath)
-                || !File.Exists(pipeline_ExePath)
-                || pipeline_ExePath.IndexOf(exeOrBat, StringComparison.OrdinalIgnoreCase) < 0)
+                || pipeline_ExePath.IndexOf(exeOrBat, StringComparison.OrdinalIgnoreCase) < 0
+                || !File.Exists(pipeline_ExePath))
             {
-                //TODO
                 if (!registryChecked)
                 {
                     registryChecked = true;
 
-                    //pipeline_ExePath = registryCheck();
+                    string folderPath = null;
+                    try
+                    {
+                        object val = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\DAISY Pipeline 2").GetValue(@"Pipeline2Home");
+                        folderPath = val as string;
+                        pipeline_ExePath = Path.Combine(folderPath, "bin\\pipeline2.bat");
 
-                    //continue;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine(ex.StackTrace);
+                    }
+
+                    continue;
                 }
 
                 if (true)
