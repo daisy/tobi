@@ -258,7 +258,9 @@ namespace Tobi.Plugin.StructureTrailPane
                     }
                     else
                     {
-                        TreeNode.StringChunk txtChunk = child.GetTextChunk();
+                        TreeNode.StringChunkRange txtChunkRange = child.GetText();
+                        TreeNode.StringChunk txtChunk = txtChunkRange != null ? txtChunkRange.First : null; //child.GetTextChunk();
+
                         bool isWhiteSpace = txtChunk != null && txtChunk.Str == @" ";
                         if (!isWhiteSpace)
                         {
