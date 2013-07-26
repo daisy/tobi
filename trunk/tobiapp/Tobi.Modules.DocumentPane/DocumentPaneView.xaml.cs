@@ -1526,6 +1526,7 @@ namespace Tobi.Plugin.DocumentPane
                     if (name != "metadata") continue;
 
                     string title = null;
+                    string xukFileName = null;
                     bool hasXuk = false;
                     foreach (var xmlAttr in xmlProp.Attributes.ContentsAs_Enumerable)
                     {
@@ -1538,6 +1539,11 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             title = xmlAttr.Value;
                         }
+
+                        if (xmlAttr.LocalName == "xukFileName")
+                        {
+                            xukFileName = xmlAttr.Value;
+                        }
                     }
 
                     if (!hasXuk) continue;
@@ -1546,7 +1552,18 @@ namespace Tobi.Plugin.DocumentPane
                     //DebugFix.Assert(title_ == title);
 
                     string rootDir = Path.GetDirectoryName(m_UrakawaSession.DocumentFilePath);
-                    string fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title);
+
+                    string fullXukPath = null;
+                    if (!string.IsNullOrEmpty(xukFileName))
+                    {
+                        fullXukPath = Path.Combine(rootDir, xukFileName);
+                    }
+                    else
+                    {
+                        //old project format
+                        fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title, -1);
+                    }
+
                     if (!File.Exists(fullXukPath))
                     {
 #if DEBUG
