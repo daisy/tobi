@@ -426,6 +426,9 @@ namespace Tobi.Plugin.Urakawa
                     {
                         script = "dtbook-to-epub3";
 
+                        extra = "--x-assert-valid false";
+                        options = "<option name=\"assert-valid\">false</option>";
+
                         if (Settings.Default.Pipeline2OldExe)
                         {
                             foreach (string fileName in dlg.FileNames)
