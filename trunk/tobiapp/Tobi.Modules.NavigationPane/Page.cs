@@ -66,15 +66,16 @@ namespace Tobi.Plugin.NavigationPane
                     return m_Name;
                 }
 
-                XmlAttribute xmlAttr = TreeNode.GetXmlProperty().GetAttribute("title");
-                if (xmlAttr!=null)
-                {
-                    if (!string.IsNullOrEmpty(xmlAttr.Value))
-                    {
-                        m_Name = xmlAttr.Value;
-                        return m_Name;
-                    }
-                }
+
+                //XmlAttribute xmlAttr = TreeNode.GetXmlProperty().GetAttribute("title");
+                //if (xmlAttr!=null)
+                //{
+                //    if (!string.IsNullOrEmpty(xmlAttr.Value))
+                //    {
+                //        m_Name = xmlAttr.Value;
+                //        return m_Name;
+                //    }
+                //}
 
                 //if (TextElement is Paragraph)
                 //{

@@ -2505,6 +2505,17 @@ namespace Tobi.Plugin.DocumentPane
             string localNamez = localName.ToLower();
             if (isPageNumber(node))
             {
+                if (node.Children.Count == 0 && string.IsNullOrEmpty(nodeText))
+                {
+                    TreeNode.StringChunkRange txtChunkRange = node.GetText();
+                    TreeNode.StringChunk txtChunk = txtChunkRange != null ? txtChunkRange.First : null;
+                        //node.GetTextChunk();
+                    if (txtChunk != null && !string.IsNullOrEmpty(txtChunk.Str))
+                    {
+                        nodeText = txtChunk.Str;
+                    }
+                }
+
                 localNamez = "pagenum";
             }
 
