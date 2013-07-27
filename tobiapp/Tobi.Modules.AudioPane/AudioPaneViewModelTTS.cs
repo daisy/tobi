@@ -245,14 +245,21 @@ namespace Tobi.Plugin.AudioPane
 
                         if (firstCommonAncestor != null)
                         {
-                            foreach (TreeNode child in firstCommonAncestor.Children.ContentsAs_Enumerable)
-                            {
-                                if (child == treeNode || child.IsAncestorOf(treeNode))
-                                {
-                                    root = child;
-                                    break;
-                                }
-                            }
+                            root = firstCommonAncestor;
+
+                            //foreach (TreeNode child in firstCommonAncestor.Children.ContentsAs_Enumerable)
+                            //{
+                            //    if (!child.HasXmlProperty)
+                            //    {
+                            //        continue;
+                            //    }
+
+                            //    if (child == treeNode || child.IsAncestorOf(treeNode))
+                            //    {
+                            //        root = child;
+                            //        break;
+                            //    }
+                            //}
                         }
                     }
 
