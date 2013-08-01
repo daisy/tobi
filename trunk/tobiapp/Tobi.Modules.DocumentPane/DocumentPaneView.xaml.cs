@@ -1980,7 +1980,8 @@ namespace Tobi.Plugin.DocumentPane
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!e.PropertyName.StartsWith(@"Document_Color_")
-                //&& !e.PropertyName.StartsWith(@"Document_")
+                && !e.PropertyName.StartsWith(@"Document_Highlight")
+                && !e.PropertyName.StartsWith(@"Document_Back")
                 ) return;
 
             refreshTextOnlyViewColors();

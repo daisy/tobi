@@ -307,7 +307,25 @@ namespace Tobi.Plugin.DocumentPane
 
             var treeNode = (TreeNode)data.Tag;
 
-            if (!treeNode.HasXmlProperty) return;
+            if (!treeNode.HasXmlProperty)
+            {
+                if (Settings.Default.Document_Highlight_TextOnly_Fragments)
+                {
+                    TreeNode.StringChunkRange range = treeNode.GetText();
+                    if (range != null)
+                    {
+                        if (range.First != null && !String.IsNullOrEmpty(range.First.Str))
+                        {
+                            if (!TreeNode.TextOnlyContainsPunctuation(range))
+                            {
+                                data.Background = ColorBrushCache.Get(Settings.Default.Document_Color_TextOnly_Back);
+                            }
+                        }
+                    }
+                }
+
+                return;
+            }
 
             string localName = treeNode.GetXmlElementLocalName();
 
@@ -2414,6 +2432,7 @@ namespace Tobi.Plugin.DocumentPane
                 var data = new Run(nodeText);
                 setTextDirection(node, null, data, null);
                 setTag(data, node);
+                SetBorderAndBackColorBasedOnTreeNodeTag(data);
                 addInline(parent, data);
 
                 return parent;
