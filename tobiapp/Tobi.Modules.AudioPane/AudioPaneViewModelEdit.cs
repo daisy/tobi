@@ -493,7 +493,7 @@ namespace Tobi.Plugin.AudioPane
                     OnInterruptAudioPlayerRecorder(); //  CHANGES IsAutoPlay to FALSE
                     //CommandPause.Execute();
 
-                    TreeNode nested;
+                    //TreeNode nested;
                     TreeNode next = null;
                     {
                         Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
@@ -501,7 +501,8 @@ namespace Tobi.Plugin.AudioPane
 
                     tryNext:
 
-                        next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, treeNode, out nested);
+                        //next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, treeNode, out nested);
+                        next = TreeNode.NavigatePreviousNextSignificantText(false, treeNode);
                         if (next != null)
                         {
                             TreeNode math = next.GetFirstAncestorWithXmlElement("math");
@@ -550,7 +551,7 @@ namespace Tobi.Plugin.AudioPane
                     //CutCommand.Execute();
                     OnInterruptAudioPlayerRecorder();
 
-                    m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
+                    m_UrakawaSession.PerformTreeNodeSelection(next, false, null); //nested);
                     OnInterruptAudioPlayerRecorder();
 
                     Tuple<TreeNode, TreeNode> treeNodeSelectionNew = m_UrakawaSession.GetTreeNodeSelection();

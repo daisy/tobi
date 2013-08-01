@@ -1020,13 +1020,18 @@ namespace Tobi.Plugin.Urakawa
                     }
                     else
                     {
-                        var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, DocumentProject.Presentations.Get(0).RootNode, null);
+                        //var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, DocumentProject.Presentations.Get(0).RootNode, null);
+                        var treeNode = TreeNode.NavigateInsideSignificantText(DocumentProject.Presentations.Get(0).RootNode);
                         if (treeNode != null)
                         {
                             //m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded", Category.Debug, Priority.Medium);
 
                             PerformTreeNodeSelection(treeNode);
                             //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
+                        }
+                        else
+                        {
+                            PerformTreeNodeSelection(DocumentProject.Presentations.Get(0).RootNode);
                         }
 
                         tryParseXukSpine(DocumentFilePath);

@@ -223,59 +223,25 @@ namespace Tobi.Plugin.AudioPane
                 else
                 {
                     TreeNode root = treeNodeSelection.Item1;
-                    if (!initial)
+                    if (initial)
                     {
-                        if (!treeNode.IsDescendantOf(root))
-                        {
-                            return;
-                        }
+                        adjustedNode = TreeNode.NavigateInsideSignificantText(root);
 
-                        TreeNode firstCommonAncestor = null;
-
-                        TreeNode parent = treeNode.Parent;
-                        while (parent != null)
-                        {
-                            if (parent.IsAncestorOf(adjustedNode))
-                            {
-                                firstCommonAncestor = parent;
-                                break;
-                            }
-                            parent = parent.Parent;
-                        }
-
-                        if (firstCommonAncestor != null)
-                        {
-                            root = firstCommonAncestor;
-
-                            //foreach (TreeNode child in firstCommonAncestor.Children.ContentsAs_Enumerable)
-                            //{
-                            //    if (!child.HasXmlProperty)
-                            //    {
-                            //        continue;
-                            //    }
-
-                            //    if (child == treeNode || child.IsAncestorOf(treeNode))
-                            //    {
-                            //        root = child;
-                            //        break;
-                            //    }
-                            //}
-                        }
+                        //TreeNode candidate = m_viewModel.m_UrakawaSession.AdjustTextSyncGranularity(adjustedNode, adjustedNode);
+                        //if (candidate != null)
+                        //{
+                        //    treeNode = candidate;
+                        //}
+                    }
+                    else
+                    {
+                        adjustedNode = treeNode;
                     }
 
-                    adjustedNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, root, initial ? null : treeNode);
-                    if (adjustedNode == null)
+                    if (adjustedNode == null
+                        || !adjustedNode.IsDescendantOf(root) && adjustedNode != root)
                     {
-                        if (initial
-                            && treeNodeSelection.Item1 != null && treeNodeSelection.Item1.Parent != null
-                            && !treeNodeSelection.Item1.Parent.AtLeastOneChildSiblingIsSignificantTextOnly())
-                        {
-                            adjustedNode = treeNodeSelection.Item1;
-                        }
-                        else
-                        {
-                            return;
-                        }
+                        return;
                     }
                 }
 
@@ -404,8 +370,9 @@ namespace Tobi.Plugin.AudioPane
                     return;
                 }
 
-                TreeNode nested;
-                treeNode = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, adjustedNode, out nested);
+                //TreeNode nested;
+                //treeNode = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, adjustedNode, out nested);
+                treeNode = TreeNode.NavigatePreviousNextSignificantText(false, adjustedNode);
                 if (treeNode == null)
                 {
                     return;

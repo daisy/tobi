@@ -132,7 +132,7 @@ namespace Tobi.Plugin.NavigationPane
             HeadingTreeNodeWrapper node = TreeView.SelectedItem as HeadingTreeNodeWrapper;
             if (node == null) return;
 
-            TreeNode nested;
+            //TreeNode nested;
             TreeNode treeNode = null;
 
             if (node.WrappedTreeNode_LevelHeading != null)
@@ -144,9 +144,8 @@ namespace Tobi.Plugin.NavigationPane
                 treeNode = node.WrappedTreeNode_Level.GetFirstDescendantWithText();
                 if (treeNode != null && treeNode.GetXmlProperty() == null)
                 {
-                    treeNode = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false,
-                                                                                         treeNode,
-                                                                                         out nested);
+                    //treeNode = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, treeNode, out nested);
+                    treeNode = TreeNode.NavigatePreviousNextSignificantText(false, treeNode);
                 }
             }
 
