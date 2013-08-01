@@ -711,8 +711,9 @@ namespace Tobi.Plugin.AudioPane
                 {
                 //TreeNode next = electNextRecordableNode(treeNode);
                 tryNext:
-                    TreeNode nested;
-                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, treeNode, out nested);
+                    //TreeNode nested;
+                    //TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, treeNode, out nested);
+                    TreeNode next = TreeNode.NavigatePreviousNextSignificantText(false, treeNode);
                     if (next != null)
                     {
                         TreeNode math = next.GetFirstAncestorWithXmlElement("math");
@@ -746,7 +747,7 @@ namespace Tobi.Plugin.AudioPane
 
                         m_StateToRestore = null;
 
-                        m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
+                        m_UrakawaSession.PerformTreeNodeSelection(next, false, null); //nested);
                         State.Selection.ClearSelection();
 
                         //must appear after tree node selection!!!

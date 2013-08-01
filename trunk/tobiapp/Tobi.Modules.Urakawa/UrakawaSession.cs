@@ -874,9 +874,12 @@ namespace Tobi.Plugin.Urakawa
                         {
                             if (!TreeNode.TextOnlyContainsPunctuation(withText.GetText()))
                             {
-                                TreeNode adjusted = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, parent,
-                                                                                                   withText);
-                                if (adjusted != null && adjusted != parent && adjusted.HasXmlProperty)
+                                //TreeNode adjusted = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, parent, withText);
+                                TreeNode adjusted = TreeNode.AdjustSignificantTextOnlyAncestors(withText);
+                                if (adjusted != null
+                                    && adjusted.IsDescendantOf(parent)
+                                    //&& adjusted != parent
+                                    && adjusted.HasXmlProperty)
                                 {
                                     string name_ = adjusted.GetXmlElementLocalName();
                                     int nodeRank = -1;

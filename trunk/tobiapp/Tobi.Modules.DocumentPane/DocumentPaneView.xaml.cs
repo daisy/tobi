@@ -1203,8 +1203,9 @@ namespace Tobi.Plugin.DocumentPane
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
 
-                    TreeNode nested;
-                    TreeNode previous = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(true, node, out nested);
+                    //TreeNode nested;
+                    //TreeNode previous = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(true, node, out nested);
+                    TreeNode previous = TreeNode.NavigatePreviousNextSignificantText(true, node);
                     if (previous == null)
                     {
                         AudioCues.PlayBeep();
@@ -1232,7 +1233,7 @@ namespace Tobi.Plugin.DocumentPane
                                 }
                                 else
                                 {
-                                    m_UrakawaSession.PerformTreeNodeSelection(previous, false, nested);
+                                    m_UrakawaSession.PerformTreeNodeSelection(previous, false, null); //nested);
                                 }
                             }
                         }
@@ -1299,8 +1300,9 @@ namespace Tobi.Plugin.DocumentPane
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
 
-                    TreeNode nested;
-                    TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, node, out nested);
+                    //TreeNode nested;
+                    //TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, node, out nested);
+                    TreeNode next = TreeNode.NavigatePreviousNextSignificantText(false, node);
                     if (next == null)
                     {
                         AudioCues.PlayBeep();
@@ -1328,7 +1330,7 @@ namespace Tobi.Plugin.DocumentPane
                                 }
                                 else
                                 {
-                                    m_UrakawaSession.PerformTreeNodeSelection(next, false, nested);
+                                    m_UrakawaSession.PerformTreeNodeSelection(next, false, null); //nested);
                                 }
                             }
                         }
