@@ -2127,6 +2127,9 @@ namespace Tobi.Plugin.DocumentPane
                     }
                     catch (Exception ex)
                     {
+#if DEBUG
+                        Debugger.Break();
+#endif //DEBUG
                         svg_ = null;
                         consoleWrite(ex);
                         //m_DocumentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,

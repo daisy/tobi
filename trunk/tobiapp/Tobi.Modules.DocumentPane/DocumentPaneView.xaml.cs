@@ -847,6 +847,69 @@ namespace Tobi.Plugin.DocumentPane
             BringIntoFocus();
         }
 
+        private void nextPrevious(bool previous)
+        {
+            Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+            TreeNode node = selection.Item2 ?? selection.Item1;
+
+            //TreeNode nested;
+            //TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, node, out nested);
+
+            TreeNode nearestSignificantTextSibling;
+            TreeNode next = TreeNode.NavigatePreviousNextSignificantText(previous, node, out nearestSignificantTextSibling);
+            if (next == null)
+            {
+                AudioCues.PlayBeep();
+            }
+            else
+            {
+                TreeNode toSelect = next;
+                TreeNode sub = null;
+
+                TreeNode math = toSelect.GetFirstAncestorWithXmlElement("math");
+                if (math != null)
+                {
+                    toSelect = math;
+                }
+                else
+                {
+                    TreeNode svg = toSelect.GetFirstAncestorWithXmlElement("svg");
+                    if (svg != null)
+                    {
+                        toSelect = svg;
+                    }
+                    else
+                    {
+                        TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(toSelect, node);
+                        if (candidate != null)
+                        {
+                            toSelect = candidate;
+                        }
+                        //else
+                        //{
+                        //    toSelect = next;
+                        //}
+                    }
+                }
+
+
+                TreeNode firstDescendantWithManagedAudio = toSelect.GetFirstDescendantWithManagedAudio();
+                if (firstDescendantWithManagedAudio != null)
+                {
+                    sub = nearestSignificantTextSibling;
+
+                    TreeNode firstAncestorWithManagedAudio = sub.GetFirstAncestorWithManagedAudio();
+                    if (firstAncestorWithManagedAudio != null)
+                    {
+                        sub = firstAncestorWithManagedAudio;
+                    }
+                }
+
+
+                m_UrakawaSession.PerformTreeNodeSelection(toSelect, false, sub);
+            }
+        }
+
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
@@ -1199,46 +1262,9 @@ namespace Tobi.Plugin.DocumentPane
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-first"),
                 () =>
-                {
-                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = selection.Item2 ?? selection.Item1;
-
-                    //TreeNode nested;
-                    //TreeNode previous = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(true, node, out nested);
-                    TreeNode previous = TreeNode.NavigatePreviousNextSignificantText(true, node);
-                    if (previous == null)
                     {
-                        AudioCues.PlayBeep();
-                    }
-                    else
-                    {
-                        TreeNode math = previous.GetFirstAncestorWithXmlElement("math");
-                        if (math != null)
-                        {
-                            m_UrakawaSession.PerformTreeNodeSelection(math, false, null); //previous
-                        }
-                        else
-                        {
-                            TreeNode svg = previous.GetFirstAncestorWithXmlElement("svg");
-                            if (svg != null)
-                            {
-                                m_UrakawaSession.PerformTreeNodeSelection(svg, false, null); //previous
-                            }
-                            else
-                            {
-                                TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(previous, node);
-                                if (candidate != null)
-                                {
-                                    m_UrakawaSession.PerformTreeNodeSelection(candidate, false, null);
-                                }
-                                else
-                                {
-                                    m_UrakawaSession.PerformTreeNodeSelection(previous, false, null); //nested);
-                                }
-                            }
-                        }
-                    }
-
+                        nextPrevious(true);
+                    
                     //if (CurrentTreeNode == CurrentSubTreeNode)
                     //{
                     //    TreeNode nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
@@ -1297,44 +1323,7 @@ namespace Tobi.Plugin.DocumentPane
                 m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-last"),
                 () =>
                 {
-                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = selection.Item2 ?? selection.Item1;
-
-                    //TreeNode nested;
-                    //TreeNode next = TreeNode.GetNextTreeNodeWithNoSignificantTextOnlySiblings(false, node, out nested);
-                    TreeNode next = TreeNode.NavigatePreviousNextSignificantText(false, node);
-                    if (next == null)
-                    {
-                        AudioCues.PlayBeep();
-                    }
-                    else
-                    {
-                        TreeNode math = next.GetFirstAncestorWithXmlElement("math");
-                        if (math != null)
-                        {
-                            m_UrakawaSession.PerformTreeNodeSelection(math, false, null); //next
-                        }
-                        else
-                        {
-                            TreeNode svg = next.GetFirstAncestorWithXmlElement("svg");
-                            if (svg != null)
-                            {
-                                m_UrakawaSession.PerformTreeNodeSelection(svg, false, null); //next
-                            }
-                            else
-                            {
-                                TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(next, node);
-                                if (candidate != null)
-                                {
-                                    m_UrakawaSession.PerformTreeNodeSelection(candidate, false, null);
-                                }
-                                else
-                                {
-                                    m_UrakawaSession.PerformTreeNodeSelection(next, false, null); //nested);
-                                }
-                            }
-                        }
-                    }
+                    nextPrevious(false);
 
                     //if (CurrentTreeNode == CurrentSubTreeNode)
                     //{

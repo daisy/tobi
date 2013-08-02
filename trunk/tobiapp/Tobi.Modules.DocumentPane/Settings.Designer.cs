@@ -49,7 +49,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool Document_Highlight_TextOnly_Fragments {
             get {
                 return ((bool)(this["Document_Highlight_TextOnly_Fragments"]));
