@@ -11,7 +11,7 @@
       <Value Profile="(Default)">#FFDDCCDD</Value>
     </Setting>
     <Setting Name="Document_Highlight_TextOnly_Fragments" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Document_Color_PageNum_Back" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FFDCDCDC</Value>

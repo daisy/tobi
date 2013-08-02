@@ -243,6 +243,34 @@ namespace Tobi.Plugin.AudioPane
                     {
                         return;
                     }
+
+                    TreeNode math_ = adjustedNode.GetFirstAncestorWithXmlElement("math");
+                    if (math_ != null)
+                    {
+                        adjustedNode = math_;
+                    }
+                    else
+                    {
+                        TreeNode svg_ = adjustedNode.GetFirstAncestorWithXmlElement("svg");
+                        if (svg_ != null)
+                        {
+                            adjustedNode = svg_;
+                        }
+                        else
+                        {
+                            TreeNode candidate = m_viewModel.m_UrakawaSession.AdjustTextSyncGranularity(adjustedNode, adjustedNode);
+                            if (candidate != null)
+                            {
+                                adjustedNode = candidate;
+                            }
+                        }
+                    }
+
+                    if (adjustedNode == null
+                        || !adjustedNode.IsDescendantOf(root) && adjustedNode != root)
+                    {
+                        return;
+                    }
                 }
 
                 if (adjustedNode.GetManagedAudioMedia() != null
