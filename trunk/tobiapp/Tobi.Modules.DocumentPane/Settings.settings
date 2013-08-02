@@ -8,7 +8,7 @@
       <Value Profile="(Default)">#FF00FFFF</Value>
     </Setting>
     <Setting Name="Document_Color_TextOnly_Back" Type="System.Windows.Media.Color" Scope="User">
-      <Value Profile="(Default)">#FFFFEEFF</Value>
+      <Value Profile="(Default)">#FFDDCCDD</Value>
     </Setting>
     <Setting Name="Document_Highlight_TextOnly_Fragments" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

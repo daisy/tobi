@@ -37,7 +37,7 @@ namespace Tobi.Plugin.DocumentPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFEEFF")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFDDCCDD")]
         public global::System.Windows.Media.Color Document_Color_TextOnly_Back {
             get {
                 return ((global::System.Windows.Media.Color)(this["Document_Color_TextOnly_Back"]));
