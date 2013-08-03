@@ -372,6 +372,14 @@ namespace Tobi.Plugin.DocumentPane
                         bool doNotUpdateVideoTimeWhenSliderChanges = false;
                         actionUpdateSliderFromVideoTime = new Action(() =>
                         {
+                            if (medElement_WINDOWS_MEDIA_PLAYER == null)
+                            {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                return;
+                            }
+
                             TimeSpan? timeSpan = medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime;
                             double timeMS = timeSpan != null ? timeSpan.Value.TotalMilliseconds : 0;
 
@@ -406,6 +414,14 @@ namespace Tobi.Plugin.DocumentPane
                         medElement_WINDOWS_MEDIA_PLAYER.MediaOpened += new RoutedEventHandler(
                             (oo, ee) =>
                             {
+                                if (medElement_WINDOWS_MEDIA_PLAYER == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return;
+                                }
+
                                 slider.Visibility = Visibility.Visible;
                                 timeLabel.Visibility = Visibility.Visible;
 
@@ -436,6 +452,14 @@ namespace Tobi.Plugin.DocumentPane
                             new RoutedEventHandler(
                             (oo, ee) =>
                             {
+                                if (medElement_WINDOWS_MEDIA_PLAYER == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return;
+                                }
+
                                 _timer.Stop();
 
                                 medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Stop();
@@ -447,6 +471,14 @@ namespace Tobi.Plugin.DocumentPane
                         var mouseButtonEventHandler_WINDOWS_MEDIA_PLAYER = new Action(
                                 () =>
                                 {
+                                    if (medElement_WINDOWS_MEDIA_PLAYER == null)
+                                    {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                        return;
+                                    }
+
                                     if (medElement_WINDOWS_MEDIA_PLAYER.LoadedBehavior != MediaState.Manual)
                                     {
                                         return;
@@ -544,6 +576,14 @@ namespace Tobi.Plugin.DocumentPane
                         slider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(
                             (oo, ee) =>
                             {
+                                if (medElement_WINDOWS_MEDIA_PLAYER == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return;
+                                }
+
                                 var timeSpan = new TimeSpan(0, 0, 0, 0, (int)Math.Round(slider.Value));
 
                                 if (doNotUpdateVideoTimeWhenSliderChanges || !_timer.IsEnabled)
@@ -599,6 +639,14 @@ namespace Tobi.Plugin.DocumentPane
                             (Action<object, DragStartedEventArgs>)(
                             (oo, ee) =>
                             {
+                                if (medElement_WINDOWS_MEDIA_PLAYER == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return;
+                                }
+
                                 wasPlayingBeforeDrag = false;
 
                                 //Is Active
@@ -627,6 +675,14 @@ namespace Tobi.Plugin.DocumentPane
                             (Action<object, DragCompletedEventArgs>)(
                             (oo, ee) =>
                             {
+                                if (medElement_WINDOWS_MEDIA_PLAYER == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return;
+                                }
+
                                 if (wasPlayingBeforeDrag)
                                 {
                                     medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Resume();
@@ -652,6 +708,13 @@ namespace Tobi.Plugin.DocumentPane
                         bool doNotUpdateVideoTimeWhenSliderChanges = false;
                         actionUpdateSliderFromVideoTime = new Action(() =>
                         {
+                            if (medElement_MEDIAKIT_DIRECTSHOW == null)
+                            {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                return;
+                            }
                             long timeVideo = medElement_MEDIAKIT_DIRECTSHOW.MediaPosition;
 
                             //if (timeMS >= medElement_MEDIAKIT_DIRECTSHOW.MediaDuration - 50 * 10000.0)
@@ -689,6 +752,14 @@ namespace Tobi.Plugin.DocumentPane
                         medElement_MEDIAKIT_DIRECTSHOW.MediaOpened += new RoutedEventHandler(
                             (oo, ee) =>
                             {
+                                if (medElement_MEDIAKIT_DIRECTSHOW == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return;
+                                }
+
                                 long durationVideo = medElement_MEDIAKIT_DIRECTSHOW.MediaDuration;
                                 if (durationVideo == 0)
                                 {
@@ -738,6 +809,14 @@ namespace Tobi.Plugin.DocumentPane
                             new RoutedEventHandler(
                             (oo, ee) =>
                             {
+                                if (medElement_MEDIAKIT_DIRECTSHOW == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return;
+                                }
+
                                 _timer.Stop();
                                 medElement_MEDIAKIT_DIRECTSHOW.Pause();
                                 actionUpdateSliderFromVideoTime.Invoke();
@@ -772,6 +851,14 @@ namespace Tobi.Plugin.DocumentPane
                         var mouseButtonEventHandler_MEDIAKIT_DIRECTSHOW = new Action(
                                 () =>
                                 {
+                                    if (medElement_MEDIAKIT_DIRECTSHOW == null)
+                                    {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                        return;
+                                    }
+
                                     if (medElement_MEDIAKIT_DIRECTSHOW.LoadedBehavior != WPFMediaKit.DirectShow.MediaPlayers.MediaState.Manual)
                                     {
                                         return;
@@ -817,6 +904,14 @@ namespace Tobi.Plugin.DocumentPane
                         slider.ValueChanged += new RoutedPropertyChangedEventHandler<double>(
                             (oo, ee) =>
                             {
+                                if (medElement_MEDIAKIT_DIRECTSHOW == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return;
+                                }
+
                                 double timeMs = slider.Value;
 
                                 if (doNotUpdateVideoTimeWhenSliderChanges || !_timer.IsEnabled)
@@ -865,6 +960,14 @@ namespace Tobi.Plugin.DocumentPane
                             (Action<object, DragStartedEventArgs>)(
                             (oo, ee) =>
                             {
+                                if (medElement_MEDIAKIT_DIRECTSHOW == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return;
+                                }
+
                                 wasPlayingBeforeDrag = medElement_MEDIAKIT_DIRECTSHOW.IsPlaying;
 
                                 if (wasPlayingBeforeDrag)
@@ -879,6 +982,14 @@ namespace Tobi.Plugin.DocumentPane
                             (Action<object, DragCompletedEventArgs>)(
                             (oo, ee) =>
                             {
+                                if (medElement_MEDIAKIT_DIRECTSHOW == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return;
+                                }
+
                                 if (wasPlayingBeforeDrag)
                                 {
                                     medElement_MEDIAKIT_DIRECTSHOW.Play();
