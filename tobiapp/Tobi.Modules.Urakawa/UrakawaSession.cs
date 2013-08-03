@@ -906,6 +906,16 @@ namespace Tobi.Plugin.Urakawa
                             withText = withText.GetNextSiblingWithText();
                         }
 
+                        if (parent != null
+                            &&
+                            (parent.GetFirstDescendantWithXmlElement("noteref") != null
+                            || parent.GetFirstDescendantWithXmlElement("annoref") != null
+                            )
+                            )
+                        {
+                            // veto adjustement because risk of killing noteref in SMIL sync
+                            return node;
+                        }
                         return parent;
                     }
 

@@ -866,37 +866,56 @@ namespace Tobi.Plugin.DocumentPane
                 TreeNode toSelect = next;
                 TreeNode sub = null;
 
-                TreeNode math = toSelect.GetFirstAncestorWithXmlElement("math");
+                TreeNode math = null;
+                TreeNode svg = null;
+                TreeNode adjustedGranularity = null;
+                
+                math = toSelect.GetFirstAncestorWithXmlElement("math");
                 if (math != null)
                 {
                     toSelect = math;
                 }
                 else
                 {
-                    TreeNode svg = toSelect.GetFirstAncestorWithXmlElement("svg");
+                    svg = toSelect.GetFirstAncestorWithXmlElement("svg");
                     if (svg != null)
                     {
                         toSelect = svg;
                     }
                     else
                     {
-                        TreeNode candidate = m_UrakawaSession.AdjustTextSyncGranularity(toSelect, node);
-                        if (candidate != null)
+                        adjustedGranularity = m_UrakawaSession.AdjustTextSyncGranularity(toSelect, node);
+                        if (adjustedGranularity != null)
                         {
-                            toSelect = candidate;
+                            toSelect = adjustedGranularity;
                         }
-                        //else
-                        //{
-                        //    toSelect = next;
-                        //}
                     }
                 }
-
 
                 TreeNode firstDescendantWithManagedAudio = toSelect.GetFirstDescendantWithManagedAudio();
                 if (firstDescendantWithManagedAudio != null)
                 {
                     sub = nearestSignificantTextSibling;
+
+                    if (next.GetFirstDescendantWithManagedAudio() == null)
+                    {
+                        sub = next;
+                    }
+
+                    if (math != null && math.GetFirstDescendantWithManagedAudio() == null)
+                    {
+                        sub = math;
+                    }
+
+                    if (svg != null && math.GetFirstDescendantWithManagedAudio() == null)
+                    {
+                        sub = svg;
+                    }
+
+                    if (adjustedGranularity != null && adjustedGranularity.GetFirstDescendantWithManagedAudio() == null)
+                    {
+                        sub = adjustedGranularity;
+                    }
 
                     TreeNode firstAncestorWithManagedAudio = sub.GetFirstAncestorWithManagedAudio();
                     if (firstAncestorWithManagedAudio != null)
