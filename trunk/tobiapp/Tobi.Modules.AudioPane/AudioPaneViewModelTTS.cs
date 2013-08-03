@@ -256,14 +256,14 @@ namespace Tobi.Plugin.AudioPane
                         {
                             adjustedNode = svg_;
                         }
-                        else
-                        {
-                            TreeNode candidate = m_viewModel.m_UrakawaSession.AdjustTextSyncGranularity(adjustedNode, adjustedNode);
-                            if (candidate != null)
-                            {
-                                adjustedNode = candidate;
-                            }
-                        }
+                        //else
+                        //{
+                        //    TreeNode candidate = m_viewModel.m_UrakawaSession.AdjustTextSyncGranularity(adjustedNode, adjustedNode);
+                        //    if (candidate != null)
+                        //    {
+                        //        adjustedNode = candidate;
+                        //    }
+                        //}
                     }
 
                     if (adjustedNode == null
@@ -418,14 +418,14 @@ namespace Tobi.Plugin.AudioPane
                     {
                         treeNode = svg;
                     }
-                    else
-                    {
-                        TreeNode candidate = m_viewModel.m_UrakawaSession.AdjustTextSyncGranularity(treeNode, adjustedNode);
-                        if (candidate != null)
-                        {
-                            treeNode = candidate;
-                        }
-                    }
+                    //else
+                    //{
+                    //    TreeNode candidate = m_viewModel.m_UrakawaSession.AdjustTextSyncGranularity(treeNode, adjustedNode);
+                    //    if (candidate != null)
+                    //    {
+                    //        treeNode = candidate;
+                    //    }
+                    //}
                 }
 
                 goto next;
