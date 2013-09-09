@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text;
 using System.Security.Cryptography;
 using System.Web;
@@ -14,7 +15,7 @@ namespace PipelineWSClient
 		public static string PrepareAuthenticatedUri(string uri)
 		{
 			string uristring = null;
-  			string timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            string timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
   			string nonce = GenerateNonce();
   			string query = String.Format("authid={0}&time={1}&nonce={2}", AUTH_ID, timestamp, nonce);
   			if (uri.Contains("?"))
