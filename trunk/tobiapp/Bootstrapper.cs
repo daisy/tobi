@@ -4,6 +4,7 @@ using System.ComponentModel.Composition.Primitives;
 using System.Configuration;
 using System.Deployment.Application;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Reflection;
