@@ -9,12 +9,43 @@ using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa.ExternalFiles;
 using Microsoft.Practices.Unity;
+using urakawa.property.xml;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
+        public bool IsSplitMaster
+        {
+            get
+            {
+                if (DocumentProject == null || HasXukSpine || IsXukSpine)
+                {
+                    return false;
+                }
+
+                XmlAttribute xmlAttr = DocumentProject.Presentations.Get(0).RootNode.GetXmlProperty().GetAttribute("splitMerge");
+
+                return xmlAttr != null && "MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+
+        public bool IsSplitSub
+        {
+            get
+            {
+                if (DocumentProject == null || HasXukSpine || IsXukSpine)
+                {
+                    return false;
+                }
+
+                XmlAttribute xmlAttr = DocumentProject.Presentations.Get(0).RootNode.GetXmlProperty().GetAttribute("splitMerge");
+
+                return xmlAttr != null && !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+
         public string XukSpineProjectPath { get; set; }
 
         public bool IsXukSpine

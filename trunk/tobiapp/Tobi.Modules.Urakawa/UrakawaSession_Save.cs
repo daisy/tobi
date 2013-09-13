@@ -88,6 +88,142 @@ namespace Tobi.Plugin.Urakawa
             return false;
         }
 
+
+        private bool saveAsCommand(string destinationFilePath)
+        {
+            bool interactive = string.IsNullOrEmpty(destinationFilePath);
+
+            bool doCleanup = interactive && askUserCleanup();
+            if (doCleanup)
+            {
+                DataCleanup(true);
+            }
+
+            string ext = IsXukSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION;
+
+            if (interactive)
+            {
+                var dialog = new SaveFileDialog
+                {
+                    FileName = Path.GetFileNameWithoutExtension(DocumentFilePath), //@"tobi_project",
+                    DefaultExt = ext,
+                    Filter = @"XUK (*" + ext + ")|*" + ext,
+                    CheckFileExists = false,
+                    CheckPathExists = false,
+                    AddExtension = true,
+                    CreatePrompt = false,
+                    DereferenceLinks = true,
+                    OverwritePrompt = false,
+                    Title =
+                        @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdSaveAs_ShortDesc)
+                };
+
+                bool? result = false;
+
+                m_ShellView.DimBackgroundWhile(() => { result = dialog.ShowDialog(); });
+
+                if (result == false)
+                {
+                    return false;
+                }
+
+                destinationFilePath = dialog.FileName;
+            }
+
+            if (FileDataProvider.NormaliseFullFilePath(destinationFilePath)
+                == FileDataProvider.NormaliseFullFilePath(DocumentFilePath))
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                return false;
+            }
+
+            if (interactive && checkWarningFilePathLength(destinationFilePath))
+            {
+                return false;
+            }
+
+            if (File.Exists(destinationFilePath))
+            {
+                if (!interactive)
+                {
+                    return false;
+                }
+
+                if (!askUserConfirmOverwriteFileFolder(destinationFilePath, false, null))
+                {
+                    return false;
+                }
+            }
+
+            Uri oldUri = DocumentProject.Presentations.Get(0).RootUri;
+            string oldDataDir = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory;
+
+            string dirPath = Path.GetDirectoryName(destinationFilePath);
+            string prefix = Path.GetFileNameWithoutExtension(destinationFilePath);
+
+            DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix);
+            DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
+
+            if (saveAs(destinationFilePath, false))
+            {
+                string destinationFolder =
+                    DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+
+                DocumentProject.Presentations.Get(0).RootUri = oldUri;
+
+                //string datafolderPathSavedAs = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+                DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory = oldDataDir;
+
+                //string datafolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.CopyFileDataProvidersToDataFolderWithPrefix(dirPath, prefix);
+                //DebugFix.Assert(datafolderPath == datafolderPathSavedAs);
+
+
+                bool cancelled = false;
+
+                bool error = m_ShellView.RunModalCancellableProgressTask(true,
+                    Tobi_Plugin_Urakawa_Lang.CopyingDataFiles,
+                    new DataFolderCopier(DocumentProject.Presentations.Get(0),
+                    //dirPath, prefix
+                        destinationFolder
+                        ),
+                    () =>
+                    {
+                        m_Logger.Log(@"CANCELED", Category.Debug, Priority.Medium);
+                        cancelled = true;
+                    },
+                    () =>
+                    {
+                        m_Logger.Log(@"DONE", Category.Debug, Priority.Medium);
+                        cancelled = false;
+                    });
+
+                //DebugFix.Assert(outcome == !cancelled);
+
+                if (interactive && askUserOpenSavedAs(destinationFilePath))
+                {
+                    try
+                    {
+                        OpenFile(destinationFilePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        ExceptionHandler.Handle(ex, false, m_ShellView);
+                    }
+                }
+
+                return !cancelled;
+            }
+            else
+            {
+                DocumentProject.Presentations.Get(0).RootUri = oldUri;
+                DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory = oldDataDir;
+
+                return false;
+            }
+        }
+
         private void initCommands_Save()
         {
             //
@@ -106,122 +242,7 @@ namespace Tobi.Plugin.Urakawa
 
                     m_Logger.Log(@"UrakawaSession.saveAs", Category.Debug, Priority.Medium);
 
-                    bool doCleanup = askUserCleanup();
-                    if (doCleanup)
-                    {
-                        DataCleanup(true);
-                    }
-
-                    string ext = IsXukSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION;
-
-                    var dlg = new SaveFileDialog
-                    {
-                        FileName = Path.GetFileNameWithoutExtension(DocumentFilePath), //@"tobi_project",
-                        DefaultExt = ext,
-                        Filter = @"XUK (*" + ext + ")|*" + ext,
-                        CheckFileExists = false,
-                        CheckPathExists = false,
-                        AddExtension = true,
-                        CreatePrompt = false,
-                        DereferenceLinks = true,
-                        OverwritePrompt = false,
-                        Title = @"Tobi: " + UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdSaveAs_ShortDesc)
-                    };
-
-                    bool? result = false;
-
-                    m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
-
-                    if (result == false)
-                    {
-                        return;
-                    }
-
-                    if (FileDataProvider.NormaliseFullFilePath(dlg.FileName)
-                        == FileDataProvider.NormaliseFullFilePath(DocumentFilePath))
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif
-                        return;
-                    }
-
-                    if (checkWarningFilePathLength(dlg.FileName))
-                    {
-                        return;
-                    }
-
-                    if (File.Exists(dlg.FileName))
-                    {
-                        if (!askUserConfirmOverwriteFileFolder(dlg.FileName, false, null))
-                        {
-                            return;
-                        }
-                    }
-
-                    Uri oldUri = DocumentProject.Presentations.Get(0).RootUri;
-                    string oldDataDir = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory;
-
-                    string dirPath = Path.GetDirectoryName(dlg.FileName);
-                    string prefix = Path.GetFileNameWithoutExtension(dlg.FileName);
-
-                    DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix);
-                    DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
-
-                    if (saveAs(dlg.FileName, false))
-                    {
-                        string destinationFolder =
-                            DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
-
-                        DocumentProject.Presentations.Get(0).RootUri = oldUri;
-
-                        //string datafolderPathSavedAs = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
-                        DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory = oldDataDir;
-
-                        //string datafolderPath = DocumentProject.Presentations.Get(0).DataProviderManager.CopyFileDataProvidersToDataFolderWithPrefix(dirPath, prefix);
-                        //DebugFix.Assert(datafolderPath == datafolderPathSavedAs);
-
-
-                        bool cancelled = false;
-
-                        bool error = m_ShellView.RunModalCancellableProgressTask(true,
-                            Tobi_Plugin_Urakawa_Lang.CopyingDataFiles,
-                            new DataFolderCopier(DocumentProject.Presentations.Get(0),
-                            //dirPath, prefix
-                                destinationFolder
-                                ),
-                            () =>
-                            {
-                                m_Logger.Log(@"CANCELED", Category.Debug, Priority.Medium);
-                                cancelled = true;
-                            },
-                            () =>
-                            {
-                                m_Logger.Log(@"DONE", Category.Debug, Priority.Medium);
-                                cancelled = false;
-                            });
-
-                        //DebugFix.Assert(outcome == !cancelled);
-
-                        if (askUserOpenSavedAs(dlg.FileName))
-                        {
-                            try
-                            {
-                                OpenFile(dlg.FileName);
-                            }
-                            catch (Exception ex)
-                            {
-                                ExceptionHandler.Handle(ex, false, m_ShellView);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        DocumentProject.Presentations.Get(0).RootUri = oldUri;
-                        DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory = oldDataDir;
-                    }
-
-                    return;
+                    bool saved = saveAsCommand(null);
 
                     //var fileDialog = Container.Resolve<IFileDialogService>();
                     //return fileDialog.SaveAs();
@@ -341,6 +362,13 @@ namespace Tobi.Plugin.Urakawa
                             File.Delete(DocumentFilePath);
 
                             File.Move(saving, DocumentFilePath);
+                            try
+                            {
+                                File.SetAttributes(DocumentFilePath, FileAttributes.Normal);
+                            }
+                            catch
+                            {
+                            }
 
                             //File.Copy(DocumentFilePath + SAVING_EXT, DocumentFilePath);
                             //File.Delete(DocumentFilePath + SAVING_EXT);
@@ -373,6 +401,13 @@ namespace Tobi.Plugin.Urakawa
                             }
 
                             File.Move(saving, saveAsDocumentFilePath);
+                            try
+                            {
+                                File.SetAttributes(saveAsDocumentFilePath, FileAttributes.Normal);
+                            }
+                            catch
+                            {
+                            }
                         }
                         else
                         {

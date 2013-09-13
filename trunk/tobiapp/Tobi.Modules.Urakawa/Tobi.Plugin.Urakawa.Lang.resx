@@ -184,6 +184,9 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="Menu_OpenRecent" xml:space="preserve">
     <value>Open recent</value>
   </data>
+  <data name="SplitMasterNoAudio" xml:space="preserve">
+    <value>Master project must not contain any audio!</value>
+  </data>
   <data name="Menu_SplitMergeProject" xml:space="preserve">
     <value>Split / Merge project</value>
   </data>
