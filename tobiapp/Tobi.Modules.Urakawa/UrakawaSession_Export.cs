@@ -528,7 +528,7 @@ namespace Tobi.Plugin.Urakawa
 
                     doExport(exportDir, exportSpineItemProjectPath);
                 },
-                () => DocumentProject != null
+                () => DocumentProject != null && !IsSplitMaster //&& !IsSplitSub
                 //&& (IsXukSpine || !HasXukSpine)
                 ,
                 Settings_KeyGestures.Default,

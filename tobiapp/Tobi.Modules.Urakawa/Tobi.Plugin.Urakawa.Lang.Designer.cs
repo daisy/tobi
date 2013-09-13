@@ -567,6 +567,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Master project must not contain any audio!.
+        /// </summary>
+        public static string SplitMasterNoAudio {
+            get {
+                return ResourceManager.GetString("SplitMasterNoAudio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stereo: .
         /// </summary>
         public static string Stereo {

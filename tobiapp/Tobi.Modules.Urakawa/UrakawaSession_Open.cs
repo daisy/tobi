@@ -662,6 +662,13 @@ namespace Tobi.Plugin.Urakawa
                                         {
                                             string renamed = Path.Combine(outdir, renameFileName);
                                             File.Move(fileInfo.FullName, renamed);
+                                            try
+                                            {
+                                                File.SetAttributes(renamed, FileAttributes.Normal);
+                                            }
+                                            catch
+                                            {
+                                            }
                                             fileName = renameFileName;
                                         }
                                         catch (Exception ex)

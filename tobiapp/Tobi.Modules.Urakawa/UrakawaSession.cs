@@ -402,7 +402,10 @@ namespace Tobi.Plugin.Urakawa
             string docPath = DocumentFilePath;
             Project project = DocumentProject;
 
-            DebugFix.Assert(!interactive == string.IsNullOrEmpty(docPath));
+            if (!interactive)
+            {
+                DebugFix.Assert(IsSplitMaster || IsSplitSub || string.IsNullOrEmpty(docPath));
+            }
 
             if (interactive)
             {
@@ -522,6 +525,13 @@ namespace Tobi.Plugin.Urakawa
                         if (!File.Exists(filePathDest))
                         {
                             File.Move(filePath, filePathDest);
+                            try
+                            {
+                                File.SetAttributes(filePathDest, FileAttributes.Normal);
+                            }
+                            catch
+                            {
+                            }
                         }
                     }
                 }
@@ -549,6 +559,13 @@ namespace Tobi.Plugin.Urakawa
                                 File.Delete(filePathDest);
                             }
                             File.Move(filePath, filePathDest);
+                            try
+                            {
+                                File.SetAttributes(filePathDest, FileAttributes.Normal);
+                            }
+                            catch
+                            {
+                            }
                         }
                     }
                 }
