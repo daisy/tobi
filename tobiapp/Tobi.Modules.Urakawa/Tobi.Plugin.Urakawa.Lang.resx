@@ -184,6 +184,21 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="Menu_OpenRecent" xml:space="preserve">
     <value>Open recent</value>
   </data>
+  <data name="Menu_SplitMergeProject" xml:space="preserve">
+    <value>Split / Merge project</value>
+  </data>
+  <data name="CmdSplitProject_ShortDesc" xml:space="preserve">
+    <value>_Split...</value>
+  </data>
+  <data name="CmdSplitProject_LongDesc" xml:space="preserve">
+    <value>Divide the current master project into sub-projects (distribute to multiple narrators)</value>
+  </data>
+  <data name="CmdMergeProject_ShortDesc" xml:space="preserve">
+    <value>_Merge...</value>
+  </data>
+  <data name="CmdMergeProject_LongDesc" xml:space="preserve">
+    <value>Combine several sub-projects back into the master project</value>
+  </data>
   <data name="CmdOpenRecent_ShortDesc" xml:space="preserve">
     <value>Open _recent ...</value>
   </data>
