@@ -59,6 +59,7 @@ namespace Tobi.Plugin.Urakawa
         private int m_MenuBarId_6 = -1;
         private int m_MenuBarId_7;
         private int m_MenuBarId_9;
+        private int m_MenuBarId_10;
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_9 = m_MenuBarView.AddMenuBarGroup(
@@ -98,6 +99,11 @@ namespace Tobi.Plugin.Urakawa
                 Tobi_Common_Lang.Menu_File, PreferredPosition.Any, true,
                 null, PreferredPosition.First, true,
                 new[] { m_UrakawaSession.CloseCommand });
+
+            m_MenuBarId_10 = m_MenuBarView.AddMenuBarGroup(
+                Tobi_Common_Lang.Menu_Tools, PreferredPosition.First, true,
+                Tobi_Plugin_Urakawa_Lang.Menu_SplitMergeProject, PreferredPosition.First, true,
+                new[] { m_UrakawaSession.SplitProjectCommand, m_UrakawaSession.MergeProjectCommand });
 
             m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_Edit, PreferredPosition.First, true,
@@ -180,6 +186,8 @@ namespace Tobi.Plugin.Urakawa
 
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Edit, m_MenuBarId_4);
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Edit, m_MenuBarId_5);
+
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Edit, m_MenuBarId_10);
 
                 if (false && Settings.Default.EnableRecentFilesMenu)
                 {

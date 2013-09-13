@@ -316,6 +316,7 @@ namespace Tobi.Plugin.Urakawa
             initCommands_Open();
             initCommands_Save();
             initCommands_Export();
+            initCommands_SplitMerge();
 
             OpenDocumentFolderCommand = new RichDelegateCommand(
                 Tobi_Plugin_Urakawa_Lang.CmdOpenDocumentFolder_ShortDesc,

@@ -106,6 +106,7 @@
     <Compile Include="UrakawaSession_Open.cs" />
     <Compile Include="UrakawaSession_RecentFiles.cs" />
     <Compile Include="UrakawaSession_Save.cs" />
+    <Compile Include="UrakawaSession_SplitMerge.cs" />
     <Compile Include="UrakawaSession_TreeNodeSelection.cs" />
     <Compile Include="UrakawaSession_XukSpine.cs" />
     <Compile Include="XukSpineView.xaml.cs">
