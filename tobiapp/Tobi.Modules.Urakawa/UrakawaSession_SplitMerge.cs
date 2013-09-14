@@ -542,6 +542,7 @@ namespace Tobi.Plugin.Urakawa
                                 if (attrCheck != null)
                                 {
                                     DebugFix.Assert(counter == Int32.Parse(attrCheck.Value));
+                                    level.GetXmlProperty().RemoveAttribute(attrCheck);
 
                                     //TextMedia txtMedia = (TextMedia)hd.GetChannelsProperty().GetMedia(presentation.ChannelsManager.GetOrCreateTextChannel());
                                     //txtMedia.Text = "MERGED_OK_" + counter;
