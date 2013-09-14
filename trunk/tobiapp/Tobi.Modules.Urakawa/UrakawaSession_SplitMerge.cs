@@ -535,7 +535,7 @@ namespace Tobi.Plugin.Urakawa
                             DebugFix.Assert(attrCheck.Value == counter.ToString());
 
 
-                            TreeNode level = root.GetFirstDescendantWithXmlElement("level1");
+                            TreeNode level = subroot.GetFirstDescendantWithXmlElement("level1");
                             while (level != null)
                             {
                                 attrCheck = level.GetXmlProperty().GetAttribute("splitMergeId");
@@ -543,14 +543,16 @@ namespace Tobi.Plugin.Urakawa
                                 {
                                     DebugFix.Assert(counter == Int32.Parse(attrCheck.Value));
 
-                                    TextMedia txtMedia = (TextMedia)hd.GetChannelsProperty().GetMedia(presentation.ChannelsManager.GetOrCreateTextChannel());
-                                    txtMedia.Text = "MERGED_OK_" + counter;
+                                    //TextMedia txtMedia = (TextMedia)hd.GetChannelsProperty().GetMedia(presentation.ChannelsManager.GetOrCreateTextChannel());
+                                    //txtMedia.Text = "MERGED_OK_" + counter;
 
-                                    //TreeNode parent = hd.Parent;
-                                    //int index = parent.Children.IndexOf(hd);
-                                    //parent.RemoveChild(index);
-                                    //// LEVEL IMPORT!
-                                    //parent.Insert(importedLevel, index);
+                                    TreeNode importedLevel = level.Export(presentation);
+
+                                    TreeNode parent = hd.Parent;
+                                    int index = parent.Children.IndexOf(hd);
+                                    parent.RemoveChild(index);
+                                    parent.Insert(importedLevel, index);
+                                    hd = importedLevel;
 
                                     break;
                                 }
