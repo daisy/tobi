@@ -482,94 +482,94 @@ namespace Tobi.Plugin.Urakawa
                     DocumentFilePath = destinationFilePath;
                     DocumentProject = project;
 
-                    //Uri oldUri = DocumentProject.Presentations.Get(0).RootUri;
-                    //string oldDataDir = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory;
-
-                    string dirPath = Path.GetDirectoryName(destinationFilePath);
-                    string prefix = Path.GetFileNameWithoutExtension(destinationFilePath);
-
-                    DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix);
-                    DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
-
-
-
-                    Presentation presentation = project.Presentations.Get(0);
-                    TreeNode root = presentation.RootNode;
-
-                    int counter = -1;
-
-                    TreeNode hd = root.GetFirstDescendantWithXmlElement("h1");
-                    while (hd != null)
-                    {
-                        XmlAttribute xmlAttr = hd.GetXmlProperty().GetAttribute("splitMergeId");
-                        if (xmlAttr != null)
-                        {
-                            counter++;
-                            DebugFix.Assert(counter == Int32.Parse(xmlAttr.Value));
-
-                            string xukFolder = Path.Combine(topDirectory, fileNameWithoutExtension + "_" + counter);
-                            string xukPath = Path.Combine(xukFolder, counter + extension);
-
-
-
-                            Uri uri = new Uri(xukPath, UriKind.Absolute);
-                            bool pretty = project.PrettyFormat;
-                            Project subproject = new Project();
-                            subproject.PrettyFormat = pretty;
-                            OpenXukAction action = new OpenXukAction(subproject, uri);
-                            action.ShortDescription = "...";
-                            action.LongDescription = "...";
-                            action.Execute();
-
-                            if (subproject.Presentations.Count <= 0)
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif //DEBUG
-                                continue;
-                            }
-
-                            Presentation subpresentation = subproject.Presentations.Get(0);
-                            TreeNode subroot = subpresentation.RootNode;
-                            XmlAttribute attrCheck = subroot.GetXmlProperty().GetAttribute("splitMerge");
-                            DebugFix.Assert(attrCheck.Value == counter.ToString());
-
-
-                            TreeNode level = subroot.GetFirstDescendantWithXmlElement("level1");
-                            while (level != null)
-                            {
-                                attrCheck = level.GetXmlProperty().GetAttribute("splitMergeId");
-                                if (attrCheck != null)
-                                {
-                                    DebugFix.Assert(counter == Int32.Parse(attrCheck.Value));
-                                    level.GetXmlProperty().RemoveAttribute(attrCheck);
-
-                                    //TextMedia txtMedia = (TextMedia)hd.GetChannelsProperty().GetMedia(presentation.ChannelsManager.GetOrCreateTextChannel());
-                                    //txtMedia.Text = "MERGED_OK_" + counter;
-
-                                    TreeNode importedLevel = level.Export(presentation);
-
-                                    TreeNode parent = hd.Parent;
-                                    int index = parent.Children.IndexOf(hd);
-                                    parent.RemoveChild(index);
-                                    parent.Insert(importedLevel, index);
-                                    hd = importedLevel;
-
-                                    break;
-                                }
-
-                                level = level.GetNextSiblingWithXmlElement("level1");
-                            }
-                        }
-
-                        hd = hd.GetNextSiblingWithXmlElement("h1");
-                    }
-
-                    int total = counter + 1;
-
-
                     try
                     {
+
+                        //Uri oldUri = DocumentProject.Presentations.Get(0).RootUri;
+                        //string oldDataDir = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory;
+
+                        string dirPath = Path.GetDirectoryName(destinationFilePath);
+                        string prefix = Path.GetFileNameWithoutExtension(destinationFilePath);
+
+                        DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix);
+                        DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
+
+
+
+                        Presentation presentation = project.Presentations.Get(0);
+                        TreeNode root = presentation.RootNode;
+
+                        int counter = -1;
+
+                        TreeNode hd = root.GetFirstDescendantWithXmlElement("h1");
+                        while (hd != null)
+                        {
+                            XmlAttribute xmlAttr = hd.GetXmlProperty().GetAttribute("splitMergeId");
+                            if (xmlAttr != null)
+                            {
+                                counter++;
+                                DebugFix.Assert(counter == Int32.Parse(xmlAttr.Value));
+
+                                string xukFolder = Path.Combine(topDirectory, fileNameWithoutExtension + "_" + counter);
+                                string xukPath = Path.Combine(xukFolder, counter + extension);
+
+                                try
+                                {
+                                    Uri uri = new Uri(xukPath, UriKind.Absolute);
+                                    bool pretty = project.PrettyFormat;
+                                    Project subproject = new Project();
+                                    subproject.PrettyFormat = pretty;
+                                    OpenXukAction action = new OpenXukAction(subproject, uri);
+                                    action.ShortDescription = "...";
+                                    action.LongDescription = "...";
+                                    action.Execute();
+
+                                    Presentation subpresentation = subproject.Presentations.Get(0);
+                                    TreeNode subroot = subpresentation.RootNode;
+                                    XmlAttribute attrCheck = subroot.GetXmlProperty().GetAttribute("splitMerge");
+                                    DebugFix.Assert(attrCheck.Value == counter.ToString());
+
+
+                                    TreeNode level = subroot.GetFirstDescendantWithXmlElement("level1");
+                                    while (level != null)
+                                    {
+                                        attrCheck = level.GetXmlProperty().GetAttribute("splitMergeId");
+                                        if (attrCheck != null)
+                                        {
+                                            DebugFix.Assert(counter == Int32.Parse(attrCheck.Value));
+                                            level.GetXmlProperty().RemoveAttribute(attrCheck);
+
+                                            //TextMedia txtMedia = (TextMedia)hd.GetChannelsProperty().GetMedia(presentation.ChannelsManager.GetOrCreateTextChannel());
+                                            //txtMedia.Text = "MERGED_OK_" + counter;
+
+                                            TreeNode importedLevel = level.Export(presentation);
+
+                                            TreeNode parent = hd.Parent;
+                                            int index = parent.Children.IndexOf(hd);
+                                            parent.RemoveChild(index);
+                                            parent.Insert(importedLevel, index);
+                                            hd = importedLevel;
+
+                                            break;
+                                        }
+
+                                        level = level.GetNextSiblingWithXmlElement("level1");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    //messageBoxAlert("PROBLEM:\n " + xukPath, null);
+                                    messageBoxText("MERGE PROBLEM", xukPath, ex.Message);
+
+                                    throw ex;
+                                }
+                            }
+
+                            hd = hd.GetNextSiblingWithXmlElement("h1");
+                        }
+
+                        int total = counter + 1;
+
                         string deletedDataFolderPath = DataCleanup(false);
 
                         if (!string.IsNullOrEmpty(deletedDataFolderPath) && Directory.Exists(deletedDataFolderPath))
