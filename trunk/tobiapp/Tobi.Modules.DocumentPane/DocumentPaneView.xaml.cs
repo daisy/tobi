@@ -2684,7 +2684,7 @@ namespace Tobi.Plugin.DocumentPane
                 //m_ScrollToViewStopwatch.Reset();
                 //m_ScrollToViewStopwatch.Start();
 
-                Dispatcher.Invoke(DispatcherPriority.Render, (Action)(m_scrollTextElement.BringIntoView));
+                //Dispatcher.Invoke(DispatcherPriority.Input, (Action)(m_scrollTextElement.BringIntoView));
 
                 if (m_scrollRefreshIntervalTimer == null)
                 {
@@ -2722,6 +2722,9 @@ namespace Tobi.Plugin.DocumentPane
         private void scrollToView_(TextElement textElement)
         {
             m_Logger.Log("@@@@@@@@@ SCROLL", Category.Debug, Priority.Medium);
+
+            textElement.BringIntoView();
+
             //DebugFix.Assert(FlowDocReader.ScrollViewer.ScrollableHeight == FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight);
             if (FlowDocReader.ScrollViewer.ScrollableHeight !=
                          FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight)
