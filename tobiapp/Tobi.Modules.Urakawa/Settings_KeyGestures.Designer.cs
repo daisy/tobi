@@ -145,25 +145,25 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] B")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_SplitProject {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] B")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_ProjectSplit {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_SplitProject"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_ProjectSplit"]));
             }
             set {
-                this["Keyboard_SplitProject"] = value;
+                this["Keyboard_ProjectSplit"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] B")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_MergeProject {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ALT ] B")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_ProjectMerge {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_MergeProject"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_ProjectMerge"]));
             }
             set {
-                this["Keyboard_MergeProject"] = value;
+                this["Keyboard_ProjectMerge"] = value;
             }
         }
         
