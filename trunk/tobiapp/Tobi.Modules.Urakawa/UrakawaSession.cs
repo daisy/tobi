@@ -618,7 +618,7 @@ namespace Tobi.Plugin.Urakawa
                     DocumentProject = project;
                     //XukStrings.RelocateProjectReference(DocumentProject);
 
-                    if (save())
+                    if (save(false))
                     {
                         DocumentFilePath = null;
                         DocumentProject = null;
@@ -759,7 +759,7 @@ namespace Tobi.Plugin.Urakawa
 
                 if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
                 {
-                    if (!save())
+                    if (!save(false))
                     {
                         return PopupModalWindow.DialogButton.Cancel;
                     }

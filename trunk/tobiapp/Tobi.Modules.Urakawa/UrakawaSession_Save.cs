@@ -89,7 +89,7 @@ namespace Tobi.Plugin.Urakawa
         }
 
 
-        private bool saveAsCommand(string destinationFilePath)
+        private bool saveAsCommand(string destinationFilePath, bool noUI)
         {
             bool interactive = string.IsNullOrEmpty(destinationFilePath);
 
@@ -166,7 +166,7 @@ namespace Tobi.Plugin.Urakawa
             DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix);
             DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
 
-            if (saveAs(destinationFilePath, false))
+            if (saveAs(destinationFilePath, false, noUI))
             {
                 string destinationFolder =
                     DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
@@ -182,23 +182,31 @@ namespace Tobi.Plugin.Urakawa
 
                 bool cancelled = false;
 
-                bool error = m_ShellView.RunModalCancellableProgressTask(true,
-                    Tobi_Plugin_Urakawa_Lang.CopyingDataFiles,
-                    new DataFolderCopier(DocumentProject.Presentations.Get(0),
+                var copier = new DataFolderCopier(DocumentProject.Presentations.Get(0),
                     //dirPath, prefix
-                        destinationFolder
-                        ),
-                    () =>
-                    {
-                        m_Logger.Log(@"CANCELED", Category.Debug, Priority.Medium);
-                        cancelled = true;
-                    },
-                    () =>
-                    {
-                        m_Logger.Log(@"DONE", Category.Debug, Priority.Medium);
-                        cancelled = false;
-                    });
+                    destinationFolder
+                    );
 
+                if (noUI)
+                {
+                    copier.DoWork();
+                }
+                else
+                {
+                    bool error = m_ShellView.RunModalCancellableProgressTask(true,
+                        Tobi_Plugin_Urakawa_Lang.CopyingDataFiles,
+                        copier,
+                        () =>
+                        {
+                            m_Logger.Log(@"CANCELED", Category.Debug, Priority.Medium);
+                            cancelled = true;
+                        },
+                        () =>
+                        {
+                            m_Logger.Log(@"DONE", Category.Debug, Priority.Medium);
+                            cancelled = false;
+                        });
+                }
                 //DebugFix.Assert(outcome == !cancelled);
 
                 if (interactive && askUserOpenSavedAs(destinationFilePath))
@@ -242,7 +250,7 @@ namespace Tobi.Plugin.Urakawa
 
                     m_Logger.Log(@"UrakawaSession.saveAs", Category.Debug, Priority.Medium);
 
-                    bool saved = saveAsCommand(null);
+                    bool saved = saveAsCommand(null, false);
 
                     //var fileDialog = Container.Resolve<IFileDialogService>();
                     //return fileDialog.SaveAs();
@@ -259,7 +267,7 @@ namespace Tobi.Plugin.Urakawa
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadTangoIcon(@"drive-harddisk"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
-                () => save(),
+                () => save(false),
                 () => DocumentProject != null,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Save));
@@ -284,19 +292,19 @@ namespace Tobi.Plugin.Urakawa
             //m_Logger.Log(String.Format(@"UrakawaSession.saveAuto() [{0}]", autoSaveFilePath), Category.Debug, Priority.Medium);
             m_Logger.Log(@"UrakawaSession.saveAuto()", Category.Debug, Priority.Medium);
 
-            return saveAs(autoSaveFilePath, true);
+            return saveAs(autoSaveFilePath, true, true);
         }
 
-        private bool save()
+        private bool save(bool noUI)
         {
             if (DocumentProject == null)
             {
                 return false;
             }
-            return saveAs(DocumentFilePath, false);
+            return saveAs(DocumentFilePath, false, noUI);
         }
 
-        private bool saveAs(string filePath, bool autoSave)
+        private bool saveAs(string filePath, bool autoSave, bool noUI)
         {
             if (DocumentProject == null)
             {
@@ -431,7 +439,7 @@ namespace Tobi.Plugin.Urakawa
                     //IsDirty = false;
                 };
 
-            if (autoSave)
+            if (autoSave || noUI)
             {
                 action.Progress += new EventHandler<ProgressEventArgs>(
                     delegate(object sender, ProgressEventArgs e)

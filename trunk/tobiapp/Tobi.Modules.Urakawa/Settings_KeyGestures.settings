@@ -34,11 +34,11 @@
     <Setting Name="Keyboard_SaveAs" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] S</Value>
     </Setting>
-    <Setting Name="Keyboard_SplitProject" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ CTRL ] B</Value>
-    </Setting>
-    <Setting Name="Keyboard_MergeProject" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+    <Setting Name="Keyboard_ProjectSplit" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] B</Value>
+    </Setting>
+    <Setting Name="Keyboard_ProjectMerge" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ALT ] B</Value>
     </Setting>
     <Setting Name="Keyboard_Export" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] E</Value>

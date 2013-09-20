@@ -1,64 +1,433 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
+using System.Threading;
 using AudioLib;
+using Microsoft.Internal;
 using Tobi.Common.MVVM;
 using Microsoft.Practices.Composite.Logging;
-using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa.data;
-using urakawa.events.progress;
+using urakawa.progress;
 using urakawa.property.channel;
 using urakawa.xuk;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using Orientation = System.Windows.Controls.Orientation;
-using ProgressBar = System.Windows.Controls.ProgressBar;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Threading;
-using System.Xml;
-using AudioLib;
-using PipelineWSClient;
-using Saxon.Api;
-using Microsoft.Practices.Composite.Logging;
-using Microsoft.Win32;
-using Tobi.Common;
-using Tobi.Common.MVVM;
-using Tobi.Common.MVVM.Command;
-using Tobi.Common.UI;
 using urakawa;
 using urakawa.core;
-using urakawa.daisy.export;
-using urakawa.daisy.import;
-using urakawa.data;
-using urakawa.exception;
 using urakawa.media;
 using urakawa.property.xml;
-using urakawa.xuk;
-using ListBox = System.Windows.Forms.ListBox;
 using XmlAttribute = urakawa.property.xml.XmlAttribute;
 
 namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
+        public class MergeAction : DualCancellableProgressReporter
+        {
+            private readonly UrakawaSession m_session;
+            private readonly string docPath;
+            private readonly Project project;
+            private readonly string destinationFilePath;
+            private readonly string topDirectory;
+            private readonly string fileNameWithoutExtension;
+            private readonly string extension;
+
+            public MergeAction(UrakawaSession session, string docPath_, Project project_, string destinationFilePath_, string topDirectory_, string fileNameWithoutExtension_, string extension_)
+            {
+                m_session = session;
+                docPath = docPath_;
+                project = project_;
+                destinationFilePath = destinationFilePath_;
+                topDirectory = topDirectory_;
+                fileNameWithoutExtension = fileNameWithoutExtension_;
+                extension = extension_;
+            }
+
+            public override void DoWork()
+            {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+                try
+                {
+                    Merge();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    throw ex;
+                }
+                finally
+                {
+                    stopWatch.Stop();
+                    Console.WriteLine(@"......MERGE milliseconds: " + stopWatch.ElapsedMilliseconds);
+                }
+            }
+
+            public void Merge()
+            {
+                m_session.DocumentFilePath = docPath;
+                m_session.DocumentProject = project;
+
+                bool saved = false;
+                try
+                {
+                    saved = m_session.saveAsCommand(destinationFilePath, true);
+                    //SaveAsCommand.Execute();
+                }
+                finally
+                {
+                    m_session.DocumentFilePath = null;
+                    m_session.DocumentProject = null;
+                }
+
+                if (!saved)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                    RequestCancellation = true;
+                    return;
+                }
+
+                m_session.DocumentFilePath = destinationFilePath;
+                m_session.DocumentProject = project;
+
+                try
+                {
+
+                    //Uri oldUri = DocumentProject.Presentations.Get(0).RootUri;
+                    //string oldDataDir = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory;
+
+                    string dirPath = Path.GetDirectoryName(destinationFilePath);
+                    string prefix = Path.GetFileNameWithoutExtension(destinationFilePath);
+
+                    m_session.DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix);
+                    m_session.DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
+
+
+
+                    Presentation presentation = project.Presentations.Get(0);
+                    TreeNode root = presentation.RootNode;
+
+                    int counter = -1;
+
+                    TreeNode hd = root.GetFirstDescendantWithXmlElement("h1");
+                    while (hd != null)
+                    {
+                        XmlAttribute xmlAttr = hd.GetXmlProperty().GetAttribute("splitMergeId");
+                        if (xmlAttr != null)
+                        {
+                            counter++;
+                            DebugFix.Assert(counter == Int32.Parse(xmlAttr.Value));
+                        }
+
+                        hd = hd.GetNextSiblingWithXmlElement("h1");
+                    }
+                    int total = counter + 1;
+                    counter = -1;
+                    hd = root.GetFirstDescendantWithXmlElement("h1");
+                    while (hd != null)
+                    {
+                        if (RequestCancellation)
+                        {
+                            return;
+                        }
+
+                        XmlAttribute xmlAttr = hd.GetXmlProperty().GetAttribute("splitMergeId");
+                        if (xmlAttr != null)
+                        {
+                            counter++;
+                            //DebugFix.Assert(counter == Int32.Parse(xmlAttr.Value));
+                            
+                            int i = counter + 1;
+                            reportProgress(100 * i / total, i + " / " + total);
+
+                            //Thread.Sleep(500);
+
+                            string xukFolder = Path.Combine(topDirectory, fileNameWithoutExtension + "_" + counter);
+                            string xukPath = Path.Combine(xukFolder, counter + extension);
+
+                            try
+                            {
+                                Uri uri = new Uri(xukPath, UriKind.Absolute);
+                                bool pretty = project.PrettyFormat;
+                                Project subproject = new Project();
+                                subproject.PrettyFormat = pretty;
+                                OpenXukAction action = new OpenXukAction(subproject, uri);
+                                action.ShortDescription = "...";
+                                action.LongDescription = "...";
+                                action.Execute();
+
+                                Presentation subpresentation = subproject.Presentations.Get(0);
+                                TreeNode subroot = subpresentation.RootNode;
+                                XmlAttribute attrCheck = subroot.GetXmlProperty().GetAttribute("splitMerge");
+                                DebugFix.Assert(attrCheck.Value == counter.ToString());
+
+
+                                TreeNode level = subroot.GetFirstDescendantWithXmlElement("level1");
+                                while (level != null)
+                                {
+                                    attrCheck = level.GetXmlProperty().GetAttribute("splitMergeId");
+                                    if (attrCheck != null)
+                                    {
+                                        DebugFix.Assert(counter == Int32.Parse(attrCheck.Value));
+                                        level.GetXmlProperty().RemoveAttribute(attrCheck);
+
+                                        //TextMedia txtMedia = (TextMedia)hd.GetChannelsProperty().GetMedia(presentation.ChannelsManager.GetOrCreateTextChannel());
+                                        //txtMedia.Text = "MERGED_OK_" + counter;
+
+                                        TreeNode importedLevel = level.Export(presentation);
+
+                                        TreeNode parent = hd.Parent;
+                                        int index = parent.Children.IndexOf(hd);
+                                        parent.RemoveChild(index);
+                                        parent.Insert(importedLevel, index);
+                                        hd = importedLevel;
+
+                                        break;
+                                    }
+
+                                    level = level.GetNextSiblingWithXmlElement("level1");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                //messageBoxAlert("PROBLEM:\n " + xukPath, null);
+                                //m_session.messageBoxText("MERGE PROBLEM", xukPath, ex.Message);
+
+                                throw ex;
+                            }
+                        }
+
+                        hd = hd.GetNextSiblingWithXmlElement("h1");
+                    }
+
+                    //int total = counter + 1;
+
+                    string deletedDataFolderPath = m_session.DataCleanup(false);
+
+                    if (!string.IsNullOrEmpty(deletedDataFolderPath) && Directory.Exists(deletedDataFolderPath))
+                    {
+                        //FileDataProvider.DeleteDirectory(deletedDataFolderPath);
+                        if (Directory.GetFiles(deletedDataFolderPath).Length != 0 ||
+                            Directory.GetDirectories(deletedDataFolderPath).Length != 0)
+                        {
+                            m_session.m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+                        }
+                    }
+
+                    root.GetXmlProperty().RemoveAttribute("splitMerge", "");
+
+                    saved = m_session.save(true);
+                }
+                finally
+                {
+                    m_session.DocumentFilePath = null;
+                    m_session.DocumentProject = null;
+                }
+
+                if (!saved)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif //DEBUG
+                    RequestCancellation = true;
+                    return;
+                }
+            }
+        }
+
+        public class SplitAction : DualCancellableProgressReporter
+        {
+            private readonly UrakawaSession m_session;
+            private readonly int m_total;
+            private readonly string m_docPath;
+            private readonly bool m_pretty;
+            private readonly List<string> m_cleanupFolders;
+            private readonly string m_splitDirectory;
+            private readonly string m_fileNameWithoutExtension;
+            private readonly string m_extension;
+
+            public SplitAction(UrakawaSession session, int total, string docPath, bool pretty, List<string> cleanupFolders, string splitDirectory, string fileNameWithoutExtension, string extension)
+            {
+                m_session = session;
+                m_total = total;
+                m_docPath = docPath;
+                m_pretty = pretty;
+                m_cleanupFolders = cleanupFolders;
+                m_splitDirectory = splitDirectory;
+                m_fileNameWithoutExtension = fileNameWithoutExtension;
+                m_extension = extension;
+            }
+
+            public override void DoWork()
+            {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+                try
+                {
+                    Split();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    throw ex;
+                }
+                finally
+                {
+                    stopWatch.Stop();
+                    Console.WriteLine(@"......SPLIT milliseconds: " + stopWatch.ElapsedMilliseconds);
+                }
+            }
+
+            public void Split()
+            {
+                for (int i = 0; i < m_total; i++)
+                {
+                    int j = i + 1;
+
+                    reportProgress(100 * j / m_total, j + " / " + m_total);
+
+                    //Thread.Sleep(1000);
+
+                    if (RequestCancellation)
+                    {
+                        return;
+                    }
+
+                    //// Open original (untouched)
+
+                    Uri uri = new Uri(m_docPath, UriKind.Absolute);
+                    Project project = new Project();
+                    project.PrettyFormat = m_pretty;
+                    OpenXukAction action = new OpenXukAction(project, uri);
+                    action.ShortDescription = "...";
+                    action.LongDescription = "...";
+                    action.Execute();
+
+                    if (project.Presentations.Count <= 0)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif //DEBUG
+                        RequestCancellation = true;
+                        return;
+                    }
+
+                    Presentation presentation = project.Presentations.Get(0);
+                    TreeNode root = presentation.RootNode;
+                    root.GetXmlProperty().SetAttribute("splitMerge", "", i.ToString());
+
+                    int counter = -1;
+
+                    TreeNode level = root.GetFirstDescendantWithXmlElement("level1");
+                    while (level != null)
+                    {
+                        counter++;
+
+                        if (counter == i)
+                        {
+                            XmlProperty xmlProp = level.GetOrCreateXmlProperty();
+                            xmlProp.SetAttribute("splitMergeId", "", i.ToString());
+
+                            TreeNode parent = level.Parent;
+                            TreeNode toKeep = level;
+                            while (parent != null)
+                            {
+                                foreach (TreeNode child in parent.Children.ContentsAs_ListCopy)
+                                {
+                                    if (child != toKeep)
+                                    {
+                                        parent.RemoveChild(child);
+                                    }
+                                }
+
+                                toKeep = parent;
+                                parent = parent.Parent;
+                            }
+
+                            break;
+                        }
+
+                        level = level.GetNextSiblingWithXmlElement("level1");
+                    }
+
+
+                    string subDirectory = Path.Combine(m_splitDirectory, m_fileNameWithoutExtension + "_" + i);
+                    string destinationFilePath = Path.Combine(subDirectory, i + m_extension);
+
+                    m_session.DocumentFilePath = m_docPath;
+                    m_session.DocumentProject = project;
+
+                    bool saved = false;
+                    try
+                    {
+                        saved = m_session.saveAsCommand(destinationFilePath, true);
+                        //SaveAsCommand.Execute();
+                    }
+                    finally
+                    {
+                        m_session.DocumentFilePath = null;
+                        m_session.DocumentProject = null;
+                    }
+
+                    if (!saved)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif //DEBUG
+
+                        RequestCancellation = true;
+                        return;
+                    }
+
+                    m_session.DocumentFilePath = destinationFilePath;
+                    m_session.DocumentProject = project;
+
+                    //Uri oldUri = DocumentProject.Presentations.Get(0).RootUri;
+                    //string oldDataDir = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory;
+
+                    string dirPath_ = Path.GetDirectoryName(destinationFilePath);
+                    string prefix_ = Path.GetFileNameWithoutExtension(destinationFilePath);
+
+                    m_session.DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix_);
+                    m_session.DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath_ + Path.DirectorySeparatorChar, UriKind.Absolute);
+
+                    try
+                    {
+                        string deletedDataFolderPath_ = m_session.DataCleanup(false);
+
+                        if (!string.IsNullOrEmpty(deletedDataFolderPath_) && Directory.Exists(deletedDataFolderPath_))
+                        {
+                            m_cleanupFolders.Add(deletedDataFolderPath_);
+                            //FileDataProvider.DeleteDirectory(deletedDataFolderPath_);
+                        }
+
+                        saved = m_session.save(true);
+                    }
+                    finally
+                    {
+                        m_session.DocumentFilePath = null;
+                        m_session.DocumentProject = null;
+                    }
+
+                    if (!saved)
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif //DEBUG
+                        RequestCancellation = true;
+                        return;
+                    }
+                }
+            }
+        }
+
         public RichDelegateCommand SplitProjectCommand { get; private set; }
         public RichDelegateCommand MergeProjectCommand { get; private set; }
 
@@ -175,7 +544,7 @@ namespace Tobi.Plugin.Urakawa
                     bool saved = false;
                     try
                     {
-                        saved = saveAsCommand(destinationFilePath);
+                        saved = saveAsCommand(destinationFilePath, true);
                         //SaveAsCommand.Execute();
                     }
                     finally
@@ -216,7 +585,7 @@ namespace Tobi.Plugin.Urakawa
                             //FileDataProvider.DeleteDirectory(deletedDataFolderPath);
                         }
 
-                        saved = save();
+                        saved = save(true);
                     }
                     finally
                     {
@@ -234,159 +603,88 @@ namespace Tobi.Plugin.Urakawa
 
                     string masterFilePath = destinationFilePath;
 
-                    for (int i = 0; i < total; i++)
-                    {
-                        //// Open original (untouched)
 
-                        Uri uri = new Uri(docPath, UriKind.Absolute);
-                        bool pretty = project.PrettyFormat;
-                        project = new Project();
-                        project.PrettyFormat = pretty;
-                        OpenXukAction action = new OpenXukAction(project, uri);
-                        action.ShortDescription = "...";
-                        action.LongDescription = "...";
-                        action.Execute();
+                    bool cancelled = false;
+                    bool error = false;
 
-                        if (project.Presentations.Count <= 0)
+                    var action = new SplitAction(this, total, docPath, project.PrettyFormat, cleanupFolders, splitDirectory, fileNameWithoutExtension, extension);
+
+                    Action cancelledCallback =
+                        () =>
                         {
-#if DEBUG
-                            Debugger.Break();
-#endif //DEBUG
-                            continue;
-                        }
+                            cancelled = true;
 
-                        presentation = project.Presentations.Get(0);
-                        root = presentation.RootNode;
-                        root.GetXmlProperty().SetAttribute("splitMerge", "", i.ToString());
+                        };
 
-                        counter = -1;
-
-                        level = root.GetFirstDescendantWithXmlElement("level1");
-                        while (level != null)
+                    Action finishedCallback =
+                        () =>
                         {
-                            counter++;
+                            cancelled = false;
 
-                            if (counter == i)
-                            {
-                                XmlProperty xmlProp = level.GetOrCreateXmlProperty();
-                                xmlProp.SetAttribute("splitMergeId", "", i.ToString());
+                        };
 
-                                TreeNode parent = level.Parent;
-                                TreeNode toKeep = level;
-                                while (parent != null)
-                                {
-                                    foreach (TreeNode child in parent.Children.ContentsAs_ListCopy)
-                                    {
-                                        if (child != toKeep)
-                                        {
-                                            parent.RemoveChild(child);
-                                        }
-                                    }
-
-                                    toKeep = parent;
-                                    parent = parent.Parent;
-                                }
-
-                                break;
-                            }
-
-                            level = level.GetNextSiblingWithXmlElement("level1");
-                        }
-
-
-
-                        string subDirectory = Path.Combine(splitDirectory, fileNameWithoutExtension + "_" + i);
-                        destinationFilePath = Path.Combine(subDirectory, i + extension);
-
-                        DocumentFilePath = docPath;
-                        DocumentProject = project;
-
-                        saved = false;
-                        try
-                        {
-                            saved = saveAsCommand(destinationFilePath);
-                            //SaveAsCommand.Execute();
-                        }
-                        finally
-                        {
-                            DocumentFilePath = null;
-                            DocumentProject = null;
-                        }
-
-                        if (!saved)
-                        {
-#if DEBUG
-                            Debugger.Break();
-#endif //DEBUG
-
-                            continue;
-                        }
-
-                        DocumentFilePath = destinationFilePath;
-                        DocumentProject = project;
-
-                        //Uri oldUri = DocumentProject.Presentations.Get(0).RootUri;
-                        //string oldDataDir = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory;
-
-                        string dirPath_ = Path.GetDirectoryName(destinationFilePath);
-                        string prefix_ = Path.GetFileNameWithoutExtension(destinationFilePath);
-
-                        DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix_);
-                        DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath_ + Path.DirectorySeparatorChar, UriKind.Absolute);
-
-                        try
-                        {
-                            string deletedDataFolderPath_ = DataCleanup(false);
-
-                            if (!string.IsNullOrEmpty(deletedDataFolderPath_) && Directory.Exists(deletedDataFolderPath_))
-                            {
-                                cleanupFolders.Add(deletedDataFolderPath_);
-                                //FileDataProvider.DeleteDirectory(deletedDataFolderPath_);
-                            }
-
-                            saved = save();
-                        }
-                        finally
-                        {
-                            DocumentFilePath = null;
-                            DocumentProject = null;
-                        }
-
-                        if (!saved)
-                        {
-#if DEBUG
-                            Debugger.Break();
-#endif //DEBUG
-                            continue;
-                        }
-                    }
-
-                    foreach (string cleanupFolder in cleanupFolders)
-                    {
-                        FileDataProvider.DeleteDirectory(cleanupFolder);
-                    }
-
-                    // Conclude: open master project, show folder with sub projects
+                    error = m_ShellView.RunModalCancellableProgressTask(true,
+                        Tobi_Plugin_Urakawa_Lang.CmdSplitProject_ShortDesc, action,
+                        cancelledCallback,
+                        finishedCallback
+                        );
 
                     DocumentFilePath = null;
                     DocumentProject = null;
-                    try
+
+                    if (!cancelled && !error)
                     {
-                        OpenFile(masterFilePath);
-                    }
-                    catch (Exception ex)
-                    {
-                        ExceptionHandler.Handle(ex, false, m_ShellView);
+                        foreach (string cleanupFolder in cleanupFolders)
+                        {
+                            FileDataProvider.DeleteDirectory(cleanupFolder);
+                        }
+
+                        // Conclude: open master project, show folder with sub projects
+
+                        try
+                        {
+                            OpenFile(masterFilePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionHandler.Handle(ex, false, m_ShellView);
+                        }
                     }
 
                     m_ShellView.ExecuteShellProcess(splitDirectory);
                 },
                 () => DocumentProject != null && !IsXukSpine && !HasXukSpine && !IsSplitMaster && !IsSplitSub,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_SplitProject));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ProjectSplit));
 
             m_ShellView.RegisterRichCommand(SplitProjectCommand);
+
             //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //
+
             MergeProjectCommand = new RichDelegateCommand(
                 Tobi_Plugin_Urakawa_Lang.CmdMergeProject_ShortDesc,
                 Tobi_Plugin_Urakawa_Lang.CmdMergeProject_LongDesc,
@@ -456,152 +754,31 @@ namespace Tobi.Plugin.Urakawa
                     }
 
 
-                    DocumentFilePath = docPath;
-                    DocumentProject = project;
 
-                    bool saved = false;
-                    try
-                    {
-                        saved = saveAsCommand(destinationFilePath);
-                        //SaveAsCommand.Execute();
-                    }
-                    finally
-                    {
-                        DocumentFilePath = null;
-                        DocumentProject = null;
-                    }
+                    bool cancelled = false;
+                    bool error = false;
 
-                    if (!saved)
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif //DEBUG
-                        return;
-                    }
+                    var action = new MergeAction(this, docPath, project, destinationFilePath, topDirectory, fileNameWithoutExtension, extension);
 
-                    DocumentFilePath = destinationFilePath;
-                    DocumentProject = project;
-
-                    try
-                    {
-
-                        //Uri oldUri = DocumentProject.Presentations.Get(0).RootUri;
-                        //string oldDataDir = DocumentProject.Presentations.Get(0).DataProviderManager.DataFileDirectory;
-
-                        string dirPath = Path.GetDirectoryName(destinationFilePath);
-                        string prefix = Path.GetFileNameWithoutExtension(destinationFilePath);
-
-                        DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix);
-                        DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
-
-
-
-                        Presentation presentation = project.Presentations.Get(0);
-                        TreeNode root = presentation.RootNode;
-
-                        int counter = -1;
-
-                        TreeNode hd = root.GetFirstDescendantWithXmlElement("h1");
-                        while (hd != null)
+                    Action cancelledCallback =
+                        () =>
                         {
-                            XmlAttribute xmlAttr = hd.GetXmlProperty().GetAttribute("splitMergeId");
-                            if (xmlAttr != null)
-                            {
-                                counter++;
-                                DebugFix.Assert(counter == Int32.Parse(xmlAttr.Value));
+                            cancelled = true;
 
-                                string xukFolder = Path.Combine(topDirectory, fileNameWithoutExtension + "_" + counter);
-                                string xukPath = Path.Combine(xukFolder, counter + extension);
+                        };
 
-                                try
-                                {
-                                    Uri uri = new Uri(xukPath, UriKind.Absolute);
-                                    bool pretty = project.PrettyFormat;
-                                    Project subproject = new Project();
-                                    subproject.PrettyFormat = pretty;
-                                    OpenXukAction action = new OpenXukAction(subproject, uri);
-                                    action.ShortDescription = "...";
-                                    action.LongDescription = "...";
-                                    action.Execute();
-
-                                    Presentation subpresentation = subproject.Presentations.Get(0);
-                                    TreeNode subroot = subpresentation.RootNode;
-                                    XmlAttribute attrCheck = subroot.GetXmlProperty().GetAttribute("splitMerge");
-                                    DebugFix.Assert(attrCheck.Value == counter.ToString());
-
-
-                                    TreeNode level = subroot.GetFirstDescendantWithXmlElement("level1");
-                                    while (level != null)
-                                    {
-                                        attrCheck = level.GetXmlProperty().GetAttribute("splitMergeId");
-                                        if (attrCheck != null)
-                                        {
-                                            DebugFix.Assert(counter == Int32.Parse(attrCheck.Value));
-                                            level.GetXmlProperty().RemoveAttribute(attrCheck);
-
-                                            //TextMedia txtMedia = (TextMedia)hd.GetChannelsProperty().GetMedia(presentation.ChannelsManager.GetOrCreateTextChannel());
-                                            //txtMedia.Text = "MERGED_OK_" + counter;
-
-                                            TreeNode importedLevel = level.Export(presentation);
-
-                                            TreeNode parent = hd.Parent;
-                                            int index = parent.Children.IndexOf(hd);
-                                            parent.RemoveChild(index);
-                                            parent.Insert(importedLevel, index);
-                                            hd = importedLevel;
-
-                                            break;
-                                        }
-
-                                        level = level.GetNextSiblingWithXmlElement("level1");
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    //messageBoxAlert("PROBLEM:\n " + xukPath, null);
-                                    messageBoxText("MERGE PROBLEM", xukPath, ex.Message);
-
-                                    throw ex;
-                                }
-                            }
-
-                            hd = hd.GetNextSiblingWithXmlElement("h1");
-                        }
-
-                        int total = counter + 1;
-
-                        string deletedDataFolderPath = DataCleanup(false);
-
-                        if (!string.IsNullOrEmpty(deletedDataFolderPath) && Directory.Exists(deletedDataFolderPath))
+                    Action finishedCallback =
+                        () =>
                         {
-                            //FileDataProvider.DeleteDirectory(deletedDataFolderPath);
-                            if (Directory.GetFiles(deletedDataFolderPath).Length != 0 ||
-                                Directory.GetDirectories(deletedDataFolderPath).Length != 0)
-                            {
-                                m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
-                            }
-                        }
+                            cancelled = false;
 
-                        root.GetXmlProperty().RemoveAttribute("splitMerge", "");
+                        };
 
-                        saved = save();
-                    }
-                    finally
-                    {
-                        DocumentFilePath = null;
-                        DocumentProject = null;
-                    }
-
-                    if (!saved)
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif //DEBUG
-                        return;
-                    }
-
-
-
+                    error = m_ShellView.RunModalCancellableProgressTask(true,
+                        Tobi_Plugin_Urakawa_Lang.CmdMergeProject_ShortDesc, action,
+                        cancelledCallback,
+                        finishedCallback
+                        );
 
 
 
@@ -609,23 +786,25 @@ namespace Tobi.Plugin.Urakawa
 
                     DocumentFilePath = null;
                     DocumentProject = null;
-                    try
+                    if (!cancelled && !error)
                     {
-                        OpenFile(destinationFilePath);
-                    }
-                    catch (Exception ex)
-                    {
-                        DocumentFilePath = null;
-                        DocumentProject = null;
+                        try
+                        {
+                            OpenFile(destinationFilePath);
+                        }
+                        catch (Exception ex)
+                        {
+                            DocumentFilePath = null;
+                            DocumentProject = null;
 
-                        ExceptionHandler.Handle(ex, false, m_ShellView);
+                            ExceptionHandler.Handle(ex, false, m_ShellView);
+                        }
                     }
-
                     //m_ShellView.ExecuteShellProcess(mergeDirectory);
                 },
                 () => DocumentProject != null && !IsXukSpine && !HasXukSpine && IsSplitMaster,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_MergeProject));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ProjectMerge));
 
             m_ShellView.RegisterRichCommand(MergeProjectCommand);
             //
