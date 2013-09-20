@@ -47,6 +47,11 @@ namespace Tobi.Plugin.Urakawa
             //#endif
         }
 
+        //public bool PerformanceFlag
+        //{
+        //    get; set;
+        //}
+
         private readonly ILoggerFacade m_Logger;
         private readonly IEventAggregator m_EventAggregator;
         private readonly IShellView m_ShellView;
