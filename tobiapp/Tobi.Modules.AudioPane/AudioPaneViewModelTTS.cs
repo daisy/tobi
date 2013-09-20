@@ -210,6 +210,8 @@ namespace Tobi.Plugin.AudioPane
             bool skipDrawing = Settings.Default.AudioWaveForm_DisableDraw;
             Settings.Default.AudioWaveForm_DisableDraw = true;
 
+            //m_viewModel.m_UrakawaSession.PerformanceFlag = true;
+
             bool initial = true;
             try
             {
@@ -440,6 +442,8 @@ namespace Tobi.Plugin.AudioPane
             }
             finally
             {
+                //m_viewModel.m_UrakawaSession.PerformanceFlag = false;
+
                 m_viewModel.TheDispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
                 {
                     Settings.Default.AudioWaveForm_DisableDraw = skipDrawing;

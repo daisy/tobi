@@ -9,6 +9,11 @@ namespace Tobi.Plugin.DocumentPane
     {
         private void WalkDocumentTree(TextElement textElement, Action<TextElement> action)
         {
+            //if (m_UrakawaSession.PerformanceFlag)
+            //{
+            //    return;
+            //}
+
             action.Invoke(textElement);
 
             if (textElement is ListItem) // TEXT_ELEMENT
@@ -118,8 +123,14 @@ namespace Tobi.Plugin.DocumentPane
 
         private void WalkDocumentTree(Action<TextElement> action)
         {
+            //if (m_UrakawaSession.PerformanceFlag)
+            //{
+            //    return;
+            //}
+
             WalkDocumentTree(action, TheFlowDocument.Blocks);
         }
+
         private void WalkDocumentTree(Action<TextElement> action, InlineCollection ic)
         {
             foreach (Inline inline in ic)

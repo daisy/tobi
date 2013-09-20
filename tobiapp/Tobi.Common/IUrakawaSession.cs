@@ -26,6 +26,12 @@ namespace Tobi.Common
     ///</summary>
     public interface IUrakawaSession : IPropertyChangedNotifyBase
     {
+        //bool PerformanceFlag
+        //{
+        //    get;
+        //    set;
+        //}
+
         void AutoSave_OFF();
         void AutoSave_ON();
 

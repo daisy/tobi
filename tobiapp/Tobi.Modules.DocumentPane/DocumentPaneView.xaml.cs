@@ -869,7 +869,7 @@ namespace Tobi.Plugin.DocumentPane
                 TreeNode math = null;
                 TreeNode svg = null;
                 TreeNode adjustedGranularity = null;
-                
+
                 math = toSelect.GetFirstAncestorWithXmlElement("math");
                 if (math != null)
                 {
@@ -1281,9 +1281,9 @@ namespace Tobi.Plugin.DocumentPane
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeFoxtrotIcon("Foxtrot_go-first"),
                 () =>
-                    {
-                        nextPrevious(true);
-                    
+                {
+                    nextPrevious(true);
+
                     //if (CurrentTreeNode == CurrentSubTreeNode)
                     //{
                     //    TreeNode nextNode = CurrentTreeNode.GetPreviousSiblingWithText();
@@ -3051,18 +3051,22 @@ namespace Tobi.Plugin.DocumentPane
                 //m_lastHighlighted_Background = m_lastHighlighted.Background;
                 //m_lastHighlighted_Foreground = m_lastHighlighted.Foreground;
             }
-            m_lastHighlighted.Background = brushBack1;
-            //m_lastHighlighted.Foreground = brushFont;
 
-            if (m_lastHighlighted is Block)
+            if (Settings.Default.Document_EnableDrawTopSelection)
             {
-                if (!onlyUpdateColors)
+                m_lastHighlighted.Background = brushBack1;
+                //m_lastHighlighted.Foreground = brushFont;
+
+                if (m_lastHighlighted is Block)
                 {
-                    //m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
-                    //m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
+                    if (!onlyUpdateColors)
+                    {
+                        //m_lastHighlighted_BorderBrush = ((Block)m_lastHighlighted).BorderBrush;
+                        //m_lastHighlighted_BorderThickness = ((Block)m_lastHighlighted).BorderThickness;
+                    }
+                    ((Block)m_lastHighlighted).BorderBrush = brushBorder;
+                    ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
                 }
-                ((Block)m_lastHighlighted).BorderBrush = brushBorder;
-                ((Block)m_lastHighlighted).BorderThickness = new Thickness(1);
             }
 
             if (!onlyUpdateColors)
@@ -3158,7 +3162,12 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true, false);
+            bool enable = m_lastHighlightedSub == null || Settings.Default.Document_EnableDrawTopSelection;
+
+            if (enable)
+            {
+                setOrRemoveTextDecoration_SelectUnderline(m_lastHighlighted, true, false);
+            }
 
 #if !USE_WALKTREE_FOR_SELECT
 #if USE_FLOWDOCSELECTION_FOR_SELECT
@@ -3205,7 +3214,7 @@ namespace Tobi.Plugin.DocumentPane
                 setOrRemoveTextDecoration_SelectUnderline(m_lastHighlightedSub, true, false);
             }
 
-            TextElement backup = m_lastHighlighted;
+            TextElement backup = m_lastHighlightedSub != null && !enable ? m_lastHighlightedSub : m_lastHighlighted;
             m_lastHighlighted = null;
             m_lastHighlightedSub = null;
             m_SearchCurrentIndex = -1;
@@ -3776,6 +3785,11 @@ namespace Tobi.Plugin.DocumentPane
 
         private void setOrRemoveTextDecoration_SelectUnderline(TextElement textElement, bool remove, bool overrideUseDottedSelect)
         {
+            //if (m_UrakawaSession.PerformanceFlag)
+            //{
+            //    return;
+            //}
+
             if (!remove && !overrideUseDottedSelect && !Settings.Default.Document_UseDottedSelect)
             {
                 return;
@@ -3885,6 +3899,8 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        private TextDecorationCollection m_TextDecorationCollection = null;
+
         private void setOrRemoveTextDecoration_SelectUnderline_(Inline inline, bool remove)
         {
             if (remove)
@@ -3893,33 +3909,36 @@ namespace Tobi.Plugin.DocumentPane
                 return;
             }
 
-            Brush brush = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_UnderOverLine);
+            if (m_TextDecorationCollection == null)
+            {
+                Brush brush = ColorBrushCache.Get(Settings.Default.Document_Color_Selection_UnderOverLine);
 
-            var decUnder = new TextDecoration(
-                TextDecorationLocation.Underline,
-                new Pen(brush, 1)
-                {
-                    DashStyle = DashStyles.Solid
-                },
-                2,
-                TextDecorationUnit.Pixel,
-                TextDecorationUnit.Pixel
-            );
+                var decUnder = new TextDecoration(
+                    TextDecorationLocation.Underline,
+                    new Pen(brush, 1)
+                    {
+                        DashStyle = DashStyles.Solid
+                    },
+                    2,
+                    TextDecorationUnit.Pixel,
+                    TextDecorationUnit.Pixel
+                    );
 
-            var decOver = new TextDecoration(
-                TextDecorationLocation.OverLine,
-                new Pen(brush, 1)
-                {
-                    DashStyle = DashStyles.Solid
-                },
-                0,
-                TextDecorationUnit.Pixel,
-                TextDecorationUnit.Pixel
-            );
+                var decOver = new TextDecoration(
+                    TextDecorationLocation.OverLine,
+                    new Pen(brush, 1)
+                    {
+                        DashStyle = DashStyles.Solid
+                    },
+                    0,
+                    TextDecorationUnit.Pixel,
+                    TextDecorationUnit.Pixel
+                    );
 
-            var decs = new TextDecorationCollection { decUnder, decOver };
+                m_TextDecorationCollection = new TextDecorationCollection { decUnder, decOver };
+            }
 
-            inline.TextDecorations = decs;
+            inline.TextDecorations = m_TextDecorationCollection;
         }
 
         //private void setTextDecoration_ErrorUnderline(Inline inline)
