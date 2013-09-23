@@ -2036,6 +2036,12 @@ namespace Tobi.Plugin.DocumentPane
                 return treeNode;
             }
 
+            string uid = treeNode.GetXmlElementId();
+            if (!string.IsNullOrEmpty(uid) && HasLinkSource(uid))
+            {
+                return treeNode;
+            }
+
             return ensureTreeNodeIsNoteAnnotation(treeNode.Parent);
         }
 
@@ -3364,6 +3370,14 @@ namespace Tobi.Plugin.DocumentPane
         {
             m_idLinkTargets.Add(name, textElement);
         }
+
+        public bool HasLinkSource(string name)
+        {
+            List<TextElement> lte;
+            m_idLinkSources.TryGetValue(name, out lte);
+            return lte != null;
+        }
+
         public void AddIdLinkSource(string name, TextElement textElement)
         {
             List<TextElement> lte;
@@ -4171,7 +4185,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (key == Key.Escape)
             {
-                CommandUnFollowLink.Execute();
+                //CommandUnFollowLink.Execute();
             }
         }
 
