@@ -637,9 +637,10 @@ namespace Tobi.Plugin.DocumentPane
                             );
 
                 bool okay = isNote
-                || node.GetXmlElementLocalName().Equals("annotation", StringComparison.OrdinalIgnoreCase)
-                || node.GetXmlElementLocalName().Equals("note", StringComparison.OrdinalIgnoreCase)
-                ;
+                    || m_DocumentPaneView.HasLinkSource(id)
+                    || node.GetXmlElementLocalName().Equals("annotation", StringComparison.OrdinalIgnoreCase)
+                    || node.GetXmlElementLocalName().Equals("note", StringComparison.OrdinalIgnoreCase)
+                    ;
 
                 if (okay)
                 {
@@ -1340,9 +1341,11 @@ namespace Tobi.Plugin.DocumentPane
                 bool isNoteref = attrEpubType != null
                     && "noteref".Equals(attrEpubType.Value, StringComparison.OrdinalIgnoreCase);
 
-                if (isNoteref)
+                bool hashStart = attr.Value.StartsWith("#");
+
+                if (isNoteref || hashStart)
                 {
-                    string id = attr.Value.StartsWith("#") ? attr.Value.Substring(1) : attr.Value;
+                    string id = hashStart ? attr.Value.Substring(1) : attr.Value;
                     data.NavigateUri = new Uri("#" + id, UriKind.Relative);
 
                     //// Now using LostMouseCapture data.RequestNavigate += m_DocumentPaneView.OnTextElementRequestNavigate;
@@ -2531,7 +2534,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     TreeNode.StringChunkRange txtChunkRange = node.GetText();
                     TreeNode.StringChunk txtChunk = txtChunkRange != null ? txtChunkRange.First : null;
-                        //node.GetTextChunk();
+                    //node.GetTextChunk();
                     if (txtChunk != null && !string.IsNullOrEmpty(txtChunk.Str))
                     {
                         nodeText = txtChunk.Str;
