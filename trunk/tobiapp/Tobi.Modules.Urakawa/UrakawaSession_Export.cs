@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -22,6 +23,8 @@ using Tobi.Common;
 using Tobi.Common.MVVM.Command;
 using urakawa.daisy.import;
 using urakawa.data;
+using urakawa.metadata;
+using urakawa.metadata.daisy;
 using urakawa.xuk;
 using Application = System.Windows.Application;
 using CheckBox = System.Windows.Controls.CheckBox;
@@ -91,6 +94,32 @@ namespace Tobi.Plugin.Urakawa
                         return;
                     }
 
+                    Metadata foundDate = null;
+                    bool dateIsEmpty = false;
+                    foreach (var metadata in DocumentProject.Presentations.Get(0).Metadatas.ContentsAs_Enumerable)
+                    {
+                        if (metadata.NameContentAttribute != null && metadata.NameContentAttribute.Name.Equals(SupportedMetadata_Z39862005.DC_Date,
+                                   StringComparison.OrdinalIgnoreCase))
+                        {
+                            foundDate = metadata;
+
+                            dateIsEmpty = !string.IsNullOrEmpty(metadata.NameContentAttribute.Value) &&
+                                          metadata.NameContentAttribute.Value.Equals(SupportedMetadata_Z39862005.MagicStringEmpty, StringComparison.OrdinalIgnoreCase);
+                            break;
+                        }
+                    }
+                    string date = DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);//yyyy-MM-ddTHH:mm:ssZ;
+                    if (foundDate == null)
+                    {
+                        var metadata = DocumentProject.Presentations.Get(0).MetadataFactory.CreateMetadata();
+                        metadata.NameContentAttribute = new MetadataAttribute();
+                        metadata.NameContentAttribute.Name = SupportedMetadata_Z39862005.DC_Date;
+                        metadata.NameContentAttribute.Value = date;
+                    }
+                    else if (dateIsEmpty)
+                    {
+                        foundDate.NameContentAttribute.Value = date;
+                    }
 
 
                     bool thereIsAtLeastOneError = false;
@@ -98,6 +127,9 @@ namespace Tobi.Plugin.Urakawa
                     {
                         foreach (var validator in m_Validators)
                         {
+                            //if (validator is MetadataValidator)
+                            validator.Validate();
+
                             foreach (var validationItem in validator.ValidationItems)
                             {
                                 if (validationItem.Severity == ValidationSeverity.Error)
@@ -107,6 +139,15 @@ namespace Tobi.Plugin.Urakawa
                                 }
                             }
                         }
+                    }
+
+                    if (foundDate == null)
+                    {
+                        DocumentProject.Presentations.Get(0).DeleteMetadata(SupportedMetadata_Z39862005.DC_Date);
+                    }
+                    else if (dateIsEmpty)
+                    {
+                        foundDate.NameContentAttribute.Value = SupportedMetadata_Z39862005.MagicStringEmpty;
                     }
 
                     if (thereIsAtLeastOneError)
@@ -526,7 +567,32 @@ namespace Tobi.Plugin.Urakawa
 
                     FileDataProvider.CreateDirectory(exportDir);
 
-                    doExport(exportDir, exportSpineItemProjectPath);
+                    if (foundDate == null)
+                    {
+                        var metadata = DocumentProject.Presentations.Get(0).MetadataFactory.CreateMetadata();
+                        metadata.NameContentAttribute = new MetadataAttribute();
+                        metadata.NameContentAttribute.Name = SupportedMetadata_Z39862005.DC_Date;
+                        metadata.NameContentAttribute.Value = date;
+                    }
+                    else if (dateIsEmpty)
+                    {
+                        foundDate.NameContentAttribute.Value = date;
+                    }
+                    try
+                    {
+                        doExport(exportDir, exportSpineItemProjectPath);
+                    }
+                    finally
+                    {
+                        if (foundDate == null)
+                        {
+                            DocumentProject.Presentations.Get(0).DeleteMetadata(SupportedMetadata_Z39862005.DC_Date);
+                        }
+                        else if (dateIsEmpty)
+                        {
+                            foundDate.NameContentAttribute.Value = SupportedMetadata_Z39862005.MagicStringEmpty;
+                        }
+                    }
                 },
                 () => DocumentProject != null && !IsSplitMaster //&& !IsSplitSub
                 //&& (IsXukSpine || !HasXukSpine)

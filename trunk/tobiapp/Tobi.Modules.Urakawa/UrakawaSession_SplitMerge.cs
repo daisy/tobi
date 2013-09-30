@@ -528,7 +528,7 @@ namespace Tobi.Plugin.Urakawa
                         xmlProp.SetAttribute("splitMergeId", "", counter.ToString());
 
                         TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
-                        textMedia.Text = "SPLIT-MERGE: " + counter;
+                        textMedia.Text = "PART " + counter;
 
                         ChannelsProperty chProp = anchorNode.GetOrCreateChannelsProperty();
                         chProp.SetMedia(presentation.ChannelsManager.GetOrCreateTextChannel(), textMedia);
