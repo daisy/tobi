@@ -28,6 +28,31 @@ namespace Tobi
         //    }
         //}
 
+        private static int parseVersionNumber(string versionString)
+        {
+            string[] strs = versionString.Split('.');
+            string str = "";
+            for (int i = 0; i < 4; i++)
+            {
+                if (strs.Length >= i + 1 && !string.IsNullOrEmpty(strs[i]))
+                {
+                    string dot = strs[i];
+                    if (dot.Length > 1)
+                    {
+                        dot = dot.Substring(0, 1);
+                    }
+
+                    str += dot;
+                }
+                else
+                {
+                    str += "0";
+                }
+            }
+
+            return Int32.Parse(str);
+        }
+
         private bool m_SettingsDone;
         private void trySettings()
         {
@@ -69,7 +94,10 @@ namespace Tobi
                                 {
                                     string latestVersion = xmlStr.Substring(k, j - k);
 
-                                    if (latestVersion != thisVersion
+                                    int lastestVersionNumber = parseVersionNumber(latestVersion);
+                                    int thisVersionNumber = parseVersionNumber(thisVersion);
+
+                                    if (lastestVersionNumber > thisVersionNumber
                                         && Settings.Default.UpdateRejected != latestVersion)
                                     {
                                         bool update = askUserAppUpdate(thisVersion, latestVersion);
