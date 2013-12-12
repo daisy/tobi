@@ -145,12 +145,65 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnToolbarToggleVisibleKeyboard(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return) // || e.Key == Key.Space)
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            if (key == Key.Return) // || key == Key.Space)
             {
                 Settings.Default.Audio_ButtonBarVisible = !Settings.Default.Audio_ButtonBarVisible;
                 FocusHelper.FocusBeginInvoke(Settings.Default.Audio_ButtonBarVisible ? FocusExpanded : FocusCollapsed);
             }
         }
+
+        private void OnAudioKeyboardUp(object sender, KeyEventArgs e)
+        {
+            if (m_ViewModel == null)
+            {
+                return;
+            }
+
+            if (isControlKeyDown() || isShiftKeyDown())
+            {
+                return;
+            }
+
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            //KeyGestureString
+            if (key == Settings_KeyGestures.Default.Keyboard_Audio_StartStopRecord.Key) //Key.R
+            {
+                if (m_ViewModel.IsRecording)
+                {
+                    m_ViewModel.CommandStopRecordAndContinue.Execute();
+                }
+                else if (m_ViewModel.CommandStartRecord.CanExecute())
+                {
+                    m_ViewModel.CommandStartRecord.Execute();
+                }
+            }
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_PlayPause.Key) //Key.Space
+            {
+                if (m_ViewModel.IsRecording)
+                {
+                    m_ViewModel.CommandStopRecord.Execute();
+                }
+                else if (m_ViewModel.IsMonitoring)
+                {
+                    m_ViewModel.CommandStopMonitor.Execute();
+                }
+            }
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_StartStopMonitor.Key) //Key.M
+            {
+                if (m_ViewModel.IsMonitoring)
+                {
+                    m_ViewModel.CommandStopMonitor.Execute();
+                }
+                else if (m_ViewModel.CommandStartMonitor.CanExecute())
+                {
+                    m_ViewModel.CommandStartMonitor.Execute();
+                }
+            }
+        }
+
         #region Construction
 
 
