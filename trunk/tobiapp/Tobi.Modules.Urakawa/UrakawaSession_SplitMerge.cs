@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using AudioLib;
 using Microsoft.Internal;
+using Tobi.Common;
 using Tobi.Common.MVVM;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common.MVVM.Command;
@@ -29,17 +30,17 @@ namespace Tobi.Plugin.Urakawa
             private readonly string docPath;
             private readonly Project project;
             private readonly string destinationFilePath;
-            private readonly string topDirectory;
+            private readonly string splitDirectory;
             private readonly string fileNameWithoutExtension;
             private readonly string extension;
 
-            public MergeAction(UrakawaSession session, string docPath_, Project project_, string destinationFilePath_, string topDirectory_, string fileNameWithoutExtension_, string extension_)
+            public MergeAction(UrakawaSession session, string docPath_, Project project_, string destinationFilePath_, string splitDirectory_, string fileNameWithoutExtension_, string extension_)
             {
                 m_session = session;
                 docPath = docPath_;
                 project = project_;
                 destinationFilePath = destinationFilePath_;
-                topDirectory = topDirectory_;
+                splitDirectory = splitDirectory_;
                 fileNameWithoutExtension = fileNameWithoutExtension_;
                 extension = extension_;
             }
@@ -147,7 +148,7 @@ namespace Tobi.Plugin.Urakawa
 
                             //Thread.Sleep(500);
 
-                            string xukFolder = Path.Combine(topDirectory, fileNameWithoutExtension + "_" + counter);
+                            string xukFolder = Path.Combine(splitDirectory, fileNameWithoutExtension + "_" + counter);
                             string xukPath = Path.Combine(xukFolder, counter + extension);
 
                             try
@@ -246,18 +247,19 @@ namespace Tobi.Plugin.Urakawa
             private readonly int m_total;
             private readonly string m_docPath;
             private readonly bool m_pretty;
-            private readonly List<string> m_cleanupFolders;
+            //private readonly List<string> m_cleanupFolders;
             private readonly string m_splitDirectory;
             private readonly string m_fileNameWithoutExtension;
             private readonly string m_extension;
 
-            public SplitAction(UrakawaSession session, int total, string docPath, bool pretty, List<string> cleanupFolders, string splitDirectory, string fileNameWithoutExtension, string extension)
+            //List<string> cleanupFolders
+            public SplitAction(UrakawaSession session, int total, string docPath, bool pretty, string splitDirectory, string fileNameWithoutExtension, string extension)
             {
                 m_session = session;
                 m_total = total;
                 m_docPath = docPath;
                 m_pretty = pretty;
-                m_cleanupFolders = cleanupFolders;
+                //m_cleanupFolders = cleanupFolders;
                 m_splitDirectory = splitDirectory;
                 m_fileNameWithoutExtension = fileNameWithoutExtension;
                 m_extension = extension;
@@ -404,8 +406,8 @@ namespace Tobi.Plugin.Urakawa
 
                         if (!string.IsNullOrEmpty(deletedDataFolderPath_) && Directory.Exists(deletedDataFolderPath_))
                         {
-                            m_cleanupFolders.Add(deletedDataFolderPath_);
-                            //FileDataProvider.DeleteDirectory(deletedDataFolderPath_);
+                            //m_cleanupFolders.Add(deletedDataFolderPath_);
+                            FileDataProvider.DeleteDirectory(deletedDataFolderPath_);
                         }
 
                         saved = m_session.save(true);
@@ -448,7 +450,19 @@ namespace Tobi.Plugin.Urakawa
 
                     m_Logger.Log(@"UrakawaSession.splitProject", Category.Debug, Priority.Medium);
 
-                    bool hasAudio = DocumentProject.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
+                    bool hasAudio = false;
+                    //hasAudio = DocumentProject.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
+                    TreeNode nodeTestAudio = DocumentProject.Presentations.Get(0).RootNode;
+                    nodeTestAudio = nodeTestAudio.GetFirstDescendantWithXmlElement("level1");
+                    while (nodeTestAudio != null)
+                    {
+                        if (nodeTestAudio.GetFirstAncestorWithManagedAudio() != null)
+                        {
+                            hasAudio = true;
+                            break;
+                        }
+                        nodeTestAudio = nodeTestAudio.GetNextSiblingWithXmlElement("level1");
+                    }
                     if (hasAudio)
                     {
                         messageBoxAlert(Tobi_Plugin_Urakawa_Lang.SplitMasterNoAudio, null);
@@ -477,7 +491,7 @@ namespace Tobi.Plugin.Urakawa
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(docPath);
                     string extension = Path.GetExtension(docPath);
 
-                    string splitDirectory = Path.Combine(parentDirectory, "SPLIT_MERGE");
+                    string splitDirectory = Path.Combine(parentDirectory, "_SPLIT");
 
                     string masterDirectory = Path.Combine(splitDirectory, fileNameWithoutExtension);
 
@@ -573,7 +587,7 @@ namespace Tobi.Plugin.Urakawa
                     DocumentProject.Presentations.Get(0).DataProviderManager.SetCustomDataFileDirectory(prefix);
                     DocumentProject.Presentations.Get(0).RootUri = new Uri(dirPath + Path.DirectorySeparatorChar, UriKind.Absolute);
 
-                    List<string> cleanupFolders = new List<string>(total + 1);
+                    //List<string> cleanupFolders = new List<string>(total + 1);
 
                     try
                     {
@@ -581,8 +595,8 @@ namespace Tobi.Plugin.Urakawa
 
                         if (!string.IsNullOrEmpty(deletedDataFolderPath) && Directory.Exists(deletedDataFolderPath))
                         {
-                            cleanupFolders.Add(deletedDataFolderPath);
-                            //FileDataProvider.DeleteDirectory(deletedDataFolderPath);
+                            //cleanupFolders.Add(deletedDataFolderPath);
+                            FileDataProvider.DeleteDirectory(deletedDataFolderPath);
                         }
 
                         saved = save(true);
@@ -607,7 +621,8 @@ namespace Tobi.Plugin.Urakawa
                     bool cancelled = false;
                     bool error = false;
 
-                    var action = new SplitAction(this, total, docPath, project.PrettyFormat, cleanupFolders, splitDirectory, fileNameWithoutExtension, extension);
+                    //cleanupFolders
+                    var action = new SplitAction(this, total, docPath, project.PrettyFormat, splitDirectory, fileNameWithoutExtension, extension);
 
                     Action cancelledCallback =
                         () =>
@@ -624,7 +639,7 @@ namespace Tobi.Plugin.Urakawa
                         };
 
                     error = m_ShellView.RunModalCancellableProgressTask(true,
-                        Tobi_Plugin_Urakawa_Lang.CmdSplitProject_ShortDesc, action,
+                        UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdSplitProject_ShortDesc), action,
                         cancelledCallback,
                         finishedCallback
                         );
@@ -634,10 +649,10 @@ namespace Tobi.Plugin.Urakawa
 
                     if (!cancelled && !error)
                     {
-                        foreach (string cleanupFolder in cleanupFolders)
-                        {
-                            FileDataProvider.DeleteDirectory(cleanupFolder);
-                        }
+                        //foreach (string cleanupFolder in cleanupFolders)
+                        //{
+                        //    FileDataProvider.DeleteDirectory(cleanupFolder);
+                        //}
 
                         // Conclude: open master project, show folder with sub projects
 
@@ -700,7 +715,23 @@ namespace Tobi.Plugin.Urakawa
 
                     m_Logger.Log(@"UrakawaSession.mergeProject", Category.Debug, Priority.Medium);
 
-                    bool hasAudio = DocumentProject.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
+                    bool hasAudio = false;
+                    //hasAudio = DocumentProject.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
+                    TreeNode nodeTestAudio = DocumentProject.Presentations.Get(0).RootNode;
+                    nodeTestAudio = nodeTestAudio.GetFirstDescendantWithXmlElement("h1");
+                    while (nodeTestAudio != null)
+                    {
+                        XmlAttribute xmlAttr = nodeTestAudio.GetXmlProperty().GetAttribute("splitMergeId");
+                        if (xmlAttr != null)
+                        {
+                            if (nodeTestAudio.GetFirstAncestorWithManagedAudio() != null || nodeTestAudio.GetManagedAudioMedia() != null)
+                            {
+                                hasAudio = true;
+                                break;
+                            }
+                        }
+                        nodeTestAudio = nodeTestAudio.GetNextSiblingWithXmlElement("h1");
+                    }
                     if (hasAudio)
                     {
                         messageBoxAlert(Tobi_Plugin_Urakawa_Lang.SplitMasterNoAudio, null);
@@ -726,9 +757,9 @@ namespace Tobi.Plugin.Urakawa
                     string parentDirectory = Path.GetDirectoryName(docPath);
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(parentDirectory);
                     string extension = Path.GetExtension(docPath);
-
-                    string topDirectory = Path.GetDirectoryName(parentDirectory);
-                    string mergeDirectory = Path.Combine(topDirectory, "_MERGE");
+                    string splitDirectory = Path.GetDirectoryName(parentDirectory);
+                    string containerFolder = Path.GetDirectoryName(splitDirectory);
+                    string mergeDirectory = Path.Combine(containerFolder, "_MERGE");
 
                     string destinationFilePath = Path.Combine(mergeDirectory, fileNameWithoutExtension + extension);
 
@@ -758,7 +789,7 @@ namespace Tobi.Plugin.Urakawa
                     bool cancelled = false;
                     bool error = false;
 
-                    var action = new MergeAction(this, docPath, project, destinationFilePath, topDirectory, fileNameWithoutExtension, extension);
+                    var action = new MergeAction(this, docPath, project, destinationFilePath, splitDirectory, fileNameWithoutExtension, extension);
 
                     Action cancelledCallback =
                         () =>
@@ -775,7 +806,7 @@ namespace Tobi.Plugin.Urakawa
                         };
 
                     error = m_ShellView.RunModalCancellableProgressTask(true,
-                        Tobi_Plugin_Urakawa_Lang.CmdMergeProject_ShortDesc, action,
+                        UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdMergeProject_ShortDesc), action,
                         cancelledCallback,
                         finishedCallback
                         );
@@ -800,7 +831,31 @@ namespace Tobi.Plugin.Urakawa
                             ExceptionHandler.Handle(ex, false, m_ShellView);
                         }
                     }
-                    //m_ShellView.ExecuteShellProcess(mergeDirectory);
+
+                    //UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ShortDesc)
+                    if (askUser(Tobi_Plugin_Urakawa_Lang.DeleteSplitFiles, splitDirectory)
+                        &&
+                        askUser(Tobi_Plugin_Urakawa_Lang.DeleteSplitFilesConfirm, splitDirectory))
+                    {
+                        FileDataProvider.DeleteDirectory(splitDirectory);
+
+//                        try
+//                        {
+//                            FileDataProvider.TryDeleteDirectory(topDirectory, false);
+//                        }
+//                        catch (Exception ex)
+//                        {
+//#if DEBUG
+//                            Debugger.Break();
+//#endif // DEBUG
+//                            Console.WriteLine(ex.Message);
+//                            Console.WriteLine(ex.StackTrace);
+//                        }
+                    }
+                    else
+                    {
+                        m_ShellView.ExecuteShellProcess(containerFolder);
+                    }
                 },
                 () => DocumentProject != null && !IsXukSpine && !HasXukSpine && IsSplitMaster,
                 Settings_KeyGestures.Default,
