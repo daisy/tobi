@@ -166,6 +166,12 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="CmdDataCleanup_ShortDesc" xml:space="preserve">
     <value>C_leanup</value>
   </data>
+  <data name="DeleteSplitFiles" xml:space="preserve">
+    <value>Permanently delete the split files?</value>
+  </data>
+  <data name="DeleteSplitFilesConfirm" xml:space="preserve">
+    <value>Confirm delete files? (cannot be undone)</value>
+  </data>
   <data name="CmdDataCleanup_LongDesc" xml:space="preserve">
     <value>Remove data files not used by the current project</value>
   </data>
@@ -185,7 +191,7 @@ Press OK to ignore, or CANCEL to see the issues.</value>
     <value>Open recent</value>
   </data>
   <data name="SplitMasterNoAudio" xml:space="preserve">
-    <value>Master project must not contain any audio!</value>
+    <value>A split/merge point cannot have ancestor audio!</value>
   </data>
   <data name="Menu_SplitMergeProject" xml:space="preserve">
     <value>Split / Merge project</value>
