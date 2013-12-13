@@ -594,6 +594,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nothing to split (please place document markers)..
+        /// </summary>
+        public static string SplitNothing {
+            get {
+                return ResourceManager.GetString("SplitNothing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stereo: .
         /// </summary>
         public static string Stereo {
