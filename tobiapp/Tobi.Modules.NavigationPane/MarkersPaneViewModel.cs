@@ -62,7 +62,7 @@ namespace Tobi.Plugin.NavigationPane
                                         var cmd = SelectedTreeNode.Presentation.CommandFactory.CreateTreeNodeSetIsMarkedCommand(SelectedTreeNode, !SelectedTreeNode.IsMarked);
                                         SelectedTreeNode.Presentation.UndoRedoManager.Execute(cmd);
                                     },
-                                    () => SelectedTreeNode != null,
+                                    () => SelectedTreeNode != null, //!m_UrakawaSession.IsSplitMaster &&
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ToggleDocMark));
 
@@ -197,7 +197,9 @@ namespace Tobi.Plugin.NavigationPane
             {
                 if (m_UrakawaSession.DocumentProject == null) return null;
                 var selection = m_UrakawaSession.GetTreeNodeSelection();
+
                 return selection.Item2 ?? selection.Item1;
+                //return selection.Item1;
             }
         }
 

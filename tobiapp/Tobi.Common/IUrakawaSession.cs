@@ -74,6 +74,9 @@ namespace Tobi.Common
 
         bool IsAcmCodecsDisabled { get; }
 
+        bool IsSplitMaster { get; }
+        bool IsSplitSub { get; }
+
         bool IsXukSpine { get; }
         bool HasXukSpine { get; }
 
