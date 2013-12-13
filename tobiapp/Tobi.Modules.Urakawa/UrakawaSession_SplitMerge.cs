@@ -24,6 +24,15 @@ namespace Tobi.Plugin.Urakawa
 {
     public partial class UrakawaSession
     {
+        protected static TreeNode getNextSplitMergeFragment(TreeNode context)
+        {
+            if (context.Parent == null)
+            {
+                return context.GetFirstDescendantWithXmlElement("level2");
+            }
+            return context.GetNextSiblingWithXmlElement("level2");
+        }
+
         public class MergeAction : DualCancellableProgressReporter
         {
             private readonly UrakawaSession m_session;
@@ -168,7 +177,7 @@ namespace Tobi.Plugin.Urakawa
                                 DebugFix.Assert(attrCheck.Value == counter.ToString());
 
 
-                                TreeNode level = subroot.GetFirstDescendantWithXmlElement("level1");
+                                TreeNode level = UrakawaSession.getNextSplitMergeFragment(subroot);
                                 while (level != null)
                                 {
                                     attrCheck = level.GetXmlProperty().GetAttribute("splitMergeId");
@@ -191,7 +200,7 @@ namespace Tobi.Plugin.Urakawa
                                         break;
                                     }
 
-                                    level = level.GetNextSiblingWithXmlElement("level1");
+                                    level = UrakawaSession.getNextSplitMergeFragment(level);
                                 }
                             }
                             catch (Exception ex)
@@ -327,7 +336,7 @@ namespace Tobi.Plugin.Urakawa
 
                     int counter = -1;
 
-                    TreeNode level = root.GetFirstDescendantWithXmlElement("level1");
+                    TreeNode level = UrakawaSession.getNextSplitMergeFragment(root);
                     while (level != null)
                     {
                         counter++;
@@ -356,7 +365,7 @@ namespace Tobi.Plugin.Urakawa
                             break;
                         }
 
-                        level = level.GetNextSiblingWithXmlElement("level1");
+                        level = UrakawaSession.getNextSplitMergeFragment(level);
                     }
 
 
@@ -453,7 +462,7 @@ namespace Tobi.Plugin.Urakawa
                     bool hasAudio = false;
                     //hasAudio = DocumentProject.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
                     TreeNode nodeTestAudio = DocumentProject.Presentations.Get(0).RootNode;
-                    nodeTestAudio = nodeTestAudio.GetFirstDescendantWithXmlElement("level1");
+                    nodeTestAudio = UrakawaSession.getNextSplitMergeFragment(nodeTestAudio);
                     while (nodeTestAudio != null)
                     {
                         if (nodeTestAudio.GetFirstAncestorWithManagedAudio() != null)
@@ -461,7 +470,7 @@ namespace Tobi.Plugin.Urakawa
                             hasAudio = true;
                             break;
                         }
-                        nodeTestAudio = nodeTestAudio.GetNextSiblingWithXmlElement("level1");
+                        nodeTestAudio = UrakawaSession.getNextSplitMergeFragment(nodeTestAudio);
                     }
                     if (hasAudio)
                     {
@@ -525,7 +534,7 @@ namespace Tobi.Plugin.Urakawa
 
                     int counter = -1;
 
-                    TreeNode level = root.GetFirstDescendantWithXmlElement("level1");
+                    TreeNode level = UrakawaSession.getNextSplitMergeFragment(root);
                     while (level != null)
                     {
                         counter++;
@@ -547,7 +556,7 @@ namespace Tobi.Plugin.Urakawa
                         ChannelsProperty chProp = anchorNode.GetOrCreateChannelsProperty();
                         chProp.SetMedia(presentation.ChannelsManager.GetOrCreateTextChannel(), textMedia);
 
-                        level = anchorNode.GetNextSiblingWithXmlElement("level1");
+                        level = UrakawaSession.getNextSplitMergeFragment(anchorNode);
                     }
 
                     int total = counter + 1;
