@@ -380,6 +380,10 @@ namespace Tobi.Plugin.DocumentPane
                     ((Block)data).BorderBrush = ColorBrushCache.Get(Settings.Default.Document_Color_Font_NoAudio);
                 }
             }
+
+#if true || DEBUG
+            setBackgroundForSplitMerge(treeNode, data);
+#endif
         }
 
         private void addInline(TextElement parent, Inline data)
@@ -562,6 +566,10 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(data.Tag is TreeNode);
             var node = (TreeNode)data.Tag;
 
+#if true || DEBUG
+            setBackgroundForSplitMerge(node, data);
+#endif
+
             ManagedAudioMedia media = node.GetManagedAudioMedia();
             if (media != null)
             {
@@ -620,6 +628,112 @@ namespace Tobi.Plugin.DocumentPane
             //            Debugger.Break();
             //#endif
         }
+
+
+#if true || DEBUG
+
+        private static void prependSplitMergeAnchorID(TreeNode treeNode, TextElement data)
+        {
+            if (!treeNode.HasXmlProperty)
+            {
+                return;
+            }
+
+            //m_UrakawaSession.IsSplitMaster
+            XmlAttribute xmlAttr = treeNode.Presentation.RootNode.GetXmlProperty().GetAttribute("splitMerge");
+            if (xmlAttr == null || !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
+
+            var attr = treeNode.GetXmlProperty().GetAttribute("splitMergeId");
+            if (attr == null)
+            {
+                attr = treeNode.GetXmlProperty().GetAttribute("splitMergeSubId");
+            }
+
+            if (attr != null)
+            {
+                var run = new Run("[ " + attr.Value + " ]");
+                run.Background = ColorBrushCache.Get(Colors.Black);
+                run.Foreground = ColorBrushCache.Get(Colors.White);
+
+                var para = new Paragraph(run);
+
+                if (data is TableCell)
+                {
+                    ((TableCell)data).Blocks.Add(para);
+                }
+                else if (data is Section)
+                {
+                    ((Section)data).Blocks.Add(para);
+                }
+                else if (data is Floater)
+                {
+                    ((Floater)data).Blocks.Add(para);
+                }
+                else if (data is Figure)
+                {
+                    ((Figure)data).Blocks.Add(para);
+                }
+                else if (data is ListItem)
+                {
+                    ((ListItem)data).Blocks.Add(para);
+                }
+                else if (data is Paragraph)
+                {
+                    ((Paragraph)data).Inlines.Add(run);
+                    ((Paragraph)data).Inlines.Add(new LineBreak());
+                }
+                else if (data is Span)
+                {
+                    ((Span)data).Inlines.Add(run);
+                    ((Span)data).Inlines.Add(new LineBreak());
+                }
+            }
+        }
+
+        private static void setBackgroundForSplitMerge(TreeNode treeNode, TextElement data)
+        {
+            if (!treeNode.HasXmlProperty)
+            {
+                return;
+            }
+
+            //m_UrakawaSession.IsSplitMaster
+            XmlAttribute xmlAttr = treeNode.Presentation.RootNode.GetXmlProperty().GetAttribute("splitMerge");
+            if (xmlAttr == null || !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
+
+            var attr = treeNode.GetXmlProperty().GetAttribute("splitMergeId");
+            if (attr != null)
+            {
+                data.Background = ColorBrushCache.Get(Colors.Red);
+
+                if (data is Block)
+                {
+                    ((Block)data).BorderThickness = new Thickness(2.5);
+                    ((Block)data).BorderBrush = ColorBrushCache.Get(Colors.Orange);
+                }
+            }
+            else
+            {
+                attr = treeNode.GetXmlProperty().GetAttribute("splitMergeSubId");
+                if (attr != null)
+                {
+                    data.Background = ColorBrushCache.Get(Colors.Pink);
+
+                    if (data is Block)
+                    {
+                        ((Block)data).BorderThickness = new Thickness(2.5);
+                        ((Block)data).BorderBrush = ColorBrushCache.Get(Colors.Magenta);
+                    }
+                }
+            }
+        }
+#endif
 
         private void setTag(TextElement data, TreeNode node)
         {
@@ -688,6 +802,8 @@ namespace Tobi.Plugin.DocumentPane
                 data.Cursor = Cursors.Hand;
                 data.MouseEnter += m_DocumentPaneView.OnTextElementMouseEnter;
             }
+
+            prependSplitMergeAnchorID(node, data);
         }
 
         //public static string IdToName(string id)

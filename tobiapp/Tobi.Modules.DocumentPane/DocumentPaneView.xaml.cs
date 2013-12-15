@@ -2727,125 +2727,137 @@ namespace Tobi.Plugin.DocumentPane
 
         private void scrollToView_(TextElement textElement)
         {
-            m_Logger.Log("@@@@@@@@@ SCROLL", Category.Debug, Priority.Medium);
+            //m_Logger.Log("@@@@@@@@@ SCROLL", Category.Debug, Priority.Medium);
 
-            textElement.BringIntoView();
-
-            //DebugFix.Assert(FlowDocReader.ScrollViewer.ScrollableHeight == FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight);
-            if (FlowDocReader.ScrollViewer.ScrollableHeight !=
-                         FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight)
+            try
             {
-                double diff = FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight -
-                              FlowDocReader.ScrollViewer.ScrollableHeight;
-                Console.WriteLine("FlowDocument Scroll area diff: " + diff);
-            }
+                textElement.BringIntoView();
 
-            TextPointer textPointerStart = textElement.ContentStart;
-            TextPointer textPointerEnd = textElement.ContentEnd;
-
-            double left = Double.MaxValue, top = Double.MaxValue;
-            double right = Double.MinValue, bottom = Double.MinValue;
-
-            bool found = false;
-
-            TextPointer textPointerCurrent = null;
-            do
-            {
-                if (textPointerCurrent == null)
+                //DebugFix.Assert(FlowDocReader.ScrollViewer.ScrollableHeight == FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight);
+                if (FlowDocReader.ScrollViewer.ScrollableHeight !=
+                    FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight)
                 {
-                    textPointerCurrent = textPointerStart;
-                }
-                else
-                {
-                    textPointerCurrent = textPointerCurrent.GetNextContextPosition(LogicalDirection.Forward);
+                    double diff = FlowDocReader.ScrollViewer.ExtentHeight - FlowDocReader.ScrollViewer.ViewportHeight -
+                                  FlowDocReader.ScrollViewer.ScrollableHeight;
+                    Console.WriteLine("FlowDocument Scroll area diff: " + diff);
                 }
 
-                Rect rect = textPointerCurrent.GetCharacterRect(LogicalDirection.Forward);
-                if (rect.Left == Double.MaxValue || rect.Top == Double.MaxValue
+                TextPointer textPointerStart = textElement.ContentStart;
+                TextPointer textPointerEnd = textElement.ContentEnd;
+
+                double left = Double.MaxValue, top = Double.MaxValue;
+                double right = Double.MinValue, bottom = Double.MinValue;
+
+                bool found = false;
+
+                TextPointer textPointerCurrent = null;
+                do
+                {
+                    if (textPointerCurrent == null)
+                    {
+                        textPointerCurrent = textPointerStart;
+                    }
+                    else
+                    {
+                        textPointerCurrent = textPointerCurrent.GetNextContextPosition(LogicalDirection.Forward);
+                    }
+
+                    Rect rect = textPointerCurrent.GetCharacterRect(LogicalDirection.Forward);
+                    if (rect.Left == Double.MaxValue || rect.Top == Double.MaxValue
                         || rect.Right == Double.MinValue || rect.Bottom == Double.MinValue)
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                }
-                if (rect.Left < left) left = rect.Left;
-                if (rect.Top < top) top = rect.Top;
-                if (rect.Right > right) right = rect.Right;
-                if (rect.Bottom > bottom) bottom = rect.Bottom;
-
-                //textPointerCurrent = textPointerCurrent.GetNextInsertionPosition(LogicalDirection.Forward);
-
-                //int result = textPointerCurrent.CompareTo(textPointerEnd);
-                //result = textPointerEnd.CompareTo(textPointerCurrent);
-                //if (result==0)
-                //{
-                //    bool b = textPointerEnd == textPointerCurrent;
-                //}
-
-                if (textPointerCurrent.CompareTo(textPointerEnd) == 0)
-                {
-                    if (left == Double.MaxValue || top == Double.MaxValue
-                        || right == Double.MinValue || bottom == Double.MinValue)
                     {
 #if DEBUG
                         Debugger.Break();
 #endif
                     }
-                    found = true;
-                    break;
+                    if (rect.Left < left) left = rect.Left;
+                    if (rect.Top < top) top = rect.Top;
+                    if (rect.Right > right) right = rect.Right;
+                    if (rect.Bottom > bottom) bottom = rect.Bottom;
+
+                    //textPointerCurrent = textPointerCurrent.GetNextInsertionPosition(LogicalDirection.Forward);
+
+                    //int result = textPointerCurrent.CompareTo(textPointerEnd);
+                    //result = textPointerEnd.CompareTo(textPointerCurrent);
+                    //if (result==0)
+                    //{
+                    //    bool b = textPointerEnd == textPointerCurrent;
+                    //}
+
+                    if (textPointerCurrent.CompareTo(textPointerEnd) == 0)
+                    {
+                        if (left == Double.MaxValue || top == Double.MaxValue
+                            || right == Double.MinValue || bottom == Double.MinValue)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
+                        found = true;
+                        break;
+                    }
+
+                } while (textPointerCurrent != null);
+
+                double width = right - left;
+                double height = bottom - top;
+                if (width <= 0 || height <= 0)
+                {
+                    Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action) (textElement.BringIntoView));
+                    return;
+                }
+                var rectBoundingBox = new Rect(left, top, width, height);
+
+                if (!found)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    Rect rectStart = textPointerStart.GetCharacterRect(LogicalDirection.Forward);
+                    Rect rectEnd = textPointerEnd.GetCharacterRect(LogicalDirection.Backward);
+
+                    rectBoundingBox = new Rect(rectStart.Left, rectStart.Top, rectStart.Width, rectStart.Height);
+                    rectBoundingBox.Union(rectEnd);
+
+                    double textTotalHeight_ = rectEnd.Top + rectEnd.Height - rectStart.Top;
+                    double textTotalHeight = rectBoundingBox.Height;
+                    DebugFix.Assert(textTotalHeight_ == textTotalHeight);
                 }
 
-            } while (textPointerCurrent != null);
+                //Rect rectDocStart = FlowDocReader.Document.ContentStart.GetCharacterRect(LogicalDirection.Forward);
+                double boxTopRelativeToDoc = -20 + FlowDocReader.ScrollViewer.VerticalOffset + rectBoundingBox.Top;
 
-            double width = right - left;
-            double height = bottom - top;
-            if (width <= 0 || height <= 0)
-            {
-                Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
-                return;
+                double offsetToTop = boxTopRelativeToDoc;
+                double offsetToCenter = boxTopRelativeToDoc -
+                                        (FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height)/2;
+                double offsetToBottom = offsetToTop + FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height;
+
+                if (rectBoundingBox.Height > FlowDocReader.ScrollViewer.ViewportHeight)
+                {
+                    offsetToCenter = offsetToTop;
+                    offsetToBottom = offsetToTop;
+                }
+
+                double offset = offsetToCenter; //TODO: choose based on app pref
+                if (offset < 0)
+                {
+                    offset = 0;
+                }
+                else if (offset > FlowDocReader.ScrollViewer.ScrollableHeight)
+                {
+                    offset = FlowDocReader.ScrollViewer.ScrollableHeight;
+                }
+
+                Dispatcher.BeginInvoke(DispatcherPriority.Background,
+                    (Action) (() => FlowDocReader.ScrollViewer.ScrollToVerticalOffset(offset)));
             }
-            var rectBoundingBox = new Rect(left, top, width, height);
-
-            if (!found)
+            catch (Exception ex)
             {
+                // TextPointer API?
 #if DEBUG
-                Debugger.Break();
+                    Debugger.Break();
 #endif
-                Rect rectStart = textPointerStart.GetCharacterRect(LogicalDirection.Forward);
-                Rect rectEnd = textPointerEnd.GetCharacterRect(LogicalDirection.Backward);
-
-                rectBoundingBox = new Rect(rectStart.Left, rectStart.Top, rectStart.Width, rectStart.Height);
-                rectBoundingBox.Union(rectEnd);
-
-                double textTotalHeight_ = rectEnd.Top + rectEnd.Height - rectStart.Top;
-                double textTotalHeight = rectBoundingBox.Height;
-                DebugFix.Assert(textTotalHeight_ == textTotalHeight);
             }
-
-            //Rect rectDocStart = FlowDocReader.Document.ContentStart.GetCharacterRect(LogicalDirection.Forward);
-            double boxTopRelativeToDoc = -20 + FlowDocReader.ScrollViewer.VerticalOffset + rectBoundingBox.Top;
-
-            double offsetToTop = boxTopRelativeToDoc;
-            double offsetToCenter = boxTopRelativeToDoc - (FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height) / 2;
-            double offsetToBottom = offsetToTop + FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height;
-
-            if (rectBoundingBox.Height > FlowDocReader.ScrollViewer.ViewportHeight)
-            {
-                offsetToCenter = offsetToTop;
-                offsetToBottom = offsetToTop;
-            }
-
-            double offset = offsetToCenter; //TODO: choose based on app pref
-            if (offset < 0)
-            {
-                offset = 0;
-            }
-            else if (offset > FlowDocReader.ScrollViewer.ScrollableHeight)
-            {
-                offset = FlowDocReader.ScrollViewer.ScrollableHeight;
-            }
-
-            Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => FlowDocReader.ScrollViewer.ScrollToVerticalOffset(offset)));
         }
 
         //public static TextPointer AlignTextPointer(TextPointer start, int x)
