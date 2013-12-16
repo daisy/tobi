@@ -3622,21 +3622,23 @@ namespace Tobi.Plugin.DocumentPane
 
         private void createFlowDocumentFromXuk(Project project)
         {
-            TreeNode root = project.Presentations.Get(0).RootNode;
+            TreeNode nodeBook = project.Presentations.Get(0).RootNode;
 
-            TreeNode nodeBook = root.GetFirstChildWithXmlElementName("book");
+            //TreeNode nodeBook = root.GetFirstChildWithXmlElementName("book");
+            //if (nodeBook == null)
+            //{
+            //    nodeBook = root.GetFirstChildWithXmlElementName("body");
+            //}
+
+            //DebugFix.Assert(root == nodeBook);
+
             if (nodeBook == null)
             {
-                nodeBook = root.GetFirstChildWithXmlElementName("body");
-            }
-
-            DebugFix.Assert(root == nodeBook);
-
-            if (nodeBook == null)
-            {
-                Debug.Fail("No 'book' root element ??");
+                Debug.Fail("No 'book' / 'body' root element ??");
                 return;
             }
+
+            DebugFix.Assert(nodeBook.GetXmlElementLocalName().Equals("book", StringComparison.OrdinalIgnoreCase) || nodeBook.GetXmlElementLocalName().Equals("body", StringComparison.OrdinalIgnoreCase));
 
             var converter = new XukToFlowDocument(this,
                 nodeBook, TheFlowDocument,

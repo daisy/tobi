@@ -25,7 +25,7 @@ namespace Tobi.Plugin.Urakawa
                     return false;
                 }
 
-                XmlAttribute xmlAttr = DocumentProject.Presentations.Get(0).RootNode.GetXmlProperty().GetAttribute("splitMerge");
+                XmlAttribute xmlAttr = DocumentProject.Presentations.Get(0).RootNode.GetXmlProperty().GetAttribute(SPLIT_MERGE);
 
                 return xmlAttr != null && "MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase);
             }
@@ -40,7 +40,7 @@ namespace Tobi.Plugin.Urakawa
                     return false;
                 }
 
-                XmlAttribute xmlAttr = DocumentProject.Presentations.Get(0).RootNode.GetXmlProperty().GetAttribute("splitMerge");
+                XmlAttribute xmlAttr = DocumentProject.Presentations.Get(0).RootNode.GetXmlProperty().GetAttribute(SPLIT_MERGE);
 
                 return xmlAttr != null && !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase);
             }
