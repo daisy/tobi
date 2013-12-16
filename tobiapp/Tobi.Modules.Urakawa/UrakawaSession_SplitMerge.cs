@@ -26,16 +26,6 @@ namespace Tobi.Plugin.Urakawa
     {
         private static string SPLIT_MERGE_ANCHOR_ELEMENT = "splitMerge";
 
-#if SPLIT_MERGE_FRAGMENT
-        protected static TreeNode getNextSplitMergeFragment(TreeNode context)
-        {
-            if (context.Parent == null)
-            {
-                return context.GetFirstDescendantWithXmlElement("level2");
-            }
-            return context.GetNextSiblingWithXmlElement("level2");
-        }
-#else
         protected static TreeNode getNextSplitMergeMark(TreeNode context)
         {
             if (context.Parent == null)
@@ -75,8 +65,6 @@ namespace Tobi.Plugin.Urakawa
 
             return null;
         }
-
-#endif //SPLIT_FRAGMENT
 
         public class MergeAction : DualCancellableProgressReporter
         {
@@ -221,34 +209,6 @@ namespace Tobi.Plugin.Urakawa
                                 XmlAttribute attrCheck = subroot.GetXmlProperty().GetAttribute("splitMerge");
                                 DebugFix.Assert(attrCheck.Value == counter.ToString());
 
-#if SPLIT_MERGE_FRAGMENT
-                                TreeNode level = UrakawaSession.getNextSplitMergeFragment(subroot);
-                                
-                                while (level != null)
-                                {
-                                    attrCheck = level.GetXmlProperty().GetAttribute("splitMergeId");
-                                    if (attrCheck != null)
-                                    {
-                                        DebugFix.Assert(counterSource == Int32.Parse(attrCheck.Value));
-                                        level.GetXmlProperty().RemoveAttribute(attrCheck);
-
-                                        //TextMedia txtMedia = (TextMedia)hd.GetChannelsProperty().GetMedia(presentation.ChannelsManager.GetOrCreateTextChannel());
-                                        //txtMedia.Text = "MERGED_OK_" + counter;
-
-                                        TreeNode importedLevel = level.Export(presentation);
-
-                                        TreeNode parent = hd.Parent;
-                                        int index = parent.Children.IndexOf(hd);
-                                        parent.RemoveChild(index);
-                                        parent.Insert(importedLevel, index);
-                                        hd = importedLevel;
-
-                                        break;
-                                    }
-                                
-                                    level = UrakawaSession.getNextSplitMergeFragment(level);
-                                }
-#else
                                 TreeNode mark = UrakawaSession.getNextSplitMergeMark(subroot);
 
                                 while (mark != null)
@@ -412,8 +372,6 @@ namespace Tobi.Plugin.Urakawa
 
                                     mark = nextMark;
                                 }
-
-#endif //SPLIT_FRAGMENT
                             }
                             catch (Exception ex)
                             {
@@ -548,40 +506,6 @@ namespace Tobi.Plugin.Urakawa
 
                     int counter = -1;
 
-#if SPLIT_MERGE_FRAGMENT
-                    TreeNode mark = UrakawaSession.getNextSplitMergeFragment(root);
-                    
-                    while (mark != null)
-                    {
-                        counter++;
-
-                        if (counter == i)
-                        {
-                            XmlProperty xmlProp = mark.GetOrCreateXmlProperty();
-                            xmlProp.SetAttribute("splitMergeId", "", i.ToString());
-
-                            TreeNode parent = mark.Parent;
-                            TreeNode toKeep = mark;
-                            while (parent != null)
-                            {
-                                foreach (TreeNode child in parent.Children.ContentsAs_ListCopy)
-                                {
-                                    if (child != toKeep)
-                                    {
-                                        parent.RemoveChild(child);
-                                    }
-                                }
-
-                                toKeep = parent;
-                                parent = parent.Parent;
-                            }
-
-                            break;
-                        }
-
-                        mark = UrakawaSession.getNextSplitMergeFragment(mark);
-                    }
-#else
                     TreeNode mark = UrakawaSession.getNextSplitMergeMark(root);
 
                     while (mark != null)
@@ -606,57 +530,23 @@ namespace Tobi.Plugin.Urakawa
                                 TreeNode topChild = mark;
                                 while (topChild != null && topChild.Parent != null)
                                 {
-                                    TreeNode child = topChild.Parent.Children.Count > 0
-                                        ? topChild.Parent.Children.Get(0)
-                                        : null;
+                                    TreeNode parent = topChild.Parent;
+                                    TreeNode child = topChild;
 
-                                    //foreach (TreeNode child in topChild.Parent.Children.ContentsAs_Enumerable)
                                     while (child != null)
                                     {
-                                        if (child == topChild)
-                                        {
-                                            topChild = topChild.Parent;
-                                            break;
-                                        }
-
-                                        TreeNode nextChild = child.NextSibling;
-
-                                        topChild.Parent.RemoveChild(child);
-
-                                        child = nextChild;
-                                    }
-                                }
-                            }
-
-                            // purge node content after following mark (including mark itself):
-
-                            if (nextMark != null)
-                            {
-                                TreeNode topChild = nextMark;
-                                while (topChild != null && topChild.Parent != null)
-                                {
-                                    TreeNode child = topChild.Parent.Children.Count > 0
-                                        ? topChild.Parent.Children.Get(topChild.Parent.Children.Count - 1)
-                                        : null;
-
-                                    //foreach (TreeNode child in topChild.Parent.Children.ContentsAs_Enumerable)
-                                    while (child != null)
-                                    {
-                                        if (child == topChild)
-                                        {
-                                            topChild = topChild.Parent;
-                                            break;
-                                        }
-
                                         TreeNode prevChild = child.PreviousSibling;
 
-                                        topChild.Parent.RemoveChild(child);
+                                        if (child != mark && (child != topChild || child.Children.Count == 0))
+                                        {
+                                            parent.RemoveChild(child);
+                                        }
 
                                         child = prevChild;
                                     }
-                                }
 
-                                nextMark.Parent.RemoveChild(nextMark);
+                                    topChild = parent;
+                                }
                             }
 
                             int subcounter = -1;
@@ -664,35 +554,33 @@ namespace Tobi.Plugin.Urakawa
                             TreeNode anchorNode = mark;
                             while (anchorNode != null)
                             {
-                                TreeNode nextToRemove = anchorNode.NextSibling;
-                                if (nextToRemove != null)
+                                TreeNode nextCandidateToSubmark = anchorNode.NextSibling;
+                                if (nextCandidateToSubmark != null)
                                 {
-                                    if (nextMark == null || nextMark != nextToRemove && !nextMark.IsDescendantOf(nextToRemove))
+                                    if (nextMark == null
+                                        || nextMark != nextCandidateToSubmark && !nextMark.IsDescendantOf(nextCandidateToSubmark))
                                     {
                                         subcounter++;
 
-                                        xmlProp = nextToRemove.GetOrCreateXmlProperty();
+                                        xmlProp = nextCandidateToSubmark.GetOrCreateXmlProperty();
                                         xmlProp.SetAttribute("splitMergeSubId", "", counter.ToString() + '~' + subcounter.ToString());
 
-                                        anchorNode = nextToRemove;
+                                        anchorNode = nextCandidateToSubmark;
                                         continue;
                                     }
 
-                                    if (nextMark == nextToRemove)
+                                    if (nextMark == nextCandidateToSubmark)
                                     {
                                         anchorNode = null; //break higher while
                                         break;
                                     }
 
-                                    //assert nextMark.IsDescendantOf(nextToRemove)
+                                    //assert nextMark.IsDescendantOf(nextCandidateToSubmark)
                                     TreeNode topChild = nextMark;
-                                    while (topChild != null && topChild.Parent != null && topChild.Parent != nextToRemove.Parent) //heading anchorNode
+                                    while (topChild != null && topChild.Parent != null && topChild.Parent != nextCandidateToSubmark.Parent)
                                     {
-                                        TreeNode child = topChild.Parent.Children.Count > 0
-                                            ? topChild.Parent.Children.Get(0)
-                                            : null;
+                                        TreeNode child = topChild.Parent.Children.Get(0);
 
-                                        //foreach (TreeNode child in topChild.Parent.Children.ContentsAs_Enumerable)
                                         while (child != null)
                                         {
                                             if (child == topChild)
@@ -720,14 +608,37 @@ namespace Tobi.Plugin.Urakawa
                                 }
                             }
 
+                            // purge node content after following mark (including mark itself):
+                            if (nextMark != null)
+                            {
+                                TreeNode topChild = nextMark;
+                                while (topChild != null && topChild.Parent != null)
+                                {
+                                    TreeNode parent = topChild.Parent;
+                                    TreeNode child = topChild;
+
+                                    while (child != null)
+                                    {
+                                        TreeNode nextChild = child.NextSibling;
+
+                                        if (child == nextMark || child != topChild || child.Children.Count == 0)
+                                        {
+                                            parent.RemoveChild(child);
+                                        }
+
+                                        child = nextChild;
+                                    }
+
+                                    topChild = parent;
+                                }
+                            }
+
+                            // we're done with this sub project trimming and marking
                             break;
                         }
 
                         mark = nextMark;
                     }
-
-#endif //SPLIT_FRAGMENT
-
 
                     string subDirectory = Path.Combine(m_splitDirectory, m_fileNameWithoutExtension + "_" + i);
                     string destinationFilePath = Path.Combine(subDirectory, i + m_extension);
@@ -802,7 +713,7 @@ namespace Tobi.Plugin.Urakawa
         public RichDelegateCommand SplitProjectCommand { get; private set; }
         public RichDelegateCommand MergeProjectCommand { get; private set; }
 
-        private TreeNode replaceFragmentWithAnchor(TreeNode level, String headingText, Presentation presentation, String headingAttributeName, String headingAttributeValue)
+        private TreeNode handleSplitFragmentAnchorInMaster(TreeNode level, String headingText, Presentation presentation, String headingAttributeName, String headingAttributeValue)
         {
 #if DEBUG
             if (level.GetXmlProperty() == null)
@@ -860,11 +771,8 @@ namespace Tobi.Plugin.Urakawa
                     bool hasAudio = false;
                     //hasAudio = DocumentProject.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
                     TreeNode nodeTestAudio = DocumentProject.Presentations.Get(0).RootNode;
-#if SPLIT_MERGE_FRAGMENT
-                    nodeTestAudio = UrakawaSession.getNextSplitMergeFragment(nodeTestAudio);
-#else
+
                     nodeTestAudio = UrakawaSession.getNextSplitMergeMark(nodeTestAudio);
-#endif //SPLIT_FRAGMENT
 
                     if (nodeTestAudio == null)
                     {
@@ -879,11 +787,8 @@ namespace Tobi.Plugin.Urakawa
                             hasAudio = true;
                             break;
                         }
-#if SPLIT_MERGE_FRAGMENT
-                        nodeTestAudio = UrakawaSession.getNextSplitMergeFragment(nodeTestAudio);
-#else
+
                         nodeTestAudio = UrakawaSession.getNextSplitMergeMark(nodeTestAudio);
-#endif //SPLIT_FRAGMENT
                     }
                     if (hasAudio)
                     {
@@ -947,23 +852,12 @@ namespace Tobi.Plugin.Urakawa
 
                     int counter = -1;
 
-#if SPLIT_MERGE_FRAGMENT
-                    TreeNode mark = UrakawaSession.getNextSplitMergeFragment(root);
-                    
-                    while (mark != null)
-                    {
-                        counter++;
-                        TreeNode heading = replaceFragmentWithAnchor(mark, "PART " + counter, presentation, "splitMergeId", counter.ToString());
-
-                        mark = UrakawaSession.getNextSplitMergeFragment(heading);
-                    }
-#else
                     TreeNode mark = UrakawaSession.getNextSplitMergeMark(root);
 
                     while (mark != null)
                     {
                         counter++;
-                        TreeNode heading = replaceFragmentWithAnchor(mark, "PART " + counter, presentation, "splitMergeId", counter.ToString());
+                        TreeNode heading = handleSplitFragmentAnchorInMaster(mark, "PART " + counter, presentation, "splitMergeId", counter.ToString());
 
                         mark = UrakawaSession.getNextSplitMergeMark(heading);
 
@@ -978,7 +872,7 @@ namespace Tobi.Plugin.Urakawa
                                 if (mark == null || mark != nextToRemove && !mark.IsDescendantOf(nextToRemove))
                                 {
                                     subcounter++;
-                                    anchorNode = replaceFragmentWithAnchor(nextToRemove, "PART " + counter + " - " + subcounter, presentation, "splitMergeSubId", counter.ToString() + '~' + subcounter.ToString());
+                                    anchorNode = handleSplitFragmentAnchorInMaster(nextToRemove, "PART " + counter + " - " + subcounter, presentation, "splitMergeSubId", counter.ToString() + '~' + subcounter.ToString());
                                     continue;
                                 }
 
@@ -992,11 +886,8 @@ namespace Tobi.Plugin.Urakawa
                                 TreeNode topChild = mark;
                                 while (topChild != null && topChild.Parent != null && topChild.Parent != nextToRemove.Parent) //heading anchorNode
                                 {
-                                    TreeNode child = topChild.Parent.Children.Count > 0
-                                        ? topChild.Parent.Children.Get(0)
-                                        : null;
+                                    TreeNode child = topChild.Parent.Children.Get(0);
 
-                                    //foreach (TreeNode child in topChild.Parent.Children.ContentsAs_Enumerable)
                                     while (child != null)
                                     {
                                         if (child == topChild)
@@ -1006,7 +897,7 @@ namespace Tobi.Plugin.Urakawa
                                         }
 
                                         subcounter++;
-                                        anchorNode = replaceFragmentWithAnchor(child,
+                                        anchorNode = handleSplitFragmentAnchorInMaster(child,
                                             "PART " + counter + " - " + subcounter, presentation, "splitMergeSubId",
                                             counter.ToString() + '~' + subcounter.ToString());
 
@@ -1023,7 +914,6 @@ namespace Tobi.Plugin.Urakawa
                             }
                         }
                     }
-#endif //SPLIT_FRAGMENT
 
                     int total = counter + 1;
 
@@ -1197,12 +1087,12 @@ namespace Tobi.Plugin.Urakawa
                     while (nodeTestAudio != null)
                     {
                         XmlAttribute xmlAttr = nodeTestAudio.GetXmlProperty().GetAttribute("splitMergeId");
-#if !SPLIT_MERGE_FRAGMENT
+
                         if (xmlAttr == null)
                         {
                             xmlAttr = nodeTestAudio.GetXmlProperty().GetAttribute("splitMergeSubId");
                         }
-#endif
+
                         if (xmlAttr != null)
                         {
                             if (nodeTestAudio.GetFirstAncestorWithManagedAudio() != null || nodeTestAudio.GetManagedAudioMedia() != null)

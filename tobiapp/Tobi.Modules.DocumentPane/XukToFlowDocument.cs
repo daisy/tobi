@@ -631,7 +631,6 @@ namespace Tobi.Plugin.DocumentPane
 
 
 #if true || DEBUG
-
         private static void prependSplitMergeAnchorID(TreeNode treeNode, TextElement data)
         {
             if (!treeNode.HasXmlProperty)
@@ -641,7 +640,11 @@ namespace Tobi.Plugin.DocumentPane
 
             //m_UrakawaSession.IsSplitMaster
             XmlAttribute xmlAttr = treeNode.Presentation.RootNode.GetXmlProperty().GetAttribute("splitMerge");
-            if (xmlAttr == null || !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase))
+            if (xmlAttr == null
+#if !DEBUG
+                || !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase)
+#endif
+                )
             {
                 return;
             }
@@ -702,7 +705,11 @@ namespace Tobi.Plugin.DocumentPane
 
             //m_UrakawaSession.IsSplitMaster
             XmlAttribute xmlAttr = treeNode.Presentation.RootNode.GetXmlProperty().GetAttribute("splitMerge");
-            if (xmlAttr == null || !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase))
+            if (xmlAttr == null
+#if !DEBUG
+                || !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase)
+#endif
+)
             {
                 return;
             }
@@ -802,8 +809,10 @@ namespace Tobi.Plugin.DocumentPane
                 data.Cursor = Cursors.Hand;
                 data.MouseEnter += m_DocumentPaneView.OnTextElementMouseEnter;
             }
-
+            
+#if true || DEBUG
             prependSplitMergeAnchorID(node, data);
+#endif
         }
 
         //public static string IdToName(string id)
