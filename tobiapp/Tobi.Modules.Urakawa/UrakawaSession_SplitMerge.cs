@@ -438,12 +438,13 @@ namespace Tobi.Plugin.Urakawa
 
                     if (!string.IsNullOrEmpty(deletedDataFolderPath) && Directory.Exists(deletedDataFolderPath))
                     {
-                        //FileDataProvider.DeleteDirectory(deletedDataFolderPath);
-                        if (Directory.GetFiles(deletedDataFolderPath).Length != 0 ||
-                            Directory.GetDirectories(deletedDataFolderPath).Length != 0)
-                        {
-                            m_session.m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
-                        }
+                        FileDataProvider.DeleteDirectory(deletedDataFolderPath);
+
+                        //if (Directory.GetFiles(deletedDataFolderPath).Length != 0 ||
+                        //    Directory.GetDirectories(deletedDataFolderPath).Length != 0)
+                        //{
+                        //    m_session.m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+                        //}
                     }
 
                     root.GetXmlProperty().RemoveAttribute(SPLIT_MERGE, "");
