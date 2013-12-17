@@ -565,6 +565,13 @@ namespace Tobi.Plugin.Urakawa
 
                     TreeNode mark = UrakawaSession.getNextSplitMergeMark(root);
 
+                    TreeNode topText = TreeNode.NavigateInsideSignificantText(root);
+                    if (topText.IsBefore(mark))
+                    {
+                        topText.IsMarked = true;
+                        mark = UrakawaSession.getNextSplitMergeMark(root);
+                    }
+
                     while (mark != null)
                     {
                         counter++;
@@ -838,16 +845,46 @@ namespace Tobi.Plugin.Urakawa
 
                     m_Logger.Log(@"UrakawaSession.splitProject", Category.Debug, Priority.Medium);
 
+                    //DataCleanupCommand.Execute();
+                    //Thread.Sleep(1000);
+                    ////m_ShellView.PumpDispatcherFrames();
+
+                    // Backup before close.
+                    string docPath = DocumentFilePath;
+                    Project project = DocumentProject;
+
+                    Presentation presentation = project.Presentations.Get(0);
+                    TreeNode root = presentation.RootNode;
+
+                    //TODO clone project here instead of OpenXukAction() for every subproject?
+
+                    // Closing is REQUIRED ! 
+                    PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(
+                        PopupModalWindow.DialogButtonsSet.OkCancel, Tobi_Plugin_Urakawa_Lang.Menu_SplitMergeProject);
+                    if (!PopupModalWindow.IsButtonOkYesApply(button))
+                    {
+                        return;
+                    }
+
+
+
                     bool hasAudio = false;
-                    //hasAudio = DocumentProject.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
-                    TreeNode nodeTestAudio = DocumentProject.Presentations.Get(0).RootNode;
+                    //hasAudio = project.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
+                    
+                    TreeNode nodeTestAudio = UrakawaSession.getNextSplitMergeMark(root);
 
-                    nodeTestAudio = UrakawaSession.getNextSplitMergeMark(nodeTestAudio);
+                    TreeNode topText = TreeNode.NavigateInsideSignificantText(root);
 
-                    if (nodeTestAudio == null)
+                    if (nodeTestAudio == null || topText == null)
                     {
                         messageBoxAlert(Tobi_Plugin_Urakawa_Lang.SplitNothing, null);
                         return;
+                    }
+
+                    if (topText.IsBefore(nodeTestAudio))
+                    {
+                        topText.IsMarked = true;
+                        nodeTestAudio = UrakawaSession.getNextSplitMergeMark(root);
                     }
 
                     while (nodeTestAudio != null)
@@ -869,23 +906,8 @@ namespace Tobi.Plugin.Urakawa
                         return;
                     }
 
-                    //DataCleanupCommand.Execute();
-                    //Thread.Sleep(1000);
-                    ////m_ShellView.PumpDispatcherFrames();
 
-                    // Backup before close.
-                    string docPath = DocumentFilePath;
-                    Project project = DocumentProject;
 
-                    //TODO clone project here instead of OpenXukAction() for every subproject
-
-                    // Closing is REQUIRED ! 
-                    PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(
-                        PopupModalWindow.DialogButtonsSet.OkCancel, Tobi_Plugin_Urakawa_Lang.Menu_SplitMergeProject);
-                    if (!PopupModalWindow.IsButtonOkYesApply(button))
-                    {
-                        return;
-                    }
 
                     string parentDirectory = Path.GetDirectoryName(docPath);
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(docPath);
@@ -918,9 +940,6 @@ namespace Tobi.Plugin.Urakawa
                         FileDataProvider.DeleteDirectory(splitDirectory);
                     }
 
-
-                    Presentation presentation = project.Presentations.Get(0);
-                    TreeNode root = presentation.RootNode;
                     root.GetXmlProperty().SetAttribute(SPLIT_MERGE, "", "MASTER");
 
                     int counter = -1;
