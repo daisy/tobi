@@ -381,9 +381,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }
 
-#if true || DEBUG
             setBackgroundForSplitMerge(treeNode, data);
-#endif
         }
 
         private void addInline(TextElement parent, Inline data)
@@ -566,9 +564,7 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(data.Tag is TreeNode);
             var node = (TreeNode)data.Tag;
 
-#if true || DEBUG
             setBackgroundForSplitMerge(node, data);
-#endif
 
             ManagedAudioMedia media = node.GetManagedAudioMedia();
             if (media != null)
@@ -630,9 +626,9 @@ namespace Tobi.Plugin.DocumentPane
         }
 
 
-#if true || DEBUG
         private static void prependSplitMergeAnchorID(TreeNode treeNode, TextElement data)
         {
+#if DEBUG
             if (!treeNode.HasXmlProperty)
             {
                 return;
@@ -641,9 +637,7 @@ namespace Tobi.Plugin.DocumentPane
             //m_UrakawaSession.IsSplitMaster
             XmlAttribute xmlAttr = treeNode.Presentation.RootNode.GetXmlProperty().GetAttribute("splitMerge");
             if (xmlAttr == null
-#if !DEBUG
                 || !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase)
-#endif
                 )
             {
                 return;
@@ -694,6 +688,9 @@ namespace Tobi.Plugin.DocumentPane
                     ((Span)data).Inlines.Add(new LineBreak());
                 }
             }
+#else
+            return;
+#endif
         }
 
         private static void setBackgroundForSplitMerge(TreeNode treeNode, TextElement data)
@@ -740,7 +737,6 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }
         }
-#endif
 
         private void setTag(TextElement data, TreeNode node)
         {
@@ -809,10 +805,8 @@ namespace Tobi.Plugin.DocumentPane
                 data.Cursor = Cursors.Hand;
                 data.MouseEnter += m_DocumentPaneView.OnTextElementMouseEnter;
             }
-            
-#if true || DEBUG
+
             prependSplitMergeAnchorID(node, data);
-#endif
         }
 
         //public static string IdToName(string id)

@@ -102,6 +102,21 @@ namespace PipelineWSClient
 			XmlNode node = doc.SelectSingleNode("//ns:job", manager);
 			return node.Attributes.GetNamedItem("status").Value;
 		}
+        public static string GetJobOutputEpubFilePath(string id)
+        {
+
+            XmlDocument doc = GetJob(id);
+            XmlNamespaceManager manager = new XmlNamespaceManager(doc.NameTable);
+            manager.AddNamespace("ns", "http://www.daisy.org/ns/pipeline/data");
+
+            XmlNodeList nodes = doc.SelectNodes("//ns:job/ns:results/ns:result[@name='output-dir']/ns:result[contains(@file, '.epub')]", manager);
+            if (nodes.Count > 0)
+            {
+                return nodes[0].Attributes.GetNamedItem("file").Value.Replace("file:", "").Replace('/', '\\')).Replace("%20", " "); //TODO URL escaped entities
+            }
+
+            return null;
+        }
 		
 		private static string XmlDocToString(XmlDocument doc)
 		{
