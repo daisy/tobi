@@ -235,8 +235,9 @@ namespace Tobi.Plugin.Urakawa
 
                         //DebugFix.Assert(nextMark != null);
 
-#if DEBUG
                         attrCheck = mark.GetXmlProperty().GetAttribute(SPLIT_MERGE_ID);
+
+#if DEBUG
                         DebugFix.Assert(counter == Int32.Parse(attrCheck.Value));
 #endif
                         mark.GetXmlProperty().RemoveAttribute(attrCheck);
@@ -295,9 +296,10 @@ namespace Tobi.Plugin.Urakawa
                                         //hd = hd.GetNextSiblingWithXmlAttribute(SPLIT_MERGE_SUB_ID);
                                         hd = UrakawaSession.findSubSplitMergeAnchor(root, counter, subcounter);
                                         DebugFix.Assert(hd != null);
-#if DEBUG
+
                                         attrCheck = hd.GetXmlProperty().GetAttribute(SPLIT_MERGE_SUB_ID);
 
+#if DEBUG
                                         val = attrCheck.Value;
                                         val1 = "-1";
                                         val2 = "-1";
@@ -353,7 +355,6 @@ namespace Tobi.Plugin.Urakawa
                                         if (attrCheck != null)
                                         {
                                             subcounter++;
-
 #if DEBUG
                                             string val = attrCheck.Value;
                                             string val1 = "-1";
@@ -374,9 +375,10 @@ namespace Tobi.Plugin.Urakawa
                                             //hd = hd.GetNextSiblingWithXmlAttribute(SPLIT_MERGE_SUB_ID);
                                             hd = UrakawaSession.findSubSplitMergeAnchor(root, counter, subcounter);
                                             DebugFix.Assert(hd != null);
-#if DEBUG
+
                                             attrCheck = hd.GetXmlProperty().GetAttribute(SPLIT_MERGE_SUB_ID);
 
+#if DEBUG
                                             val = attrCheck.Value;
                                             val1 = "-1";
                                             val2 = "-1";
@@ -447,7 +449,11 @@ namespace Tobi.Plugin.Urakawa
                         //}
                     }
 
+                    
+                    //XmlAttribute attrSplitMerge = root.GetXmlProperty().GetAttribute(SPLIT_MERGE);
+                    //root.GetXmlProperty().RemoveAttribute(attrSplitMerge);
                     root.GetXmlProperty().RemoveAttribute(SPLIT_MERGE, "");
+                    
 #if DEBUG
                     root.GetXmlProperty().SetAttribute(SPLIT_MERGE, "", "-1");
 #endif
