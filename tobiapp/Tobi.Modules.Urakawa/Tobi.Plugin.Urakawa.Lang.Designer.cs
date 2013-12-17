@@ -475,6 +475,24 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This is a split/merge &quot;master&quot;, do not edit!.
+        /// </summary>
+        public static string IsSplitMaster {
+            get {
+                return ResourceManager.GetString("IsSplitMaster", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note: this is a split/merge sub-project..
+        /// </summary>
+        public static string IsSplitSub {
+            get {
+                return ResourceManager.GetString("IsSplitSub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open recent.
         /// </summary>
         public static string Menu_OpenRecent {

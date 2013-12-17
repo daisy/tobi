@@ -703,10 +703,8 @@ namespace Tobi.Plugin.DocumentPane
             //m_UrakawaSession.IsSplitMaster
             XmlAttribute xmlAttr = treeNode.Presentation.RootNode.GetXmlProperty().GetAttribute("splitMerge");
             if (xmlAttr == null
-#if !DEBUG
                 || !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase)
-#endif
-)
+                )
             {
                 return;
             }

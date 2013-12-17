@@ -190,6 +190,12 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="Menu_OpenRecent" xml:space="preserve">
     <value>Open recent</value>
   </data>
+  <data name="IsSplitMaster" xml:space="preserve">
+    <value>This is a split/merge "master", do not edit!</value>
+  </data>
+  <data name="IsSplitSub" xml:space="preserve">
+    <value>Note: this is a split/merge sub-project.</value>
+  </data>
   <data name="SplitMasterNoAudio" xml:space="preserve">
     <value>A split/merge point cannot have ancestor audio!</value>
   </data>
