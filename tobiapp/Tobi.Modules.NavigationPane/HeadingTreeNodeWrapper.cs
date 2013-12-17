@@ -109,7 +109,7 @@ namespace Tobi.Plugin.NavigationPane
                         {
                             localName = nd.HasXmlProperty ? nd.GetXmlElementLocalName() : null;
 
-                            if (localName != null && localName == "pagenum" && level.Children.Count > 1)
+                            if (localName != null && (localName == "pagenum" || localName == "img") && level.Children.Count > 1)
                             {
                                 nd = level.Children.Get(1);
                                 if (nd != null)
@@ -117,10 +117,28 @@ namespace Tobi.Plugin.NavigationPane
                                     localName = nd.GetXmlElementLocalName();
                                 }
                             }
+
                             if (localName != null &&
                                 (TreeNode.IsHeading(localName)))
                             {
                                 heading = nd;
+                            }
+                            else
+                            {
+                                if (localName != null && (localName == "pagenum" || localName == "img") && level.Children.Count > 2)
+                                {
+                                    nd = level.Children.Get(2);
+                                    if (nd != null)
+                                    {
+                                        localName = nd.GetXmlElementLocalName();
+                                    }
+                                }
+
+                                if (localName != null &&
+                                    (TreeNode.IsHeading(localName)))
+                                {
+                                    heading = nd;
+                                }
                             }
                         }
                     }
