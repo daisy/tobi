@@ -1028,6 +1028,16 @@ namespace Tobi.Plugin.Urakawa
                     }
                     else
                     {
+                        if (IsSplitMaster)
+                        {
+                            messageBoxText(Tobi_Plugin_Urakawa_Lang.Menu_SplitMergeProject, Tobi_Plugin_Urakawa_Lang.IsSplitMaster, null);
+                        }
+                        else if (IsSplitSub)
+                        {
+                            messageBoxText(Tobi_Plugin_Urakawa_Lang.Menu_SplitMergeProject, Tobi_Plugin_Urakawa_Lang.IsSplitSub, null);
+                        }
+
+
                         //var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, DocumentProject.Presentations.Get(0).RootNode, null);
                         var treeNode = TreeNode.NavigateInsideSignificantText(DocumentProject.Presentations.Get(0).RootNode);
                         if (treeNode != null)
