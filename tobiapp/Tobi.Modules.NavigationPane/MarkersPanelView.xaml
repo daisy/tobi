@@ -113,6 +113,14 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
                             Converter={XAML:BooleanToVisibilityConverter},
                             Mode=OneWay}">
 
+    <Button
+             DockPanel.Dock="Top"
+             Content="{x:Static local:Tobi_Plugin_NavigationPane_Lang.RemoveAllMarkers}"
+             Click="OnClick_ButtonRemoveAll"
+             Margin="4,2,4,2"
+          Control.TabIndex="1"
+             ToolTip="{Binding Source={x:Static local:Settings_KeyGestures.Default}, Path=Keyboard_RemoveAllDocMarks, Mode=OneWay}"
+  />
     <CheckBox
       FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
       DockPanel.Dock="Right"
@@ -123,7 +131,7 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
                 IsThreeState="False"
     Margin="4,4,4,4"
                Click="OnMouseClickCheckBox"
-        Control.TabIndex="2"/>
+        Control.TabIndex="3"/>
 
     <TextBlock 
       FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
@@ -135,7 +143,7 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
                Text="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"
                ToolTip="{Binding Path=CurrentTreeNodeLabel, Mode=OneWay}"
                
-        KeyboardNavigation.TabIndex="1"/>
+        KeyboardNavigation.TabIndex="2"/>
 
   </DockPanel>
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -12,6 +13,7 @@ using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
 using urakawa;
+using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
@@ -22,6 +24,7 @@ namespace Tobi.Plugin.NavigationPane
     public class MarkersPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
     {
         public RichDelegateCommand CommandToggleMark { get; private set; }
+        public RichDelegateCommand CommandRemoveAllMarks { get; private set; }
 
         #region Construction
 
@@ -67,6 +70,37 @@ namespace Tobi.Plugin.NavigationPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ToggleDocMark));
 
             m_ShellView.RegisterRichCommand(CommandToggleMark);
+
+            CommandRemoveAllMarks = new RichDelegateCommand(
+                Tobi_Plugin_NavigationPane_Lang.CmdNavigationRemoveAllMarks_ShortDesc,
+                Tobi_Plugin_NavigationPane_Lang.CmdNavigationRemoveAllMarks_LongDesc,
+                                    null, // KeyGesture obtained from settings (see last parameters below)
+                                    null, //m_ShellView.LoadTangoIcon("bookmark-new"),
+                                    () =>
+                                    {
+                                        if (MarkersNavigator_MarkedTreeNodes.Count <= 0)
+                                        {
+                                            return;
+                                        }
+                                        var treeNodes = new List<TreeNode>(MarkersNavigator_MarkedTreeNodes.Count);
+                                        foreach (MarkedTreeNode marked in MarkersNavigator_MarkedTreeNodes)
+                                        {
+                                            treeNodes.Add(marked.TreeNode);
+                                        }
+
+                                        m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_NavigationPane_Lang.CmdNavigationRemoveAllMarks_ShortDesc, Tobi_Plugin_NavigationPane_Lang.CmdNavigationRemoveAllMarks_LongDesc);
+                                        foreach (TreeNode treeNode in treeNodes)
+                                        {
+                                            var cmd = treeNode.Presentation.CommandFactory.CreateTreeNodeSetIsMarkedCommand(treeNode, !treeNode.IsMarked);
+                                            treeNode.Presentation.UndoRedoManager.Execute(cmd);
+                                        }
+                                        m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+                                    },
+                                    () => m_UrakawaSession.DocumentProject != null, //SelectedTreeNode != null, //!m_UrakawaSession.IsSplitMaster &&
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_RemoveAllDocMarks));
+
+            m_ShellView.RegisterRichCommand(CommandRemoveAllMarks);
 
             CommandFindFocusMarkers = new RichDelegateCommand(
                 @"MARKERS CommandFindFocus DUMMY TXT",
@@ -334,8 +368,30 @@ namespace Tobi.Plugin.NavigationPane
             }
 
             if (!(eventt.Command is TreeNodeSetIsMarkedCommand)
-                && !(eventt.Command is TreeNodeChangeTextCommand))
+                && !(eventt.Command is TreeNodeChangeTextCommand)
+                && !(eventt.Command is CompositeCommand)
+                )
             {
+                return;
+            }
+
+            if (eventt.Command is CompositeCommand)
+            {
+                List<TreeNodeSetIsMarkedCommand> list = ((CompositeCommand)eventt.Command).GetChildCommandsAllType<TreeNodeSetIsMarkedCommand>();
+                if (list == null || list.Count <= 0)
+                {
+                    return;
+                }
+
+                foreach (TreeNodeSetIsMarkedCommand command in list)
+                {
+                    if (command.TreeNode.IsMarked)
+                        MarkersNavigator.AddMarkedTreeNode(command.TreeNode);
+                    else
+                        MarkersNavigator.RemoveMarkedTreeNode(command.TreeNode);
+                }
+
+                RaisePropertyChanged(() => HasNotMarkers);
                 return;
             }
 

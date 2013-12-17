@@ -23,7 +23,21 @@ namespace Tobi.Plugin.NavigationPane
         public void AddMarkedTreeNode(TreeNode node)
         {
             RemoveMarkedTreeNode(node); // ensure no duplicate
-            MarkedTreeNodes.Add(new MarkedTreeNode(node));
+            
+            bool inserted = false;
+            foreach (MarkedTreeNode marked in MarkedTreeNodes)
+            {
+                if (node.IsBefore(marked.TreeNode))
+                {
+                    MarkedTreeNodes.Insert(MarkedTreeNodes.IndexOf(marked), new MarkedTreeNode(node));
+                    inserted = true;
+                    break;
+                }
+            }
+            if (!inserted)
+            {
+                MarkedTreeNodes.Add(new MarkedTreeNode(node));
+            }
         }
 
         public void RemoveMarkedTreeNode(TreeNode node)

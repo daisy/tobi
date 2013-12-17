@@ -231,11 +231,23 @@
   <data name="Marks" xml:space="preserve">
     <value>Marks</value>
   </data>
+  <data name="Menu_Markers" xml:space="preserve">
+    <value>Document _marks</value>
+  </data>
   <data name="Marked" xml:space="preserve">
     <value>Marked</value>
   </data>
+  <data name="RemoveAllMarkers" xml:space="preserve">
+    <value>Remove all</value>
+  </data>
+  <data name="CmdNavigationRemoveAllMarks_ShortDesc" xml:space="preserve">
+    <value>_Remove all document marks</value>
+  </data>
+  <data name="CmdNavigationRemoveAllMarks_LongDesc" xml:space="preserve">
+    <value>Switch off the marks in the entire document</value>
+  </data>
   <data name="CmdNavigationToggleMark_ShortDesc" xml:space="preserve">
-    <value>Toggle document _mark</value>
+    <value>_Toggle document mark</value>
   </data>
   <data name="CmdNavigationToggleMark_LongDesc" xml:space="preserve">
     <value>Switch on/off the marker on the currently-selected text item</value>
