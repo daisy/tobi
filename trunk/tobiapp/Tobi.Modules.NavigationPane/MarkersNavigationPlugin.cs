@@ -79,9 +79,8 @@ namespace Tobi.Plugin.NavigationPane
         {
             m_MenuBarId_1 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_Text, PreferredPosition.First, true,
-                null, //Tobi_Common_Lang.Menu_Focus,
-                PreferredPosition.First, false,
-                new[] { m_MarkersViewModel.CommandToggleMark });
+                Tobi_Plugin_NavigationPane_Lang.Menu_Markers, PreferredPosition.First, false,
+                new[] { m_MarkersViewModel.CommandToggleMark, m_MarkersViewModel.CommandRemoveAllMarks });
 
             m_Logger.Log(@"Navigation commands pushed to menubar", Category.Debug, Priority.Medium);
         }

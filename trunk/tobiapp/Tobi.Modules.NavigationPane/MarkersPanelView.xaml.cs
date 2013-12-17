@@ -228,5 +228,10 @@ namespace Tobi.Plugin.NavigationPane
                 FocusHelper.FocusBeginInvoke(item);
             }
         }
+
+        private void OnClick_ButtonRemoveAll(object sender, RoutedEventArgs e)
+        {
+            ViewModel.CommandRemoveAllMarks.Execute();
+        }
     }
 }

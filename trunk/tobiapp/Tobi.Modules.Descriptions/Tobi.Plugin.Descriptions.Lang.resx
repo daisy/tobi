@@ -159,4 +159,7 @@
   <data name="FilterEmptyAlt" xml:space="preserve">
     <value>Show empty alt</value>
   </data>
+  <data name="AddEdit" xml:space="preserve">
+    <value>Add / edit ...</value>
+  </data>
 </root>

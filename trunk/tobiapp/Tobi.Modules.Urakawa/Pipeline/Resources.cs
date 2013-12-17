@@ -112,7 +112,7 @@ namespace PipelineWSClient
             XmlNodeList nodes = doc.SelectNodes("//ns:job/ns:results/ns:result[@name='output-dir']/ns:result[contains(@file, '.epub')]", manager);
             if (nodes.Count > 0)
             {
-                return nodes[0].Attributes.GetNamedItem("file").Value.Replace("file:", "").Replace('/', '\\')).Replace("%20", " "); //TODO URL escaped entities
+                return nodes[0].Attributes.GetNamedItem("file").Value.Replace("file:", "").Replace('/', '\\').Replace("%20", " "); //TODO URL escaped entities
             }
 
             return null;

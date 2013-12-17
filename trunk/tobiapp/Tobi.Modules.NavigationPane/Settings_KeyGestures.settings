@@ -10,5 +10,8 @@
     <Setting Name="Keyboard_ToggleDocMark" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] K</Value>
     </Setting>
+    <Setting Name="Keyboard_RemoveAllDocMarks" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] K</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
