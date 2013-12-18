@@ -558,6 +558,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please install the latest Pipeline2.
+        /// </summary>
+        public static string PleaseUpgradePipeline {
+            get {
+                return ResourceManager.GetString("PleaseUpgradePipeline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project audio format.
         /// </summary>
         public static string ProjectAudioFormat {

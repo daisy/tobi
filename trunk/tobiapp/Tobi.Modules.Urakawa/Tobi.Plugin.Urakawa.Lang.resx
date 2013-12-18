@@ -362,4 +362,7 @@ any changes will be lost !</value>
   <data name="WarningFilePathLength" xml:space="preserve">
     <value>Please choose a shorter file path ({0} characters maximum).</value>
   </data>
+  <data name="PleaseUpgradePipeline" xml:space="preserve">
+    <value>Please install the latest Pipeline2</value>
+  </data>
 </root>

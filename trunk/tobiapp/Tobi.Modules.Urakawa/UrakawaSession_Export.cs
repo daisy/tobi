@@ -930,7 +930,7 @@ namespace Tobi.Plugin.Urakawa
 
                 if (true)
                 {
-                    pipeline_ExePath = messageBoxFilePick("Pipeline2 configuration", exeOrBat);
+                    pipeline_ExePath = messageBoxFilePick("Pipeline2 (" + exeOrBat + ")", exeOrBat);
 
                     if (string.IsNullOrEmpty(pipeline_ExePath))
                     {
@@ -939,7 +939,7 @@ namespace Tobi.Plugin.Urakawa
                 }
                 else
                 {
-                    messageBoxText("Pipeline2 configuration", "Please specify the location of [" + exeOrBat + "]...", exeOrBat);
+                    messageBoxText("Pipeline2", "Please specify the location of [" + exeOrBat + "]...", exeOrBat);
 
                     string ext = Path.GetExtension(exeOrBat);
 
@@ -974,6 +974,25 @@ namespace Tobi.Plugin.Urakawa
             if (!string.IsNullOrEmpty(pipeline_ExePath))
             {
                 Settings.Default.Pipeline2Path = pipeline_ExePath;
+
+                double version = 1.7;
+                string filePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(pipeline_ExePath)), "etc\\system.properties");
+                if (File.Exists(filePath))
+                {
+                    string content = File.ReadAllText(filePath);
+                    string match = "org.daisy.pipeline.version";
+                    int index = content.IndexOf(match);
+                    if (index >= 0)
+                    {
+                        string vStr = content.Substring(index + match.Length + 1, 3);
+                        version = Double.Parse(vStr);
+                    }
+                }
+                if (version < 1.7)
+                {
+                    messageBoxText("Pipeline2", Tobi_Plugin_Urakawa_Lang.PleaseUpgradePipeline, "Pipeline2 v" + version + " (> 1.7)\n\nhttp://daisy.org/pipeline2");
+                    return null;
+                }
             }
 
             return pipeline_ExePath;
