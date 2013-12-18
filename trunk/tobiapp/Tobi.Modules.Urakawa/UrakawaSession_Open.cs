@@ -476,7 +476,7 @@ namespace Tobi.Plugin.Urakawa
                         //outParam = "--x-output";
 
                         extra = "--x-mediaoverlay true --x-compatibility-mode false";
-                        options = "<option name=\"mediaoverlays\">true</option><option name=\"compatibility-mode\">false</option>";
+                        options = "<option name=\"mediaoverlay\">true</option><option name=\"compatibility-mode\">false</option>";
 
                         if (Settings.Default.Pipeline2OldExe)
                         {
@@ -489,7 +489,7 @@ namespace Tobi.Plugin.Urakawa
 
                     if (Settings.Default.Pipeline2OldExe)
                     {
-                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileNames[dlg.FileNames.Length - 1]);
+                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileNames[0]);
 
                         outFile = Path.Combine(outdir, fileName + ".zip");
                         if (!Directory.Exists(outdir))
@@ -562,7 +562,7 @@ namespace Tobi.Plugin.Urakawa
                                 //zip.Close();
                                 zip.Dispose();
 #endif //ENABLE_SHARPZIP
-                                string outputDirectory = Path.Combine(outdir, "output-dir");
+                                string outputDirectory = Path.Combine(outdir, isNCC ? "output" : "output-dir");
                                 string epubFileName = Path.GetFileNameWithoutExtension(outFile);
 
                                 if (ext.Equals(".opf", StringComparison.OrdinalIgnoreCase))
@@ -585,31 +585,26 @@ namespace Tobi.Plugin.Urakawa
                                     {
                                         if (".epub".Equals(Path.GetExtension(fileInfo.FullName)))
                                         {
-                                            fileName = Path.GetFileName(fileInfo.FullName);
-
-                                            int index = fileName.IndexOf(" - ");
-                                            if (index > 0)
+                                            epubFileName = epubFileName + ".epub";
+                                            try
                                             {
-                                                string renameFileName = fileName.Substring(index + 3);
+                                                string renamed = Path.Combine(outputDirectory, epubFileName);
+
+                                                File.Move(fileInfo.FullName, renamed);
                                                 try
                                                 {
-                                                    string renamed = Path.Combine(outputDirectory, renameFileName);
-                                                    File.Move(fileInfo.FullName, renamed);
-                                                    try
-                                                    {
-                                                        File.SetAttributes(renamed, FileAttributes.Normal);
-                                                    }
-                                                    catch
-                                                    {
-                                                    }
-                                                    epubFileName = renameFileName;
+                                                    File.SetAttributes(renamed, FileAttributes.Normal);
                                                 }
-                                                catch (Exception ex)
+                                                catch
                                                 {
-#if DEBUG
-                                                    Debugger.Break();
-#endif
                                                 }
+                                                epubFileName = renamed;
+                                            }
+                                            catch (Exception ex)
+                                            {
+#if DEBUG
+                                                Debugger.Break();
+#endif
                                             }
 
                                             break;
@@ -735,7 +730,17 @@ namespace Tobi.Plugin.Urakawa
                                 {
                                     DebugFix.Assert(File.Exists(epubPath));
 
-                                    outFile = Path.Combine(outdir, Path.GetFileName(epubPath));
+                                    if (isNCC)
+                                    {
+                                        string fileName =
+                                            Path.GetFileNameWithoutExtension(dlg.FileNames[0]);
+                                        outFile = Path.Combine(outdir, fileName + ".epub");
+                                    }
+                                    else
+                                    {
+                                        outFile = Path.Combine(outdir, Path.GetFileName(epubPath));
+                                    }
+
                                     if (!Directory.Exists(outdir))
                                     {
                                         Directory.CreateDirectory(outdir);
@@ -786,66 +791,6 @@ namespace Tobi.Plugin.Urakawa
                     }
                     else
                     {
-                        //                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileNames[dlg.FileNames.Length - 1]);
-                        //                        if (ext.Equals(".opf", StringComparison.OrdinalIgnoreCase))
-                        //                        {
-                        //                            fileName = "result.epub";
-                        //                        }
-                        //                        else if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
-                        //                        {
-                        //                            fileName = fileName + ".epub";
-                        //                        }
-                        //                        else if (isNCC)
-                        //                        {
-                        //                            DirectoryInfo dirInfo = new DirectoryInfo(outdir);
-                        //#if NET40
-                        //                            IEnumerable<FileInfo> allFiles = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
-                        //#else
-                        //            FileInfo[] allFiles = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
-                        //#endif
-                        //                            foreach (FileInfo fileInfo in allFiles)
-                        //                            {
-                        //                                if (".epub".Equals(Path.GetExtension(fileInfo.FullName)))
-                        //                                {
-                        //                                    fileName = Path.GetFileName(fileInfo.FullName);
-
-                        //                                    int index = fileName.IndexOf(" - ");
-                        //                                    if (index > 0)
-                        //                                    {
-                        //                                        string renameFileName = fileName.Substring(index + 3);
-                        //                                        try
-                        //                                        {
-                        //                                            string renamed = Path.Combine(outdir, renameFileName);
-                        //                                            File.Move(fileInfo.FullName, renamed);
-                        //                                            try
-                        //                                            {
-                        //                                                File.SetAttributes(renamed, FileAttributes.Normal);
-                        //                                            }
-                        //                                            catch
-                        //                                            {
-                        //                                            }
-                        //                                            fileName = renameFileName;
-                        //                                        }
-                        //                                        catch (Exception ex)
-                        //                                        {
-                        //#if DEBUG
-                        //                                            Debugger.Break();
-                        //#endif
-                        //                                        }
-                        //                                    }
-
-                        //                                    break;
-                        //                                }
-                        //                            }
-                        //                        }
-
-                        //string outFile = Path.Combine(outdir, fileName);
-
-                        //if (!File.Exists(outFile))
-                        //{
-                        //    outFile = Path.Combine(outdir, fileName + ".html");
-                        //}
-
                         if (askUser("Import EPUB to create Tobi project?", outFile))
                         {
                             try

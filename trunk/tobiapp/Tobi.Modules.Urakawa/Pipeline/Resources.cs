@@ -111,6 +111,10 @@ namespace PipelineWSClient
             manager.AddNamespace("ns", "http://www.daisy.org/ns/pipeline/data");
 
             XmlNodeList nodes = doc.SelectNodes("//ns:job/ns:results/ns:result[@name='output-dir']/ns:result[contains(@file, '.epub')]", manager);
+            if (nodes.Count <= 0)
+            {
+                nodes = doc.SelectNodes("//ns:job/ns:results/ns:result[@name='output']/ns:result[contains(@file, '.epub')]", manager);
+            }
             if (nodes.Count > 0)
             {
                 string path = nodes[0].Attributes.GetNamedItem("file").Value;
