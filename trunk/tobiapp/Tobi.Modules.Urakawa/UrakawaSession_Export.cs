@@ -811,6 +811,10 @@ namespace Tobi.Plugin.Urakawa
                     {
                         timeout = 1000 * 60 * 2; // 2 minutes
                     }
+                    if (isPipeline)
+                    {
+                        timeout *= 2;
+                    }
 
                     bool notTimeout = isPipeline ? true : process.WaitForExit(timeout);
 
@@ -824,17 +828,23 @@ namespace Tobi.Plugin.Urakawa
                             notTimeout = errorWaitHandle.WaitOne(timeout);
                         }
 
-                        if (!notTimeout || !process.HasExited)
+                        string report = output.ToString();
+
+                        if (!isPipeline || report.IndexOf("[DP2] DONE", StringComparison.Ordinal) < 0)
                         {
-                            messageBoxText(title, "Timeout?", EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
-                        }
-                        else if (process.ExitCode != 0)
-                        {
-                            messageBoxText(title, "Error!", EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + output.ToString());
+                            if (!notTimeout || !process.HasExited)
+                            {
+                                messageBoxText(title, "Timeout?",
+                                    EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + report);
+                            }
+                            else if (process.ExitCode != 0)
+                            {
+                                messageBoxText(title, "Error!",
+                                    EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + report);
+                            }
                         }
                         else if (checkErrorsOrWarning != null)
                         {
-                            string report = output.ToString();
                             string text = "Success.";
 
                             string errorWarningReport = checkErrorsOrWarning(report);
@@ -916,7 +926,7 @@ namespace Tobi.Plugin.Urakawa
                     {
                         object val = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\DAISY Pipeline 2").GetValue(@"Pipeline2Home");
                         folderPath = val as string;
-                        pipeline_ExePath = Path.Combine(folderPath, "bin\\pipeline2.bat");
+                        pipeline_ExePath = Path.Combine(folderPath, (exeOrBat.EndsWith(".exe") ? "cli" : "bin") + "\\" + exeOrBat);
 
                     }
                     catch (Exception ex)
