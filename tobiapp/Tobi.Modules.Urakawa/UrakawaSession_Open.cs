@@ -31,6 +31,11 @@ using urakawa.exception;
 using urakawa.media;
 using urakawa.property.xml;
 using urakawa.xuk;
+#if ENABLE_SHARPZIP
+using ICSharpCode.SharpZipLib.Zip;
+#else
+using Jaime.Olivares;
+#endif
 
 namespace Tobi.Plugin.Urakawa
 {
@@ -240,7 +245,7 @@ namespace Tobi.Plugin.Urakawa
                             try
                             {
                                 JavaXmx mem_ = Settings.Default.Pipeline2JavaMaxMem;
-                                var mem = (ushort) mem_;
+                                var mem = (ushort)mem_;
                                 string xmx = mem == 1024 ? "1G" : (mem == 512 ? "512M" : "1G");
                                 string javaOpts = "-Xmx" + xmx + " -XX:MaxPermSize=256M -Dcom.sun.management.jmxremote";
                                 string envJavaOpts = Environment.GetEnvironmentVariable("JAVA_OPTS", EnvironmentVariableTarget.Process);
@@ -411,7 +416,7 @@ namespace Tobi.Plugin.Urakawa
 
                     string script = "";
                     string inParam = "--i-source";
-                    string outParam = "--x-output-dir";
+                    string outParam = "--output"; //"--x-output-dir"
                     string extra = "";
 
                     string filenames = dlg.FileNames[0];
@@ -432,20 +437,24 @@ namespace Tobi.Plugin.Urakawa
 
                         if (Settings.Default.Pipeline2OldExe)
                         {
-                            foreach (string fileName in dlg.FileNames)
-                            {
-                                if (".xml".Equals(Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
-                                {
-                                    //filenames += (inParam + " " + "\"" + fileName + "\" ");
-                                    filenames += ("\"" + fileName + "\";");
-                                }
-                            }
+                            filenames = inParam + " \"" + dlg.FileNames[0] + "\"";
 
-                            char[] chars = new char[1] { ';' };
-                            filenames = filenames.TrimEnd(chars);
+                            //filenames = "";
+
+                            //foreach (string fileName in dlg.FileNames)
+                            //{
+                            //    if (".xml".Equals(Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
+                            //    {
+                            //        //filenames += (inParam + " " + "\"" + fileName + "\" ");
+                            //        filenames += ("\"" + fileName + "\";");
+                            //    }
+                            //}
+
+                            //char[] chars = new char[1] { ';' };
+                            //filenames = filenames.TrimEnd(chars);
 
 
-                            filenames = inParam + " " + filenames;
+                            //filenames = inParam + " " + filenames;
                         }
                     }
                     else if (ext.Equals(".opf", StringComparison.OrdinalIgnoreCase))
@@ -457,21 +466,21 @@ namespace Tobi.Plugin.Urakawa
 
                         if (Settings.Default.Pipeline2OldExe)
                         {
-                            filenames = inParam + " " + dlg.FileNames[0];
+                            filenames = inParam + " \"" + dlg.FileNames[0] + "\"";
                         }
                     }
                     else if (isNCC)
                     {
                         script = "daisy202-to-epub3";
                         inParam = "--x-href";
-                        outParam = "--x-output";
+                        //outParam = "--x-output";
 
                         extra = "--x-mediaoverlay true --x-compatibility-mode false";
                         options = "<option name=\"mediaoverlays\">true</option><option name=\"compatibility-mode\">false</option>";
 
                         if (Settings.Default.Pipeline2OldExe)
                         {
-                            filenames = inParam + " " + dlg.FileNames[0];
+                            filenames = inParam + " \"" + dlg.FileNames[0] + "\"";
                         }
                     }
 
@@ -480,13 +489,137 @@ namespace Tobi.Plugin.Urakawa
 
                     if (Settings.Default.Pipeline2OldExe)
                     {
+                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileNames[dlg.FileNames.Length - 1]);
+
+                        outFile = Path.Combine(outdir, fileName + ".zip");
+                        if (!Directory.Exists(outdir))
+                        {
+                            Directory.CreateDirectory(outdir);
+                        }
+
                         Func<String, String> checkErrorsOrWarning =
                             (string report) =>
                             {
-                                if (report.IndexOf("[DP2] DONE", StringComparison.Ordinal) < 0)
+                                if (report.IndexOf("[DP2] DONE", StringComparison.Ordinal) < 0 || !File.Exists(outFile))
                                 {
-                                    return "Pipeline job doesn't appear to have completed?";
+                                    return "Pipeline fail?";
                                 }
+
+#if ENABLE_SHARPZIP
+            ZipInputStream zipInputStream = new ZipInputStream(File.OpenRead(outFile));
+            ZipEntry zipEntry;
+            while ((zipEntry = zipInputStream.GetNextEntry()) != null)
+            {
+                if (RequestCancellation) return;
+
+                string zipEntryName = Path.GetFileName(zipEntry.Name);
+                if (!String.IsNullOrEmpty(zipEntryName)) // || zipEntryName.IndexOf(".ini") >= 0
+                {
+                    // string unzippedFilePath = Path.Combine(outdir, zipEntryName);
+                    string unzippedFilePath = outdir + Path.DirectorySeparatorChar + zipEntry.Name;
+                    string unzippedFileDir = Path.GetDirectoryName(unzippedFilePath);
+                    if (!Directory.Exists(unzippedFileDir))
+                    {
+                        FileDataProvider.CreateDirectory(unzippedFileDir);
+                    }
+
+                    FileStream fileStream = File.Create(unzippedFilePath);
+
+                    //byte[] data = new byte[2 * 1024]; // 2 KB buffer
+                    //int bytesRead = 0;
+                    try
+                    {
+                        const uint BUFFER_SIZE = 1024 * 2; // 2 KB MAX BUFFER
+                        StreamUtils.Copy(zipInputStream, 0, fileStream, BUFFER_SIZE);
+
+                        //while ((bytesRead = zipInputStream.Read(data, 0, data.Length)) > 0)
+                        //{
+                        //    fileStream.Write(data, 0, bytesRead);
+                        //}
+                    }
+                    finally
+                    {
+                        fileStream.Close();
+                    }
+                }
+            }
+            zipInputStream.Close();
+#else //ENABLE_SHARPZIP
+                                ZipStorer zip = ZipStorer.Open(File.OpenRead(outFile), FileAccess.Read);
+
+                                List<ZipStorer.ZipFileEntry> dir = zip.ReadCentralDir();
+                                foreach (ZipStorer.ZipFileEntry entry in dir)
+                                {
+                                    string unzippedFilePath = outdir + Path.DirectorySeparatorChar + entry.FilenameInZip;
+                                    string unzippedFileDir = Path.GetDirectoryName(unzippedFilePath);
+                                    if (!Directory.Exists(unzippedFileDir))
+                                    {
+                                        FileDataProvider.CreateDirectory(unzippedFileDir);
+                                    }
+
+                                    zip.ExtractFile(entry, unzippedFilePath);
+                                }
+                                //zip.Close();
+                                zip.Dispose();
+#endif //ENABLE_SHARPZIP
+                                string outputDirectory = Path.Combine(outdir, "output-dir");
+                                string epubFileName = Path.GetFileNameWithoutExtension(outFile);
+
+                                if (ext.Equals(".opf", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    epubFileName = "result.epub";
+                                }
+                                else if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    epubFileName = epubFileName + ".epub";
+                                }
+                                else if (isNCC)
+                                {
+                                    DirectoryInfo dirInfo = new DirectoryInfo(outputDirectory);
+#if NET40
+                                    IEnumerable<FileInfo> allFiles = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
+#else
+                                                FileInfo[] allFiles = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
+#endif
+                                    foreach (FileInfo fileInfo in allFiles)
+                                    {
+                                        if (".epub".Equals(Path.GetExtension(fileInfo.FullName)))
+                                        {
+                                            fileName = Path.GetFileName(fileInfo.FullName);
+
+                                            int index = fileName.IndexOf(" - ");
+                                            if (index > 0)
+                                            {
+                                                string renameFileName = fileName.Substring(index + 3);
+                                                try
+                                                {
+                                                    string renamed = Path.Combine(outputDirectory, renameFileName);
+                                                    File.Move(fileInfo.FullName, renamed);
+                                                    try
+                                                    {
+                                                        File.SetAttributes(renamed, FileAttributes.Normal);
+                                                    }
+                                                    catch
+                                                    {
+                                                    }
+                                                    epubFileName = renameFileName;
+                                                }
+                                                catch (Exception ex)
+                                                {
+#if DEBUG
+                                                    Debugger.Break();
+#endif
+                                                }
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                outFile = Path.Combine(outputDirectory, epubFileName);
+
+                                DebugFix.Assert(File.Exists(outFile));
 
                                 success = true;
                                 return null;
@@ -503,7 +636,7 @@ namespace Tobi.Plugin.Urakawa
                                 ,
                                 script + " " +
                                 filenames + " " +
-                                outParam + " " + "\"" + outdir + "\" " +
+                                outParam + " " + "\"" + outFile + "\" " +
                                 extra,
                                 checkErrorsOrWarning);
                         }
@@ -600,6 +733,8 @@ namespace Tobi.Plugin.Urakawa
                                 string epubPath = Resources.GetJobOutputEpubFilePath(id);
                                 if (!string.IsNullOrEmpty(epubPath))
                                 {
+                                    DebugFix.Assert(File.Exists(epubPath));
+
                                     outFile = Path.Combine(outdir, Path.GetFileName(epubPath));
                                     if (!Directory.Exists(outdir))
                                     {
@@ -651,58 +786,58 @@ namespace Tobi.Plugin.Urakawa
                     }
                     else
                     {
-//                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileNames[dlg.FileNames.Length - 1]);
-//                        if (ext.Equals(".opf", StringComparison.OrdinalIgnoreCase))
-//                        {
-//                            fileName = "result.epub";
-//                        }
-//                        else if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
-//                        {
-//                            fileName = fileName + ".epub";
-//                        }
-//                        else if (isNCC)
-//                        {
-//                            DirectoryInfo dirInfo = new DirectoryInfo(outdir);
-//#if NET40
-//                            IEnumerable<FileInfo> allFiles = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
-//#else
-//            FileInfo[] allFiles = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
-//#endif
-//                            foreach (FileInfo fileInfo in allFiles)
-//                            {
-//                                if (".epub".Equals(Path.GetExtension(fileInfo.FullName)))
-//                                {
-//                                    fileName = Path.GetFileName(fileInfo.FullName);
+                        //                        string fileName = Path.GetFileNameWithoutExtension(dlg.FileNames[dlg.FileNames.Length - 1]);
+                        //                        if (ext.Equals(".opf", StringComparison.OrdinalIgnoreCase))
+                        //                        {
+                        //                            fileName = "result.epub";
+                        //                        }
+                        //                        else if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+                        //                        {
+                        //                            fileName = fileName + ".epub";
+                        //                        }
+                        //                        else if (isNCC)
+                        //                        {
+                        //                            DirectoryInfo dirInfo = new DirectoryInfo(outdir);
+                        //#if NET40
+                        //                            IEnumerable<FileInfo> allFiles = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
+                        //#else
+                        //            FileInfo[] allFiles = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
+                        //#endif
+                        //                            foreach (FileInfo fileInfo in allFiles)
+                        //                            {
+                        //                                if (".epub".Equals(Path.GetExtension(fileInfo.FullName)))
+                        //                                {
+                        //                                    fileName = Path.GetFileName(fileInfo.FullName);
 
-//                                    int index = fileName.IndexOf(" - ");
-//                                    if (index > 0)
-//                                    {
-//                                        string renameFileName = fileName.Substring(index + 3);
-//                                        try
-//                                        {
-//                                            string renamed = Path.Combine(outdir, renameFileName);
-//                                            File.Move(fileInfo.FullName, renamed);
-//                                            try
-//                                            {
-//                                                File.SetAttributes(renamed, FileAttributes.Normal);
-//                                            }
-//                                            catch
-//                                            {
-//                                            }
-//                                            fileName = renameFileName;
-//                                        }
-//                                        catch (Exception ex)
-//                                        {
-//#if DEBUG
-//                                            Debugger.Break();
-//#endif
-//                                        }
-//                                    }
+                        //                                    int index = fileName.IndexOf(" - ");
+                        //                                    if (index > 0)
+                        //                                    {
+                        //                                        string renameFileName = fileName.Substring(index + 3);
+                        //                                        try
+                        //                                        {
+                        //                                            string renamed = Path.Combine(outdir, renameFileName);
+                        //                                            File.Move(fileInfo.FullName, renamed);
+                        //                                            try
+                        //                                            {
+                        //                                                File.SetAttributes(renamed, FileAttributes.Normal);
+                        //                                            }
+                        //                                            catch
+                        //                                            {
+                        //                                            }
+                        //                                            fileName = renameFileName;
+                        //                                        }
+                        //                                        catch (Exception ex)
+                        //                                        {
+                        //#if DEBUG
+                        //                                            Debugger.Break();
+                        //#endif
+                        //                                        }
+                        //                                    }
 
-//                                    break;
-//                                }
-//                            }
-//                        }
+                        //                                    break;
+                        //                                }
+                        //                            }
+                        //                        }
 
                         //string outFile = Path.Combine(outdir, fileName);
 
@@ -1299,7 +1434,7 @@ namespace Tobi.Plugin.Urakawa
 
                 //string title_ = Daisy3_Import.GetTitle(presentation);
                 //DebugFix.Assert(title_ == title);
-                
+
                 string fullXukPath = null;
                 if (!string.IsNullOrEmpty(xukFileName))
                 {
