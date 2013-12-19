@@ -856,17 +856,6 @@ namespace Tobi.Plugin.Urakawa
                     Presentation presentation = project.Presentations.Get(0);
                     TreeNode root = presentation.RootNode;
 
-                    //TODO clone project here instead of OpenXukAction() for every subproject?
-
-                    // Closing is REQUIRED ! 
-                    PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(
-                        PopupModalWindow.DialogButtonsSet.OkCancel, Tobi_Plugin_Urakawa_Lang.Menu_SplitMergeProject);
-                    if (!PopupModalWindow.IsButtonOkYesApply(button))
-                    {
-                        return;
-                    }
-
-
 
                     bool hasAudio = false;
                     //hasAudio = project.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
@@ -907,8 +896,6 @@ namespace Tobi.Plugin.Urakawa
                     }
 
 
-
-
                     string parentDirectory = Path.GetDirectoryName(docPath);
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(docPath);
                     string extension = Path.GetExtension(docPath);
@@ -938,6 +925,15 @@ namespace Tobi.Plugin.Urakawa
                         }
 
                         FileDataProvider.DeleteDirectory(splitDirectory);
+                    }
+
+
+                    // Closing is REQUIRED ! 
+                    PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(
+                        PopupModalWindow.DialogButtonsSet.OkCancel, Tobi_Plugin_Urakawa_Lang.Menu_SplitMergeProject);
+                    if (!PopupModalWindow.IsButtonOkYesApply(button))
+                    {
+                        return;
                     }
 
                     root.GetXmlProperty().SetAttribute(SPLIT_MERGE, "", "MASTER");
@@ -1247,13 +1243,6 @@ namespace Tobi.Plugin.Urakawa
                     string docPath = DocumentFilePath;
                     Project project = DocumentProject;
 
-                    // Closing is REQUIRED ! 
-                    PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(
-                        PopupModalWindow.DialogButtonsSet.OkCancel, Tobi_Plugin_Urakawa_Lang.Menu_SplitMergeProject);
-                    if (!PopupModalWindow.IsButtonOkYesApply(button))
-                    {
-                        return;
-                    }
 
                     string parentDirectory = Path.GetDirectoryName(docPath);
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(parentDirectory);
@@ -1285,6 +1274,13 @@ namespace Tobi.Plugin.Urakawa
                         FileDataProvider.DeleteDirectory(mergeDirectory);
                     }
 
+                    // Closing is REQUIRED ! 
+                    PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(
+                        PopupModalWindow.DialogButtonsSet.OkCancel, Tobi_Plugin_Urakawa_Lang.Menu_SplitMergeProject);
+                    if (!PopupModalWindow.IsButtonOkYesApply(button))
+                    {
+                        return;
+                    }
 
 
                     bool cancelled = false;
