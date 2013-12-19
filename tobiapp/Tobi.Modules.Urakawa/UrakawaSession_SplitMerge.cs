@@ -27,6 +27,7 @@ namespace Tobi.Plugin.Urakawa
         private static readonly string SPLIT_MERGE = "splitMerge";
         private static readonly string SPLIT_MERGE_ID = "splitMergeId";
         private static readonly string SPLIT_MERGE_SUB_ID = "splitMergeSubId";
+        private static readonly string MASTER_SUFFIX = "__MASTER";
 
         // This tree-walk method ensures nested marked nodes are ignored / bypassed.
         // Also discards text-only nodes (to avoid introducing a distruptive XML wrapper element to support the splitMerge attribute)
@@ -268,7 +269,7 @@ namespace Tobi.Plugin.Urakawa
                                 }
 
                                 if (nextMark == null ||
-                                //nextMark != nextCandidateToSubmark &&
+                                    //nextMark != nextCandidateToSubmark &&
                                 !nextMark.IsDescendantOf(nextCandidateToSubmark))
                                 {
                                     XmlProperty xProp = nextCandidateToSubmark.GetXmlProperty();
@@ -337,7 +338,7 @@ namespace Tobi.Plugin.Urakawa
                                 while (topChild != null && topChild.Parent != null && topChild.Parent != nextCandidateToSubmark.Parent)
                                 {
                                     TreeNode child = topChild.Parent.Children.Get(0);
-                                    
+
                                     while (child != null)
                                     {
                                         if (!child.HasXmlProperty)
@@ -449,11 +450,11 @@ namespace Tobi.Plugin.Urakawa
                         //}
                     }
 
-                    
+
                     //XmlAttribute attrSplitMerge = root.GetXmlProperty().GetAttribute(SPLIT_MERGE);
                     //root.GetXmlProperty().RemoveAttribute(attrSplitMerge);
                     root.GetXmlProperty().RemoveAttribute(SPLIT_MERGE, "");
-                    
+
 #if DEBUG
                     root.GetXmlProperty().SetAttribute(SPLIT_MERGE, "", "-1");
 #endif
@@ -902,7 +903,7 @@ namespace Tobi.Plugin.Urakawa
 
                     string splitDirectory = Path.Combine(parentDirectory, "_SPLIT");
 
-                    string masterDirectory = Path.Combine(splitDirectory, fileNameWithoutExtension);
+                    string masterDirectory = Path.Combine(splitDirectory, fileNameWithoutExtension + MASTER_SUFFIX);
 
                     string destinationFilePath = Path.Combine(masterDirectory, "master" + extension);
 
@@ -1246,6 +1247,11 @@ namespace Tobi.Plugin.Urakawa
 
                     string parentDirectory = Path.GetDirectoryName(docPath);
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(parentDirectory);
+                    if (fileNameWithoutExtension.EndsWith(MASTER_SUFFIX))
+                    {
+                        fileNameWithoutExtension = fileNameWithoutExtension.Substring(0,
+                            fileNameWithoutExtension.Length - MASTER_SUFFIX.Length);
+                    }
                     string extension = Path.GetExtension(docPath);
                     string splitDirectory = Path.GetDirectoryName(parentDirectory);
                     string containerFolder = Path.GetDirectoryName(splitDirectory);

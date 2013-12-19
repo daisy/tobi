@@ -194,7 +194,7 @@ Press OK to ignore, or CANCEL to see the issues.</value>
     <value>This is a split/merge "master", do not edit!</value>
   </data>
   <data name="IsSplitSub" xml:space="preserve">
-    <value>Note: this is a split/merge sub-project.</value>
+    <value>This project is part of a split/merge "master" (can be edited)</value>
   </data>
   <data name="SplitMasterNoAudio" xml:space="preserve">
     <value>A split/merge point cannot have ancestor audio!</value>
