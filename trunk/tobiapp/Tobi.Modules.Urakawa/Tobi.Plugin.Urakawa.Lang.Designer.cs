@@ -484,7 +484,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Note: this is a split/merge sub-project..
+        ///   Looks up a localized string similar to This project is part of a split/merge &quot;master&quot; (can be edited).
         /// </summary>
         public static string IsSplitSub {
             get {
