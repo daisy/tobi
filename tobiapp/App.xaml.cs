@@ -403,13 +403,6 @@ c.Execute();
 #endif
                 SetCulture(Settings.Default.Lang);
             }
-            catch (CultureNotFoundException ex)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Settings.Default.Lang = "en";
-            }
             catch (ConfigurationErrorsException ex)
             {
                 HandleConfigurationErrorsException(ex);
@@ -420,6 +413,25 @@ c.Execute();
                 return;
 #endif
             }
+#if NET40
+            catch (CultureNotFoundException ex2)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Settings.Default.Lang = "en";
+                SetCulture(Settings.Default.Lang);
+            }
+#else
+            catch (ArgumentException ex2)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Settings.Default.Lang = "en";
+                SetCulture(Settings.Default.Lang);
+            }
+#endif
 
 #if DEBUG
             str = Tobi_Lang.LangStringKey1;
