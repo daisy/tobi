@@ -39,8 +39,11 @@ namespace Tobi.Plugin.Settings
 
             m_SettingsProviders = settingsProviders;
 
-            // Get the previous settings, if any. Saves to persistent storage.
-            UpgradeAll();
+            if (Tobi.Common.Settings.Default.UpgradeSettings)
+            {
+                UpgradeAll();
+                Tobi.Common.Settings.Default.UpgradeSettings = false;
+            }
 
             // Make sure we mark all the settings so that they all show in persistant storage next time we save.
             MarkAllAsChanged();
