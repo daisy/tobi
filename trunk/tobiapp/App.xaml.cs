@@ -319,7 +319,6 @@ c.Execute();
             str = CultureInfo.CurrentUICulture.IetfLanguageTag;
             str = CultureInfo.CurrentUICulture.EnglishName;
             str = CultureInfo.CurrentUICulture.DisplayName;
-
         }
 
         private void HandleConfigurationErrorsException(ConfigurationErrorsException ex)
@@ -360,6 +359,14 @@ c.Execute();
         /// <param name="e"></param>
         private void OnApplicationStartup(object sender, StartupEventArgs e)
         {
+            if (Tobi.Common.Settings.Default.UpgradeSettings)
+            {
+                Settings.Default.Upgrade();
+                Tobi.Common.Settings.Default.Upgrade();
+
+                Tobi.Common.Settings.Default.UpgradeSettings = true; // ensure settings aggregator does its job of upgrading the other providers
+            }
+
             try
             {
                 SettingsPropertyCollection col1 = Settings.Default.Properties;
@@ -377,45 +384,46 @@ c.Execute();
                 HandleConfigurationErrorsException(ex);
             }
 
-
 #if DEBUG
             var str = Tobi_Lang.LangStringKey1;
-
-            SetCulture("fr");
-            str = Tobi_Lang.LangStringKey1;
-
-            SetCulture("hi");
-            str = Tobi_Lang.LangStringKey1;
-
+#endif
             try
             {
+#if DEBUG
+                SetCulture("fr");
+                str = Tobi_Lang.LangStringKey1;
+
+                SetCulture("hi");
+                str = Tobi_Lang.LangStringKey1;
+#endif
                 SetCulture(Settings.Default.Lang);
+            }
+            catch (CultureNotFoundException ex)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Settings.Default.Lang = "en";
             }
             catch (ConfigurationErrorsException ex)
             {
                 HandleConfigurationErrorsException(ex);
-
+#if DEBUG
                 MessageBox.Show(ex.Message);
 
                 Process.GetCurrentProcess().Kill();
                 return;
+#endif
             }
-            str = Tobi_Lang.LangStringKey1;
-#else //DEBUG
-            try
-            {
-                SetCulture(Settings.Default.Lang);
-            }
-            catch (ConfigurationErrorsException ex)
-            {
-                HandleConfigurationErrorsException(ex);
-            }
-#endif //DEBUG
 
-            string lang = Thread.CurrentThread.CurrentUICulture.ToString();
+#if DEBUG
+            str = Tobi_Lang.LangStringKey1;
+#endif
 
             if (false && ApplicationDeployment.IsNetworkDeployed)
             {
+                string lang = Thread.CurrentThread.CurrentUICulture.ToString();
+
                 ApplicationDeployment deploy = ApplicationDeployment.CurrentDeployment;
                 try
                 {
@@ -437,12 +445,12 @@ c.Execute();
                 }
             }
 
-            //to use on individual forms: this.Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
+            //to use on individual forms: this.Language = XmlLanguage.GetLanguage(CultureInfo.CurrentUICulture.IetfLanguageTag);
             FrameworkElement.LanguageProperty.OverrideMetadata(
                   typeof(FrameworkElement),
                   new FrameworkPropertyMetadata(
                      XmlLanguage.GetLanguage(
-                     CultureInfo.CurrentCulture.IetfLanguageTag)));
+                     CultureInfo.CurrentUICulture.IetfLanguageTag)));
 
             Timeline.DesiredFrameRateProperty.OverrideMetadata(
                 typeof(Timeline),
