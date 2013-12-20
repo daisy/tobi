@@ -361,8 +361,13 @@ c.Execute();
         {
             if (Tobi.Common.Settings.Default.UpgradeSettings)
             {
-                Settings.Default.Upgrade();
-                Tobi.Common.Settings.Default.Upgrade();
+                if (!ApplicationDeployment.IsNetworkDeployed)
+                {
+                    // ClickOnce automatically Upgrades.
+
+                    Settings.Default.Upgrade();
+                    Tobi.Common.Settings.Default.Upgrade();
+                }
 
                 Tobi.Common.Settings.Default.UpgradeSettings = true; // ensure settings aggregator does its job of upgrading the other providers
             }
