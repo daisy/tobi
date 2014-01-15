@@ -304,14 +304,20 @@ namespace Tobi.Plugin.DocumentPane
                     XmlAttribute srcW = xmlProp_.GetAttribute("width");
                     if (srcW != null)
                     {
-                        double ww = Double.Parse(srcW.Value);
-                        mediaElement.Width = ww;
+                        var d = parseWidthHeight(srcW.Value);
+                        if (d > 0)
+                        {
+                            mediaElement.Width = d;
+                        }
                     }
                     XmlAttribute srcH = xmlProp_.GetAttribute("height");
                     if (srcH != null)
                     {
-                        double hh = Double.Parse(srcH.Value);
-                        mediaElement.Height = hh;
+                        var d = parseWidthHeight(srcH.Value);
+                        if (d > 0)
+                        {
+                            mediaElement.Height = d;
+                        }
                     }
 
                     mediaElement.HorizontalAlignment = HorizontalAlignment.Center;
