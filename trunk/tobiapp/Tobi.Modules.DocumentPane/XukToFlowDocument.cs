@@ -736,6 +736,31 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        private double parseWidthHeight(string str)
+        {
+            string val = str.Trim();
+
+            if (val.EndsWith("%"))
+            {
+                //val = val.Substring(0, val.Length - 1);
+                return 0.0;
+            }
+
+            if (val.EndsWith("px"))
+            {
+                val = val.Substring(0, val.Length - 2);
+            }
+
+            val = val.Trim();
+
+            double d = 0;
+            if (!Double.TryParse(val, out d))
+            {
+                Console.WriteLine("Cannot parse width/height: " + str);
+            }
+            return d;
+        }
+
         private void setTag(TextElement data, TreeNode node)
         {
             XmlProperty xmlProp = node.GetXmlProperty();
@@ -2426,14 +2451,20 @@ namespace Tobi.Plugin.DocumentPane
             XmlAttribute srcW = xmlProp.GetAttribute("width");
             if (srcW != null)
             {
-                double ww = Double.Parse(srcW.Value);
-                image.Width = ww;
+                var d = parseWidthHeight(srcW.Value);
+                if (d > 0)
+                {
+                    image.Width = d;
+                }
             }
             XmlAttribute srcH = xmlProp.GetAttribute("height");
             if (srcH != null)
             {
-                double hh = Double.Parse(srcH.Value);
-                image.Height = hh;
+                var d = parseWidthHeight(srcH.Value);
+                if (d > 0)
+                {
+                    image.Height = d;
+                }
             }
 
             image.HorizontalAlignment = HorizontalAlignment.Center;
