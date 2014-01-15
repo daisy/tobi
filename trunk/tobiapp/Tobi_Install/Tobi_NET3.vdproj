@@ -2396,7 +2396,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Tobi_NET3.resources, Version=2.1.1.0, Culture=fr, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Tobi_NET3.resources, Version=2.2.0.0, Culture=fr, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -5473,7 +5473,7 @@
         {
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_604749D0A56B40C1875B60180ED327F2"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]_[ProductVersion]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
@@ -5576,15 +5576,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Tobi (NET3)"
-        "ProductCode" = "8:{19D3C74C-6650-49A2-81E5-6F3DEDDE61C1}"
-        "PackageCode" = "8:{254D648F-6A93-4713-9D18-59A9BCCED577}"
+        "ProductCode" = "8:{CB9E8DC9-D61A-468B-BF1F-295A67C8BF28}"
+        "PackageCode" = "8:{D7AE5AB4-3FFE-4C73-9A4E-B44C39EFD73C}"
         "UpgradeCode" = "8:{1F5EA56E-A940-4B5D-9362-2309A907FA11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:02.02.0000"
+        "ProductVersion" = "8:02.02.0001"
         "Manufacturer" = "8:DAISY Consortium"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://daisy.org/tobi"
