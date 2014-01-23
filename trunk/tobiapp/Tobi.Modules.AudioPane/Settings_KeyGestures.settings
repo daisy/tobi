@@ -49,6 +49,9 @@
     <Setting Name="Keyboard_Audio_GenTTS" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] G</Value>
     </Setting>
+    <Setting Name="Keyboard_Audio_GenTTS_All" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] G</Value>
+    </Setting>
     <Setting Name="Keyboard_Audio_FileInsert" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] I</Value>
     </Setting>

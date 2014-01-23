@@ -30,6 +30,7 @@ namespace Tobi.Plugin.AudioPane
 
         public RichDelegateCommand CommandInsertFile { get; private set; }
         public RichDelegateCommand CommandGenTTS { get; private set; }
+        public RichDelegateCommand CommandGenTTS_All { get; private set; }
         public RichDelegateCommand CommandDeleteAudioSelection { get; private set; }
 
         public RichDelegateCommand CommandSplitShift { get; private set; }
@@ -254,6 +255,61 @@ namespace Tobi.Plugin.AudioPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GenTTS));
 
             m_ShellView.RegisterRichCommand(CommandGenTTS);
+            //
+            //
+            CommandGenTTS_All = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioGenTTS_All_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioGenTTS_All_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("audio-x-generic"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandGenTTS_All", Category.Debug, Priority.Medium);
+
+                    CommandGenTTS_All_Execute();
+                },
+                () =>
+                {
+                    //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+                    //bool okay = treeNodeSelection.Item1 != null
+                    //    && (
+                    //    IsSimpleMode
+                    //    ? TreeNode.GetLengthStringChunks(treeNodeSelection.Item1.GetTextFlattened_()) > 0
+                    //    : true
+                    //        )
+                    //        ;
+
+                    return
+                        //okay &&
+                        (!IsMonitoring || IsMonitoringAlways)
+                       && !IsRecording
+                       && !IsWaveFormLoading
+                       && !IsPlaying
+                       && m_UrakawaSession.DocumentProject != null
+                       //&& (IsSimpleMode || treeNodeSelection.Item1.HasXmlProperty)
+                       //&& treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
+                        //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
+                       ;
+
+                    //// because we change the selection in the execute code
+                    ////return CommandInsertFile.CanExecute();
+
+                    // Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                    // TreeNode node = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
+
+                    // return !IsMonitoring && !IsRecording && !IsWaveFormLoading && !IsPlaying
+                    //     && m_UrakawaSession.DocumentProject != null
+                    //&& node != null
+                    //&& node.HasXmlProperty
+                    //&& node.GetFirstAncestorWithManagedAudio() == null
+                    //&& node.GetFirstDescendantWithManagedAudio() == null;
+                }
+                      ,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GenTTS_All));
+
+            m_ShellView.RegisterRichCommand(CommandGenTTS_All);
             //
             CommandDeleteAudioSelection = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdAudioDelete_ShortDesc,

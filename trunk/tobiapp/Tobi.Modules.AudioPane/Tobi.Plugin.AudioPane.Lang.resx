@@ -244,10 +244,16 @@
     <value>Jump to the end of the audio content</value>
   </data>
   <data name="CmdAudioGenTTS_ShortDesc" xml:space="preserve">
-    <value>_Generate TTS audio</value>
+    <value>_TTS audio (selected text)</value>
   </data>
   <data name="CmdAudioGenTTS_LongDesc" xml:space="preserve">
-    <value>Create audio for the selected text using a Text To Speech synthesizer</value>
+    <value>Generate audio for the selected text using synthetic speech</value>
+  </data>
+  <data name="CmdAudioGenTTS_All_ShortDesc" xml:space="preserve">
+    <value>_TTS audio (entire document)</value>
+  </data>
+  <data name="CmdAudioGenTTS_All_LongDesc" xml:space="preserve">
+    <value>Generate audio for the entire document using synthetic speech</value>
   </data>
   <data name="CmdAudioInsertFile_ShortDesc" xml:space="preserve">
     <value>_Import audio file(s)</value>
