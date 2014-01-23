@@ -81,7 +81,7 @@ namespace Tobi.Plugin.AudioPane
         private int m_MenuBarId_13;
         private int m_MenuBarId_14;
         private int m_MenuBarId_15;
-        //private int m_MenuBarId_16;
+        private int m_MenuBarId_16;
         protected override void OnMenuBarReady()
         {
             var dataMonitor = new TwoStateMenuItemRichCommand_DataContextWrapper
@@ -182,8 +182,16 @@ namespace Tobi.Plugin.AudioPane
                  {
                      m_AudioPaneViewModel.CommandInsertFile,
                      m_AudioPaneViewModel.CommandEditWavExternally,
-                     m_AudioPaneViewModel.CommandGenTTS,
                      m_AudioPaneViewModel.CommandResetSessionCounter
+                 });
+
+            m_MenuBarId_16 = m_MenuBarView.AddMenuBarGroup(
+                Tobi_Common_Lang.Menu_Audio, PreferredPosition.First, true,
+                null, PreferredPosition.Any, true,
+                new[]
+                 {
+                     m_AudioPaneViewModel.CommandGenTTS,
+                     m_AudioPaneViewModel.CommandGenTTS_All
                  });
 
             m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(
@@ -325,6 +333,7 @@ namespace Tobi.Plugin.AudioPane
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Audio, m_MenuBarId_10);
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Audio, m_MenuBarId_11);
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Audio, m_MenuBarId_12);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Audio, m_MenuBarId_16);
 
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Edit, m_MenuBarId_13);
 

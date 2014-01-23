@@ -459,6 +459,12 @@ namespace Tobi.Plugin.AudioPane
 
     public partial class AudioPaneViewModel
     {
+        private void CommandGenTTS_All_Execute()
+        {
+            m_UrakawaSession.PerformTreeNodeSelection(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, false, null);
+            CommandGenTTS_Execute();
+        }
+
         private void CommandGenTTS_Execute()
         {
             bool cancelled = false;
