@@ -839,8 +839,19 @@ namespace Tobi.Plugin.Urakawa
                             }
                             else if (process.ExitCode != 0)
                             {
-                                messageBoxText(title, "Error!",
-                                    EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + report);
+                                if (!isPipeline
+                                    && report.IndexOf("ERROR", StringComparison.Ordinal) < 0
+                                    && error.IndexOf("ERROR", StringComparison.Ordinal) < 0
+                                    )
+                                {
+                                    messageBoxText(title, "Warning",
+                                        EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + report);
+                                }
+                                else
+                                {
+                                    messageBoxText(title, "Error!",
+                                        EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + report);
+                                }
                             }
                         }
                         else if (checkErrorsOrWarning != null)
