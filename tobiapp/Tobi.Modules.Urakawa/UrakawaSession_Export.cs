@@ -829,28 +829,29 @@ namespace Tobi.Plugin.Urakawa
                         }
 
                         string report = output.ToString();
+                        string errorStr = error.ToString();
 
                         if (!isPipeline || report.IndexOf("[DP2] DONE", StringComparison.Ordinal) < 0)
                         {
                             if (!notTimeout || !process.HasExited)
                             {
                                 messageBoxText(title, "Timeout?",
-                                    EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + report);
+                                    EXEC + errorStr + Environment.NewLine + Environment.NewLine + report);
                             }
                             else if (process.ExitCode != 0)
                             {
                                 if (!isPipeline
                                     && report.IndexOf("ERROR", StringComparison.Ordinal) < 0
-                                    && error.IndexOf("ERROR", StringComparison.Ordinal) < 0
+                                    && errorStr.IndexOf("ERROR", StringComparison.Ordinal) < 0
                                     )
                                 {
                                     messageBoxText(title, "Warning",
-                                        EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + report);
+                                        EXEC + errorStr + Environment.NewLine + Environment.NewLine + report);
                                 }
                                 else
                                 {
                                     messageBoxText(title, "Error!",
-                                        EXEC + error.ToString() + Environment.NewLine + Environment.NewLine + report);
+                                        EXEC + errorStr + Environment.NewLine + Environment.NewLine + report);
                                 }
                             }
                         }
@@ -869,7 +870,7 @@ namespace Tobi.Plugin.Urakawa
                                 report = errorWarningReport + Environment.NewLine + Environment.NewLine + report;
                             }
 
-                            messageBoxText(title, text, report + Environment.NewLine + Environment.NewLine + error.ToString());
+                            messageBoxText(title, text, report + Environment.NewLine + Environment.NewLine + errorStr);
                         }
 
                         //if (process.StartInfo.RedirectStandardOutput && process.StartInfo.RedirectStandardError)
