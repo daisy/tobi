@@ -56,8 +56,8 @@
     <Setting Name="Skippables" Type="System.String" Scope="User">
       <Value Profile="(Default)">pagenum,linenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,note,noteref,</Value>
     </Setting>
-    <Setting Name="MediaOverlayActiveCSS" Type="System.String" Scope="User">
-      <Value Profile="(Default)">background-color: #FF0000; color: white; font-weight: bold;</Value>
+    <Setting Name="MediaOverlayPlaybackActiveCSS" Type="System.String" Scope="User">
+      <Value Profile="(Default)">background-color: black !important; color: white !important; border-radius: 0.2em;</Value>
     </Setting>
     <Setting Name="ProcessTimeoutMinutes" Type="System.Double" Scope="User">
       <Value Profile="(Default)">5</Value>

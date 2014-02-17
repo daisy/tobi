@@ -389,11 +389,10 @@ namespace Tobi.Plugin.Urakawa
                         VerticalAlignment = VerticalAlignment.Center,
                     };
 
-                    //TODO: DIAGRAM export with EPUB 3
-                    if (IsXukSpine || HasXukSpine)
-                    {
-                        checkBoxIncludeImageDescriptions.IsEnabled = false;
-                    }
+                    //if (IsXukSpine || HasXukSpine)
+                    //{
+                    //    checkBoxIncludeImageDescriptions.IsEnabled = false;
+                    //}
 
                     var panelIncludeImageDescriptions = new StackPanel
                     {
@@ -632,7 +631,7 @@ namespace Tobi.Plugin.Urakawa
                      Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                      Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
                      IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, exportSpineItemProjectPath,
-                     Settings.Default.MediaOverlayActiveCSS);
+                     Settings.Default.MediaOverlayPlaybackActiveCSS);
             }
             else
             {
