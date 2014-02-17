@@ -25,7 +25,12 @@ namespace Tobi.Plugin.Urakawa
                     return false;
                 }
 
-                XmlAttribute xmlAttr = DocumentProject.Presentations.Get(0).RootNode.GetXmlProperty().GetAttribute(SPLIT_MERGE);
+                XmlProperty xmlProp = DocumentProject.Presentations.Get(0).RootNode.GetXmlProperty();
+                if (xmlProp == null)
+                {
+                    return false;
+                }
+                XmlAttribute xmlAttr = xmlProp.GetAttribute(SPLIT_MERGE);
 
                 return xmlAttr != null && "MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase);
             }
@@ -40,7 +45,12 @@ namespace Tobi.Plugin.Urakawa
                     return false;
                 }
 
-                XmlAttribute xmlAttr = DocumentProject.Presentations.Get(0).RootNode.GetXmlProperty().GetAttribute(SPLIT_MERGE);
+                XmlProperty xmlProp = DocumentProject.Presentations.Get(0).RootNode.GetXmlProperty();
+                if (xmlProp == null)
+                {
+                    return false;
+                }
+                XmlAttribute xmlAttr = xmlProp.GetAttribute(SPLIT_MERGE);
 
                 return xmlAttr != null && !"MASTER".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase) && !"-1".Equals(xmlAttr.Value, StringComparison.InvariantCultureIgnoreCase);
             }
