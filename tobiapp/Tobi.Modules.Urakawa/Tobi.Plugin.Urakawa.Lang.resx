@@ -270,6 +270,15 @@ Do you want to continue ?</value>
   <data name="ExportIncludeImageDescriptions" xml:space="preserve">
     <value>Include/merge image descriptions: </value>
   </data>
+  <data name="ExportImageDescriptions_AriaDescribedAt" xml:space="preserve">
+    <value>Use ARIA "described-at":</value>
+  </data>
+  <data name="ExportImageDescriptions_AriaDescribedBy" xml:space="preserve">
+    <value>Use ARIA "described-by":</value>
+  </data>
+  <data name="ExportImageDescriptions_HtmlLongDesc" xml:space="preserve">
+    <value>Use HTML "longdesc":</value>
+  </data>
   <data name="ExportGenerateSmilNotes" xml:space="preserve">
     <value>Generate SMIL note references: </value>
   </data>
