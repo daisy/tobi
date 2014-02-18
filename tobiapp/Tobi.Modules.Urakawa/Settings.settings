@@ -29,14 +29,14 @@
     <Setting Name="ExportIncludeImageDescriptions" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="ExportImageDescriptions_AriaDescribedAt" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="ExportImageDescriptions_AriaDescribedBy" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ExportImageDescriptions_AriaDescribedAt" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="ExportImageDescriptions_HtmlLongDesc" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AudioCodecDisableACM" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
