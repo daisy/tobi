@@ -315,7 +315,7 @@ namespace Tobi.Plugin.Descriptions
 
 
 
-            Metadata diagramElementName_Metadata = new Metadata();
+            Metadata diagramElementName_Metadata = treeNode.Presentation.MetadataFactory.CreateMetadata();
             diagramElementName_Metadata.NameContentAttribute = new MetadataAttribute();
             diagramElementName_Metadata.NameContentAttribute.Name = DiagramContentModelHelper.DiagramElementName;
             diagramElementName_Metadata.NameContentAttribute.NamespaceUri = null;
@@ -505,7 +505,7 @@ namespace Tobi.Plugin.Descriptions
                     }
                     else
                     {
-                        Metadata diagramElementAttribute_Metadata = new Metadata();
+                        Metadata diagramElementAttribute_Metadata = treeNode.Presentation.MetadataFactory.CreateMetadata();
                         diagramElementAttribute_Metadata.NameContentAttribute = new MetadataAttribute();
                         diagramElementAttribute_Metadata.NameContentAttribute.Name = attribute.Name;
                         diagramElementAttribute_Metadata.NameContentAttribute.NamespaceUri = attribute.NamespaceURI;
@@ -586,7 +586,7 @@ namespace Tobi.Plugin.Descriptions
                         }
                         else
                         {
-                            Metadata diagramElementAttribute_Metadata = new Metadata();
+                            Metadata diagramElementAttribute_Metadata = treeNode.Presentation.MetadataFactory.CreateMetadata();
                             diagramElementAttribute_Metadata.NameContentAttribute = new MetadataAttribute();
                             diagramElementAttribute_Metadata.NameContentAttribute.Name = attribute.Name;
                             diagramElementAttribute_Metadata.NameContentAttribute.NamespaceUri = attribute.NamespaceURI;
