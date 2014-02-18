@@ -133,18 +133,6 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ExportImageDescriptions_AriaDescribedAt {
-            get {
-                return ((bool)(this["ExportImageDescriptions_AriaDescribedAt"]));
-            }
-            set {
-                this["ExportImageDescriptions_AriaDescribedAt"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ExportImageDescriptions_AriaDescribedBy {
             get {
@@ -157,7 +145,19 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExportImageDescriptions_AriaDescribedAt {
+            get {
+                return ((bool)(this["ExportImageDescriptions_AriaDescribedAt"]));
+            }
+            set {
+                this["ExportImageDescriptions_AriaDescribedAt"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ExportImageDescriptions_HtmlLongDesc {
             get {
                 return ((bool)(this["ExportImageDescriptions_HtmlLongDesc"]));

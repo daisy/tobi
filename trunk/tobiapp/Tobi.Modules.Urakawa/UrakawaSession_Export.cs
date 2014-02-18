@@ -578,8 +578,8 @@ namespace Tobi.Plugin.Urakawa
                     rootPanel.Children.Add(panelIncludeImageDescriptions);
                     if (isEPUB)
                     {
-                        rootPanel.Children.Add(panelImageDescriptions_AriaDescribedAt);
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedBy);
+                        rootPanel.Children.Add(panelImageDescriptions_AriaDescribedAt);
                         rootPanel.Children.Add(panelImageDescriptions_HtmlLongDesc);
                     }
 
