@@ -170,6 +170,18 @@ namespace Tobi.Plugin.Urakawa {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExportImageDescriptions_inlineTextAudio {
+            get {
+                return ((bool)(this["ExportImageDescriptions_inlineTextAudio"]));
+            }
+            set {
+                this["ExportImageDescriptions_inlineTextAudio"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool AudioCodecDisableACM {
             get {
                 return ((bool)(this["AudioCodecDisableACM"]));

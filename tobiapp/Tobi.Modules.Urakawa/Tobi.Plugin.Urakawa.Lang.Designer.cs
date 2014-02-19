@@ -466,6 +466,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inline HTML5 text / audio:.
+        /// </summary>
+        public static string ExportImageDescriptions_inlineTextAudio {
+            get {
+                return ResourceManager.GetString("ExportImageDescriptions_inlineTextAudio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Include/merge image descriptions: .
         /// </summary>
         public static string ExportIncludeImageDescriptions {
