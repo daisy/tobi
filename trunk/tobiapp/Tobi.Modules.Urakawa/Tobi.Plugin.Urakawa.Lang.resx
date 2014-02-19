@@ -279,6 +279,9 @@ Do you want to continue ?</value>
   <data name="ExportImageDescriptions_HtmlLongDesc" xml:space="preserve">
     <value>Use HTML "longdesc":</value>
   </data>
+  <data name="ExportImageDescriptions_inlineTextAudio" xml:space="preserve">
+    <value>Inline HTML5 text / audio:</value>
+  </data>
   <data name="ExportGenerateSmilNotes" xml:space="preserve">
     <value>Generate SMIL note references: </value>
   </data>

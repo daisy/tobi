@@ -38,6 +38,9 @@
     <Setting Name="ExportImageDescriptions_HtmlLongDesc" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="ExportImageDescriptions_inlineTextAudio" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="AudioCodecDisableACM" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>

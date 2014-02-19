@@ -434,7 +434,7 @@ namespace Tobi.Plugin.Urakawa
                     };
                     panelImageDescriptions_AriaDescribedBy.Children.Add(labelImageDescriptions_AriaDescribedBy);
                     panelImageDescriptions_AriaDescribedBy.Children.Add(checkBoxImageDescriptions_AriaDescribedBy);
-
+                    
 
 
                     var labelImageDescriptions_HtmlLongDesc = new TextBlock
@@ -467,6 +467,35 @@ namespace Tobi.Plugin.Urakawa
 
 
 
+                    var labelImageDescriptions_inlineTextAudio = new TextBlock
+                    {
+                        Text = Tobi_Plugin_Urakawa_Lang.ExportImageDescriptions_inlineTextAudio,
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var checkBoxImageDescriptions_inlineTextAudio = new CheckBox
+                    {
+                        IsThreeState = false,
+                        IsChecked = Settings.Default.ExportImageDescriptions_inlineTextAudio,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+
+                    var panelImageDescriptions_inlineTextAudio = new StackPanel
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Horizontal,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(20, 0, 12, 0),
+                    };
+                    panelImageDescriptions_inlineTextAudio.Children.Add(labelImageDescriptions_inlineTextAudio);
+                    panelImageDescriptions_inlineTextAudio.Children.Add(checkBoxImageDescriptions_inlineTextAudio);
+
+
 
 
                     var labelIncludeImageDescriptions = new TextBlock
@@ -494,12 +523,14 @@ namespace Tobi.Plugin.Urakawa
                             checkBoxImageDescriptions_AriaDescribedAt.IsEnabled = true;
                             checkBoxImageDescriptions_AriaDescribedBy.IsEnabled = true;
                             checkBoxImageDescriptions_HtmlLongDesc.IsEnabled = true;
+                            checkBoxImageDescriptions_inlineTextAudio.IsEnabled = true;
                         });
                         checkBoxIncludeImageDescriptions.Unchecked += new RoutedEventHandler((sender, ev) =>
                         {
                             checkBoxImageDescriptions_AriaDescribedAt.IsEnabled = false;
                             checkBoxImageDescriptions_AriaDescribedBy.IsEnabled = false;
                             checkBoxImageDescriptions_HtmlLongDesc.IsEnabled = false;
+                            checkBoxImageDescriptions_inlineTextAudio.IsEnabled = false;
                         });
                     }
 
@@ -581,6 +612,7 @@ namespace Tobi.Plugin.Urakawa
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedBy);
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedAt);
                         rootPanel.Children.Add(panelImageDescriptions_HtmlLongDesc);
+                        rootPanel.Children.Add(panelImageDescriptions_inlineTextAudio);
                     }
 
                     if (!isEPUB)
@@ -606,11 +638,15 @@ namespace Tobi.Plugin.Urakawa
 
                     Settings.Default.AudioExportStereo = checkBoxStereo.IsChecked.Value;
                     Settings.Default.AudioExportEncodeToMp3 = checkBoxEncodeMP3.IsChecked.Value;
+
                     Settings.Default.ExportIncludeImageDescriptions = checkBoxIncludeImageDescriptions.IsChecked.Value;
 
                     Settings.Default.ExportImageDescriptions_AriaDescribedAt = checkBoxImageDescriptions_AriaDescribedAt.IsChecked.Value;
                     Settings.Default.ExportImageDescriptions_AriaDescribedBy = checkBoxImageDescriptions_AriaDescribedBy.IsChecked.Value;
                     Settings.Default.ExportImageDescriptions_HtmlLongDesc = checkBoxImageDescriptions_HtmlLongDesc.IsChecked.Value;
+
+                    Settings.Default.ExportImageDescriptions_inlineTextAudio = checkBoxImageDescriptions_inlineTextAudio.IsChecked.Value;
+
 
                     Settings.Default.ExportGenerateSmilNotes = checkBoxGenSmilNote.IsChecked.Value;
 
@@ -776,7 +812,8 @@ namespace Tobi.Plugin.Urakawa
                      Settings.Default.MediaOverlayPlaybackActiveCSS,
                     Settings.Default.ExportImageDescriptions_AriaDescribedAt,
                     Settings.Default.ExportImageDescriptions_AriaDescribedBy,
-                    Settings.Default.ExportImageDescriptions_HtmlLongDesc);
+                    Settings.Default.ExportImageDescriptions_HtmlLongDesc,
+                    Settings.Default.ExportImageDescriptions_inlineTextAudio);
             }
             else
             {
