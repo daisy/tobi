@@ -465,7 +465,7 @@ namespace Tobi.Plugin.Urakawa
                     panelImageDescriptions_HtmlLongDesc.Children.Add(labelImageDescriptions_HtmlLongDesc);
                     panelImageDescriptions_HtmlLongDesc.Children.Add(checkBoxImageDescriptions_HtmlLongDesc);
 
-
+#if ENABLE_INLINE_DIAGRAM
 
                     var labelImageDescriptions_inlineTextAudio = new TextBlock
                     {
@@ -495,8 +495,7 @@ namespace Tobi.Plugin.Urakawa
                     panelImageDescriptions_inlineTextAudio.Children.Add(labelImageDescriptions_inlineTextAudio);
                     panelImageDescriptions_inlineTextAudio.Children.Add(checkBoxImageDescriptions_inlineTextAudio);
 
-
-
+#endif
 
                     var labelIncludeImageDescriptions = new TextBlock
                     {
@@ -523,14 +522,20 @@ namespace Tobi.Plugin.Urakawa
                             checkBoxImageDescriptions_AriaDescribedAt.IsEnabled = true;
                             checkBoxImageDescriptions_AriaDescribedBy.IsEnabled = true;
                             checkBoxImageDescriptions_HtmlLongDesc.IsEnabled = true;
+
+#if ENABLE_INLINE_DIAGRAM
                             checkBoxImageDescriptions_inlineTextAudio.IsEnabled = true;
+#endif
                         });
                         checkBoxIncludeImageDescriptions.Unchecked += new RoutedEventHandler((sender, ev) =>
                         {
                             checkBoxImageDescriptions_AriaDescribedAt.IsEnabled = false;
                             checkBoxImageDescriptions_AriaDescribedBy.IsEnabled = false;
                             checkBoxImageDescriptions_HtmlLongDesc.IsEnabled = false;
+
+#if ENABLE_INLINE_DIAGRAM
                             checkBoxImageDescriptions_inlineTextAudio.IsEnabled = false;
+#endif
                         });
                     }
 
@@ -612,7 +617,10 @@ namespace Tobi.Plugin.Urakawa
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedBy);
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedAt);
                         rootPanel.Children.Add(panelImageDescriptions_HtmlLongDesc);
+
+#if ENABLE_INLINE_DIAGRAM
                         rootPanel.Children.Add(panelImageDescriptions_inlineTextAudio);
+#endif
                     }
 
                     if (!isEPUB)
@@ -644,8 +652,12 @@ namespace Tobi.Plugin.Urakawa
                     Settings.Default.ExportImageDescriptions_AriaDescribedAt = checkBoxImageDescriptions_AriaDescribedAt.IsChecked.Value;
                     Settings.Default.ExportImageDescriptions_AriaDescribedBy = checkBoxImageDescriptions_AriaDescribedBy.IsChecked.Value;
                     Settings.Default.ExportImageDescriptions_HtmlLongDesc = checkBoxImageDescriptions_HtmlLongDesc.IsChecked.Value;
-
+                    
+#if ENABLE_INLINE_DIAGRAM
                     Settings.Default.ExportImageDescriptions_inlineTextAudio = checkBoxImageDescriptions_inlineTextAudio.IsChecked.Value;
+#else
+                    Settings.Default.ExportImageDescriptions_inlineTextAudio = false;
+#endif
 
 
                     Settings.Default.ExportGenerateSmilNotes = checkBoxGenSmilNote.IsChecked.Value;
