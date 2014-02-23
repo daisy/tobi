@@ -62,11 +62,11 @@ namespace Tobi.Plugin.Urakawa
                 }
             }
 
-            if (".epub".Equals(ext, StringComparison.OrdinalIgnoreCase))
+            if (DataProviderFactory.EPUB_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 checkEpub(DocumentFilePath, null);
             }
-            else if (".xml".Equals(ext, StringComparison.OrdinalIgnoreCase)
+            else if (DataProviderFactory.XML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
                 &&
                 FileDataProvider.NormaliseFullFilePath(DocumentFilePath).IndexOf(
                         @"META-INF"
@@ -92,15 +92,15 @@ namespace Tobi.Plugin.Urakawa
                     //checkEpub(DocumentFilePath, "opf"); assume container.xml was found (see above)
                 }
             }
-            else if (".html".Equals(ext, StringComparison.OrdinalIgnoreCase)
-                || ".xhtml".Equals(ext, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.HTML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.XHTML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 //MessageBox.Show
                 messageBoxAlert("WARNING: single HTML import is an experimental and incomplete EPUB feature!", null);
 
                 checkEpub(DocumentFilePath, "xhtml");
             }
-            else if (".xml".Equals(ext, StringComparison.OrdinalIgnoreCase))
+            else if (DataProviderFactory.XML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase))
             {
                 //checkDAISY(DocumentFilePath);
                 if (false && // TODO: Pipeline 2 with better support for DTBOOK validation (currently skips metadata values)
