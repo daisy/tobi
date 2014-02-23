@@ -387,11 +387,11 @@ namespace Tobi.Plugin.Urakawa
 
                     if (string.IsNullOrEmpty(ext)
                         || (
-                               !ext.Equals(".xml", StringComparison.OrdinalIgnoreCase)
+                               !ext.Equals(DataProviderFactory.XML_EXTENSION, StringComparison.OrdinalIgnoreCase)
                                &&
                                !ext.Equals(".opf", StringComparison.OrdinalIgnoreCase)
                                &&
-                               !ext.Equals(".html", StringComparison.OrdinalIgnoreCase)
+                               !ext.Equals(DataProviderFactory.HTML_EXTENSION, StringComparison.OrdinalIgnoreCase)
                            ))
                     {
                         return;
@@ -426,9 +426,9 @@ namespace Tobi.Plugin.Urakawa
 
                     string options = "";
 
-                    bool isNCC = ext.Equals(".html", StringComparison.OrdinalIgnoreCase);
+                    bool isNCC = ext.Equals(DataProviderFactory.HTML_EXTENSION, StringComparison.OrdinalIgnoreCase);
 
-                    if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+                    if (ext.Equals(DataProviderFactory.XML_EXTENSION, StringComparison.OrdinalIgnoreCase))
                     {
                         script = "dtbook-to-epub3";
 
@@ -443,7 +443,7 @@ namespace Tobi.Plugin.Urakawa
 
                             //foreach (string fileName in dlg.FileNames)
                             //{
-                            //    if (".xml".Equals(Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
+                            //    if (DataProviderFactory.XML_EXTENSION.Equals(Path.GetExtension(fileName), StringComparison.OrdinalIgnoreCase))
                             //    {
                             //        //filenames += (inParam + " " + "\"" + fileName + "\" ");
                             //        filenames += ("\"" + fileName + "\";");
@@ -569,9 +569,9 @@ namespace Tobi.Plugin.Urakawa
                                 {
                                     epubFileName = "result.epub";
                                 }
-                                else if (ext.Equals(".xml", StringComparison.OrdinalIgnoreCase))
+                                else if (ext.Equals(DataProviderFactory.XML_EXTENSION, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    epubFileName = epubFileName + ".epub";
+                                    epubFileName = epubFileName + DataProviderFactory.EPUB_EXTENSION;
                                 }
                                 else if (isNCC)
                                 {
@@ -583,9 +583,9 @@ namespace Tobi.Plugin.Urakawa
 #endif
                                     foreach (FileInfo fileInfo in allFiles)
                                     {
-                                        if (".epub".Equals(Path.GetExtension(fileInfo.FullName)))
+                                        if (DataProviderFactory.EPUB_EXTENSION.Equals(Path.GetExtension(fileInfo.FullName)))
                                         {
-                                            epubFileName = epubFileName + ".epub";
+                                            epubFileName = epubFileName + DataProviderFactory.EPUB_EXTENSION;
                                             try
                                             {
                                                 string renamed = Path.Combine(outputDirectory, epubFileName);
@@ -734,7 +734,7 @@ namespace Tobi.Plugin.Urakawa
                                     {
                                         string fileName =
                                             Path.GetFileNameWithoutExtension(dlg.FileNames[0]);
-                                        outFile = Path.Combine(outdir, fileName + ".epub");
+                                        outFile = Path.Combine(outdir, fileName + DataProviderFactory.EPUB_EXTENSION);
                                     }
                                     else
                                     {
@@ -931,7 +931,7 @@ namespace Tobi.Plugin.Urakawa
             string addon = "";
             int index = 0;
         tryAgain:
-            string epubFilePath = Path.Combine(dirInfo.FullName, Path.GetFileName(filename) + addon + ".epub");
+            string epubFilePath = Path.Combine(dirInfo.FullName, Path.GetFileName(filename) + addon + DataProviderFactory.EPUB_EXTENSION);
             if (File.Exists(epubFilePath))
             {
                 addon = "_" + index;
@@ -1302,11 +1302,11 @@ namespace Tobi.Plugin.Urakawa
                 OpenFile(outputFileName);
             }
             else if (
-                ".xhtml".Equals(ext, StringComparison.OrdinalIgnoreCase)
-                || ".html".Equals(ext, StringComparison.OrdinalIgnoreCase)
-                || ".xml".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                DataProviderFactory.XHTML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.HTML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.XML_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
                 || ".opf".Equals(ext, StringComparison.OrdinalIgnoreCase)
-                || ".epub".Equals(ext, StringComparison.OrdinalIgnoreCase)
+                || DataProviderFactory.EPUB_EXTENSION.Equals(ext, StringComparison.OrdinalIgnoreCase)
                 )
             {
                 //todo: should we implement HTTP import ?

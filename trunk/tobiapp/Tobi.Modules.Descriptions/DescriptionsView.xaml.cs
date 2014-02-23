@@ -549,8 +549,8 @@ namespace Tobi.Plugin.Descriptions
             var dlg = new OpenFileDialog
             {
                 FileName = "",
-                DefaultExt = ".xml",
-                Filter = @"XML (*.xml)|*.xml",
+                DefaultExt = DataProviderFactory.XML_EXTENSION,
+                Filter = @"XML (*" + DataProviderFactory.XML_EXTENSION + ")|*" + DataProviderFactory.XML_EXTENSION,
                 CheckFileExists = false,
                 CheckPathExists = false,
                 AddExtension = true,
