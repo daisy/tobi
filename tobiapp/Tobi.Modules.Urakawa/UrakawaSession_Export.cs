@@ -434,7 +434,7 @@ namespace Tobi.Plugin.Urakawa
                     };
                     panelImageDescriptions_AriaDescribedBy.Children.Add(labelImageDescriptions_AriaDescribedBy);
                     panelImageDescriptions_AriaDescribedBy.Children.Add(checkBoxImageDescriptions_AriaDescribedBy);
-                    
+
 
 
                     var labelImageDescriptions_HtmlLongDesc = new TextBlock
@@ -446,6 +446,8 @@ namespace Tobi.Plugin.Urakawa
                         Focusable = true,
                         TextWrapping = TextWrapping.Wrap
                     };
+
+#if ENABLE_DIAGRAM_LONGDESC_USER_CHOICE
 
                     var checkBoxImageDescriptions_HtmlLongDesc = new CheckBox
                     {
@@ -464,6 +466,7 @@ namespace Tobi.Plugin.Urakawa
                     };
                     panelImageDescriptions_HtmlLongDesc.Children.Add(labelImageDescriptions_HtmlLongDesc);
                     panelImageDescriptions_HtmlLongDesc.Children.Add(checkBoxImageDescriptions_HtmlLongDesc);
+#endif
 
 #if ENABLE_INLINE_DIAGRAM
 
@@ -521,7 +524,9 @@ namespace Tobi.Plugin.Urakawa
                         {
                             checkBoxImageDescriptions_AriaDescribedAt.IsEnabled = true;
                             checkBoxImageDescriptions_AriaDescribedBy.IsEnabled = true;
+#if ENABLE_DIAGRAM_LONGDESC_USER_CHOICE
                             checkBoxImageDescriptions_HtmlLongDesc.IsEnabled = true;
+#endif
 
 #if ENABLE_INLINE_DIAGRAM
                             checkBoxImageDescriptions_inlineTextAudio.IsEnabled = true;
@@ -531,7 +536,9 @@ namespace Tobi.Plugin.Urakawa
                         {
                             checkBoxImageDescriptions_AriaDescribedAt.IsEnabled = false;
                             checkBoxImageDescriptions_AriaDescribedBy.IsEnabled = false;
+#if ENABLE_DIAGRAM_LONGDESC_USER_CHOICE
                             checkBoxImageDescriptions_HtmlLongDesc.IsEnabled = false;
+#endif
 
 #if ENABLE_INLINE_DIAGRAM
                             checkBoxImageDescriptions_inlineTextAudio.IsEnabled = false;
@@ -616,7 +623,10 @@ namespace Tobi.Plugin.Urakawa
                     {
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedBy);
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedAt);
+                        
+#if ENABLE_INLINE_DIAGRAM
                         rootPanel.Children.Add(panelImageDescriptions_HtmlLongDesc);
+#endif
 
 #if ENABLE_INLINE_DIAGRAM
                         rootPanel.Children.Add(panelImageDescriptions_inlineTextAudio);
@@ -651,8 +661,13 @@ namespace Tobi.Plugin.Urakawa
 
                     Settings.Default.ExportImageDescriptions_AriaDescribedAt = checkBoxImageDescriptions_AriaDescribedAt.IsChecked.Value;
                     Settings.Default.ExportImageDescriptions_AriaDescribedBy = checkBoxImageDescriptions_AriaDescribedBy.IsChecked.Value;
+
+#if ENABLE_DIAGRAM_LONGDESC_USER_CHOICE
                     Settings.Default.ExportImageDescriptions_HtmlLongDesc = checkBoxImageDescriptions_HtmlLongDesc.IsChecked.Value;
-                    
+#else
+                    Settings.Default.ExportImageDescriptions_HtmlLongDesc = true;
+#endif
+
 #if ENABLE_INLINE_DIAGRAM
                     Settings.Default.ExportImageDescriptions_inlineTextAudio = checkBoxImageDescriptions_inlineTextAudio.IsChecked.Value;
 #else
