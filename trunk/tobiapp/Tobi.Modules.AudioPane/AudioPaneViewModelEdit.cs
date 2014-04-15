@@ -21,8 +21,16 @@ using urakawa.media.timing;
 
 namespace Tobi.Plugin.AudioPane
 {
+
     public partial class AudioPaneViewModel
     {
+        protected enum AudioSelectionOverwriteMode : ushort
+        {
+            DeleteAndInsertAtLeftEdge = 0,
+            DeleteAndReplaceConsecutiveChunks = 1,
+            DeleteAndMapStretchConsecutiveChunks = 2
+        }
+
         // non-public feature, unless you know the keyboard shortcut
         public RichDelegateCommand CommandOpenFile { get; private set; }
 
@@ -287,8 +295,8 @@ namespace Tobi.Plugin.AudioPane
                        && !IsWaveFormLoading
                        && !IsPlaying
                        && m_UrakawaSession.DocumentProject != null
-                       //&& (IsSimpleMode || treeNodeSelection.Item1.HasXmlProperty)
-                       //&& treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
+                        //&& (IsSimpleMode || treeNodeSelection.Item1.HasXmlProperty)
+                        //&& treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
                         //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
                        ;
 
@@ -1094,6 +1102,10 @@ namespace Tobi.Plugin.AudioPane
 
             long bytePositionInsert = 0;
 
+            //TODO: should this be configurable?
+            AudioSelectionOverwriteMode audioSelectionOverwriteMode =
+                AudioSelectionOverwriteMode.DeleteAndMapStretchConsecutiveChunks;
+
             if (IsSelectionSet)
             {
                 bytePositionInsert = State.Selection.SelectionBeginBytePosition;
@@ -1102,6 +1114,27 @@ namespace Tobi.Plugin.AudioPane
                 treeNode.Presentation.UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_LongDesc);
 
                 selData = getAudioSelectionData();
+
+                List<Time> selDataCachedDurations = null;
+                if (selData != null && selData.Count > 0)
+                {
+                    selDataCachedDurations = new List<Time>(selData.Count);
+                    foreach (var treeNodeAndStreamSelection in selData)
+                    {
+                        ManagedAudioMedia mm = treeNodeAndStreamSelection.m_TreeNode.GetManagedAudioMedia();
+                        if (mm == null)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                            selDataCachedDurations.Add(new Time(0));
+                        }
+                        else
+                        {
+                            selDataCachedDurations.Add(mm.AudioMediaData.AudioDuration);
+                        }
+                    }
+                }
 
                 CommandDeleteAudioSelection.Execute();
 
@@ -1134,14 +1167,195 @@ namespace Tobi.Plugin.AudioPane
 #endif
                 }
 
-                if (allWasDeleted) //!State.Audio.HasContent)
+                if (audioSelectionOverwriteMode == AudioSelectionOverwriteMode.DeleteAndInsertAtLeftEdge)
                 {
+                    if (allWasDeleted) //!State.Audio.HasContent)
+                    {
+                        if (selData != null && selData.Count > 0)
+                        {
+                            TreeNode treeNode_ = selData[0].m_TreeNode;
+                            var command_ =
+                                treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(
+                                    treeNode_, manMedia, treeNodeSelection.Item1);
+                            treeNode.Presentation.UndoRedoManager.Execute(command_);
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
+
+                        treeNode.Presentation.UndoRedoManager.EndTransaction();
+                        return;
+                    }
+                }
+                else //DeleteAndMapStretchConsecutiveChunks OR AudioSelectionOverwriteMode.DeleteAndReplaceConsecutiveChunks
+                {
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
+                    }
+
                     if (selData != null && selData.Count > 0)
                     {
-                        TreeNode treeNode_ = selData[0].m_TreeNode;
-                        var command_ =
-                            treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(treeNode_, manMedia, treeNodeSelection.Item1);
-                        treeNode.Presentation.UndoRedoManager.Execute(command_);
+                        Time minimumTimePerChunk = new Time(manMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(manMedia.AudioMediaData.PCMFormat.Data.BlockAlign));
+
+                        double ratio = 1.0;
+                        if (audioSelectionOverwriteMode == AudioSelectionOverwriteMode.DeleteAndMapStretchConsecutiveChunks)
+                        {
+                            Time selDuration = new Time(0);
+                            //foreach (var treeNodeAndStreamSelection in selData)
+                            //{
+                            //    ManagedAudioMedia selManMed =
+                            //        treeNodeAndStreamSelection.m_TreeNode.GetManagedAudioMedia();
+                            //    if (selManMed != null)
+                            //    {
+                            //        selDuration.Add(selManMed.AudioMediaData.AudioDuration);
+                            //    }
+                            //}
+                            foreach (var dur in selDataCachedDurations)
+                            {
+                                selDuration.Add(dur);
+                            }
+
+                            if (selDuration.AsLocalUnits > 0)
+                            {
+                                ratio = manMedia.AudioMediaData.AudioDuration.AsLocalUnits / (double)selDuration.AsLocalUnits; // new divided by old
+                            }
+                        }
+
+                        Time timeOffset = null;
+
+                        int count = -1;
+                        foreach (var treeNodeAndStreamSelection in selData)
+                        {
+                            count++;
+
+                            TreeNode treeNode_ = treeNodeAndStreamSelection.m_TreeNode;
+
+                            //        Time timeBegin = treeNodeAndStreamSelection.m_LocalStreamLeftMark == -1
+                            //? Time.Zero
+                            //: new Time(manMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(treeNodeAndStreamSelection.m_LocalStreamLeftMark));
+                            Time timeBegin = Time.Zero;
+
+                            if (timeOffset != null)
+                            {
+                                timeBegin.Add(timeOffset);
+                            }
+
+                            if (timeBegin.IsGreaterThanOrEqualTo(manMedia.AudioMediaData.AudioDuration))
+                            {
+                                break;
+                            }
+
+                            Time implicitEnd = selDataCachedDurations[count];
+                            if (treeNodeAndStreamSelection.m_LocalStreamLeftMark != -1 &&
+                                treeNodeAndStreamSelection.m_LocalStreamLeftMark != 0)
+                            {
+                                //implicitEnd = new Time(selDataCachedDurations[count]);
+                                //implicitEnd.Substract(
+                                //    new Time(
+                                //        manMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(
+                                //            treeNodeAndStreamSelection.m_LocalStreamLeftMark)));
+
+                                implicitEnd = new Time(selDataCachedDurations[count].AsLocalUnits - manMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(treeNodeAndStreamSelection.m_LocalStreamLeftMark));
+                            }
+                            Time timeEnd = treeNodeAndStreamSelection.m_LocalStreamRightMark == -1
+                    ? implicitEnd
+                    : new Time(manMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(treeNodeAndStreamSelection.m_LocalStreamRightMark));
+
+                            if (audioSelectionOverwriteMode == AudioSelectionOverwriteMode.DeleteAndMapStretchConsecutiveChunks)
+                            {
+                                timeEnd = new Time((long)Math.Floor((double)timeEnd.AsLocalUnits * ratio));
+                            }
+
+                            if (timeOffset != null)
+                            {
+                                timeEnd.Add(timeOffset);
+                            }
+
+                            timeOffset = timeEnd;
+
+                            if (timeEnd.GetDifference(timeBegin).IsLessThanOrEqualTo(minimumTimePerChunk))
+                            {
+                                continue;
+                            }
+
+                            bool lastOne = false;
+                            if (timeEnd.IsGreaterThanOrEqualTo(manMedia.AudioMediaData.AudioDuration)
+                                || count == selData.Count - 1 // use up the entire provided audio, so there's no data loss
+                                )
+                            {
+                                timeEnd = manMedia.AudioMediaData.AudioDuration; //.Copy(); no need
+                                lastOne = true;
+                            }
+
+                            ManagedAudioMedia manMediaChunk = null;
+
+                            if (timeBegin.IsEqualTo(Time.Zero) &&
+                             (
+                             timeEnd.IsEqualTo(Time.Zero)
+                             ||
+                             timeEnd.GetDifference(timeBegin).IsEqualTo(manMedia.AudioMediaData.AudioDuration)
+                             ))
+                            {
+                                manMediaChunk = manMedia.Copy();
+                            }
+                            else
+                            {
+                                WavAudioMediaData mediaDataChunk = ((WavAudioMediaData)manMedia.AudioMediaData).Copy(timeBegin, timeEnd);
+
+                                manMediaChunk = treeNode_.Presentation.MediaFactory.CreateManagedAudioMedia();
+                                manMediaChunk.AudioMediaData = mediaDataChunk;
+                            }
+
+                            //long byteCount = treeNodeAndStreamSelection.m_LocalStreamRightMark - treeNodeAndStreamSelection.m_LocalStreamLeftMark;
+
+                            //long timeLocalUnits = manMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(byteCount);
+                            //long timeMS = timeLocalUnits/AudioLibPCMFormat.TIME_UNIT;
+
+                            //AudioMediaData mediaDataChunk = treeNode_.Presentation.MediaDataFactory.CreateAudioMediaData();
+                            //Stream streamToBackup = manMedia.AudioMediaData.OpenPcmInputStream();
+                            //try
+                            //{
+                            //    //Time timeDelta = mediaData.AudioDuration.Substract(new Time(timeBegin.TimeAsMillisecondFloat));
+                            //    mediaDataClipboard.AppendPcmData(streamToBackup, null);
+                            //}
+                            //finally
+                            //{
+                            //    streamToBackup.Close();
+                            //}
+
+                            ManagedAudioMedia selManMedia = treeNode_.GetManagedAudioMedia();
+
+                            if (selManMedia == null)
+                            {
+                                var command_ =
+                                    treeNode.Presentation.CommandFactory.CreateTreeNodeSetManagedAudioMediaCommand(
+                                        treeNode_, manMediaChunk, treeNodeSelection.Item1);
+                                treeNode.Presentation.UndoRedoManager.Execute(command_);
+                            }
+                            else
+                            {
+#if DEBUG
+                                // middle wavform chunks cannot possibly be partially-deleted!
+                                DebugFix.Assert(count == 0 || count == selData.Count - 1);
+#endif
+                                long lastByte = selManMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
+                                    selManMedia.AudioMediaData.AudioDuration.AsLocalUnits);
+
+                                var command_ = treeNode.Presentation.CommandFactory.
+                                       CreateManagedAudioMediaInsertDataCommand(
+                                           treeNode_, manMediaChunk,
+                                           count == 0 ? lastByte : 0,
+                                           treeNodeSelection.Item1);
+
+                                treeNode.Presentation.UndoRedoManager.Execute(command_);
+                            }
+
+                            if (lastOne) break;
+                        }
                     }
                     else
                     {
@@ -1153,7 +1367,6 @@ namespace Tobi.Plugin.AudioPane
                     treeNode.Presentation.UndoRedoManager.EndTransaction();
                     return;
                 }
-
 
                 if (AudioPlaybackStreamKeepAlive)
                 {
@@ -1226,6 +1439,10 @@ namespace Tobi.Plugin.AudioPane
 #if DEBUG
                 Debugger.Break();
 #endif
+                if (transaction)
+                {
+                    treeNode.Presentation.UndoRedoManager.EndTransaction();
+                }
                 return;
             }
 
