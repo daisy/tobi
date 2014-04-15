@@ -199,7 +199,19 @@
     <value>Edit audio externally</value>
   </data>
   <data name="CmdAudioEditExternally_LongDesc" xml:space="preserve">
-    <value>Extract the selected audio waveform into a single WAV file, so you can edit with an external tool (just press 'ok' to re-import into the Tobi project).</value>
+    <value>Extracts the selected audio waveform into a single WAV file, so you can edit with an external tool (just press 'ok' to re-import into the Tobi project).</value>
+  </data>
+  <data name="CmdAudioEditEffect1_ShortDesc" xml:space="preserve">
+    <value>Slow down</value>
+  </data>
+  <data name="CmdAudioEditEffect1_LongDesc" xml:space="preserve">
+    <value>Slows down the selected audio by a predefined factor.</value>
+  </data>
+  <data name="CmdAudioEditEffect2_ShortDesc" xml:space="preserve">
+    <value>Speed up</value>
+  </data>
+  <data name="CmdAudioEditEffect2_LongDesc" xml:space="preserve">
+    <value>Speeds up the selected audio by a predefined factor.</value>
   </data>
   <data name="CmdAudioDelete_ShortDesc" xml:space="preserve">
     <value>_Delete selected audio</value>

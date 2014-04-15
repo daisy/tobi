@@ -16,6 +16,12 @@
     <Setting Name="Keyboard_Edit_Audio_Externally" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] J</Value>
     </Setting>
+    <Setting Name="Keyboard_Edit_Audio_Effect1" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] 1</Value>
+    </Setting>
+    <Setting Name="Keyboard_Edit_Audio_Effect2" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] 2</Value>
+    </Setting>
     <Setting Name="Keyboard_Audio_ResetSessionCounter" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] H</Value>
     </Setting>

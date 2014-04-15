@@ -68,6 +68,7 @@ namespace Tobi.Plugin.AudioPane
 
         private int m_MenuBarId_1;
         private int m_MenuBarId_2;
+        private int m_MenuBarId_22;
         private int m_MenuBarId_3;
         private int m_MenuBarId_4, m_MenuBarId_41, m_MenuBarId_42, m_MenuBarId_43, m_MenuBarId_44;
         private int m_MenuBarId_5;
@@ -175,13 +176,22 @@ namespace Tobi.Plugin.AudioPane
                      m_AudioPaneViewModel.CommandTogglePlayPreviewBeforeRecord
                  });
 
+            m_MenuBarId_22 = m_MenuBarView.AddMenuBarGroup(
+                Tobi_Common_Lang.Menu_Audio, PreferredPosition.First, false,
+                Tobi_Common_Lang.Menu_AudioProcessing, PreferredPosition.First, true,
+                new[]
+                 {
+                     m_AudioPaneViewModel.CommandEditWavExternally,
+                     m_AudioPaneViewModel.CommandEditWavEffect1,
+                     m_AudioPaneViewModel.CommandEditWavEffect2
+                 });
+
             m_MenuBarId_12 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_Audio, PreferredPosition.First, false,
                 null, PreferredPosition.Any, true,
                 new[]
                  {
                      m_AudioPaneViewModel.CommandInsertFile,
-                     m_AudioPaneViewModel.CommandEditWavExternally,
                      m_AudioPaneViewModel.CommandResetSessionCounter
                  });
 
