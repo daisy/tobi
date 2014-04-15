@@ -748,6 +748,10 @@ namespace Tobi.Plugin.AudioPane
             bool deselect = false;
 
             Command cmd = eventt.Command;
+
+            Command firstInsertOrSetAudioCmd = null;
+            Command lastInsertOrSetAudioCmd = null;
+
             if (cmd is CompositeCommand)
             {
                 DebugFix.Assert(!(eventt is DoneEventArgs)
@@ -777,6 +781,28 @@ namespace Tobi.Plugin.AudioPane
                             || childCmd is TreeNodeSetManagedAudioMediaCommand)
                         {
                             cmd = childCmd;
+                        }
+
+                        foreach (var childCommand in command.ChildCommands.ContentsAs_Enumerable)
+                        {
+                            if (childCommand is ManagedAudioMediaInsertDataCommand
+                               || childCommand is TreeNodeSetManagedAudioMediaCommand)
+                            {
+                                if (firstInsertOrSetAudioCmd == null)
+                                {
+                                    firstInsertOrSetAudioCmd = childCommand;
+                                }
+                                else
+                                {
+                                    lastInsertOrSetAudioCmd = childCommand;
+                                }
+                            }
+                        }
+
+                        if (firstInsertOrSetAudioCmd == lastInsertOrSetAudioCmd)
+                        {
+                            firstInsertOrSetAudioCmd = null;
+                            lastInsertOrSetAudioCmd = null;
                         }
                     }
                     else
@@ -809,6 +835,62 @@ namespace Tobi.Plugin.AudioPane
                         }
                     }
                 }
+            }
+
+            if ((cmd is ManagedAudioMediaInsertDataCommand || cmd is TreeNodeSetManagedAudioMediaCommand)
+                && firstInsertOrSetAudioCmd != null && lastInsertOrSetAudioCmd != null)
+            {
+                TreeNode targetNode1 = null;
+                TreeNode targetNode2 = null;
+
+                long byteStart = 0;
+                long byteDur = 0;
+
+                if (firstInsertOrSetAudioCmd is ManagedAudioMediaInsertDataCommand)
+                {
+                    var command = (ManagedAudioMediaInsertDataCommand)firstInsertOrSetAudioCmd;
+
+                    targetNode1 = command.CurrentTreeNode;
+                    targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
+
+                    byteStart = command.BytePositionInsert;
+
+                    //UndoRedoManagerChanged(command, done);
+                }
+                else if (firstInsertOrSetAudioCmd is TreeNodeSetManagedAudioMediaCommand)
+                {
+                    var command = (TreeNodeSetManagedAudioMediaCommand)firstInsertOrSetAudioCmd;
+
+                    targetNode1 = command.CurrentTreeNode;
+                    targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
+                    
+                    byteStart = 0;
+
+                    //UndoRedoManagerChanged(command, done);
+                }
+                else
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+
+                foreach (var childCommand in ((CompositeCommand)eventt.Command).ChildCommands.ContentsAs_Enumerable)
+                {
+                    if (childCommand is TreeNodeSetManagedAudioMediaCommand)
+                    {
+                        var ccmd = ((TreeNodeSetManagedAudioMediaCommand) childCommand);
+                        byteDur += ccmd.ManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(ccmd.ManagedAudioMedia.Duration.AsLocalUnits);
+                    }
+                    if (childCommand is ManagedAudioMediaInsertDataCommand)
+                    {
+                        var ccmd = ((ManagedAudioMediaInsertDataCommand)childCommand);
+                        byteDur += ccmd.ManagedAudioMediaSource.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(ccmd.ManagedAudioMediaSource.Duration.AsLocalUnits);
+                    }
+                }
+
+                UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(targetNode1, targetNode2, byteStart, byteDur, done);
+                return;
             }
 
             if (cmd is ManagedAudioMediaInsertDataCommand)
