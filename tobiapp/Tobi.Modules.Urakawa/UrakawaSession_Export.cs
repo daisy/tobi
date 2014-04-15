@@ -544,6 +544,9 @@ namespace Tobi.Plugin.Urakawa
                             checkBoxImageDescriptions_inlineTextAudio.IsEnabled = false;
 #endif
                         });
+
+                        checkBoxIncludeImageDescriptions.IsChecked = !Settings.Default.ExportIncludeImageDescriptions;
+                        checkBoxIncludeImageDescriptions.IsChecked = Settings.Default.ExportIncludeImageDescriptions;
                     }
 
                     //if (isEPUB)
