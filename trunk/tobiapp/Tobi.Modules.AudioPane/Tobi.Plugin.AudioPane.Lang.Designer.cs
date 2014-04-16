@@ -232,7 +232,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit audio externally.
+        ///   Looks up a localized string similar to Edit audio externally....
         /// </summary>
         public static string CmdAudioEditExternally_ShortDesc {
             get {
@@ -1092,6 +1092,15 @@ namespace Tobi.Plugin.AudioPane {
         public static string Playing {
             get {
                 return ResourceManager.GetString("Playing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processing audio.
+        /// </summary>
+        public static string ProcessingAudio {
+            get {
+                return ResourceManager.GetString("ProcessingAudio", resourceCulture);
             }
         }
         
