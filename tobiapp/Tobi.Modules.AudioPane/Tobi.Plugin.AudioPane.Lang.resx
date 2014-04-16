@@ -196,7 +196,10 @@
     <value>Open file explorer</value>
   </data>
   <data name="CmdAudioEditExternally_ShortDesc" xml:space="preserve">
-    <value>Edit audio externally</value>
+    <value>Edit audio externally...</value>
+  </data>
+  <data name="ProcessingAudio" xml:space="preserve">
+    <value>Processing audio</value>
   </data>
   <data name="CmdAudioEditExternally_LongDesc" xml:space="preserve">
     <value>Extracts the selected audio waveform into a single WAV file, so you can edit with an external tool (just press 'ok' to re-import into the Tobi project).</value>

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
@@ -182,29 +183,79 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (effect == 1)
             {
-                //m_ShellView.ExecuteShellProcess(destinationFolder);
-
-                new WavSoundTouch(destinationFile, 0.5f
+                var effect1 = new WavSoundTouch(destinationFile, 0.8f
                     //, selectedAudio.AudioMediaData.PCMFormat.Data
                     );
 
-                if (File.Exists(destinationFile))
-                {
-                    openFile(destinationFile, true, false, null);
-                }
+
+                bool error = m_ShellView.RunModalCancellableProgressTask(true,
+                    Tobi_Plugin_AudioPane_Lang.ProcessingAudio,
+                    effect1,
+                    () =>
+                    {
+                        Logger.Log(@"Audio WavSoundTouch CANCELED", Category.Debug, Priority.Medium);
+
+                        m_ShellView.ExecuteShellProcess(destinationFolder);
+                    },
+                    () =>
+                    {
+                        Logger.Log(@"Audio WavSoundTouch DONE", Category.Debug, Priority.Medium);
+
+                        Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                            (Action)(() =>
+                            {
+                                try
+                                {
+                                    if (File.Exists(destinationFile))
+                                    {
+                                        openFile(destinationFile, true, false, null);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+                                }
+                            }
+                            ));
+                    });
             }
             else if (effect == 2)
             {
-                //m_ShellView.ExecuteShellProcess(destinationFolder);
-
-                new WavSoundTouch(destinationFile, 2.0f
+                var effect2 = new WavSoundTouch(destinationFile, 1.5f
                     //, selectedAudio.AudioMediaData.PCMFormat.Data
                     );
 
-                if (File.Exists(destinationFile))
-                {
-                    openFile(destinationFile, true, false, null);
-                }
+
+                bool error = m_ShellView.RunModalCancellableProgressTask(true,
+                    Tobi_Plugin_AudioPane_Lang.ProcessingAudio,
+                    effect2,
+                    () =>
+                    {
+                        Logger.Log(@"Audio WavSoundTouch CANCELED", Category.Debug, Priority.Medium);
+
+                        m_ShellView.ExecuteShellProcess(destinationFolder);
+                    },
+                    () =>
+                    {
+                        Logger.Log(@"Audio WavSoundTouch DONE", Category.Debug, Priority.Medium);
+
+                        Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                            (Action)(() =>
+                            {
+                                try
+                                {
+                                    if (File.Exists(destinationFile))
+                                    {
+                                        openFile(destinationFile, true, false, null);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+                                }
+                            }
+                            ));
+                    });
             }
 
             if (false) // will be cleaned-up at cleanup stage.
