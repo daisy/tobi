@@ -183,7 +183,9 @@ namespace Tobi.Plugin.AudioPane
                  {
                      m_AudioPaneViewModel.CommandEditWavExternally,
                      m_AudioPaneViewModel.CommandEditWavEffect1,
-                     m_AudioPaneViewModel.CommandEditWavEffect2
+                     m_AudioPaneViewModel.CommandEditWavEffect2,
+                     m_AudioPaneViewModel.CommandEditWavEffect3,
+                     m_AudioPaneViewModel.CommandEditWavEffect4
                  });
 
             m_MenuBarId_12 = m_MenuBarView.AddMenuBarGroup(

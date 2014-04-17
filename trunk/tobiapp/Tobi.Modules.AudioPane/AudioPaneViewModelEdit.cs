@@ -38,6 +38,8 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandEditWavExternally { get; private set; }
         public RichDelegateCommand CommandEditWavEffect1 { get; private set; }
         public RichDelegateCommand CommandEditWavEffect2 { get; private set; }
+        public RichDelegateCommand CommandEditWavEffect3 { get; private set; }
+        public RichDelegateCommand CommandEditWavEffect4 { get; private set; }
 
         public RichDelegateCommand CommandInsertFile { get; private set; }
         public RichDelegateCommand CommandGenTTS { get; private set; }
@@ -238,6 +240,76 @@ namespace Tobi.Plugin.AudioPane
                     () =>
                     {
                         Logger.Log(@"Audio WavSoundTouch DONE", Category.Debug, Priority.Medium);
+
+                        Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                            (Action)(() =>
+                            {
+                                try
+                                {
+                                    if (File.Exists(destinationFile))
+                                    {
+                                        openFile(destinationFile, true, false, null);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+                                }
+                            }
+                            ));
+                    });
+            }
+            else if (effect == 3)
+            {
+                var effect3 = new WavNormalize(destinationFile, 0);
+
+                bool error = m_ShellView.RunModalCancellableProgressTask(true,
+                    Tobi_Plugin_AudioPane_Lang.ProcessingAudio,
+                    effect3,
+                    () =>
+                    {
+                        Logger.Log(@"Audio WavNormalize CANCELED", Category.Debug, Priority.Medium);
+
+                        m_ShellView.ExecuteShellProcess(destinationFolder);
+                    },
+                    () =>
+                    {
+                        Logger.Log(@"Audio WavNormalize DONE", Category.Debug, Priority.Medium);
+
+                        Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                            (Action)(() =>
+                            {
+                                try
+                                {
+                                    if (File.Exists(destinationFile))
+                                    {
+                                        openFile(destinationFile, true, false, null);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+                                }
+                            }
+                            ));
+                    });
+            }
+            else if (effect == 4)
+            {
+                var effect4 = new WavNormalize(destinationFile, 1.5f);
+
+                bool error = m_ShellView.RunModalCancellableProgressTask(true,
+                    Tobi_Plugin_AudioPane_Lang.ProcessingAudio,
+                    effect4,
+                    () =>
+                    {
+                        Logger.Log(@"Audio WavAmplify CANCELED", Category.Debug, Priority.Medium);
+
+                        m_ShellView.ExecuteShellProcess(destinationFolder);
+                    },
+                    () =>
+                    {
+                        Logger.Log(@"Audio WavAmplify DONE", Category.Debug, Priority.Medium);
 
                         Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                             (Action)(() =>
@@ -682,6 +754,58 @@ namespace Tobi.Plugin.AudioPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Edit_Audio_Effect2));
 
             m_ShellView.RegisterRichCommand(CommandEditWavEffect2);
+            //
+            CommandEditWavEffect3 = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioEditEffect3_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioEditEffect3_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("software-update-available"), //mail-send-receive
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandEditWavEffect3", Category.Debug, Priority.Medium);
+
+                    doEditAudio(3);
+                },
+                () =>
+                {
+                    return !IsWaveFormLoading
+                        && !IsPlaying
+                        && (!IsMonitoring || IsMonitoringAlways)
+                        && !IsRecording
+                         && State.Audio.PlayStreamMarkers != null
+                        //&& IsSelectionSet
+                         && State.Audio.HasContent;
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Edit_Audio_Effect3));
+
+            m_ShellView.RegisterRichCommand(CommandEditWavEffect3);
+            //
+            CommandEditWavEffect4 = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioEditEffect4_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioEditEffect4_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("software-update-available"), //mail-send-receive
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandEditWavEffect4", Category.Debug, Priority.Medium);
+
+                    doEditAudio(4);
+                },
+                () =>
+                {
+                    return !IsWaveFormLoading
+                        && !IsPlaying
+                        && (!IsMonitoring || IsMonitoringAlways)
+                        && !IsRecording
+                         && State.Audio.PlayStreamMarkers != null
+                        //&& IsSelectionSet
+                         && State.Audio.HasContent;
+                },
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Edit_Audio_Effect4));
+
+            m_ShellView.RegisterRichCommand(CommandEditWavEffect4);
             //
             CommandSplitShift = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdSplit_ShortDesc,

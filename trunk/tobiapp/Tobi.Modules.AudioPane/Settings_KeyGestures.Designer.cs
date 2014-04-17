@@ -97,6 +97,30 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] 3")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Edit_Audio_Effect3 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Edit_Audio_Effect3"]));
+            }
+            set {
+                this["Keyboard_Edit_Audio_Effect3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] 4")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Edit_Audio_Effect4 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Edit_Audio_Effect4"]));
+            }
+            set {
+                this["Keyboard_Edit_Audio_Effect4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] H")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_ResetSessionCounter {
             get {
