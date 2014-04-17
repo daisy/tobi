@@ -223,6 +223,42 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Normalizes volume levels..
+        /// </summary>
+        public static string CmdAudioEditEffect3_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioEditEffect3_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Normalize.
+        /// </summary>
+        public static string CmdAudioEditEffect3_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioEditEffect3_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amplifies audio signal..
+        /// </summary>
+        public static string CmdAudioEditEffect4_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioEditEffect4_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amplify.
+        /// </summary>
+        public static string CmdAudioEditEffect4_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioEditEffect4_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extracts the selected audio waveform into a single WAV file, so you can edit with an external tool (just press &apos;ok&apos; to re-import into the Tobi project)..
         /// </summary>
         public static string CmdAudioEditExternally_LongDesc {

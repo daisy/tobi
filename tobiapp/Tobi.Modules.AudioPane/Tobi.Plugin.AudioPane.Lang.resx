@@ -216,6 +216,18 @@
   <data name="CmdAudioEditEffect2_LongDesc" xml:space="preserve">
     <value>Speeds up the selected audio by a predefined factor.</value>
   </data>
+  <data name="CmdAudioEditEffect3_ShortDesc" xml:space="preserve">
+    <value>Normalize</value>
+  </data>
+  <data name="CmdAudioEditEffect3_LongDesc" xml:space="preserve">
+    <value>Normalizes volume levels.</value>
+  </data>
+  <data name="CmdAudioEditEffect4_ShortDesc" xml:space="preserve">
+    <value>Amplify</value>
+  </data>
+  <data name="CmdAudioEditEffect4_LongDesc" xml:space="preserve">
+    <value>Amplifies audio signal.</value>
+  </data>
   <data name="CmdAudioDelete_ShortDesc" xml:space="preserve">
     <value>_Delete selected audio</value>
   </data>
