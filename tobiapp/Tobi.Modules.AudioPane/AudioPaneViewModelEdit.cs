@@ -185,7 +185,7 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (effect == 1)
             {
-                var effect1 = new WavSoundTouch(destinationFile, 0.8f
+                var effect1 = new WavSoundTouch(destinationFile, Settings.Default.AudioEffect_SlowDown
                     //, selectedAudio.AudioMediaData.PCMFormat.Data
                     );
 
@@ -195,13 +195,13 @@ namespace Tobi.Plugin.AudioPane
                     effect1,
                     () =>
                     {
-                        Logger.Log(@"Audio WavSoundTouch CANCELED", Category.Debug, Priority.Medium);
+                        Logger.Log(@"Audio WavSoundTouch SLOW CANCELED", Category.Debug, Priority.Medium);
 
                         m_ShellView.ExecuteShellProcess(destinationFolder);
                     },
                     () =>
                     {
-                        Logger.Log(@"Audio WavSoundTouch DONE", Category.Debug, Priority.Medium);
+                        Logger.Log(@"Audio WavSoundTouch SLOW DONE", Category.Debug, Priority.Medium);
 
                         Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                             (Action)(() =>
@@ -223,7 +223,7 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (effect == 2)
             {
-                var effect2 = new WavSoundTouch(destinationFile, 1.5f
+                var effect2 = new WavSoundTouch(destinationFile, Settings.Default.AudioEffect_SpeedUp
                     //, selectedAudio.AudioMediaData.PCMFormat.Data
                     );
 
@@ -233,13 +233,13 @@ namespace Tobi.Plugin.AudioPane
                     effect2,
                     () =>
                     {
-                        Logger.Log(@"Audio WavSoundTouch CANCELED", Category.Debug, Priority.Medium);
+                        Logger.Log(@"Audio WavSoundTouch SPEED CANCELED", Category.Debug, Priority.Medium);
 
                         m_ShellView.ExecuteShellProcess(destinationFolder);
                     },
                     () =>
                     {
-                        Logger.Log(@"Audio WavSoundTouch DONE", Category.Debug, Priority.Medium);
+                        Logger.Log(@"Audio WavSoundTouch SPEED DONE", Category.Debug, Priority.Medium);
 
                         Application.Current.MainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                             (Action)(() =>
@@ -296,7 +296,7 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (effect == 4)
             {
-                var effect4 = new WavNormalize(destinationFile, 1.5f);
+                var effect4 = new WavAmplify(destinationFile, Settings.Default.AudioEffect_Amplify);
 
                 bool error = m_ShellView.RunModalCancellableProgressTask(true,
                     Tobi_Plugin_AudioPane_Lang.ProcessingAudio,
@@ -1238,7 +1238,7 @@ namespace Tobi.Plugin.AudioPane
                         }
                         else
                         {
-                            DebugFix.Assert(false);
+                            //DebugFix.Assert(false);
                             CommandGotoEnd.Execute();
                         }
                     }
