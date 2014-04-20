@@ -1690,6 +1690,21 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        public void TimeMessageShowHide()
+        {
+            if (m_WaveFormLoadingAdorner != null)
+            {
+                if (m_WaveFormLoadingAdorner.DisplayRecorderTime)
+                {
+                    TimeMessageShow();
+                }
+                else
+                {
+                    TimeMessageHide();
+                }
+            }
+        }
+
         /// <summary>
         /// (DOES NOT ensures invoke on UI Dispatcher thread)
         /// </summary>

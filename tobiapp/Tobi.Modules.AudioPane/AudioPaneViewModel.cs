@@ -164,7 +164,7 @@ namespace Tobi.Plugin.AudioPane
 
                     stopWatch.Stop();
                     m_TimeStringOther = String.Empty;
-                    View.TimeMessageHide();
+                    View.TimeMessageShowHide();
 
                     if (sm != null)
                     {
