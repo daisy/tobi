@@ -23,6 +23,7 @@
         void TimeMessageHide();
         void TimeMessageRefresh();
         void TimeMessageShow();
+        void TimeMessageShowHide();
         void ShowHideWaveFormLoadingMessage(bool visible);
         void ResetWaveFormEmpty();
         string[] OpenFileDialog();
