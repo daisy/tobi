@@ -178,6 +178,9 @@ namespace Tobi.Plugin.AudioPane
                     }
 
                     State.Selection.SetSelectionBytes(0, PlayBytePosition);
+
+                    PlayBytePosition = State.Selection.SelectionEndBytePosition;
+
                     //AudioCues.PlayTock();
                 },
                 () => CommandSelectAll.CanExecute()
