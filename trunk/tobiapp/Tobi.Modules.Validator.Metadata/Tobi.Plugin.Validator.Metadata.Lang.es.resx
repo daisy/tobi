@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+ 
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ClickToAddAndEdit" xml:space="preserve">
+    <value>Haga clic para añadir y editar</value>
+  </data>
+  <data name="ClickToEdit" xml:space="preserve">
+    <value>Haga clic para editar los metadatos</value>
+  </data>
+  <data name="DateHint" xml:space="preserve">
+    <value>con formato AAAA- MM- DD, AAAA -MM o AAAA</value>
+  </data>
+  <data name="DefinitionSummary" xml:space="preserve">
+    <value>{0}
+Debe ser in {1}
+Es {2}
+{3}</value>
+    <comment>{0} = definition, {1} = data type, {2} = occurrence, {3} = synonyms (if any)</comment>
+  </data>
+  <data name="DefNameMustBeHint" xml:space="preserve">
+    <value>{0} debe ser {1}.</value>
+  </data>
+  <data name="DuplicateErrorCompleteSummary" xml:space="preserve">
+    <value>Error de metadatos: elementos duplicados detectados
+Este archivo de metadatos no puede tener más de una instancia
+{0}</value>
+    <comment>{0} = metadata definition</comment>
+  </data>
+  <data name="DuplicateItemsDetected" xml:space="preserve">
+    <value>Error de metadatos: elementos duplicados detectados</value>
+  </data>
+  <data name="DuplicateNotAllowed" xml:space="preserve">
+    <value>Duplicados de { 0 } no permitidos</value>
+  </data>
+  <data name="EntryNotFound" xml:space="preserve">
+    <value>Una entrada para {0} no fue encontrada.</value>
+  </data>
+  <data name="FormatError" xml:space="preserve">
+    <value>El valor para el elemento es invalido:
+{0} = {1}
+Indicio: {0} debe ser {2}</value>
+    <comment>{0} = name, {1} = value, {2} = hint</comment>
+  </data>
+  <data name="FormatErrorCompleteSummary" xml:space="preserve">
+    <value>Error de metadatos: formato invalido
+El valor para el elemento es invalido.
+{0} = {1}
+Hint: {0} debe ser {2}
+{3}</value>
+    <comment>{0} = metadata name, {1} = metadata value, {2} = hint, {3} = metadata definition</comment>
+  </data>
+  <data name="InvalidFormatting" xml:space="preserve">
+    <value>Error de Metadatos: formato invalido</value>
+  </data>
+  <data name="InvalidValue" xml:space="preserve">
+    <value>El valor para el elemento es invalido:</value>
+  </data>
+  <data name="MetadataDefinitionSummary" xml:space="preserve">
+    <value>Reglas para {0}
+      {1}
+      Debe ser un {2}
+      Es {3}
+      {4}</value>
+    <comment>{0} = metadata name, {1} = metadata description, {2} = data type, {3} = occurrence, {4} = is repeatable or not</comment>
+  </data>
+  <data name="MetadataFormatError_Hint" xml:space="preserve">
+    <value>Inddicio: {0} debe ser {1}</value>
+  </data>
+  <data name="MetadataMayBeRepeated" xml:space="preserve">
+    <value>Puede ser repetido</value>
+  </data>
+  <data name="MetadataMayNotBeRepeated" xml:space="preserve">
+    <value>No puede ser repetido</value>
+  </data>
+  <data name="MetadataNameValue" xml:space="preserve">
+    <value>{0} = {1}</value>
+    <comment>{0} = name, {1} = value</comment>
+  </data>
+  <data name="MetadataSynonyms" xml:space="preserve">
+    <value>
+      Sinónimos: {0}</value>
+    <comment>{0} = list of synonyms</comment>
+  </data>
+  <data name="MetadataSynonyms2" xml:space="preserve">
+    <value>Sinónimos: {0}</value>
+    <comment>{0} = list of synonyms</comment>
+  </data>
+  <data name="MetadataValidator_Description" xml:space="preserve">
+    <value>Verificar metadatos de publicación</value>
+  </data>
+  <data name="MetadataValidator_Name" xml:space="preserve">
+    <value>Problemas de metadatos</value>
+  </data>
+  <data name="Metadata_Optional" xml:space="preserve">
+    <value>Opcional</value>
+  </data>
+  <data name="Metadata_Recommended" xml:space="preserve">
+    <value>Recomendado</value>
+  </data>
+  <data name="Metadata_Required" xml:space="preserve">
+    <value>Requerido</value>
+  </data>
+  <data name="Missing" xml:space="preserve">
+    <value>Faltante {0}</value>
+  </data>
+  <data name="MissingItemErrorCompleteSummary" xml:space="preserve">
+    <value>Error de metadatos: falta un elemento requerido
+Una entrada para {0} no fue encontrada.
+{1}</value>
+    <comment>{0} = metadata name, {1} = metadata definition</comment>
+  </data>
+  <data name="MissingRequiredItem" xml:space="preserve">
+    <value>Error de metadatos: elemento requerido faltante</value>
+  </data>
+  <data name="MustBe" xml:space="preserve">
+    <value>Debe ser un {0}</value>
+    <comment>{0} = data type</comment>
+  </data>
+  <data name="NonEmptyHint" xml:space="preserve">
+    <value>No vacío</value>
+  </data>
+  <data name="NotMoreThanOneInstance" xml:space="preserve">
+    <value>Este campo de metadatos no puede tener más de una instancia.</value>
+  </data>
+  <data name="NumericValueHint" xml:space="preserve">
+    <value>Un valor numérico</value>
+  </data>
+  <data name="LanguageValueHint" xml:space="preserve">
+    <value>Un lenguaje de codificación</value>
+  </data>
+  <data name="Occurrence" xml:space="preserve">
+    <value>Es {0}</value>
+    <comment>{0} = required, optional, or recommended</comment>
+  </data>
+  <data name="RulesFor" xml:space="preserve">
+    <value>Reglas para {0}</value>
+    <comment>{0} = name</comment>
+  </data>
+</root>

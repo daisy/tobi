@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ResetItems_Short" xml:space="preserve">
+    <value>Restaurar elementos seleccionados</value>
+  </data>
+  <data name="ResetItems_Long" xml:space="preserve">
+    <value>Restaurar los valores por default para los elementos seleccionados</value>
+  </data>
+  <data name="Cmd_ApplicationPref" xml:space="preserve">
+    <value>_Preferencias</value>
+  </data>
+  <data name="Cmd_DisplayEditor" xml:space="preserve">
+    <value>Abrir el cuadro de configuración de la aplicación</value>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Encontrar:</value>
+  </data>
+  <data name="InvalidKeyboardShortcut" xml:space="preserve">
+    <value>Atajo de teclado no valido.</value>
+  </data>
+  <data name="InvalidEnumValue" xml:space="preserve">
+    <value>Numeración invalida, Debería ser como: ({0})</value>
+  </data>
+  <data name="InvalidTextAlignment" xml:space="preserve">
+    <value>Alineación de texto invalido, Debería ser una de las siguientes: Center (centrado), Left(a la izquierda), Right(a la derecha), Justify(justificado).</value>
+  </data>
+  <data name="InvalidNumericValue" xml:space="preserve">
+    <value>Valor numérico invalido.</value>
+  </data>
+  <data name="NumericValueOutOfRange" xml:space="preserve">
+    <value>Valor numérico fuera del rango [0, 999999999].</value>
+  </data>
+  <data name="NumericValueOutOfRange9999" xml:space="preserve">
+    <value>Valor numérico fuera del rango [-999999999, 999999999].</value>
+  </data>
+  <data name="Preferences" xml:space="preserve">
+    <value>_Preferencias</value>
+  </data>
+  <data name="Preferences_" xml:space="preserve">
+    <value>Opciones configurables de la aplicación</value>
+  </data>
+  <data name="SettingsPlugin_Description" xml:space="preserve">
+    <value>Configuración de preferencias de la aplicación (administración e interfaz de usuario).</value>
+  </data>
+  <data name="SettingsPlugin_Name" xml:space="preserve">
+    <value>Preferencias de la aplicación.</value>
+  </data>
+  <data name="Settings_OriginalValue" xml:space="preserve">
+    <value>Original: {0}</value>
+  </data>
+  <data name="ShortcutAlreadyUsed" xml:space="preserve">
+    <value>Acceso directo ya utilizado por: {0}</value>
+  </data>
+  <data name="StringCannotBeEmpty" xml:space="preserve">
+    <value>La cadena no puede estar vacía..</value>
+  </data>
+  <data name="StringCannotJustBeSeparators" xml:space="preserve">
+    <value>La cadena no puede ser solo separadores (ej. los caracteres espacio).</value>
+  </data>
+  <data name="ValueNotEmpty" xml:space="preserve">
+    <value>Valor no puede estar vacío.</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>Por defecto</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Valor</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Información</value>
+  </data>
+</root>

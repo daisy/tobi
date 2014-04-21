@@ -176,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tobi.Plugin.Settings.Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi.Plugin.Settings.Lang.es.resx" />
     <EmbeddedResource Include="Tobi.Plugin.Settings.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.Settings.Lang.Designer.cs</LastGenOutput>

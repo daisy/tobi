@@ -1,0 +1,434 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TotalDuration" xml:space="preserve">
+    <value>Total: </value>
+  </data>
+  <data name="SessionDuration" xml:space="preserve">
+    <value>Sesión:  </value>
+  </data>
+  <data name="Countdown" xml:space="preserve">
+    <value>Cuenta atrás: </value>
+  </data>
+  <data name="CmdAudioResetSessionCounter_ShortDesc" xml:space="preserve">
+    <value>Reiniciar contador de sesión</value>
+  </data>
+  <data name="CmdAudioResetSessionCounter_LongDesc" xml:space="preserve">
+    <value>Reiniciar el contador de audio para la sesión de edición</value>
+  </data>
+  <data name="CmdCopy_ShortDesc" xml:space="preserve">
+    <value>_Copiar</value>
+  </data>
+  <data name="CmdCopy_LongDesc" xml:space="preserve">
+    <value>Copiar audio al portapapeles</value>
+  </data>
+  <data name="CmdCut_ShortDesc" xml:space="preserve">
+    <value>Cor_tar</value>
+  </data>
+  <data name="CmdCut_LongDesc" xml:space="preserve">
+    <value>Cortar audio al portapapeles</value>
+  </data>
+  <data name="CmdPaste_ShortDesc" xml:space="preserve">
+    <value>_Pegar</value>
+  </data>
+  <data name="CmdPaste_LongDesc" xml:space="preserve">
+    <value>Pegar audio desde el portapapeles </value>
+  </data>
+  <data name="AudioPanePlugin_Name" xml:space="preserve">
+    <value>Editor de audio waveform.</value>
+  </data>
+  <data name="ProcessingAudioClip" xml:space="preserve">
+    <value>Procesando audio clip...</value>
+  </data>
+  <data name="GeneratingTTSAudio" xml:space="preserve">
+    <value>Generando TTS audio...</value>
+  </data>
+  <data name="AudioAlwaysMonitor" xml:space="preserve">
+    <value>Siempre supervisar la entrada de audio</value>
+  </data>
+  <data name="AudioAutoPlay" xml:space="preserve">
+    <value>Auto reproducir</value>
+  </data>
+  <data name="AudioRecordPlayPreview" xml:space="preserve">
+    <value>Vista previa antes de grabar</value>
+  </data>
+  <data name="CmdAudioAutoPlay_ShortDesc" xml:space="preserve">
+    <value>Cambiar modo au_to reproducción</value>
+  </data>
+  <data name="CmdAudioAutoPlay_LongDesc" xml:space="preserve">
+    <value>Cambiar  modo auto reproducción encendido/apagado</value>
+  </data>
+  <data name="CmdAudioBeginSelection_ShortDesc" xml:space="preserve">
+    <value>Comenzar selección _b</value>
+  </data>
+  <data name="CmdAudioBeginSelection_LongDesc" xml:space="preserve">
+    <value>Comenzar audio selección waveform</value>
+  </data>
+  <data name="CmdAudioClearSelection_ShortDesc" xml:space="preserve">
+    <value>Limpiar sele_cción</value>
+  </data>
+  <data name="CmdAudioClearSelection_LongDesc" xml:space="preserve">
+    <value>Limpiar la actual selección de audio</value>
+  </data>
+  <data name="CmdSplit_ShortDesc" xml:space="preserve">
+    <value>Dividir audio _t</value>
+  </data>
+  <data name="CmdSplit_LongDesc" xml:space="preserve">
+    <value>Dividir el audio hasta el cursor de reproducción</value>
+  </data>
+  <data name="OpenFileExplorer" xml:space="preserve">
+    <value>Abrir el explorador de archivos</value>
+  </data>
+  <data name="CmdAudioEditExternally_ShortDesc" xml:space="preserve">
+    <value>Editar audio externamente</value>
+  </data>
+  <data name="CmdAudioEditExternally_LongDesc" xml:space="preserve">
+    <value>Extraer la selección de audio waveform a un archivo WAV, para que puedas editar con una herramienta externa (Solo presiona 'ok' para reimportar al proyecto Tobi ).</value>
+  </data>
+  <data name="CmdAudioDelete_ShortDesc" xml:space="preserve">
+    <value>Eliminar selección _de audio</value>
+  </data>
+  <data name="CmdAudioDelete_LongDesc" xml:space="preserve">
+    <value>Eliminar la selección de audio waveform</value>
+  </data>
+  <data name="CmdAudioEndSelection_ShortDesc" xml:space="preserve">
+    <value>Finalizar s_elección</value>
+  </data>
+  <data name="CmdAudioEndSelection_LongDesc" xml:space="preserve">
+    <value>Terminar selección de audio waveform </value>
+  </data>
+  <data name="CmdAudioFastForward_ShortDesc" xml:space="preserve">
+    <value>Siguiente paso _f</value>
+  </data>
+  <data name="CmdAudioFastForward_LongDesc" xml:space="preserve">
+    <value>Saltar hacia adelante por un periodo de tiempo predefinido</value>
+  </data>
+  <data name="CmdAudioFitFull_ShortDesc" xml:space="preserve">
+    <value>Ajustar a la vista _f</value>
+  </data>
+  <data name="CmdAudioFitFull_LongDesc" xml:space="preserve">
+    <value>Traer el audio entero a una vista completa</value>
+  </data>
+  <data name="CmdAudioFocus_ShortDesc" xml:space="preserve">
+    <value>B_arra de herramientas de audio</value>
+  </data>
+  <data name="CmdAudioFocusStatusBar_ShortDesc" xml:space="preserve">
+    <value>Barra de e_status</value>
+  </data>
+  <data name="CmdAudioGotoBegin_ShortDesc" xml:space="preserve">
+    <value>Ir al inicio _s</value>
+  </data>
+  <data name="CmdAudioGotoBegin_LongDesc" xml:space="preserve">
+    <value>Saltar al inicio del audio</value>
+  </data>
+  <data name="CmdAudioGotoEnd_ShortDesc" xml:space="preserve">
+    <value>Ir al final _e</value>
+  </data>
+  <data name="CmdAudioGotoEnd_LongDesc" xml:space="preserve">
+    <value>Saltar al final del audio</value>
+  </data>
+  <data name="CmdAudioGenTTS_ShortDesc" xml:space="preserve">
+    <value>_Generar TTS audio</value>
+  </data>
+  <data name="CmdAudioGenTTS_LongDesc" xml:space="preserve">
+    <value>Crear audio para la selección de texto usando un creador de voz sintética</value>
+  </data>
+  <data name="CmdAudioInsertFile_ShortDesc" xml:space="preserve">
+    <value>_Importar archivo(s) de audio</value>
+  </data>
+  <data name="CmdAudioInsertFile_LongDesc" xml:space="preserve">
+    <value>Importar archivo(s) local(es) de audio</value>
+  </data>
+  <data name="CmdAudioOpenFile_ShortDesc" xml:space="preserve">
+    <value>Abrir el archiv_o de audio</value>
+  </data>
+  <data name="CmdAudioOpenFile_LongDesc" xml:space="preserve">
+    <value>Abrir un archivo local de audio</value>
+  </data>
+  <data name="CmdAudioPause_ShortDesc" xml:space="preserve">
+    <value>_Pausar</value>
+  </data>
+  <data name="CmdAudioPause_LongDesc" xml:space="preserve">
+    <value>Pausar reproducción de audio</value>
+  </data>
+  <data name="CmdAudioPlay_ShortDesc" xml:space="preserve">
+    <value>Re_producir</value>
+  </data>
+  <data name="CmdAudioPlayAutoAdvance_ShortDesc" xml:space="preserve">
+    <value>Reproducir avance _automático</value>
+  </data>
+  <data name="CmdAudioPlayAutoAdvance_LongDesc" xml:space="preserve">
+    <value>Reproducción continua automática al llegar al final de una frase de audio</value>
+  </data>
+  <data name="CmdAudioPlayPreviewLeft_ShortDesc" xml:space="preserve">
+    <value>Vista previa antes de _b</value>
+  </data>
+  <data name="CmdAudioPlayPreviewLeft_LongDesc" xml:space="preserve">
+    <value>Vista previa de audio justo antes de la posición del cursor</value>
+  </data>
+  <data name="CmdAudioPlayPreviewRight_ShortDesc" xml:space="preserve">
+    <value>Vista previ_a después de</value>
+  </data>
+  <data name="CmdAudioPlayPreviewRight_LongDesc" xml:space="preserve">
+    <value>Vista previa de audio justo antes de la posición del cursor</value>
+  </data>
+  <data name="CmdAudioPlayRateDown_ShortDesc" xml:space="preserve">
+    <value>_Disminuir la tasa de reproducción</value>
+  </data>
+  <data name="CmdAudioPlayRateDown_LongDesc" xml:space="preserve">
+    <value>Bajar la velocidad de reproducción del audio</value>
+  </data>
+  <data name="CmdAudioPlayRateReset_ShortDesc" xml:space="preserve">
+    <value>_Reiniciar la tasa de reproducción</value>
+  </data>
+  <data name="CmdAudioPlayRateReset_LongDesc" xml:space="preserve">
+    <value>Restaurar la velocidad de reproducción de audio</value>
+  </data>
+  <data name="CmdAudioPlayRateUp_ShortDesc" xml:space="preserve">
+    <value>_Incrementar la tasa de reproducción</value>
+  </data>
+  <data name="CmdAudioPlayRateUp_LongDesc" xml:space="preserve">
+    <value>Subir la velocidad de reproducción de audio</value>
+  </data>
+  <data name="CmdAudioReload_ShortDesc" xml:space="preserve">
+    <value>_Recargar el audio</value>
+  </data>
+  <data name="CmdAudioReload_LongDesc" xml:space="preserve">
+    <value>Recargar la información waveform</value>
+  </data>
+  <data name="CmdAudioRewind_ShortDesc" xml:space="preserve">
+    <value>Paso atrás _b</value>
+  </data>
+  <data name="CmdAudioRewind_LongDesc" xml:space="preserve">
+    <value>Saltar hacia atrás por un periodo de tiempo predefinido</value>
+  </data>
+  <data name="CmdAudioSelectNextChunk_ShortDesc" xml:space="preserve">
+    <value>Select _next chunk</value>
+  </data>
+  <data name="CmdAudioSelectNextChunk_LongDesc" xml:space="preserve">
+    <value>Seleccionar el chunk de audio completo después del cursor</value>
+  </data>
+  <data name="CmdAudioSelectPreviousChunk_ShortDesc" xml:space="preserve">
+    <value>Seleccionar  anterior chunk _p</value>
+  </data>
+  <data name="CmdAudioSelectPreviousChunk_LongDesc" xml:space="preserve">
+    <value>Seleccionar el chunk de audio que está atrás del cursor</value>
+  </data>
+  <data name="CmdAudioSettings_ShortDesc" xml:space="preserve">
+    <value>Configur_aciones de audio...</value>
+  </data>
+  <data name="CmdAudioSettings_LongDesc" xml:space="preserve">
+    <value>Configuraciones para el audio TTS, reproductor y grabadora</value>
+  </data>
+  <data name="CmdAudioStartMonitor_ShortDesc" xml:space="preserve">
+    <value>Empezar _monitoreo</value>
+  </data>
+  <data name="CmdAudioStartMonitor_LongDesc" xml:space="preserve">
+    <value>Verificar niveles de audio del dispositivo de entrada</value>
+  </data>
+  <data name="CmdAudioStartRecord_ShortDesc" xml:space="preserve">
+    <value>Empeza_r grabación</value>
+  </data>
+  <data name="CmdAudioStartRecord_LongDesc" xml:space="preserve">
+    <value>Grabar audio desde el dispositivo de entrada</value>
+  </data>
+  <data name="CmdAudioStepBack_ShortDesc" xml:space="preserve">
+    <value>Anterior chunk _p</value>
+  </data>
+  <data name="CmdAudioStepBack_LongDesc" xml:space="preserve">
+    <value>Saltar al chunk de audio anterior al cursor</value>
+  </data>
+  <data name="CmdAudioStepForward_ShortDesc" xml:space="preserve">
+    <value>Siguiente chu_nk</value>
+  </data>
+  <data name="CmdAudioStepForward_LongDesc" xml:space="preserve">
+    <value>Saltar al chunk de audio que le sigue al cursor</value>
+  </data>
+  <data name="CmdAudioTogglePlayPreviewBeforeRecord_ShortDesc" xml:space="preserve">
+    <value>Cambiar vista previa de la grabación</value>
+  </data>
+  <data name="CmdAudioTogglePlayPreviewBeforeRecord_LongDesc" xml:space="preserve">
+    <value>Habilitar / Deshabilitar reproducción de vista previa iniciando una grabación</value>
+  </data>
+  <data name="CmdAudioStopMonitor_ShortDesc" xml:space="preserve">
+    <value>Detener m_onitoreo</value>
+  </data>
+  <data name="CmdAudioStopMonitor_LongDesc" xml:space="preserve">
+    <value>Detener monitoreo de los niveles de audio de entrada</value>
+  </data>
+  <data name="CmdAudioStopRecordAndContinue_ShortDesc" xml:space="preserve">
+    <value>Detener grabación, y _continuar</value>
+  </data>
+  <data name="CmdAudioStopRecordAndContinue_LongDesc" xml:space="preserve">
+    <value>Detener la actual grabación e ir a la siguiente frase</value>
+  </data>
+  <data name="CmdAudioStopRecord_ShortDesc" xml:space="preserve">
+    <value>Detener Grabaci_ón</value>
+  </data>
+  <data name="CmdAudioStopRecord_LongDesc" xml:space="preserve">
+    <value>Detener la actual grabación</value>
+  </data>
+  <data name="CmdAudioZoomSelection_ShortDesc" xml:space="preserve">
+    <value>Hacer _zoom en la selección</value>
+  </data>
+  <data name="CmdAudioZoomSelection_LongDesc" xml:space="preserve">
+    <value>Traer la selección de waveform a una vista completa</value>
+  </data>
+  <data name="Audio_ZoomSlider" xml:space="preserve">
+    <value>Zoom a el audio Waveform</value>
+  </data>
+  <data name="ComboLabel_Playback" xml:space="preserve">
+    <value>Reproducir:</value>
+  </data>
+  <data name="ComboLabel_Recording" xml:space="preserve">
+    <value>Grabar:</value>
+  </data>
+  <data name="ComboLabel_TTS" xml:space="preserve">
+    <value>TTS:</value>
+  </data>
+  <data name="Speak" xml:space="preserve">
+    <value>Hablar</value>
+  </data>
+  <data name="Speak_SampleText" xml:space="preserve">
+    <value>Este es el texto para hablar, el nombre de esta voz sintética es:</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Cargando (ESC para parar)</value>
+  </data>
+  <data name="LoadingWaveform" xml:space="preserve">
+    <value>Cargando waveform…</value>
+  </data>
+  <data name="Monitoring" xml:space="preserve">
+    <value>Monitoreando…</value>
+  </data>
+  <data name="MonitoringStopped" xml:space="preserve">
+    <value>Monitoreo detenido.</value>
+  </data>
+  <data name="NoDocument" xml:space="preserve">
+    <value>Sin documento</value>
+  </data>
+  <data name="PlaybackEnded" xml:space="preserve">
+    <value>Reproducción terminada</value>
+  </data>
+  <data name="PlaybackStopped" xml:space="preserve">
+    <value>Reproducción detenida</value>
+  </data>
+  <data name="PlaybackX" xml:space="preserve">
+    <value>Reproducción x{0}</value>
+  </data>
+  <data name="Playing" xml:space="preserve">
+    <value>Reproduciendo…</value>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Listo.</value>
+  </data>
+  <data name="Recording" xml:space="preserve">
+    <value>Grabando…</value>
+  </data>
+  <data name="RecordingStopped" xml:space="preserve">
+    <value>Grabación detenida.</value>
+  </data>
+  <data name="CmdAudioSelectLeft_ShortDesc" xml:space="preserve">
+    <value>_Seleccionar izquierda</value>
+  </data>
+  <data name="CmdAudioSelectLeft_LongDesc" xml:space="preserve">
+    <value>Seleccionar  todo el audio a la izquierda del cursor</value>
+  </data>
+  <data name="CmdAudioSelectRight_ShortDesc" xml:space="preserve">
+    <value>Seleccionar de_recha</value>
+  </data>
+  <data name="CmdAudioSelectRight_LongDesc" xml:space="preserve">
+    <value>Seleccionar todo el audio a la derecha del cursor</value>
+  </data>
+  <data name="CmdSelectAll_ShortDesc" xml:space="preserve">
+    <value>_Seleccionar todo</value>
+  </data>
+  <data name="CmdSelectAll_LongDesc" xml:space="preserve">
+    <value>Seleccionar todo el contenido del audio</value>
+  </data>
+  <data name="AudioPanePlugin_Description" xml:space="preserve">
+    <value>El editor y pantalla de audio waveform</value>
+  </data>
+  <data name="WaveformLoaded" xml:space="preserve">
+    <value>Waveform cargado</value>
+  </data>
+  <data name="TransactionDeleteAudio_ShortDesc" xml:space="preserve">
+    <value>Remover información del audio</value>
+  </data>
+  <data name="TransactionDeleteAudio_LongDesc" xml:space="preserve">
+    <value>Remover información del audio que potencialmente se expande a través de fragmentos del documento</value>
+  </data>
+  <data name="TransactionSplitAudio_ShortDesc" xml:space="preserve">
+    <value>Dividir audio</value>
+  </data>
+  <data name="TransactionSplitAudio_LongDesc" xml:space="preserve">
+    <value>Dividir información del audio hasta el cursor de reproducción, desplazando el sobrante al siguiente fragmento de texto disponible</value>
+  </data>
+  <data name="TransactionReplaceAudio_ShortDesc" xml:space="preserve">
+    <value>Reemplazar información de audio</value>
+  </data>
+  <data name="TransactionReplaceAudio_LongDesc" xml:space="preserve">
+    <value>Reemplazar información del audio con el clip de audio suministrado</value>
+  </data>
+  <data name="CmdAudioPlay_LongDesc" xml:space="preserve">
+    <value>Empezar reproducción de audio</value>
+  </data>
+</root>
