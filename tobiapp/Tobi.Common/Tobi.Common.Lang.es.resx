@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CheckUnCheckAll" xml:space="preserve">
+    <value>Comprobar / Desmarcar todo 
+     </value>
+  </data>
+  <data name="ToggleVisibility" xml:space="preserve">
+    <value>Cambiar visibilidad 
+     .</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>_Aplicar</value>
+  </data>
+  <data name="UnhandledException" xml:space="preserve">
+    <value>Un problema ocurrió.{0}El mensaje de error completo se muestra a continuación.{0}Alternativamente puedes abrir el archivo '{1}' , localizado aquí: [ {2} ].</value>
+  </data>
+  <data name="SearchKeywords" xml:space="preserve">
+    <value>Buscar palabras clave</value>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Encontrar: </value>
+  </data>
+  <data name="Menu_Find" xml:space="preserve">
+    <value>_Encontrar</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>_Cancelar </value>
+  </data>
+  <data name="CloseDialog" xml:space="preserve">
+    <value>_Cerrar </value>
+  </data>
+  <data name="CmdDetailsCollapse_ShortDesc" xml:space="preserve">
+    <value>Ocultar detalles _h</value>
+  </data>
+  <data name="CmdDetailsCollapse_LongDesc" xml:space="preserve">
+    <value>Ocultar información detallada</value>
+  </data>
+  <data name="CmdDetailsExpand_ShortDesc" xml:space="preserve">
+    <value>Mostrar detalle_s</value>
+  </data>
+  <data name="CmdDetailsExpand_LongDesc" xml:space="preserve">
+    <value>Mostrar información detallada</value>
+  </data>
+  <data name="Menu_Audio" xml:space="preserve">
+    <value>_Audio</value>
+  </data>
+  <data name="Menu_AudioPlayback" xml:space="preserve">
+    <value>Re_producción</value>
+  </data>
+  <data name="Menu_AudioRecording" xml:space="preserve">
+    <value>G_rabación</value>
+  </data>
+  <data name="NotFound" xml:space="preserve">
+    <value>No encontrado</value>
+  </data>
+  <data name="Menu_AudioSelection" xml:space="preserve">
+    <value>_Selección</value>
+  </data>
+  <data name="Menu_AudioTransport" xml:space="preserve">
+    <value>_Navegación</value>
+  </data>
+  <data name="Menu_AudioZoom" xml:space="preserve">
+    <value>_Zoom</value>
+  </data>
+  <data name="Menu_Edit" xml:space="preserve">
+    <value>_Editar</value>
+  </data>
+  <data name="Menu_File" xml:space="preserve">
+    <value>Archivo _f</value>
+  </data>
+  <data name="Menu_Focus" xml:space="preserve">
+    <value>En_focar</value>
+  </data>
+  <data name="Menu_Magnification" xml:space="preserve">
+    <value>Au_mento</value>
+  </data>
+  <data name="Menu_Navigation" xml:space="preserve">
+    <value>Nave_gación</value>
+  </data>
+  <data name="Menu_Text" xml:space="preserve">
+    <value>_Texto</value>
+  </data>
+  <data name="Menu_BrowseFolder" xml:space="preserve">
+    <value>_Buscar folder</value>
+  </data>
+  <data name="Menu_Tools" xml:space="preserve">
+    <value>Herramientas _o</value>
+  </data>
+  <data name="Menu_View" xml:space="preserve">
+    <value>_Vista</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>_No</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>_Ok</value>
+  </data>
+  <data name="Unexpected" xml:space="preserve">
+    <value>Problema inesperado !</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Si _y</value>
+  </data>
+  <data name="Menu_Help" xml:space="preserve">
+    <value>Ayuda _h</value>
+  </data>
+  <data name="TextSyncGranularity" xml:space="preserve">
+    <value>Auto ajuste granularidad</value>
+  </data>
+  <data name="CmdToggleTextSyncGranularity_ShortDesc" xml:space="preserve">
+    <value>Cambiar sincronización de texto granularidad</value>
+  </data>
+  <data name="CmdToggleTextSyncGranularity_LongDesc" xml:space="preserve">
+    <value>Habilitar/deshabilitar sincronización de texto granulado (Mientras esté deshabilitado, El más fino granulado es usado, de otra forma el granulado es automáticamente ajustado dependiendo del contenido del texto)</value>
+  </data>
+</root>

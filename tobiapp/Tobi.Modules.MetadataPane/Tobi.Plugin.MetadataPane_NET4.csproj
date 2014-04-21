@@ -164,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tobi.Plugin.MetadataPane.Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi.Plugin.MetadataPane.Lang.es.resx" />
     <EmbeddedResource Include="Tobi.Plugin.MetadataPane.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.MetadataPane.Lang.Designer.cs</LastGenOutput>

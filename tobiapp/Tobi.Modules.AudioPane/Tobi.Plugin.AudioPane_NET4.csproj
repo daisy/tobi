@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tobi.Plugin.AudioPane.Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi.Plugin.AudioPane.Lang.es.resx" />
     <EmbeddedResource Include="Tobi.Plugin.AudioPane.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.AudioPane.Lang.Designer.cs</LastGenOutput>

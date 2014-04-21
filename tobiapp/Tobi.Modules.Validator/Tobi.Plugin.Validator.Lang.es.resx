@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CmdValidationCheck_ShortDesc" xml:space="preserve">
+    <value>_Validación</value>
+  </data>
+  <data name="CmdValidationCheck_LongDesc" xml:space="preserve">
+    <value>Abrir el diálogo de validación</value>
+  </data>
+  <data name="ValidatorPlugin_Description" xml:space="preserve">
+    <value>Un cuadro de trabajo para validar el modelo de datos de un proyecto llamado Urakawa SDK .</value>
+  </data>
+  <data name="ValidatorPlugin_Name" xml:space="preserve">
+    <value>Validador de publicación.</value>
+  </data>
+  <data name="ClipboardEndOfValidatorReport" xml:space="preserve">
+    <value>Fin del {0} informe. 
+
+	</value>
+    <comment>{0} = validator name</comment>
+  </data>
+  <data name="ClipboardErrorEntry" xml:space="preserve">
+    <value>{0}.{1}. {2}
+    
+    </value>
+    <comment>{0} = validator number, {1} error number, {2} = error message</comment>
+  </data>
+  <data name="ClipboardListOfAll" xml:space="preserve">
+    <value>Lista de todos los errores de validación
+    
+    </value>
+  </data>
+  <data name="ClipboardNoErrors" xml:space="preserve">
+    <value>No hay errores reportados
+    
+    </value>
+  </data>
+  <data name="ClipboardTotalErrorCount" xml:space="preserve">
+    <value>Errores totales: {0}</value>
+    <comment>{0} = number of errors</comment>
+  </data>
+  <data name="ClipboardValidatorEntry" xml:space="preserve">
+    <value>{0}. {1}: {2}
+    
+    </value>
+    <comment>{0} = validator number, {1} = validator name, {2} = validator description </comment>
+  </data>
+  <data name="ContentsCopied" xml:space="preserve">
+    <value>Contenidos copiados al portapapeles.</value>
+  </data>
+  <data name="CopyAllLink" xml:space="preserve">
+    <value>Copie todos los detalles de error al portapapeles</value>
+  </data>
+  <data name="CopyLink" xml:space="preserve">
+    <value>Copiar detalles al portapapeles</value>
+  </data>
+</root>

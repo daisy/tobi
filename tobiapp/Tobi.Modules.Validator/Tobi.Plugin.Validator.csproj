@@ -170,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tobi.Plugin.Validator.Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi.Plugin.Validator.Lang.es.resx" />
     <EmbeddedResource Include="Tobi.Plugin.Validator.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.Validator.Lang.Designer.cs</LastGenOutput>

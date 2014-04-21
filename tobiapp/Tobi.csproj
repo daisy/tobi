@@ -25,7 +25,7 @@
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
-    <PublishUrl>C:\Users\daniel\Desktop\daisy\tobi\trunk\tobiapp\TobiClickOnceNET3_2.2.0.0\</PublishUrl>
+    <PublishUrl>C:\Users\daniel\Desktop\daisy\tobi\trunk\tobiapp\TobiClickOnceNET3_2.3.0.0\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -44,7 +44,7 @@
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.2.0.0</ApplicationVersion>
+    <ApplicationVersion>2.3.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -564,6 +564,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tobi_Lang.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tobi_Lang.es.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Tobi_Lang.resx">

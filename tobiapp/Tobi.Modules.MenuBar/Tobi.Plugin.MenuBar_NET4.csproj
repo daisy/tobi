@@ -85,6 +85,7 @@
       <DependentUpon>Tobi.Plugin.MenuBar.Lang.resx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Tobi.Plugin.MenuBar.Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi.Plugin.MenuBar.Lang.es.resx" />
     <EmbeddedResource Include="Tobi.Plugin.MenuBar.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.MenuBar.Lang.Designer.cs</LastGenOutput>

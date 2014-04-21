@@ -145,6 +145,7 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Tobi.Plugin.Validator.Metadata.Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi.Plugin.Validator.Metadata.Lang.es.resx" />
     <EmbeddedResource Include="Tobi.Plugin.Validator.Metadata.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.Validator.Metadata.Lang.Designer.cs</LastGenOutput>
