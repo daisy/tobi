@@ -911,6 +911,10 @@ namespace Tobi
 
             bool windowForcedClose = false;
 
+            var that = this;
+
+            bool afterModal = false;
+
             Exception workException = null;
             Dispatcher.BeginInvoke((Action)(() =>
             {
@@ -944,10 +948,17 @@ namespace Tobi
 #endif
                 }
                 windowForcedClose = true;
-                if (reporter.RequestCancellation)
+                if (workException != null || reporter.RequestCancellation)
                 {
+                    bool wasafterModal = afterModal;
+
                     actionCancelled();
                     windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
+
+                    if (wasafterModal && workException != null)
+                    {
+                        ExceptionHandler.Handle(workException, false, that);
+                    }
                 }
                 else
                 {
@@ -970,6 +981,8 @@ namespace Tobi
                 return false;
                 //throw workException;
             }
+
+            afterModal = true;
 
             if (reporter.RequestCancellation)
             {
@@ -1270,6 +1283,10 @@ namespace Tobi
                 label.Text = (string)args.UserState;
             };
 
+            bool afterModal = false;
+
+            var that = this;
+
             backWorker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
             {
                 workException = args.Error;
@@ -1281,8 +1298,15 @@ namespace Tobi
 
                 if (workException != null || reporter.RequestCancellation || args.Cancelled)
                 {
+                    bool wasafterModal = afterModal;
+
                     actionCancelled();
                     windowPopup.ForceClose(PopupModalWindow.DialogButton.Cancel);
+
+                    if (wasafterModal && workException != null)
+                    {
+                        ExceptionHandler.Handle(workException, false, that);
+                    }
                 }
                 else
                 {
@@ -1292,9 +1316,11 @@ namespace Tobi
 
                 //var result = (string)args.Result;
             };
+
             backWorker.RunWorkerAsync(@"dummy arg");
 
             windowPopup.ShowModal();
+
 
 #if NET40
             TaskbarItemInfo.ProgressValue = 0;
@@ -1307,6 +1333,8 @@ namespace Tobi
                 return true;
                 //throw workException;
             }
+
+            afterModal = true;
 
             if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Cancel
                 || windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.ESC)
