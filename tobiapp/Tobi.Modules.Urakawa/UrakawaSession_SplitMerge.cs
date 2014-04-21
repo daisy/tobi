@@ -107,7 +107,7 @@ namespace Tobi.Plugin.Urakawa
 #if DEBUG
                     Debugger.Break();
 #endif
-                    throw ex;
+                    throw new Exception("Merge", ex);
                 }
                 finally
                 {
@@ -515,7 +515,7 @@ namespace Tobi.Plugin.Urakawa
 #if DEBUG
                     Debugger.Break();
 #endif
-                    throw ex;
+                    throw new Exception("Split", ex);
                 }
                 finally
                 {

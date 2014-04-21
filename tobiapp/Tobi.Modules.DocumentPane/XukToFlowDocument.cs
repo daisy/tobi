@@ -103,7 +103,7 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw ex;
+                throw new Exception("XukToFlowDoc", ex);
             }
             //finally
             //{
