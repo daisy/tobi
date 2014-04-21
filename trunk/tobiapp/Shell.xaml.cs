@@ -1210,19 +1210,21 @@ namespace Tobi
                 if (m_StopWatch2 != null) m_StopWatch2.Stop();
                 m_StopWatch2 = null;
 #endif
-#if DEBUG
+#if true //DEBUG
                 try
                 {
 #endif
                     reporter.RunTask();
 
                     args.Result = @"dummy result";
-#if DEBUG
+#if true //DEBUG
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
                     Debugger.Break();
-                    throw ex;
+#endif
+                    throw new Exception("Tobi catch level #2", ex);
                 }
                 finally
                 {
