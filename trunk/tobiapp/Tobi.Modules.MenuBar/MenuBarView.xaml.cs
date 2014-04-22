@@ -91,7 +91,7 @@ namespace Tobi.Plugin.MenuBar
                 var menuRoot = new MenuItemRichCommand
                                    {
                                        Header = topLevelMenuItemId,
-                                       Name = "MENU_ITEM_" + topLevelMenuItemId,
+                                       Name = "MENU_ITEM_" + uid + @"__0",
                                        HorizontalContentAlignment = HorizontalAlignment.Left,
                                        VerticalContentAlignment = VerticalAlignment.Center
                                    };
@@ -147,10 +147,12 @@ namespace Tobi.Plugin.MenuBar
 
             if (targetRegionSub == null && !string.IsNullOrEmpty(subRegionName))
             {
+                string viewname = @"SUB_" + uid + @"_" + count++;
+
                 var subMenuRoot = new MenuItemRichCommand
                 {
                     Header = subMenuItemId,
-                    Name = "MENU_ITEM_" + topLevelMenuItemId,
+                    Name = "MENU_ITEM_" + viewname,
                     HorizontalContentAlignment = HorizontalAlignment.Left,
                     VerticalContentAlignment = VerticalAlignment.Center
                 };
@@ -161,8 +163,6 @@ namespace Tobi.Plugin.MenuBar
                 //RegionManager.SetRegionManager(menuRoot, m_RegionManager);
                 RegionManager.SetRegionName(subMenuRoot, subRegionName);
                 //RegionManager.UpdateRegions();
-
-                string viewname = @"SUB_" + uid + @"_" + count++;
 
                 m_RegionManager.RegisterNamedViewWithRegion(targetRegionTop.Name,
                     new PreferredPositionNamedView { m_viewName = viewname, m_viewInstance = subMenuRoot, m_viewPreferredPosition = positionInTopLevel });
