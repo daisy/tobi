@@ -67,7 +67,7 @@ namespace Tobi
 
                     ExecuteShellProcess("http://www.daisy.org/tobi/doc");
                 },
-                 () => true,
+                 () => !m_UrakawaSession.isAudioRecording,
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Help)
                 );
@@ -89,7 +89,7 @@ namespace Tobi
 
                     ExecuteShellProcess(chmPath);
                 },
-                 () => true,
+                 () => !m_UrakawaSession.isAudioRecording,
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Help)
                 );
@@ -131,7 +131,7 @@ namespace Tobi
                         exit();
                     }
                 },
-                () => Application.Current.Windows.Count == 1,
+                () => { return Application.Current.Windows.Count == 1 && !m_UrakawaSession.isAudioRecording; },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_AppExit));
 
@@ -149,7 +149,7 @@ namespace Tobi
 
                     MagnificationLevel = 1;
                 },
-                () => true,
+                () => !m_UrakawaSession.isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_UI_Zoom_Reset));
 
@@ -167,7 +167,7 @@ namespace Tobi
 
                     MagnificationLevel += 0.15;
                 },
-                () => true,
+                () => !m_UrakawaSession.isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_UI_Zoom_Increase));
 
@@ -185,7 +185,7 @@ namespace Tobi
 
                     MagnificationLevel -= 0.15;
                 },
-                () => true,
+                () => !m_UrakawaSession.isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_UI_Zoom_Decrease));
 
@@ -301,7 +301,7 @@ namespace Tobi
 
                     ExecuteShellProcess(ExternalFilesDataManager.STORAGE_FOLDER_PATH);
                 },
-                 () => true,
+                 () => !m_UrakawaSession.isAudioRecording,
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
                 );
@@ -319,7 +319,7 @@ namespace Tobi
 
                     ExecuteShellProcess(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
                 },
-                 () => true,
+                 () => !m_UrakawaSession.isAudioRecording,
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
                 );
@@ -339,7 +339,7 @@ namespace Tobi
                     string settingsPath = Path.GetDirectoryName(config.FilePath);
                     ExecuteShellProcess(settingsPath);
                 },
-                 () => true,
+                 () => !m_UrakawaSession.isAudioRecording,
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiSettingsFolder)
                 );

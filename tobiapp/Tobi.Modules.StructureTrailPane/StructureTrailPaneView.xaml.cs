@@ -209,8 +209,10 @@ namespace Tobi.Plugin.StructureTrailPane
             {
                 return;
             }
-
-            m_UrakawaSession.PerformTreeNodeSelection((TreeNode)ui.Tag);
+            if (!m_UrakawaSession.isAudioRecording)
+            {
+                m_UrakawaSession.PerformTreeNodeSelection((TreeNode) ui.Tag);
+            }
             //selectNode(wrapper.TreeNode, true);
 
             CommandFocus.Execute();
@@ -419,7 +421,11 @@ namespace Tobi.Plugin.StructureTrailPane
             {
                 return;
             }
-            m_UrakawaSession.PerformTreeNodeSelection((TreeNode)ui.Tag);
+
+            if (!m_UrakawaSession.isAudioRecording)
+            {
+                m_UrakawaSession.PerformTreeNodeSelection((TreeNode) ui.Tag);
+            }
             //selectNode((TreeNode)ui.Tag, true);
 
             CommandFocus.Execute();

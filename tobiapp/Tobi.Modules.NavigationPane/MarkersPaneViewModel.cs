@@ -65,7 +65,7 @@ namespace Tobi.Plugin.NavigationPane
                                         var cmd = SelectedTreeNode.Presentation.CommandFactory.CreateTreeNodeSetIsMarkedCommand(SelectedTreeNode, !SelectedTreeNode.IsMarked);
                                         SelectedTreeNode.Presentation.UndoRedoManager.Execute(cmd);
                                     },
-                                    () => SelectedTreeNode != null, //!m_UrakawaSession.IsSplitMaster &&
+                                    () => SelectedTreeNode != null && !m_UrakawaSession.isAudioRecording, //!m_UrakawaSession.IsSplitMaster &&
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ToggleDocMark));
 
@@ -96,7 +96,7 @@ namespace Tobi.Plugin.NavigationPane
                                         }
                                         m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
                                     },
-                                    () => m_UrakawaSession.DocumentProject != null, //SelectedTreeNode != null, //!m_UrakawaSession.IsSplitMaster &&
+                                    () => m_UrakawaSession.DocumentProject != null && !m_UrakawaSession.isAudioRecording, //SelectedTreeNode != null, //!m_UrakawaSession.IsSplitMaster &&
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_RemoveAllDocMarks));
 

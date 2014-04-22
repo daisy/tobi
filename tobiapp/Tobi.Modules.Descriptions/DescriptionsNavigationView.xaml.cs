@@ -136,9 +136,12 @@ namespace Tobi.Plugin.Descriptions
 
         private void OnClick_ButtonAddEdit(object sender, RoutedEventArgs e)
         {
-            UpdateTreeNodeSelectionFromListItem();
+            if (!m_UrakawaSession.isAudioRecording)
+            {
+                UpdateTreeNodeSelectionFromListItem();
 
-            m_DescriptionsView.Popup();
+                m_DescriptionsView.Popup();
+            }
         }
 
         public void UpdateTreeNodeSelectionFromListItem()
@@ -151,9 +154,11 @@ namespace Tobi.Plugin.Descriptions
 
                 if (treeNode == null) return;
 
-                _ignoreTreeNodeSelectedEvent = true;
-
-                m_UrakawaSession.PerformTreeNodeSelection(treeNode, false, null);
+                if (!m_UrakawaSession.isAudioRecording)
+                {
+                    _ignoreTreeNodeSelectedEvent = true;
+                    m_UrakawaSession.PerformTreeNodeSelection(treeNode, false, null);
+                }
                 //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
             }
 

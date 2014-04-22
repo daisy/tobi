@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite.Events;
@@ -144,6 +145,43 @@ namespace Tobi.Plugin.Urakawa
         public RichDelegateCommand OpenDocumentFolderCommand { get; private set; }
 
         public RichDelegateCommand DataCleanupCommand { get; private set; }
+
+        public bool isAudioActive
+        {
+            get { return isAudioRecording || isAudioPlaying || isAudioMonitoring; }
+        }
+
+        private bool m_isAudioRecording = false;
+        public bool isAudioRecording {
+            get { return m_isAudioRecording; }
+            set
+            {
+                m_isAudioRecording = value;
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
+        private bool m_isAudioPlaying = false;
+        public bool isAudioPlaying
+        {
+            get { return m_isAudioPlaying; }
+            set
+            {
+                m_isAudioPlaying = value;
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
+        private bool m_isAudioMonitoring = false;
+        public bool isAudioMonitoring
+        {
+            get { return m_isAudioMonitoring; }
+            set
+            {
+                m_isAudioMonitoring = value;
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
 
         private Project m_DocumentProject;
         public Project DocumentProject
@@ -334,7 +372,7 @@ namespace Tobi.Plugin.Urakawa
 
                     m_ShellView.ExecuteShellProcess(Path.GetDirectoryName(DocumentFilePath));
                 },
-                 () => DocumentProject != null && !string.IsNullOrEmpty(DocumentFilePath),
+                 () => DocumentProject != null && !string.IsNullOrEmpty(DocumentFilePath) && !isAudioRecording,
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowTobiFolder)
                 );
@@ -349,7 +387,7 @@ namespace Tobi.Plugin.Urakawa
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_edit-undo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Undo(),
-                () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo,
+                () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo && !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Undo));
 
@@ -361,7 +399,7 @@ namespace Tobi.Plugin.Urakawa
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_edit-redo"),
                 () => DocumentProject.Presentations.Get(0).UndoRedoManager.Redo(),
-                () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo,
+                () => DocumentProject != null && DocumentProject.Presentations.Get(0).UndoRedoManager.CanRedo && !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Redo));
 
@@ -381,7 +419,7 @@ namespace Tobi.Plugin.Urakawa
                     //    return false;
                     //}
                 },
-                () => DocumentProject != null,
+                () => DocumentProject != null && !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_CloseProject));
 
@@ -393,7 +431,7 @@ namespace Tobi.Plugin.Urakawa
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_user-trash-full"),
                 () => DataCleanup(true),
-                () => DocumentProject != null
+                () => DocumentProject != null && !isAudioRecording
                 && !IsXukSpine,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DataCleanup));

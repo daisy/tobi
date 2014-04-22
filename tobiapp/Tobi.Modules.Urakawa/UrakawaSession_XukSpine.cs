@@ -150,7 +150,7 @@ namespace Tobi.Plugin.Urakawa
                         }
                     }
                 },
-                () => HasXukSpine,
+                () => HasXukSpine && !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ShowXukSpine)
                 );

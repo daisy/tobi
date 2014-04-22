@@ -129,7 +129,7 @@ namespace Tobi.Plugin.AudioPane
                             m_SpeechSynthesizer.SpeakAsyncCancelAll();
                         });
                 },
-                () => true,
+                () => !IsRecording,
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ShowOptions)
                 );

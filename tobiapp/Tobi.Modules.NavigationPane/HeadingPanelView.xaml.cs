@@ -168,12 +168,15 @@ namespace Tobi.Plugin.NavigationPane
             //    return;
             //}
 
-            m_ignoreTreeNodeSelectedEvent = true;
             m_SelectedTreeViewItem = TreeView.SelectItem(node, true);
 
             //m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] HeadingPaneView.handleTreeViewCurrentSelection", Category.Debug, Priority.Medium);
 
-            m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+            if (!m_UrakawaSession.isAudioRecording)
+            {
+                m_ignoreTreeNodeSelectedEvent = true;
+                m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+            }
         }
 
         private void OnKeyDown_TreeViewItem(object sender, KeyEventArgs e)

@@ -799,7 +799,7 @@ namespace Tobi.Plugin.Urakawa
                         }
                     }
                 },
-                () => DocumentProject != null && !IsSplitMaster //&& !IsSplitSub
+                () => DocumentProject != null && !IsSplitMaster && !isAudioRecording //&& !IsSplitSub
                 //&& (IsXukSpine || !HasXukSpine)
                 ,
                 Settings_KeyGestures.Default,
