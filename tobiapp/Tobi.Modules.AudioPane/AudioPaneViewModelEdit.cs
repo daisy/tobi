@@ -197,7 +197,9 @@ namespace Tobi.Plugin.AudioPane
                     {
                         Logger.Log(@"Audio WavSoundTouch SLOW CANCELED", Category.Debug, Priority.Medium);
 
-                        m_ShellView.ExecuteShellProcess(destinationFolder);
+#if DEBUG
+                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+#endif
                     },
                     () =>
                     {
@@ -215,7 +217,9 @@ namespace Tobi.Plugin.AudioPane
                                 }
                                 catch (Exception ex)
                                 {
+#if DEBUG
                                     m_ShellView.ExecuteShellProcess(destinationFolder);
+#endif
                                 }
                             }
                             ));
@@ -235,7 +239,9 @@ namespace Tobi.Plugin.AudioPane
                     {
                         Logger.Log(@"Audio WavSoundTouch SPEED CANCELED", Category.Debug, Priority.Medium);
 
-                        m_ShellView.ExecuteShellProcess(destinationFolder);
+#if DEBUG
+                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+#endif
                     },
                     () =>
                     {
@@ -253,7 +259,9 @@ namespace Tobi.Plugin.AudioPane
                                 }
                                 catch (Exception ex)
                                 {
+#if DEBUG
                                     m_ShellView.ExecuteShellProcess(destinationFolder);
+#endif
                                 }
                             }
                             ));
@@ -270,7 +278,9 @@ namespace Tobi.Plugin.AudioPane
                     {
                         Logger.Log(@"Audio WavNormalize CANCELED", Category.Debug, Priority.Medium);
 
-                        m_ShellView.ExecuteShellProcess(destinationFolder);
+#if DEBUG
+                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+#endif
                     },
                     () =>
                     {
@@ -288,7 +298,9 @@ namespace Tobi.Plugin.AudioPane
                                 }
                                 catch (Exception ex)
                                 {
+#if DEBUG
                                     m_ShellView.ExecuteShellProcess(destinationFolder);
+#endif
                                 }
                             }
                             ));
@@ -305,7 +317,9 @@ namespace Tobi.Plugin.AudioPane
                     {
                         Logger.Log(@"Audio WavAmplify CANCELED", Category.Debug, Priority.Medium);
 
-                        m_ShellView.ExecuteShellProcess(destinationFolder);
+#if DEBUG
+                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+#endif
                     },
                     () =>
                     {
@@ -323,7 +337,9 @@ namespace Tobi.Plugin.AudioPane
                                 }
                                 catch (Exception ex)
                                 {
+#if DEBUG
                                     m_ShellView.ExecuteShellProcess(destinationFolder);
+#endif
                                 }
                             }
                             ));
