@@ -82,7 +82,7 @@ namespace Tobi.Plugin.Urakawa
                         }
                     }
                 },
-                () => true,
+                () => !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_OpenRecent));
 
@@ -93,7 +93,7 @@ namespace Tobi.Plugin.Urakawa
                                                    null,
                                                    m_ShellView.LoadGnomeNeuIcon(@"Neu_view-refresh"),
                                                    ClearRecentFiles,
-                                                   () => true,
+                                                   () => !isAudioRecording,
                                                    null, null);
             m_ShellView.RegisterRichCommand(ClearRecentFilesCommand);
             //

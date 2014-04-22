@@ -1222,11 +1222,13 @@ namespace Tobi.Plugin.AudioPane
             //Logger.Log("AudioPaneViewModel.OnStateChanged_Player", Category.Debug, Priority.Medium);
 
 
-            CommandManager.InvalidateRequerySuggested();
+            //CommandManager.InvalidateRequerySuggested();
 
             resetPeakMeter();
 
             RaisePropertyChanged(() => IsPlaying);
+
+            m_UrakawaSession.isAudioPlaying = IsPlaying;
 
             if (e.OldState == AudioPlayer.State.Playing
                 && (

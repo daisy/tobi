@@ -531,6 +531,11 @@ namespace Tobi.Plugin.DocumentPane
         private TextElement FindPreviousNext(bool previous, bool select)
         {
             if (string.IsNullOrEmpty(SearchTerm)) return null;
+            
+            if (m_UrakawaSession.isAudioRecording)
+            {
+                return null;
+            }
 
             if (m_FindAndReplaceManager == null)
             {
@@ -666,7 +671,10 @@ namespace Tobi.Plugin.DocumentPane
 
                         if (select)
                         {
-                            m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
+                            if (!m_UrakawaSession.isAudioRecording)
+                            {
+                                m_UrakawaSession.PerformTreeNodeSelection((TreeNode) textElement.Tag);
+                            }
                         }
                         else
                         {
@@ -1010,7 +1018,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     IsNarratorMode = !IsNarratorMode;
                 },
-                () => true,
+                () => !m_UrakawaSession.isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_SwitchNarratorView));
 
@@ -1052,6 +1060,7 @@ namespace Tobi.Plugin.DocumentPane
                 () =>
                 {
                     if (m_UrakawaSession.DocumentProject == null) return false;
+                    if (m_UrakawaSession.isAudioRecording) return false;
 
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     return selection.Item1 != null;
@@ -1085,6 +1094,8 @@ namespace Tobi.Plugin.DocumentPane
                 },
                 () =>
                 {
+                    if (m_UrakawaSession.isAudioRecording) return false;
+
                     TextElement textElement = m_lastHighlightedSub ?? m_lastHighlighted;
                     return textElement != null;
                 },
@@ -1185,6 +1196,8 @@ namespace Tobi.Plugin.DocumentPane
                 },
                 () =>
                 {
+                    if (m_UrakawaSession.isAudioRecording) return false;
+
                     TextElement textElement = m_lastHighlightedSub ?? m_lastHighlighted;
                     return textElement != null;
                 },
@@ -1237,6 +1250,8 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (m_UrakawaSession.DocumentProject == null) return false;
 
+                    if (m_UrakawaSession.isAudioRecording) return false;
+
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
                     return m_TextElementForEdit != null
@@ -1266,6 +1281,7 @@ namespace Tobi.Plugin.DocumentPane
                 () =>
                 {
                     if (m_UrakawaSession.DocumentProject == null) return false;
+                    if (m_UrakawaSession.isAudioRecording) return false;
 
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     return selection.Item1 != null;
@@ -1325,6 +1341,7 @@ namespace Tobi.Plugin.DocumentPane
                 () =>
                 {
                     if (m_UrakawaSession.DocumentProject == null) return false;
+                    if (m_UrakawaSession.isAudioRecording) return false;
 
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     return selection.Item1 != null;
@@ -1385,6 +1402,7 @@ namespace Tobi.Plugin.DocumentPane
                 () =>
                 {
                     if (m_UrakawaSession.DocumentProject == null) return false;
+                    if (m_UrakawaSession.isAudioRecording) return false;
 
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     return selection.Item1 != null;
@@ -1917,7 +1935,10 @@ namespace Tobi.Plugin.DocumentPane
 
                         if (textElement != (m_lastHighlightedSub ?? m_lastHighlighted))
                         {
-                            m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
+                            if (!m_UrakawaSession.isAudioRecording)
+                            {
+                                m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
+                            }
                         }
 
                         if (m_lastHighlighted != null)

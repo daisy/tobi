@@ -107,7 +107,7 @@ namespace Tobi.Plugin.MetadataPane
 
         bool CanShowDialog()
         {
-            return m_UrakawaSession.DocumentProject != null;
+            return m_UrakawaSession.DocumentProject != null && !m_UrakawaSession.isAudioRecording;
         }
 
         void ShowDialog()

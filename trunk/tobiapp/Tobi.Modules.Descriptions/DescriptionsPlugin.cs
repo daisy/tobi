@@ -121,6 +121,8 @@ namespace Tobi.Plugin.Descriptions
         {
             if (m_UrakawaSession.DocumentProject == null) return false;
 
+            if (m_UrakawaSession.isAudioRecording) return false;
+
             Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
             TreeNode node = selection.Item2 ?? selection.Item1;
             return

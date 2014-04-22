@@ -144,11 +144,14 @@ namespace Tobi.Plugin.NavigationPane
             Page page = ListView.SelectedItem as Page;
             if (page == null) return;
 
-            _ignoreTreeNodeSelectedEvent = true;
 
             //m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] PagePanelView.OnPageSelected", Category.Debug, Priority.Medium);
 
-            m_UrakawaSession.PerformTreeNodeSelection(page.TreeNode);
+            if (!m_UrakawaSession.isAudioRecording)
+            {
+                _ignoreTreeNodeSelectedEvent = true;
+                m_UrakawaSession.PerformTreeNodeSelection(page.TreeNode);
+            }
         }
 
         private void OnKeyUp_ListItem(object sender, KeyEventArgs e)

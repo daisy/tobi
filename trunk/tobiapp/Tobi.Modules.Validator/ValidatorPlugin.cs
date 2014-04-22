@@ -124,7 +124,7 @@ namespace Tobi.Plugin.Validator
         private bool CanShowDialog()
         {
             return !m_DialogIsShowing
-                && m_UrakawaSession.DocumentProject != null;
+                && m_UrakawaSession.DocumentProject != null && !m_UrakawaSession.isAudioRecording;
         }
 
         private void ShowDialog()

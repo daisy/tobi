@@ -20,6 +20,7 @@ namespace Tobi.Plugin.Settings
 
         //private readonly SettingsView m_SettingsView;
 
+        private readonly IUrakawaSession m_UrakawaSession;
         public readonly ISettingsAggregator m_SettingsAggregator;
 
         private readonly ILoggerFacade m_Logger;
@@ -40,6 +41,8 @@ namespace Tobi.Plugin.Settings
             IShellView shellView,
             //[Import(typeof(SettingsView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             //SettingsView view,
+            [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IUrakawaSession session,
             [Import(typeof(ISettingsAggregator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
             ISettingsAggregator settingsAggregator)
         {
@@ -48,6 +51,7 @@ namespace Tobi.Plugin.Settings
             m_ShellView = shellView;
 
             //m_SettingsView = view;
+            m_UrakawaSession = session;
 
             m_SettingsAggregator = settingsAggregator;
 
@@ -118,7 +122,7 @@ namespace Tobi.Plugin.Settings
 
         private bool CanShowDialog()
         {
-            return !m_DialogIsShowing;
+            return !m_DialogIsShowing && !m_UrakawaSession.isAudioRecording;
         }
 
         private void ShowDialog()

@@ -164,11 +164,14 @@ namespace Tobi.Plugin.NavigationPane
 
             if (treeNode == null) return;
 
-            _ignoreTreeNodeSelectedEvent = true;
 
             //m_Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] MarkersPanelView.OnMarkersSelected", Category.Debug, Priority.Medium);
 
-            m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+            if (!m_UrakawaSession.isAudioRecording)
+            {
+                _ignoreTreeNodeSelectedEvent = true;
+                m_UrakawaSession.PerformTreeNodeSelection(treeNode);
+            }
             //m_EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(treeNode);
         }
 

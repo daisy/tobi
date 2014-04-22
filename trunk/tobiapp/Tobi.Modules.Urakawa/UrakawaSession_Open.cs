@@ -136,7 +136,7 @@ namespace Tobi.Plugin.Urakawa
                         ExceptionHandler.Handle(ex, false, m_ShellView);
                     }
                 },
-                () => true,
+                () => !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Open));
 
@@ -194,7 +194,7 @@ namespace Tobi.Plugin.Urakawa
                                     ExceptionHandler.Handle(ex, false, m_ShellView);
                                 }
                             },
-                            () => true,
+                            () => !isAudioRecording,
                             Settings_KeyGestures.Default,
                             PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Import));
 
@@ -811,7 +811,7 @@ namespace Tobi.Plugin.Urakawa
                         }
                     }
                 },
-                () => true,
+                () => !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_OpenConvert)
                 );

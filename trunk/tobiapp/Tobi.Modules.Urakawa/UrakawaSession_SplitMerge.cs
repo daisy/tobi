@@ -1141,7 +1141,7 @@ namespace Tobi.Plugin.Urakawa
 
                     m_ShellView.ExecuteShellProcess(splitDirectory);
                 },
-                () => DocumentProject != null && !IsXukSpine && !HasXukSpine && !IsSplitMaster && !IsSplitSub,
+                () => DocumentProject != null && !IsXukSpine && !HasXukSpine && !IsSplitMaster && !IsSplitSub && !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ProjectSplit));
 
@@ -1360,7 +1360,7 @@ namespace Tobi.Plugin.Urakawa
                         m_ShellView.ExecuteShellProcess(containerFolder);
                     }
                 },
-                () => DocumentProject != null && !IsXukSpine && !HasXukSpine && IsSplitMaster,
+                () => DocumentProject != null && !IsXukSpine && !HasXukSpine && IsSplitMaster && !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ProjectMerge));
 

@@ -927,6 +927,9 @@ namespace Tobi.Plugin.AudioPane
             RaisePropertyChanged(() => IsRecording);
             RaisePropertyChanged(() => IsMonitoring);
 
+            m_UrakawaSession.isAudioMonitoring = IsMonitoring;
+            m_UrakawaSession.isAudioRecording = IsRecording;
+
             if ((e.OldState == AudioRecorder.State.Recording || e.OldState == AudioRecorder.State.Monitoring)
                 && m_Recorder.CurrentState == AudioRecorder.State.Stopped)
             {

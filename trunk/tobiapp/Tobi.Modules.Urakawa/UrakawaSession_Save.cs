@@ -255,7 +255,7 @@ namespace Tobi.Plugin.Urakawa
                     //var fileDialog = Container.Resolve<IFileDialogService>();
                     //return fileDialog.SaveAs();
                 },
-                () => DocumentProject != null && !IsXukSpine,
+                () => DocumentProject != null && !IsXukSpine && !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_SaveAs));
 
@@ -268,7 +268,7 @@ namespace Tobi.Plugin.Urakawa
                 m_ShellView.LoadTangoIcon(@"drive-harddisk"),
                 //ScalableGreyableImageProvider.ConvertIconFormat((DrawingImage)Application.Current.FindResource("Horizon_Image_Save")),
                 () => save(false),
-                () => DocumentProject != null,
+                () => DocumentProject != null && !isAudioRecording,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Save));
 

@@ -32,6 +32,11 @@ namespace Tobi.Common
         //    set;
         //}
 
+        bool isAudioRecording { get; set; }
+        bool isAudioPlaying { get; set; }
+        bool isAudioMonitoring { get; set; }
+        bool isAudioActive { get; }
+
         void AutoSave_OFF();
         void AutoSave_ON();
 
