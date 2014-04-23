@@ -152,7 +152,8 @@ namespace Tobi.Plugin.Urakawa
         }
 
         private bool m_isAudioRecording = false;
-        public bool isAudioRecording {
+        public bool isAudioRecording
+        {
             get { return m_isAudioRecording; }
             set
             {
@@ -520,6 +521,32 @@ namespace Tobi.Plugin.Urakawa
             if (cancelled)
             {
                 // We restore the old one, not cleaned-up (or partially...).
+
+                var deletedFiles = Directory.GetFiles(deletedDataFolderPath);
+                var deletedFolders = Directory.GetDirectories(deletedDataFolderPath);
+
+                if (deletedFiles.Length != 0 || deletedFolders.Length != 0)
+                {
+                    foreach (string filePath in deletedFiles)
+                    {
+                        var fileName = Path.GetFileName(filePath);
+                        var filePathDest = Path.Combine(dataFolderPath, fileName);
+                        DebugFix.Assert(!File.Exists(filePathDest));
+                        if (!File.Exists(filePathDest))
+                        {
+                            try
+                            {
+                                File.Move(filePath, filePathDest);
+                                File.SetAttributes(filePathDest, FileAttributes.Normal);
+                            }
+                            catch
+                            {
+                            }
+                        }
+                    }
+                }
+
+                m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
 
                 DocumentFilePath = null;
                 DocumentProject = null;

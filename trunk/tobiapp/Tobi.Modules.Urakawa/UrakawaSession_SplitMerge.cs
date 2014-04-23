@@ -191,7 +191,7 @@ namespace Tobi.Plugin.Urakawa
 #endif
 
                         int i = counter + 1;
-                        reportProgress(100 * i / total, i + " / " + total);
+                        reportProgress_Throttle(100 * i / total, i + " / " + total);
 
                         //Thread.Sleep(500);
 
@@ -530,7 +530,7 @@ namespace Tobi.Plugin.Urakawa
                 {
                     int j = i + 1;
 
-                    reportProgress(100 * j / m_total, j + " / " + m_total);
+                    reportProgress_Throttle(100 * j / m_total, j + " / " + m_total);
 
                     //Thread.Sleep(1000);
 
