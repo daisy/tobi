@@ -80,9 +80,6 @@ namespace Tobi.Plugin.AudioPane
 
                 var manualResetEvent = new ManualResetEvent(false);
 
-                var watch = new Stopwatch();
-                watch.Start();
-
                 bool done = false;
 
                 string msg = Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio + " [" + (Text.Length > 20 ? Text.Substring(0, 19) + "..." : Text) + "]";
@@ -100,21 +97,13 @@ namespace Tobi.Plugin.AudioPane
                         return;
                     }
 
-                    if (true || watch.ElapsedMilliseconds > 500)
-                    {
-                        watch.Stop();
+                    int percent = 100 * (ev.CharacterPosition + ev.CharacterCount) / Text.Length;
+                    if (percent < 0) percent = 0;
+                    if (percent > 100) percent = 100;
 
-                        int percent = 100 * (ev.CharacterPosition + ev.CharacterCount) / Text.Length;
-                        if (percent < 0) percent = 0;
-                        if (percent > 100) percent = 100;
+                    //Console.WriteLine("%%%%%%%% " + percent);
 
-                        //Console.WriteLine("%%%%%%%% " + percent);
-
-                        reportProgress(percent, msg);
-
-                        watch.Reset();
-                        watch.Start();
-                    }
+                    reportProgress_Throttle(percent, msg);
                 };
                 SpeechSynthesizer.SpeakProgress += delegateProgress;
 
@@ -152,8 +141,7 @@ namespace Tobi.Plugin.AudioPane
                 manualResetEvent.WaitOne();
 
                 done = true;
-                watch.Stop();
-
+                
                 SpeechSynthesizer.SpeakCompleted -= delegateCompleted;
                 SpeechSynthesizer.SpeakProgress -= delegateProgress;
 

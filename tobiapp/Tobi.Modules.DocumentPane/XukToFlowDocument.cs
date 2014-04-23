@@ -3156,7 +3156,7 @@ namespace Tobi.Plugin.DocumentPane
             return parent;
         }
 
-        private Stopwatch m_stopwatch;
+
         private void walkBookTreeAndGenerateFlowDocument(TreeNode node, TextElement parent)
         {
             m_nTreeNode++;
@@ -3273,32 +3273,15 @@ namespace Tobi.Plugin.DocumentPane
                             m_percentageProgress = -1;
                     }
 
-                    if (m_stopwatch == null || m_stopwatch.ElapsedMilliseconds >= 500)
-                    {
-                        if (m_stopwatch != null)
-                        {
-                            m_stopwatch.Stop();
-                        }
+                    string str = Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument + " ["
+                                 +
+                                 (node.Presentation.XukedInTreeNodes <= 0
+                                      ? m_nTreeNode.ToString()
+                                      : m_nTreeNode + "/" + node.Presentation.XukedInTreeNodes)
+                                 + "]";
+                    //Console.WriteLine(str);
+                    reportProgress_Throttle(m_percentageProgress, str);
 
-                        string str = Tobi_Plugin_DocumentPane_Lang.ConvertingXukToFlowDocument + " ["
-                                     +
-                                     (node.Presentation.XukedInTreeNodes <= 0
-                                          ? m_nTreeNode.ToString()
-                                          : m_nTreeNode + "/" + node.Presentation.XukedInTreeNodes)
-                                     + "]";
-                        //Console.WriteLine(str);
-                        reportProgress(m_percentageProgress, str);
-
-                        if (m_stopwatch == null)
-                        {
-                            m_stopwatch = new Stopwatch();
-                        }
-                        else
-                        {
-                            m_stopwatch.Reset();
-                        }
-                        m_stopwatch.Start();
-                    }
 
                     if (parentNext != null)
                     {
