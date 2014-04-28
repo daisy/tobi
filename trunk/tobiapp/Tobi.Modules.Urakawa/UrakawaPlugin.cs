@@ -152,7 +152,7 @@ namespace Tobi.Plugin.Urakawa
                             ExceptionHandler.Handle(ex, false, m_ShellView);
                         }
                     },
-                    () => true,
+                    () => !m_UrakawaSession.isAudioRecording,
                     null, null
                     );
                 uriOpenCmds.Add(cmd);
