@@ -467,12 +467,24 @@ namespace Tobi.Plugin.AudioPane
                 {
                     Logger.Log("AudioPaneViewModel.PasteCommand", Category.Debug, Priority.Medium);
 
+                    if (IsPlaying)
+                    {
+                        CommandPause.Execute();
+                        CommandClearSelection.Execute();
+
+                        // overwrite following audio?
+                        //CommandSelectRight.Execute();
+
+                        PasteCommand.Execute();
+                        return;
+                    }
+
                     insertAudioAtCursorOrSelectionReplace(AudioClipboard.Copy());
                 },
                 () =>
                 {
                     return AudioClipboard != null
-                        && CommandInsertFile.CanExecute();
+                           && CommandStartRecord.CanExecute();
                 }
                 //&& IsAudioLoaded
                       ,
