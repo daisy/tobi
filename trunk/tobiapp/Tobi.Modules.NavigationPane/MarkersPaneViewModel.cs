@@ -109,6 +109,8 @@ namespace Tobi.Plugin.NavigationPane
                 null,
                 () =>
                 {
+                    m_ShellView.RaiseEscapeEvent();
+
                     if (View != null)
                     {
                         IsSearchVisible = true;
@@ -127,7 +129,12 @@ namespace Tobi.Plugin.NavigationPane
                 @"MARKERS CommandFindNext DUMMY TXT", //UserInterfaceStrings.MarkersFindNext,
                 @"MARKERS CommandFindNext DUMMY TXT", //UserInterfaceStrings.MarkersFindNext_,
                 null, // KeyGesture set only for the top-level CompositeCommand
-                null, () => MarkersNavigator.FindNext(true),
+                null, () =>
+                {
+                    m_ShellView.RaiseEscapeEvent();
+
+                    MarkersNavigator.FindNext(true);
+                },
                 () => MarkersNavigator != null && !string.IsNullOrEmpty(MarkersNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_MarkersFindNext)
@@ -137,7 +144,12 @@ namespace Tobi.Plugin.NavigationPane
                 @"MARKERS CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.MarkersFindPrev,
                 @"MARKERS CommandFindPrevious DUMMY TXT", //UserInterfaceStrings.MarkersFindPrev_,
                 null, // KeyGesture set only for the top-level CompositeCommand
-                null, () => MarkersNavigator.FindPrevious(true),
+                null, () =>
+                {
+                    m_ShellView.RaiseEscapeEvent();
+
+                    MarkersNavigator.FindPrevious(true);
+                },
                 () => MarkersNavigator != null && !string.IsNullOrEmpty(MarkersNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_MarkersFindPrev)

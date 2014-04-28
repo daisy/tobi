@@ -442,6 +442,8 @@ namespace Tobi.Plugin.Urakawa
                 null,
                 () =>
                 {
+                    m_ShellView.RaiseEscapeEvent();
+
                     FocusHelper.Focus(SearchBox);
                     SearchBox.SelectAll();
                 },
@@ -455,7 +457,12 @@ namespace Tobi.Plugin.Urakawa
                 @"SETTINGS CommandFindNext DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => FindNext(true),
+                () =>
+                {
+                    m_ShellView.RaiseEscapeEvent();
+
+                    FindNext(true);
+                },
                 () => !string.IsNullOrEmpty(SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
@@ -465,7 +472,12 @@ namespace Tobi.Plugin.Urakawa
                 @"SETTINGS CommandFindPrevious DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => FindPrevious(true),
+                () =>
+                {
+                    m_ShellView.RaiseEscapeEvent();
+
+                    FindPrevious(true);
+                },
                 () => !string.IsNullOrEmpty(SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
