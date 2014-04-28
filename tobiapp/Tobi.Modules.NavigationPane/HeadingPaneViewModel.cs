@@ -113,6 +113,8 @@ namespace Tobi.Plugin.NavigationPane
                 null,
                 () =>
                 {
+                    m_ShellView.RaiseEscapeEvent();
+
                     if (View != null)
                     {
                         IsSearchVisible = true;
@@ -132,7 +134,12 @@ namespace Tobi.Plugin.NavigationPane
                 @"HEADINGS CommandFindNext DUMMY TXT", //UserInterfaceStrings.TreeFindNext_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => HeadingsNavigator.FindNext(true),
+                () =>
+                {
+                    m_ShellView.RaiseEscapeEvent();
+
+                    HeadingsNavigator.FindNext(true);
+                },
                 () => HeadingsNavigator != null && !string.IsNullOrEmpty(HeadingsNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindNext)
@@ -143,7 +150,12 @@ namespace Tobi.Plugin.NavigationPane
                 @"HEADINGS CommandFindPrev DUMMY TXT", //UserInterfaceStrings.TreeFindPrev_,
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                () => HeadingsNavigator.FindPrevious(true),
+                () =>
+                {
+                    m_ShellView.RaiseEscapeEvent();
+
+                    HeadingsNavigator.FindPrevious(true);
+                },
                 () => HeadingsNavigator != null && !string.IsNullOrEmpty(HeadingsNavigator.SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_TOCFindPrev)

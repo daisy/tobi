@@ -1420,6 +1420,8 @@ namespace Tobi.Plugin.DocumentPane
                 null,
                 () =>
                 {
+                    m_ShellView.RaiseEscapeEvent();
+
                     IsSearchVisible = true;
                     FocusHelper.Focus(SearchBox);
                     SearchBox.SelectAll();
@@ -1435,7 +1437,12 @@ namespace Tobi.Plugin.DocumentPane
                 @"DOCVIEW CommandFindNext DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                FindNext,
+                () =>
+                {
+                    m_ShellView.RaiseEscapeEvent();
+
+                    FindNext();
+                },
                 () => !string.IsNullOrEmpty(SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
@@ -1445,7 +1452,12 @@ namespace Tobi.Plugin.DocumentPane
                 @"DOCVIEW CommandFindPrevious DUMMY TXT",
                 null, // KeyGesture set only for the top-level CompositeCommand
                 null,
-                FindPrevious,
+                () =>
+                {
+                    m_ShellView.RaiseEscapeEvent();
+
+                    FindPrevious();
+                },
                 () => !string.IsNullOrEmpty(SearchTerm),
                 null, //Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Nav_PageFindNext)
