@@ -208,6 +208,8 @@ namespace Tobi.Plugin.Urakawa
                 m_ShellView.LoadTangoIcon(@"applications-games"),
                 () =>
                 {
+                    m_ShellView.RaiseEscapeEvent();
+
                     if (!String.IsNullOrEmpty(Settings.Default.Pipeline2Url))
                     {
                         Resources.baseUri = Settings.Default.Pipeline2Url + "/ws";
