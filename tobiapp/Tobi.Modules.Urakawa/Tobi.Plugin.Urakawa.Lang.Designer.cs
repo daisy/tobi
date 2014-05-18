@@ -547,6 +547,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None of this EPUB project&apos;s spine items seem to have been split + merged..
+        /// </summary>
+        public static string MergeEpubNoParts {
+            get {
+                return ResourceManager.GetString("MergeEpubNoParts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to open the saved project ?.
         /// </summary>
         public static string OpenSaveAsQuestion {

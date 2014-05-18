@@ -199,6 +199,9 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="SplitMasterNoAudio" xml:space="preserve">
     <value>A split/merge point cannot have ancestor audio!</value>
   </data>
+  <data name="MergeEpubNoParts" xml:space="preserve">
+    <value>None of this EPUB project's spine items seem to have been split + merged.</value>
+  </data>
   <data name="SplitNothing" xml:space="preserve">
     <value>Nothing to split (please place document markers).</value>
   </data>

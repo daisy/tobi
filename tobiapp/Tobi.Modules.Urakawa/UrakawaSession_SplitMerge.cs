@@ -76,6 +76,130 @@ namespace Tobi.Plugin.Urakawa
             return null;
         }
 
+        public class MergeDirectoriesAction : DualCancellableProgressReporter
+        {
+            private readonly UrakawaSession m_session;
+
+            public MergeDirectoriesAction(UrakawaSession session)
+            {
+                m_session = session;
+            }
+
+            public string MergedSpineProject { get; private set; }
+
+            public override void DoWork()
+            {
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+                try
+                {
+                    MergeFolders();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    throw new Exception("Merge", ex);
+                }
+                finally
+                {
+                    stopWatch.Stop();
+                    Console.WriteLine(@"......MERGE folders milliseconds: " + stopWatch.ElapsedMilliseconds);
+                }
+            }
+
+            public void MergeFolders()
+            {
+                string projectDir = Path.GetDirectoryName(m_session.DocumentFilePath);
+                string mergeDestDirectory = Path.Combine(projectDir, MERGE_PREFIX);
+                if (!Directory.Exists(mergeDestDirectory))
+                {
+                    FileDataProvider.CreateDirectory(mergeDestDirectory);
+                }
+
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(m_session.DocumentFilePath);
+
+                reportProgress(0, fileNameWithoutExt);
+
+                string pathDest = Path.Combine(mergeDestDirectory, Path.GetFileName(m_session.DocumentFilePath));
+                MergedSpineProject = pathDest;
+                File.Copy(m_session.DocumentFilePath, pathDest);
+                try
+                {
+                    File.SetAttributes(pathDest, FileAttributes.Normal);
+                }
+                catch
+                {
+                }
+                string dirPathToCopy = Path.Combine(projectDir, fileNameWithoutExt);
+                string dirDest = Path.Combine(mergeDestDirectory, fileNameWithoutExt);
+                FileDataProvider.CopyDirectory(dirPathToCopy, dirDest);
+
+
+                for (int i = 0; i < m_session.XukSpineItems.Count; i++)
+                //foreach (var fileUri in XukSpineItems)
+                {
+                    if (RequestCancellation)
+                    {
+                        return;
+                    }
+
+                    XukSpineItemData data = m_session.XukSpineItems[i];
+                    var uri = data.Uri;
+                    var title = data.Title;
+                    string filePath = data.Uri.IsFile ? data.Uri.LocalPath : data.Uri.ToString();
+                    string parentDir = Path.GetDirectoryName(filePath);
+                    fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
+
+                    reportProgress((int)Math.Floor(100.0 * i / (double)m_session.XukSpineItems.Count), fileNameWithoutExt);
+
+                    string mergedDirName = MERGE_PREFIX + @"_" + fileNameWithoutExt;
+                    string mergedDir = Path.Combine(parentDir, mergedDirName);
+
+                    string rootDir = parentDir; //projectDir;
+
+                    bool move = false;
+                    if (Directory.Exists(mergedDir))
+                    {
+                        move = true;
+                        rootDir = mergedDir;
+                        filePath = Path.Combine(mergedDir, Path.GetFileName(filePath));
+                    }
+
+                    pathDest = Path.Combine(mergeDestDirectory, Path.GetFileName(filePath));
+                    if (move)
+                    {
+                        File.Move(filePath, pathDest);
+                    }
+                    else
+                    {
+                        File.Copy(filePath, pathDest);
+                    }
+                    try
+                    {
+                        File.SetAttributes(pathDest, FileAttributes.Normal);
+                    }
+                    catch
+                    {
+                    }
+                    dirPathToCopy = Path.Combine(rootDir, fileNameWithoutExt);
+                    dirDest = Path.Combine(mergeDestDirectory, fileNameWithoutExt);
+
+                    if (move)
+                    {
+                        FileDataProvider.MoveDirectory(dirPathToCopy, dirDest);
+
+                        FileDataProvider.DeleteDirectory(mergedDir);
+                    }
+                    else
+                    {
+                        FileDataProvider.CopyDirectory(dirPathToCopy, dirDest);
+                    }
+                }
+            }
+        }
+
         public class MergeAction : DualCancellableProgressReporter
         {
             private readonly UrakawaSession m_session;
@@ -466,9 +590,9 @@ namespace Tobi.Plugin.Urakawa
                     //root.GetXmlProperty().RemoveAttribute(attrSplitMerge);
                     root.GetXmlProperty().RemoveAttribute(SPLIT_MERGE, "");
 
-#if DEBUG
-                    root.GetXmlProperty().SetAttribute(SPLIT_MERGE, "", "-1");
-#endif
+//#if DEBUG
+//                    root.GetXmlProperty().SetAttribute(SPLIT_MERGE, "", "-1");
+//#endif
 
                     saved = m_session.save(true);
                 }
@@ -1219,6 +1343,100 @@ namespace Tobi.Plugin.Urakawa
 
                     m_Logger.Log(@"UrakawaSession.mergeProject", Category.Debug, Priority.Medium);
 
+                    if (IsXukSpine)
+                    {
+                        bool atLeastOneMerge = false;
+                        for (int i = 0; i < XukSpineItems.Count; i++)
+                        //foreach (var fileUri in XukSpineItems)
+                        {
+                            XukSpineItemData data = XukSpineItems[i];
+                            var uri = data.Uri;
+                            var title = data.Title;
+                            string filePath = data.Uri.IsFile ? data.Uri.LocalPath : data.Uri.ToString();
+                            string parentDir = Path.GetDirectoryName(filePath);
+                            string fileNameWithoutExtn = Path.GetFileNameWithoutExtension(filePath);
+
+                            string mergedDirName = MERGE_PREFIX + @"_" + fileNameWithoutExtn;
+                            string mergedDir = Path.Combine(parentDir, mergedDirName);
+
+                            if (Directory.Exists(mergedDir))
+                            {
+                                atLeastOneMerge = true;
+                            }
+                        }
+
+                        if (!atLeastOneMerge)
+                        {
+                            messageBoxAlert(Tobi_Plugin_Urakawa_Lang.MergeEpubNoParts, null);
+                            return;
+                        }
+
+                        string projectDir = Path.GetDirectoryName(DocumentFilePath);
+                        string mergeDestDirectory = Path.Combine(projectDir, MERGE_PREFIX);
+                        if (Directory.Exists(mergeDestDirectory))
+                        {
+                            if (!askUserConfirmOverwriteFileFolder(mergeDestDirectory, true, null))
+                            {
+                                return;
+                            }
+
+                            FileDataProvider.DeleteDirectory(mergeDestDirectory);
+                        }
+
+                        bool cancelledx = false;
+                        bool errorx = false;
+
+                        var actionx = new MergeDirectoriesAction(this);
+
+                        Action cancelledCallbackx =
+                            () =>
+                            {
+                                cancelledx = true;
+
+                            };
+
+                        Action finishedCallbackx =
+                            () =>
+                            {
+                                cancelledx = false;
+
+                            };
+
+                        errorx = m_ShellView.RunModalCancellableProgressTask(true,
+                            UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdMergeProject_ShortDesc), actionx,
+                            cancelledCallbackx,
+                            finishedCallbackx
+                            );
+
+
+                        if (!cancelledx && !errorx)
+                        {
+                            // Closing is REQUIRED ! 
+                            PopupModalWindow.DialogButton buttonx = CheckSaveDirtyAndClose(
+                                PopupModalWindow.DialogButtonsSet.OkCancel, Tobi_Plugin_Urakawa_Lang.Menu_SplitMergeProject);
+                            if (!PopupModalWindow.IsButtonOkYesApply(buttonx))
+                            {
+                                return;
+                            }
+
+                            DocumentFilePath = null;
+                            DocumentProject = null;
+                            try
+                            {
+                                OpenFile(actionx.MergedSpineProject);
+                            }
+                            catch (Exception ex)
+                            {
+                                DocumentFilePath = null;
+                                DocumentProject = null;
+
+                                ExceptionHandler.Handle(ex, false, m_ShellView);
+                            }
+                        }
+
+                        return;
+                    }
+
                     bool hasAudio = false;
                     //hasAudio = DocumentProject.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
 
@@ -1369,9 +1587,6 @@ namespace Tobi.Plugin.Urakawa
                         );
 
 
-
-                    // Conclude: open master project, show folder with sub projects
-
                     DocumentFilePath = null;
                     DocumentProject = null;
                     if (!cancelled && !error)
@@ -1414,7 +1629,7 @@ namespace Tobi.Plugin.Urakawa
                         m_ShellView.ExecuteShellProcess(containerFolder);
                     }
                 },
-                () => DocumentProject != null && !IsXukSpine && IsSplitMaster && !isAudioRecording, //&& !HasXukSpine 
+                () => DocumentProject != null && (IsSplitMaster || IsXukSpine) && !isAudioRecording, //&& !HasXukSpine   && !IsXukSpine
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ProjectMerge));
 
