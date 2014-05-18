@@ -372,9 +372,10 @@ namespace Tobi.Plugin.Urakawa
                         };
 
 
-
-
-                    bool isEPUB = IsXukSpine || HasXukSpine;
+                    bool isEPUB = IsXukSpine
+                                  || @"body".Equals(DocumentProject.Presentations.Get(0).RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase)
+                        //|| HasXukSpine
+                                  ;
 
 
                     var labelImageDescriptions_AriaDescribedAt = new TextBlock

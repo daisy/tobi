@@ -28,6 +28,8 @@ namespace Tobi.Plugin.Urakawa
         private static readonly string SPLIT_MERGE_ID = "splitMergeId";
         private static readonly string SPLIT_MERGE_SUB_ID = "splitMergeSubId";
         private static readonly string MASTER_SUFFIX = "__MASTER";
+        private static readonly string SPLIT_PREFIX = "_SPLIT";
+        private static readonly string MERGE_PREFIX = "_MERGE";
 
         // This tree-walk method ensures nested marked nodes are ignored / bypassed.
         // Also discards text-only nodes (to avoid introducing a distruptive XML wrapper element to support the splitMerge attribute)
@@ -38,7 +40,8 @@ namespace Tobi.Plugin.Urakawa
             while (elem != null && !elem.HasXmlProperty) //string.IsNullOrEmpty(elem.GetXmlElementLocalName())
             {
 #if DEBUG
-                Debugger.Break();
+                bool debugBreakpoint = true;
+                //Debugger.Break();
 #endif
                 elem = elem.GetNextSiblingWithMark();
             }
@@ -76,6 +79,7 @@ namespace Tobi.Plugin.Urakawa
         public class MergeAction : DualCancellableProgressReporter
         {
             private readonly UrakawaSession m_session;
+            private readonly bool m_sessionHasXukSpine;
             private readonly string docPath;
             private readonly Project project;
             private readonly string destinationFilePath;
@@ -83,9 +87,10 @@ namespace Tobi.Plugin.Urakawa
             private readonly string fileNameWithoutExtension;
             private readonly string extension;
 
-            public MergeAction(UrakawaSession session, string docPath_, Project project_, string destinationFilePath_, string splitDirectory_, string fileNameWithoutExtension_, string extension_)
+            public MergeAction(UrakawaSession session, bool sessionHasXukSpine, string docPath_, Project project_, string destinationFilePath_, string splitDirectory_, string fileNameWithoutExtension_, string extension_)
             {
                 m_session = session;
+                m_sessionHasXukSpine = sessionHasXukSpine;
                 docPath = docPath_;
                 project = project_;
                 destinationFilePath = destinationFilePath_;
@@ -196,6 +201,10 @@ namespace Tobi.Plugin.Urakawa
                         //Thread.Sleep(500);
 
                         string xukFolder = Path.Combine(splitDirectory, fileNameWithoutExtension + "_" + counter);
+                        if (m_sessionHasXukSpine) //m_session.HasXukSpine is not up to date with current context!
+                        {
+                            xukFolder = Path.Combine(splitDirectory, "_" + counter);
+                        }
                         string xukPath = Path.Combine(xukFolder, counter + extension);
 
                         //try
@@ -262,7 +271,8 @@ namespace Tobi.Plugin.Urakawa
                                 if (!nextCandidateToSubmark.HasXmlProperty)
                                 {
 #if DEBUG
-                                    Debugger.Break();
+                                    bool debugBreakpoint = true;
+                                    //Debugger.Break();
 #endif
                                     anchorNode = nextCandidateToSubmark;
                                     continue;
@@ -344,7 +354,8 @@ namespace Tobi.Plugin.Urakawa
                                         if (!child.HasXmlProperty)
                                         {
 #if DEBUG
-                                            Debugger.Break();
+                                            bool debugBreakpoint = true;
+                                            //Debugger.Break();
 #endif
                                             anchorNode = child;
                                             child = anchorNode.NextSibling;
@@ -481,6 +492,7 @@ namespace Tobi.Plugin.Urakawa
         public class SplitAction : DualCancellableProgressReporter
         {
             private readonly UrakawaSession m_session;
+            private readonly bool m_sessionHasXukSpine;
             private readonly int m_total;
             private readonly string m_docPath;
             private readonly bool m_pretty;
@@ -490,9 +502,10 @@ namespace Tobi.Plugin.Urakawa
             private readonly string m_extension;
 
             //List<string> cleanupFolders
-            public SplitAction(UrakawaSession session, int total, string docPath, bool pretty, string splitDirectory, string fileNameWithoutExtension, string extension)
+            public SplitAction(UrakawaSession session, bool sessionHasXukSpine, int total, string docPath, bool pretty, string splitDirectory, string fileNameWithoutExtension, string extension)
             {
                 m_session = session;
+                m_sessionHasXukSpine = sessionHasXukSpine;
                 m_total = total;
                 m_docPath = docPath;
                 m_pretty = pretty;
@@ -619,7 +632,8 @@ namespace Tobi.Plugin.Urakawa
                                     if (!nextCandidateToSubmark.HasXmlProperty)
                                     {
 #if DEBUG
-                                        Debugger.Break();
+                                        bool debugBreakpoint = true;
+                                        //Debugger.Break();
 #endif
                                         anchorNode = nextCandidateToSubmark;
                                         continue;
@@ -654,7 +668,8 @@ namespace Tobi.Plugin.Urakawa
                                             if (!child.HasXmlProperty)
                                             {
 #if DEBUG
-                                                Debugger.Break();
+                                                bool debugBreakpoint = true;
+                                                //Debugger.Break();
 #endif
                                                 anchorNode = child;
                                                 child = anchorNode.NextSibling;
@@ -719,6 +734,10 @@ namespace Tobi.Plugin.Urakawa
                     }
 
                     string subDirectory = Path.Combine(m_splitDirectory, m_fileNameWithoutExtension + "_" + i);
+                    if (m_sessionHasXukSpine) //m_session.HasXukSpine is not up to date with current context!
+                    {
+                        subDirectory = Path.Combine(m_splitDirectory, "_" + i);
+                    }
                     string destinationFilePath = Path.Combine(subDirectory, i + m_extension);
 
                     m_session.DocumentFilePath = m_docPath;
@@ -860,7 +879,7 @@ namespace Tobi.Plugin.Urakawa
 
                     bool hasAudio = false;
                     //hasAudio = project.Presentations.Get(0).RootNode.GetDurationOfManagedAudioMediaFlattened() != null;
-                    
+
                     TreeNode nodeTestAudio = UrakawaSession.getNextSplitMergeMark(root);
 
                     TreeNode topText = TreeNode.NavigateInsideSignificantText(root);
@@ -896,14 +915,23 @@ namespace Tobi.Plugin.Urakawa
                         return;
                     }
 
-
                     string parentDirectory = Path.GetDirectoryName(docPath);
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(docPath);
                     string extension = Path.GetExtension(docPath);
 
-                    string splitDirectory = Path.Combine(parentDirectory, "_SPLIT");
+                    string splitDirectoryName = SPLIT_PREFIX;
+                    if (HasXukSpine)
+                    {
+                        splitDirectoryName = splitDirectoryName + @"_" + fileNameWithoutExtension;
+                    }
+
+                    string splitDirectory = Path.Combine(parentDirectory, splitDirectoryName);
 
                     string masterDirectory = Path.Combine(splitDirectory, fileNameWithoutExtension + MASTER_SUFFIX);
+                    if (HasXukSpine)
+                    {
+                        masterDirectory = Path.Combine(splitDirectory, MASTER_SUFFIX);
+                    }
 
                     string destinationFilePath = Path.Combine(masterDirectory, "master" + extension);
 
@@ -928,6 +956,7 @@ namespace Tobi.Plugin.Urakawa
                         FileDataProvider.DeleteDirectory(splitDirectory);
                     }
 
+                    bool hasXukSpine = HasXukSpine;
 
                     // Closing is REQUIRED ! 
                     PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(
@@ -961,7 +990,8 @@ namespace Tobi.Plugin.Urakawa
                                 if (!nextCandidateSubMark.HasXmlProperty)
                                 {
 #if DEBUG
-                                    Debugger.Break();
+                                    bool debugBreakpoint = true;
+                                    //Debugger.Break();
 #endif
                                     anchorNode = nextCandidateSubMark;
                                     continue;
@@ -991,7 +1021,8 @@ namespace Tobi.Plugin.Urakawa
                                         if (!child.HasXmlProperty)
                                         {
 #if DEBUG
-                                            Debugger.Break();
+                                            bool debugBreakpoint = true;
+                                            //Debugger.Break();
 #endif
                                             anchorNode = child;
                                             child = anchorNode.NextSibling;
@@ -1095,7 +1126,7 @@ namespace Tobi.Plugin.Urakawa
                     bool error = false;
 
                     //cleanupFolders
-                    var action = new SplitAction(this, total, docPath, project.PrettyFormat, splitDirectory, fileNameWithoutExtension, extension);
+                    var action = new SplitAction(this, hasXukSpine, total, docPath, project.PrettyFormat, splitDirectory, fileNameWithoutExtension, extension);
 
                     Action cancelledCallback =
                         () =>
@@ -1141,7 +1172,7 @@ namespace Tobi.Plugin.Urakawa
 
                     m_ShellView.ExecuteShellProcess(splitDirectory);
                 },
-                () => DocumentProject != null && !IsXukSpine && !HasXukSpine && !IsSplitMaster && !IsSplitSub && !isAudioRecording,
+                () => DocumentProject != null && !IsXukSpine && !IsSplitMaster && !IsSplitSub && !isAudioRecording, // && !HasXukSpine
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ProjectSplit));
 
@@ -1245,17 +1276,40 @@ namespace Tobi.Plugin.Urakawa
                     Project project = DocumentProject;
 
 
+                    bool isEPUB = @"body".Equals(project.Presentations.Get(0).RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase)
+                        //|| HasXukSpine
+                                  ;
+
                     string parentDirectory = Path.GetDirectoryName(docPath);
+                    string splitDirectory = Path.GetDirectoryName(parentDirectory);
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(parentDirectory);
-                    if (fileNameWithoutExtension.EndsWith(MASTER_SUFFIX))
+                    if (isEPUB)
                     {
-                        fileNameWithoutExtension = fileNameWithoutExtension.Substring(0,
-                            fileNameWithoutExtension.Length - MASTER_SUFFIX.Length);
+                        fileNameWithoutExtension = Path.GetFileNameWithoutExtension(splitDirectory);
+                        string SPLIT_PREFIX_ = SPLIT_PREFIX + "_";
+                        if (fileNameWithoutExtension.StartsWith(SPLIT_PREFIX_))
+                        {
+                            fileNameWithoutExtension = fileNameWithoutExtension.Substring(SPLIT_PREFIX_.Length);
+                        }
+                    }
+                    else
+                    {
+                        if (fileNameWithoutExtension.EndsWith(MASTER_SUFFIX))
+                        {
+                            fileNameWithoutExtension = fileNameWithoutExtension.Substring(0,
+                                fileNameWithoutExtension.Length - MASTER_SUFFIX.Length);
+                        }
                     }
                     string extension = Path.GetExtension(docPath);
-                    string splitDirectory = Path.GetDirectoryName(parentDirectory);
                     string containerFolder = Path.GetDirectoryName(splitDirectory);
-                    string mergeDirectory = Path.Combine(containerFolder, "_MERGE");
+
+                    string mergeDirectoryName = MERGE_PREFIX;
+                    if (isEPUB)
+                    {
+                        mergeDirectoryName = mergeDirectoryName + @"_" + fileNameWithoutExtension;
+                    }
+
+                    string mergeDirectory = Path.Combine(containerFolder, mergeDirectoryName);
 
                     string destinationFilePath = Path.Combine(mergeDirectory, fileNameWithoutExtension + extension);
 
@@ -1292,7 +1346,7 @@ namespace Tobi.Plugin.Urakawa
                     bool cancelled = false;
                     bool error = false;
 
-                    var action = new MergeAction(this, docPath, project, destinationFilePath, splitDirectory, fileNameWithoutExtension, extension);
+                    var action = new MergeAction(this, isEPUB, docPath, project, destinationFilePath, splitDirectory, fileNameWithoutExtension, extension);
 
                     Action cancelledCallback =
                         () =>
@@ -1360,7 +1414,7 @@ namespace Tobi.Plugin.Urakawa
                         m_ShellView.ExecuteShellProcess(containerFolder);
                     }
                 },
-                () => DocumentProject != null && !IsXukSpine && !HasXukSpine && IsSplitMaster && !isAudioRecording,
+                () => DocumentProject != null && !IsXukSpine && IsSplitMaster && !isAudioRecording, //&& !HasXukSpine 
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ProjectMerge));
 

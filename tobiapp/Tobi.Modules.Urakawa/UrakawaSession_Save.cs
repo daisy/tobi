@@ -660,6 +660,10 @@ namespace Tobi.Plugin.Urakawa
         {
             m_Logger.Log(@"UrakawaSession_Save.messageBoxText", Category.Debug, Priority.Medium);
 
+            if (String.IsNullOrEmpty(info))
+            {
+                info = "";
+            }
 
             var label = new TextBlock
             {
@@ -706,6 +710,11 @@ namespace Tobi.Plugin.Urakawa
             };
             panel.Children.Add(label);
             //panel.Margin = new Thickness(8, 8, 8, 0);
+
+            if (String.IsNullOrEmpty(info))
+            {
+                scroll = null;
+            }
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    title,
