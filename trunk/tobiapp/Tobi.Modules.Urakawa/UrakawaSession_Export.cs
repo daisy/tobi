@@ -1209,7 +1209,7 @@ namespace Tobi.Plugin.Urakawa
             {
                 Settings.Default.Pipeline2Path = pipeline_ExePath;
 
-                double version = 1.7;
+                double version = 1.8;
                 string filePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(pipeline_ExePath)), "etc\\system.properties");
                 if (File.Exists(filePath))
                 {
@@ -1222,9 +1222,9 @@ namespace Tobi.Plugin.Urakawa
                         version = Double.Parse(vStr);
                     }
                 }
-                if (version < 1.7)
+                if (version < 1.8)
                 {
-                    messageBoxText("Pipeline2", Tobi_Plugin_Urakawa_Lang.PleaseUpgradePipeline, "Pipeline2 v" + version + " (> 1.7)\n\nhttp://daisy.org/pipeline2");
+                    messageBoxText("Pipeline2", Tobi_Plugin_Urakawa_Lang.PleaseUpgradePipeline, "Pipeline2 v" + version + " (> 1.8)\n\nhttp://daisy.org/pipeline2");
                     return null;
                 }
             }
