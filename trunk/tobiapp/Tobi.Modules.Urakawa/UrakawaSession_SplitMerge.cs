@@ -703,7 +703,18 @@ namespace Tobi.Plugin.Urakawa
 
                     TreeNode mark = UrakawaSession.getNextSplitMergeMark(root);
 
-                    TreeNode topText = TreeNode.NavigateInsideSignificantText(root);
+                    TreeNode topText = null;
+                    var lname = root.GetXmlElementLocalName();
+                    if (lname != null && (lname.Equals("math", StringComparison.OrdinalIgnoreCase) ||
+                        lname.Equals("svg", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        topText = root;
+                    }
+                    else
+                    {
+                        topText = TreeNode.NavigateInsideSignificantText(root);
+                    }
+                    
                     if (topText.IsBefore(mark))
                     {
                         topText.IsMarked = true;
@@ -1006,7 +1017,17 @@ namespace Tobi.Plugin.Urakawa
 
                     TreeNode nodeTestAudio = UrakawaSession.getNextSplitMergeMark(root);
 
-                    TreeNode topText = TreeNode.NavigateInsideSignificantText(root);
+                    TreeNode topText = null;
+                    var lname = root.GetXmlElementLocalName();
+                    if (lname != null && (lname.Equals("math", StringComparison.OrdinalIgnoreCase) ||
+                        lname.Equals("svg", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        topText = root;
+                    }
+                    else
+                    {
+                        topText = TreeNode.NavigateInsideSignificantText(root);
+                    }
 
                     if (nodeTestAudio == null || topText == null)
                     {
