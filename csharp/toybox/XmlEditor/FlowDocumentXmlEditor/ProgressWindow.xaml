@@ -1,9 +1,0 @@
-﻿<Window x:Class="FlowDocumentXmlEditor.ProgressWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="ProgressWindow" Height="80" Width="417" ResizeMode="NoResize">
-    <StackPanel Name="mMainStackPanel">
-        <ProgressBar Name="mProgressBar" Height="20"/>
-        <Button DockPanel.Dock="Bottom" Height="20" Width="100" Name="mCancelButton" Click="mCancelButton_Click">Cancel</Button>
-    </StackPanel>
-</Window>
