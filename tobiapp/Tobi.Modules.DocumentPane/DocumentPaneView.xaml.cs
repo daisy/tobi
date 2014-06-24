@@ -2592,6 +2592,9 @@ namespace Tobi.Plugin.DocumentPane
             TreeNode selectedTreeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
             updateSimpleTextView(selectedTreeNode);
 
+            int max = 3;
+            XukToFlowDocument.checkLoadMathMLIntoImage_(m_ShellView, m_UrakawaSession, this, selectedTreeNode, ref max);
+
             TextElement textElement1 = null;
             if (m_lastHighlighted != null && m_lastHighlighted.Tag == newTreeNodeSelection.Item1)
             {

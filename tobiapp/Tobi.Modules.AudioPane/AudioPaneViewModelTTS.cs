@@ -141,7 +141,7 @@ namespace Tobi.Plugin.AudioPane
                 manualResetEvent.WaitOne();
 
                 done = true;
-                
+
                 SpeechSynthesizer.SpeakCompleted -= delegateCompleted;
                 SpeechSynthesizer.SpeakProgress -= delegateProgress;
 
@@ -215,7 +215,16 @@ namespace Tobi.Plugin.AudioPane
                     TreeNode root = treeNodeSelection.Item1;
                     if (initial)
                     {
-                        adjustedNode = TreeNode.NavigateInsideSignificantText(root);
+                        var lname = root.GetXmlElementLocalName();
+                        if (lname != null && (lname.Equals("math", StringComparison.OrdinalIgnoreCase) ||
+                            lname.Equals("svg", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            adjustedNode = root;
+                        }
+                        else
+                        {
+                            adjustedNode = TreeNode.NavigateInsideSignificantText(root);
+                        }
 
                         //TreeNode candidate = m_viewModel.m_UrakawaSession.AdjustTextSyncGranularity(adjustedNode, adjustedNode);
                         //if (candidate != null)

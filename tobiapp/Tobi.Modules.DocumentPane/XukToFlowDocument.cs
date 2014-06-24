@@ -1128,7 +1128,8 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
             if (data is Paragraph)
             {
-                Debugger.Break();
+                //Debugger.Break();
+                bool debug = true;
             }
 #endif //DEBUG
             //data.BorderBrush = Brushes.Orange;
@@ -1956,7 +1957,16 @@ namespace Tobi.Plugin.DocumentPane
                 addInline(parent, img);
             }
 
+            loadSVGIntoImage(node, image);
 
+            return parent;
+
+            //addBlock(parent, data);
+            //return data;
+        }
+
+        private void loadSVGIntoImage(TreeNode node, Image image)
+        {
             ThreadPool.QueueUserWorkItem(
                 delegate(Object o) // or: (foo) => {} (LAMBDA)
                 {
@@ -2018,14 +2028,9 @@ namespace Tobi.Plugin.DocumentPane
                                 return null;
                             }, xmlFragment);
                 }, image);
-
-            return parent;
-
-            //addBlock(parent, data);
-            //return data;
         }
 
-        private void consoleWrite(Exception ex)
+        private static void consoleWrite(Exception ex)
         {
             if (ex.Message != null)
             {
@@ -2040,6 +2045,156 @@ namespace Tobi.Plugin.DocumentPane
                 consoleWrite(ex.InnerException);
             }
         }
+
+        public static bool checkLoadMathMLIntoImage_(IShellView shellView, IUrakawaSession urakawaSession,
+            DocumentPaneView documentPaneView, TreeNode node, ref int max)
+        {
+            if (max <= 0) return false;
+
+            if (node == null) return false;
+
+            if (checkLoadMathMLIntoImage(shellView, urakawaSession, documentPaneView, node))
+            {
+                return true;
+            }
+
+            var atLeastOne = false;
+            foreach (var child in node.Children.ContentsAs_Enumerable)
+            {
+                if (checkLoadMathMLIntoImage_(shellView, urakawaSession, documentPaneView, child, ref max))
+                {
+                    max--;
+                    atLeastOne = true;
+                }
+            }
+            return atLeastOne;
+        }
+
+        public static bool checkLoadMathMLIntoImage(IShellView shellView, IUrakawaSession urakawaSession, DocumentPaneView documentPaneView, TreeNode node)
+        {
+            if (node == null) return false;
+
+            var lname = node.GetXmlElementLocalName();
+            if (lname == null || !lname.Equals("math", StringComparison.OrdinalIgnoreCase)) return false;
+
+            if (node.Tag != null && node.Tag is TextElement)
+            {
+                TextElement tEl = ((TextElement)node.Tag);
+#if DEBUG
+                Debug.Assert(tEl != null && tEl.Tag == node);
+#endif
+                UIElement uiElement = null;
+                if (tEl is BlockUIContainer)
+                {
+                    uiElement = ((BlockUIContainer)tEl).Child;
+                }
+                else if (tEl is InlineUIContainer)
+                {
+                    uiElement = ((BlockUIContainer)tEl).Child;
+                }
+                if (uiElement != null && uiElement is Panel)
+                {
+                    if (((Panel)uiElement).Tag != null && ((Panel)uiElement).Tag is Image)
+                    {
+                        Image image = ((Panel)uiElement).Tag as Image;
+                        ((Panel)uiElement).Tag = null;
+                        loadMathMLIntoImage(shellView, urakawaSession, documentPaneView, node, image);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static void loadMathMLIntoImage(IShellView ShellView, IUrakawaSession urakawaSession, DocumentPaneView documentPaneView, TreeNode node, Image image)
+        {
+            ThreadPool.QueueUserWorkItem(
+                delegate(Object o) // or: (foo) => {} (LAMBDA)
+                {
+                    Image image_ = (Image)o;
+
+                    string xmlFragment = null;
+                    string svg_ = null;
+                    try
+                    {
+                        xmlFragment = node.GetXmlFragment(true);
+                        //MessageBox.Show(xmlFragment);
+
+                        svg_ = urakawaSession.Convert_MathML_to_SVG(xmlFragment, null);
+                        //MessageBox.Show(svg_);
+                    }
+                    catch (Exception ex)
+                    {
+#if DEBUG
+                        //Debugger.Break();
+#endif //DEBUG
+                        svg_ = null;
+                        consoleWrite(ex);
+                        //m_DocumentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
+                        //                                          (DispatcherOperationCallback)delegate(object obj)
+                        //                                                                           {
+                        //                                                                               throw ex;
+                        //                                                                           }, null);
+                        //return;
+                    }
+                    documentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
+                            (DispatcherOperationCallback)delegate(object obj)
+                            {
+                                var svg = (string)obj;
+
+                                Exception svgException = null;
+                                ImageSource imageSource = svg == null ? null : AutoGreyableImage.GetSVGImageSource(svg, out svgException);
+                                if (imageSource == null)
+                                {
+                                    Console.WriteLine(@"Problem trying to load inline MathML (svg): [" + xmlFragment + @"]");
+
+                                    if (svg != null)
+                                    {
+                                        Console.WriteLine(svg);
+                                    }
+
+                                    if (svgException != null)
+                                    {
+                                        consoleWrite(svgException);
+                                    }
+
+#if DEBUG
+                                    //Debugger.Break();
+#endif //DEBUG
+
+                                    VisualBrush brush = ShellView.LoadGnomeNeuIcon("Neu_emblem-important");
+                                    RenderTargetBitmap bitmap = AutoGreyableImage.CreateFromVectorGraphics(brush, 100, 100);
+
+                                    image_.Source = bitmap;
+                                }
+                                else
+                                {
+                                    image_.Source = imageSource;
+                                }
+
+                                if (image_.Source.CanFreeze)
+                                {
+                                    image_.Source.Freeze();
+                                }
+
+                                if (image_.Source is BitmapSource)
+                                {
+                                    BitmapSource bitmap = (BitmapSource)image_.Source;
+                                    int ph = bitmap.PixelHeight;
+                                    int pw = bitmap.PixelWidth;
+                                    double dpix = bitmap.DpiX;
+                                    double dpiy = bitmap.DpiY;
+                                    //image.Width = pw;
+                                    //image.Height = ph;
+                                }
+
+                                return null;
+                            }, svg_);
+                }, image);
+        }
+
+        private int m_MathCounter = 0;
 
         private TextElement walkBookTreeAndGenerateFlowDocument_MathML(TreeNode node, TextElement parent, string textMedia
             //, DelegateSectionInitializer initializer
@@ -2176,6 +2331,8 @@ namespace Tobi.Plugin.DocumentPane
 
             string imagePath = null;
 
+            bool hasImagePlaceholder = false;
+
             if (imgMedia_ext != null)
             {
 
@@ -2233,6 +2390,8 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else
                 {
+                    hasImagePlaceholder = true;
+
                     image.Source = imageSource;
                 }
 
@@ -2246,98 +2405,66 @@ namespace Tobi.Plugin.DocumentPane
 
 
 
-
-
-
-
-
-
-
-
-
-            ThreadPool.QueueUserWorkItem(
-                delegate(Object o) // or: (foo) => {} (LAMBDA)
+            m_MathCounter++;
+            //Console.Write(m_MathCounter + ",");
+            if (m_MathCounter > 0) // TODO: decide what threshold is best here
+            {
+                if (node.Tag != null && node.Tag is TextElement)
                 {
-                    Image image_ = (Image)o;
-
-                    string xmlFragment = null;
-                    string svg_ = null;
-                    try
-                    {
-                        xmlFragment = node.GetXmlFragment(true);
-                        //MessageBox.Show(xmlFragment);
-
-                        svg_ = m_UrakawaSession.Convert_MathML_to_SVG(xmlFragment, null);
-                        //MessageBox.Show(svg_);
-                    }
-                    catch (Exception ex)
-                    {
+                    TextElement tEl = ((TextElement)node.Tag);
 #if DEBUG
-                        Debugger.Break();
-#endif //DEBUG
-                        svg_ = null;
-                        consoleWrite(ex);
-                        //m_DocumentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
-                        //                                          (DispatcherOperationCallback)delegate(object obj)
-                        //                                                                           {
-                        //                                                                               throw ex;
-                        //                                                                           }, null);
-                        //return;
+                    Debug.Assert(tEl != null && tEl.Tag == node);
+#endif
+                    UIElement uiElement = null;
+                    if (tEl is BlockUIContainer)
+                    {
+                        uiElement = ((BlockUIContainer) tEl).Child;
                     }
-                    m_DocumentPaneView.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
-                            (DispatcherOperationCallback)delegate(object obj)
-                            {
-                                var svg = (string)obj;
+                    else if (tEl is InlineUIContainer)
+                    {
+                        uiElement = ((BlockUIContainer)tEl).Child;
+                    }
+                    if (uiElement != null && uiElement is Panel)
+                    {
+                        ((Panel)uiElement).Tag = image;
 
-                                Exception svgException = null;
-                                ImageSource imageSource = svg == null ? null : AutoGreyableImage.GetSVGImageSource(svg, out svgException);
-                                if (imageSource == null)
-                                {
-                                    Console.WriteLine(@"Problem trying to load inline MathML (svg): [" + xmlFragment + @"]");
+                        //foreach (var child in ((Panel)uiElement).Children)
+                        //{
+                        //    if (child is Image)
+                        //    {
+                        //    ((Image)child).Tag
+                        //    }
+                        //}
+                    }
+                }
 
-                                    if (svg != null)
-                                    {
-                                        Console.WriteLine(svg);
-                                    }
+                if (!hasImagePlaceholder)
+                {
+                    VisualBrush brush = ShellView.LoadGnomeNeuIcon("Neu_image-loading");
+                    RenderTargetBitmap bitmap = AutoGreyableImage.CreateFromVectorGraphics(brush, 100, 100);
 
-                                    if (svgException != null)
-                                    {
-                                        consoleWrite(svgException);
-                                    }
+                    image.Source = bitmap;
+                    if (image.Source.CanFreeze)
+                    {
+                        image.Source.Freeze();
+                    }
 
-#if DEBUG
-                                    Debugger.Break();
-#endif //DEBUG
+                    if (image.Source is BitmapSource)
+                    {
+                        BitmapSource bitmap_ = (BitmapSource) image.Source;
+                        int ph = bitmap_.PixelHeight;
+                        int pw = bitmap_.PixelWidth;
+                        double dpix = bitmap_.DpiX;
+                        double dpiy = bitmap_.DpiY;
+                        //image.Width = pw;
+                        //image.Height = ph;
+                    }
+                }
 
-                                    VisualBrush brush = ShellView.LoadGnomeNeuIcon("Neu_emblem-important");
-                                    RenderTargetBitmap bitmap = AutoGreyableImage.CreateFromVectorGraphics(brush, 100, 100);
+                return parent;
+            }
 
-                                    image_.Source = bitmap;
-                                }
-                                else
-                                {
-                                    image_.Source = imageSource;
-                                }
-
-                                if (image_.Source.CanFreeze)
-                                {
-                                    image_.Source.Freeze();
-                                }
-
-                                if (image_.Source is BitmapSource)
-                                {
-                                    BitmapSource bitmap = (BitmapSource)image_.Source;
-                                    int ph = bitmap.PixelHeight;
-                                    int pw = bitmap.PixelWidth;
-                                    double dpix = bitmap.DpiX;
-                                    double dpiy = bitmap.DpiY;
-                                    //image.Width = pw;
-                                    //image.Height = ph;
-                                }
-
-                                return null;
-                            }, svg_);
-                }, image);
+            loadMathMLIntoImage(ShellView, m_UrakawaSession, m_DocumentPaneView, node, image);
 
             return parent;
 

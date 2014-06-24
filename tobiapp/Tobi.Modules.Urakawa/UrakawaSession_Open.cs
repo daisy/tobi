@@ -1135,7 +1135,19 @@ namespace Tobi.Plugin.Urakawa
 
 
                         //var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, DocumentProject.Presentations.Get(0).RootNode, null);
-                        var treeNode = TreeNode.NavigateInsideSignificantText(DocumentProject.Presentations.Get(0).RootNode);
+                        
+                        TreeNode treeNode = null;
+                        var lname = DocumentProject.Presentations.Get(0).RootNode.GetXmlElementLocalName();
+                        if (lname != null && (lname.Equals("math", StringComparison.OrdinalIgnoreCase) ||
+                            lname.Equals("svg", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            treeNode = DocumentProject.Presentations.Get(0).RootNode;
+                        }
+                        else
+                        {
+                            treeNode = TreeNode.NavigateInsideSignificantText(DocumentProject.Presentations.Get(0).RootNode);
+                        }
+
                         if (treeNode != null)
                         {
                             //m_Logger.Log(@"-- PublishEvent [TreeNodeSelectedEvent] DocumentPaneView.OnFlowDocumentLoaded", Category.Debug, Priority.Medium);
