@@ -1,0 +1,120 @@
+== Procedure to deploy Tobi for ClickOnce from within Visual Studio 2008
+
+1) Make sure to have the latest code from SVN: "svn up --set-depth infinity" (or Tortoise equivalent). Make sure that the "tobiapp/_ClickOnce/DirectX/" folder is copied to "C:\Program Files\Microsoft SDKs\Windows\v6.0A\Bootstrapper\Packages" (it will be used as a pre-requisite for ClickOnce setup on the client machines). Please note that the "directx" folder on the server will need to be renamed to "DirectX" (note the case difference). Otherwise users will get a 404, as Apache is case-sensitive.
+
+2) Open "tobiapp/Tobi.sln", activate the RELEASE mode (not DEBUG), MENU:Build->Clean, MENU:Build->Rebuild (just to make *sure* nothing is cached). Check the "tobiapp/bin/release" folder, and replace unchanged DLLs with backup or versions from the previous DEPLOY (remove the deploy extension). Read point (10) about versioning and "partial" updates for more info.
+
+3) Select the "Tobi" project in the Solution Explorer, MENU:Project->Tobi Properties, open the "Signing" tab.
+
+4) If first time => CHECKBOX:"Sign the ClickOnce Manifest" + BUTTON:"Create Test Certificate...", If NOT first time =>  BUTTON:"Select from File..." to re-use the previously-generated "Tobi_TemporaryKey.pfx" certificate. (either way, use "tobi" password)
+
+5) If first time => BUTTON:"More Details...", BUTTON:"Install Certificate", WIZARD:"Next", RADIO:"Place all certificates in the following store", BUTTON:"Browse", choose "Trusted Root Certification Authorities" + press "OK", WIZARD:"Next", WIZARD:"Finish", Answer "Yes" to the security warning, press "OK" for "import was successful" dialog box.
+
+6) If first time => Repeat all of the above but choose "Trusted Publishers" instead.
+
+7) Return to the Tobi project Properties, go to "Publish" tab.
+
+8) Make sure that the value of "Publishing Folder Location" is a local folder of your choice (e.g. "C:\TobiClickOnce_0.1.0.0\").
+
+9) Make sure that the "Installation Folder URL" is set to where Tobi will be deployed, for example "http://www.digitaltalkingbook.com/projects/tobi/install/alpha/".
+
+10) Verify the "Publish Version" fields so that the version number matches that of the main Tobi project (declared in AssemblyInfo.cs, see the "Application" tab of project Properties, BUTTON:"Assembly Information..."). It is important because the version is displayed in the window title (obtained from Assembly when running from a Visual Studio build, obtained from ClickOnce when running from installed Tobi ... but they should obviously be the same !). 
+
+Uncheck the "Automatically increment revision with each publish", as we will use the Build number instead.
+
+===> Please scroll down to the bottom of this document for much more information about versioning and partial updates.
+
+11) In "Install Mode and Settings", verify that offline availability is enabled.
+
+12) Press BUTTON:"Prerequisites", CHECKBOX:"Create setup program", select "DirectX", "Windows Installer 3.1" and ".NET Framework Client Profile" from the list, leave "Download prerequisites" as it is (should be "from the component vendor's website")
+
+13) Press BUTTON:"Updates...", CHECKBOX:"The application should check for updates", RADIO:"Before the application starts", Press "OK".
+
+14) Press BUTTON:"Options..." and set the following options:
+Description:
+	Publish language: DEFAULT
+	Publisher name: "DAISY Consortium"
+	Suite name: EMPTY
+	Product name: "Tobi"
+	Support URL: "http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Help.html"
+	Error URL: "http://www.digitaltalkingbook.com/projects/tobi/ClickOnce-Error.html"
+Deployment:
+	Webpage: "index.html"
+	Automatically generate webpage: CHECK
+	Open webpage after publish: CHECK
+	Use *.deploy extension: CHECK
+	CD installations and Verify: UNCHECK
+Manifests
+	CHECK Create desktop shortcut
+	UNCHECK other options
+File Associations:
+	add "xuk" with description "Tobi XML (Urakawa)" progID "000" and icon "Shortcut.ico" (NOT "Tobi.ico", because it is an embedded resource not copied into destination folder !)
+
+
+15) Press BUTTON:"Publish Now". This should succeed.
+
+16) Copy the contents of the destination folder (e.g. "C:\TobiClickOnce_0.1.0.0\") to the FTP location corresponding to the specified publish URL (e.g. for example "http://www.digitaltalkingbook.com/projects/tobi/install/alpha/"). Note that "Tobi.application" and "index.html" must be replaced, but the other files can stay as they are if they already exist. The subfolder of "Application Files" defines the actual entire application, so it must normally be uploaded entirely. However the users may not necessarily need to download everything, depending on what they already have on their machine. So we have a convention to use a single folder inside "Application Files" with always the latest application. We rename that folder "0_1_-_-" by replacing the BUILD and REVISION number with a wildcard. Of course this requires re-signing the manifests. Read on (below) for the naming convention.
+
+17) DEPLOY is done. One last customization step is to add a footer to the landing web page:
+
+<!-- Direct Download Links -->
+<TR><TD>Expert users: you may download the <a href="http://www.microsoft.com/downloads/details.aspx?FamilyId=AB99342F-5D1A-413D-8319-81DA479AB0D7&displaylang=en">.NET Framework</a> or <a href="http://download.microsoft.com/download/1/7/1/1718CCC4-6315-4D8E-9543-8E28A4E18C4C/dxwebsetup.exe">DirectX</a> directly.</TD></TR>
+
+The above text should appear just below this code:
+
+<!-- Spacer Row -->
+<TR><TD>&nbsp;</TD></TR>
+
+
+18) Now time to test the UPDATE phase of ClickOnce (install Tobi from the index.html page). If it all works fine, then change code in one of the projects, compile, deploy again (increment version numbers of both ClickOnce and main Tobi.exe assembly, and matching output directory to keep things clean on the hard disc). Then, rename the output folder in "Application Files" to "Tobi_0_1_-_-" (this is an example for alpha convention, see below for beta and stable numbering). Then copy the "deploy" files that have NOT changed from the previous publish, into the newly published folder. Then run MageUI.exe to regenerate the signing information for the application manifest (Tobi.exe.manifest), and also update the Tobi.application files. Then FTP upload (and override) only the changed "deploy" files, and the manifest and the Tobi.application files. Done: minimal uploading for the developer, minimal downloading for the user.
+
+NOTES ABOUT VERSIONING: [MAJOR, MINOR, BUILD, REVISION]
+
+We are not using the last/fourth field REVISION (it's always 0)
+
+Alpha releases will be 0.1.0, 0.1.1, 0.1.2, etc.
+Beta releases will be 0.5.0, 0.5.1, etc.
+Stable releases will be 1.0.0, 1.1.0, etc.
+
+The next major release of Tobi with text/structure editing will be 2.0.0, 2.0.*, etc. (alpha: 1.1.* -> 1.4.*, beta: 1.5.* -> 1.9.*)
+
+The version number is what the ClickOnce bootstrapper on the client side checks first. If the number on the local client machine is different than the number on the server, then ClickOnce will download whatever needs to be downloaded (i.e. non-optional files for which the hash code has changed since the user last updated the application). Note: individual Assembly versions are NOT checked by ClickOnce, only their hash code. The hash WILL change even if the actual code has not been modified (i.e. clean+compile in Visual Studio will generate a NEW assembly, as far as ClickOnce update is concerned, even though nothing has changed). MageUI.exe can be used afterwards by keeping the published files by Visual Studio and then changing versions, settings, etc. and to re-sign the Tobi.exe.manifest and Tobi.application files.
+
+"Partial" update: in order to avoid downloading the entire app when only a small part of it has changed (i.e. a DLL assembly, or another type of DEPLOY file), we have to backup the
+previous publish folder, and make sure that after a build ready for publish, we first replace the unchanged DLLs/files with the backup version. This requires manual tracking of "what has changed" (e.g. what project). We must use Mage.exe or MageUI.exe to resign the Tobi.exe.manifest, followed by the Tobi.application
+
+Tobi.Infrastructure.dll (5MB) => mainly icons. should not change often at all.
+
+Libraries for which we ship the code, but we don't modify it otherwise (bar rare exceptions):
+
+NAudio.dll (290KB)
+Mp3Sharp.dll (188KB)
+ICSharpCode.dll (128KB)
+WPFToolkit.dll (444KB)
+System.ComponentModel.Composition.dll (204KB) => That's MEF
+Microsoft.Practices.Unity.dll (112KB)
+Microsoft.Practices.Composite.dll (68KB) => Prism / CAG-CAL
+Microsoft.Practices.Composite.Presentation.dll (56KB)
+Microsoft.Practices.Composite.UnityExtensions.dll (16KB)
+MefContrib.Integration.Unity.dll (16KB)
+
+Pure DLL, no code:
+
+BitFactory.Logging.dll (36KB)
+Microsoft.Practices.ServiceLocation.dll (32KB)
+
+Core likely to change, but we must track regularly to avoid download overhead:
+
+Tobi.exe (196KB)
+urakawa.dll (248KB)
+AudioLib.dll (36KB)
+DaisyExport.dll (36KB)
+DaisyToXuk.dll (2MB)
+Tobi.Common.dll (204KB)
+Tobi.Modules.AudioPane.dll (128KB)
+Tobi.Modules.NavigationPane.dll (44KB)
+Tobi.Modules.DocumentPane.dll (52KB)
+Tobi.Modules.MetadataPane.dll (36KB)
+Tobi.Modules.MenuBar.dll (24KB)
+Tobi.Modules.Urakawa.dll (28KB)
+Tobi.Modules.FileDialog.dll (28KB)

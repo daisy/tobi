@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE dtbook PUBLIC "-//NISO//DTD dtbook 2005-1//EN" "http://www.daisy.org/z3986/2005/dtbook-2005-1.dtd"
+[
+  <!ENTITY % MATHML.prefixed "INCLUDE" >
+  <!ENTITY % MATHML.prefix "m">
+  <!ENTITY % MATHML.Common.attrib
+          "xlink:href    CDATA       #IMPLIED
+          xlink:type     CDATA       #IMPLIED
+          class          CDATA       #IMPLIED
+          style          CDATA       #IMPLIED
+          id             ID          #IMPLIED
+          xref           IDREF       #IMPLIED
+          other          CDATA       #IMPLIED
+          xmlns:dtbook   CDATA       #FIXED 'http://www.daisy.org/z3986/2005/dtbook/'
+          dtbook:smilref CDATA       #IMPLIED"
+  >
+  <!ENTITY % mathML2 PUBLIC "-//W3C//DTD MathML 2.0//EN"
+             "http://www.w3.org/Math/DTD/mathml2/mathml2.dtd"
+  >
+  %mathML2;
+  <!ENTITY % externalFlow "| m:math">
+  <!ENTITY % externalNamespaces "xmlns:m CDATA #FIXED
+	'http://www.w3.org/1998/Math/MathML'">
+ ]
+>
+<dtbook 
+	xmlns:m="http://www.w3.org/1998/Math/MathML"
+	xmlns="http://www.daisy.org/z3986/2005/dtbook/"
+	version="2005-1" xml:lang="en">
+	<head>
+		<meta name="dc:Title" content="The Title"/>
+		<meta name="dc:Creator" content="Tobi"/>
+		<meta name="dc:Identifier" content="EMPTY00TOBI"/>
+		<meta name="dtb:uid" content="EMPTY00TOBI"/>
+		<meta name="dc:Publisher" content="Tobiz"/>
+		<meta name="dc:Language" content="en-GB" />
+		<meta name="dc:Date" content="2009-09-09"/>
+		<meta name="z39-86-extension-version" scheme="http://www.w3.org/1998/Math/MathML" content="1.0" />
+		<meta name="DTBook-XSLTFallback" scheme="http://www.w3.org/1998/Math/MathML" content="xslt-file-name" />
+	</head>
+	<book>
+		<frontmatter>
+			<doctitle>
+				<sent>The Title</sent>
+				<sent>The Subtitle</sent>
+			</doctitle>
+			<docauthor>
+				<sent>The Author</sent>
+			</docauthor>
+			
+			<level1>
+			  <pagenum page="front">1</pagenum>
+			  <h1>Heading Level 1(frontmatter)</h1>
+			  
+				<p>Text <strong>after</strong> heading</p>
+
+			<level2>
+			  <h2>Heading Level 2 . (frontmatter)</h2>
+			  
+				<p>Text before pagenum</p>
+				
+			  <pagenum page="front">2</pagenum>
+			  
+				<p>Text after pagenum</p>
+
+
+        <level3>
+          <h3>Heading Level 3 . (frontmatter)</h3>
+          
+          <p>Text after heading</p>
+          
+        </level3>
+        
+          <p>Text after Level 3</p>
+          
+			</level2>
+
+          <p>Text after Level 2</p>
+          
+			</level1>
+		</frontmatter>
+
+				<bodymatter>
+			<level1>
+			  <pagenum page="front">3</pagenum>
+			  <h1>Heading Level 1(frontmatter)</h1>
+			  
+				<p>Text after heading</p>
+
+			<level2>
+			  <h2>Heading Level 2 . (frontmatter)</h2>
+			  
+				<p>Text before pagenum</p>
+				
+			  <pagenum page="front">4</pagenum>
+			  
+				<p>Text after pagenum</p>
+
+
+        <level3>
+          <h3>Heading Level 3 . (frontmatter)</h3>
+          
+          <p>Text after heading</p>
+          
+        </level3>
+        
+          <p>Text after Level 3</p>
+          
+			</level2>
+
+          <p>Text after Level 2</p>
+          
+			  <pagenum page="front">5</pagenum>
+			  
+			</level1>
+				</bodymatter>
+
+
+					<rearmatter>
+						
+			<level1>
+			  <pagenum page="front">6</pagenum>
+			  <h1>Heading Level 1(frontmatter)</h1>
+			  
+				<p>Text after heading</p>
+
+			<level2>
+			  <h2>Heading Level 2 . (frontmatter)</h2>
+			  
+				<p>Text before pagenum</p>
+				
+			  <pagenum page="front">7</pagenum>
+			  
+				<p>Text after pagenum</p>
+
+
+        <level3>
+          <h3>Heading Level 3 . (frontmatter)</h3>
+          
+          <p>Text after heading</p>
+          
+        </level3>
+        
+          <p>Text after Level 3</p>
+          
+			</level2>
+
+          <p>Text after Level 2</p>
+          
+			  <pagenum page="front">8</pagenum>
+			  
+			</level1>
+					</rearmatter>
+				</book>
+</dtbook>

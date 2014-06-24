@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="Tobi.Plugin.StatusBar.StatusBarView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+
+  <StatusBar>
+
+    <StatusBar.Triggers>
+      <EventTrigger RoutedEvent="ProgressBar.ValueChanged" SourceName="MessageProgessBar">
+        <EventTrigger.Actions>
+          <BeginStoryboard>
+            <Storyboard>
+              <StringAnimationUsingKeyFrames Storyboard.TargetProperty="Content" Storyboard.TargetName="LabelPercent"
+                    Duration="0:0:0" FillBehavior="HoldEnd">
+                <DiscreteStringKeyFrame KeyTime="0:0:0">
+                  <DiscreteStringKeyFrame.Value>
+                    <MultiBinding StringFormat="Progress: {0:0}% ({1:hh:mm:ss.ff})">
+
+                      <Binding ElementName="MessageProgessBar" Path="Value"/>
+                      <Binding ElementName="animation" Path="Duration"/>
+
+                    </MultiBinding>
+                    </DiscreteStringKeyFrame.Value>
+                  </DiscreteStringKeyFrame>
+              </StringAnimationUsingKeyFrames>
+            </Storyboard>
+
+          </BeginStoryboard>
+        </EventTrigger.Actions>
+      </EventTrigger>
+    </StatusBar.Triggers>
+    
+    <StatusBar.ItemsPanel>
+      <ItemsPanelTemplate>
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+        </Grid>
+      </ItemsPanelTemplate>
+    </StatusBar.ItemsPanel>
+
+
+    <StatusBarItem Grid.Column="0">
+      <Label x:Name="LabelStatusHeader" Content="Status: " Width="Auto" Height="Auto"/>
+    </StatusBarItem>
+
+    <StatusBarItem Grid.Column="1" >
+      <Label x:Name="LabelStatusText" Content="{Binding DisplayString}" Width="Auto" Height="Auto" HorizontalAlignment="Left"/>
+    </StatusBarItem>
+
+    <StatusBarItem Grid.Column="2" 
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Stretch">
+      <Label x:Name="LabelPercent" Content="%" Width="Auto" Height="Auto">
+      </Label>
+    </StatusBarItem>
+    
+    <StatusBarItem Grid.Column="3">
+      <ProgressBar x:Name="MessageProgessBar"
+       Maximum="100" Minimum="0"
+       Width="200" Height="{Binding Path=ActualHeight, ElementName=LabelStatusHeader}">
+        <ProgressBar.Triggers>
+          <EventTrigger RoutedEvent="ProgressBar.Loaded"  SourceName="MessageProgessBar">
+            <BeginStoryboard>
+              <Storyboard>
+                <DoubleAnimation x:Name="animation" Storyboard.TargetName="MessageProgessBar"
+                Storyboard.TargetProperty="Value"
+                From="0" To="100" Duration="0:0:5.642"/>
+              </Storyboard>
+            </BeginStoryboard>
+          </EventTrigger>
+        </ProgressBar.Triggers>
+      </ProgressBar>
+      <!-- Button x:Name="ButtonChangeStatusText" Command="{x:Static local:StatusBarView.StatusTextCommand}" CommandParameter="CMD form XAML Button" Width="Auto" Height="Auto">.. Change Status Text</Button -->
+    </StatusBarItem>
+
+  </StatusBar>
+</UserControl>

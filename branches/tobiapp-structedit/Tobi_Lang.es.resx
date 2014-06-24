@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+ 
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ExitConfirm" xml:space="preserve">
+    <value>¿Está seguro de que desea salir de Tobi ?</value>
+  </data>
+  <data name="CmdHelp_ShortDesc" xml:space="preserve">
+    <value>Ayuda _h</value>
+  </data>
+  <data name="CmdHelp_LongDesc" xml:space="preserve">
+    <value>Obtener ayuda</value>
+  </data>
+  <data name="LangStringKey1" xml:space="preserve">
+    <value>Hola</value>
+  </data>
+  <data name="CmdManageShortcuts_ShortDesc" xml:space="preserve">
+    <value>Atajos teclado ( DEBUG ) _k</value>
+  </data>
+  <data name="CmdManageShortcuts_LongDesc" xml:space="preserve">
+    <value>Vista Atajos de teclado( modo de depuración solamente)</value>
+  </data>
+  <data name="CmdMenuExit_ShortDesc" xml:space="preserve">
+    <value>Salir _x</value>
+  </data>
+  <data name="CmdMenuExit_LongDesc" xml:space="preserve">
+    <value>Cerrar la aplicación</value>
+  </data>
+  <data name="CmdOpenTobiFolder_ShortDesc" xml:space="preserve">
+    <value>Ejecutable de la _aplicación y registro</value>
+  </data>
+  <data name="CmdOpenTobiFolder_LongDesc" xml:space="preserve">
+    <value>Abrir un explorador de archivos de donde Tobi.exe se ejecuta (y donde reside Tobi.log ).</value>
+  </data>
+  <data name="CmdOpenTobiIsolatedStorage_ShortDesc" xml:space="preserve">
+    <value>Espacio de almacenamiento _Privado</value>
+  </data>
+  <data name="CmdOpenTobiIsolatedStorage_LongDesc" xml:space="preserve">
+    <value>Abrir un explorador de archivos donde se encuentran los archivos del sistema de Tobi.</value>
+  </data>
+  <data name="CmdOpenTobiSettingsFolder_ShortDesc" xml:space="preserve">
+    <value>Ajustes de _usuario</value>
+  </data>
+  <data name="CmdOpenTobiSettingsFolder_LongDesc" xml:space="preserve">
+    <value>Abrir un explorador de archivos donde se guardan los ajustes de usuario Tobi.</value>
+  </data>
+  <data name="CmdUIDecreaseMagnification_ShortDesc" xml:space="preserve">
+    <value>_Disminuir ampliación</value>
+  </data>
+  <data name="CmdUIDecreaseMagnification_LongDesc" xml:space="preserve">
+    <value>Reducir el nivel de zoom de interfaz de usuario</value>
+  </data>
+  <data name="CmdUIIncreaseMagnification_ShortDesc" xml:space="preserve">
+    <value>_Incrementar ampliación</value>
+  </data>
+  <data name="CmdUIIncreaseMagnification_LongDesc" xml:space="preserve">
+    <value>Aumentar el nivel de zoom de IU</value>
+  </data>
+  <data name="CmdUIResetMagnification_ShortDesc" xml:space="preserve">
+    <value>_Restaurar ampliación</value>
+  </data>
+  <data name="CmdUIResetMagnification_LongDesc" xml:space="preserve">
+    <value>Restablecer el nivel de zoom de IU</value>
+  </data>
+  <data name="TobiUpdate_Title" xml:space="preserve">
+    <value>Notificación de actualización</value>
+  </data>
+  <data name="TobiUpdate_Message" xml:space="preserve">
+    <value>¿Quieres descargar la versión más reciente de Tobi ?</value>
+  </data>
+  <data name="Menu_Find" xml:space="preserve">
+    <value>_Encontrar</value>
+  </data>
+  <data name="NoDocument" xml:space="preserve">
+    <value>Ningún documento</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Por favor , espere ...</value>
+  </data>
+  <data name="CancellingTask" xml:space="preserve">
+    <value>Cancelando ...</value>
+  </data>
+  <data name="IconsDebug" xml:space="preserve">
+    <value>Vista previa de iconos ( vista de depuración )</value>
+  </data>
+  <data name="CmdFocus_ShortDesc_Find" xml:space="preserve">
+    <value>Encontrar... _f</value>
+  </data>
+  <data name="Cmd_ShortDesc_FindNext" xml:space="preserve">
+    <value>Encuentra siguie_nte</value>
+  </data>
+  <data name="Cmd_ShortDesc_FindPrevious" xml:space="preserve">
+    <value>Encuentra anterior _p</value>
+  </data>
+  <data name="CmdFocus_LongDesc_Find" xml:space="preserve">
+    <value>Introduzca el texto a buscar ...</value>
+  </data>
+  <data name="Cmd_LongDesc_FindNext" xml:space="preserve">
+    <value>Buscar el siguiente elemento</value>
+  </data>
+  <data name="Cmd_LongDesc_FindPrevious" xml:space="preserve">
+    <value>Buscar el elemento anterior</value>
+  </data>
+  <data name="WindowsTitleKey_UrakawaSessionIsNotNull" xml:space="preserve">
+    <value>Tobi {{{0}}} {1} {2}</value>
+  </data>
+  <data name="WindowsTitleKey_UrakawaSessionIsNull" xml:space="preserve">
+    <value>Tobi {{{{{{0}}}}}} - {0}</value>
+  </data>
+  <data name="CmdDocOnline_LongDesc" xml:space="preserve">
+    <value>Ver la documentación en el navegador web</value>
+  </data>
+  <data name="CmdDocOnline_ShortDesc" xml:space="preserve">
+    <value>Documentación Web / _online</value>
+  </data>
+  <data name="CmdDocLocal_LongDesc" xml:space="preserve">
+    <value>Abrir la documentación incorporada</value>
+  </data>
+  <data name="CmdDocLocal_ShortDesc" xml:space="preserve">
+    <value>Documentación _Local</value>
+  </data>
+</root>

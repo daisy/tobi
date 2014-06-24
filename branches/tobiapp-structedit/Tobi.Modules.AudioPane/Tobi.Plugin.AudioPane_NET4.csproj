@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CA624531-B5E6-4F6C-96E5-7B00DE9680FE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tobi.Plugin.AudioPane</RootNamespace>
+    <AssemblyName>Tobi.Plugin.AudioPane</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\DebugNET4\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\DebugNET4\Tobi.Plugin.AudioPane.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\ReleaseNET4\</OutputPath>
+    <DefineConstants>TRACE;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore">
+    </Reference>
+    <Reference Include="PresentationFramework">
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+    </Reference>
+    <Reference Include="System.Speech" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+    </Reference>
+    <Reference Include="WindowsBase">
+    </Reference>
+    <Reference Include="WindowsFormsIntegration">
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AudioOptions.xaml.cs">
+      <DependentUpon>AudioOptions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AudioPaneViewModel.cs" />
+    <Compile Include="AudioPaneViewModelCommands.cs" />
+    <Compile Include="AudioPaneViewModelEdit.cs" />
+    <Compile Include="AudioPaneViewModelNavigation.cs" />
+    <Compile Include="AudioPaneViewModelPartial.cs" />
+    <Compile Include="AudioPaneViewModelPlayer.cs" />
+    <Compile Include="AudioPaneViewModelRecorder.cs" />
+    <Compile Include="AudioPaneViewModelSelection.cs" />
+    <Compile Include="AudioPaneViewModelState.cs" />
+    <Compile Include="AudioPaneViewModelTTS.cs" />
+    <Compile Include="AudioPaneViewModelUndoRedo.cs" />
+    <Compile Include="AudioPaneView_WaveFormLoader.cs" />
+    <Compile Include="AudioPaneView_WaveFormSelection.cs" />
+    <Compile Include="Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Settings_KeyGestures.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
+    </Compile>
+    <Compile Include="AudioSettings.xaml.cs">
+      <DependentUpon>AudioSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IAudioPaneView.cs" />
+    <Compile Include="PeakMeterBarData.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AudioPanePlugin.cs" />
+    <Compile Include="AudioPaneView.xaml.cs">
+      <DependentUpon>AudioPaneView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="Tobi.Plugin.AudioPane.Lang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tobi.Plugin.AudioPane.Lang.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WaveFormLoadingAdorner.cs" />
+    <Compile Include="WaveFormTimeTicksAdorner.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="AudioOptions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AudioPaneView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AudioSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib_NET4.csproj">
+      <Project>{6ee8e00a-db7c-41a7-bc66-527cb4c08d83}</Project>
+      <Name>AudioLib_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\audio\NAudio\NAudio_NET4.csproj">
+      <Project>{da4f02e3-0b5e-42cd-b8d9-5583fa51d66e}</Project>
+      <Name>NAudio_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core_NET4.csproj">
+      <Project>{7ccd52f9-c801-4c2b-aa9d-b7e217f307a0}</Project>
+      <Name>UrakawaSDK.core_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\urakawa-sdk\trunk\csharp\daisy\UrakawaSDK.daisy_NET4.csproj">
+      <Project>{69e083b4-ac97-4416-b7d4-61deba8a910d}</Project>
+      <Name>UrakawaSDK.daisy_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation_NET4.csproj">
+      <Project>{a957d686-369a-4ffd-b8ec-0611741c9e41}</Project>
+      <Name>Lib.Composite.Presentation_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\CAL\Composite\Lib.Composite_NET4.csproj">
+      <Project>{77138947-1d13-4e22-aee0-5d0dd046ca34}</Project>
+      <Name>Lib.Composite_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\MEF\Lib.MEF_NET4.csproj">
+      <Project>{a36aef66-2411-4225-b68e-f2d29368a31b}</Project>
+      <Name>Lib.MEF_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tobi.Common\Tobi.Common_NET4.csproj">
+      <Project>{3c21bb69-0f81-47d2-88e6-e4c08ad1460b}</Project>
+      <Name>Tobi.Common_NET4</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.VisualBasic.PowerPacks.10.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft Visual Basic PowerPacks 10.0</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Settings_KeyGestures.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings_KeyGestures.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tobi.Plugin.AudioPane.Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi.Plugin.AudioPane.Lang.es.resx" />
+    <EmbeddedResource Include="Tobi.Plugin.AudioPane.Lang.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Tobi.Plugin.AudioPane.Lang.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

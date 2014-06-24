@@ -1,0 +1,9 @@
+﻿<UserControl x:Class="Tobi.Plugin.NavigationPane.InputBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Height="79" Width="337">
+    <Grid Height="67" Width="330">
+        <TextBox Margin="0,24,24,12" Name="tbInput" />
+        <Label Height="27" Margin="0,0,23,0" Name="lblCaption" VerticalAlignment="Top">Default Caption:</Label>
+    </Grid>
+</UserControl>

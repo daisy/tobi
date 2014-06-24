@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="UrakawaPlugin_Description" xml:space="preserve">
+    <value>A context for opening and saving the data model of a Urakawa SDK project.</value>
+  </data>
+  <data name="OpenSaveAsQuestion" xml:space="preserve">
+    <value>Do you want to open the saved project ?</value>
+  </data>
+  <data name="OpenSaveAsQuestion_" xml:space="preserve">
+    <value>Open saved project ?</value>
+  </data>
+  <data name="CmdOpenDocumentFolder_ShortDesc" xml:space="preserve">
+    <value>_Current project</value>
+  </data>
+  <data name="CmdOpenDocumentFolder_LongDesc" xml:space="preserve">
+    <value>Open a file browser where the currently-loaded project is located.</value>
+  </data>
+  <data name="CannotOpenLocalFile" xml:space="preserve">
+    <value>Cannot open file.</value>
+  </data>
+  <data name="CannotOpenLocalFile_" xml:space="preserve">
+    <value>Failed to open file!</value>
+  </data>
+  <data name="ValidationIssuesConfirmExport_Title" xml:space="preserve">
+    <value>Validation issues</value>
+  </data>
+  <data name="ValidationIssuesConfirmExport" xml:space="preserve">
+    <value>There are validation issues.
+Press OK to ignore, or CANCEL to see the issues.</value>
+  </data>
+  <data name="DeleteRecentFile_Short" xml:space="preserve">
+    <value>Remove selected items</value>
+  </data>
+  <data name="DeleteRecentFile_Long" xml:space="preserve">
+    <value>Remove the selected items from the list of recent files</value>
+  </data>
+  <data name="RecentFileName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="RecentFileLocation" xml:space="preserve">
+    <value>File path</value>
+  </data>
+  <data name="CmdClose_ShortDesc" xml:space="preserve">
+    <value>_Close</value>
+  </data>
+  <data name="CmdClose_LongDesc" xml:space="preserve">
+    <value>Close the current project</value>
+  </data>
+  <data name="CmdDataCleanup_ShortDesc" xml:space="preserve">
+    <value>C_leanup</value>
+  </data>
+  <data name="DeleteSplitFiles" xml:space="preserve">
+    <value>Permanently delete the split files?</value>
+  </data>
+  <data name="DeleteSplitFilesConfirm" xml:space="preserve">
+    <value>Confirm delete files? (cannot be undone)</value>
+  </data>
+  <data name="CmdDataCleanup_LongDesc" xml:space="preserve">
+    <value>Remove data files not used by the current project</value>
+  </data>
+  <data name="CmdExport_ShortDesc" xml:space="preserve">
+    <value>_Export...</value>
+  </data>
+  <data name="CmdExport_LongDesc" xml:space="preserve">
+    <value>Export the current project...</value>
+  </data>
+  <data name="CmdMenuClearRecentFiles_ShortDesc" xml:space="preserve">
+    <value>_Clear</value>
+  </data>
+  <data name="CmdMenuClearRecentFiles_LongDesc" xml:space="preserve">
+    <value>Clear the list of recently-opened files.</value>
+  </data>
+  <data name="Menu_OpenRecent" xml:space="preserve">
+    <value>Open recent</value>
+  </data>
+  <data name="IsSplitMaster" xml:space="preserve">
+    <value>This is a split/merge "master", do not edit!</value>
+  </data>
+  <data name="IsSplitSub" xml:space="preserve">
+    <value>This project is part of a split/merge "master" (can be edited)</value>
+  </data>
+  <data name="SplitMasterNoAudio" xml:space="preserve">
+    <value>A split/merge point cannot have ancestor audio!</value>
+  </data>
+  <data name="MergeEpubNoParts" xml:space="preserve">
+    <value>None of this EPUB project's spine items seem to have been split + merged.</value>
+  </data>
+  <data name="SplitNothing" xml:space="preserve">
+    <value>Nothing to split (please place document markers).</value>
+  </data>
+  <data name="Menu_SplitMergeProject" xml:space="preserve">
+    <value>Split / Merge project</value>
+  </data>
+  <data name="CmdSplitProject_ShortDesc" xml:space="preserve">
+    <value>_Split...</value>
+  </data>
+  <data name="CmdSplitProject_LongDesc" xml:space="preserve">
+    <value>Divide the current master project into sub-projects (distribute to multiple narrators)</value>
+  </data>
+  <data name="CmdMergeProject_ShortDesc" xml:space="preserve">
+    <value>_Merge...</value>
+  </data>
+  <data name="CmdMergeProject_LongDesc" xml:space="preserve">
+    <value>Combine several sub-projects back into the master project</value>
+  </data>
+  <data name="CmdOpenRecent_ShortDesc" xml:space="preserve">
+    <value>Open _recent ...</value>
+  </data>
+  <data name="CmdOpenRecent_LongDesc" xml:space="preserve">
+    <value>Open the recent files dialog</value>
+  </data>
+  <data name="CmdShowXukSpine_ShortDesc" xml:space="preserve">
+    <value>_Project spine...</value>
+  </data>
+  <data name="CmdShowXukSpine_LongDesc" xml:space="preserve">
+    <value>Open the project spine dialog</value>
+  </data>
+  <data name="UrakawaOpenAction_ShortDesc" xml:space="preserve">
+    <value>Opening XUK file...</value>
+  </data>
+  <data name="CmdOpen_ShortDesc" xml:space="preserve">
+    <value>_Open</value>
+  </data>
+  <data name="CmdOpen_LongDesc" xml:space="preserve">
+    <value>Open an existing project</value>
+  </data>
+  <data name="CmdImport_ShortDesc" xml:space="preserve">
+    <value>_Import</value>
+  </data>
+  <data name="CmdImport_LongDesc" xml:space="preserve">
+    <value>Import a document to create a new project</value>
+  </data>
+  <data name="CmdOpenConvert_ShortDesc" xml:space="preserve">
+    <value>DAISY to EPUB3</value>
+  </data>
+  <data name="CmdOpenConvert_LongDesc" xml:space="preserve">
+    <value>Convert from DAISY to EPUB3</value>
+  </data>
+  <data name="Overwrite" xml:space="preserve">
+    <value>_Overwrite</value>
+  </data>
+  <data name="OverwriteConfirm_File" xml:space="preserve">
+    <value>You are about to overwrite a file.
+Do you want to continue ?</value>
+  </data>
+  <data name="OverwriteConfirm_Folder" xml:space="preserve">
+    <value>You are about to overwrite a folder.
+Do you want to continue ?</value>
+  </data>
+  <data name="ProjectAudioFormat" xml:space="preserve">
+    <value>Project audio format</value>
+  </data>
+  <data name="ExportSettings" xml:space="preserve">
+    <value>Export settings</value>
+  </data>
+  <data name="ExportIncludeImageDescriptions" xml:space="preserve">
+    <value>Include/merge image descriptions: </value>
+  </data>
+  <data name="ExportImageDescriptions_AriaDescribedAt" xml:space="preserve">
+    <value>Use ARIA "described-at":</value>
+  </data>
+  <data name="ExportImageDescriptions_AriaDescribedBy" xml:space="preserve">
+    <value>Use ARIA "described-by":</value>
+  </data>
+  <data name="ExportImageDescriptions_HtmlLongDesc" xml:space="preserve">
+    <value>Use HTML "longdesc":</value>
+  </data>
+  <data name="ExportImageDescriptions_inlineTextAudio" xml:space="preserve">
+    <value>Inline HTML5 text / audio:</value>
+  </data>
+  <data name="ExportGenerateSmilNotes" xml:space="preserve">
+    <value>Generate SMIL note references: </value>
+  </data>
+  <data name="ExportEncodeMp3" xml:space="preserve">
+    <value>Encode MP3: </value>
+  </data>
+  <data name="Stereo" xml:space="preserve">
+    <value>Stereo: </value>
+  </data>
+  <data name="UseSourceAudioFormatTip" xml:space="preserve">
+    <value>If the imported source is a talking book with an existing narration, its original audio format can be preserved by ticking the above box.</value>
+  </data>
+  <data name="UseSourceAudioFormat" xml:space="preserve">
+    <value>Preserve source audio format: </value>
+  </data>
+  <data name="UrakawaOpenAction_LongDesc" xml:space="preserve">
+    <value>Parsing the XML content of the XUK file...</value>
+  </data>
+  <data name="CmdRedo_ShortDesc" xml:space="preserve">
+    <value>_Redo</value>
+  </data>
+  <data name="CmdRedo_LongDesc" xml:space="preserve">
+    <value>Execute the last action that was undone</value>
+  </data>
+  <data name="RunningTask" xml:space="preserve">
+    <value>Please wait...</value>
+  </data>
+  <data name="CmdSave_ShortDesc" xml:space="preserve">
+    <value>_Save</value>
+  </data>
+  <data name="CmdSaveAs_ShortDesc" xml:space="preserve">
+    <value>S_ave as...</value>
+  </data>
+  <data name="CmdSaveAs_LongDesc" xml:space="preserve">
+    <value>Save the current project as...</value>
+  </data>
+  <data name="CmdSave_LongDesc" xml:space="preserve">
+    <value>Save the current project</value>
+  </data>
+  <data name="CmdUndo_ShortDesc" xml:space="preserve">
+    <value>_Undo</value>
+  </data>
+  <data name="CmdUndo_LongDesc" xml:space="preserve">
+    <value>Unexecute last action</value>
+  </data>
+  <data name="UnsavedChanges" xml:space="preserve">
+    <value>_Save before close</value>
+  </data>
+  <data name="UnsavedChangesConfirm" xml:space="preserve">
+    <value>There are unsaved changes.
+Would you like to save the project now ?</value>
+  </data>
+  <data name="UnsavedChangesDetails" xml:space="preserve">
+    <value>If you close the project without saving,
+any changes will be lost !</value>
+  </data>
+  <data name="UrakawaPlugin_Name" xml:space="preserve">
+    <value>Urakawa SDK session manager.</value>
+  </data>
+  <data name="Importing" xml:space="preserve">
+    <value>Importing...</value>
+  </data>
+  <data name="Exporting" xml:space="preserve">
+    <value>Exporting...</value>
+  </data>
+  <data name="CleaningUpDataFiles" xml:space="preserve">
+    <value>Cleaning up data files...</value>
+  </data>
+  <data name="CopyingDataFiles" xml:space="preserve">
+    <value>Copying data files...</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Saved.</value>
+  </data>
+  <data name="UrakawaSaveAction_ShortDesc" xml:space="preserve">
+    <value>Saving XUK file...</value>
+  </data>
+  <data name="UrakawaSaveAction_LongDesc" xml:space="preserve">
+    <value>Saving the project as XML (XUK file)...</value>
+  </data>
+  <data name="UrakawaSession_OpenFile" xml:space="preserve">
+    <value>Open file</value>
+  </data>
+  <data name="UrakawaSession_SavePath" xml:space="preserve">
+    <value>File path: {0}</value>
+  </data>
+  <data name="WarningFilePathLength_Title" xml:space="preserve">
+    <value>File path too long!</value>
+  </data>
+  <data name="WarningFilePathLength" xml:space="preserve">
+    <value>Please choose a shorter file path ({0} characters maximum).</value>
+  </data>
+  <data name="PleaseUpgradePipeline" xml:space="preserve">
+    <value>Please install the latest Pipeline2</value>
+  </data>
+</root>

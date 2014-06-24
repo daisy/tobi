@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.TaskDialog", "TaskDialog\Lib.TaskDialog.csproj", "{F6B58070-8452-4A49-94B1-E38123120859}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.TaskDialog.Test", "Test\Lib.TaskDialog.Test.csproj", "{92C764C0-DBA4-4370-87B5-2F9D83DB6959}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F6B58070-8452-4A49-94B1-E38123120859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6B58070-8452-4A49-94B1-E38123120859}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6B58070-8452-4A49-94B1-E38123120859}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6B58070-8452-4A49-94B1-E38123120859}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92C764C0-DBA4-4370-87B5-2F9D83DB6959}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92C764C0-DBA4-4370-87B5-2F9D83DB6959}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92C764C0-DBA4-4370-87B5-2F9D83DB6959}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92C764C0-DBA4-4370-87B5-2F9D83DB6959}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+EndGlobal

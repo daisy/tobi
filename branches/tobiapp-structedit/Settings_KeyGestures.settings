@@ -1,0 +1,32 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi" GeneratedClassName="Settings_KeyGestures">
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
+  <Settings>
+    <Setting Name="Keyboard_Find" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] F</Value>
+    </Setting>
+    <Setting Name="Keyboard_FindNext" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ NONE ] F3</Value>
+    </Setting>
+    <Setting Name="Keyboard_FindPrevious" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT ] F3</Value>
+    </Setting>
+    <Setting Name="Keyboard_AppExit" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ ALT ] F4</Value>
+    </Setting>
+    <Setting Name="Keyboard_Help" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ NONE ] F1</Value>
+    </Setting>
+    <Setting Name="Keyboard_UI_Zoom_Increase" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] OemPlus (=)</Value>
+    </Setting>
+    <Setting Name="Keyboard_UI_Zoom_Decrease" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] OemMinus (-)</Value>
+    </Setting>
+    <Setting Name="Keyboard_UI_Zoom_Reset" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] OemMinus (-)</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

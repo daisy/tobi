@@ -1,0 +1,853 @@
+﻿<DockPanel 
+  LastChildFill="True"
+           x:Class="Tobi.Plugin.Settings.SettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+           xmlns:System="clr-namespace:System;assembly=mscorlib"
+           xmlns:Settings="clr-namespace:Tobi.Plugin.Settings"
+           xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
+           xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
+           xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
+           xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+           
+           Unloaded="OnUnloaded_Panel"
+           Loaded="OnLoaded_Panel">
+  <!-- 
+           DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
+
+  <DockPanel.Resources>
+    <FrameworkElement x:Key="dataContextBridge" />
+    <!--<CollectionViewSource x:Key="sortedSettings"
+                          
+                      Source="{Binding AggregatedSettings, Mode=OneWay}">
+      <CollectionViewSource.GroupDescriptions>
+        <PropertyGroupDescription PropertyName="@Column1" />
+      </CollectionViewSource.GroupDescriptions>
+    </CollectionViewSource>-->
+
+  </DockPanel.Resources>
+
+  <DockPanel.DataContext>
+    <Binding
+      Mode="OneWayToSource"
+      Path="DataContext"
+      Source="{StaticResource dataContextBridge}"/>
+  </DockPanel.DataContext>
+
+  <Border
+           DockPanel.Dock="Top"
+             
+           BorderThickness="2"
+           BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+
+    <DockPanel LastChildFill="True"
+             
+             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+             >
+
+      <UI:ButtonRichCommand
+        Control.TabIndex="4"
+        DockPanel.Dock="Right"
+         HorizontalAlignment="Right" VerticalAlignment="Center"
+        UseSmallerIcon="True"
+        RichCommand="{Binding CmdFindNextGlobal}"/>
+
+      <UI:ButtonRichCommand
+        Control.TabIndex="3"
+        DockPanel.Dock="Right"
+         HorizontalAlignment="Right" VerticalAlignment="Center"
+        UseSmallerIcon="True"
+        RichCommand="{Binding CmdFindPreviousGlobal}"/>
+
+      <TextBlock
+        Text="{x:Static Common:Tobi_Common_Lang.Find}"
+        DockPanel.Dock="Left"
+                   HorizontalAlignment="Left" VerticalAlignment="Center"
+                   Margin="2,0,2,0"/>
+
+      <UI:TextBoxReadOnlyCaretVisible
+        
+        KeyUp="OnSearchBoxKeyUp"
+      Control.TabIndex="2"
+      x:Name="SearchBox"
+        
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                                     TextChanged="OnSearchTextChanged"
+
+UI:WatermarkTextBoxBehavior.EnableWatermark="True"
+UI:WatermarkTextBoxBehavior.Label="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
+                                       
+                                    HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"/>
+
+    </DockPanel>
+  </Border>
+
+  <Button DockPanel.Dock="Bottom" HorizontalAlignment="Left"
+          Control.TabIndex="6"
+          Margin="0,4,0,0"
+          Content="{x:Static Settings:Tobi_Plugin_Settings_Lang.ResetItems_Short}"
+          ToolTip="{x:Static Settings:Tobi_Plugin_Settings_Lang.ResetItems_Long}"
+          Click="OnClick_RestoreDefault"/>
+
+  <!--"{Binding Source={StaticResource sortedSettings}}"-->
+  <UI:SortableListView2
+    Control.TabIndex="5"
+    x:Name="SettingsList"
+    ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+    ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+    ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
+           ScrollViewer.CanContentScroll="True"
+             VirtualizingStackPanel.IsVirtualizing="False"
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+
+    ItemsSource="{Binding AggregatedSettings, Mode=OneWay}"
+           
+              SelectionMode="Single"
+
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+AlternationCount="2"
+search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, Mode=OneWay}"
+    >
+
+    <ListView.Resources>
+
+      <CollectionViewSource Source="{Binding Source={x:Static UI:FontsFix.SystemFontFamilies}}" x:Key="familyCollection"/>
+
+      <DataTemplate x:Key="FontFamilyComboCollapsed">
+        <!-- TextBlock Text="{Binding}" FontFamily="{Binding}"/ -->
+        <TextBlock Text="{Binding Path=Source}"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="FontFamilyComboExpanded">
+        <StackPanel Orientation="Vertical">
+          <TextBlock VerticalAlignment="Center" Height="Auto">
+            <ContentPresenter Content="{TemplateBinding Content}" />
+          </TextBlock>
+          <TextBlock FontFamily="{Binding Source}"
+              VerticalAlignment="Center" Height="Auto">
+            ABC DEF GHI JKL MNO PQR STU VWYZ 0123456789
+          </TextBlock>
+        </StackPanel>
+      </DataTemplate>
+
+      <ToolTip x:Key="settingTooltip"
+         DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+        <TextBlock Text="{Binding Path=DataContext.FullDescription, Mode=OneWay}"/>
+
+      </ToolTip>
+      <ToolTip x:Key="messageTooltip"
+         DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+        <TextBlock Text="{Binding Path=DataContext.Message, Mode=OneWay}"/>
+
+      </ToolTip>
+
+      <DataTemplate x:Key="SettingEditTemplate_KeyGesture" DataType="{x:Type UI:KeyGestureString}">
+        <UI:KeyGestureSinkBox  Validation.Error="OnError"
+                               KeyboardNavigation.IsTabStop="true"
+                               Margin="2">
+
+          <UI:KeyGestureSinkBox.Resources>
+            <XAML:DataContextSpy x:Key="dataContextSpy" />
+          </UI:KeyGestureSinkBox.Resources>
+
+          <UI:KeyGestureSinkBox.Text>
+            <Binding Path="Value" Converter="{XAML:TextToKeyGestureConverter}" Mode="TwoWay"
+                     UpdateSourceTrigger="PropertyChanged"
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
+                     NotifyOnValidationError="True">
+              <Binding.ValidationRules>
+                <!-- DataErrorValidationRule/ -->
+                <!-- IDataErrorInfo -->
+                <Settings:KeyGestureValidationRule
+                  ValidatesOnTargetUpdated="True"
+                  DataContextBridge="{StaticResource dataContextBridge}"
+                  DataContextSpy="{StaticResource dataContextSpy}"
+                  />
+              </Binding.ValidationRules>
+            </Binding>
+          </UI:KeyGestureSinkBox.Text>
+
+          <UI:KeyGestureSinkBox.Style>
+            <Style TargetType="{x:Type UI:KeyGestureSinkBox}">
+              <Style.Triggers>
+
+
+                <!-- Storyboard.Target="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UI:KeyGestureSinkBox}}}" -->
+                <!-- EventTrigger RoutedEvent="UI:KeyGestureSinkBox.Escaped">
+                  <BeginStoryboard>
+                    <Storyboard Timeline.Completed="OnCompleted_EscapedKeyGestureSinkBox">
+                      <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                                     Storyboard.TargetProperty="(FrameworkElement.Tooltip)">
+                        
+                        <DiscreteObjectKeyFrame KeyTime="00:00:00"
+                                                Value="Escaped"/>
+                      </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </BeginStoryboard>
+                </EventTrigger -->
+
+                <!-- MultiTrigger>
+                  <MultiTrigger.Conditions>
+                    <Condition Property="IsFocused" Value="false" />
+                    <Condition Property="Validation.HasError" Value="true" />
+                  </MultiTrigger.Conditions>
+                  <Setter Property="Text"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext.Value}"/>
+                </MultiTrigger -->
+
+                <Trigger Property="Validation.HasError" Value="true">
+
+                  <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" -->
+                  <!-- Value="{Binding RelativeSource={RelativeSource Self}, 
+                          Path=(Validation.Errors).CurrentItem, 
+                          Converter={Settings:ValidationErrorConverter}}" -->
+                  <Setter Property="ToolTip"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                          />
+
+                </Trigger>
+              </Style.Triggers>
+              <Style.Setters>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </UI:KeyGestureSinkBox.Style>
+        </UI:KeyGestureSinkBox>
+
+      </DataTemplate>
+
+      <DataTemplate x:Key="SettingEditTemplate_Text" DataType="{x:Type System:String}">
+        <UI:ValidationAwareTextBox
+          Validation.Error="OnError"
+          KeyboardNavigation.IsTabStop="true">
+
+          <UI:ValidationAwareTextBox.Resources>
+            <XAML:DataContextSpy x:Key="dataContextSpy" />
+          </UI:ValidationAwareTextBox.Resources>
+
+
+          <UI:ValidationAwareTextBox.Text>
+            <Binding Path="Value" Mode="TwoWay"
+                     UpdateSourceTrigger="PropertyChanged"
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
+                     NotifyOnValidationError="True">
+              <Binding.ValidationRules>
+
+                <Settings:TextValidationRule
+                  ValidatesOnTargetUpdated="True"
+                  DataContextBridge="{StaticResource dataContextBridge}"
+                  DataContextSpy="{StaticResource dataContextSpy}"/>
+              </Binding.ValidationRules>
+            </Binding>
+          </UI:ValidationAwareTextBox.Text>
+
+          <UI:ValidationAwareTextBox.Style>
+            <Style TargetType="{x:Type UI:ValidationAwareTextBox}">
+              <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+
+                  <Setter Property="ToolTip"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                          />
+
+                </Trigger>
+              </Style.Triggers>
+              <Style.Setters>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                <!-- Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/ -->
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </UI:ValidationAwareTextBox.Style>
+
+        </UI:ValidationAwareTextBox>
+
+      </DataTemplate>
+
+      <DataTemplate x:Key="SettingEditTemplate_Double" DataType="{x:Type System:Double}">
+        <UI:ValidationAwareTextBox Validation.Error="OnError"
+                                   Control.IsTabStop="true">
+
+          <UI:ValidationAwareTextBox.Resources>
+            <XAML:DataContextSpy x:Key="dataContextSpy" />
+          </UI:ValidationAwareTextBox.Resources>
+
+          <!-- DataErrorValidationRule/ -->
+          <!-- IDataErrorInfo -->
+
+          <UI:ValidationAwareTextBox.Text>
+            <Binding Path="Value" Converter="{XAML:DoubleToTextConverter}" Mode="TwoWay"
+                     UpdateSourceTrigger="PropertyChanged"
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
+                     NotifyOnValidationError="True">
+              <Binding.ValidationRules>
+
+                <Settings:DoubleValidationRule
+                  ValidatesOnTargetUpdated="True"
+                  DataContextBridge="{StaticResource dataContextBridge}"
+                  DataContextSpy="{StaticResource dataContextSpy}"/>
+              </Binding.ValidationRules>
+            </Binding>
+          </UI:ValidationAwareTextBox.Text>
+
+          <!-- Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" -->
+          <!-- Value="{Binding RelativeSource={RelativeSource Self}, 
+                          Path=(Validation.Errors).CurrentItem, 
+                          Converter={Settings:ValidationErrorConverter}}" -->
+          <UI:ValidationAwareTextBox.Style>
+            <Style TargetType="{x:Type UI:ValidationAwareTextBox}">
+              <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+
+                  <Setter Property="ToolTip"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                          />
+
+                </Trigger>
+              </Style.Triggers>
+              <Style.Setters>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </UI:ValidationAwareTextBox.Style>
+        </UI:ValidationAwareTextBox>
+
+      </DataTemplate>
+
+      <DataTemplate x:Key="SettingEditTemplate_Boolean" DataType="{x:Type System:Boolean}">
+        <CheckBox Control.IsTabStop="true"
+                  IsChecked="{Binding Value, Mode=TwoWay}"
+                  IsThreeState="False"
+                  Margin="2"
+                   >
+          <!--False-->
+
+          <CheckBox.Style>
+            <Style TargetType="{x:Type CheckBox}">
+              <Style.Setters>
+
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding Value}" Value="True">
+                  <DataTrigger.Setters>
+                    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                    <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+                  </DataTrigger.Setters>
+                  <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                      <Storyboard>
+                        <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                                     Storyboard.TargetProperty="Content">
+
+                          <DiscreteObjectKeyFrame KeyTime="00:00:00"
+                                                  Value=""/>
+                          <!--True-->
+                        </ObjectAnimationUsingKeyFrames>
+                      </Storyboard>
+                    </BeginStoryboard>
+                  </DataTrigger.EnterActions>
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </CheckBox.Style>
+        </CheckBox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="SettingEditTemplate_Color" DataType="{x:Type Color}">
+        <UI:ComboBoxColor
+          Control.IsTabStop="true"
+          SelectedColor="{Binding Value, Mode=TwoWay}">
+          <UI:ComboBoxColor.Style>
+            <Style TargetType="{x:Type UI:ComboBoxColor}">
+              <Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </UI:ComboBoxColor.Style>
+        </UI:ComboBoxColor>
+      </DataTemplate>
+
+      <DataTemplate x:Key="SettingEditTemplate_FontFamily" DataType="{x:Type FontFamily}">
+
+        <!-- 
+                 DataContext="{StaticResource familyCollection}"
+                ItemsSource="{Binding}"
+                -->
+        <ComboBox x:Name="comboListOfFonts"
+                  ItemsSource="{Binding Source={x:Static UI:FontsFix.SystemFontFamilies}}"
+                  
+                  Control.IsTabStop="true"
+          SelectedItem="{Binding Value, Mode=TwoWay}"
+                  
+                  AlternationCount="2"
+          >
+          <!--BorderBrush="{x:Null}"-->
+
+          <!--SelectionChanged="OnFontSelectionChanged"-->
+
+          <ComboBox.Style>
+            <Style TargetType="{x:Type ComboBox}">
+
+              <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+              <Setter Property="AutomationProperties.Name"
+                      Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem,
+                      TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}"/>
+              <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+            </Style>
+          </ComboBox.Style>
+          <!--<ComboBox.Style>
+            <Style TargetType="{x:Type ComboBox}">
+              <Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </ComboBox.Style>-->
+
+          <ComboBox.ItemsPanel>
+            <ItemsPanelTemplate>
+              <VirtualizingStackPanel />
+            </ItemsPanelTemplate>
+          </ComboBox.ItemsPanel>
+          <ComboBox.ItemContainerStyle>
+
+            <Style TargetType="{x:Type ComboBoxItem}">
+
+              <Style.Setters>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <!--<Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>-->
+              </Style.Setters>
+
+              <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                  <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+
+          </ComboBox.ItemContainerStyle>
+          <!--<ComboBox.ItemTemplate>
+          </ComboBox.ItemTemplate>-->
+          <ComboBox.ItemTemplateSelector>
+            <Settings:FontFamilyDataTemplateSelector/>
+          </ComboBox.ItemTemplateSelector>
+
+        </ComboBox>
+      </DataTemplate>
+
+      <DataTemplate x:Key="SettingEditTemplate_Enum" DataType="{x:Type System:Enum}">
+
+        <ComboBox x:Name="comboEnum"
+                  ItemsSource="{Binding Path=ValueType,
+                        Converter={XAML:EnumTypeToValuesConverter}}"
+                  
+                  SelectedItem="{Binding Value, Mode=TwoWay}"
+                  
+                  Control.IsTabStop="true"
+                  AlternationCount="2"
+          >
+
+          <ComboBox.Style>
+            <Style TargetType="{x:Type ComboBox}">
+
+              <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+              <Setter Property="AutomationProperties.Name"
+                      Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem,
+                      TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}"/>
+
+              <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+            </Style>
+          </ComboBox.Style>
+          <!--<ComboBox.Style>
+            <Style TargetType="{x:Type ComboBox}">
+              <Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </ComboBox.Style>-->
+
+          <!--<ComboBox.ItemsPanel>
+            <ItemsPanelTemplate>
+              <VirtualizingStackPanel />
+            </ItemsPanelTemplate>
+          </ComboBox.ItemsPanel>-->
+
+          <ComboBox.ItemContainerStyle>
+
+            <Style TargetType="{x:Type ComboBoxItem}">
+
+              <Style.Setters>
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <!--<Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>-->
+              </Style.Setters>
+
+              <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                  <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+
+
+          </ComboBox.ItemContainerStyle>
+          <!--<ComboBox.ItemTemplate>
+          </ComboBox.ItemTemplate>-->
+
+          <!--<ComboBox.ItemTemplateSelector>
+            <Settings:FontFamilyDataTemplateSelector/>
+          </ComboBox.ItemTemplateSelector>-->
+
+        </ComboBox>
+
+        <!--<UI:ValidationAwareTextBox Validation.Error="OnError"
+                                           Control.IsTabStop="true">
+
+          <UI:ValidationAwareTextBox.Resources>
+            <XAML:DataContextSpy x:Key="dataContextSpy" />
+          </UI:ValidationAwareTextBox.Resources>
+
+          <UI:ValidationAwareTextBox.Text>
+            <Binding Path="Value" Converter="{XAML:EnumToStringConverter}" Mode="TwoWay"
+                     UpdateSourceTrigger="PropertyChanged"
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
+                     NotifyOnValidationError="True">
+              <Binding.ValidationRules>
+
+                <Settings:EnumValidationRule
+                  ValidatesOnTargetUpdated="True"
+                  DataContextBridge="{StaticResource dataContextBridge}"
+                  DataContextSpy="{StaticResource dataContextSpy}"/>
+              </Binding.ValidationRules>
+            </Binding>
+          </UI:ValidationAwareTextBox.Text>
+
+          <UI:ValidationAwareTextBox.Style>
+            <Style TargetType="{x:Type UI:ValidationAwareTextBox}">
+              <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+
+                  <Setter Property="ToolTip"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                          />
+
+                </Trigger>
+              </Style.Triggers>
+              <Style.Setters>
+                <Setter Property="AutomationPropertiesName" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </UI:ValidationAwareTextBox.Style>
+        </UI:ValidationAwareTextBox>-->
+
+      </DataTemplate>
+
+      <!--<DataTemplate x:Key="SettingEditTemplate_TextAlignment" DataType="{x:Type TextAlignment}">
+        <UI:ValidationAwareTextBox Validation.Error="OnError"
+                                   Control.IsTabStop="true">
+
+          <UI:ValidationAwareTextBox.Resources>
+            <XAML:DataContextSpy x:Key="dataContextSpy" />
+          </UI:ValidationAwareTextBox.Resources>
+
+          <UI:ValidationAwareTextBox.Text>
+            <Binding Path="Value" Converter="{XAML:TextAlignmentToStringConverter}" Mode="TwoWay"
+                     UpdateSourceTrigger="PropertyChanged"
+                     ValidatesOnDataErrors="True" ValidatesOnExceptions="True"
+                     NotifyOnValidationError="True">
+              <Binding.ValidationRules>
+
+                <Settings:TextAlignmentValidationRule
+                  ValidatesOnTargetUpdated="True"
+                  DataContextBridge="{StaticResource dataContextBridge}"
+                  DataContextSpy="{StaticResource dataContextSpy}"/>
+              </Binding.ValidationRules>
+            </Binding>
+          </UI:ValidationAwareTextBox.Text>
+          
+          <UI:ValidationAwareTextBox.Style>
+            <Style TargetType="{x:Type UI:ValidationAwareTextBox}">
+              <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+
+                  <Setter Property="ToolTip"
+                          Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors).CurrentItem.ErrorContent}"
+                          />
+
+                </Trigger>
+              </Style.Triggers>
+              <Style.Setters>
+                <Setter Property="AutomationPropertiesName" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+              </Style.Setters>
+            </Style>
+          </UI:ValidationAwareTextBox.Style>
+        </UI:ValidationAwareTextBox>
+
+      </DataTemplate>-->
+
+      <Settings:SettingsValueTemplateSelector x:Key="SettingsValueTemplateSelector"/>
+    </ListView.Resources>
+
+    <ListView.View>
+      <GridView AllowsColumnReorder="false">
+
+        <!-- GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Current}"
+                        DisplayMemberBinding="{Binding OriginalValue, Mode=OneWay}"/ -->
+
+        <GridViewColumn Header="">
+          <GridViewColumn.HeaderTemplate>
+            <DataTemplate>
+              <CheckBox Control.IsTabStop="true"
+                  Checked="OnCheckAll"
+                  Unchecked="OnUnCheckAll"
+                  IsThreeState="False"
+                  Margin="2"
+                   
+                        ToolTip="{x:Static Common:Tobi_Common_Lang.CheckUnCheckAll}">
+
+                <CheckBox.Style>
+                  <Style TargetType="{x:Type CheckBox}">
+                    <Style.Setters>
+                      <Setter Property="AutomationProperties.Name" Value="{x:Static Common:Tobi_Common_Lang.CheckUnCheckAll}"/>
+                    </Style.Setters>
+                  </Style>
+                </CheckBox.Style>
+              </CheckBox>
+            </DataTemplate>
+          </GridViewColumn.HeaderTemplate>
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <CheckBox Control.IsTabStop="true"
+                  IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                  IsThreeState="False"
+                  Margin="2"
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   />
+            </DataTemplate>
+
+          </GridViewColumn.CellTemplate>
+
+        </GridViewColumn>
+
+        <UI:SortableGridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Name}"
+                        SortPropertyName="Name"
+                        IsDefaultSortColumn="True">
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name, Mode=OneWay}"
+                         ToolTip="{StaticResource settingTooltip}"
+                         Margin="2,2,2,2">
+
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Style.Setters>
+                      <Setter Property="FontWeight" Value="Bold" />
+                    </Style.Setters>
+
+                    <Style.Triggers>
+                      <!--
+                      DOESN't work for some strange reason... :(
+                      DataTrigger Binding="{Binding Path=IsChanged, Mode=OneWay}" Value="False">
+                        <Setter Property="FontWeight" Value="Normal"/>
+                      </DataTrigger -->
+                      <DataTrigger Binding="{Binding Path=Message, Mode=OneWay}" Value="{x:Null}">
+                        <Setter Property="FontWeight" Value="Normal"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+
+                  </Style>
+                </TextBlock.Style>
+              </TextBlock>
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </UI:SortableGridViewColumn>
+
+        <GridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Value}"
+                        Width="150"
+                        CellTemplateSelector="{StaticResource SettingsValueTemplateSelector}"/>
+
+        <UI:SortableGridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Default}"
+                        SortPropertyName="DefaultValue"
+                        DisplayMemberBinding="{Binding DefaultValue, Mode=OneWay}"/>
+
+        <UI:SortableGridViewColumn Header="{x:Static Settings:Tobi_Plugin_Settings_Lang.Info}"
+                        SortPropertyName="Message"
+                        Width="400">
+
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Message, Mode=OneWay}"
+                         ToolTip="{StaticResource messageTooltip}"
+                         FontStyle="Italic">
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Style.Setters>
+                      <Setter Property="FrameworkElement.Margin" Value="2,2,2,2"/>
+                    </Style.Setters>
+                  </Style>
+                </TextBlock.Style>
+              </TextBlock>
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </UI:SortableGridViewColumn>
+      </GridView>
+    </ListView.View>
+
+    <ListView.ItemContainerStyle>
+
+      <Style TargetType="{x:Type ListViewItem}">
+        <!--<Style.Resources>
+          <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                        Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+        </Style.Resources>-->
+
+        <Style.Setters>
+
+          <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+          <!--<Setter Property="FocusVisualStyle">
+            <Setter.Value>
+              <Style TargetType="{x:Type IFrameworkInputElement}">
+                --><!--<Style.Resources>
+                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                </Style.Resources>--><!--
+                <Setter Property="Control.Template">
+                  <Setter.Value>
+                    <ControlTemplate>
+                      <Rectangle
+                          Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                          StrokeThickness="1"
+                          StrokeDashArray="1 2"
+                          Margin="0"
+                          SnapsToDevicePixels="True" />
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </Setter.Value>
+          </Setter>-->
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="{x:Type ListViewItem}">
+                <!--<Grid SnapsToDevicePixels="True" Margin="0">-->
+                <Border x:Name="Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="0"
+                        SnapsToDevicePixels="true"
+                         Margin="0"
+                        Padding="0">
+                  <GridViewRowPresenter x:Name="Content"
+                                        Margin="0"
+                                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                            Content="{TemplateBinding Content}"
+                                        Columns="{TemplateBinding GridView.ColumnCollection}"/>
+                </Border>
+
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsSelected"  Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                  </Trigger>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="IsSelected" Value="true" />
+                      <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />-->
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                  </MultiTrigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+          <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>
+          <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
+          <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+          <Setter Property="UI:ListViewItemBringIntoViewFocusWhenSelectedBehavior.IsBroughtIntoViewFocusWhenSelected" Value="True" />
+
+          <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItem" />
+          <EventSetter Event="KeyUp" Handler="OnKeyUp_ListItem" />
+        </Style.Setters>
+
+        <Style.Triggers>
+          <MultiTrigger>
+            <MultiTrigger.Conditions>
+              <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+              <Condition Property="IsSelected" Value="False"/>
+            </MultiTrigger.Conditions>
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+          </MultiTrigger>
+          <!-- REMOVED to avoid interference with IsChanged / Message style activation
+          Trigger Property="IsSelected" Value="True">
+            <Setter Property="FontWeight" Value="Bold" />
+          </Trigger -->
+          <Trigger Property="search:SearchOperations.IsMatch" Value="True">
+            <Setter Property="Background">
+              <Setter.Value>
+                <SolidColorBrush Color="{Binding Source={x:Static Common:Settings.Default}, Path=SearchHits_Color, Mode=OneWay}"/>
+              </Setter.Value>
+            </Setter>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+    </ListView.ItemContainerStyle>
+  </UI:SortableListView2>
+
+  <!-- ListBox
+  HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+  ItemsSource="{Binding Path=., Mode=OneWay}"
+  -->
+  <!--DisplayMemberPath="Message"   Source=., Path=SettingsExpanded, Mode=OneWay  -->
+  <!-- ListBox.ItemTemplate>
+      <DataTemplate>
+        <TextBlock Text="{Binding Path=., Mode=OneWay}"/>
+      </DataTemplate>
+    </ListBox.ItemTemplate -->
+  <!-- ListBox.ItemContainerStyle>
+      <Style TargetType="{x:Type ListBoxItem}">
+
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="FontWeight" Value="Normal" />
+
+        <Style.Triggers>
+          <DataTrigger Binding="{Binding Severity, Converter={StaticResource SeverityConverter}}" Value="True">
+            <Setter Property="FontWeight" Value="Bold" />
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </ListBox.ItemContainerStyle  -->
+  <!-- /ListBox -->
+</DockPanel>

@@ -1,0 +1,25 @@
+﻿<Border x:Class="Tobi.Plugin.StructureTrailPane.StructureTrailPaneView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+    xmlns:StructureTrailPane="clr-namespace:Tobi.Plugin.StructureTrailPane"
+           
+          Focusable="False"
+          BorderThickness="1,1,1,1"
+          BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+           
+        Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+  <!--WindowBrushKey-->
+
+  <WrapPanel
+      
+      Focusable="False"
+      
+      KeyboardNavigation.DirectionalNavigation="Cycle"
+             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+             x:Name="BreadcrumbPanel" Orientation="Horizontal"
+             >
+    </WrapPanel>
+</Border>

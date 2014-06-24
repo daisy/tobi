@@ -1,0 +1,1000 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{64F90229-5944-4DBB-96A0-0E09E6BF5997}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tobi</RootNamespace>
+    <AssemblyName>Tobi_NET4</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <!-- TargetFrameworkSubset>Full</TargetFrameworkSubset -->
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <StartupObject>Tobi.App</StartupObject>
+    <ApplicationIcon>Tobi.ico</ApplicationIcon>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <SignManifests>true</SignManifests>
+    <ManifestCertificateThumbprint>26447AAF5A2427105686BEFC89A0E5C5B3643F2C</ManifestCertificateThumbprint>
+    <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <NoWin32Manifest>true</NoWin32Manifest>
+    <PublishUrl>C:\Users\daniel\Desktop\daisy\tobi\trunk\tobiapp\TobiClickOnceNET4_2.3.1.0\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://data.daisy.org/projects/tobi/install/net4/</InstallUrl>
+    <SupportUrl>http://data.daisy.org/projects/tobi/ClickOnce-Help.html</SupportUrl>
+    <ErrorReportUrl>http://data.daisy.org/projects/tobi/ClickOnce-Error.html</ErrorReportUrl>
+    <ProductName>Tobi %28.NET 4%29</ProductName>
+    <PublisherName>DAISY Consortium</PublisherName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>index.html</WebPage>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.3.1.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>false</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\DebugNET4\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;LINQ;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\DebugNET4\Tobi_NET4.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\ReleaseNET4\</OutputPath>
+    <DefineConstants>NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationFramework.Aero">
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+    </Reference>
+    <Reference Include="WindowsBase">
+    </Reference>
+    <Reference Include="PresentationCore">
+    </Reference>
+    <Reference Include="PresentationFramework">
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="IconsPreviewDebug.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="KeyboardShortcuts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Shell.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Shell.xaml.cs">
+      <DependentUpon>Shell.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GlobalSearchCommands.cs" />
+    <Compile Include="Settings_KeyGestures.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings_KeyGestures.settings</DependentUpon>
+    </Compile>
+    <Compile Include="ShellShortcut.cs" />
+    <Compile Include="Shell_Settings.cs" />
+    <Compile Include="Shell_Win32Device.cs" />
+    <Compile Include="Tobi_Lang.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tobi_Lang.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TobiLoggerFacade.cs" />
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandLineDictionary.cs" />
+    <Compile Include="CommandLineParser.cs" />
+    <Compile Include="DirectoryInfoConverter.cs" />
+    <Compile Include="FileInfoConverter.cs" />
+    <Compile Include="IconsPreviewDebug.xaml.cs">
+      <DependentUpon>IconsPreviewDebug.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="KeyboardShortcuts.xaml.cs">
+      <DependentUpon>KeyboardShortcuts.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Mono_Options.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="RequiredAttribute.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Shell_Commands.cs" />
+    <Compile Include="Shell_Magnification.cs" />
+    <Compile Include="Shell_SplitterDrag.cs" />
+    <Content Include="lib\guava-13.0.1.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\Saxon-HE-9.4.0.6.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="normalize.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\batik-css-1.6-1.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\batik-util-1.6-1.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\commons-cli-1.1.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\daisy-util-20100125.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\jing-20091111.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\jlayer-1.0.1.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\sac-1.3.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\Saxon-HE-9.4.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\stax-api-1.0.1.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\wstx-lgpl-3.2.9.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\xercesImpl-2.9.1.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\xml-apis-1.0.b2.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ZedVal\zedval-2.1.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="License.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Settings_KeyGestures.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings_KeyGestures.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="TobiHelp.chm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Tobi_NET4_TemporaryKey.pfx" />
+    <None Include="Tobi_TemporaryKey.pfx" />
+    <AppDesigner Include="Properties\" />
+    <Content Include="daisy.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="daisy_01.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="desc2html.xsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EPUB.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="epubcheck.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="faad.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libexpatw.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\commons-compress-1.4.1.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\jing-20120724.0.0.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="lib\sac-1.3.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="mathml-fallback-transform.xslt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Obi-to-XUK2.xsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="paper_tile_texture.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\drawingMode.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\fontMetrics.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\formattingMode.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\operator-dictionary.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\pmml2svg.xsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXGeneral-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXGeneral-BoldItalic.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXGeneral-Italic.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXGeneral-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXGeneral.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsD-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsD-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsSm-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsSm-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUp-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUp-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUpD-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUpD-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUpSm-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXIntegralsUpSm-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXNonUnicode-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXNonUnicode-BoldItalic.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXNonUnicode-Italic.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXNonUnicode-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXSizeFiveSym-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXSizeFourSym-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXSizeFourSym-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXSizeOneSym-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXSizeOneSym-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXSizeOneSym.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXSizeThreeSym-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXSizeThreeSym-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXSizeTwoSym-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXSizeTwoSym-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXVariants-Bold.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="pmml2svg_XSLT2\STIXVariants-Regular.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tpbnarrator.res">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib_NET4.csproj">
+      <Project>{6ee8e00a-db7c-41a7-bc66-527cb4c08d83}</Project>
+      <Name>AudioLib_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\core\UrakawaSDK.core_NET4.csproj">
+      <Project>{7ccd52f9-c801-4c2b-aa9d-b7e217f307a0}</Project>
+      <Name>UrakawaSDK.core_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\CAL\Composite.Presentation\Lib.Composite.Presentation_NET4.csproj">
+      <Project>{a957d686-369a-4ffd-b8ec-0611741c9e41}</Project>
+      <Name>Lib.Composite.Presentation_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\CAL\Composite.UnityExtensions\Lib.Composite.UnityExtensions_NET4.csproj">
+      <Project>{17831f3b-6b82-4916-bd2b-2ce2071ea622}</Project>
+      <Name>Lib.Composite.UnityExtensions_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\CAL\Composite\Lib.Composite_NET4.csproj">
+      <Project>{77138947-1d13-4e22-aee0-5d0dd046ca34}</Project>
+      <Name>Lib.Composite_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\CAL\Unity2\Lib.Unity2_NET4.csproj">
+      <Project>{EE1F752C-1FAB-41AD-AD63-857D0E62AB6B}</Project>
+      <Name>Lib.Unity2_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\MEF\Lib.MEF_NET4.csproj">
+      <Project>{a36aef66-2411-4225-b68e-f2d29368a31b}</Project>
+      <Name>Lib.MEF_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\MEF_Unity\Lib.MEF_Unity_NET4.csproj">
+      <Project>{24a770f8-af0e-400f-8abb-3fd68617103e}</Project>
+      <Name>Lib.MEF_Unity_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExternalLibs\ServiceLocation\Lib.ServiceLocation_NET4.csproj">
+      <Project>{FAF6D6B2-1EC9-4A1B-83BB-48F772E948CF}</Project>
+      <Name>Lib.ServiceLocation_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Common\Tobi.Common_NET4.csproj">
+      <Project>{3c21bb69-0f81-47d2-88e6-e4c08ad1460b}</Project>
+      <Name>Tobi.Common_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Infrastructure\Tobi.Infrastructure_NET4.csproj">
+      <Project>{698e4c51-9506-4cc5-94e2-31f5fd90532e}</Project>
+      <Name>Tobi.Infrastructure_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.AudioPane\Tobi.Plugin.AudioPane_NET4.csproj">
+      <Project>{ca624531-b5e6-4f6c-96e5-7b00de9680fe}</Project>
+      <Name>Tobi.Plugin.AudioPane_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Descriptions\Tobi.Plugin.Descriptions_NET4.csproj">
+      <Project>{d1e9484d-2c80-4e90-8a26-9228880539bf}</Project>
+      <Name>Tobi.Plugin.Descriptions_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.DocumentPane\Tobi.Plugin.DocumentPane_NET4.csproj">
+      <Project>{0c5e9d1d-fc0f-4dc4-a4a5-32feaf08349f}</Project>
+      <Name>Tobi.Plugin.DocumentPane_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.MenuBar\Tobi.Plugin.MenuBar_NET4.csproj">
+      <Project>{526daed8-c818-49b3-adcb-9fbe44aa7088}</Project>
+      <Name>Tobi.Plugin.MenuBar_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.MetadataPane\Tobi.Plugin.MetadataPane_NET4.csproj">
+      <Project>{f6516fb8-325f-43d5-ae86-01367b0f6181}</Project>
+      <Name>Tobi.Plugin.MetadataPane_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.NavigationPane\Tobi.Plugin.NavigationPane_NET4.csproj">
+      <Project>{7effcf20-a1aa-4668-a34c-a933c22feeba}</Project>
+      <Name>Tobi.Plugin.NavigationPane_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Settings\Tobi.Plugin.Settings_NET4.csproj">
+      <Project>{5d599bfc-aa17-4d94-9be6-6d369e214167}</Project>
+      <Name>Tobi.Plugin.Settings_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.StructureTrailPane\Tobi.Plugin.StructureTrailPane_NET4.csproj">
+      <Project>{620875f9-ee80-4d08-a603-c4347657e561}</Project>
+      <Name>Tobi.Plugin.StructureTrailPane_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.ToolBars\Tobi.Plugin.ToolBars_NET4.csproj">
+      <Project>{2ba3495e-8895-4d67-866c-c60bba3c08d5}</Project>
+      <Name>Tobi.Plugin.ToolBars_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Urakawa\Tobi.Plugin.Urakawa_NET4.csproj">
+      <Project>{2ba3495e-8895-4d67-866c-c60bca3c08a6}</Project>
+      <Name>Tobi.Plugin.Urakawa_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Validator.ContentDocument\Tobi.Plugin.Validator.ContentDocument_NET4.csproj">
+      <Project>{4a42d266-ba34-4c4d-be37-ea49ce6aabab}</Project>
+      <Name>Tobi.Plugin.Validator.ContentDocument_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Validator.Metadata\Tobi.Plugin.Validator.Metadata_NET4.csproj">
+      <Project>{341678a8-f3b5-43bf-8505-69b4ed969b53}</Project>
+      <Name>Tobi.Plugin.Validator.Metadata_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Validator.MissingAudio\Tobi.Plugin.Validator.MissingAudio_NET4.csproj">
+      <Project>{eb2751c7-1a3d-441b-9ea3-96b7022900b8}</Project>
+      <Name>Tobi.Plugin.Validator.MissingAudio_NET4</Name>
+    </ProjectReference>
+    <ProjectReference Include="Tobi.Modules.Validator\Tobi.Plugin.Validator_NET4.csproj">
+      <Project>{f5302b20-cb41-4e2e-ab1d-ab4ec0ab8db4}</Project>
+      <Name>Tobi.Plugin.Validator_NET4</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Tobi.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="DirectX">
+      <Visible>False</Visible>
+      <ProductName>DirectX</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TobiSplashScreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Lame.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="hi.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tpbnarrator_res.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="index_ClickOnce.html" />
+    <Content Include="Shortcut.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tock.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tocktock.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="IKVM.OpenJDK.Charsets">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="IKVM.OpenJDK.Core">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="IKVM.OpenJDK.Text">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="IKVM.OpenJDK.Util">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="IKVM.OpenJDK.XML.API">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="IKVM.Runtime">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\operator-dictionary.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXGeneral-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXGeneral-BoldItalic.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXGeneral-Italic.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXGeneral-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXGeneral.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXIntegralsD-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXIntegralsD-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXIntegralsSm-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXIntegralsSm-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXIntegralsUp-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXIntegralsUp-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXIntegralsUpD-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXIntegralsUpD-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXIntegralsUpSm-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXIntegralsUpSm-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXNonUnicode-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXNonUnicode-BoldItalic.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXNonUnicode-Italic.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXNonUnicode-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXSizeFiveSym-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXSizeFourSym-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXSizeFourSym-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXSizeOneSym-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXSizeOneSym-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXSizeOneSym.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXSizeThreeSym-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXSizeThreeSym-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXSizeTwoSym-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXSizeTwoSym-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXVariants-Bold.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="pmml2svg_XSLT2\STIXVariants-Regular.xml">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="saxon9he">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="saxon9he-api">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Tobi_Lang.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tobi_Lang.es.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tobi_Lang.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Tobi_Lang.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <FileAssociation Include=".xuk">
+      <Visible>False</Visible>
+      <Description>Tobi project file</Description>
+      <Progid>Tobi.Document</Progid>
+      <DefaultIcon>Shortcut.ico</DefaultIcon>
+    </FileAssociation>
+    <FileAssociation Include=".xukspine">
+      <Visible>False</Visible>
+      <Description>Tobi project spine</Description>
+      <Progid>Tobi.DocumentSpine</Progid>
+      <DefaultIcon>Shortcut.ico</DefaultIcon>
+    </FileAssociation>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--<UsingTask TaskName="Delete" AssemblyName="" />-->
+  <!--<Target Name="AfterBuild" Condition="True">
+    <Delete Files="$(TargetDir)$(TargetFileName).config" />
+    <Copy SourceFiles="$(ProjectDir)App.NET40.config" DestinationFiles="$(TargetDir)$(TargetFileName).config" />
+  </Target>-->
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

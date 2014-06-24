@@ -1,0 +1,19 @@
+﻿<UI:TextBlockWithAutomationPeer x:Class="Tobi.Common.UI.KeyGestureSinkBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:UI="clr-namespace:Tobi.Common.UI" Focusable="true"
+                                  KeyDown="OnKeyDown_TextBox"
+                                  PreviewKeyDown="OnPreviewKeyDown_TextBox"
+                                  KeyUp="OnKeyUp_TextBox"
+                                  PreviewKeyUp="OnPreviewKeyUp_TextBox"
+           
+           LostFocus="OnLostFocus_TextBox"
+           GotFocus="OnGotFocus_TextBox"
+          
+           MouseLeftButtonUp="OnMouseLeftButtonUp_TextBox"
+           
+           Loaded="OnLoaded_TextBox"
+           
+         >
+  <!-- 
+         Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" -->
+</UI:TextBlockWithAutomationPeer>

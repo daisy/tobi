@@ -1,0 +1,3125 @@
+﻿<DockPanel LastChildFill="True"
+           x:Class="Tobi.Plugin.Descriptions.DescriptionsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+           xmlns:System="clr-namespace:System;assembly=mscorlib"
+           xmlns:Descriptions="clr-namespace:Tobi.Plugin.Descriptions"
+           xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
+           xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
+           xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common"
+           xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+           Unloaded="OnUnloaded_Panel"
+           Loaded="OnLoaded_Panel"
+           
+           
+      KeyboardNavigation.TabNavigation="Local">
+  <!-- 
+           DataContext="{Binding RelativeSource={RelativeSource Self}}" -->
+
+  <DockPanel.Resources>
+    <Style TargetType="{x:Type Button}">
+      <Setter Property="Padding" Value="4,2,4,2"/>
+    </Style>
+  </DockPanel.Resources>
+
+  <DockPanel
+    DockPanel.Dock="Top"
+     LastChildFill="True"
+    
+    
+      KeyboardNavigation.TabNavigation="Local"
+    >
+
+    <!--<StackPanel
+    DockPanel.Dock="Left"
+    Orientation="Horizontal"
+                 HorizontalAlignment="Stretch"
+                      Margin="7,7,7,7">-->
+    <Image
+      DockPanel.Dock="Left"
+      Focusable="False"
+        Height="100"
+        HorizontalAlignment="Left"
+               VerticalAlignment="Top"
+                  Stretch = "Uniform"
+                  StretchDirection="DownOnly"
+        Source="{Binding DescribableImage, Mode=OneWay}"
+                
+                                Margin="6,6,12,0"
+              />
+
+    <!--</StackPanel>-->
+
+    <DockPanel DockPanel.Dock="Right"
+               
+           HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+  >
+      
+    <Border
+      DockPanel.Dock="Top"
+           HorizontalAlignment="Right"
+               VerticalAlignment="Top"
+  
+  Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+      
+      Focusable="false"
+      Padding="0" Margin="0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+      <Button
+        Control.TabIndex="2"
+        x:Name="ButtonGoBasic"
+      
+            Style="{StaticResource ToolBarButtonBaseStyle}"
+          
+               Content="Switch to basic editor"
+               Click="OnClick_ButtonGoBasic"
+               Padding="4,2,4,2"
+               Margin="4,2,4,0"
+  />
+
+    </Border>
+      <Border
+        DockPanel.Dock="Top"
+      
+           HorizontalAlignment="Right"
+               VerticalAlignment="Top"
+  Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+      
+           Focusable="false" Padding="0" Margin="0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}">
+      <Button
+        Control.TabIndex="3"
+      x:Name="ButtonGoAdvanced"
+      
+          Style="{StaticResource ToolBarButtonBaseStyle}"
+          
+             Content="Switch to advanced editor"
+             Click="OnClick_ButtonGoAdvanced"
+             Padding="4,2,4,2"
+             Margin="4,2,4,0"
+  />
+
+    </Border>
+
+      <StackPanel
+        DockPanel.Dock="Bottom"
+           HorizontalAlignment="Right"
+               VerticalAlignment="Bottom"
+        
+        Orientation="Horizontal"
+  >
+        <TextBlock
+          Text="DIAGRAM XML:"
+             Padding="4,2,4,2"
+             Margin="4,2,4,0"
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        Focusable="true"
+        
+      KeyboardNavigation.TabIndex="4"
+      KeyboardNavigation.IsTabStop="true"
+        />
+      
+      <TextBlock
+           Padding="4,2,4,2"
+           Margin="0,2,0,0"
+        >
+      <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        Focusable="true"
+        
+      KeyboardNavigation.TabIndex="5"
+      KeyboardNavigation.IsTabStop="true"
+        
+        Click="OnClick_ButtonImport"
+        KeyUp="OnKeyUp_ButtonImport">
+        <Run Text="Import"/>
+      </Hyperlink>
+    </TextBlock>
+
+        <TextBlock
+          Text="/"
+             Padding="4,2,4,2"
+             Margin="0,2,0,0"
+        />
+
+        <TextBlock
+             Padding="4,2,4,2"
+             Margin="0,2,0,0"
+        >
+          <Hyperlink
+            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+            Focusable="true"
+        
+          KeyboardNavigation.TabIndex="6"
+          KeyboardNavigation.IsTabStop="true"
+        
+            Click="OnClick_ButtonExport"
+            KeyUp="OnKeyUp_ButtonExport">
+            <Run Text="Export"/>
+          </Hyperlink>
+        </TextBlock>
+        
+      </StackPanel>
+      
+    <!--<Button
+           DockPanel.Dock="Bottom"
+           Content="Import DIAGRAM XML..."
+           HorizontalAlignment="Right"
+           Click="OnClick_ButtonImport"
+           Padding="4,2,4,2"
+           Margin="4,2,4,0"
+  />-->
+
+    </DockPanel>
+
+    <TextBlock
+      KeyboardNavigation.TabIndex="1"
+      KeyboardNavigation.IsTabStop="true"
+      
+      x:Name="ImageLabel"
+      Text="{Binding DescribableImageInfo, Mode=OneWay}"
+      
+      Focusable="True"
+      
+                 FontWeight="Bold"
+                 TextWrapping="WrapWithOverflow"
+                 VerticalAlignment="Center"
+                 HorizontalAlignment="Left"/>
+
+
+
+  </DockPanel>
+ 
+  
+  <Grid
+          HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+          Margin="0,12,0,0"
+          >
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"></RowDefinition>
+    </Grid.RowDefinitions>
+    
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+
+    <TabControl
+       x:Name="BasicPanel"
+        Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+    Grid.Row="0"
+    Grid.Column="0"
+    
+                BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+    BorderThickness="1"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+              >
+
+      <TabItem Header="Text descriptions">
+    <DockPanel
+      KeyboardNavigation.TabNavigation="Local"
+   
+        HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+    
+
+    LastChildFill="True">
+
+      <Grid
+                    KeyboardNavigation.IsTabStop="False"
+                    KeyboardNavigation.TabIndex="1"
+            HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+          >
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"></RowDefinition>
+        <RowDefinition Height="Auto"></RowDefinition>
+        <RowDefinition Height="66"></RowDefinition>
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+        <ColumnDefinition Width="*"></ColumnDefinition>
+      </Grid.ColumnDefinitions>
+
+      <GroupBox
+        KeyboardNavigation.TabNavigation="Local"
+    Grid.Row="0"
+    Grid.Column="0"
+    
+        Margin="0, 6, 0, 0" Padding="6" >
+        <GroupBox.Header>
+
+          <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+            Click="OnClick_LongDescription"
+            KeyUp="OnKeyUp_LongDescription"
+            Focusable="true"
+                  KeyboardNavigation.IsTabStop="True"
+        KeyboardNavigation.TabIndex="1"
+                  >
+            <Hyperlink.ToolTip>
+              <ToolTip>
+                <TextBlock Width="150" Margin="3"
+                           TextWrapping="WrapWithOverflow"
+                           Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.LongDescriptionHelp}">
+                </TextBlock>
+              </ToolTip>
+            </Hyperlink.ToolTip>
+            <Hyperlink.Style>
+              <Style TargetType="{x:Type Hyperlink}">
+                <Style.Setters>
+                  <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.LongDescriptionHelp}">
+                  </Setter>
+                </Style.Setters>
+              </Style>
+            </Hyperlink.Style>
+            <Run
+            FontWeight="Bold"
+            Text="Long Description"></Run>
+          </Hyperlink>
+
+        </GroupBox.Header>
+
+        <DockPanel LastChildFill="True">
+      <DockPanel
+                  DockPanel.Dock="Bottom"
+          HorizontalAlignment="Stretch">
+
+          
+        <Button
+          DockPanel.Dock="Left"
+                  FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+               Control.TabIndex="3"
+          VerticalAlignment="Center"
+          HorizontalAlignment="Left"
+                Margin="0,4,0,0"
+                Content="Edit"
+                      
+          Click="OnClick_ButtonEditText_LongDesc"/>
+        <Button
+          DockPanel.Dock="Left"
+                  FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+               Control.TabIndex="4"
+          VerticalAlignment="Center"
+          HorizontalAlignment="Left"
+                Margin="4,4,0,0"
+                Content="Clear"
+                IsEnabled="{Binding HasDescriptionText_LongDesc}"
+          Click="OnClick_ButtonRemoveText_LongDesc"/>
+
+
+
+
+
+
+        <Border
+          DockPanel.Dock="Right"
+               HorizontalAlignment="Right"
+                     VerticalAlignment="Center"
+  
+            Focusable="false"
+            Padding="0"
+                    Margin="4,4,0,0"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+          <Button
+                    FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                 Control.TabIndex="7"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Right"
+                      
+                  Content=">>"
+                  
+          Padding="0"
+            Margin="0"
+                  
+            Click="OnClick_ButtonAdvanced_LongDesc">
+
+            <Button.ToolTip>
+              <ToolTip
+                Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                ContentStringFormat="{}{0}"
+      />
+            </Button.ToolTip>
+            <Button.Style>
+              <Style TargetType="{x:Type Button}"
+                     BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                <Style.Setters>
+                  <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                  </Setter>
+                </Style.Setters>
+              </Style>
+            </Button.Style>
+          </Button>
+        </Border>
+
+        <Button
+          DockPanel.Dock="Right"
+                  FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+               Control.TabIndex="5"
+          VerticalAlignment="Center"
+          HorizontalAlignment="Right"
+                Margin="4,4,0,0"
+                Content="ZZZZ"
+                  
+  Visibility="{Binding HasAudio_LongDesc, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+      
+               Padding="0"
+                  
+                  x:Name="ButtonAudio_LongDesc"
+          Click="OnClick_ButtonAudio_LongDesc">
+
+          <Button.ToolTip>
+            <ToolTip
+              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}"
+              ContentStringFormat="{}{0}"
+      />
+          </Button.ToolTip>
+          <Button.Style>
+            <Style TargetType="{x:Type Button}"
+                   BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+              <Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}">
+                </Setter>
+              </Style.Setters>
+            </Style>
+          </Button.Style>
+        </Button>
+        
+        <!-- 
+                IsEnabled="{Binding HasDescriptionText_LongDesc}"
+                -->
+        <Button
+          DockPanel.Dock="Right"
+                  FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+               Control.TabIndex="6"
+          VerticalAlignment="Center"
+          HorizontalAlignment="Right"
+                Margin="4,4,0,0"
+                Content="ZZZZ"
+                  
+  Visibility="{Binding HasAudio_LongDesc, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+      
+               Padding="0"
+                  
+                  x:Name="ButtonNoAudio_LongDesc"
+          Click="OnClick_ButtonNoAudio_LongDesc"
+                  
+                   
+                  >
+
+          <Button.ToolTip>
+            <ToolTip
+              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}"
+              ContentStringFormat="{}{0}"
+      />
+          </Button.ToolTip>
+          <Button.Style>
+            <Style TargetType="{x:Type Button}"
+                   BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+              <Style.Setters>
+                <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}">
+                </Setter>
+              </Style.Setters>
+            </Style>
+          </Button.Style>
+        </Button>
+
+      </DockPanel>
+
+          <ScrollViewer
+            
+        HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+    
+        HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <UI:TextBoxReadOnlyCaretVisible
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                     Control.TabIndex="2"
+              x:Name="DescriptionTextBox_LongDesc"
+      TextWrapping="WrapWithOverflow"
+              TextReadOnly="{Binding DescriptionText_LongDesc}"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+              Focusable="True"
+                    IsEnabled="{Binding HasDescriptionText_LongDesc}"
+                       />
+          </ScrollViewer>
+          <!--Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"-->
+        </DockPanel>
+      </GroupBox>
+
+      <GroupBox
+        KeyboardNavigation.TabNavigation="Local"
+    Grid.Row="0"
+    Grid.Column="1"
+    
+        Margin="0, 6, 0, 0" Padding="6" >
+        <GroupBox.Header>
+
+          <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+            Click="OnClick_SummaryDescription"
+            KeyUp="OnKeyUp_SummaryDescription"
+            Focusable="true"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="1">
+            <Hyperlink.ToolTip>
+              <ToolTip>
+                <TextBlock Width="150" Margin="3"
+                           TextWrapping="WrapWithOverflow"
+                           Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SummaryDescriptionHelp}">
+                </TextBlock>
+              </ToolTip>
+            </Hyperlink.ToolTip>
+            <Hyperlink.Style>
+              <Style TargetType="{x:Type Hyperlink}">
+                <Style.Setters>
+                  <Setter Property="AutomationProperties.Name"
+                          Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SummaryDescriptionHelp}">
+                  </Setter>
+                </Style.Setters>
+              </Style>
+            </Hyperlink.Style>
+            <Run
+            FontWeight="Bold"
+            Text="Summary"></Run>
+          </Hyperlink>
+
+        </GroupBox.Header>
+
+        <DockPanel LastChildFill="True">
+
+          <DockPanel
+                  DockPanel.Dock="Bottom"
+          HorizontalAlignment="Stretch">
+            <Button
+              DockPanel.Dock="Left"
+                      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   Control.TabIndex="3"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Left"
+                    Margin="0,4,0,0"
+                    Content="Edit"
+                      
+              Click="OnClick_ButtonEditText_Summary"/>
+            <Button
+              DockPanel.Dock="Left"
+                      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   Control.TabIndex="4"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Left"
+                    Margin="4,4,0,0"
+                    Content="Clear"
+                    IsEnabled="{Binding HasDescriptionText_Summary}"
+              Click="OnClick_ButtonRemoveText_Summary"/>
+
+
+            <Border
+              DockPanel.Dock="Right"
+                   HorizontalAlignment="Right"
+                         VerticalAlignment="Center"
+  
+                Focusable="false"
+                Padding="0"
+                        Margin="4,4,0,0"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+              <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                     Control.TabIndex="7"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Right"
+                      
+                      Content=">>"
+                  
+              Padding="0"
+                Margin="0"
+                  
+                Click="OnClick_ButtonAdvanced_Summary">
+
+                <Button.ToolTip>
+                  <ToolTip
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                    ContentStringFormat="{}{0}"
+      />
+                </Button.ToolTip>
+                <Button.Style>
+                  <Style TargetType="{x:Type Button}"
+                         BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                    <Style.Setters>
+                      <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                      </Setter>
+                    </Style.Setters>
+                  </Style>
+                </Button.Style>
+              </Button>
+            </Border>
+
+
+            <Button
+              DockPanel.Dock="Right"
+                      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   Control.TabIndex="5"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Right"
+                    Margin="4,4,0,0"
+                    Content="ZZZZ"
+                  
+      Visibility="{Binding HasAudio_Summary, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+      
+                   Padding="0"
+                  
+                      x:Name="ButtonAudio_Summary"
+              Click="OnClick_ButtonAudio_Summary"
+                  >
+
+              <Button.ToolTip>
+                <ToolTip
+                  Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}"
+                  ContentStringFormat="{}{0}"
+      />
+              </Button.ToolTip>
+              <Button.Style>
+                <Style TargetType="{x:Type Button}"
+                       BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                  <Style.Setters>
+                    <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}">
+                    </Setter>
+                  </Style.Setters>
+                </Style>
+              </Button.Style>
+            </Button>
+
+
+            <!-- 
+                    IsEnabled="{Binding HasDescriptionText_Summary}"
+                    -->
+            <Button
+              DockPanel.Dock="Right"
+                      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   Control.TabIndex="6"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Right"
+                    Margin="4,4,0,0"
+                    Content="ZZZZ"
+                  
+      Visibility="{Binding HasAudio_Summary, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+      
+                   Padding="0"
+                  
+                      x:Name="ButtonNoAudio_Summary"
+              Click="OnClick_ButtonNoAudio_Summary"
+                  
+                  >
+
+              <Button.ToolTip>
+                <ToolTip
+                  Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}"
+                  ContentStringFormat="{}{0}"
+      />
+              </Button.ToolTip>
+              <Button.Style>
+                <Style TargetType="{x:Type Button}"
+                       BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                  <Style.Setters>
+                    <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}">
+                    </Setter>
+                  </Style.Setters>
+                </Style>
+              </Button.Style>
+            </Button>
+          </DockPanel>
+
+          <ScrollViewer
+            
+        HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+    
+        HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <UI:TextBoxReadOnlyCaretVisible
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                     Control.TabIndex="2"
+              x:Name="DescriptionTextBox_Summary"
+      TextWrapping="WrapWithOverflow"
+              TextReadOnly="{Binding DescriptionText_Summary}"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+              Focusable="True"
+                    IsEnabled="{Binding HasDescriptionText_Summary}"
+                       />
+          </ScrollViewer>
+          <!--Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"-->
+        </DockPanel>
+      </GroupBox>
+
+        <GroupBox
+          KeyboardNavigation.TabNavigation="Local"
+      Grid.Row="0"
+      Grid.Column="2"
+    
+          Margin="0, 6, 0, 0" Padding="6" >
+          <GroupBox.Header>
+
+            <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+              Click="OnClick_SimplifiedDescription"
+              KeyUp="OnKeyUp_SimplifiedDescription"
+              Focusable="true"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1">
+              <Hyperlink.ToolTip>
+                <ToolTip>
+                  <TextBlock Width="150" Margin="3"
+                             TextWrapping="WrapWithOverflow"
+                             Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SimplifiedDescriptionHelp}">
+                  </TextBlock>
+                </ToolTip>
+              </Hyperlink.ToolTip>
+              <Hyperlink.Style>
+                <Style TargetType="{x:Type Hyperlink}">
+                  <Style.Setters>
+                    <Setter Property="AutomationProperties.Name"
+                            Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SimplifiedDescriptionHelp}">
+                    </Setter>
+                  </Style.Setters>
+                </Style>
+              </Hyperlink.Style>
+              <Run
+              FontWeight="Bold"
+              Text="Simplified Language"></Run>
+            </Hyperlink>
+          </GroupBox.Header>
+
+          <DockPanel LastChildFill="True">
+            <DockPanel
+                  DockPanel.Dock="Bottom"
+          HorizontalAlignment="Stretch">
+              <Button
+                DockPanel.Dock="Left"
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                     Control.TabIndex="3"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                      Margin="0,4,0,0"
+                      Content="Edit"
+                      
+                Click="OnClick_ButtonEditText_SimplifiedLanguage"/>
+              <Button
+                DockPanel.Dock="Left"
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                     Control.TabIndex="4"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                      Margin="4,4,0,0"
+                      Content="Clear"
+                      IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
+                Click="OnClick_ButtonRemoveText_SimplifiedLanguage"/>
+
+
+              <Border
+                DockPanel.Dock="Right"
+                     HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+  
+                  Focusable="false"
+                  Padding="0"
+                          Margin="4,4,0,0"
+                  BorderThickness="1"
+                  BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+                <Button
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                       Control.TabIndex="7"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Right"
+                      
+                        Content=">>"
+                  
+                Padding="0"
+                  Margin="0"
+                  
+                  Click="OnClick_ButtonAdvanced_SimplifiedLang">
+
+                  <Button.ToolTip>
+                    <ToolTip
+                      Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                      ContentStringFormat="{}{0}"
+      />
+                  </Button.ToolTip>
+                  <Button.Style>
+                    <Style TargetType="{x:Type Button}"
+                           BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                      <Style.Setters>
+                        <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                        </Setter>
+                      </Style.Setters>
+                    </Style>
+                  </Button.Style>
+                </Button>
+              </Border>
+
+
+              <Button
+                DockPanel.Dock="Right"
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                     Control.TabIndex="5"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Right"
+                      Margin="4,4,0,0"
+                      Content="ZZZZ"
+                  
+        Visibility="{Binding HasAudio_SimplifiedLanguage, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+      
+                     Padding="0"
+                  
+                        x:Name="ButtonAudio_SimplifiedLanguage"
+                Click="OnClick_ButtonAudio_SimplifiedLanguage"
+                  >
+          <Button.ToolTip>
+            <ToolTip
+              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}"
+              ContentStringFormat="{}{0}"
+      />
+          </Button.ToolTip>
+                <Button.Style>
+                  <Style TargetType="{x:Type Button}"
+                         BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                    <Style.Setters>
+                      <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}">
+                      </Setter>
+                    </Style.Setters>
+                  </Style>
+                </Button.Style>
+              </Button>
+
+<!-- 
+                  IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
+                  -->
+              <Button
+                DockPanel.Dock="Right"
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                     Control.TabIndex="6"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Right"
+                      Margin="4,4,0,0"
+                      Content="ZZZZ"
+        Visibility="{Binding HasAudio_SimplifiedLanguage, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+      
+                     Padding="0"
+                  
+                        x:Name="ButtonNoAudio_SimplifiedLanguage"
+                Click="OnClick_ButtonNoAudio_SimplifiedLanguage"
+                  
+                  >
+
+                <Button.ToolTip>
+                  <ToolTip
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}"
+                    ContentStringFormat="{}{0}"
+      />
+                </Button.ToolTip>
+                <Button.Style>
+                  <Style TargetType="{x:Type Button}"
+                         BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                    <Style.Setters>
+                      <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}">
+                      </Setter>
+                    </Style.Setters>
+                  </Style>
+                </Button.Style>
+              </Button>
+            </DockPanel>
+
+            <ScrollViewer
+            
+          HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+    
+          HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+              <UI:TextBoxReadOnlyCaretVisible
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                       Control.TabIndex="2"
+                x:Name="DescriptionTextBox_SimplifiedLanguage"
+        TextWrapping="WrapWithOverflow"
+                TextReadOnly="{Binding DescriptionText_SimplifiedLanguage}"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                Focusable="True"
+                      IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
+                       />
+            </ScrollViewer>
+            <!--Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"-->
+          </DockPanel>
+        </GroupBox>
+
+
+        <GridSplitter
+            Grid.Row="1"
+          Grid.ColumnSpan="3"
+              
+          Margin="0,3,0,3"
+             Focusable="False"
+             HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        </GridSplitter>
+
+
+        <GroupBox
+          MinHeight="40"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            
+            
+  KeyboardNavigation.TabNavigation="Local"
+    
+        Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+          Margin="0, 0, 0, 0" Padding="6" >
+          <GroupBox.Header>
+
+            <TextBlock
+            Text="Notes"
+        
+            Focusable="true"
+            FontWeight="Bold"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="1"
+
+        />
+          </GroupBox.Header>
+
+          <TextBlock
+          Text="No issues detected."
+        
+          Focusable="true"
+          FontWeight="Bold"
+                KeyboardNavigation.IsTabStop="True"
+                KeyboardNavigation.TabIndex="2"
+
+        />
+        </GroupBox>
+
+
+        <GroupBox
+MinHeight="50"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            
+          KeyboardNavigation.TabNavigation="Local"
+    
+              Visibility="{Binding HasValidationWarning_BasicText, Converter={XAML:BooleanToVisibilityConverter}}"
+          Margin="0, 0, 0, 0"
+Padding="6,3,6,3"
+>
+          <GroupBox.Header>
+            <TextBlock
+              Foreground="Red"
+              Focusable="true"
+              FontWeight="Bold"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1"
+                        Text="Notes"/>
+          </GroupBox.Header>
+
+          <ScrollViewer
+          HorizontalAlignment="Stretch"
+        HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <TextBlock
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   
+                      KeyboardNavigation.IsTabStop="true"
+                      KeyboardNavigation.TabIndex="2"
+
+      TextWrapping="WrapWithOverflow"
+              Text="{Binding ValidationText_BasicText}"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+              Focusable="True"
+                       />
+          </ScrollViewer>
+        </GroupBox>
+
+
+      </Grid>
+
+  </DockPanel>
+
+      </TabItem>
+
+      <TabItem Header="Alternative Images">
+
+        <DockPanel
+          KeyboardNavigation.TabNavigation="Local"
+   
+            HorizontalAlignment="Stretch"
+                   VerticalAlignment="Stretch"
+    
+
+        LastChildFill="True">
+
+          <Grid
+                        KeyboardNavigation.IsTabStop="False"
+                        KeyboardNavigation.TabIndex="1"
+                HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+          >
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*"></RowDefinition>
+              <RowDefinition Height="Auto"></RowDefinition>
+              <RowDefinition Height="66"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"></ColumnDefinition>
+              <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <GroupBox
+              KeyboardNavigation.TabNavigation="Local"
+          Grid.Row="0"
+          Grid.Column="0"
+    
+              Margin="0, 6, 0, 0" Padding="6" >
+              <!--<GroupBox.Header>
+                <TextBlock
+                  Focusable="true"
+                  FontWeight="Bold"
+                        KeyboardNavigation.IsTabStop="True"
+                        KeyboardNavigation.TabIndex="1"
+                            Text="Simplified Image"/>
+              </GroupBox.Header>-->
+
+              <Grid
+                    HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+              KeyboardNavigation.TabNavigation="Local"
+          >
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*"></RowDefinition>
+                  <RowDefinition Height="Auto"></RowDefinition>
+                  <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"></ColumnDefinition>
+                  <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                  <DockPanel LastChildFill="True" Grid.Row="0"
+          Grid.Column="0"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Left"
+                          >
+                    <TextBlock
+                              DockPanel.Dock="Top">
+                      <Hyperlink
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                      Click="OnClick_SimplifiedImage"
+                      KeyUp="OnKeyUp_SimplifiedImage"
+                      Focusable="true"
+                            KeyboardNavigation.IsTabStop="True"
+                            KeyboardNavigation.TabIndex="1">
+                      <Hyperlink.ToolTip>
+                        <ToolTip>
+                          <TextBlock 
+                             Width="150" Margin="3"
+                                     TextWrapping="WrapWithOverflow"
+                                     Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SimplifiedImageHelp}">
+                          </TextBlock>
+                        </ToolTip>
+                      </Hyperlink.ToolTip>
+                      <Hyperlink.Style>
+                        <Style TargetType="{x:Type Hyperlink}">
+                          <Style.Setters>
+                            <Setter Property="AutomationProperties.Name"
+                                    Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SimplifiedImageHelp}">
+                            </Setter>
+                          </Style.Setters>
+                        </Style>
+                      </Hyperlink.Style>
+                      <Run
+                      FontWeight="Bold"
+                      Text="Simplified Image"></Run>
+                    </Hyperlink>
+                    </TextBlock>
+                    
+                  <StackPanel Orientation="Horizontal"
+                              DockPanel.Dock="Bottom"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
+                    <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                           Control.TabIndex="3"
+                      x:Name="ButtonOpenImage_Simplified"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Stretch"
+                            Margin="0,4,0,0"
+                            Content="Open..."
+                        
+                      Click="OnClick_ButtonOpenImage_Simplified"/>
+                    <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                           Control.TabIndex="4"
+                      x:Name="ButtonClearImage_Simplified"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Stretch"
+                            Margin="4,4,0,0"
+                            Content="Clear"
+                            IsEnabled="{Binding HasDescriptionImage_Simplified}"
+                      Click="OnClick_ButtonClearImage_Simplified"/>
+
+
+                    <Border
+                           HorizontalAlignment="Right"
+                                 VerticalAlignment="Bottom"
+  
+                        Focusable="false"
+                        Padding="0"
+                                Margin="20,4,0,0"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+                      <Button
+                                FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                             Control.TabIndex="5"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right"
+                      
+                              Content=">>"
+                  
+                      Padding="0"
+                        Margin="0"
+                  
+                        Click="OnClick_ButtonAdvanced_SimplifiedImage">
+
+                        <Button.ToolTip>
+                          <ToolTip
+                            Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                            ContentStringFormat="{}{0}"
+      />
+                        </Button.ToolTip>
+                        <Button.Style>
+                          <Style TargetType="{x:Type Button}"
+                                 BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                            <Style.Setters>
+                              <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                              </Setter>
+                            </Style.Setters>
+                          </Style>
+                        </Button.Style>
+                      </Button>
+                    </Border>
+
+
+                  </StackPanel>
+
+
+                </DockPanel>
+
+
+                  <Border Grid.Row="0"
+            Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                    Padding="0" Margin="6, 0, 0, 0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+          >
+                  <Image
+                    Focusable="True"
+                      KeyboardNavigation.IsTabStop="True"
+                           KeyboardNavigation.TabIndex="2"
+                
+                            IsEnabled="{Binding HasDescriptionImage_Simplified}"
+                    x:Name="DescriptionImage_Simplified"
+                    HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                              Stretch = "Uniform"
+                              StretchDirection="DownOnly"
+                    ToolTip="{Binding DescriptionImage_Simplified, Mode=OneWay}"
+                    Source="{Binding DescriptionImage_Simplified, Mode=OneWay, Converter={UI:PathToImageSourceConverter}}"
+              >
+                    <Image.Style>
+                      <Style TargetType="{x:Type Image}">
+                        <Style.Setters>
+                          <Setter Property="AutomationProperties.Name">
+                            <Setter.Value>
+                              <MultiBinding StringFormat="Image full path: {0}"  Mode="OneWay">
+                                <Binding Path="DescriptionImage_Simplified" Mode="OneWay"/>
+                                <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
+                              </MultiBinding>
+                            </Setter.Value>
+                          </Setter>
+                        </Style.Setters>
+                      </Style>
+                    </Image.Style>
+                  </Image>
+
+                  </Border>
+
+                <GridSplitter
+                  Margin="0,3,0,3"
+                  Grid.ColumnSpan="2"
+                    Grid.Row="1"
+                     Focusable="False"
+                     HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                </GridSplitter>
+
+                  <DockPanel LastChildFill="True"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Left"
+          Grid.Row="2"
+          Grid.Column="0">
+
+                    <TextBlock
+                                DockPanel.Dock="Top">
+                      <Hyperlink
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                        Click="OnClick_Tour"
+                        KeyUp="OnKeyUp_Tour"
+                        Focusable="true"
+                              KeyboardNavigation.IsTabStop="True"
+                              KeyboardNavigation.TabIndex="5">
+                        <Hyperlink.ToolTip>
+                          <ToolTip>
+                            <TextBlock Width="150" Margin="3"
+                                       TextWrapping="WrapWithOverflow"
+                                       Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TourHelp}">
+                            </TextBlock>
+                          </ToolTip>
+                        </Hyperlink.ToolTip>
+                        <Hyperlink.Style>
+                          <Style TargetType="{x:Type Hyperlink}">
+                            <Style.Setters>
+                              <Setter Property="AutomationProperties.Name"
+                                      Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TourHelp}">
+                              </Setter>
+                            </Style.Setters>
+                          </Style>
+                        </Hyperlink.Style>
+                        <Run
+                        FontWeight="Bold"
+                        Text="Tour"></Run>
+                      </Hyperlink>
+                    </TextBlock>
+                    <StackPanel Orientation="Horizontal"
+                            DockPanel.Dock="Bottom"
+                    HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
+                  <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="7"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Stretch"
+                          Margin="0,4,0,0"
+                          Content="Edit"
+                      
+                    Click="OnClick_ButtonEditText_SimplifiedImage"/>
+                  <Button
+                    FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Stretch"
+                          Margin="4,4,0,0"
+                          Content="Clear"
+                          IsEnabled="{Binding HasDescriptionText_SimplifiedImage}"
+                    Click="OnClick_ButtonClearText_SimplifiedImage"
+                    
+                         Control.TabIndex="8"/>
+
+                      <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="9"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Right"
+                          Margin="4,4,0,0"
+                          Content="ZZZZ"
+                  
+            Visibility="{Binding HasAudio_SimplifiedImage, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+      
+                         Padding="0"
+                  
+                            x:Name="ButtonAudio_SimplifiedImage"
+                    Click="OnClick_ButtonAudio_SimplifiedImage"
+                  >
+                    <Button.ToolTip>
+                      <ToolTip
+                        Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}"
+                        ContentStringFormat="{}{0}"
+      />
+                    </Button.ToolTip>
+                    <Button.Style>
+                      <Style TargetType="{x:Type Button}"
+                             BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                        <Style.Setters>
+                          <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}">
+                          </Setter>
+                        </Style.Setters>
+                      </Style>
+                    </Button.Style>
+                  </Button>
+
+                      <!-- 
+                  IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
+                  -->
+                      <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="10"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Right"
+                          Margin="4,4,0,0"
+                          Content="ZZZZ"
+            Visibility="{Binding HasAudio_SimplifiedImage, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+      
+                         Padding="0"
+                  
+                            x:Name="ButtonNoAudio_SimplifiedImage"
+                    Click="OnClick_ButtonNoAudio_SimplifiedImage"
+                  
+                              
+                  >
+                      <Button.ToolTip>
+                        <ToolTip
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}"
+                          ContentStringFormat="{}{0}"
+      />
+                      </Button.ToolTip>
+                    <Button.Style>
+                      <Style TargetType="{x:Type Button}"
+                             BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                        <Style.Setters>
+                          <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}">
+                          </Setter>
+                        </Style.Setters>
+                      </Style>
+                    </Button.Style>
+                  </Button>
+
+
+
+
+                      <Border
+                             HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom"
+  
+                          Focusable="false"
+                          Padding="0"
+                                  Margin="4,4,0,0"
+                          BorderThickness="1"
+                          BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+                        <Button
+                                  FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                               Control.TabIndex="11"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Right"
+                      
+                                Content=">>"
+                  
+                        Padding="0"
+                          Margin="0"
+                  
+                          Click="OnClick_ButtonAdvanced_SimplifiedImage_Text">
+
+                          <Button.ToolTip>
+                            <ToolTip
+                              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                              ContentStringFormat="{}{0}"
+      />
+                          </Button.ToolTip>
+                          <Button.Style>
+                            <Style TargetType="{x:Type Button}"
+                                   BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                              <Style.Setters>
+                                <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                                </Setter>
+                              </Style.Setters>
+                            </Style>
+                          </Button.Style>
+                        </Button>
+                      </Border>
+
+
+
+
+                    </StackPanel>
+
+              </DockPanel>
+
+                  <ScrollViewer
+                    Margin="6, 0, 0, 0"
+             Grid.Row="2"
+            Grid.Column="1"
+             
+                HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+    
+                HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <UI:TextBoxReadOnlyCaretVisible
+              FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                             Control.TabIndex="6"
+                      x:Name="DescriptionTextBox_SimplifiedImage"
+              TextWrapping="WrapWithOverflow"
+                      TextReadOnly="{Binding DescriptionText_SimplifiedImage}"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch"
+                      Focusable="True"
+                            IsEnabled="{Binding HasDescriptionText_SimplifiedImage}"
+                       />
+                  </ScrollViewer>
+              
+              </Grid>
+            </GroupBox>
+
+
+            <GroupBox
+              KeyboardNavigation.TabNavigation="Local"
+          Grid.Row="0"
+          Grid.Column="1"
+    
+              Margin="12, 6, 0, 0" Padding="6" >
+              <!--<GroupBox.Header>
+                <TextBlock
+                  Focusable="true"
+                  FontWeight="Bold"
+                        KeyboardNavigation.IsTabStop="True"
+                        KeyboardNavigation.TabIndex="1"
+                            Text="Tactile Image"/>
+              </GroupBox.Header>-->
+
+              <Grid
+                    HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+            KeyboardNavigation.TabNavigation="Local"
+          >
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="*"></RowDefinition>
+                  <RowDefinition Height="Auto"></RowDefinition>
+                  <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"></ColumnDefinition>
+                  <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <DockPanel LastChildFill="True" Grid.Row="0"
+        Grid.Column="0"
+                         VerticalAlignment="Stretch"
+                         HorizontalAlignment="Left"
+                          >
+                  <TextBlock
+                            DockPanel.Dock="Top">
+                    <Hyperlink
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                              DockPanel.Dock="Top"
+                      Click="OnClick_TactileImage"
+                      KeyUp="OnKeyUp_TactileImage"
+                      Focusable="true"
+                            KeyboardNavigation.IsTabStop="True"
+                            KeyboardNavigation.TabIndex="1">
+                    <Hyperlink.ToolTip>
+                      <ToolTip>
+                        <TextBlock Width="150" Margin="3"
+                                   TextWrapping="WrapWithOverflow"
+                                   Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TactileImageHelp}">
+                        </TextBlock>
+                      </ToolTip>
+                    </Hyperlink.ToolTip>
+                    <Hyperlink.Style>
+                      <Style TargetType="{x:Type Hyperlink}">
+                        <Style.Setters>
+                          <Setter Property="AutomationProperties.Name"
+                                  Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TactileImageHelp}">
+                          </Setter>
+                        </Style.Setters>
+                      </Style>
+                    </Hyperlink.Style>
+                    <Run
+                    FontWeight="Bold"
+                    Text="Tactile Image"></Run>
+                  </Hyperlink>
+                  </TextBlock>
+                  <StackPanel Orientation="Horizontal"
+                              DockPanel.Dock="Bottom"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
+                    <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                           Control.TabIndex="3"
+                      x:Name="ButtonOpenImage_Tactile"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Stretch"
+                            Margin="0,4,0,0"
+                            Content="Open..."
+                        
+                      Click="OnClick_ButtonOpenImage_Tactile"/>
+                    <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                           Control.TabIndex="4"
+                      x:Name="ButtonClearImage_Tactile"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Stretch"
+                            Margin="4,4,0,0"
+                            Content="Clear"
+                            IsEnabled="{Binding HasDescriptionImage_Tactile}"
+                      Click="OnClick_ButtonClearImage_Tactile"/>
+
+
+                    <Border
+                           HorizontalAlignment="Right"
+                                 VerticalAlignment="Bottom"
+  
+                        Focusable="false"
+                        Padding="0"
+                                Margin="20,4,0,0"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+                      <Button
+                                FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                             Control.TabIndex="5"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right"
+                      
+                              Content=">>"
+                  
+                      Padding="0"
+                        Margin="0"
+                  
+                        Click="OnClick_ButtonAdvanced_TactileImage">
+
+                        <Button.ToolTip>
+                          <ToolTip
+                            Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                            ContentStringFormat="{}{0}"
+      />
+                        </Button.ToolTip>
+                        <Button.Style>
+                          <Style TargetType="{x:Type Button}"
+                                 BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                            <Style.Setters>
+                              <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                              </Setter>
+                            </Style.Setters>
+                          </Style>
+                        </Button.Style>
+                      </Button>
+                    </Border>
+
+
+
+                  </StackPanel>
+
+
+                </DockPanel>
+
+
+                <Border Grid.Row="0"
+          Grid.Column="1"
+                  HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"
+                  Padding="0" Margin="6, 0, 0, 0" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+          >
+                  <Image
+                    Focusable="True"
+                      KeyboardNavigation.IsTabStop="True"
+                           KeyboardNavigation.TabIndex="2"
+                
+                            IsEnabled="{Binding HasDescriptionImage_Tactile}"
+                    x:Name="DescriptionImage_Tactile"
+                    HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                              Stretch = "Uniform"
+                              StretchDirection="DownOnly"
+                    ToolTip="{Binding DescriptionImage_Tactile, Mode=OneWay}"
+                    Source="{Binding DescriptionImage_Tactile, Mode=OneWay, Converter={UI:PathToImageSourceConverter}}"
+              >
+                    <Image.Style>
+                      <Style TargetType="{x:Type Image}">
+                        <Style.Setters>
+                          <Setter Property="AutomationProperties.Name">
+                            <Setter.Value>
+                              <MultiBinding StringFormat="Image full path: {0}"  Mode="OneWay">
+                                <Binding Path="DescriptionImage_Tactile" Mode="OneWay"/>
+                                <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
+                              </MultiBinding>
+                            </Setter.Value>
+                          </Setter>
+                        </Style.Setters>
+                      </Style>
+                    </Image.Style>
+                  </Image>
+
+                </Border>
+
+                <GridSplitter
+                  Margin="0,3,0,3"
+                  Grid.ColumnSpan="2"
+                    Grid.Row="1"
+                     Focusable="False"
+                     HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                </GridSplitter>
+
+                <DockPanel LastChildFill="True"
+                         VerticalAlignment="Stretch"
+                         HorizontalAlignment="Left"
+        Grid.Row="2"
+        Grid.Column="0">
+
+                  <TextBlock
+                              DockPanel.Dock="Top">
+                    <Hyperlink
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                                        Click="OnClick_Tour"
+                                        KeyUp="OnKeyUp_Tour"
+                                        Focusable="true"
+                                              KeyboardNavigation.IsTabStop="True"
+                                              KeyboardNavigation.TabIndex="5">
+                    <Hyperlink.ToolTip>
+                      <ToolTip>
+                        <TextBlock Width="150" Margin="3"
+                                   TextWrapping="WrapWithOverflow"
+                                   Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TourHelp}">
+                        </TextBlock>
+                      </ToolTip>
+                    </Hyperlink.ToolTip>
+                    <Hyperlink.Style>
+                      <Style TargetType="{x:Type Hyperlink}">
+                        <Style.Setters>
+                          <Setter Property="AutomationProperties.Name"
+                                  Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TourHelp}">
+                          </Setter>
+                        </Style.Setters>
+                      </Style>
+                    </Hyperlink.Style>
+                    <Run
+                    FontWeight="Bold"
+                    Text="Tour"></Run>
+                  </Hyperlink>
+                  </TextBlock>
+                    
+                    <StackPanel Orientation="Horizontal"
+                              DockPanel.Dock="Bottom"
+                      HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                    <Button
+                              FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                           Control.TabIndex="7"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Stretch"
+                            Margin="0,4,0,0"
+                            Content="Edit"
+                      
+                      Click="OnClick_ButtonEditText_TactileImage"/>
+                    <Button
+                      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Stretch"
+                            Margin="4,4,0,0"
+                            Content="Clear"
+                            IsEnabled="{Binding HasDescriptionText_TactileImage}"
+                      Click="OnClick_ButtonClearText_TactileImage"
+                    
+                           Control.TabIndex="8"/>
+
+
+                      <Button
+                              FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                           Control.TabIndex="9"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Right"
+                            Margin="4,4,0,0"
+                            Content="ZZZZ"
+                  
+                            
+              Visibility="{Binding HasAudio_TactileImage, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+      
+                           Padding="0"
+                  
+                              x:Name="ButtonAudio_TactileImage"
+                      Click="OnClick_ButtonAudio_TactileImage"
+                  >
+          <Button.ToolTip>
+            <ToolTip
+              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}"
+              ContentStringFormat="{}{0}"
+      />
+          </Button.ToolTip>
+                      <Button.Style>
+                        <Style TargetType="{x:Type Button}"
+                               BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                          <Style.Setters>
+                            <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioIcon}">
+                            </Setter>
+                          </Style.Setters>
+                        </Style>
+                      </Button.Style>
+                    </Button>
+
+<!-- 
+                            IsEnabled="{Binding HasDescriptionText_TactileImage}"
+                            -->
+                    <Button
+                              FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                           Control.TabIndex="10"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Right"
+                            Margin="4,4,0,0"
+                            Content="ZZZZ"
+                  
+              Visibility="{Binding HasAudio_TactileImage, Mode=OneWay, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+      
+                           Padding="0"
+                  
+                              x:Name="ButtonNoAudio_TactileImage"
+                      Click="OnClick_ButtonNoAudio_TactileImage"
+                  
+                  >
+                      <Button.ToolTip>
+                        <ToolTip
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}"
+                          ContentStringFormat="{}{0}"
+      />
+                      </Button.ToolTip>
+                      <Button.Style>
+                        <Style TargetType="{x:Type Button}"
+                               BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                          <Style.Setters>
+                            <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoAudioIcon}">
+                            </Setter>
+                          </Style.Setters>
+                        </Style>
+                      </Button.Style>
+                    </Button>
+
+                      <Border
+                             HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom"
+  
+                          Focusable="false"
+                          Padding="0"
+                                  Margin="4,4,0,0"
+                          BorderThickness="1"
+                          BorderBrush="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+      >
+                        <Button
+                                  FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                               Control.TabIndex="11"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Right"
+                      
+                                Content=">>"
+                  
+                        Padding="0"
+                          Margin="0"
+                  
+                          Click="OnClick_ButtonAdvanced_TactileImage_Text">
+
+                          <Button.ToolTip>
+                            <ToolTip
+                              Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}"
+                              ContentStringFormat="{}{0}"
+      />
+                          </Button.ToolTip>
+                          <Button.Style>
+                            <Style TargetType="{x:Type Button}"
+                                   BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                              <Style.Setters>
+                                <Setter Property="AutomationProperties.Name" Value="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.EditAdvanced}">
+                                </Setter>
+                              </Style.Setters>
+                            </Style>
+                          </Button.Style>
+                        </Button>
+                      </Border>
+
+
+
+
+                    </StackPanel>
+
+                </DockPanel>
+
+                <ScrollViewer
+                  Margin="6, 0, 0, 0"
+           Grid.Row="2"
+          Grid.Column="1"
+             
+              HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+    
+              HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                  <UI:TextBoxReadOnlyCaretVisible
+            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                           Control.TabIndex="6"
+                    x:Name="DescriptionTextBox_TactileImage"
+            TextWrapping="WrapWithOverflow"
+                    TextReadOnly="{Binding DescriptionText_TactileImage}"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                    Focusable="True"
+                          IsEnabled="{Binding HasDescriptionText_TactileImage}"
+                       />
+                </ScrollViewer>
+
+              </Grid>
+            </GroupBox>
+
+            <GridSplitter
+                Grid.Row="1"
+              Grid.ColumnSpan="2"
+              
+              Margin="0,3,0,3"
+                 Focusable="False"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            </GridSplitter>
+
+
+            <GroupBox
+MinHeight="40"
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+      
+  KeyboardNavigation.TabNavigation="Local"
+    
+            Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+              Margin="0, 0, 0, 0" Padding="6" >
+              <GroupBox.Header>
+
+                <TextBlock
+                Text="Notes"
+        
+                Focusable="true"
+                FontWeight="Bold"
+                      KeyboardNavigation.IsTabStop="True"
+                      KeyboardNavigation.TabIndex="1"
+
+        />
+              </GroupBox.Header>
+
+              <TextBlock
+              Text="No issues detected."
+        
+              Focusable="true"
+              FontWeight="Bold"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="2"
+
+        />
+            </GroupBox>
+
+
+            <GroupBox
+MinHeight="50"
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            
+              KeyboardNavigation.TabNavigation="Local"
+    
+                  Visibility="{Binding HasValidationWarning_BasicImage, Converter={XAML:BooleanToVisibilityConverter}}"
+              Margin="0, 0, 0, 0"
+Padding="6,3,6,3"
+>
+              <GroupBox.Header>
+                <TextBlock
+                  Foreground="Red"
+                  Focusable="true"
+                  FontWeight="Bold"
+                        KeyboardNavigation.IsTabStop="True"
+                        KeyboardNavigation.TabIndex="1"
+                            Text="Notes"/>
+              </GroupBox.Header>
+
+              <ScrollViewer
+              HorizontalAlignment="Stretch"
+            HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <TextBlock
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   
+                          KeyboardNavigation.IsTabStop="true"
+                          KeyboardNavigation.TabIndex="2"
+
+          TextWrapping="WrapWithOverflow"
+                  Text="{Binding ValidationText_BasicImage}"
+                         HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"
+                  Focusable="True"
+                       />
+              </ScrollViewer>
+            </GroupBox>
+
+          </Grid>
+
+        </DockPanel>
+
+      </TabItem>
+    </TabControl>
+    
+    
+  <TabControl
+              BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+  BorderThickness="1"
+              
+    x:Name="AdvancedPanel"
+    
+      KeyboardNavigation.TabNavigation="Local"
+    Grid.Row="0"
+    Grid.Column="0"
+    
+        HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+    
+    Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+              >
+    <TabItem Header="Metadata">
+
+      <DockPanel LastChildFill="true">
+
+      <Grid Height="Auto" Width="Auto" 
+          KeyboardNavigation.TabNavigation="Local">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="300"/>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="Auto"></RowDefinition>
+          <RowDefinition Height="66"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <DockPanel LastChildFill="True"
+                    Grid.Column="0" Grid.Row="0"
+          KeyboardNavigation.TabNavigation="Local">
+          
+          <StackPanel Orientation="Horizontal"
+                      DockPanel.Dock="Bottom"
+              HorizontalAlignment="Stretch">
+            <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   Control.TabIndex="2"
+              x:Name="ButtonAddMetadata"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="0,4,0,0"
+                    Content="Add"
+
+              Click="OnClick_ButtonAddMetadata"/>
+            <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   Control.TabIndex="3"
+              x:Name="ButtonEditMetadata"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="4,4,4,0"
+                    Content="Edit"
+                   IsEnabled="{Binding HasMetadata}"
+              Click="OnClick_ButtonEditMetadata"/>
+            <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   Control.TabIndex="4"
+              x:Name="ButtonRemoveMetadata"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="0,4,0,0"
+                    Content="Remove"
+IsEnabled="{Binding HasMetadata}"
+              Click="OnClick_ButtonRemoveMetadata"/>
+          </StackPanel>
+
+          <UI:SortableListView2
+                   Control.TabIndex="1"
+                   ItemsSource="{Binding Metadatas}"
+                   x:Name="MetadatasListView"
+                   
+    ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+    ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+    ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
+           ScrollViewer.CanContentScroll="True"
+             VirtualizingStackPanel.IsVirtualizing="False"
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+
+              SelectionMode="Single"
+
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+  AlternationCount="2"
+                   
+                   SelectionChanged="OnSelectionChanged_MetadataList"
+    >
+            <ListView.View>
+              <GridView AllowsColumnReorder="false">
+
+                <UI:SortableGridViewColumn Header="Property"
+                                SortPropertyName="NameContentAttribute.Name"
+                                DisplayMemberBinding="{Binding NameContentAttribute.Name, Mode=OneWay}"
+                                             Width="150"/>
+
+                <UI:SortableGridViewColumn Header="Content"
+                                SortPropertyName="NameContentAttribute.Value"
+                                DisplayMemberBinding="{Binding NameContentAttribute.Value, Mode=OneWay}"
+                                             Width="150"/>
+
+              </GridView>
+            </ListView.View>
+
+            <ListView.Resources>
+
+              <ToolTip x:Key="toolTip_MetadataListItem"
+                 DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+                <TextBlock>
+                  <TextBlock.Text>
+                    <MultiBinding StringFormat="Metadata property = {0}, content = {1}"  Mode="OneWay">
+                      <Binding Path="DataContext.NameContentAttribute.Name"   Mode="OneWay" />
+                      <Binding Path="DataContext.NameContentAttribute.Value"   Mode="OneWay"/>
+                    </MultiBinding>
+                  </TextBlock.Text>
+                </TextBlock>
+              </ToolTip>
+
+            </ListView.Resources>
+            <ListView.ItemContainerStyle>
+
+              <Style TargetType="{x:Type ListViewItem}">
+          <!--<Style.Resources>
+          <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                        Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+          </Style.Resources>-->
+
+                <Style.Setters>
+                  
+          <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+          
+<!--<Setter Property="FocusVisualStyle">
+            <Setter.Value>
+              <Style TargetType="{x:Type IFrameworkInputElement}">
+                --><!--<Style.Resources>
+                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                </Style.Resources>--><!--
+                <Setter Property="Control.Template">
+                  <Setter.Value>
+                    <ControlTemplate>
+                      <Rectangle
+                          Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                          StrokeThickness="1"
+                          StrokeDashArray="1 2"
+                          Margin="0"
+                          SnapsToDevicePixels="True" />
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </Setter.Value>
+          </Setter>-->
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="{x:Type ListViewItem}">
+                <!--<Grid SnapsToDevicePixels="True" Margin="0">-->
+                <Border x:Name="Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="0"
+                        SnapsToDevicePixels="true"
+                         Margin="0"
+                        Padding="0">
+                  <GridViewRowPresenter x:Name="Content"
+                                        Margin="0"
+                                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                            Content="{TemplateBinding Content}"
+                                        Columns="{TemplateBinding GridView.ColumnCollection}"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsSelected"  Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                  </Trigger>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="IsSelected" Value="true" />
+                      <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />-->
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                  </MultiTrigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+                  <!-- Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/ -->
+                  <Setter Property="UI:ListViewItemBringIntoViewNoFocusWhenSelectedBehavior.IsBroughtIntoViewNoFocusWhenSelected" Value="True" />
+                  
+                  <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItemMetadata" />
+                  <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItemMetadata" />
+
+                  <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+                  <Setter Property="AutomationProperties.Name">
+                    <Setter.Value>
+                      <MultiBinding StringFormat="Metadata property = {0}, content = {1}"  Mode="OneWay">
+                        <Binding Path="NameContentAttribute.Name"   Mode="OneWay" />
+                        <Binding Path="NameContentAttribute.Value"   Mode="OneWay"/>
+                      </MultiBinding>
+                    </Setter.Value>
+                  </Setter>
+
+                  <Setter Property="ToolTipService.ToolTip" Value="{StaticResource toolTip_MetadataListItem}"/>
+                  
+                </Style.Setters>
+
+                <Style.Triggers>
+                  <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="FontWeight" Value="Bold" />
+                  </Trigger>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+                      <Condition Property="IsSelected" Value="False"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+                  </MultiTrigger>
+                </Style.Triggers>
+              </Style>
+
+            </ListView.ItemContainerStyle>
+          </UI:SortableListView2>
+
+        </DockPanel>
+        
+        <GridSplitter
+            Grid.Column="1" Grid.Row="0"
+             Focusable="False"
+             HorizontalAlignment="Center" VerticalAlignment="Stretch">
+        </GridSplitter>
+
+        <DockPanel
+            Grid.Column="2" Grid.Row="0"
+          LastChildFill="True"
+            IsEnabled="{Binding HasMetadata}"
+            
+          KeyboardNavigation.TabNavigation="Local">
+          <StackPanel Orientation="Horizontal"
+                      DockPanel.Dock="Bottom"
+              HorizontalAlignment="Stretch">
+            <TextBlock
+                   KeyboardNavigation.IsTabStop="true"
+                   KeyboardNavigation.TabIndex="2"
+              Focusable="True"
+              VerticalAlignment="Center"
+                     HorizontalAlignment="Left"
+              Margin="4,4,4,0"
+                     DockPanel.Dock="Top">Additional metadata attributes:</TextBlock>
+            <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   Control.TabIndex="3"
+              x:Name="ButtonAddMetadataAttr"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="0,4,0,0"
+                    Content="Add"
+                    
+              Click="OnClick_ButtonAddMetadataAttr"/>
+            <Button
+              Control.TabIndex="4"
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   
+              x:Name="ButtonEditMetadataAttr"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="4,4,4,0"
+                    Content="Edit"
+                    IsEnabled="{Binding HasMetadataAttrs}"
+              Click="OnClick_ButtonEditMetadataAttr"/>
+            <Button
+                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   
+              x:Name="ButtonRemoveMetadataAttr"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+                    Margin="0,4,0,0"
+                    Content="Remove"
+                    IsEnabled="{Binding HasMetadataAttrs}"
+              Click="OnClick_ButtonRemoveMetadataAttr"/>
+          </StackPanel>
+
+          <UI:SortableListView2
+
+                   Control.TabIndex="1"
+  x:Name="MetadataAttributesListView"
+  ItemsSource="{Binding ElementName=MetadatasListView, Path=SelectedItem.OtherAttributes.ContentsAs_Enumerable, Mode=OneWay}"
+           
+  ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+  ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+  ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
+         ScrollViewer.CanContentScroll="True"
+           VirtualizingStackPanel.IsVirtualizing="False"
+           VirtualizingStackPanel.VirtualizationMode="Recycling"
+           ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+
+            SelectionMode="Single"
+
+          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+          ScrollViewer.VerticalScrollBarVisibility="Auto"
+AlternationCount="2"
+    >
+          <ListView.View>
+            <GridView AllowsColumnReorder="false">
+
+              <UI:SortableGridViewColumn Header="Name"
+                              SortPropertyName="Name"
+                              DisplayMemberBinding="{Binding Name, Mode=OneWay}"
+                                           Width="150"/>
+
+              <UI:SortableGridViewColumn Header="Value"
+                              SortPropertyName="Value"
+                              DisplayMemberBinding="{Binding Value, Mode=OneWay}"
+                                           Width="150"/>
+
+            </GridView>
+          </ListView.View>
+
+            <ListView.Resources>
+
+              <ToolTip x:Key="toolTip_MetadataAttrListItem"
+                 DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+
+                <TextBlock>
+                  <TextBlock.Text>
+                    <MultiBinding StringFormat="Metadata attribute name = {0}, value = {1}"  Mode="OneWay">
+                      <Binding Path="DataContext.Name"   Mode="OneWay" />
+                      <Binding Path="DataContext.Value"   Mode="OneWay"/>
+                    </MultiBinding>
+                  </TextBlock.Text>
+                </TextBlock>
+              </ToolTip>
+
+            </ListView.Resources>
+            
+          <ListView.ItemContainerStyle>
+
+            <Style TargetType="{x:Type ListViewItem}">
+              <!--<Style.Resources>
+          <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                        Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+              </Style.Resources>-->
+
+              <Style.Setters>
+
+                <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                <!--<Setter Property="FocusVisualStyle">
+            <Setter.Value>
+              <Style TargetType="{x:Type IFrameworkInputElement}">
+                --><!--<Style.Resources>
+                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                </Style.Resources>--><!--
+                <Setter Property="Control.Template">
+                  <Setter.Value>
+                    <ControlTemplate>
+                      <Rectangle
+                          Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                          StrokeThickness="1"
+                          StrokeDashArray="1 2"
+                          Margin="0"
+                          SnapsToDevicePixels="True" />
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </Setter.Value>
+          </Setter>-->
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="{x:Type ListViewItem}">
+                <!--<Grid SnapsToDevicePixels="True" Margin="0">-->
+                <Border x:Name="Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="0"
+                        SnapsToDevicePixels="true"
+                         Margin="0"
+                        Padding="0">
+                  <GridViewRowPresenter x:Name="Content"
+                                        Margin="0"
+                                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                            Content="{TemplateBinding Content}"
+                                        Columns="{TemplateBinding GridView.ColumnCollection}"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsSelected"  Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                  </Trigger>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="IsSelected" Value="true" />
+                      <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />-->
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                  </MultiTrigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+                <!-- Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/ -->
+                <Setter Property="UI:ListViewItemBringIntoViewNoFocusWhenSelectedBehavior.IsBroughtIntoViewNoFocusWhenSelected" Value="True" />
+
+                <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItemMetadataAttr" />
+
+                <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItemMetadataAttr" />
+
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+                <Setter Property="AutomationProperties.Name">
+                  <Setter.Value>
+                    <MultiBinding StringFormat="Metadata attribute name = {0}, value = {1}"  Mode="OneWay">
+                      <Binding Path="Name"   Mode="OneWay" />
+                      <Binding Path="Value"   Mode="OneWay"/>
+                    </MultiBinding>
+                  </Setter.Value>
+                </Setter>
+
+                <Setter Property="ToolTipService.ToolTip" Value="{StaticResource toolTip_MetadataAttrListItem}"/>
+
+              </Style.Setters>
+
+              <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                  <Setter Property="FontWeight" Value="Bold" />
+                </Trigger>
+                <MultiTrigger>
+                  <MultiTrigger.Conditions>
+                    <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+                    <Condition Property="IsSelected" Value="False"/>
+                  </MultiTrigger.Conditions>
+                  <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+                </MultiTrigger>
+              </Style.Triggers>
+            </Style>
+
+          </ListView.ItemContainerStyle>
+        </UI:SortableListView2>
+
+        </DockPanel>
+
+
+
+        <GridSplitter
+            Grid.Row="1"
+          Grid.ColumnSpan="3"
+              
+          Margin="0,3,0,3"
+             Focusable="False"
+             HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        </GridSplitter>
+
+        <GroupBox
+MinHeight="40"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            
+            
+KeyboardNavigation.TabNavigation="Local"
+        
+    
+        Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+          Margin="0, 0, 0, 0" Padding="6" >
+          <GroupBox.Header>
+
+            <TextBlock
+            Text="Notes"
+        
+            Focusable="true"
+            FontWeight="Bold"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="1"
+
+        />
+          </GroupBox.Header>
+
+          <TextBlock
+          Text="No issues detected."
+        
+          Focusable="true"
+          FontWeight="Bold"
+                KeyboardNavigation.IsTabStop="True"
+                KeyboardNavigation.TabIndex="2"
+
+        />
+        </GroupBox>
+
+        <GroupBox
+MinHeight="50"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+      
+            
+            
+        KeyboardNavigation.TabNavigation="Local"
+      
+    
+            Visibility="{Binding HasValidationWarning_Metadata, Converter={XAML:BooleanToVisibilityConverter}}"
+        Margin="0, 0, 0, 0"
+Padding="6,3,6,3"
+>
+          <GroupBox.Header>
+            <TextBlock
+              Foreground="Red"
+              Focusable="true"
+              FontWeight="Bold"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1"
+                        Text="Notes"/>
+          </GroupBox.Header>
+
+          <ScrollViewer
+          HorizontalAlignment="Stretch"
+        HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <TextBlock
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   
+                      KeyboardNavigation.IsTabStop="true"
+                      KeyboardNavigation.TabIndex="2"
+
+      TextWrapping="WrapWithOverflow"
+              Text="{Binding ValidationText_Metadata}"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+              Focusable="True"
+                       />
+          </ScrollViewer>
+        </GroupBox>
+
+
+
+      </Grid>
+
+      </DockPanel>
+    </TabItem>
+    
+    
+    <TabItem Header="Descriptions" x:Name="TabItem_Descriptions">
+
+      <DockPanel LastChildFill="true">
+
+        <Grid Height="Auto" Width="Auto"
+          KeyboardNavigation.TabNavigation="Local">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="66"></RowDefinition>
+          </Grid.RowDefinitions>
+
+          <DockPanel LastChildFill="True"
+                      Grid.Column="0" Grid.Row="0"
+          KeyboardNavigation.TabNavigation="Local">
+
+            <StackPanel Orientation="Horizontal"
+                        DockPanel.Dock="Bottom"
+                HorizontalAlignment="Stretch">
+              <Button
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                     Control.TabIndex="2"
+                x:Name="ButtonAddDescription"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                      Margin="0,4,0,0"
+                      Content="Add"
+                    
+                Click="OnClick_ButtonAddDescription"/>
+              <Button
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                     Control.TabIndex="3"
+                x:Name="ButtonRemoveDescription"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                      Margin="4,4,0,0"
+                      Content="Remove"
+                      IsEnabled="{Binding HasDescriptions}"
+                Click="OnClick_ButtonRemoveDescription"/>
+            </StackPanel>
+
+            <UI:SortableListView2
+                     Control.TabIndex="1"
+                     ItemsSource="{Binding Descriptions}"
+                     x:Name="DescriptionsListView"
+                   
+      ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+      ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+      ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
+             ScrollViewer.CanContentScroll="True"
+               VirtualizingStackPanel.IsVirtualizing="False"
+               VirtualizingStackPanel.VirtualizationMode="Recycling"
+               ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+
+                SelectionMode="Single"
+
+              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+              ScrollViewer.VerticalScrollBarVisibility="Auto"
+    AlternationCount="2"
+                   
+                     SelectionChanged="OnSelectionChanged_DescriptionsList"
+    >
+              <!-- ListView.View>
+              <GridView AllowsColumnReorder="false">
+
+                <UI:SortableGridViewColumn Header="Index"
+                                SortPropertyName="Text.Text"
+                                DisplayMemberBinding="{Binding Text.Text, Mode=OneWay}"
+                                             Width="150"/>
+
+                <UI:SortableGridViewColumn Header="Content"
+                                SortPropertyName="NameContentAttribute.Value"
+                                DisplayMemberBinding="{Binding NameContentAttribute.Value, Mode=OneWay}"
+                                             Width="150"/>
+
+              </GridView>
+            </ListView.View -->
+
+              <ListView.Resources>
+
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                              Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+
+                <ToolTip x:Key="toolTip_DescriptionListItem"
+                   DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+                  <TextBlock>
+                    <TextBlock.Text>
+                      <MultiBinding StringFormat="Description summary:  {0}"  Mode="OneWay">
+                        <Binding Path="DataContext"   Mode="OneWay" Converter="{Descriptions:AlternateContentToSummaryConverter}"/>
+                      </MultiBinding>
+                    </TextBlock.Text>
+                  </TextBlock>
+                </ToolTip >
+
+              </ListView.Resources>
+
+              <ListView.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Padding="4">
+                    <TextBlock.Text>
+                      <MultiBinding StringFormat="{}{0}"  Mode="OneWay">
+                        <Binding Path="."   Mode="OneWay" Converter="{Descriptions:AlternateContentToSummaryConverter}"/>
+                        <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
+                      </MultiBinding>
+                    </TextBlock.Text>
+                  </TextBlock>
+                </DataTemplate>
+              </ListView.ItemTemplate>
+
+              <ListView.ItemContainerStyle>
+
+                <Style TargetType="{x:Type ListViewItem}">
+                  <Style.Setters>
+                    <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
+
+                    <!-- Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/ -->
+                    <Setter Property="UI:ListViewItemBringIntoViewNoFocusWhenSelectedBehavior.IsBroughtIntoViewNoFocusWhenSelected" Value="True" />
+
+                    <!-- EventSetter Event="KeyDown" Handler="OnKeyDown_ListItemDescription" />
+                  <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItemDescription" / -->
+
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+                    <Setter Property="AutomationProperties.Name">
+                      <Setter.Value>
+                        <MultiBinding StringFormat="Description summary: {0}"  Mode="OneWay">
+                          <Binding Path="."   Mode="OneWay" Converter="{Descriptions:AlternateContentToSummaryConverter}"/>
+                          <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
+                        </MultiBinding>
+                      </Setter.Value>
+                    </Setter>
+
+                    <Setter Property="ToolTipService.ToolTip" Value="{StaticResource toolTip_DescriptionListItem}"/>
+                  </Style.Setters>
+
+                  <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                      <Setter Property="FontWeight" Value="Bold" />
+                    </Trigger>
+                    <MultiTrigger>
+                      <MultiTrigger.Conditions>
+                        <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+                        <Condition Property="IsSelected" Value="False"/>
+                      </MultiTrigger.Conditions>
+                      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+                    </MultiTrigger>
+                  </Style.Triggers>
+                </Style>
+
+              </ListView.ItemContainerStyle>
+            </UI:SortableListView2>
+
+          </DockPanel>
+          <GridSplitter
+              Grid.Column="1" Grid.Row="0"
+               Focusable="False"
+               HorizontalAlignment="Center" VerticalAlignment="Stretch">
+          </GridSplitter>
+
+          <TabControl
+              Grid.Column="2" Grid.Row="0"
+                      BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+          BorderThickness="1"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch"
+              IsEnabled="{Binding HasDescriptions}"
+              >
+            <TabControl.Resources>
+              <Style TargetType="{x:Type Button}">
+                <Setter Property="Padding" Value="4,2,4,2"/>
+              </Style>
+            </TabControl.Resources>
+
+
+            <TabItem Header="Text" x:Name="TabItem_Text">
+              <DockPanel LastChildFill="True"
+          KeyboardNavigation.TabNavigation="Local">
+                <StackPanel Orientation="Horizontal"
+                            DockPanel.Dock="Bottom"
+                    HorizontalAlignment="Stretch">
+                  <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="2"
+                    x:Name="ButtonEditText"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="0,4,0,0"
+                          Content="Edit"
+                      
+                    Click="OnClick_ButtonEditText"/>
+                  <Button
+                            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="3"
+                    x:Name="ButtonClearText"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="4,4,0,0"
+                          Content="Clear"
+                          IsEnabled="{Binding HasDescriptionText}"
+                    Click="OnClick_ButtonClearText"/>
+                </StackPanel>
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                  <UI:TextBoxReadOnlyCaretVisible
+            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                           Control.TabIndex="1"
+                    x:Name="DescriptionTextBox"
+                    TextReadOnly="{Binding ElementName=DescriptionsListView, Path=SelectedItem, Mode=OneWay, Converter={Descriptions:AlternateContentToTextConverter}}"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                    Focusable="True"
+                          IsEnabled="{Binding HasDescriptionText}"
+            TextWrapping="WrapWithOverflow"
+                       />
+                </ScrollViewer>
+              </DockPanel>
+            </TabItem>
+
+
+
+            <TabItem Header="Audio" x:Name="TabItem_Audio">
+
+              <DockPanel LastChildFill="True"
+                         x:Name="AudioMediaElementContainer"
+                   
+          KeyboardNavigation.TabNavigation="Local"
+                       >
+
+                <!-- TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.OriginalRelativePath, Mode=OneWay}"
+                         DockPanel.Dock="Top"
+                         HorizontalAlignment="Center"/>
+              <TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
+                         DockPanel.Dock="Bottom"/ -->
+
+                <StackPanel Orientation="Horizontal"
+                            DockPanel.Dock="Bottom"
+                    HorizontalAlignment="Stretch">
+                  <Button
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="4"
+                    x:Name="ButtonAddEditAudio"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="0,4,0,0"
+                          Content="Add/edit..."
+                        
+                    Click="OnClick_ButtonAddEditAudio"/>
+                  <Button
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="5"
+                    x:Name="ButtonClearAudio"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="4,4,0,0"
+                          Content="Clear"
+                          IsEnabled="{Binding HasDescriptionAudio}"
+                    Click="OnClick_ButtonClearAudio"/>
+                </StackPanel>
+
+                <DockPanel
+                  LastChildFill="True"
+                  HorizontalAlignment="Stretch"
+                         VerticalAlignment="Center">
+                  <!--<StackPanel
+                Orientation="Horizontal"          >
+
+              </StackPanel>-->
+
+                  <Button
+                  DockPanel.Dock="Left"
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="1"
+                    x:Name="ButtonAudioPlayPause"
+                        
+                          Content="Play/Pause"
+                          IsEnabled="{Binding HasDescriptionAudio}"
+                    Click="OnClick_ButtonAudioPlayPause"
+                Margin="0,0,4,0"/>
+
+                  <TextBlock
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="3"
+                  DockPanel.Dock="Right"
+                  MinWidth="120"
+                    x:Name="AudioTimeLabel"
+                          IsEnabled="{Binding HasDescriptionAudio}"
+                    Focusable="True"
+                    TextWrapping="NoWrap"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                  TextAlignment="Center"
+                        />
+                  <Slider x:Name="AudioTimeSlider"
+                         Control.TabIndex="2"
+                          IsEnabled="{Binding HasDescriptionAudio}"
+                          ValueChanged="OnAudioTimeSliderValueChanged"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center"
+                          Orientation="Horizontal"
+                          Thumb.DragStarted="OnDragStarted_AudioTimeSlider"
+            Thumb.DragCompleted="OnDragCompleted_AudioTimeSlider"
+                          TickPlacement="None"
+                IsMoveToPointEnabled="True"
+                        
+                LargeChange="1000"
+                SmallChange="500"
+                        />
+                  <!-- 
+              TickFrequency="25"
+              Delay="500"
+              Interval="15"
+              -->
+                </DockPanel>
+              </DockPanel>
+
+            </TabItem>
+
+
+                            <TabItem Header="Image" x:Name="TabItem_Image">
+                                <DockPanel LastChildFill="True"
+          KeyboardNavigation.TabNavigation="Local">
+
+                                    <!-- TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.OriginalRelativePath, Mode=OneWay}"
+                         DockPanel.Dock="Top"
+                         HorizontalAlignment="Center"/>
+              <TextBlock Text="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay}"
+                         DockPanel.Dock="Bottom"/ -->
+
+                                    <StackPanel Orientation="Horizontal"
+                            DockPanel.Dock="Bottom"
+                    HorizontalAlignment="Stretch">
+                                        <Button
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="2"
+                    x:Name="ButtonOpenImage"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="0,4,0,0"
+                          Content="Open..."
+                        
+                    Click="OnClick_ButtonOpenImage"/>
+                                        <Button
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="3"
+                    x:Name="ButtonClearImage"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="4,4,0,0"
+                          Content="Clear"
+                          IsEnabled="{Binding HasDescriptionImage}"
+                    Click="OnClick_ButtonClearImage"/>
+                                    </StackPanel>
+                                    <Image
+                  Focusable="True"
+                    KeyboardNavigation.IsTabStop="True"
+                         KeyboardNavigation.TabIndex="1"
+                
+                          IsEnabled="{Binding HasDescriptionImage}"
+                  x:Name="DescriptionImage"
+                  HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"
+                            Stretch = "Uniform"
+                            StretchDirection="DownOnly"
+                  ToolTip="{Binding ElementName=DescriptionsListView, Path=SelectedItem, Mode=OneWay, Converter={Descriptions:AlternateContentToImagePathConverter}}"
+                  Source="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Image.ImageMediaData.DataProvider.DataFileFullPath, Mode=OneWay, Converter={UI:PathToImageSourceConverter}}"
+              >
+                                        <Image.Style>
+                                            <Style TargetType="{x:Type Image}">
+                                                <Style.Setters>
+                                                    <Setter Property="AutomationProperties.Name">
+                                                        <Setter.Value>
+                                                            <MultiBinding StringFormat="Image full path: {0}"  Mode="OneWay">
+                                                                <Binding ElementName="DescriptionsListView" Path="SelectedItem" Mode="OneWay" Converter="{Descriptions:AlternateContentToImagePathConverter}"/>
+                                                                <!-- Binding Path="Image.ImageMediaData.OriginalRelativePath"   Mode="OneWay" / -->
+                                                            </MultiBinding>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style.Setters>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </DockPanel>
+                            </TabItem>
+
+
+                            <TabItem Header="Attributes" x:Name="TabItem_Attributes">
+
+              <DockPanel LastChildFill="True"
+          KeyboardNavigation.TabNavigation="Local">
+
+                <StackPanel Orientation="Horizontal"
+                            DockPanel.Dock="Bottom"
+                    HorizontalAlignment="Stretch">
+                  <Button
+                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="2"
+                    x:Name="ButtonAddMetadataAltContent"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="0,4,0,0"
+                          Content="Add"
+
+                    Click="OnClick_ButtonAddMetadataAltContent"/>
+                  <Button
+                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="3"
+                    x:Name="ButtonEditMetadataAltContent"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="4,4,4,0"
+                          Content="Edit"
+  IsEnabled="{Binding HasDescriptionMetadata}"
+                    Click="OnClick_ButtonEditMetadataAltContent"/>
+                  <Button
+                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="4"
+                    x:Name="ButtonRemoveMetadataAltContent"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                          Margin="0,4,0,0"
+                          Content="Remove"
+  IsEnabled="{Binding HasDescriptionMetadata}"
+                    Click="OnClick_ButtonRemoveMetadataAltContent"/>
+                </StackPanel>
+
+                <UI:SortableListView2
+                         Control.TabIndex="1"
+                         ItemsSource="{Binding ElementName=DescriptionsListView, Path=SelectedItem.Metadatas.ContentsAs_Enumerable, Mode=OneWay}"
+                         x:Name="MetadatasAltContentListView"
+                   
+          ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+          ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+          ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
+                 ScrollViewer.CanContentScroll="True"
+                   VirtualizingStackPanel.IsVirtualizing="False"
+                   VirtualizingStackPanel.VirtualizationMode="Recycling"
+                   ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+
+                    SelectionMode="Single"
+
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+        AlternationCount="2"
+    >
+                  <ListView.View>
+                    <GridView AllowsColumnReorder="false">
+
+                      <UI:SortableGridViewColumn Header="Name"
+                                      SortPropertyName="NameContentAttribute.Name"
+                                      DisplayMemberBinding="{Binding NameContentAttribute.Name, Mode=OneWay}"
+                                                   Width="150"/>
+
+                      <UI:SortableGridViewColumn Header="Value"
+                                      SortPropertyName="NameContentAttribute.Value"
+                                      DisplayMemberBinding="{Binding NameContentAttribute.Value, Mode=OneWay}"
+                                                   Width="150"/>
+
+                    </GridView>
+                  </ListView.View>
+
+                  <ListView.Resources>
+
+                    <ToolTip x:Key="toolTip_MetadataAltContentListItem"
+                       DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+                      <TextBlock>
+                        <TextBlock.Text>
+                          <MultiBinding StringFormat="Attribute name = {0}, value = {1}"  Mode="OneWay">
+                            <Binding Path="DataContext.NameContentAttribute.Name"   Mode="OneWay" />
+                            <Binding Path="DataContext.NameContentAttribute.Value"   Mode="OneWay"/>
+                          </MultiBinding>
+                        </TextBlock.Text>
+                      </TextBlock>
+                    </ToolTip>
+
+                  </ListView.Resources>
+                  <ListView.ItemContainerStyle>
+
+                    <Style TargetType="{x:Type ListViewItem}">
+                      <!--<Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                          Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+          </Style.Resources>-->
+
+                      <Style.Setters>
+
+                        <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+                        <!--<Setter Property="FocusVisualStyle">
+            <Setter.Value>
+              <Style TargetType="{x:Type IFrameworkInputElement}">
+                -->
+                        <!--<Style.Resources>
+                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                </Style.Resources>-->
+                        <!--
+                <Setter Property="Control.Template">
+                  <Setter.Value>
+                    <ControlTemplate>
+                      <Rectangle
+                          Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                          StrokeThickness="1"
+                          StrokeDashArray="1 2"
+                          Margin="0"
+                          SnapsToDevicePixels="True" />
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </Setter.Value>
+          </Setter>-->
+                        <Setter Property="Template">
+                          <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                              <!--<Grid SnapsToDevicePixels="True" Margin="0">-->
+                              <Border x:Name="Border"
+                                      Background="{TemplateBinding Background}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                          BorderThickness="0"
+                                      SnapsToDevicePixels="true"
+                                       Margin="0"
+                                      Padding="0">
+                                <GridViewRowPresenter x:Name="Content"
+                                                      Margin="0"
+                                                      TextBlock.Foreground="{TemplateBinding Foreground}"
+                                          Content="{TemplateBinding Content}"
+                                                      Columns="{TemplateBinding GridView.ColumnCollection}"/>
+                              </Border>
+                              <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected"  Value="true">
+                                  <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                                </Trigger>
+                                <MultiTrigger>
+                                  <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true" />
+                                    <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                  </MultiTrigger.Conditions>
+                                  <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />-->
+                                  <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                                </MultiTrigger>
+                              </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                          </Setter.Value>
+                        </Setter>
+                        <!-- Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/ -->
+                        <Setter Property="UI:ListViewItemBringIntoViewNoFocusWhenSelectedBehavior.IsBroughtIntoViewNoFocusWhenSelected" Value="True" />
+
+                        <EventSetter Event="KeyDown" Handler="OnKeyDown_ListItemMetadataAltContent" />
+                        <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_ListItemMetadataAltContent" />
+
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+                        <Setter Property="AutomationProperties.Name">
+                          <Setter.Value>
+                            <MultiBinding StringFormat="Attribute name = {0}, value = {1}"  Mode="OneWay">
+                              <Binding Path="NameContentAttribute.Name"   Mode="OneWay" />
+                              <Binding Path="NameContentAttribute.Value"   Mode="OneWay"/>
+                            </MultiBinding>
+                          </Setter.Value>
+                        </Setter>
+
+                        <Setter Property="ToolTipService.ToolTip" Value="{StaticResource toolTip_MetadataAltContentListItem}"/>
+
+                      </Style.Setters>
+
+                      <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                          <Setter Property="FontWeight" Value="Bold" />
+                        </Trigger>
+                        <MultiTrigger>
+                          <MultiTrigger.Conditions>
+                            <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+                            <Condition Property="IsSelected" Value="False"/>
+                          </MultiTrigger.Conditions>
+                          <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+                        </MultiTrigger>
+                      </Style.Triggers>
+                    </Style>
+
+                  </ListView.ItemContainerStyle>
+                </UI:SortableListView2>
+
+              </DockPanel>
+
+            </TabItem>
+
+          </TabControl>
+
+          <GridSplitter
+              Grid.Row="1"
+            Grid.ColumnSpan="3"
+              
+            Margin="0,3,0,3"
+               Focusable="False"
+               HorizontalAlignment="Stretch" VerticalAlignment="Center">
+          </GridSplitter>
+
+          <GroupBox
+MinHeight="40"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            
+  KeyboardNavigation.TabNavigation="Local"
+          
+    
+          Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToOppositeVisibilityConverter}}"
+            Margin="0, 0, 0, 0" Padding="6" >
+            <GroupBox.Header>
+
+              <TextBlock
+              Text="Notes"
+        
+              Focusable="true"
+              FontWeight="Bold"
+                    KeyboardNavigation.IsTabStop="True"
+                    KeyboardNavigation.TabIndex="1"
+
+        />
+            </GroupBox.Header>
+
+            <TextBlock
+            Text="No issues detected."
+        
+            Focusable="true"
+            FontWeight="Bold"
+                  KeyboardNavigation.IsTabStop="True"
+                  KeyboardNavigation.TabIndex="2"
+
+        />
+          </GroupBox>
+          
+          
+          <GroupBox
+MinHeight="50"
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            
+            
+            
+            KeyboardNavigation.TabNavigation="Local"
+          
+                Visibility="{Binding HasValidationWarning_Descriptions, Converter={XAML:BooleanToVisibilityConverter}}"
+            Margin="0, 0, 0, 0"
+Padding="6,3,6,3"
+>
+            <GroupBox.Header>
+              <TextBlock
+                Foreground="Red"
+                Focusable="true"
+              FontWeight="Bold"
+                      KeyboardNavigation.IsTabStop="True"
+                      KeyboardNavigation.TabIndex="1"
+                          Text="Notes"/>
+            </GroupBox.Header>
+
+            <ScrollViewer
+            HorizontalAlignment="Stretch"
+          HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+>
+              <TextBlock
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                   
+                        KeyboardNavigation.IsTabStop="true"
+                        KeyboardNavigation.TabIndex="2"
+              
+        TextWrapping="WrapWithOverflow"
+                Text="{Binding ValidationText_Descriptions}"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                Focusable="True"
+                       />
+            </ScrollViewer>
+          </GroupBox>
+
+
+
+
+        </Grid>
+      </DockPanel>
+    </TabItem>
+  
+  </TabControl>
+
+  </Grid>
+
+</DockPanel>

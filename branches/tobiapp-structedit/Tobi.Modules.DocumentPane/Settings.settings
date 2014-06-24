@@ -1,0 +1,71 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
+  <Settings>
+    <Setting Name="Document_Color_Hyperlink_Back" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF00FFFF</Value>
+    </Setting>
+    <Setting Name="Document_Color_TextOnly_Back" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFDDCCDD</Value>
+    </Setting>
+    <Setting Name="Document_Highlight_TextOnly_Fragments" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Document_Color_PageNum_Back" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFDCDCDC</Value>
+    </Setting>
+    <Setting Name="Document_Back" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFFFFFF</Value>
+    </Setting>
+    <Setting Name="Document_TypeFace" Type="System.Windows.Media.FontFamily" Scope="User">
+      <Value Profile="(Default)">Times New Roman</Value>
+    </Setting>
+    <Setting Name="Document_Zoom" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">110</Value>
+    </Setting>
+    <Setting Name="Document_EnableDrawTopSelection" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Document_EnableInstantSearch" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="Document_UseDottedSelect" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Document_SinglePhraseView" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Document_TextOnlyAlign" Type="System.Windows.TextAlignment" Scope="User">
+      <Value Profile="(Default)">Center</Value>
+    </Setting>
+    <Setting Name="Document_ButtonBarVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="Document_Color_Font_Audio" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF000000</Value>
+    </Setting>
+    <Setting Name="Document_Color_Font_TextOnly" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF000000</Value>
+    </Setting>
+    <Setting Name="Document_Color_Font_NoAudio" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF686868</Value>
+    </Setting>
+    <Setting Name="Document_Color_Selection_UnderOverLine" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF00FF00</Value>
+    </Setting>
+    <Setting Name="Document_Color_Selection_Font" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF000000</Value>
+    </Setting>
+    <Setting Name="Document_Color_Selection_Border" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF6B8E23</Value>
+    </Setting>
+    <Setting Name="Document_Color_Selection_Back1" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFF5F5F5</Value>
+    </Setting>
+    <Setting Name="Document_Color_Selection_Back2" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF98FB98</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,17 @@
+﻿<l:InteropWindow x:Class="Sid.Windows.Controls.TaskDialogWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:l="clr-namespace:Sid.Windows.Controls"
+    Title="TaskDialogWindow"
+    SizeToContent="WidthAndHeight" 
+    WindowStyle="ToolWindow"
+    WindowStartupLocation="Manual"
+    ResizeMode="NoResize"
+    Loaded="OnWindowLoaded">
+
+    <!-- Window.Resources>
+        <Style TargetType="TextBox">
+            <EventSetter Event="GotKeyboardFocus" Handler="OnGotKeyboardFocusTextBox" />
+        </Style>
+    </Window.Resources -->
+</l:InteropWindow>

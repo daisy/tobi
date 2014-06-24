@@ -1,0 +1,351 @@
+﻿<StackPanel
+  
+  
+   x:Class="Tobi.Plugin.ToolBars.ToolBarsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    mc:Ignorable="PresentationOptions"
+    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+    xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+             
+  xmlns:Controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
+  
+  xmlns:prism="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation" xmlns:ToolBars="clr-namespace:Tobi.Plugin.ToolBars"
+   xmlns:System="clr-namespace:System;assembly=mscorlib" DataContext="{Binding RelativeSource={RelativeSource Self}}"
+  
+  Orientation="Vertical">
+
+  <TextBlock 
+             x:Name="FocusCollapsed"
+             Text=""
+             Width="Auto"
+             VerticalAlignment="Center"
+             HorizontalAlignment="Stretch"
+             
+             KeyDown="OnToolbarToggleVisibleKeyboard"
+             MouseDown="OnToolbarToggleVisible"
+             
+   Visibility="{Binding Source={x:Static ToolBars:Settings.Default}, Path=ToolBarVisible,
+              Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
+          
+             Style="{StaticResource VisibilityTogglerStyleHeight}"
+          />
+
+<StackPanel 
+  Orientation="Horizontal"
+  
+   Visibility="{Binding Source={x:Static ToolBars:Settings.Default}, Path=ToolBarVisible,
+              Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}">
+  <TextBlock 
+   Focusable="True"
+  x:Name="FocusExpanded"
+   
+   Text=""
+             Height="Auto"
+             VerticalAlignment="Stretch"
+             HorizontalAlignment="Center"
+             
+             KeyDown="OnToolbarToggleVisibleKeyboard"
+             MouseDown="OnToolbarToggleVisible"
+             
+             Style="{StaticResource VisibilityTogglerStyleWidth}"
+          />
+
+
+  <ItemsControl
+  
+   Focusable="False"
+   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MainToolbar}"
+   
+   >
+
+    <!-- ItemsControl.Resources>
+    ItemTemplateSelector="{StaticResource ToolbarTemplateSelector}"
+    <local:ToolbarTemplateSelector x:Key="ToolbarTemplateSelector" />
+    </ItemsControl.Resources -->
+
+    <!--<ItemsControl.Resources>
+      <DataTemplate DataType="{x:Type System:String}">
+        <Separator />
+      </DataTemplate>
+    </ItemsControl.Resources>-->
+    
+    <ItemsControl.ItemsPanel>
+      <ItemsPanelTemplate>
+        <WrapPanel Orientation="Horizontal"
+                   KeyboardNavigation.DirectionalNavigation="Cycle"
+                   />
+      </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+    <ItemsControl.ItemTemplate>
+
+      <DataTemplate DataType="{x:Type Common:MVVM.Command.RichDelegateCommand}">
+        <!-- DataTemplate DataType="{x:Type UI:ScalableGreyableImageProvider}" -->
+        <UI:ButtonRichCommand RichCommand="{Binding .}" />
+        <!-- Button Command="{Binding Path=.}" Content="{Binding Path=.ShortDescription}"/ -->
+        <!-- Button Command="{Binding Path=.}" Content="{Binding Path=.IconProvider.IconXLarge, Mode=OneWay}"/ -->
+        <!-- ContentControl Content="{Binding Path=.IconProvider.IconXLarge}"/ -->
+        <!-- ContentControl Content="{Binding Path=.IconXLarge, Mode=OneWay}"/ -->
+      </DataTemplate>
+
+    </ItemsControl.ItemTemplate>
+  </ItemsControl>
+
+</StackPanel>
+<!-- WrapPanel
+           Orientation="Horizontal"
+           
+           KeyboardNavigation.DirectionalNavigation="Cycle"
+           >
+
+      <UI:ButtonRichCommand
+        
+  Focusable="True"
+  x:Name="FocusStart"
+        
+        RichCommand="{Binding OpenCommand}"/>
+      
+      <UI:ButtonRichCommand RichCommand="{Binding SaveCommand}"/>
+  <Separator/>
+
+  <UI:ButtonRichCommand RichCommand="{Binding CommandShowMetadataPane}"/>
+  <Separator/>
+
+    
+      <UI:ButtonRichCommand RichCommand="{Binding UndoCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding RedoCommand}"/>
+      <Separator/>
+      
+      <UI:ButtonRichCommand RichCommand="{Binding MagnifyUiDecreaseCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding MagnifyUiIncreaseCommand}"/>
+
+      <Separator/>
+  <UI:ButtonRichCommand RichCommand="{Binding ManageShortcutsCommand}"/ -->
+
+
+
+  <!-- UI:ButtonRichCommand
+        RichCommand="{Binding NewCommand}"/ -->
+
+
+  <!--<UI:ButtonRichCommand RichCommand="{Binding PreferencesCommand}"/>-->
+
+  <!-- UI:ButtonRichCommand RichCommand="{Binding NavPreviousCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding NavNextCommand}"/>
+      <Separator/ -->
+
+  <!-- UI:ButtonRichCommand RichCommand="{Binding SaveAsCommand}"/ -->
+  <!--<UI:ButtonRichCommand RichCommand="{Binding CopyCommand}"/>
+      <UI:ButtonRichCommand RichCommand="{Binding CutCommand}"/>
+
+      <UI:ButtonRichCommand RichCommand="{Binding PasteCommand}"/>
+      <Separator/>-->
+
+  <!--<Separator/>
+
+      <UI:ButtonRichCommand RichCommand="{Binding HelpCommand}"/>-->
+  <!-- UI:ButtonRichCommand RichCommand="{Binding WebHomeCommand}"/ -->
+
+
+    <!-- StackPanel Orientation="Horizontal">
+      <TextBlock>Width: </TextBlock>
+
+      <ComboBox x:Name="ComboWidth" Margin="2"
+                ItemsSource="{Binding IconWidths, Mode=OneWay}"
+                SelectedItem="{Binding IconWidth, Mode=TwoWay}" >
+      </ComboBox>
+    </StackPanel>
+
+    <StackPanel Orientation="Horizontal">
+      <TextBlock>Height: </TextBlock>
+
+      <ComboBox x:Name="ComboHeight" Margin="2"
+                ItemsSource="{Binding IconHeights, Mode=OneWay}"
+                SelectedItem="{Binding IconHeight, Mode=TwoWay}" >
+      </ComboBox>
+    </StackPanel -->
+
+
+    <!-- ToolBarTray Focusable="False">
+
+    <ToolBar
+KeyboardNavigation.TabNavigation="Continue">
+
+      <Button>
+        <Image Source="{StaticResource Home_icon}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Check}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Printer}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Help}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Exit}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Configurator}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Refresh}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+    </ToolBar>
+    <ToolBar
+KeyboardNavigation.TabNavigation="Continue">
+
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Back}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Forward}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Up}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Up1}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Down}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Down1}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Left}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Left1}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Right}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Right1}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+    </ToolBar>
+    <ToolBar
+KeyboardNavigation.TabNavigation="Continue">
+
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_File}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Open}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Save}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Save_As}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+    </ToolBar>
+    <ToolBar
+KeyboardNavigation.TabNavigation="Continue">
+
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Edit}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Add}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Delete}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+    </ToolBar>
+    <ToolBar
+KeyboardNavigation.TabNavigation="Continue">
+
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Warning}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Error}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+    </ToolBar>
+    <ToolBar
+KeyboardNavigation.TabNavigation="Continue">
+
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Search}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Find}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Find_Next}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+    </ToolBar>
+    <ToolBar
+KeyboardNavigation.TabNavigation="Continue">
+
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Block}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Padlock}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Lock}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+    </ToolBar>
+    <ToolBar
+KeyboardNavigation.TabNavigation="Continue">
+
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Undo}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+      <Button>
+        <Image Source="{StaticResource Horizon_Image_Redo}"
+        Stretch="Uniform" SnapsToDevicePixels="False" Height="{Binding IconHeight, Mode=OneWay}" Width="{Binding IconWidth, Mode=OneWay}"/>
+      </Button>
+    </ToolBar>
+    <ToolBar
+KeyboardNavigation.TabNavigation="Continue">
+
+    </ToolBar>
+
+  </ToolBarTray -->
+</StackPanel>

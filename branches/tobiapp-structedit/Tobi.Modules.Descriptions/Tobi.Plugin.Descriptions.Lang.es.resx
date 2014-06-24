@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CmdEditDescriptions_LongDesc" xml:space="preserve">
+    <value>Modificar la(s) descripción del elemento de documento seleccionado</value>
+  </data>
+  <data name="CmdEditDescriptions_ShortDesc" xml:space="preserve">
+    <value>Editar _descripción de imagen</value>
+  </data>
+  <data name="DescriptionsPlugin_Description" xml:space="preserve">
+    <value>Un interfaz de usuario para editar descripciones de las imágenes.</value>
+  </data>
+  <data name="DescriptionsPlugin_Name" xml:space="preserve">
+    <value>Descripciones de editor.</value>
+  </data>
+  <data name="NoAudioIcon" xml:space="preserve">
+    <value>Sin audio (click para corregir )</value>
+  </data>
+  <data name="AudioIcon" xml:space="preserve">
+    <value>Audio (click corregir )</value>
+  </data>
+  <data name="LongDescriptionHelp" xml:space="preserve">
+    <value>La descripción larga proporciona la descripción principal de la imagen asociada, estructura gráfica u orientada visualmente. Por tanto, debe contener una explicación detallada del tema de referencia. Véase la descripción resumida para obtener información sobre la forma de incluir una descripción compacta.</value>
+  </data>
+  <data name="SummaryDescriptionHelp" xml:space="preserve">
+    <value>La descripción de resumen proporciona una versión más breve que la descripción primaria.</value>
+  </data>
+  <data name="SimplifiedDescriptionHelp" xml:space="preserve">
+    <value>La descripción  simplificada ofrece una versión simplificada de la descripción larga primaria.</value>
+  </data>
+  <data name="TactileImageHelp" xml:space="preserve">
+    <value>La imagen táctil ofrece una imagen alternativa a la imagen de origen, opcionalmente asociado con un recorrido explicativo. Usando el editor avanzado, es posible especificar uno o más imágenes táctiles para diferentes métodos de producción , que se diferencian por su atributo de papel (por ejemplo , una para la producción de papel oleaje y otro para la impresión stereolithograph ) .</value>
+  </data>
+  <data name="SimplifiedImageHelp" xml:space="preserve">
+    <value>La imagen simplificada ofrece una versión simplificada de la imagen de origen, opcionalmente asociado con un recorrido explicativo. Usando el editor avanzado, es posible especificar uno o más idénticos imágenes simplificadas , en diferentes formatos.</value>
+  </data>
+  <data name="TourHelp" xml:space="preserve">
+    <value>El tour de descripción asociado con una gráfica táctil o una imagen alternativa simplificada proporciona orientación , y explica cómo explorar conceptualmente las imágenes.</value>
+  </data>
+  <data name="EditAdvanced" xml:space="preserve">
+    <value>Editar en el modo avanzado ...</value>
+  </data>
+  <data name="FilterEmptyAlt" xml:space="preserve">
+    <value>Mostrar  vacío alt</value>
+  </data>
+  <data name="AddEdit" xml:space="preserve">
+    <value>Añadir / modificar ...</value>
+  </data>
+</root>

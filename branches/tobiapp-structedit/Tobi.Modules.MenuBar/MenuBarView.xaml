@@ -1,0 +1,248 @@
+﻿<UserControl
+  
+     x:Class="Tobi.Plugin.MenuBar.MenuBarView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+     xmlns:MenuBar="clr-namespace:Tobi.Plugin.MenuBar"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    >
+  <!-- UserControl.Resources>
+
+    <DataTemplate x:Key="MenuItemSeparatorDataTemplate">
+      <Separator/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="MenuItemSimpleDataTemplate" DataType="{x:Type Common:MVVM.Command.RichDelegateCommand}">
+      <UI:MenuItemRichCommand RichCommand="{Binding ., Mode=OneWay}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="MenuItemToggleDataTemplate" DataType="{x:Type UI:TwoStateMenuItemRichCommand_DataContextWrapper}">
+      <UI:TwoStateMenuItemRichCommand
+            RichCommandOne="{Binding RichCommandOne, Mode=OneWay}"
+            RichCommandTwo="{Binding RichCommandTwo, Mode=OneWay}"
+            InputBindingManager="{Binding InputBindingManager, Mode=OneWay}"
+                  RichCommandActive="{Binding RichCommandActive, Mode=OneWay}"/>
+    </DataTemplate>
+
+    <MenuBar:MenuItemDataTemplateSelector x:Key="templateSelector"
+          MenuItemSeparatorDataTemplate="{StaticResource MenuItemSeparatorDataTemplate}"
+          MenuItemSimpleDataTemplate="{StaticResource MenuItemSimpleDataTemplate}"
+          MenuItemToggleDataTemplate="{StaticResource MenuItemToggleDataTemplate}"
+            />
+  </UserControl.Resources -->
+
+
+  <!-- Menu>
+    <MenuItem Header="Enemies" ItemsSource="{Binding AvailableEnemyClasses}">
+      <MenuItem.ItemContainerStyle>
+        <Style TargetType="MenuItem">
+          <Setter Property="Header" Value="{Binding}"/>
+          <Setter Property="IsChecked">
+            <Setter.Value>
+              <MultiBinding Converter="{StaticResource YourConverter}">
+                <Binding ...=""/>
+                <Binding ...=""/>
+              </MultiBinding>
+            </Setter.Value>
+          </Setter>
+        </Style>
+      </MenuItem.ItemContainerStyle>
+    </MenuItem>
+  </Menu -->
+
+
+  <Menu x:Name="MenuBarAnchor"
+  xmlns:prism="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation"
+  
+  Width="Auto" Height="Auto" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"
+     >
+    <Menu.Resources>
+      <!-- Setter Property="OverridesDefaultStyle" Value="True"/ -->
+      <!-- Setter Property="FontSize" Value="40"/>
+        <Setter Property="FontWeight" Value="UltraBold"/ -->
+
+      <!--This trigger is needed, because RelativeSource binding can only succeeds if the current MenuItem is already connected to its visual parent-->
+      <!--<Style TargetType="{x:Type UI:MenuItemRichCommand}" BasedOn="{StaticResource {x:Type MenuItem}}">
+
+        <Style.Triggers>
+          
+          <Trigger Property="IsVisible" Value="True">
+            <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+          </Trigger>
+        </Style.Triggers>
+        
+      </Style>-->
+    </Menu.Resources>
+
+    <!-- File Menu -->
+    <!-- UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_File}"
+   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_File}"
+              -->
+    
+<!-- ItemTemplateSelector="{StaticResource templateSelector}" -->
+      <!-- MenuItem.ItemTemplate>
+        <DataTemplate DataType="{x:Type Common:MVVM.Command.RichDelegateCommand}">
+          <UI:MenuItemRichCommand RichCommand="{Binding .}" />
+        </DataTemplate>
+      </MenuItem.ItemTemplate -->
+      
+      <!-- UI:MenuItemRichCommand
+        RichCommand="{Binding NewCommand}"
+                CommandParameter="{Binding}"
+                />
+      <UI:MenuItemRichCommand RichCommand="{Binding OpenCommand}"
+        />
+      <UI:MenuItemRichCommand RichCommand="{Binding SaveCommand}"
+        />
+      <UI:MenuItemRichCommand RichCommand="{Binding SaveAsCommand}"
+        />
+      <UI:MenuItemRichCommand RichCommand="{Binding ExportCommand}"
+        />
+      <UI:MenuItemRichCommand RichCommand="{Binding CloseCommand}"
+        />
+      <Separator/>
+      <UI:MenuItemRichCommand RichCommand="{Binding ExitCommand}"/  -->
+    <!-- /UI:MenuItemRichCommand -->
+
+    <!-- Edit Menu -->
+    <!-- UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Edit}"
+   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_Edit}"
+              -->
+      <!-- -->
+      <!-- UI:MenuItemRichCommand RichCommand="{Binding UndoCommand}"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding RedoCommand}"/ -->
+      <!--<Separator/>-->
+      <!--<UI:MenuItemRichCommand RichCommand="{Binding CopyCommand}"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CutCommand}"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding PasteCommand}"/>-->
+    <!-- /UI:MenuItemRichCommand -->
+
+      <!-- Audio Menu -->
+    <!-- UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Audio}"
+   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_Audio}"
+                  -->
+          <!-- -->
+
+          <!-- UI:TwoStateMenuItemRichCommand
+            RichCommandOne="{Binding AudioCommandStopMonitor}"
+            RichCommandTwo="{Binding AudioCommandStartMonitor}"
+            InputBindingManager="{Binding InputBindingManager}"
+                  RichCommandActive="{Binding AudioPaneViewModel.IsMonitoring, Mode=OneWay}"/>
+
+
+          <UI:TwoStateMenuItemRichCommand
+            RichCommandOne="{Binding AudioCommandStopRecord}"
+            RichCommandTwo="{Binding AudioCommandStartRecord}"
+            InputBindingManager="{Binding InputBindingManager}"
+                  RichCommandActive="{Binding AudioPaneViewModel.IsRecording, Mode=OneWay}"/ -->
+                  
+            <!-- UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStartMonitor}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStopMonitor}"/>
+          
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStartRecord}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStopRecord}"/ -->
+
+          <!-- Separator/>
+            
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlayPreviewLeft}"/ -->
+
+          <!-- UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPause}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlay}"/ -->
+
+
+          <!-- UI:TwoStateMenuItemRichCommand
+            RichCommandOne="{Binding AudioCommandPause}"
+            RichCommandTwo="{Binding AudioCommandPlay}"
+            InputBindingManager="{Binding InputBindingManager}"
+                  RichCommandActive="{Binding AudioPaneViewModel.IsPlaying, Mode=OneWay}"/>
+
+          <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandPlayPreviewRight}"/>
+            <Separator/>
+
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandGotoBegining}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStepBack}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandRewind}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandFastForward}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandStepForward}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandGotoEnd}"/>
+            <Separator/>
+
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandSelectAll}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandSelectPreviousChunk}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandSelectNextChunk}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandEndSelection}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandClearSelection}"/>
+            <Separator/>
+            
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandZoomFitFull}"/>
+            <UI:MenuItemRichCommand RichCommand="{Binding AudioCommandZoomSelection}"/ -->
+    <!-- /UI:MenuItemRichCommand -->
+            <!-- Tools Menu -->
+    <!-- UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Tools}"
+   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_Tools}"
+              -->
+      <!-- -->
+
+      <!-- UI:MenuItemRichCommand RichCommand="{Binding ManageShortcutsCommand}"/>
+        <UI:MenuItemRichCommand RichCommand="{Binding CommandShowMetadataPane}"/ -->
+      <!--<UI:MenuItemRichCommand RichCommand="{Binding PreferencesCommand}"/>-->
+      <!--<Separator/>-->
+      <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Addins}"/>-->
+      <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Logging}"/>-->
+    <!-- /UI:MenuItemRichCommand -->
+
+    
+    <!-- View Menu -->
+    <!-- UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_View}"
+   prism:RegionManager.RegionName="{x:Static Common:RegionNames.MenuBar_View}"
+              -->
+      
+      <!-- UNFORTUNATELY this sub-menu must be configured from the constructor in the code behind,
+                        due to a problem in the RegionManager.
+      
+      UI:MenuItemRichCommand Header="{x:Static Common:UserInterfaceStrings.Menu_Focus}"
+      prism:RegionManager.RegionName="{x:Static Common:Tobi_Common_Lang.Menu_Focus}"
+   x:Name="MenuBar_Focus"
+              / -->
+      <!-- -->
+
+     <!-- <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_ToolBars}"
+                IsCheckable="True"
+                IsChecked="True"/>
+      <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_StatusBar}"
+                IsCheckable="True"
+                IsChecked="True"/>
+      <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_DocumentPane}"
+                IsCheckable="True"
+                IsChecked="True"/>
+      <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_AudioPane}"
+                IsCheckable="True"
+                IsChecked="True"/>
+      <MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_NavigationPane}"
+                IsCheckable="True"
+                IsChecked="True"/>-->
+
+      <!-- MenuItem x:Name="ZoomMenuItem"
+                Header="{Binding ZoomToggleCommand.ShortDescription}"
+                IsCheckable="True"
+                IsChecked="True"
+                InputGestureText="{Binding ZoomToggleCommand.KeyGestureText}"
+                Command="{Binding ZoomToggleCommand}"
+                CommandParameter="{Binding ElementName=ZoomMenuItem, Path=IsChecked}"/ -->
+    <!-- /UI:MenuItemRichCommand -->
+
+    <!-- Help Menu -->
+
+        <!-- removed for now because it's empty -->
+        <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_Help}">-->
+      <!-- UI:MenuItemRichCommand RichCommand="{Binding WebHomeCommand}"/ -->
+      <!--<UI:MenuItemRichCommand RichCommand="{Binding HelpCommand}"/>-->
+      <!--<MenuItem Header="{x:Static Common:UserInterfaceStrings.Menu_About}"/>-->
+    <!--</MenuItem>-->
+      
+
+  </Menu>
+</UserControl>

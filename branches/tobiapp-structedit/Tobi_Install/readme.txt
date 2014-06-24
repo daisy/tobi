@@ -1,0 +1,1 @@
+Please note that executing setup.exe will require an internet connection to check for the .NET framework version. If you do not have a working internet connection, please execute the Tobi_NET3/4.msi file instead.

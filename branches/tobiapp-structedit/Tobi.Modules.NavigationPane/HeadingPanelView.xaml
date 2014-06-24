@@ -1,0 +1,226 @@
+﻿<DockPanel x:Class="Tobi.Plugin.NavigationPane.HeadingPanelView"
+           
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:pres="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:local="clr-namespace:Tobi.Plugin.NavigationPane"
+                    xmlns:search="clr-namespace:Tobi.Common.Search;assembly=Tobi.Common"
+           xmlns:NavigationPane="clr-namespace:Tobi.Plugin.NavigationPane"
+           xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+           xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+           xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common"
+           
+           Loaded="OnUILoaded"
+           >
+
+  <Border
+           DockPanel.Dock="Top"
+             
+           BorderThickness="2"
+           BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+           
+             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}"
+             Visibility="{Binding Path=IsSearchVisible, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+             LostFocus="OnSearchLostFocus"
+             >
+
+    <DockPanel LastChildFill="True"
+             
+             Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+
+    <UI:ButtonRichCommand
+      Control.TabIndex="4"
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindNextGlobal}"/>
+
+    <UI:ButtonRichCommand
+      Control.TabIndex="3"
+      DockPanel.Dock="Right"
+       HorizontalAlignment="Right" VerticalAlignment="Center"
+      UseSmallerIcon="True"
+      RichCommand="{Binding CmdFindPreviousGlobal}"/>
+
+    <TextBlock
+      Text="{x:Static Common:Tobi_Common_Lang.Find}"
+      DockPanel.Dock="Left"
+                 HorizontalAlignment="Left" VerticalAlignment="Center"
+                 Margin="2,0,2,0"/>
+
+      <UI:TextBoxReadOnlyCaretVisible
+      
+          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+          
+        KeyUp="OnSearchBoxKeyUp"
+      Control.TabIndex="2"
+      x:Name="SearchBox"
+                                     TextChanged="OnSearchTextChanged"
+
+UI:WatermarkTextBoxBehavior.EnableWatermark="True"
+UI:WatermarkTextBoxBehavior.Label="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
+                                     
+                                    HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"/>
+
+  </DockPanel>
+    </Border>
+  <pres:ScrollViewer
+      VerticalScrollBarVisibility="Auto"
+      HorizontalScrollBarVisibility="Visible"
+      CanContentScroll="True"
+      IsDeferredScrollingEnabled="False"
+      Focusable="False">
+    <!--DataContext="{Binding Path=ViewModel.HeadingsNavigator, RelativeSource={x:Static RelativeSource.Self}}"-->
+    <TreeView
+      x:Name="TreeView"
+      ItemsSource="{Binding HeadingsNavigator_Roots}"
+      SelectedItemChanged="OnSelectedItemChanged_TreeView"
+      DockPanel.Dock="Top"
+      VirtualizingStackPanel.IsVirtualizing="False"
+      VirtualizingStackPanel.VirtualizationMode="Recycling"
+      
+      Focusable="True"
+      IsTabStop="True"
+      
+      FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+      
+      AutomationProperties.Name="{x:Static local:Tobi_Plugin_NavigationPane_Lang.Headings}">
+
+      <TreeView.ItemContainerStyle>
+        <Style TargetType="{x:Type TreeViewItem}">
+
+          <Style.Setters>
+            <!--<Setter Property="FocusVisualStyle">
+              <Setter.Value>
+                <Style TargetType="{x:Type IFrameworkInputElement}">
+                  --><!--<Style.Resources>
+                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                </Style.Resources>--><!--
+                  <Setter Property="Control.Template">
+                    <Setter.Value>
+                      <ControlTemplate>
+                        <Rectangle
+                            Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                            StrokeThickness="1"
+                            StrokeDashArray="1 2"
+                            Margin="0"
+                            SnapsToDevicePixels="True" />
+                      </ControlTemplate>
+                    </Setter.Value>
+                  </Setter>
+                </Style>
+              </Setter.Value>
+            </Setter>-->
+
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
+
+            <!-- THIS CODE GENERATES 1 EVENT PER DEPTH OR TREE NODE !!!
+          <EventSetter Event="MouseDoubleClick" Handler="OnMouseDoubleClick_TreeItem" />
+          -->
+            <EventSetter Event="KeyDown" Handler="OnKeyDown_TreeViewItem" />
+
+            <Setter Property="AutomationProperties.Name" Value="{Binding Title}"/>
+            <Setter Property="UI:TreeViewItemBringIntoViewNoFocusWhenSelectedBehavior.IsBroughtIntoViewNoFocusWhenSelected" Value="True" />
+
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="search:SearchOperations.IsMatch" Value="{Binding SearchMatch}"/>
+          </Style.Setters>
+
+
+          <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="FontWeight" Value="Bold" />
+            </Trigger>
+            
+            <Trigger Property="search:SearchOperations.IsMatch" Value="True">
+
+              <Setter Property="Background">
+                <Setter.Value>
+                  <SolidColorBrush Color="{Binding Source={x:Static Common:Settings.Default}, Path=SearchHits_Color, Mode=OneWay}"/>
+                  <!-- LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <GradientStop Color="White" Offset="0"/>
+                                        <GradientStop Color="#FF78C4FF" Offset="1"/>
+                                    </LinearGradientBrush -->
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+
+            <!--This trigger is needed, because RelativeSource binding can only succeeds if the current MenuItem is already connected to its visual parent-->
+            <!--<Trigger Property="IsVisible" Value="True">
+              <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+              <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            </Trigger>-->
+            
+          </Style.Triggers>
+        </Style>
+      </TreeView.ItemContainerStyle>
+
+
+      <TreeView.Resources>
+
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                      Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+        
+        <HierarchicalDataTemplate DataType="{x:Type local:HeadingTreeNodeWrapper}"
+                                  ItemsSource="{Binding Children}">
+
+          <TextBlock Text="{Binding Path=Title}"
+                     MouseDown="OnMouseDown_TreeItem">
+              <TextBlock.ContextMenu>
+              <ContextMenu>
+                <ContextMenu.Resources>
+                  <Style TargetType="{x:Type UI:MenuItemRichCommand}" BasedOn="{StaticResource {x:Type MenuItem}}">
+                    <!-- Setter Property="OverridesDefaultStyle" Value="True"/ -->
+                    <!-- Setter Property="FontSize" Value="30"/>
+                              <Setter Property="FontWeight" Value="UltraBold"/ -->
+                    <Style.Triggers>
+                      <!--This trigger is needed, because RelativeSource binding can only succeeds if the current MenuItem is already connected to its visual parent-->
+                      <Trigger Property="IsVisible" Value="True">
+                        <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                        <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </ContextMenu.Resources>
+                <UI:MenuItemRichCommand RichCommand="{Binding CommandExpandAll}" x:Name="CommandExpandAll"/>
+                <!-- <UI:MenuItemRichCommand RichCommand="{Binding CommandExpand}" CommandParameter="{Binding Path=.}"/> -->
+                <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}" x:Name="CommandCollapseAll"/>
+                <!-- <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapse}" CommandParameter="{Binding Path=.}"/> -->
+                <!-- UI:MenuItemRichCommand RichCommand="{Binding CommandEditText}" CommandParameter="{Binding Path=.}"/ -->
+              </ContextMenu>
+            </TextBlock.ContextMenu>
+          </TextBlock>
+          <!--
+                <HierarchicalDataTemplate.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=Title}">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <UI:MenuItemRichCommand RichCommand="{Binding CommandExpandAll}"/>
+                                <UI:MenuItemRichCommand RichCommand="{Binding CommandExpand}" CommandParameter="{Binding Path=.}"/>
+                                <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}"/>
+                                <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapse}" CommandParameter="{Binding Path=.}"/>
+                                <UI:MenuItemRichCommand RichCommand="{Binding CommandEditText}" CommandParameter="{Binding Path=.}"/>
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                        </TextBlock>
+                    </DataTemplate>
+                </HierarchicalDataTemplate.ItemTemplate>
+                -->
+        </HierarchicalDataTemplate>
+        <!-- ContextMenu x:Key="TreeViewContext">
+                    <UI:MenuItemRichCommand RichCommand="{Binding CommandExpandAll}"/>
+                    <UI:MenuItemRichCommand RichCommand="{Binding CommandCollapseAll}"/>
+                </ContextMenu -->
+
+      </TreeView.Resources>
+
+    </TreeView>
+  </pres:ScrollViewer>
+</DockPanel>

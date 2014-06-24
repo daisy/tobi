@@ -1,0 +1,81 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.Urakawa" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Pipeline2JavaMaxMem" Type="Tobi.Plugin.Urakawa.JavaXmx" Scope="User">
+      <Value Profile="(Default)">_1G</Value>
+    </Setting>
+    <Setting Name="Pipeline2Timeout" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="Pipeline2Path" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\daisy\bin\pipeline2.bat</Value>
+    </Setting>
+    <Setting Name="Pipeline2Url" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://localhost:8181</Value>
+    </Setting>
+    <Setting Name="Pipeline2OldExe" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="EnableAutoSave" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="EnableRecentFilesMenu" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ExportGenerateSmilNotes" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ExportIncludeImageDescriptions" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ExportImageDescriptions_AriaDescribedBy" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ExportImageDescriptions_AriaDescribedAt" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ExportImageDescriptions_HtmlLongDesc" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ExportImageDescriptions_inlineTextAudio" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AudioCodecDisableACM" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AudioExportEncodeToMp3" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AudioExportMp3Bitrate" Type="AudioLib.Mp3BitRate" Scope="User">
+      <Value Profile="(Default)">kbps_64</Value>
+    </Setting>
+    <Setting Name="AudioExportSampleRate" Type="AudioLib.SampleRate" Scope="User">
+      <Value Profile="(Default)">Hz44100</Value>
+    </Setting>
+    <Setting Name="AudioExportStereo" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AudioProjectSampleRate" Type="AudioLib.SampleRate" Scope="User">
+      <Value Profile="(Default)">Hz44100</Value>
+    </Setting>
+    <Setting Name="AudioProjectStereo" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="XUK_PrettyFormat" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Skippables" Type="System.String" Scope="User">
+      <Value Profile="(Default)">pagenum,linenum,sidebar,footnote,endnote,rearnote,prodnote,annotation,annoref,note,noteref,</Value>
+    </Setting>
+    <Setting Name="MediaOverlayPlaybackActiveCSS" Type="System.String" Scope="User">
+      <Value Profile="(Default)">background-color: black !important; color: white !important; border-radius: 0.2em;</Value>
+    </Setting>
+    <Setting Name="ProcessTimeoutMinutes" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="FilePathMax" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">120</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

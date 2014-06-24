@@ -1,0 +1,108 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.AudioPane" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AudioEffect_SpeedUp" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1.5</Value>
+    </Setting>
+    <Setting Name="AudioEffect_SlowDown" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.8</Value>
+    </Setting>
+    <Setting Name="AudioEffect_Amplify" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1.5</Value>
+    </Setting>
+    <Setting Name="Audio_AutoPlayAfterSplit" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="Audio_DisableSingleWavFileRecord" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Audio_PlayKeepPitch" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="Audio_EnablePlayPreviewBeforeRecord" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Audio_OutputDevice" Type="System.String" Scope="User">
+      <Value Profile="(Default)">default</Value>
+    </Setting>
+    <Setting Name="Audio_InputDevice" Type="System.String" Scope="User">
+      <Value Profile="(Default)">default</Value>
+    </Setting>
+    <Setting Name="Audio_TTS_Voice" Type="System.String" Scope="User">
+      <Value Profile="(Default)">default</Value>
+    </Setting>
+    <Setting Name="Audio_EnableSkippability" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Audio_AlwaysMonitor" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="UseFriendlyTimeFormat" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Audio_ButtonBarVisible" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_LoadDelay" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">350</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_TileWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">400</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_ThreadBytesThreshold" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">5242880</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_UseVectorAtResize" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_VectorWidthThreshold" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">4000</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_UseDecibels" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_DisableDraw" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_TimeStepPlayPreview" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_RenderMethod" Type="Tobi.Plugin.AudioPane.WaveFormRenderMethod" Scope="User">
+      <Value Profile="(Default)">RenderTargetBitmap</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Resolution" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_DrawStyle" Type="Tobi.Plugin.AudioPane.WaveFormDrawStyle" Scope="User">
+      <Value Profile="(Default)">BorderFillBars</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Border" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF7FFF00</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Fill" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF32CD32</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Bars" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF00FF00</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Back" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF000000</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_CursorBorder" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFF0000</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_CursorFill" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFFD700</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Selection" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF00BFFF</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_Phrases" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF4682B4</Value>
+    </Setting>
+    <Setting Name="AudioWaveForm_Color_TimeText" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFFFFFF</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

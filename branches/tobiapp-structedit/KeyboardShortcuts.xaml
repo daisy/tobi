@@ -1,0 +1,374 @@
+﻿<UI:SortableListView2
+    
+    x:Class="Tobi.KeyboardShortcuts"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+
+           ScrollViewer.CanContentScroll="True"
+             VirtualizingStackPanel.IsVirtualizing="False"
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+
+    ItemsSource="{Binding RegisteredRichCommands, Mode=OneWay}"
+           
+              SelectionMode="Single"
+
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+AlternationCount="2"
+    
+            >
+
+  <ListView.Resources>
+    <ToolTip x:Key="imageIconTooltipp"
+       DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               
+               >
+      <ContentControl
+                        Width="{Binding Path=DataContext.IconProvider.IconWidth_XLarge}"
+                            
+                          Height="{Binding Path=DataContext.IconProvider.IconHeight_XLarge}"
+                            
+              Content="{Binding Path=DataContext.IconProvider.IconXLarge}"/>
+
+    </ToolTip>
+
+  </ListView.Resources>
+
+  <ListView.View>
+    <GridView AllowsColumnReorder="true">
+      <GridViewColumn Header="Icon">
+        <GridViewColumn.CellTemplate>
+          <DataTemplate>
+
+            <ContentControl Focusable="False"
+                              Width="{Binding Path=IconProvider.IconWidth_Large}"
+                            
+                                Height="{Binding Path=IconProvider.IconHeight_Large}"
+                            
+                                Content="{Binding Path=IconProvider.IconLarge}"
+                                                     
+                                                     
+                    ToolTip="{StaticResource imageIconTooltipp}"
+                            Margin="2, 4, 2, 4">
+            </ContentControl>
+          </DataTemplate>
+
+        </GridViewColumn.CellTemplate>
+
+      </GridViewColumn>
+
+
+      <UI:SortableGridViewColumn Header="Short Description"
+                      SortPropertyName="ShortDescription"
+                      DisplayMemberBinding="{Binding ShortDescription}"/>
+
+      <UI:SortableGridViewColumn Header="Keyboard shortcut"
+                      SortPropertyName="KeyGestureText"
+                      DisplayMemberBinding="{Binding KeyGestureText}"/>
+
+      <UI:SortableGridViewColumn Header="Long Description"
+                    SortPropertyName="LongDescription"
+                    DisplayMemberBinding="{Binding LongDescription}"/>
+
+    </GridView>
+  </ListView.View>
+
+  <ListView.ItemContainerStyle>
+
+    <Style TargetType="{x:Type ListViewItem}">
+
+      <Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription}"/>
+
+      <Style.Triggers>
+        <MultiTrigger>
+          <MultiTrigger.Conditions>
+            <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+            <Condition Property="IsSelected" Value="False"/>
+          </MultiTrigger.Conditions>
+          <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+        </MultiTrigger>
+      </Style.Triggers>
+    </Style>
+
+  </ListView.ItemContainerStyle>
+</UI:SortableListView2>
+
+
+<!-- TabControl
+    x:Class="Tobi.KeyboardShortcuts"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+    xmlns:Controls="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+    xmlns:Primitives="clr-namespace:Microsoft.Windows.Controls.Primitives;assembly=WPFToolkit"
+  TabStripPlacement="Top" -->
+
+  <!-- TabControl.Resources>
+
+    <Style x:Key="dataGridRowStyle"
+              TargetType="{x:Type Controls:DataGridRow}">
+
+      <Setter Property="FontWeight" Value="Normal" />
+
+      <Style.Triggers>
+        <Trigger Property="IsSelected" Value="True">
+          <Setter Property="FontWeight" Value="Bold" />
+          <Setter Property="Foreground" Value="Red"/>
+        </Trigger>
+      </Style.Triggers>
+      
+      <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.IconsDebug}"/>
+
+    </Style>
+
+
+
+    
+RowStyle="{StaticResource dataGridRowStyle}"
+
+
+
+  </TabControl.Resources -->
+
+  <!-- TabItem Header="Shortcuts (DataGrid)" -->
+
+
+
+
+    <!--     VerticalGridLinesBrush="Transparent" -->
+  <!-- Controls:DataGrid
+
+    LoadingRow="OnLoadingRow"
+    
+    ItemsSource="{Binding RegisteredRichCommands, Mode=OneWay}"
+    CanUserDeleteRows="False" CanUserAddRows="False"
+    CanUserResizeRows="False"
+    EnableColumnVirtualization="False"
+    EnableRowVirtualization="False"
+    IsReadOnly="True"
+    AutoGenerateColumns="False"
+        CanUserReorderColumns="False"
+    
+    HeadersVisibility="All"
+    
+    GridLinesVisibility="Horizontal"
+    
+    HorizontalContentAlignment="Center"
+    VerticalContentAlignment="Center"
+    
+           ScrollViewer.CanContentScroll="True"
+             VirtualizingStackPanel.IsVirtualizing="False"
+             VirtualizingStackPanel.VirtualizationMode="Recycling"
+             ScrollViewer.IsDeferredScrollingEnabled="False"
+    
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+    
+    
+    AlternatingRowBackground="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+AlternationCount="2"
+    
+    SelectionMode="Single"
+    SelectionUnit="FullRow"
+    
+    -->
+      <!-- Controls:DataGrid.ItemContainerStyle>
+
+        <Style TargetType="{x:Type Controls:DataGridRow}">
+
+          <Setter Property="Control.FontWeight" Value="Normal" />
+
+          <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.IconsDebug}"/>
+
+          <Style.Triggers>
+            <Trigger Property="Selector.IsSelected" Value="True">
+              <Setter Property="Control.FontWeight" Value="Bold" />
+              <Setter Property="Control.Foreground" Value="Red"/>
+            </Trigger>
+          </Style.Triggers>
+
+        </Style>
+      </Controls:DataGrid.ItemContainerStyle -->
+
+
+<!-- Controls:DataGrid.Resources>
+
+        <ToolTip x:Key="imageIconTooltip"
+           DataContext="{Binding Path=PlacementTarget,
+           RelativeSource={x:Static RelativeSource.Self}}"
+               >
+          <ContentControl
+                            Width="{Binding Path=DataContext.IconProvider.IconWidth_XLarge}"
+                            
+                              Height="{Binding Path=DataContext.IconProvider.IconHeight_XLarge}"
+                            
+                  Content="{Binding Path=DataContext.IconProvider.IconXLarge}"/>
+
+        </ToolTip>
+      </Controls:DataGrid.Resources -->
+
+<!-- Controls:DataGrid.Columns>
+        <Controls:DataGridTemplateColumn Header="Icon"
+                                     MinWidth="50"
+                                     Width="Auto"
+                                     IsReadOnly="True"
+                                     CanUserSort="False"
+                                          >
+          <Controls:DataGridTemplateColumn.HeaderStyle>
+
+            <Style>
+              <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_ClearSelection_}"/>
+            </Style>
+            
+          </Controls:DataGridTemplateColumn.HeaderStyle>
+          
+          <Controls:DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <ContentControl Focusable="False"
+                                Width="{Binding Path=IconProvider.IconWidth_Large}"
+                            
+                                  Height="{Binding Path=IconProvider.IconHeight_Large}"
+                            
+                                  Content="{Binding Path=IconProvider.IconLarge}"
+                                                     
+                      ToolTip="{StaticResource imageIconTooltip}"
+                              Margin="2, 4, 2, 4" -->
+
+                <!-- ContentControl.Style>
+                  <Style TargetType="{x:Type ContentControl}">
+                    <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_BeginSelection_}"/>
+                  </Style>
+                </ContentControl.Style -->
+
+<!-- /ContentControl>
+            </DataTemplate>
+          </Controls:DataGridTemplateColumn.CellTemplate -->
+
+          <!-- Controls:DataGridTemplateColumn.CellStyle>
+
+            <Style TargetType="{x:Type Controls:DataGridCell}">
+
+              <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.IconsDebug}"/>
+
+            </Style>
+          </Controls:DataGridTemplateColumn.CellStyle -->
+
+<!-- /Controls:DataGridTemplateColumn>
+
+
+        <Controls:DataGridTextColumn Header="Short description"
+                                     MinWidth="50"
+                                     Width="Auto"
+                                     IsReadOnly="True"
+                                     CanUserSort="True"
+                                         SortMemberPath="ShortDescription"
+                                         SortDirection="Descending"
+                                     Binding="{Binding ShortDescription}"/>
+
+        <Controls:DataGridTextColumn Header="Keyboard shortcut"
+                                     MinWidth="50"
+                                     Width="Auto"
+                                     IsReadOnly="True"
+                                     CanUserSort="True"
+                                         SortMemberPath="KeyGestureText"
+                                         SortDirection="Descending"
+                                     Binding="{Binding KeyGestureText}" -->
+
+          <!-- Controls:DataGridTextColumn.HeaderStyle>
+            <Style  TargetType="{x:Type Primitives:DataGridColumnHeader}">
+              <Setter Property="HorizontalContentAlignment" Value="Right"/>
+
+              <Setter Property="Foreground" Value="Red"/>
+              <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_Delete}"/>
+            </Style>
+          </Controls:DataGridTextColumn.HeaderStyle>
+
+          <Controls:DataGridTextColumn.CellStyle>
+            <Style TargetType="{x:Type Controls:DataGridCell}">
+              <Setter Property="HorizontalContentAlignment" Value="Right"/>
+
+              <Setter Property="Foreground" Value="Yellow"/>
+              <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_Delete}"/>
+            </Style>
+          </Controls:DataGridTextColumn.CellStyle>
+          
+          <Controls:DataGridTextColumn.ElementStyle>
+            <Style TargetType="{x:Type TextBlock}">
+              <Setter Property="HorizontalAlignment" Value="Center"/>
+              <Setter Property="Foreground" Value="Blue"/>
+              <Setter Property="AutomationProperties.Name" Value="{x:Static Common:UserInterfaceStrings.Audio_Delete}"/>
+            </Style>
+          </Controls:DataGridTextColumn.ElementStyle -->
+
+
+<!-- /Controls:DataGridTextColumn>
+
+
+        <Controls:DataGridTextColumn Header="Long description"
+                                     MinWidth="50"
+                                     Width="Auto"
+                                     IsReadOnly="True"
+                                     CanUserSort="True"
+                                         SortMemberPath="LongDescription"
+                                         SortDirection="Descending"
+                                     Binding="{Binding LongDescription}"/>
+
+      </Controls:DataGrid.Columns>
+
+    </Controls:DataGrid>
+  </TabItem -->
+
+
+
+
+
+
+
+
+
+<!-- TabItem Header="Shortcuts (ListView + GridView)" >
+
+    
+
+  </TabItem -->
+
+
+  <!-- Trigger Property="ItemsControl.AlternationIndex" Value="1">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+          </Trigger -->
+  <!-- GridViewColumn.CellTemplate>
+            <DataTemplate>
+
+              <DataTemplate.Resources>
+
+                <Style x:Key="accessStyle" TargetType="{x:Type TextBlock}">
+
+                  <Setter Property="Text" Value="{Binding Path=LongDescription}"/>
+                  <Setter Property="AutomationProperties.Name" Value="{Binding Path=LongDescription}"/>
+                  <Setter Property="Background" Value="Red"/>
+
+                </Style>
+              </DataTemplate.Resources>
+              <TextBlock
+                         Style="{StaticResource accessStyle}"
+                         Focusable="True">
+              </TextBlock>
+
+            </DataTemplate>
+
+          </GridViewColumn.CellTemplate>
+
+        </GridViewColumn>
+
+</TabControl -->

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="PresentationOptions">
+  <VisualBrush x:Key="audio-volume-high">
+    <VisualBrush.Visual>
+        <Canvas >
+          <Path  RenderTransform="2.901907,0,0,3.804948,-4.8525,-32.31157" Opacity="0.42857145">
+            <Path.Data>
+              <PathGeometry FillRule="Nonzero" Figures="M11.932427,17.403807A5.524272,2.2980971,0,1,1,0.88388348,17.403807A5.524272,2.2980971,0,1,1,11.932427,17.403807z" />
+            </Path.Data>
+            <Path.Fill>
+              <RadialGradientBrush Center="6.4081554,17.403807" RadiusX="5.524272" RadiusY="5.524272" GradientOrigin="6.4081554,17.403807" MappingMode="Absolute" SpreadMethod="Pad" Transform="1,0,0,0.416,2.706926E-15,10.16382">
+                <RadialGradientBrush.GradientStops>
+                  <GradientStop Color="#FF000000" Offset="0" />
+                  <GradientStop Color="#00000000" Offset="1" />
+                </RadialGradientBrush.GradientStops>
+              </RadialGradientBrush>
+            </Path.Fill>
+          </Path>
+          <Canvas  RenderTransform="1.296182,0,0,1.296182,-4.176277,-7.324567">
+            <Path Stroke="#FF5D615F" StrokeThickness="0.57792485" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeDashCap="Round" StrokeLineJoin="Round" StrokeMiterLimit="4"  RenderTransform="1.415965,0,0,1.258558,-2.667614,-6.200669">
+              <Path.Data>
+                <PathGeometry FillRule="Nonzero" Figures="M12.374369,24.665476A3.6239223,6.3639612,0,1,1,5.126524,24.665476A3.6239223,6.3639612,0,1,1,12.374369,24.665476z" />
+              </Path.Data>
+              <Path.Fill>
+                <LinearGradientBrush StartPoint="7.5763841,20.301662" EndPoint="7.3215322,27.345011" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="Identity">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FFEAEAE9" Offset="0" />
+                    <GradientStop Color="#FFA5A7A2" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Path.Fill>
+            </Path>
+            <Path  RenderTransform="1.154526,0,0,1.154526,-0.379902,-3.63468">
+              <Path.Data>
+                <PathGeometry FillRule="Nonzero" Figures="M12.374369,24.665476A3.6239223,6.3639612,0,1,1,5.126524,24.665476A3.6239223,6.3639612,0,1,1,12.374369,24.665476z" />
+              </Path.Data>
+              <Path.Fill>
+                <LinearGradientBrush StartPoint="7.5763841,20.301662" EndPoint="7.3215322,27.345011" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="Identity">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FFEAEAE9" Offset="0" />
+                    <GradientStop Color="#FFA5A7A2" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Path.Fill>
+            </Path>
+            <Path Fill="#FF93958F"  RenderTransform="1.081355,0,0,1.081355,1.232653,-1.829889">
+              <Path.Data>
+                <PathGeometry FillRule="Nonzero" Figures="M12.374369,24.665476A3.6239223,6.3639612,0,1,1,5.126524,24.665476A3.6239223,6.3639612,0,1,1,12.374369,24.665476z" />
+              </Path.Data>
+            </Path>
+            <Path StrokeThickness="0.68416733" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeDashCap="Round" StrokeLineJoin="Round" StrokeMiterLimit="4"  RenderTransform="1.1807,0,0,1.076971,-0.608944,-1.721744" Opacity="0.39560439">
+              <Path.Data>
+                <PathGeometry FillRule="Nonzero" Figures="M12.374369,24.665476A3.6239223,6.3639612,0,1,1,5.126524,24.665476A3.6239223,6.3639612,0,1,1,12.374369,24.665476z" />
+              </Path.Data>
+              <Path.Stroke>
+                <LinearGradientBrush StartPoint="4.6831215,24.665476" EndPoint="8.3712559,24.317278" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="Identity">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FFFFFFFF" Offset="0" />
+                    <GradientStop Color="#00FFFFFF" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Path.Stroke>
+            </Path>
+          </Canvas>
+          <Path StrokeThickness="1.00000024" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeDashCap="Round" StrokeMiterLimit="4" >
+            <Path.Data>
+              <PathGeometry Figures="M9.4806798,18.24261L16.570367,12.118401 16.341232,37.201244 9.1369775,31.676187C6.6164956,29.613972,6.1582259,20.41939,9.4806798,18.24261z" />
+            </Path.Data>
+            <Path.Fill>
+              <LinearGradientBrush StartPoint="56.302975,4.9369388" EndPoint="56.609135,8.6796741" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="1.769913,0,0,1.769913,-88.34438,10.67235">
+                <LinearGradientBrush.GradientStops>
+                  <GradientStop Color="#FFEEEEEC" Offset="0" />
+                  <GradientStop Color="#FF8A8C87" Offset="1" />
+                </LinearGradientBrush.GradientStops>
+              </LinearGradientBrush>
+            </Path.Fill>
+            <Path.Stroke>
+              <LinearGradientBrush StartPoint="11.125889,25.559732" EndPoint="9.346509,25.736509" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="1.296181,0,0,1.296181,-4.978245,-7.324566">
+                <LinearGradientBrush.GradientStops>
+                  <GradientStop Color="#FF6F726F" Offset="0" />
+                  <GradientStop Color="#006F726F" Offset="1" />
+                </LinearGradientBrush.GradientStops>
+              </LinearGradientBrush>
+            </Path.Stroke>
+          </Path>
+          <Path >
+            <Path.Data>
+              <PathGeometry Figures="M7.5383505,21.987453L11.593316,18.948432 11.341702,22.484506 7.3782322,23.145502 7.5383505,21.987453z" />
+            </Path.Data>
+            <Path.Fill>
+              <LinearGradientBrush StartPoint="9.485774,22.107626" EndPoint="7.378232,22.637957" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="Identity">
+                <LinearGradientBrush.GradientStops>
+                  <GradientStop Color="#FFFFFFFF" Offset="0" />
+                  <GradientStop Color="#00FFFFFF" Offset="1" />
+                </LinearGradientBrush.GradientStops>
+              </LinearGradientBrush>
+            </Path.Fill>
+          </Path>
+          <Path  Opacity="0.7692308">
+            <Path.Data>
+              <PathGeometry FillRule="Nonzero" Figures="M8.203516,30.371178L12.644321,33.939519 12.087496,31.511626 7.6110912,29.008887 8.203516,30.371178z" />
+            </Path.Data>
+            <Path.Fill>
+              <RadialGradientBrush Center="5.0822492,12.516305" RadiusX="2.9831069" RadiusY="2.9831069" GradientOrigin="5.0822492,12.516305" MappingMode="Absolute" SpreadMethod="Pad" Transform="1.525791,4.898427E-16,-1.480441E-08,1.768964,-0.08162983,6.066255">
+                <RadialGradientBrush.GradientStops>
+                  <GradientStop Color="#00FFFFFF" Offset="0" />
+                  <GradientStop Color="#FFFFFFFF" Offset="1" />
+                </RadialGradientBrush.GradientStops>
+              </RadialGradientBrush>
+            </Path.Fill>
+          </Path>
+          <Canvas  RenderTransform="1.096894,0,0,1.509271,-4.216951,-12.11812">
+            <Path StrokeThickness="1.47668338" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeDashCap="Round" StrokeMiterLimit="4" >
+              <Path.Data>
+                <PathGeometry Figures="M23.75,14C21.81001,14.049168 20.013366,14.683436 18.5,15.6875 18.13319,15.264088 17.60375,15 17,15 16.9655,15 16.912662,15.000854 16.875,15 16.847007,14.9998 16.806453,14.997438 16.78125,15 15.773145,15.102481 15,15.965001 15,17 15,17.60375 15.264088,18.13319 15.6875,18.5 14.639107,20.080181 14,21.962011 14,24 14,26.033681 14.611921,27.921829 15.65625,29.5 15.243427,29.869532 15,30.401641 15,31 15,32.104 15.896,33.000001 17,33 17.60375,33 18.13319,32.735911 18.5,32.3125 20.080181,33.360893 21.962011,34 24,34 26.03799,34 27.919819,33.360893 29.5,32.3125 29.86681,32.735912 30.396251,33.000001 31,33 32.103999,33 33,32.104001 33,31 33,30.39625 32.735912,29.86681 32.3125,29.5 33.360893,27.919819 34,26.03799 34,24 34,21.962011 33.360893,20.080181 32.3125,18.5 32.735912,18.13319 33,17.60375 33,17 33,15.896 32.103999,15 31,15 30.9655,15 30.912662,15.000854 30.875,15 30.847007,14.9998 30.806453,14.997438 30.78125,15 30.277198,15.05124 29.819299,15.298435 29.5,15.65625 29.493313,15.651825 29.475448,15.660659 29.46875,15.65625 27.894622,14.620029 26.025064,14 24,14 23.913827,14 23.835651,13.997829 23.75,14z" />
+              </Path.Data>
+              <Path.Fill>
+                <RadialGradientBrush Center="-1.0016617,0.99004257" RadiusX="9.9205227" RadiusY="9.9205227" GradientOrigin="-1.0016617,0.99004257" MappingMode="Absolute" SpreadMethod="Pad" Transform="-0.127582,1.416065,-1.630141,-0.146854,17.48751,15.56121">
+                  <RadialGradientBrush.GradientStops>
+                    <GradientStop Color="#FFEEEEEC" Offset="0" />
+                    <GradientStop Color="#FF555753" Offset="1" />
+                  </RadialGradientBrush.GradientStops>
+                </RadialGradientBrush>
+              </Path.Fill>
+              <Path.Stroke>
+                <LinearGradientBrush StartPoint="17.0625,34.950001" EndPoint="20.3125,5.375" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="Identity">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FF2E3436" Offset="0" />
+                    <GradientStop Color="#FF888A85" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Path.Stroke>
+            </Path>
+            <Path >
+              <Path.Data>
+                <PathGeometry Figures="M23.75,14C21.81001,14.049168 20.013366,14.683436 18.5,15.6875 18.13319,15.264088 17.60375,15 17,15 16.9655,15 16.912662,15.000854 16.875,15 16.847007,14.9998 16.806453,14.997438 16.78125,15 15.773145,15.102481 15,15.965001 15,17 15,17.60375 15.264088,18.13319 15.6875,18.5 14.639107,20.080181 14,21.962011 14,24 14,26.033681 14.611921,27.921829 15.65625,29.5 15.243427,29.869532 15,30.401641 15,31 15,32.104 15.896,33.000001 17,33 17.60375,33 18.13319,32.735911 18.5,32.3125 20.080181,33.360893 21.962011,34 24,34 26.03799,34 27.919819,33.360893 29.5,32.3125 29.86681,32.735912 30.396251,33.000001 31,33 32.103999,33 33,32.104001 33,31 33,30.39625 32.735912,29.86681 32.3125,29.5 33.360893,27.919819 34,26.03799 34,24 34,21.962011 33.360893,20.080181 32.3125,18.5 32.735912,18.13319 33,17.60375 33,17 33,15.896 32.103999,15 31,15 30.9655,15 30.912662,15.000854 30.875,15 30.847007,14.9998 30.806453,14.997438 30.78125,15 30.277198,15.05124 29.819299,15.298435 29.5,15.65625 29.493313,15.651825 29.475448,15.660659 29.46875,15.65625 27.894622,14.620029 26.025064,14 24,14 23.913827,14 23.835651,13.997829 23.75,14z" />
+              </Path.Data>
+              <Path.Fill>
+                <RadialGradientBrush Center="-1.0016617,0.99004257" RadiusX="9.9205227" RadiusY="9.9205227" GradientOrigin="-1.0016617,0.99004257" MappingMode="Absolute" SpreadMethod="Pad" Transform="-0.310032,2.110862,-2.082775,-0.305867,17.75288,16.41459">
+                  <RadialGradientBrush.GradientStops>
+                    <GradientStop Color="#FFEEEEEC" Offset="0" />
+                    <GradientStop Color="#FF888A85" Offset="1" />
+                  </RadialGradientBrush.GradientStops>
+                </RadialGradientBrush>
+              </Path.Fill>
+            </Path>
+            <Path StrokeThickness="0.8383193" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeDashCap="Round" StrokeMiterLimit="4"  RenderTransform="0.846982,0,0,0.911415,16.71027,15.44956">
+              <Path.Data>
+                <PathGeometry Figures="M18.75,9.375A9.375,9.375,0,1,1,0,9.375A9.375,9.375,0,1,1,18.75,9.375z" />
+              </Path.Data>
+              <Path.Fill>
+                <RadialGradientBrush Center="12.704856,13.847466" RadiusX="9.375" RadiusY="9.375" GradientOrigin="12.704856,13.847466" MappingMode="Absolute" SpreadMethod="Pad" Transform="0.06370852,-1.424475,1.547293,0.0692112,-9.530629,30.98681">
+                  <RadialGradientBrush.GradientStops>
+                    <GradientStop Color="#FFD3D7CF" Offset="0" />
+                    <GradientStop Color="#FF555753" Offset="1" />
+                  </RadialGradientBrush.GradientStops>
+                </RadialGradientBrush>
+              </Path.Fill>
+              <Path.Stroke>
+                <LinearGradientBrush StartPoint="-0.51990569,-0.51990569" EndPoint="-0.51990569,19.269905" ColorInterpolationMode="ScRgbLinearInterpolation" MappingMode="Absolute" SpreadMethod="Pad" Transform="Identity">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStop Color="#FF2E3436" Offset="0" />
+                    <GradientStop Color="#FFBABDB6" Offset="1" />
+                  </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+              </Path.Stroke>
+            </Path>
+            <Path  RenderTransform="0.367272,0,0,0.32,18.56254,21.125">
+              <Path.Data>
+                <PathGeometry Figures="M18.75,9.375A9.375,9.375,0,1,1,0,9.375A9.375,9.375,0,1,1,18.75,9.375z" />
+              </Path.Data>
+              <Path.Fill>
+                <RadialGradientBrush Center="6.8797626,7.1986876" RadiusX="9.375" RadiusY="9.375" GradientOrigin="6.8797626,7.1986876" MappingMode="Absolute" SpreadMethod="Pad" Transform="1.240749,9.690094E-09,-9.043116E-09,1.157631,-1.713645,-1.134736">
+                  <RadialGradientBrush.GradientStops>
+                    <GradientStop Color="#FFD3D7CF" Offset="0" />
+                    <GradientStop Color="#FF555753" Offset="1" />
+                  </RadialGradientBrush.GradientStops>
+                </RadialGradientBrush>
+              </Path.Fill>
+            </Path>
+            <Path Fill="#FF2E3436"  RenderTransform="1.3125,0,0,1.3125,-4.657679,-5.09375">
+              <Path.Data>
+                <PathGeometry Figures="M17,16.5A0.5,0.5,0,1,1,16,16.5A0.5,0.5,0,1,1,17,16.5z" />
+              </Path.Data>
+            </Path>
+            <Path Fill="#FF2E3436"  RenderTransform="1,0,0,1,15.22159,0.25">
+              <Path.Data>
+                <PathGeometry Figures="M17,16.5A0.5,0.5,0,1,1,16,16.5A0.5,0.5,0,1,1,17,16.5z" />
+              </Path.Data>
+            </Path>
+            <Path Fill="#FF2E3436"  RenderTransform="1,0,0,1,15.22159,14.96875">
+              <Path.Data>
+                <PathGeometry Figures="M17,16.5A0.5,0.5,0,1,1,16,16.5A0.5,0.5,0,1,1,17,16.5z" />
+              </Path.Data>
+            </Path>
+            <Path Fill="#FF2E3436"  RenderTransform="1.375,0,0,1.375,-5.688929,8.8125">
+              <Path.Data>
+                <PathGeometry Figures="M17,16.5A0.5,0.5,0,1,1,16,16.5A0.5,0.5,0,1,1,17,16.5z" />
+              </Path.Data>
+            </Path>
+          </Canvas>
+          <Path StrokeThickness="0.99999982" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeDashCap="Round" StrokeMiterLimit="4" >
+            <Path.Data>
+              <PathGeometry Figures="M36.087935,32.865672C37.005198,30.700908 37.568925,27.707589 37.568925,24.427683 37.568925,21.147777 37.005198,18.154458 36.087935,15.989694" />
+            </Path.Data>
+            <Path.Stroke>
+              <RadialGradientBrush Center="36.82843,24.427677" RadiusX="1.2404949" RadiusY="1.2404949" GradientOrigin="36.82843,24.427677" MappingMode="Absolute" SpreadMethod="Pad" Transform="13.39869,-4.118282E-06,6.831725E-06,22.22678,-456.6246,-518.5208">
+                <RadialGradientBrush.GradientStops>
+                  <GradientStop Color="#FF3465A4" Offset="0" />
+                  <GradientStop Color="#003465A4" Offset="1" />
+                </RadialGradientBrush.GradientStops>
+              </RadialGradientBrush>
+            </Path.Stroke>
+          </Path>
+          <Path StrokeThickness="0.99999982" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeDashCap="Round" StrokeMiterLimit="4" >
+            <Path.Data>
+              <PathGeometry Figures="M39.838951,35.702755C41.064624,32.810137 41.817892,28.81038 41.817892,24.427678 41.817892,20.044976 41.064624,16.045219 39.838951,13.152601" />
+            </Path.Data>
+            <Path.Stroke>
+              <RadialGradientBrush Center="36.82843,24.427677" RadiusX="1.2404949" RadiusY="1.2404949" GradientOrigin="36.82843,24.427677" MappingMode="Absolute" SpreadMethod="Pad" Transform="13.39869,-4.118282E-06,6.831725E-06,22.22678,-456.6246,-518.5208">
+                <RadialGradientBrush.GradientStops>
+                  <GradientStop Color="#FF3465A4" Offset="0" />
+                  <GradientStop Color="#003465A4" Offset="1" />
+                </RadialGradientBrush.GradientStops>
+              </RadialGradientBrush>
+            </Path.Stroke>
+          </Path>
+          <Path StrokeThickness="0.99999982" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeDashCap="Round" StrokeMiterLimit="4" >
+            <Path.Data>
+              <PathGeometry Figures="M43.487454,39.708054C45.148528,35.787876 46.169383,30.367266 46.169383,24.427674 46.169383,18.488083 45.148528,13.067472 43.487454,9.1472948" />
+            </Path.Data>
+            <Path.Stroke>
+              <RadialGradientBrush Center="36.82843,24.427683" RadiusX="1.2404949" RadiusY="1.2404949" GradientOrigin="36.82843,24.427683" MappingMode="Absolute" SpreadMethod="Pad" Transform="21.09444,2.34445E-15,1.470518E-12,22.22672,-740.0468,-518.5196">
+                <RadialGradientBrush.GradientStops>
+                  <GradientStop Color="#FF3465A4" Offset="0" />
+                  <GradientStop Color="#003465A4" Offset="1" />
+                </RadialGradientBrush.GradientStops>
+              </RadialGradientBrush>
+            </Path.Stroke>
+          </Path>
+        </Canvas>
+
+    </VisualBrush.Visual>
+  </VisualBrush>
+</ResourceDictionary>

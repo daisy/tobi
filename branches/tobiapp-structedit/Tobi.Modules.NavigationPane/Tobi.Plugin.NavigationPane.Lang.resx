@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Find" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="HeadingEdit" xml:space="preserve">
+    <value>Edit Heading</value>
+  </data>
+  <data name="HeadingEdit_" xml:space="preserve">
+    <value>Please Enter The New Value For This Heading.</value>
+  </data>
+  <data name="HeadingNavigationPlugin_Description" xml:space="preserve">
+    <value>The Navigation panel</value>
+  </data>
+  <data name="HeadingNavigationPlugin_Name" xml:space="preserve">
+    <value>Navigation pane.</value>
+  </data>
+  <data name="NavigationPanePlugin_Description" xml:space="preserve">
+    <value>The Navigation panel</value>
+  </data>
+  <data name="NavigationPanePlugin_Name" xml:space="preserve">
+    <value>Navigation pane.</value>
+  </data>
+  <data name="CmdNavigationFocus_ShortDesc" xml:space="preserve">
+    <value>_Navigation pane</value>
+  </data>
+  <data name="NoHeading" xml:space="preserve">
+    <value>(No heading)</value>
+  </data>
+  <data name="PageFindNext" xml:space="preserve">
+    <value>Find Next</value>
+  </data>
+  <data name="PageFindNext_" xml:space="preserve">
+    <value>Find the next matching item in the page list</value>
+  </data>
+  <data name="PageFindNext_FAILURE" xml:space="preserve">
+    <value>No More Matches Found</value>
+  </data>
+  <data name="PageFindPrev" xml:space="preserve">
+    <value>Find Previous</value>
+  </data>
+  <data name="PageFindPrev_" xml:space="preserve">
+    <value>Find the previous matching item in the page list</value>
+  </data>
+  <data name="PageFindPrev_FAILURE" xml:space="preserve">
+    <value>No More Matches Found</value>
+  </data>
+  <data name="MarkersNavigationPlugin_Description" xml:space="preserve">
+    <value>The markers navigation plugin</value>
+  </data>
+  <data name="MarkersNavigationPlugin_Name" xml:space="preserve">
+    <value>Markers navigation plugin</value>
+  </data>
+  <data name="PageNavigationPlugin_Description" xml:space="preserve">
+    <value>The page navigation plugin</value>
+  </data>
+  <data name="PageNavigationPlugin_Name" xml:space="preserve">
+    <value>Page navigation plugin</value>
+  </data>
+  <data name="TreeCollapse" xml:space="preserve">
+    <value>Co_llapse</value>
+  </data>
+  <data name="CmdTreeCollapseAll_ShortDesc" xml:space="preserve">
+    <value>_Collapse all</value>
+  </data>
+  <data name="CmdTreeCollapseAll_LongDesc" xml:space="preserve">
+    <value>Collapse all children in the tree</value>
+  </data>
+  <data name="TreeCollapse_" xml:space="preserve">
+    <value>Collapse the current item in the tree</value>
+  </data>
+  <data name="TreeEdit" xml:space="preserve">
+    <value>Edit _Heading</value>
+  </data>
+  <data name="TreeEdit_" xml:space="preserve">
+    <value>Edit the current heading</value>
+  </data>
+  <data name="TreeExpand" xml:space="preserve">
+    <value>Ex_pand</value>
+  </data>
+  <data name="CmdTreeExpandAll_ShortDesc" xml:space="preserve">
+    <value>E_xpand all</value>
+  </data>
+  <data name="CmdTreeExpandAll_LongDesc" xml:space="preserve">
+    <value>Expand all children in the tree</value>
+  </data>
+  <data name="TreeExpand_" xml:space="preserve">
+    <value>Expand the current item in the tree</value>
+  </data>
+  <data name="TreeFindNext" xml:space="preserve">
+    <value>Find Next</value>
+  </data>
+  <data name="TreeFindNext_" xml:space="preserve">
+    <value>Find the next matching item in the tree</value>
+  </data>
+  <data name="TreeFindNext_FAILURE" xml:space="preserve">
+    <value>No More Matches Found</value>
+  </data>
+  <data name="TreeFindPrev" xml:space="preserve">
+    <value>Find Previous</value>
+  </data>
+  <data name="TreeFindPrev_" xml:space="preserve">
+    <value>Find the previous matching item in the tree</value>
+  </data>
+  <data name="TreeFindPrev_FAILURE" xml:space="preserve">
+    <value>No More Matches Found</value>
+  </data>
+  <data name="Headings" xml:space="preserve">
+    <value>Headings</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>Pages</value>
+  </data>
+  <data name="Marks" xml:space="preserve">
+    <value>Marks</value>
+  </data>
+  <data name="Menu_Markers" xml:space="preserve">
+    <value>Document _marks</value>
+  </data>
+  <data name="Marked" xml:space="preserve">
+    <value>Marked</value>
+  </data>
+  <data name="RemoveAllMarkers" xml:space="preserve">
+    <value>Remove all</value>
+  </data>
+  <data name="CmdNavigationRemoveAllMarks_ShortDesc" xml:space="preserve">
+    <value>_Remove all document marks</value>
+  </data>
+  <data name="CmdNavigationRemoveAllMarks_LongDesc" xml:space="preserve">
+    <value>Switch off the marks in the entire document</value>
+  </data>
+  <data name="CmdNavigationToggleMark_ShortDesc" xml:space="preserve">
+    <value>_Toggle document mark</value>
+  </data>
+  <data name="CmdNavigationToggleMark_LongDesc" xml:space="preserve">
+    <value>Switch on/off the marker on the currently-selected text item</value>
+  </data>
+</root>

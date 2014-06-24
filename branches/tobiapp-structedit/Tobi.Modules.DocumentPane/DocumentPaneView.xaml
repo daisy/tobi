@@ -1,0 +1,686 @@
+﻿<Grid x:Class="Tobi.Plugin.DocumentPane.DocumentPaneView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:Common="clr-namespace:Tobi.Common;assembly=Tobi.Common"
+    xmlns:DocumentPane="clr-namespace:Tobi.Plugin.DocumentPane" xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML;assembly=Tobi.Common" xmlns:_UnusedCode="clr-namespace:Tobi.Common._UnusedCode;assembly=Tobi.Common" Margin="0,0,0,0"
+          
+      >
+  <Grid.Resources>
+
+    <ContextMenu x:Key="DocContextMenu">
+      <ContextMenu.Resources>
+        <Style TargetType="{x:Type UI:MenuItemRichCommand}" BasedOn="{StaticResource {x:Type MenuItem}}">
+          <!-- Setter Property="OverridesDefaultStyle" Value="True"/ -->
+          <!-- Setter Property="FontSize" Value="30"/>
+                              <Setter Property="FontWeight" Value="UltraBold"/ -->
+
+          <!--This trigger is needed, because RelativeSource binding can only succeeds if the current MenuItem is already connected to its visual parent-->
+          <!--<Style.Triggers>
+            <Trigger Property="IsVisible" Value="True">
+              <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+              <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            </Trigger>
+          </Style.Triggers>-->
+        </Style>
+      </ContextMenu.Resources>
+
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandEditText}" x:Name="CommandEditText"/>
+      <Separator/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandFollowLink}" x:Name="CommandFollowLink"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandUnFollowLink}" x:Name="CommandUnFollowLink"/>
+      
+
+    </ContextMenu>
+    
+    <!--<Style TargetType="{x:Type Hyperlink}">
+      <Setter Property="ContextMenu" Value="{StaticResource DocContextMenu}">
+      </Setter>
+    </Style>-->
+
+    <Style TargetType="{x:Type DocumentPane:FlowDocumentScrollViewerEx}">
+      <Style.Resources>
+        <ResourceDictionary />
+      </Style.Resources>
+      <Setter Property="Control.HorizontalContentAlignment">
+        <Setter.Value>
+          <x:Static Member="HorizontalAlignment.Stretch" />
+        </Setter.Value>
+      </Setter>
+      <Setter Property="Control.VerticalContentAlignment">
+        <Setter.Value>
+          <x:Static Member="VerticalAlignment.Stretch" />
+        </Setter.Value>
+      </Setter>
+      <Setter Property="KeyboardNavigation.TabNavigation">
+        <Setter.Value>
+          <x:Static Member="KeyboardNavigationMode.Local" />
+        </Setter.Value>
+      </Setter>
+      <Setter Property="Control.Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type FlowDocumentScrollViewer}">
+            <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Margin="{TemplateBinding Control.Padding}" x:Uid="Border_49">
+              <ScrollViewer
+                CanContentScroll="True" Name="PART_ContentHost" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" x:Uid="ScrollViewer_8">
+              </ScrollViewer>
+            </Border>
+            <!--<Grid xml:lang="en-us" x:Uid="Grid_26">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              
+            </Grid>-->
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Grid.Resources>
+
+  <!--LastChildFill="True"-->
+
+  <Grid.ColumnDefinitions>
+    <ColumnDefinition Width="*"/>
+  </Grid.ColumnDefinitions>
+  <Grid.RowDefinitions>
+    <RowDefinition Height="*"/>
+    <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
+  </Grid.RowDefinitions>
+
+  <DockPanel LastChildFill="True"
+             
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0"
+                            >
+
+    <Border
+             DockPanel.Dock="Top"
+             
+             BorderThickness="2"
+             BorderBrush="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+             
+             IsEnabled="{Binding Path=IsSearchEnabled, Mode=OneWay}"
+             Visibility="{Binding Path=IsSearchVisible, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+             LostFocus="OnSearchLostFocus"
+             >
+
+      <DockPanel LastChildFill="True"
+                                VerticalAlignment="Stretch"
+                                HorizontalAlignment="Stretch"
+             
+                 Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+
+        <UI:ButtonRichCommand
+          Control.TabIndex="2"
+          DockPanel.Dock="Right"
+           HorizontalAlignment="Right" VerticalAlignment="Center"
+          UseSmallerIcon="True"
+          RichCommand="{Binding CmdFindNextGlobal}"/>
+
+        <UI:ButtonRichCommand
+          Control.TabIndex="1"
+          DockPanel.Dock="Right"
+           HorizontalAlignment="Right" VerticalAlignment="Center"
+          UseSmallerIcon="True"
+          RichCommand="{Binding CmdFindPreviousGlobal}"/>
+
+        <TextBlock
+          Text="{x:Static Common:Tobi_Common_Lang.Find}"
+          DockPanel.Dock="Left"
+                     HorizontalAlignment="Left" VerticalAlignment="Center"
+                     Margin="2,0,2,0"/>
+
+        <UI:TextBoxReadOnlyCaretVisible
+      
+            FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+          Control.TabIndex="0"
+          x:Name="SearchBox"
+                                         TextChanged="OnSearchTextChanged"
+
+    UI:WatermarkTextBoxBehavior.EnableWatermark="True"
+    UI:WatermarkTextBoxBehavior.Label="{x:Static Common:Tobi_Common_Lang.SearchKeywords}"
+    UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
+                                     
+                                        HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+          KeyUp="OnSearchBoxKeyUp"/>
+
+      </DockPanel>
+    </Border>
+
+    <!--Template="{StaticResource FlowDocViewerTemplate}"-->
+    <DocumentPane:FlowDocumentScrollViewerEx
+     x:Name="FlowDocReader"
+     KeyUp="OnDocKeyUp"
+    AllowDrop="True"
+    HorizontalScrollBarVisibility="Disabled"
+                                          KeyboardNavigation.TabNavigation="Continue"
+   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_SinglePhraseView,
+              Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
+         
+          Margin="0,0,0,0"
+          Padding="0,0,0,0"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                    
+    Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
+                      
+                            Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+
+                    IsTabStop="False"
+                    IsEnabled = "True"
+    IsToolBarVisible="false"
+Background="Transparent"
+    
+    
+    
+    IsSelectionEnabled="True"
+                        Focusable="True"
+    
+                      >
+      <!-- 
+     PreviewKeyDown="OnPreviewKeyDown_DocViewer" -->
+
+      <!-- FlowDocumentScrollViewer.CommandBindings>
+        <CommandBinding Command="Copy" Executed="BuiltinCommandExecuted"/>
+        <CommandBinding Command="Cut" Executed="BuiltinCommandExecuted"/>
+        <CommandBinding Command="Paste" Executed="BuiltinCommandExecuted"/>
+        <CommandBinding Command="Print" Executed="BuiltinCommandExecuted"/>
+        <CommandBinding Command="SelectAll" Executed="BuiltinCommandExecuted"/>
+      </FlowDocumentScrollViewer.CommandBindings -->
+
+      <!--
+
+Background="{Binding
+      Converter={XAML:ColorToBrushConverter},
+      Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"-->
+
+
+      <!-- 
+{DynamicResource {x:Static SystemColors.WindowBrushKey}}
+
+                            IsFindEnabled="False"
+                      IsPrintEnabled="False"
+                      
+                        IsScrollViewEnabled="True"
+                      IsPageViewEnabled="True"
+                      IsTwoPageViewEnabled="False"
+                      
+                      ViewingMode="Scroll" -->
+
+      <FlowDocument
+      
+                    IsEnabled = "True"
+                    
+                    Focusable="False"
+                    
+                    DragOver="OnFlowDocDragOver"
+                    AllowDrop="True"
+                    x:Name="TheFlowDocument"
+                  
+                    
+                    FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
+                      
+                   AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
+         
+           IsHyphenationEnabled = "False"
+           IsOptimalParagraphEnabled = "False"
+           ColumnWidth = "Infinity"
+           IsColumnWidthFlexible="True"
+           TextAlignment = "Left"
+                  
+                        PageHeight="Auto"
+      PageWidth="Auto"
+Background="{Binding
+        Converter={DocumentPane:BackgroundColorToBrushConverter},
+        Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                    >
+        <!--
+Background="Transparent"
+-->
+        <!--ImageSource="pack://application:,,,/Tobi;component/Resources/paper_tile_texture.jpg"-->
+
+      </FlowDocument>
+
+
+      <!-- ScrollViewer
+                VerticalScrollBarVisibility="Visible"
+                HorizontalScrollBarVisibility="Auto"
+                
+             CanContentScroll="False"
+                IsDeferredScrollingEnabled="False"
+                  Focusable="False"
+                >
+    </ScrollViewer -->
+
+
+
+    </DocumentPane:FlowDocumentScrollViewerEx>
+
+  </DockPanel>
+
+
+  <!--Template="{StaticResource FlowDocViewerTemplate}"-->
+
+  <DocumentPane:FlowDocumentScrollViewerEx
+    
+    AllowDrop="True"
+                                           x:Name="FlowDocReaderSimple"
+                            HorizontalScrollBarVisibility="Disabled"
+   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_SinglePhraseView,
+              Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}"
+         
+          Margin="0,0,0,0"
+          Padding="0,0,0,0"
+          
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0"
+                            
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                    
+                            VerticalContentAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+    
+                            Zoom="{Binding ElementName=ZoomSlider, Path=Value, Mode=OneWay}"
+                      
+                            Foreground="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"
+                                           
+                    IsTabStop="False"
+                    IsEnabled = "True"
+    IsToolBarVisible="false"
+    Background="Transparent"
+    
+                                           
+    IsSelectionEnabled="True"
+                        Focusable="True"
+                      >
+    <!--Background="{Binding
+    Converter={XAML:ColorToBrushConverter},
+    Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"-->
+    <!-- 
+{DynamicResource {x:Static SystemColors.WindowBrushKey}}
+
+                            IsFindEnabled="False"
+                      IsPrintEnabled="False"
+                      
+                        IsScrollViewEnabled="True"
+                      IsPageViewEnabled="True"
+                      IsTwoPageViewEnabled="False"
+                      
+                      ViewingMode="Scroll" -->
+
+    <!--TextBoxBase.AutoWordSelectionProperty-->
+
+    <FlowDocument
+      
+                  Focusable="False"
+                  
+                  IsEnabled = "True"
+                  DragOver="OnFlowDocDragOver"
+                  AllowDrop="True" x:Name="TheFlowDocumentSimple"
+                    
+                    FontFamily="{Binding ElementName=comboListOfFonts, Path=SelectedItem, Mode=OneWay}"
+                      
+                 AutomationProperties.Name="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.Feature_Not_Available}"
+         
+         IsHyphenationEnabled = "False"
+         IsOptimalParagraphEnabled = "False"
+         ColumnWidth = "Infinity"
+         IsColumnWidthFlexible="True"
+          
+                  TextAlignment="{Binding
+                            Source={x:Static DocumentPane:Settings.Default}, Path=Document_TextOnlyAlign, Mode=OneWay}"
+                  
+    PageHeight="Auto"
+    PageWidth="Auto"
+Background="{Binding
+      Converter={DocumentPane:BackgroundColorToBrushConverter},
+      Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                    >
+
+      <!--<FlowDocument.Background>
+        <ImageBrush  ImageSource="/paper_tile_texture.jpg"
+                     Stretch="Fill" TileMode="tile"/>
+      </FlowDocument.Background>-->
+
+    </FlowDocument>
+
+    <!--Converter={XAML:StringToTextAlignmentConverter},-->
+
+    <!-- ScrollViewer
+                VerticalScrollBarVisibility="Visible"
+                HorizontalScrollBarVisibility="Auto"
+                
+             CanContentScroll="False"
+                IsDeferredScrollingEnabled="False"
+                  Focusable="False"
+                >
+    </ScrollViewer -->
+
+
+
+  </DocumentPane:FlowDocumentScrollViewerEx>
+
+
+
+  <!-- IsSelectionEnabled="True"
+    
+                        IsScrollViewEnabled="False"
+    -->
+
+  <!-- FlowDocumentReader i IsFindEnabled="False" ViewingMode="Scroll" -->
+
+  <!--Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"-->
+
+  <TextBlock Text=""
+             x:Name="FocusCollapsed"
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1"
+             Width="Auto"
+             VerticalAlignment="Center"
+             HorizontalAlignment="Stretch"
+             
+             KeyDown="OnToolbarToggleVisibleKeyboard"
+             MouseDown="OnToolbarToggleVisible"
+             
+   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ButtonBarVisible,
+              Converter={XAML:BooleanToOppositeVisibilityConverter}, Mode=OneWay}"
+         
+             Style="{StaticResource VisibilityTogglerStyleHeight}"
+          />
+
+  <Border
+          BorderThickness="1,1,1,1"
+          BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+        
+      Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+          
+          Margin="0,0,0,0"
+          Padding="0,0,0,0"
+          
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="2"
+           
+          
+   Visibility="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_ButtonBarVisible,
+              Converter={XAML:BooleanToVisibilityConverter}, Mode=OneWay}"
+          
+          
+        Focusable="False"
+                HorizontalAlignment="Stretch"
+           VerticalAlignment="Bottom">
+
+    <Border.Resources>
+
+      <DataTemplate x:Key="FontFamilyComboCollapsed">
+        <!-- TextBlock Text="{Binding}" FontFamily="{Binding}"/ -->
+        <TextBlock Text="{Binding Path=Source}"/>
+      </DataTemplate>
+
+      <DataTemplate x:Key="FontFamilyComboExpanded">
+        <StackPanel Orientation="Vertical">
+          <TextBlock VerticalAlignment="Center" Height="Auto">
+            <ContentPresenter Content="{TemplateBinding Content}" />
+          </TextBlock>
+          <TextBlock FontFamily="{Binding Source}"
+              VerticalAlignment="Center" Height="Auto">
+            ABC DEF GHI JKL MNO PQR STU VWYZ 0123456789
+          </TextBlock>
+        </StackPanel>
+      </DataTemplate>
+
+    </Border.Resources>
+
+    <UI:WrapPanelLastChildFill
+      
+      LastChildFill="True"
+               Orientation="Horizontal"
+      
+                HorizontalAlignment="Stretch"
+           VerticalAlignment="Bottom"
+          
+          Margin="0,0,0,0"
+           KeyboardNavigation.DirectionalNavigation="Cycle"
+             >
+
+      <!--HorizontalAlignment="Right"-->
+      <!-- Button Command="Annotations:AnnotationService.CreateTextStickyNoteCommand">Test</Button -->
+
+
+      <WrapPanel.Resources>
+        <CollectionViewSource Source="{Binding Source={x:Static UI:FontsFix.SystemFontFamilies}}" x:Key="familyCollection"/>
+      </WrapPanel.Resources>
+
+      <TextBlock
+             x:Name="FocusExpanded"
+        Focusable="True"
+             
+             Text=""
+                 Height="Auto"
+                 VerticalAlignment="Stretch"
+                 HorizontalAlignment="Center"
+                 
+             KeyDown="OnToolbarToggleVisibleKeyboard"
+                 MouseDown="OnToolbarToggleVisible"
+                 
+             Style="{StaticResource VisibilityTogglerStyleWidth}"
+          />
+
+
+      <UI:TwoStateButtonRichCommand
+  Visibility="{Binding Path=IsNarratorMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+        RichCommandOne="{Binding AudioViewModel.CommandStopRecord}"
+        RichCommandTwo="{Binding AudioViewModel.CommandStartRecord}"
+        InputBindingManager="{Binding InputBindingManager}"
+              RichCommandActive="{Binding AudioViewModel.IsRecording, Mode=OneWay}"/>
+
+      <UI:ButtonRichCommand
+        Visibility="{Binding Path=IsNarratorMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+          RichCommand="{Binding AudioViewModel.CommandStopRecordAndContinue}"/>
+
+      <UI:TwoStateButtonRichCommand
+        Visibility="{Binding Path=IsNarratorMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+        RichCommandOne="{Binding AudioViewModel.CommandPause}"
+        RichCommandTwo="{Binding AudioViewModel.CommandPlay}"
+        InputBindingManager="{Binding InputBindingManager}"
+              RichCommandActive="{Binding AudioViewModel.IsPlaying, Mode=OneWay}"/>
+
+      <Separator
+        Visibility="{Binding Path=IsNarratorMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+                 />
+
+
+      <UI:ButtonRichCommand
+                          RichCommand="{Binding CommandStructureUp}"
+                                 />
+      <UI:ButtonRichCommand
+                            RichCommand="{Binding CommandStructureDown}"
+                                 />
+      <UI:ButtonRichCommand
+                            RichCommand="{Binding CommandSwitchPhrasePrevious}"
+                                 />
+
+
+      <UI:ButtonRichCommand
+        RichCommand="{Binding CommandSwitchPhraseNext}"
+                                 />
+
+      
+      <CheckBox
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        Content="{x:Static Common:Tobi_Common_Lang.TextSyncGranularity}"
+                ToolTip="{Binding Source={x:Static DocumentPane:Settings_KeyGestures.Default}, Path=Keyboard_ToggleTextSyncGranularity, Mode=OneWay}"
+                Margin="3"
+                 VerticalAlignment="Center"
+   IsChecked="{Binding Source={x:Static Common:Settings.Default}, Path=EnableTextSyncGranularity, Mode=TwoWay}"
+        Click="OnMouseClickCheckBox"
+        />
+      
+      <!--ToolTip="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.CmdTextOnlyViewToggle_LongDesc}"-->
+      <!--
+
+      <Separator
+                 />
+      
+      <CheckBox
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        Content="{x:Static DocumentPane:Tobi_Plugin_DocumentPane_Lang.TextOnly}"
+                ToolTip="{Binding Source={x:Static DocumentPane:Settings_KeyGestures.Default}, Path=Keyboard_ToggleSinglePhraseView, Mode=OneWay}"
+                Margin="3"
+                 VerticalAlignment="Center"
+   IsChecked="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_SinglePhraseView, Mode=TwoWay}"
+        Click="OnMouseClickCheckBox"
+        />-->
+
+      <!--<Separator/>
+      <CheckBox Content="Narrator view"
+                Margin="3"
+                 VerticalAlignment="Center"
+   IsChecked="{Binding IsNarratorMode, Mode=TwoWay}"/>-->
+
+
+      <!--<Separator/>
+
+      <UI:ButtonRichCommand
+        RichCommand="{Binding CommandEditText}"
+                                 />-->
+
+      <Separator/>
+
+      <ComboBox
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        x:Name="comboListOfFonts"
+                 DataContext="{StaticResource familyCollection}"
+                ItemsSource="{Binding}"
+                IsSynchronizedWithCurrentItem="True"
+                  
+                SelectedItem="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_TypeFace, Mode=TwoWay}"
+                  
+                Width="160"
+                AlternationCount="2"
+                Height="Auto"
+                VerticalAlignment="Center"
+          >
+        <!--BorderBrush="{x:Null}"-->
+
+        <!--SelectionChanged="OnFontSelectionChanged"-->
+
+        <ComboBox.Style>
+          <Style TargetType="{x:Type ComboBox}">
+            <Setter Property="AutomationProperties.Name"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}"/>
+            <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+          </Style>
+        </ComboBox.Style>
+        <ComboBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <VirtualizingStackPanel />
+          </ItemsPanelTemplate>
+        </ComboBox.ItemsPanel>
+        <ComboBox.ItemContainerStyle>
+
+          <Style TargetType="{x:Type ComboBoxItem}">
+
+            <Style.Setters>
+              <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}" />
+              <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+              <Setter Property="VerticalContentAlignment" Value="Center" />
+              <Setter Property="AutomationProperties.Name" Value="{Binding Mode=OneWay}"/>
+            </Style.Setters>
+
+            <Style.Triggers>
+              <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+
+        </ComboBox.ItemContainerStyle>
+        <!--<ComboBox.ItemTemplate>
+          </ComboBox.ItemTemplate>-->
+        <ComboBox.ItemTemplateSelector>
+          <DocumentPane:FontFamilyDataTemplateSelector/>
+        </ComboBox.ItemTemplateSelector>
+
+      </ComboBox>
+
+      <!-- ComboBox ItemsSource="{Binding Path=FamilyTypefaces}"
+                Width="120"
+                AlternationCount="2">
+
+        <ComboBox.ItemContainerStyle>
+
+          <Style TargetType="{x:Type ComboBoxItem}">
+
+            <Style.Setters>
+              <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+              <Setter Property="AutomationProperties.Name" Value="{Binding Path=Style, Mode=OneWay}"/>
+            </Style.Setters>
+
+            <Style.Triggers>
+              <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+
+        </ComboBox.ItemContainerStyle>
+        <ComboBox.ItemTemplate>
+          <DataTemplate DataType="{x:Type FamilyTypeface}">
+            <WrapPanel>
+              <TextBlock Text="{Binding Path=Style}"/>
+              <TextBlock Text=" "/>
+              <TextBlock Text="{Binding Path=Weight}" />
+              <TextBlock Text=" "/>
+              <TextBlock Text="{Binding Path=Stretch}" />
+            </WrapPanel>
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+
+      </ComboBox -->
+      <!--</StackPanel>-->
+
+      <Separator/>
+
+      <Slider x:Name="ZoomSlider"
+              
+          Margin="0,0,0,0"
+          Padding="0,0,0,0"
+          
+          Focusable="True"
+              Orientation="Horizontal"
+                  Height="Auto"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Center"
+            
+          Minimum="100" Maximum="200"
+          TickPlacement="None"
+              IsMoveToPointEnabled="True"
+              Value="{Binding Source={x:Static DocumentPane:Settings.Default}, Path=Document_Zoom, Mode=TwoWay}"
+              TickFrequency="25"
+              Delay="500"
+              Interval="15"
+              LargeChange="20"
+              SmallChange="10"/>
+
+    </UI:WrapPanelLastChildFill>
+  </Border>
+
+
+  <TextBlock
+    Visibility="{Binding Path=IsNarratorMode, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
+    Focusable="False"
+         Text=""
+             Height="10"
+             VerticalAlignment="Center"
+             HorizontalAlignment="Stretch"
+                 
+    Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="3"
+    
+              Background="{Binding AudioViewModel.IsRecording, Mode=OneWay, Converter={DocumentPane:BooleanToBrushConverter}}"
+          />
+
+</Grid>

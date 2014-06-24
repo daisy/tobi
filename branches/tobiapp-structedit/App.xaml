@@ -1,0 +1,21 @@
+﻿<Application x:Class="Tobi.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:Tobi="clr-namespace:Tobi" xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common"
+             Startup="OnApplicationStartup"
+             ShutdownMode="OnExplicitShutdown">
+
+  <Application.Resources>
+    <ResourceDictionary>
+      <Tobi:Settings x:Key="Settings"/>
+      
+
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Tobi.Infrastructure;component/IconResources.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/Tobi.Common;component/Resources.xaml"/>
+        <!--<ResourceDictionary Source="pack://application:,,,/Tobi.Common;component/UI/WatermarkTextBox.xaml"/>-->
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+
+  </Application.Resources>
+</Application>

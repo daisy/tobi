@@ -1,0 +1,677 @@
+﻿<ResourceDictionary    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:UI="clr-namespace:Tobi.Common.UI"
+    xmlns:XAML="clr-namespace:Tobi.Common.UI.XAML" xmlns:Common="clr-namespace:Tobi.Common">
+
+  <!-- XAML:WindowStateFullScreenConverter x:Key="WindowStateFullScreenConverter" / -->
+
+  <Style x:Key="WatermarkTextBoxStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="Opacity"
+            Value="0.345" />
+    <Setter Property="Margin"
+            Value="4,2,0,0" />
+  </Style>
+
+  <!--<Storyboard x:Key="startHighlight"  FillBehavior="Stop">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+            To="16"
+            Duration="0:0:0.5" />
+      </Storyboard>
+      <Storyboard x:Key="reverseHighlight"   FillBehavior="Stop">
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+            To="8"
+            Duration="0:0:0.2" />
+      </Storyboard>
+      <Storyboard x:Key="GlowOn" FillBehavior="Stop">
+        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
+              Storyboard.TargetProperty="(UIElement.Effect).Opacity">
+          <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+        </DoubleAnimationUsingKeyFrames>
+      </Storyboard>
+      <Storyboard x:Key="GlowOff" FillBehavior="Stop">
+        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
+              Storyboard.TargetProperty="(UIElement.Effect).Opacity">
+          <SplineDoubleKeyFrame KeyTime="0:0:0.3" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+      </Storyboard>-->
+
+
+  <!--Stroke="{Binding Converter={XAML:ColorToBrushConverter},
+  Source={x:Static Common:Settings.Default},
+  Path=UIFocus_Color, Mode=OneWay}"-->
+  <ControlTemplate x:Key="MyFocusVisualStyleTemplate" >
+    <Rectangle
+      Stroke="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+      Margin="-2"
+               StrokeThickness="2.3"
+                  RadiusX="0" RadiusY="0" StrokeDashArray="2,1"
+                       SnapsToDevicePixels="true"
+               Opacity="0.5">
+      <Rectangle.Triggers>
+        <EventTrigger RoutedEvent="Rectangle.Loaded" >
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation
+             To="3" Duration="0:0:1" RepeatBehavior="Forever"
+                       Storyboard.TargetProperty="StrokeDashOffset" />
+            </Storyboard>
+          </BeginStoryboard>
+        </EventTrigger>
+      </Rectangle.Triggers>
+    </Rectangle>
+  </ControlTemplate>
+
+  <!--<Style x:Key="{x:Static SystemParameters.FocusVisualStyleKey}">
+        <Setter Property="Control.Template" Value="{StaticResource MyFocusVisualStyleTemplate}">
+        </Setter>
+      </Style>-->
+
+  <Style x:Key="MyFocusVisualStyle" TargetType="{x:Type Control}">
+    <Style.Setters>
+      <Setter Property="Template" Value="{StaticResource MyFocusVisualStyleTemplate}"/>
+    </Style.Setters>
+  </Style>
+
+  <Style
+    TargetType="{x:Type FrameworkElement}">
+    <Style.Setters>
+      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}">
+      </Setter>
+
+      <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
+      <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+      <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+      <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+
+    </Style.Setters>
+
+
+    <!--<Style.Triggers>
+          <Trigger Property="IsFocused" Value="True">
+            <Setter Property="Effect">
+              <Setter.Value>
+                <DropShadowEffect Color="Red"
+                                  BlurRadius="8"
+                                  ShadowDepth="0" />
+              </Setter.Value>
+            </Setter>
+            <Setter Property="RenderTransform">
+              <Setter.Value>
+                <ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+              </Setter.Value>
+            </Setter>
+          </Trigger>
+          
+          <MultiTrigger>
+            <MultiTrigger.Conditions>
+              <Condition Property="IsMouseOver" Value="True" />
+              <Condition Property="IsFocused" Value="False" />
+            </MultiTrigger.Conditions>
+            
+            <MultiTrigger.EnterActions>
+              <BeginStoryboard
+                    Storyboard="{StaticResource GlowOn}"/>
+            </MultiTrigger.EnterActions>
+
+            <MultiTrigger.ExitActions>
+              <BeginStoryboard
+                    Storyboard="{StaticResource GlowOff}"/>
+            </MultiTrigger.ExitActions>
+
+          </MultiTrigger>
+
+          <EventTrigger RoutedEvent="UIElement.GotFocus">
+            <BeginStoryboard  Storyboard="{StaticResource startHighlight}">
+            </BeginStoryboard>
+          </EventTrigger>
+          <EventTrigger RoutedEvent="UIElement.LostFocus">
+            <BeginStoryboard Storyboard="{StaticResource reverseHighlight}">
+            </BeginStoryboard>
+          </EventTrigger>
+        </Style.Triggers>-->
+  </Style>
+
+  <!--
+      
+         x:Key="FocusHighlightStyle"
+         -->
+
+
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type Label}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type MenuItem}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         x:Key="MyFocusVisualStyle_TextBlock"
+         TargetType="{x:Type TextBlock}">
+  </Style>
+  <Style BasedOn="{StaticResource MyFocusVisualStyle_TextBlock}"
+         TargetType="{x:Type TextBlock}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type TextBox}">
+  </Style>
+
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         x:Key="MyFocusVisualStyle_ButtonBase"
+         TargetType="{x:Type ButtonBase}">
+  </Style>
+  <Style BasedOn="{StaticResource MyFocusVisualStyle_ButtonBase}"
+         TargetType="{x:Type ButtonBase}">
+  </Style>
+  <Style BasedOn="{StaticResource MyFocusVisualStyle_ButtonBase}"
+         TargetType="{x:Type CheckBox}">
+  </Style>
+  <Style BasedOn="{StaticResource MyFocusVisualStyle_ButtonBase}"
+         TargetType="{x:Type RadioButton}">
+  </Style>
+  <Style BasedOn="{StaticResource MyFocusVisualStyle_ButtonBase}"
+         TargetType="{x:Type Button}">
+  </Style>
+  
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ScrollViewer}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type TabItem}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type TabControl}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ListView}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ListViewItem}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ListBox}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ListBoxItem}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ComboBox}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type ComboBoxItem}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type Slider}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type StatusBarItem}">
+  </Style>
+
+
+
+
+
+  <!--<Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:ButtonRichCommand}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:RepeatButtonRichCommand}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:TwoStateButtonRichCommand}">
+  </Style>-->
+  
+  
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:ComboBoxWithAutomationPeer}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:SortableListView2}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:MenuItemRichCommand}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:TwoStateMenuItemRichCommand}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:TextBlockWithAutomationPeer}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:TextBoxReadOnlyCaretVisible}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:TextBoxWithAutomationPeer}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:ValidationAwareTextBox}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:KeyGestureSinkBox}">
+  </Style>
+  <Style BasedOn="{StaticResource {x:Type FrameworkElement}}"
+         TargetType="{x:Type UI:LazyKeepAliveTabControl}">
+  </Style>
+
+
+
+
+
+
+
+
+
+
+
+  <!-- SolidColorBrush x:Key="SystemColorsHighlight" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"></SolidColorBrush>
+
+  <SolidColorBrush x:Key="SystemColorsControl" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"></SolidColorBrush -->
+
+
+  <DataTemplate x:Key="ColumnHeaderTemplateArrowNone">
+
+    <DockPanel>
+
+      <TextBlock HorizontalAlignment="Center" Text="{Binding}"/>
+
+      <Path x:Name="arrow"
+
+         StrokeThickness = "1"
+
+         Fill            = "transparent"
+
+         Data            = "M 5,10 L 15,10 L 10,5 L 5,10"/>
+
+    </DockPanel>
+
+  </DataTemplate>
+  
+  <DataTemplate x:Key="ColumnHeaderTemplateArrowUp">
+
+    <DockPanel>
+
+      <TextBlock HorizontalAlignment="Center" Text="{Binding}"/>
+
+      <Path x:Name="arrow"
+
+         StrokeThickness = "1"
+
+         Fill            = "gray"
+
+         Data            = "M 5,10 L 15,10 L 10,5 L 5,10"/>
+
+    </DockPanel>
+
+  </DataTemplate>
+
+  <DataTemplate x:Key="ColumnHeaderTemplateArrowDown">
+
+    <DockPanel>
+
+      <TextBlock HorizontalAlignment="Center" Text="{Binding }"/>
+
+      <Path x:Name="arrow"
+
+            StrokeThickness = "1"
+
+            Fill            = "gray"
+
+            Data            = "M 5,5 L 10,10 L 15,5 L 5,5"/>
+
+    </DockPanel>
+
+  </DataTemplate>
+  
+<Geometry x:Key="DownArrow">M0,0 L1,0 0.5,1Z</Geometry>
+<Geometry x:Key="UpArrow">M0,1 L1,1 0.5,0Z</Geometry>
+<Geometry x:Key="RightArrow">M0,0 L1,0.5 0,1Z</Geometry>
+<Geometry x:Key="LeftArrow">M0,0.5 L1,1 1,0Z</Geometry>
+<Geometry x:Key="CloseX">M0,0 L1,1 M0,1 L1,0</Geometry>
+
+  <!-- DownArrow
+  <Path Data="{StaticResource DownArrow}" Width="10" Height="8"
+    Stretch="Fill" Fill="Black" / -->
+
+  <!-- CloseX
+  <Path Data="{StaticResource CloseX}" Width="12" Height="12"
+    Stretch="Fill" Stroke="Black" StrokeThickness="3" Margin="10" / -->
+
+  <Path x:Key="Arrow"
+        x:Shared="false"
+				   Fill ="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+				   VerticalAlignment ="Center"
+				   HorizontalAlignment ="Center"
+				   StrokeThickness = "1"
+				   Data            = "M 0,0 L 6,3 L 0,6 L 0,0"/>
+
+  <System:Double x:Key="VisibilityTogglerThickness">5</System:Double>
+  <System:Double x:Key="VisibilityTogglerThicknessEmphasis">10</System:Double>
+
+  <!--<Style TargetType="{x:Type TextBlock}">
+    <Setter Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text, Mode=OneWay}"/>
+  </Style>-->
+  
+  <Style x:Key="VisibilityTogglerStyle" TargetType="{x:Type TextBlock}"
+         BasedOn="{StaticResource MyFocusVisualStyle_TextBlock}">
+    <Setter Property="FrameworkElement.Cursor" Value="Hand"/>
+    <Setter Property="UIElement.Focusable" Value="True"/>
+    <Setter Property="FrameworkElement.ToolTip" Value="{x:Static Common:Tobi_Common_Lang.ToggleVisibility}"/>
+    <Setter Property="AutomationProperties.Name" Value="{x:Static Common:Tobi_Common_Lang.ToggleVisibility}"/>
+    <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+  </Style>
+
+  <Style x:Key="VisibilityTogglerStyleWidth"
+         BasedOn="{StaticResource VisibilityTogglerStyle}"
+         TargetType="{x:Type TextBlock}">
+    <Style.Triggers>
+
+      <Trigger Property="UIElement.IsMouseOver" Value="True">
+        
+        <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+        <Setter Property="FrameworkElement.Width" Value="{StaticResource VisibilityTogglerThicknessEmphasis}"/>
+
+      </Trigger>
+
+      <Trigger Property="UIElement.IsFocused" Value="True">
+
+        <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+
+      </Trigger>
+
+    </Style.Triggers>
+    <Setter Property="FrameworkElement.Width" Value="{StaticResource VisibilityTogglerThickness}"/>
+  </Style>
+  <Style x:Key="VisibilityTogglerStyleHeight"
+         BasedOn="{StaticResource VisibilityTogglerStyle}"
+         TargetType="{x:Type TextBlock}">
+    <Style.Triggers>
+
+      <Trigger Property="UIElement.IsMouseOver" Value="True">
+
+        <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+        <Setter Property="FrameworkElement.Height" Value="{StaticResource VisibilityTogglerThicknessEmphasis}"/>
+
+      </Trigger>
+
+      <Trigger Property="UIElement.IsFocused" Value="True">
+
+        <Setter Property="TextBlock.Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+
+      </Trigger>
+
+    </Style.Triggers>
+    <Setter Property="FrameworkElement.Height" Value="{StaticResource VisibilityTogglerThickness}"/>
+  </Style>
+
+  <Style TargetType="{x:Type GridSplitter}">
+    
+    <Style.Triggers>
+
+      <Trigger Property="HorizontalAlignment" Value="Stretch">
+        <Setter Property="Height">
+          <Setter.Value>
+            <System:Double>4.5</System:Double>
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+      
+      <Trigger Property="VerticalAlignment" Value="Stretch">
+        <Setter Property="Width">
+          <Setter.Value>
+            <System:Double>4.5</System:Double>
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+      
+      <EventTrigger RoutedEvent="Control.MouseEnter">
+        <BeginStoryboard>
+
+          <Storyboard>
+            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                           Storyboard.TargetProperty="(Control.Background)">
+              <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static SystemColors.HighlightBrush}"/>
+            </ObjectAnimationUsingKeyFrames>
+          </Storyboard>
+        </BeginStoryboard>
+      </EventTrigger>
+      <EventTrigger RoutedEvent="Control.MouseLeave">
+        <BeginStoryboard>
+
+          <Storyboard>
+            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                           Storyboard.TargetProperty="Background">
+              <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static SystemColors.ControlBrush}"/>
+            </ObjectAnimationUsingKeyFrames>
+          </Storyboard>
+        </BeginStoryboard>
+      </EventTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <!-- XAML:RenderTargetBitmapImageSourceConverter x:Key="RenderTargetBitmapImageSourceConverter"/ -->
+
+  <!-- XAML:BoolToOppositeBoolConverter x:Key="BoolToOppositeBoolConverter"/ -->
+
+  <Style TargetType="{x:Type Separator}" BasedOn="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+
+
+  
+  <System:Double x:Key="MagnificationLevel">1.0</System:Double>
+
+  <Style x:Key="ScaleTransformed">
+
+    <Setter Property="FrameworkElement.LayoutTransform">
+      <Setter.Value>
+        <ScaleTransform ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}"
+                        ScaleX="{DynamicResource MagnificationLevel}">
+        </ScaleTransform>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  
+  <Style  TargetType="{x:Type ContextMenu}"
+          BasedOn="{StaticResource ScaleTransformed}">
+
+    <!-- Setter Property="ContextMenu.OverridesDefaultStyle" Value="False"/ -->
+
+  </Style>
+
+  <Style  TargetType="{x:Type ToolTip}"
+    BasedOn="{StaticResource ScaleTransformed}">
+
+    <!-- Setter Property="ContextMenu.OverridesDefaultStyle" Value="False"/ -->
+
+  </Style>
+
+
+  <!-- ScaleTransform.ScaleX>
+                <Binding RelativeSource="{x:Static RelativeSource.TemplatedParent}"
+                         Mode="OneWay"
+                         Path="(ToolTipService.PlacementTarget).DataContext.MagnificationLevel"/>
+              </ScaleTransform.ScaleX>
+              
+              <ScaleTransform.ScaleX>
+                <Binding RelativeSource="{x:Static RelativeSource.Self}"
+                         Mode="OneWay"
+                         Path="(ToolTipService.PlacementTarget).DataContext.MagnificationLevel"/>
+              </ScaleTransform.ScaleX>
+
+          <ScaleTransform.ScaleX>
+            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ToolTip}}"
+                     Mode="OneWay"
+                     Path="(ToolTipService.PlacementTarget).DataContext.MagnificationLevel"/>
+          </ScaleTransform.ScaleX -->
+  <!--
+        
+        
+        Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="{x:Type ToolTip}">
+              <Border Name="Border"
+                      
+                Background="{DynamicResource {x:Static SystemColors.InfoBrushKey}}"
+                BorderBrush="{DynamicResource {x:Static SystemColors.InfoTextBrushKey}}"
+                BorderThickness="1.7"
+                Width="{Binding Path=Width,
+				            RelativeSource={RelativeSource TemplatedParent}}"
+                Height="{TemplateBinding Height}"
+                      >
+                <Border.LayoutTransform>
+                  <ScaleTransform ScaleY="{Binding RelativeSource={RelativeSource Self}, Path=ScaleX, Mode=OneWay}">
+                    <ScaleTransform.ScaleX>
+                      <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ToolTip}, AncestorLevel=1}"
+                               Mode="OneWay"
+                               Path="(ToolTipService.PlacementTarget).DataContext.MagnificationLevel">
+                      
+                    </Binding>
+                      </ScaleTransform.ScaleX>
+                  
+                  </ScaleTransform>
+                </Border.LayoutTransform>
+
+                <ContentPresenter
+                  Margin="4"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top" />
+              </Border>
+              < ControlTemplate.Triggers>
+                <Trigger Property="HasDropShadow" Value="true">
+                  <Setter TargetName="Border" Property="CornerRadius" Value="4"/>
+                  <Setter TargetName="Border" Property="SnapsToDevicePixels" Value="true"/>
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter -->
+
+
+  <!--<Style TargetType="{x:Type ListItem}">
+
+    <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+
+  </Style>
+
+  <Style TargetType="{x:Type MenuItem}">
+
+    <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+
+  </Style>-->
+
+
+  <!--<Style TargetType="{x:Type ButtonBase}">
+
+    <Setter Property="ToolTipService.HasDropShadow" Value="False"/>
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+
+  </Style>-->
+
+
+  <Style x:Key="ToolBarButtonBaseStyle"
+         
+         TargetType="{x:Type ButtonBase}"
+         BasedOn="{StaticResource MyFocusVisualStyle_ButtonBase}">
+
+    <!--<Setter Property="ToolTipService.HasDropShadow" Value="False"/>
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.InitialShowDelay" Value="100"/>
+    <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>-->
+    
+    <Setter Property="RepeatButton.Delay" Value="0"/>
+    <Setter Property="RepeatButton.Interval" Value="100"/>
+
+    <Setter Property="SnapsToDevicePixels" Value="true"/>
+    <Setter Property="OverridesDefaultStyle" Value="true"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <Border
+            x:Name="Border"
+            BorderThickness="1"
+            Background="Transparent"
+            BorderBrush="Transparent">
+            <ContentPresenter
+              Margin="2"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              RecognizesAccessKey="True"/>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsKeyboardFocused" Value="true">
+              <!-- Setter TargetName="Border" Property="Background"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" / -->
+              <Setter TargetName="Border" Property="BorderBrush"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+
+              <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SolidBorderBrush}" / -->
+            </Trigger>
+
+            <Trigger Property="IsMouseOver" Value="true">
+              
+              <Setter TargetName="Border" Property="BorderBrush"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              
+              <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource SelectedBackgroundBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource SolidBorderBrush}" / -->
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="true">
+              
+              <Setter TargetName="Border" Property="Background"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+              
+              <Setter TargetName="Border" Property="BorderBrush"
+                      Value="Red" />
+              
+              <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource PressedBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" / -->
+            </Trigger>
+
+            <Trigger Property="ToggleButton.IsChecked" Value="true">
+
+              <Setter TargetName="Border" Property="Background"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+
+              <Setter TargetName="Border" Property="BorderBrush"
+                      Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+              
+              <!-- Setter TargetName="Border" Property="Background" Value="{StaticResource PressedBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" /-->
+              </Trigger>
+
+            <!-- Trigger Property="IsEnabled" Value="false">
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledBackgroundBrush}" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledBorderBrush}" />
+                <Setter Property="Foreground" Value="{StaticResource DisabledForegroundBrush}"/>
+              </Trigger -->
+
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="{x:Static ToolBar.ButtonStyleKey}"
+         
+         TargetType="{x:Type Button}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+
+  <Style TargetType="{x:Type UI:ButtonRichCommand}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+  
+  <Style TargetType="{x:Type UI:RepeatButtonRichCommand}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+  
+  <Style TargetType="{x:Type UI:TwoStateButtonRichCommand}"
+         BasedOn="{StaticResource ToolBarButtonBaseStyle}"/>
+
+</ResourceDictionary>

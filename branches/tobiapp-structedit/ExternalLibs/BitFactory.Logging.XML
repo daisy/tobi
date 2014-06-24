@@ -1,0 +1,1865 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BitFactory.Logging</name>
+    </assembly>
+    <members>
+        <member name="T:BitFactory.Logging.MemoryLogger">
+            <summary>
+            Instances store LogEntries in memory.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.Logger">
+             <summary>
+             Concrete subclasses of this abstract class do the actual logging of information
+             to their respective "logs."
+             </summary>
+             <remarks>
+             Subclasses that simply write a String to a log need only override WriteToLog(String).
+             Subclasses that do a little more processing may prefer to override DoLog(LogEntry).
+            
+             In general, users of the various Logger subclasses need to be aware of only the
+             public Log*(Object anItemToLog) and Log*(Object aCategory, Object anItemToLog) methods
+            	(where * is one of the severities, such as LogInfo( "This is information" ) ).
+             You can log any Object, and it's ToString() will be used in the LogEntry. Optionally, you
+             can use categories to distinguish various types of items being logged. These would usually
+             be Strings, but can be any Object. e.g. To log all database related items, you could
+             do something like LogWarning("DB System", "Cannot connect to DB"); where you categorize
+             all database logs with "DB System". A LogEntryCatagegoryFilter subclass could optionally
+             be used to log only database related items.
+            
+             application - This optional String represents information that is application-wide.
+             It might be a user name, or it might be the name of the application.
+             </remarks>
+             <seealso cref="T:BitFactory.Logging.LogEntryCategoryFilter"/>
+        </member>
+        <member name="F:BitFactory.Logging.Logger._application">
+            <summary>
+            A String representing the application.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.Logger._enabled">
+            <summary>
+            A bool indicating if this Logger is enabled or not.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.Logger._filter">
+            <summary>
+            The filter through which all LogEntries must pass before being logged.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.Logger._formatter">
+            <summary>
+            A formatter that formats LogEntries before being logged.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.Logger._defaultFormatterClass">
+            <summary>
+            The default class to use for formatting.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.Logger._defaultFilterClass">
+            <summary>
+            The default class to use for filtering.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.#ctor">
+            <summary>
+            Logger constructor.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Really log aLogEntry. (We are past filtering at this point.)
+            Subclasses might want to do something more interesting and override this method.
+            </summary>
+            <param name="aLogEntry">The LogEntry to log</param>
+            <returns>true upon success, false upon failure.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.CreateLogEntry(BitFactory.Logging.LogSeverity,System.Object,System.Object)">
+            <summary>
+            Create a LogEntry.
+            </summary>
+            <remarks>
+            This is virtual and can be overriden in subclasses that,
+            although unlikely, might want to create a subclass of LogEntry.
+            </remarks>
+            <param name="aSeverity">The severity of this log entry.</param>
+            <param name="aCategory">An Object (often a String) that classifies this log entry.</param>
+            <param name="anObject">An Object (often a String) to log.</param>
+            <returns>A LogEntry</returns>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.Log(BitFactory.Logging.LogSeverity,System.Object)">
+            <summary>
+            Log something.
+            </summary>
+            <param name="aSeverity">The severity of this log entry.</param>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.Log(BitFactory.Logging.LogSeverity,System.Object,System.Object)">
+            <summary>
+            Log something.
+            </summary>
+            <param name="aSeverity">The severity of this log entry.</param>
+            <param name="aCategory">An Object (often a String) that classifies this log entry.</param>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.Log(BitFactory.Logging.LogEntry)">
+            <summary>
+            Log something.
+            </summary>
+            <param name="aLogEntry">The LogEntry.</param>
+            <returns>true upon success, false upon failure.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogCritical(System.Object)">
+            <summary>
+            Make a "critical" log entry.
+            </summary>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogCritical(System.Object,System.Object)">
+            <summary>
+            Make a "Critical" log entry.
+            </summary>
+            <param name="aCategory">An Object (often a String) that classifies this log entry.</param>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogDebug(System.Object)">
+            <summary>
+            Make a "Debug" log entry.
+            </summary>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogDebug(System.Object,System.Object)">
+            <summary>
+            Make a "Debug" log entry.
+            </summary>
+            <param name="aCategory">An Object (often a String) that classifies this log entry.</param>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogError(System.Object)">
+            <summary>
+            Make an "Error" log entry.
+            </summary>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogError(System.Object,System.Object)">
+            <summary>
+            Make an "Error" log entry.
+            </summary>
+            <param name="aCategory">An Object (often a String) that classifies this log entry.</param>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogFatal(System.Object)">
+            <summary>
+            Make a "Fatal" log entry.
+            </summary>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogFatal(System.Object,System.Object)">
+            <summary>
+            Make a "Fatal" log entry.
+            </summary>
+            <param name="aCategory">An Object (often a String) that classifies this log entry.</param>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogInfo(System.Object)">
+            <summary>
+            Make an "Info" log entry.
+            </summary>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogInfo(System.Object,System.Object)">
+            <summary>
+            Make an "Info" log entry.
+            </summary>
+            <param name="aCategory">An Object (often a String) that classifies this log entry.</param>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogStatus(System.Object)">
+            <summary>
+            Make an "Status" log entry.
+            </summary>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogStatus(System.Object,System.Object)">
+            <summary>
+            Make an "Status" log entry.
+            </summary>
+            <param name="aCategory">An Object (often a String) that classifies this log entry.</param>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogWarning(System.Object)">
+            <summary>
+            Make an "Warning" log entry.
+            </summary>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.LogWarning(System.Object,System.Object)">
+            <summary>
+            Make an "Warning" log entry.
+            </summary>
+            <param name="aCategory">An Object (often a String) that classifies this log entry.</param>
+            <param name="anObject">An Object (often a String) to log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.GetDefaultFilter">
+            <summary>
+            Create a new filter instance to use for this Logger.
+            Use the DefaultFilterClass property.
+            Subclasses may wish to override.
+            </summary>
+            <returns>A new filter.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.GetDefaultFormatter">
+            <summary>
+            Create a new formatter instance to use for this Logger.
+            Use the DefaultFormatterClass property.
+            Subclasses may wish to override.
+            </summary>
+            <returns>A new formatter.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.ShouldLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Determine if aLogEntry should be logged
+            </summary>
+            <param name="aLogEntry">The LogEntry to test.</param>
+            <returns>true if aLogEntry should be logged.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.Logger.WriteToLog(System.String)">
+            <summary>
+            Write a String to the log.
+            Subclasses can override this to actually write to the log.
+            </summary>
+            <param name="s">The String</param>
+            <returns>true upon success, false upon failure.</returns>
+        </member>
+        <member name="P:BitFactory.Logging.Logger.Version">
+            <summary>
+            Utility property to simply indicate the version of the Logging assembly being used.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.Logger.Application">
+            <summary>
+            Gets and sets the Application.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.Logger.Enabled">
+            <summary>
+            Gets and sets the Enabled flag.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.Logger.Filter">
+            <summary>
+            Gets and sets the Filter.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.Logger.Formatter">
+            <summary>
+            Gets and sets the Formatter.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.Logger.DefaultFormatterClass">
+            <summary>
+            Gets and sets the DefaultFormatterClass.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.Logger.DefaultFilterClass">
+            <summary>
+            Gets and sets the DefaultFilterClass.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.Logger.SeverityThreshold">
+            <summary>
+            Gets and sets the severity threshold of the filter--the lowest severity which will be logged.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.MemoryLogger._capacity">
+            <summary>
+            maximum number of LogEntries to store.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.MemoryLogger._logEntries">
+            <summary>
+            A list of LogEntries.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.MemoryLogger.#ctor">
+            <summary>
+            Create an instance of MemoryLogger.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.MemoryLogger.#ctor(System.Int32)">
+            <summary>
+            Create an instance of MemoryLogger.
+            </summary>
+            <param name="aCapacity">The capacity of the Logger.</param>
+        </member>
+        <member name="M:BitFactory.Logging.MemoryLogger.#ctor(BitFactory.Logging.MemoryLogger)">
+            <summary>
+             Copy constructor.
+            </summary>
+            <param name="aMemoryLogger">The MemoryLogger to copy.</param>
+        </member>
+        <member name="M:BitFactory.Logging.MemoryLogger.Clear">
+            <summary>
+            Clear all the LogEntries
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.MemoryLogger.Copy">
+            <summary>
+            A convenience method that copies a MemoryLogger.
+            </summary>
+            <returns>A new MemoryLogger with the same LogEntries as in the receiver.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.MemoryLogger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Store the LogEntry.
+            If my capacity has been reached, remove the oldest entry.
+            Add the new entry to the collection.
+            </summary>
+            <param name="aLogEntry">The LogEntry to log.</param>
+            <returns>Always return true.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.MemoryLogger.GetLog">
+            <summary>
+            Create and return an Array of LogEntry.
+            </summary>
+            <returns>A LogEntry Array.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.MemoryLogger.LogAllTo(BitFactory.Logging.Logger)">
+            <summary>
+            Send all LogEntries to another Logger.
+            </summary>
+            <param name="aLogger">The Logger to which the receiver should send all its LogEntries.</param>
+        </member>
+        <member name="M:BitFactory.Logging.MemoryLogger.MoveTo(BitFactory.Logging.Logger)">
+            <summary>
+            Transfer all held LogEntries to another Logger.
+            This differs from LogAllTo in that successfully logged entries
+            are removed from the receiver. Also, a DoLog message is sent, as opposed to Log.
+            Also, the receiver stops trying to log once it gets a failure.
+            </summary>
+            <param name="aLogger">The Logger to which LogEntries should be transfered.</param>
+            <returns>true if everything logged successfully, false otherwise.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.MemoryLogger.TransferTo(BitFactory.Logging.Logger)">
+            <summary>
+            Transfer all held LogEntries to another Logger.
+            This differs from LogAllTo in that successfully logged entries
+            are removed from the receiver. Also, a DoLog message is sent, as opposed to Log.
+            Also, the receiver stops trying to log once it gets a failure.
+            </summary>
+            <param name="aLogger">The Logger to which LogEntries should be transfered.</param>
+            <returns>true if everything logged successfully, false otherwise.</returns>
+        </member>
+        <member name="P:BitFactory.Logging.MemoryLogger.Capacity">
+            <summary>
+            Gets and sets the capacity.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.MemoryLogger.LogEntries">
+            <summary>
+            Gets and sets the list of logEntries.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.MemoryLogger.Count">
+            <summary>
+            Get the number of LogEntries currently held by the Logger.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.DebugLogger">
+            <summary>
+            DebugLogger encapsulates logging to System.Diagnostics.Debug in a Logger.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.DebugLogger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Send aLogEntry information to System.Diagnostics.Debug.
+            </summary>
+            <param name="aLogEntry">A LogEntry.</param>
+            <returns>true upon success, which this Logger always assumes.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.DebugLogger.#ctor">
+            <summary>
+            Create a new instance of DebugLogger.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.TraceLogger">
+            <summary>
+            TraceLogger encapsulates logging to System.Diagnostics.Trace in a Logger
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.TraceLogger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Send aLogEntry information to System.Diagnostics.Trace.
+            </summary>
+            <param name="aLogEntry">A LogEntry.</param>
+            <returns>true upon success, false upon failure.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.TraceLogger.#ctor">
+            <summary>
+            Create a new instance of TraceLogger.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.TextWriterLogger">
+            <summary>
+            Instances of TextWriterLogger write LogEntry information to a TextWriter.
+            </summary>
+            <remarks>
+            It's most likely use will be as a System console logger--instances of which
+            can be created by using the static method NewConsoleLogger().
+            </remarks>
+        </member>
+        <member name="F:BitFactory.Logging.TextWriterLogger._textWriter">
+            <summary>
+            The TextWriter to which LogEntries are written.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.TextWriterLogger.WriteToLog(System.String)">
+            <summary>
+            Write the String representatin of a LogEntry to the TextWriter.
+            </summary>
+            <param name="s">The String representation of a LogEntry.</param>
+            <returns>true upon success, false upon failure.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.TextWriterLogger.#ctor">
+            <summary>
+            Create a new instance of TextWriterLogger.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.TextWriterLogger.#ctor(System.IO.TextWriter)">
+            <summary>
+            Create a new instance of TextWriterLogger.
+            </summary>
+            <param name="aTextWriter">A TextWriter to write LogEntries.</param>
+        </member>
+        <member name="M:BitFactory.Logging.TextWriterLogger.NewConsoleLogger">
+            <summary>
+            Utility for creating a logger that writes to the System.Console.
+            </summary>
+            <returns>A new TextWriterLogger.</returns>
+        </member>
+        <member name="P:BitFactory.Logging.TextWriterLogger.TextWriter">
+            <summary>
+            Gets and sets the TestWriter.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.LogSocketReaderReceiver">
+            <summary>
+            Implementers of this interface are sent the ReaderReady message when a client logger
+            has made a connection to LogSocketReader.Listener
+            </summary>
+            <seealso cref="T:BitFactory.Logging.LogSocketReader"/>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReaderReceiver.ListenerClosed">
+            <summary>
+            A notification that the listener has stopped listening.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReaderReceiver.ReaderReady(BitFactory.Logging.LogSocketReader)">
+            <summary>
+            When this method is sent, a connection has been made and aLogSocketReader
+            is ready to start reading LogEntries.
+            Return true if additional connections can be made to the port, or false if the
+            current connection is the only one allowed.
+            It is up to the receiver of this message (or some other object to which it delegates)
+            to send the Start() message to aLogSocketReader.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.LogEntryPassFilter">
+            <summary>
+            This Filter "passes" all LogEntries.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.LogEntryFilter">
+            <summary>
+            Concrete subclasses of this abstract class are used by loggers
+            to "filter" each item and decide whether or not to actually log it.
+            </summary>
+            <remarks>
+            Subclasses should override the canPass(LogEntry) method.
+            </remarks>
+        </member>
+        <member name="F:BitFactory.Logging.LogEntryFilter._severityThreshold">
+            <summary>
+            The lowest severity of a LogEntry that will pass this filter.
+            Debug is the default.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryFilter.CanPass(BitFactory.Logging.LogEntry)">
+            <summary>
+            Concrete subclasses override this method and determine if aLogEntry
+            should pass through the filter or not.
+            </summary>
+            <param name="aLogEntry">The LogEntry being tested.</param>
+            <returns>true if aLogEntry passes the filter, false otherwise.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryFilter.ShouldLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Test to determine if aLogEntry should be logged.
+            </summary>
+            <param name="aLogEntry">The LogEntry being tested.</param>
+            <returns>true if aLogEntry should be logged, false otherwise.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryFilter.#ctor">
+            <summary>
+            LogEntryFilter constructor.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogEntryFilter.SeverityThreshold">
+            <summary>
+            Gets and sets the severity threshold.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryPassFilter.#ctor">
+            <summary>
+            Create a new instance of LogEntryPassFilter.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryPassFilter.CanPass(BitFactory.Logging.LogEntry)">
+            <summary>
+            Determine if aLogEntry should pass through the filter.
+            </summary>
+            <param name="aLogEntry">The LogEntry being tested.</param>
+            <returns>Always return true.</returns>
+        </member>
+        <member name="T:BitFactory.Logging.LogEntryMessageOnlyFormatter">
+            <summary>
+            This formatter is concerned only with a LogEntry's message, ignoring all other information
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.LogEntryFormatter">
+            <summary>
+            Concrete subclasses of this abstract class are responsible for formatting LogEntries.
+            </summary>
+            <remarks>
+            Subclasses should override the asString(LogEntry) method.
+            Also, users can freely modify the formatString attribute for timestamp formatting.
+            </remarks>
+        </member>
+        <member name="F:BitFactory.Logging.LogEntryFormatter._formatString">
+            <summary>
+            A format String for DateTime.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryFormatter.AsString(BitFactory.Logging.LogEntry)">
+            <summary>
+            String format of the LogEntry.
+            </summary>
+            <param name="aLogEntry">The LogEntry to format.</param>
+            <returns>A nicely formatted String.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryFormatter.DateString(BitFactory.Logging.LogEntry)">
+            <summary>
+            String format of the DateTime of the LogEntry.
+            </summary>
+            <param name="aLogEntry">The LogEntry whose timestamp needs formatting.</param>
+            <returns>A nicely formatted String.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryFormatter.#ctor">
+            <summary>
+            LogEntryFormatter constructor.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogEntryFormatter.FormatString">
+            <summary>
+            Gets and sets the format String.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryMessageOnlyFormatter.AsString(BitFactory.Logging.LogEntry)">
+            <summary>
+            A String formatted version of a LogEntry.
+            </summary>
+            <param name="aLogEntry">The LogEntry to format.</param>
+            <returns>The LogEntry message.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryMessageOnlyFormatter.#ctor">
+            <summary>
+            Create a new instance of LogEntryMessageOnlyFormatter.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.EventLogLogger">
+            <summary>
+            EventLogLogger writes log entries to the Windows Event Log
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.EventLogLogger._eventLog">
+            <summary>
+            The Windows event log.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.EventLogLogger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Write aLogEntry information to the Windows event log
+            </summary>
+            <param name="aLogEntry">The LogEntry being logged</param>
+            <returns>true upon success, false upon failure.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.EventLogLogger.#ctor">
+            <summary>
+            Create a new instance of EventLogLogger
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.EventLogLogger.#ctor(System.Diagnostics.EventLog)">
+            <summary>
+            Create a new instance of EventLogLogger with a given Eventog
+            </summary>
+            <param name="anEventLog">An EventLog to which logs will be written by this logger</param>
+        </member>
+        <member name="M:BitFactory.Logging.EventLogLogger.GetDefaultFormatter">
+            <summary>
+            EventLogLogger uses LogEntryMessageOnlyFormatter by default.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:BitFactory.Logging.EventLogLogger.EventLog">
+            <summary>
+            Gets and Sets the Windows event log.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.LogEntry">
+            <summary>
+            Represents an entry that gets logged by a Logger.
+            </summary>
+            <remarks>
+            This class is instantiated by other members of it's assembly.
+            </remarks>
+        </member>
+        <member name="F:BitFactory.Logging.LogEntry._message">
+            <summary>
+            The main text of the LogEntry.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogEntry._date">
+            <summary>
+            The timestamp when the LogEntry was created.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogEntry._application">
+            <summary>
+            An optional String that represents the application that generated the LogEntry.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogEntry._severity">
+            <summary>
+            The severity of the LogEntry.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogEntry._category">
+            <summary>
+            An optional "category" that can be used to further classify a LogEntry.
+            Usually this wouls be a String, but can be any Object.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntry.#ctor">
+            <summary>
+            Create a new instance of LogEntry.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntry.#ctor(BitFactory.Logging.LogSeverity,System.String,System.Object,System.String)">
+            <summary>
+            Create a new instance of LogEntry.
+            </summary>
+            <param name="aSeverity">The severity of the LogEntry.</param>
+            <param name="anApplication">A String representing the application.</param>
+            <param name="aCategory">A category to classify the LogEntry.</param>
+            <param name="aMessage">The primary text of the LogEntry.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntry.#ctor(BitFactory.Logging.LogSeverity,System.String,System.Object,System.String,System.DateTime)">
+            <summary>
+            Create a new instance of LogEntry.
+            </summary>
+            <param name="aSeverity">The severity of the LogEntry.</param>
+            <param name="anApplication">A String representing the application.</param>
+            <param name="aCategory">A category to classify the LogEntry.</param>
+            <param name="aMessage">The primary text of the LogEntry.</param>
+            <param name="aDate">The timestamp when the LogEntry was created.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntry.ToString">
+            <summary>
+            Represent the LogEntry as a String.
+            </summary>
+            <returns>The String representation of the LogEntry.</returns>
+        </member>
+        <member name="P:BitFactory.Logging.LogEntry.Application">
+            <summary>
+            Gets and sets the application.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogEntry.Category">
+            <summary>
+            Gets and sets the category.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogEntry.Date">
+            <summary>
+            Gets and sets the timestamp.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogEntry.Message">
+            <summary>
+            Gets and sets the message.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogEntry.Severity">
+            <summary>
+            Gets and sets the severity.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogEntry.SeverityString">
+            <summary>
+            Gets a friendly String that represents the severity.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.CompositeLogger">
+             <summary>
+             A CompositeLogger contains other Logger instances.
+             </summary>
+             <remarks>
+             When instances of this class log LogEntries,
+             they simply pass on the LogEntries to the Loggers contained therein.
+            
+             Loggers are contained in a HashMap, with the keys being Strings.
+             This provides a nice means to access a specific contained Logger, if necessary.
+            
+             Instances of this class are likely to be used as an application's main logger,
+             within which more specific loggers can be contained.
+             </remarks>
+        </member>
+        <member name="F:BitFactory.Logging.CompositeLogger._loggers">
+            <summary>
+            The Collection of Loggers.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.CompositeLogger.AddLogger(System.String,BitFactory.Logging.Logger)">
+            <summary>
+            Add a Logger to this CompositeLogger.
+            </summary>
+            <param name="aName">A meaningful name for possible access later.</param>
+            <param name="aLogger">The Logger to add.</param>
+        </member>
+        <member name="M:BitFactory.Logging.CompositeLogger.RemoveLogger(System.String)">
+            <summary>
+            Remove a Logger
+            </summary>
+            <param name="aName">The name of the Logger to remove</param>
+        </member>
+        <member name="M:BitFactory.Logging.CompositeLogger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Send the log message to contained Loggers.
+            </summary>
+            <param name="aLogEntry">The LogEntry to log.</param>
+            <returns>Always return true--assume success</returns>
+        </member>
+        <member name="M:BitFactory.Logging.CompositeLogger.#ctor">
+            <summary>
+            Create a new instance of CompositeLogger
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.CompositeLogger.Loggers">
+            <summary>
+            Gets and sets the Collection of Loggers.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.CompositeLogger.Item(System.String)">
+            <summary>
+            Gets the Logger with the name corresponding to the given String.
+            </summary>
+            <param name="aName">The name of the desired Logger</param>
+            <returns>The Logger corresponding with aName</returns>
+        </member>
+        <member name="T:BitFactory.Logging.LogReceiverLogger">
+            <summary>
+            This class can be used as a convenient base class when creating
+            a logger that receives LogEntries over a Socket.
+            </summary>
+            <remarks>
+            Keep in mind that the logging methods that are called on instances of this class are
+            done so in a different thread than the main thread of the application.
+            Depending on the action taken, this may impact the subclasses' impementation
+            of those mthods. e.g. Writing to the GUI from a different thread often
+            requires using the various "Invoke" methods of the Control class.
+            </remarks>
+        </member>
+        <member name="F:BitFactory.Logging.LogReceiverLogger._tagValue">
+            <summary>
+            This is a placeholder for any Object a newly created
+            instance of this class needs access.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogReceiverLogger._logSocketReader">
+            <summary>
+            The LogSocketReader that is being used to
+            read LogEntries from the Socket.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLogger.PreStart(BitFactory.Logging.LogReceiverLoggerFactory)">
+            <summary>
+            This called by an instance of LogReceiverLoggerFactory
+            just prior to the LogSocketReader
+            starting to read LogEntries from the Socket.
+            </summary>
+            <remarks>
+            Subclasses can override this method to perform
+            any initialization necessary. Alternatively, PreStart() can be overridden.
+            </remarks>
+            <param name="aFactory">The LogReceiverLoggerFactory that created this Logger.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLogger.PreStart">
+            <summary>
+            This called by PreStart(LogReceiverLoggerFactory)
+            just prior to the LogSocketReader
+            starting to read LogEntries from the Socket.
+            </summary>
+            <remarks>
+            Subclasses can override this method to perform
+            any initialization necessary. Alternatively, PreStart(LogReceiverLoggerFactory) can be overridden.
+            </remarks>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLogger.#ctor(BitFactory.Logging.LogSocketReader,System.Object)">
+            <summary>
+            Create a new instance of LogReceiverLogger.
+            </summary>
+            <param name="aLogSocketReader">The LogSocketReader.</param>
+            <param name="aTagValue">The TagValue.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLogger.#ctor">
+            <summary>
+            Create a new instance of LogReceiverLogger.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogReceiverLogger.TagValue">
+            <summary>
+            Gets and sets the TagValue.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogReceiverLogger.LogSocketReader">
+            <summary>
+            Gets and sets the LogSocketReader.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.FileLogger">
+            <summary>
+            Summary description for FileLogger.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.FileLogger._fileName">
+            <summary>
+            The name of the file to which this Logger is writing.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.FileLogger.#ctor">
+            <summary>
+            Create a new instance of FileLogger.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.FileLogger.#ctor(System.String)">
+            <summary>
+            Create a new instance of FileLogger.
+            </summary>
+            <param name="aFileName">The name of the file to which this Logger should write.</param>
+        </member>
+        <member name="M:BitFactory.Logging.FileLogger.CreateFileStream">
+            <summary>
+            Create a new FileStream.
+            </summary>
+            <returns>The newly created FileStream.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.FileLogger.GetFileStream">
+            <summary>
+            Get the FileStream.
+            Create the directory structure if necessary.
+            </summary>
+            <returns>The FileStream.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.FileLogger.GetStreamWriter">
+            <summary>
+            Create a new StreamWriter.
+            </summary>
+            <returns>A new StreamWriter.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.FileLogger.WriteToLog(System.String)">
+            <summary>
+            Write the String to the file.
+            </summary>
+            <param name="s">The String representing the LogEntry being logged.</param>
+            <returns>true upon success, false upon failure.</returns>
+        </member>
+        <member name="P:BitFactory.Logging.FileLogger.FileName">
+            <summary>
+            Gets and sets the file name.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.DelegatableLogger">
+            <summary>
+            DelegatableLogger can be used to easily create a logger to which will use a given delegate to actually do the logging.
+            </summary>
+            <remarks>
+            One of two different delegates can be used:
+            one for handling a complete LogEntry if complicated handling is required,
+            the other for simply handing a pre-formatted string to be logged
+            </remarks>
+        </member>
+        <member name="M:BitFactory.Logging.DelegatableLogger.#ctor(BitFactory.Logging.DelegatableLogger.DoLogDelegate)">
+            <summary>
+            Create a new DelegatableLogger using a DoLogDelegate
+            </summary>
+            <param name="aDoLogDelegate">A DoLogDelegate</param>
+        </member>
+        <member name="M:BitFactory.Logging.DelegatableLogger.#ctor(BitFactory.Logging.DelegatableLogger.WriteToLogDelegate)">
+            <summary>
+            Create a new DelegatableLogger using a WriteToLogDelegate
+            </summary>
+            <param name="aWriteToLogDelegate">A WriteToLogDelegate</param>
+        </member>
+        <member name="M:BitFactory.Logging.DelegatableLogger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Log a LogEntry
+            </summary>
+            <param name="aLogEntry">The LogEntry to be logged</param>
+            <returns>true if successfully logged, otherwise false</returns>
+        </member>
+        <member name="M:BitFactory.Logging.DelegatableLogger.WriteToLog(System.String)">
+            <summary>
+            Write a string to the log
+            </summary>
+            <param name="s">The string to write to the log</param>
+            <returns>true if successfully written to the log, otherwise false</returns>
+        </member>
+        <member name="T:BitFactory.Logging.DelegatableLogger.DoLogDelegate">
+            <summary>
+            This is a delegate used to handle writing log entries based on the LogEntry
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.DelegatableLogger.WriteToLogDelegate">
+            <summary>
+            This is a delegate used to handle writing log entries based in the string to be written to the log
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.SerialSocketLogger">
+            <summary>
+            Instances of SerialSocketLogger write out serialized LogEntries to a Socket
+            <seealso cref="T:BitFactory.Logging.LogSocketReader"/>
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.SerialLogger">
+            <summary>
+            Instances of SerialLogger write out serialized LogEntries to it's OutputStream
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.SerialLogger._serialFormatter">
+            <summary>
+            A formatter for writing to the stream.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.SerialLogger._out">
+            <summary>
+            The stream to which the SerialLogger logs.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.SerialLogger.#ctor">
+            <summary>
+            Create a new instance of SerialLogger.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.SerialLogger.#ctor(System.IO.Stream)">
+            <summary>
+            Create a new instance of SerialLogger.
+            </summary>
+            <param name="anOutStream">The Stream into which logs should be written.</param>
+        </member>
+        <member name="M:BitFactory.Logging.SerialLogger.Finalize">
+            <summary>
+            Destructor.
+            Close the stream.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.SerialLogger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Write the LogEntry to the stream.
+            </summary>
+            <param name="aLogEntry">The LogEntry to log.</param>
+            <returns>true upon success, false upon failure.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.SerialLogger.HandleLogFailure(BitFactory.Logging.LogEntry,System.Exception)">
+            <summary>
+            Take action upon failure to log to the stream.
+            </summary>
+            <param name="aLogEntry">The LogEntry that failed to be logged.</param>
+            <param name="ex">The exception thrown during the logging attempt.</param>
+            <returns>Always return false.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.SerialLogger.TryToLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Attampt to write the LogEntry to the stream.
+            </summary>
+            <param name="aLogEntry">The Log Entry being logged.</param>
+        </member>
+        <member name="P:BitFactory.Logging.SerialLogger.SerialFormatter">
+            <summary>
+            Gets and sets the formatter.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.SerialLogger.Out">
+            <summary>
+            Gets and sets the stream.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.SerialSocketLogger._tcpClient">
+            <summary>
+            The TcpClient used for writing LogEntries.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.SerialSocketLogger._hostName">
+            <summary>
+            The name of the remote host to which the receiver is logging.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.SerialSocketLogger._port">
+            <summary>
+            The port number of the socket.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.SerialSocketLogger.#ctor">
+            <summary>
+            Create a new instance of SerialSocketLogger.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.SerialSocketLogger.#ctor(System.String,System.Int32)">
+            <summary>
+            Create a new instance of SerialSocketLogger.
+            </summary>
+            <param name="aHostName">The name of the remote host.</param>
+            <param name="aPort">The port number.</param>
+        </member>
+        <member name="M:BitFactory.Logging.SerialSocketLogger.HandleLogFailure(BitFactory.Logging.LogEntry,System.Exception)">
+            <summary>
+            Reset the socket and try one more time
+            </summary>
+            <param name="aLogEntry">The LogEntry that failed to get logged.</param>
+            <param name="ex">The exception thrown during the logging attempt.</param>
+            <returns>true upon success, false upon failure.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.SerialSocketLogger.ResetSocket">
+            <summary>
+            Safely try to reset the socket, handling errors.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.SerialSocketLogger.TryToResetSocket">
+            <summary>
+            Attempt to reset the socket
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.SerialSocketLogger.TcpClient">
+            <summary>
+            Gets and sets the TcpClient.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.SerialSocketLogger.HostName">
+            <summary>
+            Gets and sets the name of the remote host.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.SerialSocketLogger.Port">
+            <summary>
+            Gets and sets the port number.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.InsistentLogger">
+            <summary>
+            Wrap instances of this class around any other logger. If the wrapped logger fails
+            to successfully log an entry, then this instance will keep trying to log the entry.
+            </summary>
+            <remarks>
+            example: Logger myLogger = new SerialSocketLogger("localhost", 12345);
+                     /* set any desired filters or formatters for myLogger
+                        then wrap in an InsistentLogger... */
+                     myLogger = new InsistentLogger(myLogger,200,60);
+                     /* now myLogger can be used like any other logger, but with more
+                        reliability in entries reaching their destination */
+            </remarks>
+        </member>
+        <member name="F:BitFactory.Logging.InsistentLogger._logger">
+            <summary>
+            The Logger being wrapped.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.InsistentLogger._memoryLogger">
+            <summary>
+            A MemoryLogger to store LogEntries.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.InsistentLogger._intervalSeconds">
+            <summary>
+            The number of seconds between retries at logging.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.InsistentLogger._thread">
+            <summary>
+            A Thread.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.InsistentLogger.#ctor">
+            <summary>
+            Create a new instance of InsistentLogger.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.InsistentLogger.#ctor(BitFactory.Logging.Logger,System.Int32,System.Int32)">
+            <summary>
+            Create a new instance of InsistentLogger.
+            </summary>
+            <param name="aLogger">The actual Logger that should eventually receive LogEntries.</param>
+            <param name="capacity">The maximum number of LogEntries that should be stored for retrying.</param>
+            <param name="anIntervalSeconds">The number of seconds between each retry at logging.</param>
+        </member>
+        <member name="M:BitFactory.Logging.InsistentLogger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Send aLogEntry to the ActiveLogger, either the desired Logger, or the MemoryLogger.
+            </summary>
+            <param name="aLogEntry">The LogEntry being logged</param>
+            <returns>Always returns true.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.InsistentLogger.HandleLogFailure(BitFactory.Logging.LogEntry)">
+            <summary>
+            Send the LogEntry to the MemoryLogger, then start the retrying thread.
+            </summary>
+            <param name="aLogEntry">The LogEntry to log.</param>
+            <returns>Always returns true.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.InsistentLogger.StartThread">
+            <summary>
+            Start the retrying thread.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.InsistentLogger.StopThread">
+            <summary>
+            Stop the retrying thread.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.InsistentLogger.TryLogging">
+            <summary>
+            The logging thread's main loop.
+            Attempt to send the LogEntries in the MemoryLogger to the desired Logger.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.InsistentLogger.Transfer">
+            <summary>
+            Attempt to transfer the stored LogEntries to their proper destination.
+            </summary>
+            <returns>true if all LogEntries transfered, false otherwise.</returns>
+        </member>
+        <member name="P:BitFactory.Logging.InsistentLogger.Logger">
+            <summary>
+            Gets and sets the Logger.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.InsistentLogger.MemoryLogger">
+            <summary>
+            Gets and sets the MemoryLogger.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.InsistentLogger.IntervalSeconds">
+            <summary>
+            Gets and sets the interval seconds.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.InsistentLogger.Thread">
+            <summary>
+            Gets and sets the Thread.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.InsistentLogger.ActiveLogger">
+            <summary>
+            Gets the active Logger currently being logged to.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.NullLogger">
+            <summary>
+            Instances of this class can be used as placeholders where the actual
+            logger is not yet known.
+            Notice that the only difference between this class and its superclass
+            is that this class is not abstract.
+            </summary>
+            <remarks>
+            Since the only difference between this class and its superclass, Logger,
+            is that Logger is abstract whereas this class isn't,
+            one might ask the question, "Why not just make Logger a concrete class
+            that can be used as a 'null' logger instead of creating a new subclass?"
+            The answer is that Logger, from a design point of view, *is* abstract,
+            and shouldn't be changed just to accomodate this functionality. Also,
+            by using a NullLogger in code, an explicit design declaration is made that
+            indicates its purpose as being a "null" logger.
+            </remarks>
+        </member>
+        <member name="T:BitFactory.Logging.LogSeverity">
+            <summary>
+            Represent severities of LogEntries.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSeverity.Debug">
+            <summary>
+            Represents a severity level of "Debug"
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSeverity.Info">
+            <summary>
+            Represents a severity level of "Info"
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSeverity.Status">
+            <summary>
+            Represents a severity level of "Status"
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSeverity.Warning">
+            <summary>
+            Represents a severity level of "Warning"
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSeverity.Error">
+            <summary>
+            Represents a severity level of "Error"
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSeverity.Critical">
+            <summary>
+            Represents a severity level of "Critical"
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSeverity.Fatal">
+            <summary>
+            Represents a severity level of "Fatal"
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.LoggerTester">
+            <summary>
+            LoggerTester can be used to test Loggers.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LoggerTester.allLoggerTesters">
+            <summary>
+            A list of all running testers.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LoggerTester.logger">
+            <summary>
+            The logger to which this tester is logging.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LoggerTester.logSeverity">
+            <summary>
+            The severity at which this tester logs.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LoggerTester.category">
+            <summary>
+            The category of which this tester logs.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LoggerTester.logItem">
+            <summary>
+            The Object this tester logs.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LoggerTester.thread">
+            <summary>
+            The thread on which this tester is logging.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LoggerTester.#ctor(BitFactory.Logging.Logger,BitFactory.Logging.LogSeverity,System.Object,System.Object)">
+            <summary>
+            Create a new instance of a LoggerTester.
+            </summary>
+            <param name="aLogger">The logger to which the tester should log.</param>
+            <param name="aLogSeverity">The severity at which the tester should log.</param>
+            <param name="aCategory">The category of which this tester should log.</param>
+            <param name="aLogItem">The Object which this tester should log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LoggerTester.Start">
+            <summary>
+            Start the logging thread.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LoggerTester.Stop">
+            <summary>
+            Stop the logging thread.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LoggerTester.Run">
+            <summary>
+            The logging thread start method.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LoggerTester.TestAllSeverities(BitFactory.Logging.Logger)">
+            <summary>
+            Create a tester for each severity and begin logging.
+            </summary>
+            <param name="aLogger">The logger to which the testers should log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LoggerTester.TestAllSeverities(BitFactory.Logging.Logger,System.Object)">
+            <summary>
+            Create a tester for each severity and begin logging.
+            </summary>
+            <param name="aLogger">The logger to which the testers should log.</param>
+            <param name="aCategory">The category of which the testers should log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LoggerTester.TestAllSeverities(BitFactory.Logging.Logger,System.Object[])">
+            <summary>
+            Create a tester for each severity and each specified category and begin logging.
+            </summary>
+            <param name="aLogger">The logger to which the testers should log.</param>
+            <param name="categories">The categories of which the testers should log.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LoggerTester.StopAll">
+            <summary>
+            Stop all currently running testers.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.LogSocketReader">
+            <summary>
+            An instance of LogSocketReader reads serialized LogEntries from a socket
+            and subsequently logs the LogEntries to its respective logger.
+            </summary>
+            <remarks>
+            Instances are typically created via the static method StartListening(aPort,aLogSocketReaderReceiver).
+            </remarks>
+        </member>
+        <member name="F:BitFactory.Logging.LogSocketReader._socket">
+            <summary>
+            The client Socket.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSocketReader._logger">
+            <summary>
+            The internal Logger.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSocketReader._thread">
+            <summary>
+            The Thread used for reading.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.#ctor">
+            <summary>
+            Create a new instance of LogSocketReader.
+            The best way to create instances of this class is to use the static method StartListening.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.#ctor(System.Net.Sockets.Socket)">
+            <summary>
+            Create a new instance of LogSocketReader.
+            The best way to create instances of this class is to use the static method StartListening.
+            </summary>
+            <param name="aSocket">A Socket from which to read LogEntries</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.#ctor(System.Net.Sockets.Socket,BitFactory.Logging.Logger)">
+            <summary>
+            Create a new instance of LogSocketReader.
+            The best way to create instances of this class is to use the static method StartListening.
+            </summary>
+            <param name="aSocket">A Socket from which to read LogEntries</param>
+            <param name="aLogger">A logger to which received LogEntries are logged.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.ProcessLogEntry(BitFactory.Logging.LogEntry)">
+            <summary>
+            Log a LogEntry.
+            </summary>
+            <param name="aLogEntry">The LogEntry to process.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.ReaderClosed">
+            <summary>
+            A notification that the reader has been closed.
+            Log status information.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.Run">
+            <summary>
+            The main loop of the Thread.
+            Read LogEntries from the Socket Stream.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.HandleIncompatibleLogEntry(System.Object)">
+            <summary>
+            Handle exceptions due to LogEntry incompatibilities.
+            </summary>
+            <param name="objectFromStream">The Object read from the stream.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.StartListening(System.Int32,BitFactory.Logging.LogSocketReaderReceiver)">
+            <summary>
+            Create a new Listener and start listening on the port.
+            </summary>
+            <remarks>
+            An exception may be raised if there is a problem
+            opening the server socket on the specified port.
+            </remarks>
+            <param name="aPort">The port on which to listen.</param>
+            <param name="aReceiver">A LogSocketReaderReceiver that will be notified of new connections.</param>
+            <returns>A Listener.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.StartListening(System.Net.IPAddress,System.Int32,BitFactory.Logging.LogSocketReaderReceiver)">
+            <summary>
+            Create a new Listener and start listening on the port.
+            </summary>
+            <remarks>
+            An exception may be raised if there is a problem
+            opening the server socket on the specified port.
+            </remarks>
+            <param name="anIpAddress">The IP address on which to listen.</param>
+            <param name="aPort">The port on which to listen.</param>
+            <param name="aReceiver">A LogSocketReaderReceiver that will be notified of new connections.</param>
+            <returns>A Listener.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.Start">
+            <summary>
+            Start the Thread.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.Stop">
+            <summary>
+            Stop the Thread.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogSocketReader.Socket">
+            <summary>
+            Gets and sets the socket.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogSocketReader.Logger">
+            <summary>
+            Gets and sets the Logger.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogSocketReader.Thread">
+            <summary>
+            Gets and sets the Thread
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogSocketReader.RemoteAddress">
+            <summary>
+            Gets a String representation of the remote endpoint address (eg. 1.2.3.4:2350).
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.LogSocketReader.Listener">
+            <summary>
+            Inner class used for listening for connections.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSocketReader.Listener._ipAddress">
+            <summary>
+            An IP Address
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSocketReader.Listener._port">
+            <summary>
+            A port number.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSocketReader.Listener._tcpListener">
+            <summary>
+            A TcpListener.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSocketReader.Listener._logSocketReaderReceiver">
+            <summary>
+            A LogSocketReaderReceiver.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogSocketReader.Listener._thread">
+            <summary>
+            A Thread.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.Listener.#ctor(System.Int32,BitFactory.Logging.LogSocketReaderReceiver)">
+            <summary>
+            Create a new instance of Listener listening on any IP address
+            </summary>
+            <remarks>
+            An exception may be raised if there is a problem
+            opening the server socket on the specified port.
+            </remarks>
+            <param name="aPort">A port number on which to listen</param>
+            <param name="aReceiver">A LogSocketReaderReceiver</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.Listener.#ctor(System.Net.IPAddress,System.Int32,BitFactory.Logging.LogSocketReaderReceiver)">
+            <summary>
+            Create a new instance of Listener.
+            </summary>
+            <remarks>
+            An exception may be raised if there is a problem
+            opening the server socket on the specified port.
+            </remarks>
+            <param name="anIpAddress">The IP address on which a port will be opened to listen</param>
+            <param name="aPort">A port number on which to listen</param>
+            <param name="aReceiver">A LogSocketReaderReceiver</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.Listener.GetReader">
+            <summary>
+            Get the reader.
+            </summary>
+            <returns>A LogSocketReader.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.Listener.Run">
+            <summary>
+            The loop for the internal Thread that listens for connections.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogSocketReader.Listener.Stop">
+            <summary>
+            Stop listening on the port.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogSocketReader.Listener.IpAddress">
+            <summary>
+            Gets and sets the IP address.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogSocketReader.Listener.Port">
+            <summary>
+            Gets and sets the port number.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogSocketReader.Listener.TcpListener">
+            <summary>
+            Gets and sets the TcpListener.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogSocketReader.Listener.LogSocketReaderReceiver">
+            <summary>
+            Gets and sets the LogSocketReaderReceiver.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogSocketReader.Listener.Thread">
+            <summary>
+            Gets and sets the Thread.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.LogEntryCategoryFilter">
+            <summary>
+            Instances filter LogEntries based on their categories.
+            </summary>
+            <remarks>
+            By default, this is an "allow" filter, meaning that the specified categories
+            contained herein pass through the filter. If allow is set to false, then all
+            categories that are NOT contained herein will pass through.
+            </remarks>
+        </member>
+        <member name="F:BitFactory.Logging.LogEntryCategoryFilter._categories">
+            <summary>
+            A Collection of categories.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogEntryCategoryFilter._allow">
+            <summary>
+            A flag to determine whether the categories are allowed or not.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryCategoryFilter.#ctor">
+            <summary>
+            Create a new instance of LogEntryCategoryFilter.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryCategoryFilter.#ctor(System.Boolean)">
+            <summary>
+            Create a new instance of LogEntryCategoryFilter.
+            </summary>
+            <param name="allowFlag">If true, allow the categories. If false, disallow them.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryCategoryFilter.AddCategory(System.Object)">
+            <summary>
+            Add a category to the filter.
+            </summary>
+            <param name="aCategory">A category to add.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryCategoryFilter.removeCategory(System.Object)">
+            <summary>
+            Remove a category from the filter.
+            </summary>
+            <param name="aCategory">The category to remove.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryCategoryFilter.CanPass(BitFactory.Logging.LogEntry)">
+            <summary>
+            Determine if a LogEntry "passes" through the filter.
+            </summary>
+            <param name="aLogEntry">The LogEntry being tested.</param>
+            <returns>true if aLogEntry passes, false otherwise.</returns>
+        </member>
+        <member name="P:BitFactory.Logging.LogEntryCategoryFilter.Allow">
+            <summary>
+            Gets and sets the Allow flag.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.LogEntryCategoryFilter.Categories">
+            <summary>
+            Gets and sets the categories.
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.RollingFileLogger">
+            <summary>
+            RollingFileLogger can be used to automatically roll-over files by any determination.
+            It does not delete old log files, it just creates new log files as required.
+            </summary>
+            <remarks>
+            A log file name can change based on the current date, such as MyLogFile_20050615.log, MyLogFile_20050616.log.
+            Or at a predetermined size, the log file name can automatically increment, such as MyLogFile_1.log, MyLogFile_2.log.
+            There are a couple included inner 'Strategy' classes defined for rolling-over files
+            based on the date or the size of the log. Others can easily be added.
+            </remarks>
+        </member>
+        <member name="M:BitFactory.Logging.RollingFileLogger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Do Log aLogEntry
+            </summary>
+            <param name="aLogEntry">A LogEntry</param>
+            <returns>true if successfully logged, otherwise false</returns>
+        </member>
+        <member name="M:BitFactory.Logging.RollingFileLogger.#ctor(BitFactory.Logging.RollingFileLogger.RollOverStrategy)">
+            <summary>
+            Instantiate a new RollingFileLogger with the given RollOverStrategy
+            </summary>
+            <param name="aRollOverStrategy">A RollOverStrategy the logger will use to determine when it should roll-over</param>
+        </member>
+        <member name="M:BitFactory.Logging.RollingFileLogger.NewRollingDateFileLogger(System.String)">
+            <summary>
+            Create and return a new RollingFileLogger that rolls over according to the current date
+            </summary>
+            <param name="aFullPathFormatString">The Full path of the log file with a parameter ({0}) for the variable date, for example: "\mylogs\logfile{0}.log"</param>
+            <returns>A new RollingFileLogger</returns>
+        </member>
+        <member name="M:BitFactory.Logging.RollingFileLogger.NewRollingSizeFileLogger(System.String,System.Int64)">
+            <summary>
+            Create and return a new RollingFileLogger that rolls over according to the size of the log file
+            </summary>
+            <param name="aFullPathFormatString">The Full path of the log file with a parameter ({0}) for a variable number (1, 2, 3, etc.), for example: "\mylogs\logfile{0}.log"</param>
+            <param name="aMaxSize">The maximum size the file should be before it rolls over to the next file</param>
+            <returns>A new RollingFileLogger</returns>
+        </member>
+        <member name="T:BitFactory.Logging.RollingFileLogger.RollOverStrategy">
+            <summary>
+            RollOverStrategy is an abstract class that defines the basic functionality required by a RollingFileLogger to roll-over.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.RollingFileLogger.RollOverStrategy.FileNameFormatString">
+            <summary>
+            The format string used to generate the log file name
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.RollingFileLogger.RollOverStrategy.#ctor(System.String)">
+            <summary>
+            Instantiate a RollOverStrategy providing a string looking like "c:\SomeDirectoryPath\SomeFileName{0}.log"
+            </summary>
+            <remarks>
+            A FormatException will be thrown if the provided string does not include the format item "{0}"
+            </remarks>
+            <param name="aFullPathFormatString">A string describing the full path of the log file with a format item (e.g. "c:\SomeDirectoryPath\SomeFileName{0}.log")</param>
+        </member>
+        <member name="T:BitFactory.Logging.RollingFileLogger.RollOverDateStrategy">
+            <summary>
+            RollOverDateStrategy provides date-based roll-over functionality
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.RollingFileLogger.RollOverDateStrategy.#ctor(System.String)">
+            <summary>
+            Create a new RollOverDateStrategy
+            </summary>
+            <remarks>
+            A FormatException will be thrown if the provided string does not include the format item "{0}"
+            </remarks>
+            <param name="aFullPathFormatString">The Full path of the log file with a format item ({0}) for the variable date, for example: "\mylogs\logfile{0}.log"</param>
+        </member>
+        <member name="M:BitFactory.Logging.RollingFileLogger.RollOverDateStrategy.#ctor(System.String,System.String)">
+            <summary>
+            Create a new RollOverDateStrategy
+            </summary>
+            <remarks>
+            A FormatException will be thrown if the provided string does not include the format item "{0}"
+            </remarks>
+            <param name="aFullPathFormatString">The Full path of the log file with a format item ({0}) for the variable date, for example: "\mylogs\logfile{0}.log"</param>
+            <param name="aDateFormatString">A format string that will be used to format the date portion of the log file name (e.g. "yyyyMMdd")</param>
+        </member>
+        <member name="T:BitFactory.Logging.RollingFileLogger.RollOverSizeStrategy">
+            <summary>
+            RollOverSizeStrategy provides log file size-based roll-over functionality
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.RollingFileLogger.RollOverSizeStrategy.#ctor(System.String,System.Int64)">
+            <summary>
+            Create a new RollOverSizeStrategy
+            </summary>
+            <remarks>
+            A FormatException will be thrown if the provided string does not include the format item "{0}"
+            </remarks>
+            <param name="aFullPathFormatString">The Full path of the log file with a format item ({0}) for a variable number (1, 2, 3, etc.), for example: "\mylogs\logfile{0}.log"</param>
+            <param name="aMaxSize">The maximum size the file should be before it rolls over to the next file</param>
+        </member>
+        <member name="M:BitFactory.Logging.RollingFileLogger.RollOverSizeStrategy.GetFileNumber">
+            <summary>
+            Determine the file number to use--essentially find the highest existing file number, otherwise use 1
+            </summary>
+            <returns>An int representing the file number to use</returns>
+        </member>
+        <member name="T:BitFactory.Logging.EmailLogger">
+            <summary>
+            An EmailLogger sends log information via an email message.
+            </summary>
+            <remarks>
+            If the subject attribute is not explicitly set, then it will automatically be filled
+            with the logEntry's application, category, and severity.
+            </remarks>
+        </member>
+        <member name="F:BitFactory.Logging.EmailLogger._from">
+            <summary>
+            The "from" for the email.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.EmailLogger._to">
+            <summary>
+            The "to" for the email.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.EmailLogger._subject">
+            <summary>
+            The "subject" of the email.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.EmailLogger._smtpClient">
+            <summary>
+            The SMTP client
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.EmailLogger.#ctor(System.Net.Mail.SmtpClient,System.String,System.String)">
+            <summary>
+            Create an instance of EmailLogger.
+            </summary>
+            <param name="anSmtpClient">The SmtpClient object the logger will use to send emails.</param>
+            <param name="aFrom">The "from" for the emails that get sent.</param>
+            <param name="aTo">The "to" for the emails that get sent.</param>
+        </member>
+        <member name="M:BitFactory.Logging.EmailLogger.#ctor(System.Net.Mail.SmtpClient,System.String,System.String,System.String)">
+            <summary>
+            Create an instance of EmailLogger.
+            </summary>
+            <param name="anSmtpClient">The SmtpClient object the logger will use to send emails.</param>
+            <param name="aFrom">The "from" for the emails that get sent.</param>
+            <param name="aTo">The "to" for the emails that get sent.</param>
+            <param name="aSubject">The "subject" of the emails that get sent.</param>
+        </member>
+        <member name="M:BitFactory.Logging.EmailLogger.DoLog(BitFactory.Logging.LogEntry)">
+            <summary>
+            Send the email representing aLogEntry.
+            </summary>
+            <param name="aLogEntry">The LogEntry.</param>
+            <returns>true upon success, false upon failure.</returns>
+        </member>
+        <member name="P:BitFactory.Logging.EmailLogger.From">
+            <summary>
+            Gets and sets the "from" for the email.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.EmailLogger.To">
+            <summary>
+            Gets and sets the "to" for the email.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.EmailLogger.Subject">
+            <summary>
+            Gets and sets the "subject" of the email.
+            </summary>
+        </member>
+        <member name="P:BitFactory.Logging.EmailLogger.SmtpClient">
+            <summary>
+            Gets and sets the SmtpClient
+            </summary>
+        </member>
+        <member name="T:BitFactory.Logging.LogReceiverLoggerFactory">
+            <summary>
+            Instances of this class are used to create
+            instances of LogReceiverLogger subclasses when
+            socket connections are made to clients sending LogEntry information.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogReceiverLoggerFactory.loggerType">
+            <summary>
+            The Type of the Logger this instance should create.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogReceiverLoggerFactory.tagInfo">
+            <summary>
+            Any information that needs to be passed to newly
+            created Loggers.
+            </summary>
+        </member>
+        <member name="F:BitFactory.Logging.LogReceiverLoggerFactory.listener">
+            <summary>
+            The Listener that listens for new socket connections.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLoggerFactory.#ctor(System.Type,System.Int32,System.Object)">
+            <summary>
+            Create a new instance of LogReceiverLoggerFactory.
+            </summary>
+            <param name="aLoggerType">The Type of Logger this instance should eventually create.</param>
+            <param name="portNumber">The port number on which to listen for new connections.</param>
+            <param name="aTagInfo">Any information newly created Loggers should be passed.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLoggerFactory.CheckLoggerType(System.Type)">
+            <summary>
+            Make sure that aLoggerType is a subclass of LogReceiverLogger.
+            Throw an InvalidReceiverLoggerException if not.
+            </summary>
+            <param name="aLoggerType">The Type to check.</param>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLoggerFactory.StopListening">
+            <summary>
+            Stop listening.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLoggerFactory.ListenerClosed">
+            <summary>
+            This is a notification that the server socket has been closed.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLoggerFactory.ReaderReady(BitFactory.Logging.LogSocketReader)">
+            <summary>
+            This is a notification that a socket connection has been made
+            and that a LogSocketReader is ready for reading.
+            </summary>
+            <param name="aLogSocketReader">The LogSocketReader that will read from the socket.</param>
+            <returns>Always returns true, signifying that it is okay to accept more client connections.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLoggerFactory.CreateNewLogger(BitFactory.Logging.LogSocketReader)">
+            <summary>
+            Create and initialize a new Logger.
+            </summary>
+            <param name="aLogSocketReader">The LogSocketReader.</param>
+            <returns>The newly created Logger</returns>
+        </member>
+        <member name="T:BitFactory.Logging.LogReceiverLoggerFactory.InvalidReceiverLoggerException">
+            <summary>
+            An Exception class thrown when an invalid Logger is used with LogReceiverLoggerFactory.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogReceiverLoggerFactory.InvalidReceiverLoggerException.#ctor(System.Type)">
+            <summary>
+            Create a new instance of InvalidReceiverLoggerException.
+            </summary>
+            <param name="aType">The invalid Type of Logger attempted to be used.</param>
+        </member>
+        <member name="T:BitFactory.Logging.LogEntryStandardFormatter">
+            <summary>
+            This formatter is the default one that formats all LogEntry information in a reasonable way.
+            </summary>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryStandardFormatter.AsString(BitFactory.Logging.LogEntry)">
+            <summary>
+            Create a reasonably formatted String that contains all the LogEntry information.
+            </summary>
+            <param name="aLogEntry">The LogEntry to format.</param>
+            <returns>A nicely formatted String.</returns>
+        </member>
+        <member name="M:BitFactory.Logging.LogEntryStandardFormatter.#ctor">
+            <summary>
+            Create a new instance of LogEntryStandardFormatter.
+            </summary>
+        </member>
+    </members>
+</doc>

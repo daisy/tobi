@@ -1,0 +1,410 @@
+﻿<DockPanel
+    x:Class="Tobi.Plugin.MetadataPane.MetadataPaneView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Tobi.Plugin.MetadataPane"
+    xmlns:UI="clr-namespace:Tobi.Common.UI;assembly=Tobi.Common" 
+    xmlns:Metadata="clr-namespace:Tobi.Plugin.Validator.Metadata;assembly=Tobi.Plugin.Validator.Metadata"
+    xmlns:System="clr-namespace:System;assembly=mscorlib" LastChildFill="True"
+    Loaded="MetadataPaneView_OnLoaded">
+  <!-- ALL RESOURCES -->
+  <DockPanel.Resources>
+
+    <!-- COLLECTION VIEW SOURCE for Metadata objects -->
+    <CollectionViewSource Source="{Binding Path=MetadataCollection.Metadatas}" x:Key="MetadatasCVS"/>
+
+    <Style TargetType="{x:Type TextBlock}">
+
+      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+      <Setter Property="Focusable" Value="True"/>
+    </Style>
+    
+    <!-- display the name field; do not allow editing -->
+    <DataTemplate x:Key="FixedNameTemplate">
+      <TextBlock Text="{Binding Path=Name}" Width="Auto"/>
+    </DataTemplate>
+
+    <!-- display the name field and provide a combo box for editing the value -->
+    <DataTemplate x:Key="ChooseNameTemplate">
+      
+      <!-- , Converter={local:LowerCaseConverter} -->
+      <ComboBox Grid.Row="2" Grid.Column="1" MinWidth="100"
+      x:Name="namesComboBox"
+                
+                IsEditable="True"
+                LostFocus="ComboBoxLostFocus"
+                
+      SelectedItem="{Binding Path=Name}"
+                
+                  Control.IsTabStop="true"
+                  AlternationCount="2"
+                >
+
+        <ComboBox.Style>
+          <Style TargetType="{x:Type ComboBox}">
+
+            <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+            <Setter Property="AutomationProperties.Name"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem,
+                    TargetNullValue={x:Static System:String.Empty}, Mode=OneWay}"/>
+            <!--<Setter Property="ToolTip" Value="{Binding Name}"/>-->
+          </Style>
+        </ComboBox.Style>
+        
+        <ComboBox.ItemsSource>
+          <MultiBinding Converter="{local:AvailableMetadataNamesConverter}"
+                        UpdateSourceTrigger="PropertyChanged">
+            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:MetadataPaneView}}"
+                     Path="DataContext.AvailableMetadataNames"/>
+            <Binding Path="Name"/>
+          </MultiBinding>
+        </ComboBox.ItemsSource>
+        <ComboBox.ItemContainerStyle>
+
+          <Style TargetType="{x:Type ComboBoxItem}">
+
+            <Style.Setters>
+
+              <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+              <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+              <Setter Property="VerticalContentAlignment" Value="Center" />
+              <!--<Setter Property="AutomationProperties.Name" Value="{Binding Path=FullDescription, Mode=OneWay}"/>-->
+            </Style.Setters>
+
+            <Style.Triggers>
+              <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+
+        </ComboBox.ItemContainerStyle>
+      </ComboBox>
+
+    </DataTemplate>
+    
+  </DockPanel.Resources>
+
+    <DockPanel  DockPanel.Dock="Bottom" LastChildFill="True">
+    <Button DockPanel.Dock="Right"
+            Margin="50, 0, 0, 0"
+            Padding="4,4,4,4"
+      Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Add_new}"
+            HorizontalAlignment="Left" VerticalAlignment="Top"
+            Width="Auto"
+            Click="AddButton_OnClick"
+             Control.TabIndex="111"
+            />
+      
+      <GroupBox x:Name="groupBox" VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                Padding="4,4,4,4"
+               Control.TabIndex="1">
+
+        <GroupBox.Header>
+          <TextBlock Text="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Description}"
+                           FontWeight="Bold"  Focusable="true"
+                     />
+        </GroupBox.Header>
+
+        <StackPanel VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                     Focusable="false">
+
+          <TextBlock TextWrapping="Wrap"  Focusable="true">
+            <TextBlock.Text>
+              <MultiBinding StringFormat="{x:Static local:Tobi_Plugin_MetadataPane_Lang.NameAndDescription}">
+                <Binding Source="{StaticResource MetadatasCVS}" Path="/Name"/>
+                <Binding Source="{StaticResource MetadatasCVS}" Path="/Definition.Description"/>
+              </MultiBinding>
+            </TextBlock.Text>
+          </TextBlock>
+
+          <TextBlock TextWrapping="Wrap"
+                     Visibility="{Binding Source={StaticResource MetadatasCVS}, 
+                 Path=/Definition, Converter={Metadata:DefinitionSynonymsListVisibilityConverter}}"
+                       Focusable="true">
+            <TextBlock.Text>
+              <Binding StringFormat="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Synonyms}"
+                       Source="{StaticResource MetadatasCVS}"
+                       Path="/Definition"
+                       Converter="{Metadata:DefinitionSynonymsListConverter}"/>
+            </TextBlock.Text>
+          </TextBlock>
+          <Line
+      Margin="0,2,0,2"
+      SnapsToDevicePixels="True"
+      Stroke="{Binding
+                ElementName=groupBox,
+                Path=BorderBrush, Mode=OneWay}"
+      Stretch="Fill"
+      X1="0" X2="1"
+      />
+          <TextBlock TextWrapping="Wrap"
+                     Text="{Binding Source={StaticResource MetadatasCVS}, Path=/Definition,
+                 Converter={Metadata:OccurrenceDescriptionConverter}}"
+                       Focusable="true"/>
+          
+        </StackPanel>
+      </GroupBox>
+    </DockPanel>
+
+  <UI:SortableListView2
+      SelectionMode="Single"
+    Control.TabIndex="0"
+    Margin="0,0,0,4"
+  ColumnHeaderSortedAscendingTemplate="ColumnHeaderTemplateArrowUp"
+  ColumnHeaderSortedDescendingTemplate="ColumnHeaderTemplateArrowDown"
+  ColumnHeaderNotSortedTemplate="ColumnHeaderTemplateArrowNone"
+    
+    AlternationCount="2"
+      
+    ScrollViewer.CanContentScroll="False"
+    ItemsSource="{Binding Source={StaticResource MetadatasCVS}}"
+    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+    ScrollViewer.VerticalScrollBarVisibility="Auto"
+    HorizontalContentAlignment="Stretch"
+    IsSynchronizedWithCurrentItem="True"
+    x:Name="MetadataList"
+      
+      Focusable="False">
+
+    <ListView.Style>
+    <Style TargetType="{x:Type ListView}">
+
+      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+    </Style>
+      </ListView.Style>
+
+    <ListView.ItemContainerStyle>
+      <Style TargetType="{x:Type ListViewItem}">
+        <!--<Style.Resources>
+          <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                        Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+        </Style.Resources>-->
+
+        <Style.Setters>
+
+          <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+
+          
+          <!--<Setter Property="FocusVisualStyle">
+            <Setter.Value>
+              <Style TargetType="{x:Type IFrameworkInputElement}">
+                --><!--<Style.Resources>
+                  <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                                                Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                </Style.Resources>--><!--
+                <Setter Property="Control.Template">
+                  <Setter.Value>
+                    <ControlTemplate>
+                      <Rectangle
+                          Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                          StrokeThickness="1"
+                          StrokeDashArray="1 2"
+                          Margin="0"
+                          SnapsToDevicePixels="True" />
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </Setter.Value>
+          </Setter>-->
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="{x:Type ListViewItem}">
+                <!--<Grid SnapsToDevicePixels="True" Margin="0">-->
+                  <Border x:Name="Border"
+                          Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                              BorderThickness="0"
+                          SnapsToDevicePixels="true"
+                           Margin="0"
+                          Padding="0">
+                    <GridViewRowPresenter x:Name="Content"
+                                          Margin="0"
+                                          TextBlock.Foreground="{TemplateBinding Foreground}"
+                              Content="{TemplateBinding Content}"
+                                          Columns="{TemplateBinding GridView.ColumnCollection}"/>
+                  </Border>
+                
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsSelected"  Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                  </Trigger>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="IsSelected" Value="true" />
+                      <Condition Property="Selector.IsSelectionActive" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />-->
+                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                  </MultiTrigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="AutomationProperties.Name">
+          <Setter.Value>
+            <MultiBinding Converter="{local:FullSummaryConverter}">
+              <Binding />
+              <Binding RelativeSource="{RelativeSource FindAncestor,
+                                       AncestorType={x:Type local:MetadataPaneView}}"
+                                 Path="DataContext.ValidationItems"/>
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+        </Style.Setters>
+
+        <Style.Triggers>
+          <MultiTrigger>
+            <MultiTrigger.Conditions>
+              <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+              <Condition Property="IsSelected" Value="False"/>
+            </MultiTrigger.Conditions>
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+          </MultiTrigger>
+          <Trigger Property="IsSelected" Value="True">
+            <Setter Property="FontWeight" Value="Bold" />
+          </Trigger>
+        </Style.Triggers>
+     
+      </Style>
+    </ListView.ItemContainerStyle>
+
+    <ListView.View>
+      <GridView>
+
+        <UI:SortableGridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Name}"
+                        Width="130"
+                        SortPropertyName="Name"
+                                   IsDefaultSortColumn="True">
+          <GridViewColumn.CellTemplate>
+            <!-- template to decide how to display the name  -->
+            <DataTemplate>
+              <ContentPresenter x:Name="Presenter"
+                              ContentTemplate="{StaticResource ChooseNameTemplate}"
+                              Content="{Binding}"/>
+
+              <DataTemplate.Triggers>
+
+                <!-- the trigger changes the template to a fixed uneditable field -->
+                <!-- unique instances of required metadata items cannot be edited -->
+                <DataTrigger Value="False" Binding="{Binding CanEditOrDelete}">
+                  <Setter TargetName="Presenter"
+                      Property="ContentTemplate"
+                      Value="{StaticResource FixedNameTemplate}" />
+                </DataTrigger>
+              </DataTemplate.Triggers>
+
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </UI:SortableGridViewColumn>
+
+        <UI:SortableGridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Content}"
+                        Width="150"
+                        SortPropertyName="Content">
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <UI:TextBoxReadOnlyCaretVisible x:Name="contentText"
+                                              
+        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+        
+                       Text="{Binding 
+                         Mode=TwoWay, 
+                         Path=Content, 
+                         UpdateSourceTrigger=PropertyChanged}"
+                       GotFocus="OnContentGotFocus"/>
+              <!-- 
+                     MouseDown="ContentText_OnMouseDown"
+                     GotMouseCapture="OnContentTextMouseFocus"
+                     GotKeyboardFocus="OnContentTextKeyboardFocus"
+                     MouseLeftButtonDown="ContentText_OnMouseLeftButtonDown"
+                -->
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </UI:SortableGridViewColumn>
+
+        <GridViewColumn Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Errors}">
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <!-- default: show no text -->
+              <TextBlock x:Name="errorText" Text="" TextWrapping="Wrap"  MinWidth="150"/>
+
+              <DataTemplate.Triggers>
+                <DataTrigger Value="False">
+                  <DataTrigger.Binding>
+                    <!-- if there is an error -->
+                    <MultiBinding Converter="{local:ValidityConverter}">
+                      <MultiBinding.Bindings>
+                        <Binding/>
+                        <Binding RelativeSource="{RelativeSource FindAncestor, 
+                                     AncestorType={x:Type local:MetadataPaneView}}"
+                                 Path="DataContext.ValidationItems"/>
+                      </MultiBinding.Bindings>
+                    </MultiBinding>
+                  </DataTrigger.Binding>
+
+                  <!-- set the error text -->
+                  <Setter TargetName="errorText" Property="Text">
+                    <Setter.Value>
+
+                      <MultiBinding Converter="{local:DescriptiveErrorTextConverter}">
+                        <Binding/>
+                        <Binding RelativeSource="{RelativeSource FindAncestor,
+                                       AncestorType={x:Type local:MetadataPaneView}}"
+                                 Path="DataContext.ValidationItems"/>
+                      </MultiBinding>
+                    </Setter.Value>
+                  </Setter>
+
+                </DataTrigger>
+              </DataTemplate.Triggers>
+
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+
+        <GridViewColumn  Width="Auto" Header="{x:Static local:Tobi_Plugin_MetadataPane_Lang.PrimaryIdentifier}">
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <CheckBox
+                AutomationProperties.Name="{x:Static local:Tobi_Plugin_MetadataPane_Lang.PrimaryIdentifier}"
+                Visibility="{Binding Converter={local:PrimaryIdentifierConverter}}"
+                      IsChecked="{Binding IsPrimaryIdentifier, Mode=TwoWay}"/>
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+
+        <GridViewColumn  Width="Auto">
+          <GridViewColumn.CellTemplate>
+
+            <DataTemplate>
+              <Button x:Name="deleteButton" Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Delete}"
+                      Click="DeleteButton_OnClick"
+                      ToolTip="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Delete_Tooltip}"
+                      ToolTipService.ShowOnDisabled="True" />
+              <DataTemplate.Triggers>
+
+                <!-- the delete button is not enabled for required items-->
+                <DataTrigger Value="False" Binding="{Binding CanEditOrDelete}">
+                  <Setter TargetName="deleteButton" Property="IsEnabled" Value="False"/>
+                  <Setter TargetName="deleteButton" Property="ToolTip" Value="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Delete_Tooltip2}"/>
+                </DataTrigger>
+              </DataTemplate.Triggers>
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+
+      </GridView>
+    </ListView.View>
+  </UI:SortableListView2>
+
+</DockPanel>
+

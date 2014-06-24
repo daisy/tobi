@@ -1,0 +1,309 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="UrakawaPlugin_Description" xml:space="preserve">
+    <value>Contexto para abrir y guardar el modelo de datos de un proyecto de Urakawa SDK.</value>
+  </data>
+  <data name="OpenSaveAsQuestion" xml:space="preserve">
+    <value>¿Quieres abrir el proyecto guardado?</value>
+  </data>
+  <data name="OpenSaveAsQuestion_" xml:space="preserve">
+    <value>¿Abrir proyecto guardado?</value>
+  </data>
+  <data name="CmdOpenDocumentFolder_ShortDesc" xml:space="preserve">
+    <value>Proyecto A_ctual</value>
+  </data>
+  <data name="CmdOpenDocumentFolder_LongDesc" xml:space="preserve">
+    <value>Abrir explorador de archivos donde se encuentra el proyecto actual.</value>
+  </data>
+  <data name="CannotOpenLocalFile" xml:space="preserve">
+    <value>No se puede abrir el archivo.</value>
+  </data>
+  <data name="CannotOpenLocalFile_" xml:space="preserve">
+    <value>Error al abrir el archivo!</value>
+  </data>
+  <data name="ValidationIssuesConfirmExport_Title" xml:space="preserve">
+    <value>Problemas de validación</value>
+  </data>
+  <data name="ValidationIssuesConfirmExport" xml:space="preserve">
+    <value>Pulsar OK para ignorar, o CANCELAR para ver los errores.</value>
+  </data>
+  <data name="DeleteRecentFile_Short" xml:space="preserve">
+    <value>Eliminar los elementos seleccionados</value>
+  </data>
+  <data name="DeleteRecentFile_Long" xml:space="preserve">
+    <value>Quitar los elementos seleccionados de la lista de archivos recientes</value>
+  </data>
+  <data name="RecentFileName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="RecentFileLocation" xml:space="preserve">
+    <value>Ruta del archivo</value>
+  </data>
+  <data name="CmdClose_ShortDesc" xml:space="preserve">
+    <value>_Cerrar</value>
+  </data>
+  <data name="CmdClose_LongDesc" xml:space="preserve">
+    <value>Cerrar el proyecto actual</value>
+  </data>
+  <data name="CmdDataCleanup_ShortDesc" xml:space="preserve">
+    <value>_Limpiar</value>
+  </data>
+  <data name="DeleteSplitFiles" xml:space="preserve">
+    <value>Eliminar permanentemente los archivos divididos?</value>
+  </data>
+  <data name="DeleteSplitFilesConfirm" xml:space="preserve">
+    <value>Confirmar la eliminación de archivos? (no se puede deshacer)</value>
+  </data>
+  <data name="CmdDataCleanup_LongDesc" xml:space="preserve">
+    <value>Eliminar archivos de datos no utilizados por el proyecto actual</value>
+  </data>
+  <data name="CmdExport_ShortDesc" xml:space="preserve">
+    <value>_Exportar...</value>
+  </data>
+  <data name="CmdExport_LongDesc" xml:space="preserve">
+    <value>Exportar el proyecto actual ...</value>
+  </data>
+  <data name="CmdMenuClearRecentFiles_ShortDesc" xml:space="preserve">
+    <value>Limpiar _c</value>
+  </data>
+  <data name="CmdMenuClearRecentFiles_LongDesc" xml:space="preserve">
+    <value>Borrar la lista de archivos abiertos recientemente.</value>
+  </data>
+  <data name="Menu_OpenRecent" xml:space="preserve">
+    <value>Abrir reciente</value>
+  </data>
+  <data name="IsSplitMaster" xml:space="preserve">
+    <value>Esto es una división/fusión maestro, no editar!</value>
+  </data>
+  <data name="IsSplitSub" xml:space="preserve">
+    <value>Este proyecto forma parte de un división/fusión maestro (puede editarse)</value>
+  </data>
+  <data name="SplitMasterNoAudio" xml:space="preserve">
+    <value>Un punto división / fusión no puede tener audio anterior!</value>
+  </data>
+  <data name="SplitNothing" xml:space="preserve">
+    <value>Nada para dividir (por favor colocar marcadores de documento) .</value>
+  </data>
+  <data name="Menu_SplitMergeProject" xml:space="preserve">
+    <value>División/Fusión de proyecto</value>
+  </data>
+  <data name="CmdSplitProject_ShortDesc" xml:space="preserve">
+    <value>Dividir ... _s</value>
+  </data>
+  <data name="CmdSplitProject_LongDesc" xml:space="preserve">
+    <value>Dividir el proyecto principal actual en sub-proyectos ( distribuir a múltiples narradores )</value>
+  </data>
+  <data name="CmdMergeProject_ShortDesc" xml:space="preserve">
+    <value>Fusionar... _m</value>
+  </data>
+  <data name="CmdMergeProject_LongDesc" xml:space="preserve">
+    <value>Combinar varios sub- proyectos de nuevo en el proyecto principal</value>
+  </data>
+  <data name="CmdOpenRecent_ShortDesc" xml:space="preserve">
+    <value>Abrir _reciente ...</value>
+  </data>
+  <data name="CmdOpenRecent_LongDesc" xml:space="preserve">
+    <value>Abra el cuadro de diálogo de archivos recientes</value>
+  </data>
+  <data name="CmdShowXukSpine_ShortDesc" xml:space="preserve">
+    <value>Columna principal del  _Proyecto...</value>
+  </data>
+  <data name="CmdShowXukSpine_LongDesc" xml:space="preserve">
+    <value>Abrir el diálogo de la columna principal del proyecto</value>
+  </data>
+  <data name="UrakawaOpenAction_ShortDesc" xml:space="preserve">
+    <value>Abrir archivo XUK ...</value>
+  </data>
+  <data name="CmdOpen_ShortDesc" xml:space="preserve">
+    <value>Abrir _o</value>
+  </data>
+  <data name="CmdOpen_LongDesc" xml:space="preserve">
+    <value>Abrir un proyecto existente</value>
+  </data>
+  <data name="CmdImport_ShortDesc" xml:space="preserve">
+    <value>_Importar</value>
+  </data>
+  <data name="CmdImport_LongDesc" xml:space="preserve">
+    <value>Importar un documento para crear un nuevo proyecto</value>
+  </data>
+  <data name="CmdOpenConvert_ShortDesc" xml:space="preserve">
+    <value>DAISY a EPUB3</value>
+  </data>
+  <data name="CmdOpenConvert_LongDesc" xml:space="preserve">
+    <value>Conversión de DAISY a EPUB3</value>
+  </data>
+  <data name="Overwrite" xml:space="preserve">
+    <value>S_obreescribir</value>
+  </data>
+  <data name="OverwriteConfirm_File" xml:space="preserve">
+    <value>Usted está a punto de sobrescribir un archivo.
+¿Quieres continuar?</value>
+  </data>
+  <data name="OverwriteConfirm_Folder" xml:space="preserve">
+    <value>Usted está a punto de sobrescribir una carpeta.
+¿Quieres continuar?</value>
+  </data>
+  <data name="ProjectAudioFormat" xml:space="preserve">
+    <value>Formato del audio del Proyecto</value>
+  </data>
+  <data name="ExportSettings" xml:space="preserve">
+    <value>Exportar configuración</value>
+  </data>
+  <data name="ExportIncludeImageDescriptions" xml:space="preserve">
+    <value>Incluir / fusionar descripciones de las imágenes :</value>
+  </data>
+  <data name="ExportGenerateSmilNotes" xml:space="preserve">
+    <value>Generar las notas de referencias SMIL :</value>
+  </data>
+  <data name="ExportEncodeMp3" xml:space="preserve">
+    <value>Codificar MP3:</value>
+  </data>
+  <data name="Stereo" xml:space="preserve">
+    <value>Estéreo:</value>
+  </data>
+  <data name="UseSourceAudioFormatTip" xml:space="preserve">
+    <value>Si la fuente importada es un libro con una narración existente, su formato de audio original se puede conservar seleccionando el cuadro de arriba.</value>
+  </data>
+  <data name="UseSourceAudioFormat" xml:space="preserve">
+    <value>Conservar formato de audio de origen:</value>
+  </data>
+  <data name="UrakawaOpenAction_LongDesc" xml:space="preserve">
+    <value>Analizar el contenido XML del archivo XUK ...</value>
+  </data>
+  <data name="CmdRedo_ShortDesc" xml:space="preserve">
+    <value>_Rehacer</value>
+  </data>
+  <data name="CmdRedo_LongDesc" xml:space="preserve">
+    <value>Ejecutar la última acción que se deshizo</value>
+  </data>
+  <data name="RunningTask" xml:space="preserve">
+    <value>Por favor , espere ...</value>
+  </data>
+  <data name="CmdSave_ShortDesc" xml:space="preserve">
+    <value>Guardar _s</value>
+  </data>
+  <data name="CmdSaveAs_ShortDesc" xml:space="preserve">
+    <value>Guard_ar como ...</value>
+  </data>
+  <data name="CmdSaveAs_LongDesc" xml:space="preserve">
+    <value>Guardar el proyecto actual como ...</value>
+  </data>
+  <data name="CmdSave_LongDesc" xml:space="preserve">
+    <value>Guardar el proyecto actual</value>
+  </data>
+  <data name="CmdUndo_ShortDesc" xml:space="preserve">
+    <value>Deshacer _u</value>
+  </data>
+  <data name="CmdUndo_LongDesc" xml:space="preserve">
+    <value>Deshacer  última acción</value>
+  </data>
+  <data name="UnsavedChanges" xml:space="preserve">
+    <value>Guardar Ante_s del cierre</value>
+  </data>
+  <data name="UnsavedChangesConfirm" xml:space="preserve">
+    <value>Hay cambios sin guardar.
+¿Quieres guardar el proyecto ahora?</value>
+  </data>
+  <data name="UnsavedChangesDetails" xml:space="preserve">
+    <value>Si cierra el proyecto sin guardar ,
+Los cambios se perderán !</value>
+  </data>
+  <data name="UrakawaPlugin_Name" xml:space="preserve">
+    <value>gestor de sesión Urakawa SDK.</value>
+  </data>
+  <data name="Importing" xml:space="preserve">
+    <value>Importando ...</value>
+  </data>
+  <data name="Exporting" xml:space="preserve">
+    <value>Exportando ...</value>
+  </data>
+  <data name="CleaningUpDataFiles" xml:space="preserve">
+    <value>Limpiando de los archivos de datos...</value>
+  </data>
+  <data name="CopyingDataFiles" xml:space="preserve">
+    <value>Copiando de información de los archivos...</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Guardado.</value>
+  </data>
+  <data name="UrakawaSaveAction_ShortDesc" xml:space="preserve">
+    <value>Guardando archivo XUK ...</value>
+  </data>
+  <data name="UrakawaSaveAction_LongDesc" xml:space="preserve">
+    <value>Guardando el proyecto como XML (archivo XUK ) ...</value>
+  </data>
+  <data name="UrakawaSession_OpenFile" xml:space="preserve">
+    <value>Abrir el archivo</value>
+  </data>
+  <data name="UrakawaSession_SavePath" xml:space="preserve">
+    <value>Ruta del archivo : { 0 }</value>
+  </data>
+  <data name="WarningFilePathLength_Title" xml:space="preserve">
+    <value>Ruta de archivo demasiado larga!</value>
+  </data>
+  <data name="WarningFilePathLength" xml:space="preserve">
+    <value>Por favor, elija una ruta de acceso más corta ({ 0 } caracteres como máximo).</value>
+  </data>
+  <data name="PleaseUpgradePipeline" xml:space="preserve">
+    <value>Por favor, instale la última versión Pipeline2</value>
+  </data>
+</root>

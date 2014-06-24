@@ -1,0 +1,32 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
+  <Settings>
+    <Setting Name="WindowShellRightToLeft" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="EnableMediaKit" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SearchHits_Color" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF99FF66</Value>
+    </Setting>
+    <Setting Name="EnableAudioCues" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="WpfSoftwareRender" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="TextAudioSyncGranularity" Type="System.String" Scope="User">
+      <Value Profile="(Default)">video,audio,math,svg,img,caption,doctitle,docauthor,pagenum,hd,h1,h2,h3,h4,h5,h6,p,lic,li,dd,dt,quote,td,th,a,sent,span,</Value>
+    </Setting>
+    <Setting Name="EnableTextSyncGranularity" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="UpgradeSettings" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
