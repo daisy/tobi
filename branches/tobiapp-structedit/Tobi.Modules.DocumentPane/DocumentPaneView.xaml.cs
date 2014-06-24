@@ -817,6 +817,10 @@ namespace Tobi.Plugin.DocumentPane
 
         public RichDelegateCommand CommandEditText { get; private set; }
 
+        public RichDelegateCommand CommandStructRemoveFragment { get; private set; }
+        public RichDelegateCommand CommandStructCutFragment { get; private set; }
+        public RichDelegateCommand CommandStructPasteFragment { get; private set; }
+
         public RichDelegateCommand CommandFollowLink { get; private set; }
         public RichDelegateCommand CommandUnFollowLink { get; private set; }
 
@@ -1205,6 +1209,108 @@ namespace Tobi.Plugin.DocumentPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_UnfollowLink));
 
             m_ShellView.RegisterRichCommand(CommandUnFollowLink);
+
+            //
+
+            CommandStructCutFragment = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditCutFragment_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditCutFragment_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    if (node == null) return;
+
+                    //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+                    //var cmd = node.Presentation.CommandFactory.CreateTreeNodeCutCommand(node);
+                    //node.Presentation.UndoRedoManager.Execute(cmd);
+                },
+                () =>
+                {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
+                    if (m_UrakawaSession.isAudioRecording) return false;
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    return node != null;
+                },
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditCutFragment)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandStructCutFragment);
+
+            //
+
+            CommandStructPasteFragment = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditPasteFragment_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditPasteFragment_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    if (node == null) return;
+
+                    //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+                    //var cmd = node.Presentation.CommandFactory.CreateTreeNodePasteCommand(node);
+                    //node.Presentation.UndoRedoManager.Execute(cmd);
+                },
+                () =>
+                {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
+                    if (m_UrakawaSession.isAudioRecording) return false;
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    return node != null;
+                },
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditPasteFragment)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandStructPasteFragment);
+
+            //
+
+            CommandStructRemoveFragment = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditRemoveFragment_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditRemoveFragment_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    if (node == null) return;
+
+                    //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+                    var cmd = node.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
+                    node.Presentation.UndoRedoManager.Execute(cmd);
+                },
+                () =>
+                {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
+                    if (m_UrakawaSession.isAudioRecording) return false;
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    return node != null;
+                },
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditRemoveFragment)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandStructRemoveFragment);
 
             //
             //

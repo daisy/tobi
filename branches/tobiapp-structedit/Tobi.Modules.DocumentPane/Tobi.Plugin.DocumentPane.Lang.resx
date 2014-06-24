@@ -147,6 +147,28 @@
   <data name="TextOnly" xml:space="preserve">
     <value>Single phrase</value>
   </data>
+
+  <data name="CmdStructEditRemoveFragment_ShortDesc" xml:space="preserve">
+    <value>Remove node</value>
+  </data>
+  <data name="CmdStructEditRemoveFragment_LongDesc" xml:space="preserve">
+    <value>Delete document fragment</value>
+  </data>
+
+  <data name="CmdStructEditCutFragment_ShortDesc" xml:space="preserve">
+    <value>Cut node</value>
+  </data>
+  <data name="CmdStructEditCutFragment_LongDesc" xml:space="preserve">
+    <value>Delete document fragment and save in clipboard</value>
+  </data>
+
+  <data name="CmdStructEditPasteFragment_ShortDesc" xml:space="preserve">
+    <value>Paste node</value>
+  </data>
+  <data name="CmdStructEditPasteFragment_LongDesc" xml:space="preserve">
+    <value>Paste document fragment from clipboard</value>
+  </data>
+  
   <data name="CmdEditText_ShortDesc" xml:space="preserve">
     <value>Edit _text</value>
   </data>
