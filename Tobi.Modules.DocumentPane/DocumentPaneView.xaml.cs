@@ -2403,6 +2403,18 @@ namespace Tobi.Plugin.DocumentPane
                                     (Tuple<DependencyObject, ListItem, ListItem>)((TreeNodeRemoveCommand)cmd).Tag;
                                 parent = data.Item1;
                             }
+                            else if (((TreeNodeRemoveCommand)cmd).Tag is Tuple<DependencyObject, Inline, Inline>)
+                            {
+                                Tuple<DependencyObject, Inline, Inline> data =
+                                    (Tuple<DependencyObject, Inline, Inline>)((TreeNodeRemoveCommand)cmd).Tag;
+                                parent = data.Item1;
+                            }
+                            else if (((TreeNodeRemoveCommand)cmd).Tag is Tuple<DependencyObject, Block, Block>)
+                            {
+                                Tuple<DependencyObject, Block, Block> data =
+                                    (Tuple<DependencyObject, Block, Block>)((TreeNodeRemoveCommand)cmd).Tag;
+                                parent = data.Item1;
+                            }
                             else
                             {
 #if DEBUG
