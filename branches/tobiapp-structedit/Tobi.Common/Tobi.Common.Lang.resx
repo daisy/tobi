@@ -199,7 +199,7 @@
     <value>_Text</value>
   </data>
   <data name="Menu_StructureEdit" xml:space="preserve">
-    <value>_Structure editing</value>
+    <value>Edit _structure</value>
   </data>
   <data name="Menu_BrowseFolder" xml:space="preserve">
     <value>_Browse folder</value>
