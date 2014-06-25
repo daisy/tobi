@@ -253,6 +253,12 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="CmdOpenConvert_LongDesc" xml:space="preserve">
     <value>Convert from DAISY to EPUB3</value>
   </data>
+  <data name="CmdImportDocx_ShortDesc" xml:space="preserve">
+    <value>MS-Word to DAISY</value>
+  </data>
+  <data name="CmdImportDocx_LongDesc" xml:space="preserve">
+    <value>Start a DAISY project from an MS Word document (*.docx file, WordML / OpenXML)</value>
+  </data>
   <data name="Overwrite" xml:space="preserve">
     <value>_Overwrite</value>
   </data>
