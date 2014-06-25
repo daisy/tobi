@@ -1293,8 +1293,24 @@ namespace Tobi.Plugin.DocumentPane
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
 
+                    var previous = node.GetPreviousSiblingWithText();
+                    var next = node.GetNextSiblingWithText();
+
                     var cmd = node.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
                     node.Presentation.UndoRedoManager.Execute(cmd);
+
+                    if (previous != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(previous);
+                    }
+                    else if (next != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(next);
+                    }
+                    else
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(node.Presentation.RootNode);
+                    }
                 },
                 () =>
                 {
@@ -1304,7 +1320,7 @@ namespace Tobi.Plugin.DocumentPane
 
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
-                    return node != null;
+                    return node != null && node.Parent != null;
                 },
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditRemoveFragment)
@@ -2353,6 +2369,255 @@ namespace Tobi.Plugin.DocumentPane
             DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
 
             Command cmd = eventt.Command;
+
+            if (cmd is TreeNodeRemoveCommand)
+            {
+                if (((TreeNodeRemoveCommand)cmd).TreeNode.Tag is TextElement)
+                {
+                    var txtElem = (TextElement) ((TreeNodeRemoveCommand) cmd).TreeNode.Tag;
+                    var parent = txtElem.Parent;
+                    if (done)
+                    {
+                        DebugFix.Assert(parent != null);
+                    }
+                    else
+                    {
+                        DebugFix.Assert(parent == null);
+                    }
+
+
+
+                    if (txtElem is TableRow)
+                    {
+                        if (parent is TableRowGroup)
+                        {
+                            if (((TableRowGroup)parent).Rows.Contains((TableRow)txtElem))
+                            {
+                                ((TableRowGroup)parent).Rows.Remove((TableRow)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
+                    }
+                    else if (txtElem is TableCell)
+                    {
+                        if (parent is TableRow)
+                        {
+                            if (((TableRow)parent).Cells.Contains((TableCell)txtElem))
+                            {
+                                ((TableRow)parent).Cells.Remove((TableCell)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
+                    }
+                    else if (txtElem is TableRowGroup)
+                    {
+                        if (parent is Table)
+                        {
+                            if (((Table)parent).RowGroups.Contains((TableRowGroup)txtElem))
+                            {
+                                ((Table)parent).RowGroups.Remove((TableRowGroup)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
+                    }
+                    else if (txtElem is ListItem)
+                    {
+                        if (parent is List)
+                        {
+                            if (((List)parent).ListItems.Contains((ListItem)txtElem))
+                            {
+                                ((List)parent).ListItems.Remove((ListItem)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
+                    }
+                    else if (txtElem is Inline)
+                    {
+                        if (parent is Paragraph)
+                        {
+                            if (((Paragraph) parent).Inlines.Contains((Inline)txtElem))
+                            {
+                                ((Paragraph)parent).Inlines.Remove((Inline)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else if (parent is Span)
+                        {
+                            if (((Span)parent).Inlines.Contains((Inline)txtElem))
+                            {
+                                ((Span)parent).Inlines.Remove((Inline)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else if (parent is TextBlock)
+                        {
+                            if (((TextBlock)parent).Inlines.Contains((Inline)txtElem))
+                            {
+                                ((TextBlock)parent).Inlines.Remove((Inline)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
+                    }
+                    else if (txtElem is Block)
+                    {
+                        if (parent is FlowDocument)
+                        {
+                            if (((FlowDocument)parent).Blocks.Contains((Block)txtElem))
+                            {
+                                ((FlowDocument)parent).Blocks.Remove((Block)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else if (parent is Section)
+                        {
+                            if (((Section)parent).Blocks.Contains((Block)txtElem))
+                            {
+                                ((Section)parent).Blocks.Remove((Block)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else if (parent is ListItem)
+                        {
+                            if (((ListItem)parent).Blocks.Contains((Block)txtElem))
+                            {
+                                ((ListItem)parent).Blocks.Remove((Block)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else if (parent is TableCell)
+                        {
+                            if (((TableCell)parent).Blocks.Contains((Block)txtElem))
+                            {
+                                ((TableCell)parent).Blocks.Remove((Block)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else if (parent is Floater)
+                        {
+                            if (((Floater)parent).Blocks.Contains((Block)txtElem))
+                            {
+                                ((Floater)parent).Blocks.Remove((Block)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else if (parent is Figure)
+                        {
+                            if (((Figure)parent).Blocks.Contains((Block)txtElem))
+                            {
+                                ((Figure)parent).Blocks.Remove((Block)txtElem);
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+                        }
+                        else
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+            }
 
             findAndUpdateTreeNodeAudioTextStatus(cmd, done);
         }
