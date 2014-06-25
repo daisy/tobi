@@ -295,7 +295,7 @@ namespace Tobi.Common {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Structure editing.
+        ///   Looks up a localized string similar to Edit _structure.
         /// </summary>
         public static string Menu_StructureEdit {
             get {
