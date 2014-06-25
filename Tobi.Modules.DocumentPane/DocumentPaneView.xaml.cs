@@ -2632,13 +2632,43 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             if (done && ((Span)parent).Inlines.Contains((Inline)txtElem))
                             {
-                                ((Tuple<TextElement, int>)((TreeNodeRemoveCommand)cmd).Tag).Item2 =
-                                    ((Span)parent).Inlines.IndexOf((Inline)txtElem);
+                                ((TreeNodeRemoveCommand)cmd).Tag = new Tuple<TextElement, Inline, Inline>(parent, null, null);
+
+                                if (((Inline)txtElem).PreviousInline != null)
+                                {
+                                    //inlineAfter
+                                    ((Tuple<TextElement, Inline, Inline>)((TreeNodeRemoveCommand)cmd).Tag).Item2 =
+                                        ((Inline)txtElem).PreviousInline;
+                                }
+                                else if (((Inline)txtElem).NextInline != null)
+                                {
+                                    //inlineBefore
+                                    ((Tuple<TextElement, Inline, Inline>)((TreeNodeRemoveCommand)cmd).Tag).Item3 =
+                                        ((Inline)txtElem).NextInline;
+                                }
+
                                 ((Span)parent).Inlines.Remove((Inline)txtElem);
                             }
                             else if (!done)
                             {
-                                ((Span)parent).Inlines.Add((Inline)txtElem);
+                                var inlineAfter =
+                                    ((Tuple<TextElement, Inline, Inline>)((TreeNodeRemoveCommand)cmd).Tag).Item2;
+
+                                var inlineBefore =
+                                    ((Tuple<TextElement, Inline, Inline>)((TreeNodeRemoveCommand)cmd).Tag).Item3;
+
+                                if (inlineAfter != null)
+                                {
+                                    ((Span)parent).Inlines.InsertAfter(inlineAfter, (Inline)txtElem);
+                                }
+                                else if (inlineBefore != null)
+                                {
+                                    ((Span)parent).Inlines.InsertBefore(inlineBefore, (Inline)txtElem);
+                                }
+                                else
+                                {
+                                    ((Span)parent).Inlines.Add((Inline)txtElem);
+                                }
                             }
                             else
                             {
@@ -2651,13 +2681,43 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             if (done && ((TextBlock)parent).Inlines.Contains((Inline)txtElem))
                             {
-                                ((Tuple<TextElement, int>)((TreeNodeRemoveCommand)cmd).Tag).Item2 =
-                                    ((TextBlock)parent).Inlines.IndexOf((Inline)txtElem);
+                                ((TreeNodeRemoveCommand)cmd).Tag = new Tuple<TextElement, Inline, Inline>(parent, null, null);
+
+                                if (((Inline)txtElem).PreviousInline != null)
+                                {
+                                    //inlineAfter
+                                    ((Tuple<TextElement, Inline, Inline>)((TreeNodeRemoveCommand)cmd).Tag).Item2 =
+                                        ((Inline)txtElem).PreviousInline;
+                                }
+                                else if (((Inline)txtElem).NextInline != null)
+                                {
+                                    //inlineBefore
+                                    ((Tuple<TextElement, Inline, Inline>)((TreeNodeRemoveCommand)cmd).Tag).Item3 =
+                                        ((Inline)txtElem).NextInline;
+                                }
+
                                 ((TextBlock)parent).Inlines.Remove((Inline)txtElem);
                             }
                             else if (!done)
                             {
-                                ((TextBlock)parent).Inlines.Add((Inline)txtElem);
+                                var inlineAfter =
+                                    ((Tuple<TextElement, Inline, Inline>)((TreeNodeRemoveCommand)cmd).Tag).Item2;
+
+                                var inlineBefore =
+                                    ((Tuple<TextElement, Inline, Inline>)((TreeNodeRemoveCommand)cmd).Tag).Item3;
+
+                                if (inlineAfter != null)
+                                {
+                                    ((TextBlock)parent).Inlines.InsertAfter(inlineAfter, (Inline)txtElem);
+                                }
+                                else if (inlineBefore != null)
+                                {
+                                    ((TextBlock)parent).Inlines.InsertBefore(inlineBefore, (Inline)txtElem);
+                                }
+                                else
+                                {
+                                    ((TextBlock)parent).Inlines.Add((Inline)txtElem);
+                                }
                             }
                             else
                             {
@@ -2679,13 +2739,43 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             if (done && ((FlowDocument)parent).Blocks.Contains((Block)txtElem))
                             {
-                                ((Tuple<TextElement, int>)((TreeNodeRemoveCommand)cmd).Tag).Item2 =
-                                    ((FlowDocument)parent).Blocks.IndexOf((Block)txtElem);
+                                ((TreeNodeRemoveCommand)cmd).Tag = new Tuple<TextElement, Block, Block>(parent, null, null);
+
+                                if (((Block)txtElem).PreviousBlock != null)
+                                {
+                                    //blockAfter
+                                    ((Tuple<TextElement, Block, Block>)((TreeNodeRemoveCommand)cmd).Tag).Item2 =
+                                        ((Block)txtElem).PreviousBlock;
+                                }
+                                else if (((Block)txtElem).NextBlock != null)
+                                {
+                                    //blockBefore
+                                    ((Tuple<TextElement, Block, Block>)((TreeNodeRemoveCommand)cmd).Tag).Item3 =
+                                        ((Block)txtElem).NextBlock;
+                                }
+
                                 ((FlowDocument)parent).Blocks.Remove((Block)txtElem);
                             }
                             else if (!done)
                             {
-                                ((FlowDocument)parent).Blocks.Add((Block)txtElem);
+                                var blockAfter =
+                                    ((Tuple<TextElement, Block, Block>)((TreeNodeRemoveCommand)cmd).Tag).Item2;
+
+                                var blockBefore =
+                                    ((Tuple<TextElement, Block, Block>)((TreeNodeRemoveCommand)cmd).Tag).Item3;
+
+                                if (blockAfter != null)
+                                {
+                                    ((FlowDocument)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
+                                }
+                                else if (blockBefore != null)
+                                {
+                                    ((FlowDocument)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
+                                }
+                                else
+                                {
+                                    ((FlowDocument)parent).Blocks.Add((Block)txtElem);
+                                }
                             }
                             else
                             {
