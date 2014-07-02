@@ -430,6 +430,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export full EPUB.
+        /// </summary>
+        public static string ExportFullEpub {
+            get {
+                return ResourceManager.GetString("ExportFullEpub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generate SMIL note references: .
         /// </summary>
         public static string ExportGenerateSmilNotes {
@@ -547,6 +556,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to EPUB merge.
+        /// </summary>
+        public static string MergeEPUB {
+            get {
+                return ResourceManager.GetString("MergeEPUB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None of this EPUB project&apos;s spine items seem to have been split + merged..
         /// </summary>
         public static string MergeEpubNoParts {
@@ -570,6 +588,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string OpenSaveAsQuestion_ {
             get {
                 return ResourceManager.GetString("OpenSaveAsQuestion_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open EPUB spine.
+        /// </summary>
+        public static string OpenSpine {
+            get {
+                return ResourceManager.GetString("OpenSpine", resourceCulture);
             }
         }
         
@@ -653,6 +680,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string Saved {
             get {
                 return ResourceManager.GetString("Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string Size {
+            get {
+                return ResourceManager.GetString("Size", resourceCulture);
             }
         }
         

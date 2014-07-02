@@ -34,13 +34,17 @@ namespace Tobi.Plugin.Urakawa
 
         public readonly XukSpineItemData Data;
 
-        public XukSpineItemWrapper(XukSpineItemData data)
+        public XukSpineItemWrapper(XukSpineItemData data, int index)
         {
             Data = data;
+            Index = index;
 
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
         }
+
+
+        public int Index { get; private set; }
 
         //public bool CheckFileExists()
         //{
@@ -68,7 +72,7 @@ namespace Tobi.Plugin.Urakawa
                 //{
                 //    str = "[" + Tobi_Common_Lang.NotFound + "] " + str;
                 //}
-                return ShortDescription + " -- " + FilePath;
+                return "#" + Index + " " + ShortDescription + " [" + Size + "kB] (" + FileName + ") -- " + FilePath;
             }
         }
 
@@ -85,17 +89,46 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
+        public decimal Size
+        {
+            get
+            {
+                decimal size = 0;
+
+                string path = FilePath;
+
+                try
+                {
+                    var file = new FileInfo(path);
+                    decimal kB = file.Length / (decimal)(1024.0); // * 1024.0
+                    size = Math.Round(kB, 2, MidpointRounding.ToEven);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
+
+                return size;
+            }
+        }
+
+        public string FileName
+        {
+            get { return Path.GetFileName(FilePath).Replace(".xuk", ""); }
+        }
+
         public string ShortDescription
         {
             get
             {
                 if (!string.IsNullOrEmpty(Data.Title))
                 {
-                    return Data.Title + " (" + Path.GetFileName(FilePath).Replace(".xuk", "") + ")";
+                    return Data.Title; // + " (" + Path.GetFileName(FilePath).Replace(".xuk", "") + ")";
                 }
                 else
                 {
-                    return Path.GetFileName(FilePath);
+                    return FileName; //Path.GetFileName(FilePath);
                 }
             }
         }
@@ -318,7 +351,7 @@ namespace Tobi.Plugin.Urakawa
             //foreach (var fileUri in m_Session.XukSpineItems)
             {
                 XukSpineItemData data = m_Session.XukSpineItems[i];
-                XukSpineItems.Add(new XukSpineItemWrapper(data));
+                XukSpineItems.Add(new XukSpineItemWrapper(data, i));
             }
         }
 
@@ -636,6 +669,16 @@ namespace Tobi.Plugin.Urakawa
         private void OnExportClick(object sender, RoutedEventArgs e)
         {
             OwnerWindow.ForceClose(PopupModalWindow.DialogButton.Apply);
+        }
+
+        private void OnMergeClick(object sender, RoutedEventArgs e)
+        {
+            OwnerWindow.ForceClose(PopupModalWindow.DialogButton.Close);
+        }
+
+        private void OnSpineClick(object sender, RoutedEventArgs e)
+        {
+            OwnerWindow.ForceClose(PopupModalWindow.DialogButton.No);
         }
     }
 }
