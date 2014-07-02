@@ -105,7 +105,7 @@ namespace Tobi.Plugin.Urakawa
                                                            view,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           true, 350, 500, null, 0, null);
+                                                           true, 800, 700, null, 0, null);
                     //view.OwnerWindow = windowPopup;
 
                     windowPopup.EnableEnterKeyDefault = true;
@@ -147,6 +147,52 @@ namespace Tobi.Plugin.Urakawa
                         if (opened)
                         {
                             ExportCommand.Execute();
+                        }
+                    }
+                    else if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Close)
+                    {
+                        // IsXukSpine ? DocumentFilePath : XukSpineProjectPath
+
+                        bool opened = true;
+                        if (!IsXukSpine)
+                        {
+                            opened = false;
+                            try
+                            {
+                                opened = OpenFile(XukSpineProjectPath, false);
+                            }
+                            catch (Exception ex)
+                            {
+                                ExceptionHandler.Handle(ex, false, m_ShellView);
+                            }
+                        }
+
+                        if (opened)
+                        {
+                            MergeProjectCommand.Execute();
+                        }
+                    }
+                    else if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.No)
+                    {
+                        // IsXukSpine ? DocumentFilePath : XukSpineProjectPath
+
+                        bool opened = true;
+                        if (!IsXukSpine)
+                        {
+                            opened = false;
+                            try
+                            {
+                                opened = OpenFile(XukSpineProjectPath, false);
+                            }
+                            catch (Exception ex)
+                            {
+                                ExceptionHandler.Handle(ex, false, m_ShellView);
+                            }
+                        }
+
+                        if (opened)
+                        {
+                            //noop
                         }
                     }
                 },
