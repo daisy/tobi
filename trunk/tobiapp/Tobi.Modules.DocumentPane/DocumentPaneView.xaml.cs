@@ -422,27 +422,28 @@ namespace Tobi.Plugin.DocumentPane
                     m_SearchCurrentIndex = -1;
                 }
 
-                if (FlowDocReader.Selection == null)
+                TextRange selectionBackup = null;
+                if (FlowDocReader.Selection != null)
                 {
-                    return;
+                    selectionBackup = new TextRange(FlowDocReader.Selection.Start, FlowDocReader.Selection.End);
                 }
-                var selectionBackup = new TextRange(FlowDocReader.Selection.Start, FlowDocReader.Selection.End);
+
 
                 AnnotationService service = AnnotationService.GetService(FlowDocReader);
 
-                if (service == null || !service.IsEnabled)
+                if (service != null && service.IsEnabled)
                 {
-                    return;
+                    foreach (var annotation in service.Store.GetAnnotations())
+                    {
+                        service.Store.DeleteAnnotation(annotation.Id);
+                    }
+
+                    service.Store.Flush();
                 }
 
                 //FlowDocReader.Selection.Select(FlowDocReader.Document.ContentStart,
                 //                               FlowDocReader.Document.ContentEnd);
                 //AnnotationHelper.ClearHighlightsForSelection(service);
-
-                foreach (var annotation in service.Store.GetAnnotations())
-                {
-                    service.Store.DeleteAnnotation(annotation.Id);
-                }
 
                 if (string.IsNullOrEmpty(m_SearchTerm) || m_SearchTerm.Length < 2)
                 {
@@ -473,11 +474,21 @@ namespace Tobi.Plugin.DocumentPane
 
                 foreach (var textRange in m_SearchMatches)
                 {
-                    FlowDocReader.Selection.Select(textRange.Start, textRange.End);
-                    AnnotationHelper.CreateHighlightForSelection(service, "Tobi search hits", brush);
+                    if (FlowDocReader.Selection != null)
+                    {
+                        FlowDocReader.Selection.Select(textRange.Start, textRange.End);
+                    }
+
+                    if (service != null && service.IsEnabled)
+                    {
+                        AnnotationHelper.CreateHighlightForSelection(service, "Tobi search hits", brush);
+                    }
                 }
 
-                FlowDocReader.Selection.Select(selectionBackup.Start, selectionBackup.End);
+                if (FlowDocReader.Selection != null && selectionBackup != null)
+                {
+                    FlowDocReader.Selection.Select(selectionBackup.Start, selectionBackup.End);
+                }
             }
         }
 
@@ -531,7 +542,7 @@ namespace Tobi.Plugin.DocumentPane
         private TextElement FindPreviousNext(bool previous, bool select)
         {
             if (string.IsNullOrEmpty(SearchTerm)) return null;
-            
+
             if (m_UrakawaSession.isAudioRecording)
             {
                 return null;
@@ -563,6 +574,11 @@ namespace Tobi.Plugin.DocumentPane
                     textPointer = TheFlowDocument.ContentStart;
                 }
                 //m_FindAndReplaceManager.CurrentPosition = textPointer;
+
+                if (FlowDocReader.Selection != null && !FlowDocReader.Selection.IsEmpty)
+                {
+                    textPointer = !previous ? FlowDocReader.Selection.End : FlowDocReader.Selection.Start;
+                }
 
                 int position = -1;
                 if (previous)
@@ -652,7 +668,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 if (FlowDocReader.Selection != null)
                 {
-                    if (select && !Settings.Default.Document_EnableInstantSearch)
+                    if (select) // && !Settings.Default.Document_EnableInstantSearch)
                     {
                         FlowDocReader.Selection.Select(hit.Start, hit.End);
 
@@ -673,7 +689,7 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             if (!m_UrakawaSession.isAudioRecording)
                             {
-                                m_UrakawaSession.PerformTreeNodeSelection((TreeNode) textElement.Tag);
+                                m_UrakawaSession.PerformTreeNodeSelection((TreeNode)textElement.Tag);
                             }
                         }
                         else
@@ -2109,10 +2125,9 @@ namespace Tobi.Plugin.DocumentPane
             return m_PathToTreeNode;
         }
 
+        // NEEDED for Settings.Default.Document_EnableInstantSearch
         private void annotationsOff()
         {
-            return;
-
             AnnotationService service = AnnotationService.GetService(FlowDocReader);
 
             if (service != null && service.IsEnabled)
@@ -2129,10 +2144,9 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        // NEEDED for Settings.Default.Document_EnableInstantSearch
         private void annotationsOn()
         {
-            return;
-
             AnnotationService service = AnnotationService.GetService(FlowDocReader);
             if (service != null && service.IsEnabled)
             {
@@ -2839,7 +2853,7 @@ namespace Tobi.Plugin.DocumentPane
                 double height = bottom - top;
                 if (width <= 0 || height <= 0)
                 {
-                    Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action) (textElement.BringIntoView));
+                    Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(textElement.BringIntoView));
                     return;
                 }
                 var rectBoundingBox = new Rect(left, top, width, height);
@@ -2865,7 +2879,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 double offsetToTop = boxTopRelativeToDoc;
                 double offsetToCenter = boxTopRelativeToDoc -
-                                        (FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height)/2;
+                                        (FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height) / 2;
                 double offsetToBottom = offsetToTop + FlowDocReader.ScrollViewer.ViewportHeight - rectBoundingBox.Height;
 
                 if (rectBoundingBox.Height > FlowDocReader.ScrollViewer.ViewportHeight)
@@ -2885,13 +2899,13 @@ namespace Tobi.Plugin.DocumentPane
                 }
 
                 Dispatcher.BeginInvoke(DispatcherPriority.Background,
-                    (Action) (() => FlowDocReader.ScrollViewer.ScrollToVerticalOffset(offset)));
+                    (Action)(() => FlowDocReader.ScrollViewer.ScrollToVerticalOffset(offset)));
             }
             catch (Exception ex)
             {
                 // TextPointer API?
 #if DEBUG
-                    Debugger.Break();
+                Debugger.Break();
 #endif
             }
         }
