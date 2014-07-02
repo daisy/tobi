@@ -7,6 +7,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using urakawa.command;
 using urakawa.ExternalFiles;
 using Microsoft.Practices.Unity;
 using urakawa.property.xml;
@@ -192,7 +193,7 @@ namespace Tobi.Plugin.Urakawa
 
                         if (opened)
                         {
-                            //noop
+                            ShowXukSpineCommand.Execute();
                         }
                     }
                 },
