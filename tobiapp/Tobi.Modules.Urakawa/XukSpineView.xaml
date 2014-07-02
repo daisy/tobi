@@ -66,12 +66,11 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
     </Border>
 
   
-  <Button Margin="0,2,0,2" DockPanel.Dock="Bottom" Content="{x:Static Urakawa:Tobi_Plugin_Urakawa_Lang.MergeEPUB}" Click="OnMergeClick"></Button>
-  
   <Button Margin="0,2,0,2" DockPanel.Dock="Bottom" Content="{x:Static Urakawa:Tobi_Plugin_Urakawa_Lang.OpenSpine}" Click="OnSpineClick"></Button>
   
   <Button Margin="0,2,0,2" DockPanel.Dock="Bottom" Content="{x:Static Urakawa:Tobi_Plugin_Urakawa_Lang.ExportFullEpub}" Click="OnExportClick"></Button>
   
+  <Button Margin="0,2,0,2" DockPanel.Dock="Bottom" Content="{x:Static Urakawa:Tobi_Plugin_Urakawa_Lang.MergeEPUB}" Click="OnMergeClick"></Button>
   
     <!--"{Binding Source={StaticResource sortedSettings}}"-->
     <UI:SortableListView2
