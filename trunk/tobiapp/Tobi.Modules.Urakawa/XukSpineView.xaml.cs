@@ -680,5 +680,10 @@ namespace Tobi.Plugin.Urakawa
         {
             OwnerWindow.ForceClose(PopupModalWindow.DialogButton.No);
         }
+
+        public bool IsSpine
+        {
+            get { return m_Session.IsXukSpine; }
+        }
     }
 }
