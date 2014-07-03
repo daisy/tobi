@@ -220,6 +220,12 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="CmdSplitProject_LongDesc" xml:space="preserve">
     <value>Divide the current master project into sub-projects (distribute to multiple narrators)</value>
   </data>
+  <data name="ShowMerged" xml:space="preserve">
+    <value>Show merged spine items</value>
+  </data>
+  <data name="Merged" xml:space="preserve">
+    <value>MERGED</value>
+  </data>
   <data name="MergeEPUB" xml:space="preserve">
     <value>Merge full EPUB</value>
   </data>

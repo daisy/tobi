@@ -556,6 +556,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MERGED.
+        /// </summary>
+        public static string Merged {
+            get {
+                return ResourceManager.GetString("Merged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merge full EPUB.
         /// </summary>
         public static string MergeEPUB {
@@ -689,6 +698,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string Saved {
             get {
                 return ResourceManager.GetString("Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show merged spine items.
+        /// </summary>
+        public static string ShowMerged {
+            get {
+                return ResourceManager.GetString("ShowMerged", resourceCulture);
             }
         }
         
