@@ -223,6 +223,9 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="MergeEPUB" xml:space="preserve">
     <value>EPUB merge</value>
   </data>
+  <data name="MergeEPUB_Finished" xml:space="preserve">
+    <value>Note: this is the final merged EPUB (separate folder)</value>
+  </data>
   <data name="CmdMergeProject_ShortDesc" xml:space="preserve">
     <value>_Merge...</value>
   </data>
