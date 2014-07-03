@@ -33,11 +33,13 @@ namespace Tobi.Plugin.Urakawa
         //}
 
         public readonly XukSpineItemData Data;
+        private readonly XukSpineView View;
 
-        public XukSpineItemWrapper(XukSpineItemData data, int index)
+        public XukSpineItemWrapper(XukSpineItemData data, int index, XukSpineView view)
         {
             Data = data;
             Index = index;
+            View = view;
 
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
@@ -63,6 +65,7 @@ namespace Tobi.Plugin.Urakawa
         //}
 
         //[NotifyDependsOn("Uri")]
+        [NotifyDependsOn("FilePath")]
         public string FullDescription
         {
             get
@@ -72,10 +75,13 @@ namespace Tobi.Plugin.Urakawa
                 //{
                 //    str = "[" + Tobi_Common_Lang.NotFound + "] " + str;
                 //}
-                return "#" + Index + " " + ShortDescription + " [" + Size + "kB] (" + FileName + ") -- " + FilePath;
+                String filePath = FilePath;
+                return "#" + Index + " " + ShortDescription + " [" + Size + "kB] (" + FileName + ") -- " + filePath;
             }
+            private set { }
         }
 
+        private bool? m_cachedMergedExist = null;
         public string FilePath
         {
             get
@@ -85,14 +91,78 @@ namespace Tobi.Plugin.Urakawa
                 //{
                 //    str = "[" + Tobi_Common_Lang.NotFound + "] " + str;
                 //}
+                if (View.check.IsChecked.GetValueOrDefault())
+                {
+                    string parentDir = Path.GetDirectoryName(str);
+                    string fileNameWithoutExtn = Path.GetFileNameWithoutExtension(str);
+
+                    string mergedDirName = UrakawaSession.MERGE_PREFIX + @"_" + fileNameWithoutExtn;
+                    string mergedDir = Path.Combine(parentDir, mergedDirName);
+
+                    String filePath = Path.Combine(mergedDir, Path.GetFileName(str));
+
+                    if (m_cachedMergedExist != null)
+                    {
+                        if (m_cachedMergedExist.GetValueOrDefault())
+                        {
+                            str = filePath;
+                            m_SplitMerged = true;
+                        }
+                        else
+                        {
+                            m_SplitMerged = false;
+                        }
+                    }
+                    else
+                    {
+                        if (File.Exists(filePath)) // Directory.Exists(mergedDir)
+                        {
+                            str = filePath;
+
+                            m_cachedMergedExist = true;
+                            m_SplitMerged = true;
+                        }
+                        else
+                        {
+                            m_cachedMergedExist = false;
+                            m_SplitMerged = false;
+                        }
+                    }
+                }
+                else
+                {
+                    m_SplitMerged = false;
+                }
+
                 return str;
             }
         }
 
+        private bool m_SplitMerged = false;
+
+        [NotifyDependsOn("FilePath")]
+        public bool SplitMerged
+        {
+            get
+            {
+                String filePath = FilePath;
+                return m_SplitMerged;
+            }
+        }
+
+        private decimal m_cachedSize = -1;
+
+        //[NotifyDependsOn("FilePath")]
+        [NotifyDependsOnEx("FilePath", typeof(XukSpineItemWrapper))]
         public decimal Size
         {
             get
             {
+                if (m_cachedSize > -1)
+                {
+                    return m_cachedSize;
+                }
+
                 decimal size = 0;
 
                 string path = FilePath;
@@ -109,28 +179,37 @@ namespace Tobi.Plugin.Urakawa
                     Console.WriteLine(ex.StackTrace);
                 }
 
+                m_cachedSize = size;
                 return size;
             }
+            private set { }
         }
 
+        [NotifyDependsOn("FilePath")]
         public string FileName
         {
             get { return Path.GetFileName(FilePath).Replace(".xuk", ""); }
+            private set { }
         }
 
+        //STRUCT! readonly fields, not getter/setter [NotifyDependsOnEx("Title", typeof(XukSpineItemData))]
+        [NotifyDependsOn("FileName")]
+        [NotifyDependsOn("SplitMerged")]
         public string ShortDescription
         {
             get
             {
+                String prefix = (SplitMerged ? "[" + Tobi_Plugin_Urakawa_Lang.Merged + "] " : "");
                 if (!string.IsNullOrEmpty(Data.Title))
                 {
-                    return Data.Title; // + " (" + Path.GetFileName(FilePath).Replace(".xuk", "") + ")";
+                    return prefix + Data.Title; // + " (" + Path.GetFileName(FilePath).Replace(".xuk", "") + ")";
                 }
                 else
                 {
-                    return FileName; //Path.GetFileName(FilePath);
+                    return prefix + FileName; //Path.GetFileName(FilePath);
                 }
             }
+            private set { }
         }
 
         //private bool? m_FileFound = null;
@@ -156,6 +235,13 @@ namespace Tobi.Plugin.Urakawa
 
         private PropertyChangedNotifyBase m_PropertyChangeHandler;
 
+        public void Changed()
+        {
+            m_cachedMergedExist = null;
+            m_cachedSize = -1;
+            m_SplitMerged = false;
+            m_PropertyChangeHandler.RaisePropertyChanged(() => FilePath);
+        }
 
         private bool m_isMatch;
         public bool SearchMatch
@@ -351,7 +437,7 @@ namespace Tobi.Plugin.Urakawa
             //foreach (var fileUri in m_Session.XukSpineItems)
             {
                 XukSpineItemData data = m_Session.XukSpineItems[i];
-                XukSpineItems.Add(new XukSpineItemWrapper(data, i));
+                XukSpineItems.Add(new XukSpineItemWrapper(data, i, this));
             }
         }
 
@@ -653,7 +739,7 @@ namespace Tobi.Plugin.Urakawa
 
         private void OnLoaded_ListView(object sender, RoutedEventArgs e)
         {
-            FocusHelper.FocusBeginInvoke(XukSpineItemsList);
+            FocusHelper.FocusBeginInvoke(check); //XukSpineItemsList
         }
 
         private void OnMouseDoubleClick_ListItem(object sender, MouseButtonEventArgs e)
@@ -684,6 +770,28 @@ namespace Tobi.Plugin.Urakawa
         public bool IsSpine
         {
             get { return m_Session.IsXukSpine; }
+        }
+
+        private void OnCheck(object sender, RoutedEventArgs e)
+        {
+            foreach (XukSpineItemWrapper wrapper in XukSpineItems)
+            {
+                wrapper.Changed();
+            }
+
+            //var listItem = VisualLogicalTreeWalkHelper.FindObjectInVisualTreeWithMatchingType<ListViewItem>(
+            //               XukSpineItemsList,
+            //               child =>
+            //               {
+            //                   child.InvalidateVisual();
+            //                   //object dc = child.GetValue(FrameworkElement.DataContextProperty);
+            //                   return false; // continue
+            //               });
+
+            //ICollectionView dataView = CollectionViewSource.GetDefaultView(XukSpineItemsList.ItemsSource);
+            //dataView.Refresh();
+
+            //XukSpineItemsList.Items.Refresh();
         }
     }
 }

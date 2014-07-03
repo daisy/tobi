@@ -117,9 +117,23 @@ namespace Tobi.Plugin.Urakawa
                     {
                         if (view.XukSpineItemsList.SelectedItem != null)
                         {
+                            var item = (XukSpineItemWrapper) view.XukSpineItemsList.SelectedItem;
+                            string str = item.Data.Uri.IsFile ? item.Data.Uri.LocalPath : item.Data.Uri.ToString();
+
+                            if (view.check.IsChecked.GetValueOrDefault() && item.SplitMerged)
+                            {
+                                string parentDir = Path.GetDirectoryName(str);
+                                string fileNameWithoutExtn = Path.GetFileNameWithoutExtension(str);
+
+                                string mergedDirName = MERGE_PREFIX + @"_" + fileNameWithoutExtn;
+                                string mergedDir = Path.Combine(parentDir, mergedDirName);
+
+                                str = Path.Combine(mergedDir, Path.GetFileName(str));
+                            }
+
                             try
                             {
-                                OpenFile(((XukSpineItemWrapper)view.XukSpineItemsList.SelectedItem).Data.Uri.ToString());
+                                OpenFile(str);
                             }
                             catch (Exception ex)
                             {

@@ -29,7 +29,7 @@ namespace Tobi.Plugin.Urakawa
         private static readonly string SPLIT_MERGE_SUB_ID = "splitMergeSubId";
         private static readonly string MASTER_SUFFIX = "__MASTER";
         private static readonly string SPLIT_PREFIX = "_SPLIT";
-        private static readonly string MERGE_PREFIX = "_MERGE";
+        public static readonly string MERGE_PREFIX = "_MERGE";
 
         // This tree-walk method ensures nested marked nodes are ignored / bypassed.
         // Also discards text-only nodes (to avoid introducing a distruptive XML wrapper element to support the splitMerge attribute)
@@ -157,14 +157,17 @@ namespace Tobi.Plugin.Urakawa
                     string mergedDirName = MERGE_PREFIX + @"_" + fileNameWithoutExt;
                     string mergedDir = Path.Combine(parentDir, mergedDirName);
 
+                    String fileP = Path.Combine(mergedDir, Path.GetFileName(filePath));
+
+
                     string rootDir = parentDir; //projectDir;
 
                     bool move = false;
-                    if (Directory.Exists(mergedDir))
+                    if (File.Exists(fileP)) //Directory.Exists(mergedDir)
                     {
                         move = true;
                         rootDir = mergedDir;
-                        filePath = Path.Combine(mergedDir, Path.GetFileName(filePath));
+                        filePath = fileP;
                     }
 
                     pathDest = Path.Combine(mergeDestDirectory, Path.GetFileName(filePath));
@@ -590,9 +593,9 @@ namespace Tobi.Plugin.Urakawa
                     //root.GetXmlProperty().RemoveAttribute(attrSplitMerge);
                     root.GetXmlProperty().RemoveAttribute(SPLIT_MERGE, "");
 
-//#if DEBUG
-//                    root.GetXmlProperty().SetAttribute(SPLIT_MERGE, "", "-1");
-//#endif
+                    //#if DEBUG
+                    //                    root.GetXmlProperty().SetAttribute(SPLIT_MERGE, "", "-1");
+                    //#endif
 
                     saved = m_session.save(true);
                 }
@@ -714,7 +717,7 @@ namespace Tobi.Plugin.Urakawa
                     {
                         topText = TreeNode.NavigateInsideSignificantText(root);
                     }
-                    
+
                     if (topText.IsBefore(mark))
                     {
                         topText.IsMarked = true;
@@ -1380,7 +1383,10 @@ namespace Tobi.Plugin.Urakawa
                             string mergedDirName = MERGE_PREFIX + @"_" + fileNameWithoutExtn;
                             string mergedDir = Path.Combine(parentDir, mergedDirName);
 
-                            if (Directory.Exists(mergedDir))
+                            filePath = Path.Combine(mergedDir, Path.GetFileName(filePath));
+
+
+                            if (File.Exists(filePath)) // Directory.Exists(mergedDir)
                             {
                                 atLeastOneMerge = true;
                             }
