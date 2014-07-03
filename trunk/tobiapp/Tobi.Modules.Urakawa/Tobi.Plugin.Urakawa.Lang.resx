@@ -221,7 +221,7 @@ Press OK to ignore, or CANCEL to see the issues.</value>
     <value>Divide the current master project into sub-projects (distribute to multiple narrators)</value>
   </data>
   <data name="MergeEPUB" xml:space="preserve">
-    <value>EPUB merge</value>
+    <value>Merge full EPUB</value>
   </data>
   <data name="MergeEPUB_Finished" xml:space="preserve">
     <value>Note: this is the final merged EPUB (separate folder)</value>

@@ -556,7 +556,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to EPUB merge.
+        ///   Looks up a localized string similar to Merge full EPUB.
         /// </summary>
         public static string MergeEPUB {
             get {
