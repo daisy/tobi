@@ -1444,7 +1444,14 @@ namespace Tobi.Plugin.Urakawa
                             DocumentProject = null;
                             try
                             {
-                                OpenFile(actionx.MergedSpineProject);
+                                OpenFile(actionx.MergedSpineProject, false);
+
+                                if (IsXukSpine)
+                                {
+                                    messageBoxText(Tobi_Plugin_Urakawa_Lang.MergeEPUB, Tobi_Plugin_Urakawa_Lang.MergeEPUB_Finished, DocumentFilePath);
+
+                                    ShowXukSpineCommand.Execute();
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -1614,7 +1621,7 @@ namespace Tobi.Plugin.Urakawa
                     {
                         try
                         {
-                            OpenFile(destinationFilePath);
+                            OpenFile(destinationFilePath, true);
                         }
                         catch (Exception ex)
                         {

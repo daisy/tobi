@@ -565,6 +565,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Note: this is the final merged EPUB (separate folder).
+        /// </summary>
+        public static string MergeEPUB_Finished {
+            get {
+                return ResourceManager.GetString("MergeEPUB_Finished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None of this EPUB project&apos;s spine items seem to have been split + merged..
         /// </summary>
         public static string MergeEpubNoParts {

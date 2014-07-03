@@ -106,7 +106,7 @@ namespace Tobi.Plugin.Urakawa
                                                            view,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           true, 800, 700, null, 0, null);
+                                                           true, 400, 600, null, 0, null);
                     //view.OwnerWindow = windowPopup;
 
                     windowPopup.EnableEnterKeyDefault = true;
@@ -183,7 +183,7 @@ namespace Tobi.Plugin.Urakawa
                             opened = false;
                             try
                             {
-                                opened = OpenFile(XukSpineProjectPath, false);
+                                opened = OpenFile(XukSpineProjectPath, true);
                             }
                             catch (Exception ex)
                             {
@@ -191,10 +191,10 @@ namespace Tobi.Plugin.Urakawa
                             }
                         }
 
-                        if (opened)
-                        {
-                            ShowXukSpineCommand.Execute();
-                        }
+                        //if (opened)
+                        //{
+                        //    ShowXukSpineCommand.Execute();
+                        //}
                     }
                 },
                 () => HasXukSpine && !isAudioRecording,
