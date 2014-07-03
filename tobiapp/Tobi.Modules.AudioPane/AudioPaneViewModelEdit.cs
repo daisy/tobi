@@ -506,7 +506,8 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => !IsWaveFormLoading
                     && (!IsMonitoring || IsMonitoringAlways)
-                    && !IsRecording,
+                    && !IsRecording
+                     && !m_UrakawaSession.IsXukSpine,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_OpenFile));
 
@@ -960,6 +961,7 @@ namespace Tobi.Plugin.AudioPane
             return CommandDeleteAudioSelection.CanExecute()
                 ||
                 m_UrakawaSession.DocumentProject != null
+                 && !m_UrakawaSession.IsXukSpine
                    && node != null
                    && (IsSimpleMode || node.HasXmlProperty)
                    && node.GetFirstAncestorWithManagedAudio() == null
