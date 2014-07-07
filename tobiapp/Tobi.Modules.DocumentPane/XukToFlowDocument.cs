@@ -130,6 +130,7 @@ namespace Tobi.Plugin.DocumentPane
             //#endif
         }
 
+
         public XukToFlowDocument(DocumentPaneView documentPaneView, TreeNode node, FlowDocument flowDocument,
             ILoggerFacade logger, IEventAggregator aggregator, IShellView shellView, IUrakawaSession urakawaSession
             //DelegateOnMouseUpFlowDoc delegateOnMouseUpFlowDoc,
@@ -2055,6 +2056,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (checkLoadMathMLIntoImage(shellView, urakawaSession, documentPaneView, node))
             {
+                max--;
                 return true;
             }
 
@@ -2063,7 +2065,6 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (checkLoadMathMLIntoImage_(shellView, urakawaSession, documentPaneView, child, ref max))
                 {
-                    max--;
                     atLeastOne = true;
                 }
             }
@@ -2195,6 +2196,13 @@ namespace Tobi.Plugin.DocumentPane
         }
 
         private int m_MathCounter = 0;
+        public int MathMLs
+        {
+            get
+            {
+                return m_MathCounter;
+            }
+        }
 
         private TextElement walkBookTreeAndGenerateFlowDocument_MathML(TreeNode node, TextElement parent, string textMedia
             //, DelegateSectionInitializer initializer
@@ -2404,10 +2412,11 @@ namespace Tobi.Plugin.DocumentPane
 
 
 
+            int max = (int)Math.Floor(Settings.Default.Document_MathML_LoadInitial);
 
             m_MathCounter++;
             //Console.Write(m_MathCounter + ",");
-            if (m_MathCounter > 0) // TODO: decide what threshold is best here
+            if (m_MathCounter > max)
             {
                 if (node.Tag != null && node.Tag is TextElement)
                 {

@@ -201,4 +201,7 @@
   <data name="CmdTxtFocus_ShortDesc" xml:space="preserve">
     <value>_Document toolbar</value>
   </data>
+  <data name="MathMLSelectToShow" xml:space="preserve">
+    <value>Reminder: MathML will display during selection</value>
+  </data>
 </root>
