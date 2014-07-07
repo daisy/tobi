@@ -2090,7 +2090,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (tEl is InlineUIContainer)
                 {
-                    uiElement = ((BlockUIContainer)tEl).Child;
+                    uiElement = ((InlineUIContainer)tEl).Child;
                 }
                 if (uiElement != null && uiElement is Panel)
                 {
@@ -2422,7 +2422,7 @@ namespace Tobi.Plugin.DocumentPane
                     }
                     else if (tEl is InlineUIContainer)
                     {
-                        uiElement = ((BlockUIContainer)tEl).Child;
+                        uiElement = ((InlineUIContainer)tEl).Child;
                     }
                     if (uiElement != null && uiElement is Panel)
                     {
