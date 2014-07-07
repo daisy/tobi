@@ -2606,7 +2606,7 @@ namespace Tobi.Plugin.DocumentPane
             TreeNode selectedTreeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
             updateSimpleTextView(selectedTreeNode);
 
-            int max = 3;
+            int max = (int)Math.Floor(Settings.Default.Document_MathML_LoadSelection);
             XukToFlowDocument.checkLoadMathMLIntoImage_(m_ShellView, m_UrakawaSession, this, selectedTreeNode, ref max);
 
             TextElement textElement1 = null;
@@ -3729,6 +3729,83 @@ namespace Tobi.Plugin.DocumentPane
 
                                  FlowDocumentLoadedEvents.AddRange(converter.FlowDocumentLoadedEvents);
                                  converter.FlowDocumentLoadedEvents.Clear();
+
+                                 if (converter.MathMLs > 0 && Settings.Default.Document_MathML_LoadReminderMessage)
+                                 {
+                                     var label = new TextBlock
+                                     {
+                                         Text = Tobi_Plugin_DocumentPane_Lang.MathMLSelectToShow,
+                                         Margin = new Thickness(8, 0, 8, 0),
+                                         HorizontalAlignment = HorizontalAlignment.Center,
+                                         VerticalAlignment = VerticalAlignment.Center,
+                                         Focusable = true,
+                                         TextWrapping = TextWrapping.Wrap
+                                     };
+
+                                     var iconProvider = new ScalableGreyableImageProvider(
+                                         m_ShellView.LoadGnomeNeuIcon("Neu_image-loading"),
+                                         m_ShellView.MagnificationLevel);
+
+                                     var panel = new StackPanel
+                                     {
+                                         Orientation = Orientation.Horizontal,
+                                         HorizontalAlignment = HorizontalAlignment.Left,
+                                         VerticalAlignment = VerticalAlignment.Stretch,
+                                     };
+                                     panel.Children.Add(iconProvider.IconLarge);
+                                     panel.Children.Add(label);
+                                     //panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+
+
+
+
+
+                                     var checkBox = new CheckBox
+                                     {
+                                         FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+                                         IsThreeState = false,
+                                         IsChecked = !Settings.Default.Document_MathML_LoadReminderMessage,
+                                         VerticalAlignment = VerticalAlignment.Center,
+                                         Content = Tobi_Common_Lang.DoNotShowMessageAgain,
+                                         Margin = new Thickness(0, 16, 0, 0),
+                                         HorizontalAlignment = HorizontalAlignment.Left,
+                                     };
+
+
+
+
+
+                                     var mainPanel = new StackPanel
+                                     {
+                                         Orientation = Orientation.Vertical,
+                                     };
+                                     mainPanel.Children.Add(panel);
+                                     mainPanel.Children.Add(checkBox);
+
+
+
+
+
+                                     var windowPopup = new PopupModalWindow(m_ShellView,
+                                                                            "MathML",
+                                                                            mainPanel,
+                                                                            PopupModalWindow.DialogButtonsSet.Ok,
+                                                                            PopupModalWindow.DialogButton.Ok,
+                                                                            true, 360, 180, null, 40, null);
+
+                                     windowPopup.ShowModal();
+
+                                     if (checkBox.IsChecked.Value)
+                                     {
+                                         Settings.Default.Document_MathML_LoadReminderMessage = false;
+                                     }
+
+                                     //if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+                                     //{
+                                     //}
+                                 }
                              });
 
             foreach (var ev in FlowDocumentLoadedEvents)

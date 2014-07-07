@@ -151,6 +151,15 @@ namespace Tobi.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not show this message again.
+        /// </summary>
+        public static string DoNotShowMessageAgain {
+            get {
+                return ResourceManager.GetString("DoNotShowMessageAgain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Find: .
         /// </summary>
         public static string Find {

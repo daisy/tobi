@@ -366,8 +366,8 @@
     <EmbeddedResource Include="Tobi.Common.Lang.es.resx" />
     <EmbeddedResource Include="Tobi.Common.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Tobi.Common.Lang.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Tobi.Common.Lang.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
