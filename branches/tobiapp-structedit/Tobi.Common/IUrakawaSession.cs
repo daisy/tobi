@@ -17,8 +17,11 @@ namespace Tobi.Common
             Title = title;
         }
 
-        public Uri Uri;
-        public string Title;
+        //public Uri Uri { get; private set; }
+        //public string Title { get; private set; }
+
+        public readonly Uri Uri;
+        public readonly string Title;
     }
 
     ///<summary>

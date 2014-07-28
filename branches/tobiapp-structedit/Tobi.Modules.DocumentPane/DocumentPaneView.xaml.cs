@@ -422,27 +422,28 @@ namespace Tobi.Plugin.DocumentPane
                     m_SearchCurrentIndex = -1;
                 }
 
-                if (FlowDocReader.Selection == null)
+                TextRange selectionBackup = null;
+                if (FlowDocReader.Selection != null)
                 {
-                    return;
+                    selectionBackup = new TextRange(FlowDocReader.Selection.Start, FlowDocReader.Selection.End);
                 }
-                var selectionBackup = new TextRange(FlowDocReader.Selection.Start, FlowDocReader.Selection.End);
+
 
                 AnnotationService service = AnnotationService.GetService(FlowDocReader);
 
-                if (service == null || !service.IsEnabled)
+                if (service != null && service.IsEnabled)
                 {
-                    return;
+                    foreach (var annotation in service.Store.GetAnnotations())
+                    {
+                        service.Store.DeleteAnnotation(annotation.Id);
+                    }
+
+                    service.Store.Flush();
                 }
 
                 //FlowDocReader.Selection.Select(FlowDocReader.Document.ContentStart,
                 //                               FlowDocReader.Document.ContentEnd);
                 //AnnotationHelper.ClearHighlightsForSelection(service);
-
-                foreach (var annotation in service.Store.GetAnnotations())
-                {
-                    service.Store.DeleteAnnotation(annotation.Id);
-                }
 
                 if (string.IsNullOrEmpty(m_SearchTerm) || m_SearchTerm.Length < 2)
                 {
@@ -473,11 +474,21 @@ namespace Tobi.Plugin.DocumentPane
 
                 foreach (var textRange in m_SearchMatches)
                 {
-                    FlowDocReader.Selection.Select(textRange.Start, textRange.End);
-                    AnnotationHelper.CreateHighlightForSelection(service, "Tobi search hits", brush);
+                    if (FlowDocReader.Selection != null)
+                    {
+                        FlowDocReader.Selection.Select(textRange.Start, textRange.End);
+                    }
+
+                    if (service != null && service.IsEnabled)
+                    {
+                        AnnotationHelper.CreateHighlightForSelection(service, "Tobi search hits", brush);
+                    }
                 }
 
-                FlowDocReader.Selection.Select(selectionBackup.Start, selectionBackup.End);
+                if (FlowDocReader.Selection != null && selectionBackup != null)
+                {
+                    FlowDocReader.Selection.Select(selectionBackup.Start, selectionBackup.End);
+                }
             }
         }
 
@@ -563,6 +574,11 @@ namespace Tobi.Plugin.DocumentPane
                     textPointer = TheFlowDocument.ContentStart;
                 }
                 //m_FindAndReplaceManager.CurrentPosition = textPointer;
+
+                if (FlowDocReader.Selection != null && !FlowDocReader.Selection.IsEmpty)
+                {
+                    textPointer = !previous ? FlowDocReader.Selection.End : FlowDocReader.Selection.Start;
+                }
 
                 int position = -1;
                 if (previous)
@@ -652,7 +668,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 if (FlowDocReader.Selection != null)
                 {
-                    if (select && !Settings.Default.Document_EnableInstantSearch)
+                    if (select) // && !Settings.Default.Document_EnableInstantSearch)
                     {
                         FlowDocReader.Selection.Select(hit.Start, hit.End);
 
@@ -2231,10 +2247,9 @@ namespace Tobi.Plugin.DocumentPane
             return m_PathToTreeNode;
         }
 
+        // NEEDED for Settings.Default.Document_EnableInstantSearch
         private void annotationsOff()
         {
-            return;
-
             AnnotationService service = AnnotationService.GetService(FlowDocReader);
 
             if (service != null && service.IsEnabled)
@@ -2251,10 +2266,9 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        // NEEDED for Settings.Default.Document_EnableInstantSearch
         private void annotationsOn()
         {
-            return;
-
             AnnotationService service = AnnotationService.GetService(FlowDocReader);
             if (service != null && service.IsEnabled)
             {
@@ -3382,7 +3396,7 @@ namespace Tobi.Plugin.DocumentPane
             TreeNode selectedTreeNode = newTreeNodeSelection.Item2 ?? newTreeNodeSelection.Item1;
             updateSimpleTextView(selectedTreeNode);
 
-            int max = 3;
+            int max = (int)Math.Floor(Settings.Default.Document_MathML_LoadSelection);
             XukToFlowDocument.checkLoadMathMLIntoImage_(m_ShellView, m_UrakawaSession, this, selectedTreeNode, ref max);
 
             TextElement textElement1 = null;
@@ -4505,6 +4519,83 @@ namespace Tobi.Plugin.DocumentPane
 
                                  FlowDocumentLoadedEvents.AddRange(converter.FlowDocumentLoadedEvents);
                                  converter.FlowDocumentLoadedEvents.Clear();
+
+                                 if (converter.MathMLs > 0 && Settings.Default.Document_MathML_LoadReminderMessage)
+                                 {
+                                     var label = new TextBlock
+                                     {
+                                         Text = Tobi_Plugin_DocumentPane_Lang.MathMLSelectToShow,
+                                         Margin = new Thickness(8, 0, 8, 0),
+                                         HorizontalAlignment = HorizontalAlignment.Center,
+                                         VerticalAlignment = VerticalAlignment.Center,
+                                         Focusable = true,
+                                         TextWrapping = TextWrapping.Wrap
+                                     };
+
+                                     var iconProvider = new ScalableGreyableImageProvider(
+                                         m_ShellView.LoadGnomeNeuIcon("Neu_image-loading"),
+                                         m_ShellView.MagnificationLevel);
+
+                                     var panel = new StackPanel
+                                     {
+                                         Orientation = Orientation.Horizontal,
+                                         HorizontalAlignment = HorizontalAlignment.Left,
+                                         VerticalAlignment = VerticalAlignment.Stretch,
+                                     };
+                                     panel.Children.Add(iconProvider.IconLarge);
+                                     panel.Children.Add(label);
+                                     //panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+
+
+
+
+
+                                     var checkBox = new CheckBox
+                                     {
+                                         FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+                                         IsThreeState = false,
+                                         IsChecked = !Settings.Default.Document_MathML_LoadReminderMessage,
+                                         VerticalAlignment = VerticalAlignment.Center,
+                                         Content = Tobi_Common_Lang.DoNotShowMessageAgain,
+                                         Margin = new Thickness(0, 16, 0, 0),
+                                         HorizontalAlignment = HorizontalAlignment.Left,
+                                     };
+
+
+
+
+
+                                     var mainPanel = new StackPanel
+                                     {
+                                         Orientation = Orientation.Vertical,
+                                     };
+                                     mainPanel.Children.Add(panel);
+                                     mainPanel.Children.Add(checkBox);
+
+
+
+
+
+                                     var windowPopup = new PopupModalWindow(m_ShellView,
+                                                                            "MathML",
+                                                                            mainPanel,
+                                                                            PopupModalWindow.DialogButtonsSet.Ok,
+                                                                            PopupModalWindow.DialogButton.Ok,
+                                                                            true, 360, 180, null, 40, null);
+
+                                     windowPopup.ShowModal();
+
+                                     if (checkBox.IsChecked.Value)
+                                     {
+                                         Settings.Default.Document_MathML_LoadReminderMessage = false;
+                                     }
+
+                                     //if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+                                     //{
+                                     //}
+                                 }
                              });
 
             foreach (var ev in FlowDocumentLoadedEvents)

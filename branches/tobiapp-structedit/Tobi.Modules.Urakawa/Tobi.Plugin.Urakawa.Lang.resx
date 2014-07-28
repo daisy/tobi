@@ -175,6 +175,12 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="CmdDataCleanup_LongDesc" xml:space="preserve">
     <value>Remove data files not used by the current project</value>
   </data>
+  <data name="OpenSpine" xml:space="preserve">
+    <value>Open EPUB spine</value>
+  </data>
+  <data name="ExportFullEpub" xml:space="preserve">
+    <value>Export full EPUB</value>
+  </data>
   <data name="CmdExport_ShortDesc" xml:space="preserve">
     <value>_Export...</value>
   </data>
@@ -213,6 +219,18 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   </data>
   <data name="CmdSplitProject_LongDesc" xml:space="preserve">
     <value>Divide the current master project into sub-projects (distribute to multiple narrators)</value>
+  </data>
+  <data name="ShowMerged" xml:space="preserve">
+    <value>Show merged spine items</value>
+  </data>
+  <data name="Merged" xml:space="preserve">
+    <value>MERGED</value>
+  </data>
+  <data name="MergeEPUB" xml:space="preserve">
+    <value>Merge full EPUB</value>
+  </data>
+  <data name="MergeEPUB_Finished" xml:space="preserve">
+    <value>Note: this is the final merged EPUB (separate folder)</value>
   </data>
   <data name="CmdMergeProject_ShortDesc" xml:space="preserve">
     <value>_Merge...</value>
@@ -308,6 +326,9 @@ Do you want to continue ?</value>
   </data>
   <data name="UrakawaOpenAction_LongDesc" xml:space="preserve">
     <value>Parsing the XML content of the XUK file...</value>
+  </data>
+  <data name="Size" xml:space="preserve">
+    <value>Size</value>
   </data>
   <data name="CmdRedo_ShortDesc" xml:space="preserve">
     <value>_Redo</value>

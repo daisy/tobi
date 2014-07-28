@@ -109,7 +109,7 @@ namespace Tobi.Plugin.AudioPane
             {
                 var details = new TextBoxReadOnlyCaretVisible
                 {
-                    FocusVisualStyle = (Style) Application.Current.Resources["MyFocusVisualStyle"],
+                    FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
 
                     BorderThickness = new Thickness(1),
                     Padding = new Thickness(6),
@@ -198,7 +198,7 @@ namespace Tobi.Plugin.AudioPane
                         Logger.Log(@"Audio WavSoundTouch SLOW CANCELED", Category.Debug, Priority.Medium);
 
 #if DEBUG
-                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+                        m_ShellView.ExecuteShellProcess(destinationFolder);
 #endif
                     },
                     () =>
@@ -240,7 +240,7 @@ namespace Tobi.Plugin.AudioPane
                         Logger.Log(@"Audio WavSoundTouch SPEED CANCELED", Category.Debug, Priority.Medium);
 
 #if DEBUG
-                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+                        m_ShellView.ExecuteShellProcess(destinationFolder);
 #endif
                     },
                     () =>
@@ -279,7 +279,7 @@ namespace Tobi.Plugin.AudioPane
                         Logger.Log(@"Audio WavNormalize CANCELED", Category.Debug, Priority.Medium);
 
 #if DEBUG
-                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+                        m_ShellView.ExecuteShellProcess(destinationFolder);
 #endif
                     },
                     () =>
@@ -318,7 +318,7 @@ namespace Tobi.Plugin.AudioPane
                         Logger.Log(@"Audio WavAmplify CANCELED", Category.Debug, Priority.Medium);
 
 #if DEBUG
-                                    m_ShellView.ExecuteShellProcess(destinationFolder);
+                        m_ShellView.ExecuteShellProcess(destinationFolder);
 #endif
                     },
                     () =>
@@ -506,7 +506,8 @@ namespace Tobi.Plugin.AudioPane
                 },
                 () => !IsWaveFormLoading
                     && (!IsMonitoring || IsMonitoringAlways)
-                    && !IsRecording,
+                    && !IsRecording
+                     && !m_UrakawaSession.IsXukSpine,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_OpenFile));
 
@@ -559,6 +560,7 @@ namespace Tobi.Plugin.AudioPane
 
                     return okay
                        && (!IsMonitoring || IsMonitoringAlways)
+                       && !m_UrakawaSession.IsXukSpine
                        && !IsRecording
                        && !IsWaveFormLoading
                        && !IsPlaying
@@ -614,6 +616,7 @@ namespace Tobi.Plugin.AudioPane
                     return
                         //okay &&
                         (!IsMonitoring || IsMonitoringAlways)
+                       && !m_UrakawaSession.IsXukSpine
                        && !IsRecording
                        && !IsWaveFormLoading
                        && !IsPlaying
@@ -958,6 +961,7 @@ namespace Tobi.Plugin.AudioPane
             return CommandDeleteAudioSelection.CanExecute()
                 ||
                 m_UrakawaSession.DocumentProject != null
+                 && !m_UrakawaSession.IsXukSpine
                    && node != null
                    && (IsSimpleMode || node.HasXmlProperty)
                    && node.GetFirstAncestorWithManagedAudio() == null

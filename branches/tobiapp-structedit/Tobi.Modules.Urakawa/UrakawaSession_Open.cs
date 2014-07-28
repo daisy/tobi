@@ -1611,6 +1611,16 @@ namespace Tobi.Plugin.Urakawa
 , SearchOption.TopDirectoryOnly
 #endif
 );
+                if (files == null || files.Length <= 0)
+                {
+                    dir = Path.GetDirectoryName(dir);
+                    files = Directory.GetFiles(dir, "*.xukspine"
+#if NET40
+, SearchOption.TopDirectoryOnly
+#endif
+);
+                }
+
                 foreach (var projectPath in files)
                 {
                     Uri uri = new Uri(projectPath, UriKind.Absolute);

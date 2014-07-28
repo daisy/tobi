@@ -25,6 +25,15 @@
     <Setting Name="Document_Zoom" Type="System.Double" Scope="User">
       <Value Profile="(Default)">110</Value>
     </Setting>
+    <Setting Name="Document_MathML_LoadReminderMessage" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="Document_MathML_LoadInitial" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Document_MathML_LoadSelection" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
     <Setting Name="Document_EnableDrawTopSelection" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
