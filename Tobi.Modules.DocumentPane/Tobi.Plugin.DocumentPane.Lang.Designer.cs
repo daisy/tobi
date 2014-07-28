@@ -340,6 +340,15 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reminder: MathML will display during selection.
+        /// </summary>
+        public static string MathMLSelectToShow {
+            get {
+                return ResourceManager.GetString("MathMLSelectToShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Narrator view.
         /// </summary>
         public static string NarratorView {

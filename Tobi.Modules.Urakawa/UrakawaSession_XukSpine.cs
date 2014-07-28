@@ -7,6 +7,7 @@ using Tobi.Common;
 using Tobi.Common.MVVM;
 using Tobi.Common.MVVM.Command;
 using Tobi.Common.UI;
+using urakawa.command;
 using urakawa.ExternalFiles;
 using Microsoft.Practices.Unity;
 using urakawa.property.xml;
@@ -105,7 +106,7 @@ namespace Tobi.Plugin.Urakawa
                                                            view,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           true, 350, 500, null, 0, null);
+                                                           true, 400, 600, null, 0, null);
                     //view.OwnerWindow = windowPopup;
 
                     windowPopup.EnableEnterKeyDefault = true;
@@ -116,9 +117,23 @@ namespace Tobi.Plugin.Urakawa
                     {
                         if (view.XukSpineItemsList.SelectedItem != null)
                         {
+                            var item = (XukSpineItemWrapper) view.XukSpineItemsList.SelectedItem;
+                            string str = item.Data.Uri.IsFile ? item.Data.Uri.LocalPath : item.Data.Uri.ToString();
+
+                            if (view.check.IsChecked.GetValueOrDefault() && item.SplitMerged)
+                            {
+                                string parentDir = Path.GetDirectoryName(str);
+                                string fileNameWithoutExtn = Path.GetFileNameWithoutExtension(str);
+
+                                string mergedDirName = MERGE_PREFIX + @"_" + fileNameWithoutExtn;
+                                string mergedDir = Path.Combine(parentDir, mergedDirName);
+
+                                str = Path.Combine(mergedDir, Path.GetFileName(str));
+                            }
+
                             try
                             {
-                                OpenFile(((XukSpineItemWrapper)view.XukSpineItemsList.SelectedItem).Data.Uri.ToString());
+                                OpenFile(str);
                             }
                             catch (Exception ex)
                             {
@@ -148,6 +163,52 @@ namespace Tobi.Plugin.Urakawa
                         {
                             ExportCommand.Execute();
                         }
+                    }
+                    else if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.Close)
+                    {
+                        // IsXukSpine ? DocumentFilePath : XukSpineProjectPath
+
+                        bool opened = true;
+                        if (!IsXukSpine)
+                        {
+                            opened = false;
+                            try
+                            {
+                                opened = OpenFile(XukSpineProjectPath, false);
+                            }
+                            catch (Exception ex)
+                            {
+                                ExceptionHandler.Handle(ex, false, m_ShellView);
+                            }
+                        }
+
+                        if (opened)
+                        {
+                            MergeProjectCommand.Execute();
+                        }
+                    }
+                    else if (windowPopup.ClickedDialogButton == PopupModalWindow.DialogButton.No)
+                    {
+                        // IsXukSpine ? DocumentFilePath : XukSpineProjectPath
+
+                        bool opened = true;
+                        if (!IsXukSpine)
+                        {
+                            opened = false;
+                            try
+                            {
+                                opened = OpenFile(XukSpineProjectPath, true);
+                            }
+                            catch (Exception ex)
+                            {
+                                ExceptionHandler.Handle(ex, false, m_ShellView);
+                            }
+                        }
+
+                        //if (opened)
+                        //{
+                        //    ShowXukSpineCommand.Execute();
+                        //}
                     }
                 },
                 () => HasXukSpine && !isAudioRecording,

@@ -448,6 +448,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export full EPUB.
+        /// </summary>
+        public static string ExportFullEpub {
+            get {
+                return ResourceManager.GetString("ExportFullEpub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generate SMIL note references: .
         /// </summary>
         public static string ExportGenerateSmilNotes {
@@ -565,6 +574,33 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MERGED.
+        /// </summary>
+        public static string Merged {
+            get {
+                return ResourceManager.GetString("Merged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge full EPUB.
+        /// </summary>
+        public static string MergeEPUB {
+            get {
+                return ResourceManager.GetString("MergeEPUB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note: this is the final merged EPUB (separate folder).
+        /// </summary>
+        public static string MergeEPUB_Finished {
+            get {
+                return ResourceManager.GetString("MergeEPUB_Finished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None of this EPUB project&apos;s spine items seem to have been split + merged..
         /// </summary>
         public static string MergeEpubNoParts {
@@ -588,6 +624,15 @@ namespace Tobi.Plugin.Urakawa {
         public static string OpenSaveAsQuestion_ {
             get {
                 return ResourceManager.GetString("OpenSaveAsQuestion_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open EPUB spine.
+        /// </summary>
+        public static string OpenSpine {
+            get {
+                return ResourceManager.GetString("OpenSpine", resourceCulture);
             }
         }
         
@@ -671,6 +716,24 @@ namespace Tobi.Plugin.Urakawa {
         public static string Saved {
             get {
                 return ResourceManager.GetString("Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show merged spine items.
+        /// </summary>
+        public static string ShowMerged {
+            get {
+                return ResourceManager.GetString("ShowMerged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string Size {
+            get {
+                return ResourceManager.GetString("Size", resourceCulture);
             }
         }
         

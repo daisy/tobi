@@ -234,4 +234,7 @@
   <data name="CmdToggleTextSyncGranularity_LongDesc" xml:space="preserve">
     <value>Enable/disable text sync granularity (when disabled, the finest granularity is used, otherwise the granularity is automatically adjusted depending on text content)</value>
   </data>
+  <data name="DoNotShowMessageAgain" xml:space="preserve">
+    <value>Do not show this message again</value>
+  </data>
 </root>
