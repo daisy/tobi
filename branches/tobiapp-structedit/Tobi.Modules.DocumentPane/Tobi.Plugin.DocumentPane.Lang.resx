@@ -155,6 +155,13 @@
     <value>Delete document fragment</value>
   </data>
 
+  <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
+    <value>Insert node</value>
+  </data>
+  <data name="CmdStructEditInsertFragment_LongDesc" xml:space="preserve">
+    <value>Add document fragment</value>
+  </data>
+
   <data name="CmdStructEditCutFragment_ShortDesc" xml:space="preserve">
     <value>Cut node</value>
   </data>

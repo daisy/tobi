@@ -151,6 +151,24 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add document fragment.
+        /// </summary>
+        public static string CmdStructEditInsertFragment_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditInsertFragment_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert node.
+        /// </summary>
+        public static string CmdStructEditInsertFragment_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditInsertFragment_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Paste document fragment from clipboard.
         /// </summary>
         public static string CmdStructEditPasteFragment_LongDesc {
