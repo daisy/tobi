@@ -118,8 +118,8 @@ namespace Tobi.Plugin.DocumentPane
         protected readonly IEventAggregator EventAggregator;
         protected readonly IShellView ShellView;
 
-        private long m_nTreeNode;
-        private static Time m_totalAudioDuration;
+        private long m_nTreeNode = 0;
+        private static Time m_totalAudioDuration = Time.Zero;
 
         private static int COUNT = 0;
         ~XukToFlowDocument()
@@ -3293,7 +3293,7 @@ namespace Tobi.Plugin.DocumentPane
         }
 
 
-        private void walkBookTreeAndGenerateFlowDocument(TreeNode node, TextElement parent)
+        public void walkBookTreeAndGenerateFlowDocument(TreeNode node, TextElement parent)
         {
             m_nTreeNode++;
 

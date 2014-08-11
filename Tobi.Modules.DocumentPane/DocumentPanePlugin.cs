@@ -102,7 +102,9 @@ namespace Tobi.Plugin.DocumentPane
                 Tobi_Common_Lang.Menu_Text, PreferredPosition.Last, true,
                 Tobi_Common_Lang.Menu_StructureEdit,
                 PreferredPosition.First, true,
-                new[] { m_DocView.CommandStructRemoveFragment, m_DocView.CommandStructCutFragment, m_DocView.CommandStructPasteFragment });
+                new[] { m_DocView.CommandStructRemoveFragment, m_DocView.CommandStructInsertFragment
+                //    , m_DocView.CommandStructCutFragment, m_DocView.CommandStructPasteFragment
+                });
             
             m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_View, PreferredPosition.Last, true,
