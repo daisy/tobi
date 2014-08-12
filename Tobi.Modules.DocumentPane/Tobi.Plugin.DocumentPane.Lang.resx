@@ -156,7 +156,7 @@
   </data>
 
   <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
-    <value>Insert node</value>
+    <value>Insert node ...</value>
   </data>
   <data name="CmdStructEditInsertFragment_LongDesc" xml:space="preserve">
     <value>Add document fragment</value>

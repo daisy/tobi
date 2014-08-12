@@ -160,7 +160,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert node.
+        ///   Looks up a localized string similar to Insert node ....
         /// </summary>
         public static string CmdStructEditInsertFragment_ShortDesc {
             get {

@@ -1361,19 +1361,13 @@ namespace Tobi.Plugin.DocumentPane
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
 
-                    bool xml = node.GetXmlProperty() != null;
+                    //bool xml = node.GetXmlProperty() != null;
 
                     bool html = node.Presentation.RootNode.GetXmlElementLocalName()
                         .Equals("body", StringComparison.OrdinalIgnoreCase);
 
                     TreeNode newNode = node.Presentation.TreeNodeFactory.Create();
-                    if (xml)
-                    {
-                        string elementName = html ? "span" : "sent";
-                        XmlProperty xmlProp = newNode.GetOrCreateXmlProperty();
-                        xmlProp.SetQName(elementName, node.GetXmlNamespaceUri());
-                    }
-
+                    
                     ChannelsProperty chProp = newNode.GetOrCreateChannelsProperty();
                     //Channel textChannel = node.Presentation.ChannelFactory.CreateTextChannel();
                     Channel textChannel = node.Presentation.ChannelsManager.GetOrCreateTextChannel();
@@ -1383,7 +1377,97 @@ namespace Tobi.Plugin.DocumentPane
 
                     int position = node.Children.Count; // append
                     position = 0; // prepend
-                    var cmd = node.Presentation.CommandFactory.CreateTreeNodeInsertCommand(newNode, node, position);
+
+                    TreeNode parent = node;
+
+                    var radioPrepend = new RadioButton()
+                    {
+                        Content = "First inside",
+                        GroupName = "INSERT"
+                    };
+                    var radioAppend = new RadioButton()
+                    {
+                        Content = "Last inside",
+                        GroupName = "INSERT"
+                    };
+                    var radioBefore = new RadioButton()
+                    {
+                        Content = "Before",
+                        GroupName = "INSERT"
+                    };
+                    var radioAfter = new RadioButton()
+                    {
+                        Content = "After",
+                        GroupName = "INSERT"
+                    };
+
+                    radioPrepend.IsChecked = true;
+
+                    string elementName = html ? "span" : "sent";
+                    var elementNameInput = new TextBox()
+                    {
+                        Text = elementName
+                    };
+
+                    var panel = new StackPanel
+                    {
+                        Orientation = Orientation.Vertical,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+                    panel.Children.Add(radioPrepend);
+                    panel.Children.Add(radioAppend);
+                    panel.Children.Add(radioBefore);
+                    panel.Children.Add(radioAfter);
+                    panel.Children.Add(elementNameInput);
+
+                    var windowPopup = new PopupModalWindow(m_ShellView,
+                                                           UserInterfaceStrings.EscapeMnemonic("Insert TreeNode"),
+                                                           panel,
+                                                           PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                           PopupModalWindow.DialogButton.Ok,
+                                                           false, 300, 200, null, 40, null);
+                    windowPopup.ShowModal();
+
+                    if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok)
+                    {
+                        return;
+                    }
+
+                    elementName = elementNameInput.Text;
+
+                    XmlProperty xmlProp = newNode.GetOrCreateXmlProperty();
+                    xmlProp.SetQName(elementName, node.GetXmlNamespaceUri());
+
+                    if (Convert.ToBoolean(radioPrepend.IsChecked))
+                    {
+                        position = node.Children.Count; // append
+                        position = 0; // prepend
+
+                        parent = node;
+                    }
+                    else if (Convert.ToBoolean(radioAppend.IsChecked))
+                    {
+                        position = node.Children.Count; // append
+
+                        parent = node;
+                    }
+                    else if (Convert.ToBoolean(radioBefore.IsChecked))
+                    {
+                        parent = node.Parent;
+                        if (parent == null) return;
+
+                        position = parent.Children.IndexOf(node);
+                    }
+                    else if (Convert.ToBoolean(radioAfter.IsChecked))
+                    {
+                        parent = node.Parent;
+                        if (parent == null) return;
+
+                        position = parent.Children.IndexOf(node) + 1;
+                    }
+
+                    var cmd = node.Presentation.CommandFactory.CreateTreeNodeInsertCommand(newNode, parent, position);
                     node.Presentation.UndoRedoManager.Execute(cmd);
 
                     m_UrakawaSession.PerformTreeNodeSelection(newNode);
@@ -1396,7 +1480,10 @@ namespace Tobi.Plugin.DocumentPane
 
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
-                    return node != null; // && node.Parent != null;
+                    return node != null
+                        && node.GetTextMedia() == null
+                        //&& node.GetText() == null
+                        ; // && node.Parent != null;
                 },
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditRemoveFragment)
