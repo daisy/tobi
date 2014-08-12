@@ -1381,7 +1381,8 @@ namespace Tobi.Plugin.DocumentPane
                     txtMedia.Text = "INSERTED TEXT";
                     chProp.SetMedia(textChannel, txtMedia);
 
-                    int position = node.Children.Count;
+                    int position = node.Children.Count; // append
+                    position = 0; // prepend
                     var cmd = node.Presentation.CommandFactory.CreateTreeNodeInsertCommand(newNode, node, position);
                     node.Presentation.UndoRedoManager.Execute(cmd);
 
