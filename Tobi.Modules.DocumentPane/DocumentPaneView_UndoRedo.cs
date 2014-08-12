@@ -47,6 +47,720 @@ namespace Tobi.Plugin.DocumentPane
 {
     public partial class DocumentPaneView
     {
+        private class ObjectTagger : ObjectTag
+        {
+            private object m_Tag = null;
+
+            public object Tag
+            {
+                set { m_Tag = value; }
+                get { return m_Tag; }
+            }
+        }
+
+        public static void detachFlowDocumentFragment(bool done, TextElement txtElem, ObjectTag cmd)
+        {
+            DependencyObject parent = txtElem.Parent;
+
+            if (done)
+            {
+                DebugFix.Assert(parent != null);
+            }
+            else
+            {
+                DebugFix.Assert(parent == null);
+
+                DebugFix.Assert(cmd.Tag != null);
+                //DebugFix.Assert(cmd.Tag is Tuple);
+
+                if (cmd.Tag != null)
+                {
+                    if (cmd.Tag is Tuple<DependencyObject, int>)
+                    {
+                        Tuple<DependencyObject, int> data =
+                            (Tuple<DependencyObject, int>)cmd.Tag;
+                        parent = data.Item1;
+                    }
+                    else if (cmd.Tag is Tuple<DependencyObject, ListItem, ListItem>)
+                    {
+                        Tuple<DependencyObject, ListItem, ListItem> data =
+                            (Tuple<DependencyObject, ListItem, ListItem>)cmd.Tag;
+                        parent = data.Item1;
+                    }
+                    else if (cmd.Tag is Tuple<DependencyObject, Inline, Inline>)
+                    {
+                        Tuple<DependencyObject, Inline, Inline> data =
+                            (Tuple<DependencyObject, Inline, Inline>)cmd.Tag;
+                        parent = data.Item1;
+                    }
+                    else if (cmd.Tag is Tuple<DependencyObject, Block, Block>)
+                    {
+                        Tuple<DependencyObject, Block, Block> data =
+                            (Tuple<DependencyObject, Block, Block>)cmd.Tag;
+                        parent = data.Item1;
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+            }
+
+            if (txtElem is TableRow)
+            {
+                if (parent is TableRowGroup)
+                {
+                    if (done && ((TableRowGroup)parent).Rows.Contains((TableRow)txtElem))
+                    {
+                        cmd.Tag = new Tuple<DependencyObject, int>(parent, ((TableRowGroup)parent).Rows.IndexOf((TableRow)txtElem));
+
+                        ((TableRowGroup)parent).Rows.Remove((TableRow)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        int index = ((Tuple<DependencyObject, int>)cmd.Tag).Item2;
+                        if (index >= ((TableRowGroup)parent).Rows.Count)
+                        {
+                            ((TableRowGroup)parent).Rows.Add((TableRow)txtElem);
+                        }
+                        else
+                        {
+                            ((TableRowGroup)parent).Rows.Insert(index, (TableRow)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+            }
+            else if (txtElem is TableCell)
+            {
+                if (parent is TableRow)
+                {
+                    if (done && ((TableRow)parent).Cells.Contains((TableCell)txtElem))
+                    {
+                        cmd.Tag = new Tuple<DependencyObject, int>(parent, ((TableRow)parent).Cells.IndexOf((TableCell)txtElem));
+
+                        ((TableRow)parent).Cells.Remove((TableCell)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        int index = ((Tuple<DependencyObject, int>)cmd.Tag).Item2;
+                        if (index >= ((TableRow)parent).Cells.Count)
+                        {
+                            ((TableRow)parent).Cells.Add((TableCell)txtElem);
+                        }
+                        else
+                        {
+                            ((TableRow)parent).Cells.Insert(index, (TableCell)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+            }
+            else if (txtElem is TableRowGroup)
+            {
+                if (parent is Table)
+                {
+                    if (done && ((Table)parent).RowGroups.Contains((TableRowGroup)txtElem))
+                    {
+                        cmd.Tag = new Tuple<DependencyObject, int>(parent, ((Table)parent).RowGroups.IndexOf((TableRowGroup)txtElem));
+
+                        ((Table)parent).RowGroups.Remove((TableRowGroup)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        int index = ((Tuple<DependencyObject, int>)cmd.Tag).Item2;
+                        if (index >= ((Table)parent).RowGroups.Count)
+                        {
+                            ((Table)parent).RowGroups.Add((TableRowGroup)txtElem);
+                        }
+                        else
+                        {
+                            ((Table)parent).RowGroups.Insert(index, (TableRowGroup)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+            }
+            else if (txtElem is ListItem)
+            {
+                if (parent is List)
+                {
+                    if (done && ((List)parent).ListItems.Contains((ListItem)txtElem))
+                    {
+                        if (((ListItem)txtElem).PreviousListItem != null)
+                        {
+                            //listItemAfter
+
+                            cmd.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, ((ListItem)txtElem).PreviousListItem, null);
+                        }
+                        else if (((ListItem)txtElem).NextListItem != null)
+                        {
+                            //listItemBefore
+
+                            cmd.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, null, ((ListItem)txtElem).NextListItem);
+                        }
+                        else
+                        {
+                            cmd.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, null, null);
+                        }
+
+                        ((List)parent).ListItems.Remove((ListItem)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        var listItemAfter =
+                            ((Tuple<DependencyObject, ListItem, ListItem>)cmd.Tag).Item2;
+
+                        var listItemBefore =
+                            ((Tuple<DependencyObject, ListItem, ListItem>)cmd.Tag).Item3;
+
+                        if (listItemAfter != null)
+                        {
+                            ((List)parent).ListItems.InsertAfter(listItemAfter, (ListItem)txtElem);
+                        }
+                        else if (listItemBefore != null)
+                        {
+                            ((List)parent).ListItems.InsertBefore(listItemBefore, (ListItem)txtElem);
+                        }
+                        else
+                        {
+                            ((List)parent).ListItems.Add((ListItem)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+            }
+            else if (txtElem is Inline)
+            {
+                if (parent is Paragraph)
+                {
+                    if (done && ((Paragraph)parent).Inlines.Contains((Inline)txtElem))
+                    {
+                        if (((Inline)txtElem).PreviousInline != null)
+                        {
+                            //inlineAfter
+
+                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
+                        }
+                        else if (((Inline)txtElem).NextInline != null)
+                        {
+                            //inlineBefore
+
+                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
+                        }
+                        else
+                        {
+                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
+                        }
+
+                        ((Paragraph)parent).Inlines.Remove((Inline)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        var inlineAfter =
+                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item2;
+
+                        var inlineBefore =
+                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item3;
+
+                        if (inlineAfter != null)
+                        {
+                            ((Paragraph)parent).Inlines.InsertAfter(inlineAfter, (Inline)txtElem);
+                        }
+                        else if (inlineBefore != null)
+                        {
+                            ((Paragraph)parent).Inlines.InsertBefore(inlineBefore, (Inline)txtElem);
+                        }
+                        else
+                        {
+                            ((Paragraph)parent).Inlines.Add((Inline)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else if (parent is Span)
+                {
+                    if (done && ((Span)parent).Inlines.Contains((Inline)txtElem))
+                    {
+                        if (((Inline)txtElem).PreviousInline != null)
+                        {
+                            //inlineAfter
+
+                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
+                        }
+                        else if (((Inline)txtElem).NextInline != null)
+                        {
+                            //inlineBefore
+
+                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
+                        }
+                        else
+                        {
+                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
+                        }
+
+                        ((Span)parent).Inlines.Remove((Inline)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        var inlineAfter =
+                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item2;
+
+                        var inlineBefore =
+                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item3;
+
+                        if (inlineAfter != null)
+                        {
+                            ((Span)parent).Inlines.InsertAfter(inlineAfter, (Inline)txtElem);
+                        }
+                        else if (inlineBefore != null)
+                        {
+                            ((Span)parent).Inlines.InsertBefore(inlineBefore, (Inline)txtElem);
+                        }
+                        else
+                        {
+                            ((Span)parent).Inlines.Add((Inline)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else if (parent is TextBlock)
+                {
+                    if (done && ((TextBlock)parent).Inlines.Contains((Inline)txtElem))
+                    {
+                        if (((Inline)txtElem).PreviousInline != null)
+                        {
+                            //inlineAfter
+
+                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
+                        }
+                        else if (((Inline)txtElem).NextInline != null)
+                        {
+                            //inlineBefore
+
+                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
+                        }
+                        else
+                        {
+                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
+                        }
+
+                        ((TextBlock)parent).Inlines.Remove((Inline)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        var inlineAfter =
+                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item2;
+
+                        var inlineBefore =
+                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item3;
+
+                        if (inlineAfter != null)
+                        {
+                            ((TextBlock)parent).Inlines.InsertAfter(inlineAfter, (Inline)txtElem);
+                        }
+                        else if (inlineBefore != null)
+                        {
+                            ((TextBlock)parent).Inlines.InsertBefore(inlineBefore, (Inline)txtElem);
+                        }
+                        else
+                        {
+                            ((TextBlock)parent).Inlines.Add((Inline)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+            }
+            else if (txtElem is Block)
+            {
+                if (parent is FlowDocument)
+                {
+                    if (done && ((FlowDocument)parent).Blocks.Contains((Block)txtElem))
+                    {
+                        if (((Block)txtElem).PreviousBlock != null)
+                        {
+                            //blockAfter
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                        }
+                        else if (((Block)txtElem).NextBlock != null)
+                        {
+                            //blockBefore
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                        }
+                        else
+                        {
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                        }
+
+                        ((FlowDocument)parent).Blocks.Remove((Block)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        var blockAfter =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+
+                        var blockBefore =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+
+                        if (blockAfter != null)
+                        {
+                            ((FlowDocument)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
+                        }
+                        else if (blockBefore != null)
+                        {
+                            ((FlowDocument)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
+                        }
+                        else
+                        {
+                            ((FlowDocument)parent).Blocks.Add((Block)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else if (parent is Section)
+                {
+                    if (done && ((Section)parent).Blocks.Contains((Block)txtElem))
+                    {
+                        if (((Block)txtElem).PreviousBlock != null)
+                        {
+                            //blockAfter
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                        }
+                        else if (((Block)txtElem).NextBlock != null)
+                        {
+                            //blockBefore
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                        }
+                        else
+                        {
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                        }
+
+                        ((Section)parent).Blocks.Remove((Block)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        var blockAfter =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+
+                        var blockBefore =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+
+                        if (blockAfter != null)
+                        {
+                            ((Section)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
+                        }
+                        else if (blockBefore != null)
+                        {
+                            ((Section)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
+                        }
+                        else
+                        {
+                            ((Section)parent).Blocks.Add((Block)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else if (parent is ListItem)
+                {
+                    if (done && ((ListItem)parent).Blocks.Contains((Block)txtElem))
+                    {
+                        if (((Block)txtElem).PreviousBlock != null)
+                        {
+                            //blockAfter
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                        }
+                        else if (((Block)txtElem).NextBlock != null)
+                        {
+                            //blockBefore
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                        }
+                        else
+                        {
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                        }
+
+                        ((ListItem)parent).Blocks.Remove((Block)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        var blockAfter =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+
+                        var blockBefore =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+
+                        if (blockAfter != null)
+                        {
+                            ((ListItem)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
+                        }
+                        else if (blockBefore != null)
+                        {
+                            ((ListItem)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
+                        }
+                        else
+                        {
+                            ((ListItem)parent).Blocks.Add((Block)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else if (parent is TableCell)
+                {
+                    if (done && ((TableCell)parent).Blocks.Contains((Block)txtElem))
+                    {
+                        if (((Block)txtElem).PreviousBlock != null)
+                        {
+                            //blockAfter
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                        }
+                        else if (((Block)txtElem).NextBlock != null)
+                        {
+                            //blockBefore
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                        }
+                        else
+                        {
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                        }
+
+                        ((TableCell)parent).Blocks.Remove((Block)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        var blockAfter =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+
+                        var blockBefore =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+
+                        if (blockAfter != null)
+                        {
+                            ((TableCell)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
+                        }
+                        else if (blockBefore != null)
+                        {
+                            ((TableCell)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
+                        }
+                        else
+                        {
+                            ((TableCell)parent).Blocks.Add((Block)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else if (parent is Floater)
+                {
+                    if (done && ((Floater)parent).Blocks.Contains((Block)txtElem))
+                    {
+                        if (((Block)txtElem).PreviousBlock != null)
+                        {
+                            //blockAfter
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                        }
+                        else if (((Block)txtElem).NextBlock != null)
+                        {
+                            //blockBefore
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                        }
+                        else
+                        {
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                        }
+
+                        ((Floater)parent).Blocks.Remove((Block)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        var blockAfter =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+
+                        var blockBefore =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+
+                        if (blockAfter != null)
+                        {
+                            ((Floater)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
+                        }
+                        else if (blockBefore != null)
+                        {
+                            ((Floater)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
+                        }
+                        else
+                        {
+                            ((Floater)parent).Blocks.Add((Block)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else if (parent is Figure)
+                {
+                    if (done && ((Figure)parent).Blocks.Contains((Block)txtElem))
+                    {
+                        if (((Block)txtElem).PreviousBlock != null)
+                        {
+                            //blockAfter
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                        }
+                        else if (((Block)txtElem).NextBlock != null)
+                        {
+                            //blockBefore
+
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                        }
+                        else
+                        {
+                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                        }
+
+                        ((Figure)parent).Blocks.Remove((Block)txtElem);
+                    }
+                    else if (!done)
+                    {
+                        var blockAfter =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+
+                        var blockBefore =
+                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+
+                        if (blockAfter != null)
+                        {
+                            ((Figure)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
+                        }
+                        else if (blockBefore != null)
+                        {
+                            ((Figure)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
+                        }
+                        else
+                        {
+                            ((Figure)parent).Blocks.Add((Block)txtElem);
+                        }
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+                else
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+            }
+            else
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+        }
+
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
             if (!Dispatcher.CheckAccess())
@@ -95,9 +809,36 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     // at undo (remove) time, there should already be FlowDocument tag!!
                     DebugFix.Assert(done);
+                    DebugFix.Assert(cmdTreeNode.Parent != null);
 
                     TreeNode parent = ((TreeNodeInsertCommand)cmd).TreeNodeParent;
+                    DebugFix.Assert(cmdTreeNode.Parent == parent);
+
                     int pos = ((TreeNodeInsertCommand)cmd).TreeNodePos;
+                    DebugFix.Assert(pos >= 0 && pos < parent.Children.Count);
+
+                    var parentTextElem = parent.Tag as TextElement;
+                    DebugFix.Assert(parentTextElem != null);
+                    if (parentTextElem == null) return;
+
+                    int toRemove = parent.Children.Count - 1 - pos;
+                    var tags = new List<ObjectTagger>(toRemove);
+
+                    // Temporarily delete next siblings
+                    for (int i = parent.Children.Count-1; i >= 0; i--)
+                    //for (int i = 0; i < parent.Children.Count; i++)
+                    {
+                        TreeNode childTreeNode = parent.Children.Get(i);
+
+                        if (i > pos && childTreeNode.Tag is TextElement)
+                        {
+                            var tag = new ObjectTagger();
+                            tags.Add(tag);
+                            DocumentPaneView.detachFlowDocumentFragment(true, (TextElement)childTreeNode.Tag, tag);
+                        }
+                    }
+
+                    DebugFix.Assert(tags.Count == toRemove);
 
                     var converter = new XukToFlowDocument(this,
                         cmdTreeNode,
@@ -107,673 +848,26 @@ namespace Tobi.Plugin.DocumentPane
                         m_ShellView,
                         m_UrakawaSession
                         );
-                    converter.walkBookTreeAndGenerateFlowDocument(cmdTreeNode, parent.Tag as TextElement);
+                    converter.walkBookTreeAndGenerateFlowDocument(cmdTreeNode, parentTextElem);
+
+                    int j = tags.Count-1;
+
+                    // Restore temporarily-deleted next siblings
+                    for (int i = 0; i < parent.Children.Count; i++)
+                    {
+                        TreeNode childTreeNode = parent.Children.Get(i);
+
+                        if (i > pos && childTreeNode.Tag is TextElement)
+                        {
+                            DocumentPaneView.detachFlowDocumentFragment(false, (TextElement)childTreeNode.Tag, tags[j--]);
+                        }
+                    }
                 }
                 else if (cmdTreeNode.Tag is TextElement)
                 {
                     if (add) done = !done;
 
-                    var txtElem = (TextElement)cmdTreeNode.Tag;
-
-                    var parent = txtElem.Parent;
-
-                    if (done)
-                    {
-                        DebugFix.Assert(parent != null);
-                    }
-                    else
-                    {
-                        DebugFix.Assert(parent == null);
-
-                        DebugFix.Assert(cmd.Tag != null);
-                        //DebugFix.Assert(cmd.Tag is Tuple);
-
-                        if (cmd.Tag != null)
-                        {
-                            if (cmd.Tag is Tuple<DependencyObject, int>)
-                            {
-                                Tuple<DependencyObject, int> data =
-                                    (Tuple<DependencyObject, int>)cmd.Tag;
-                                parent = data.Item1;
-                            }
-                            else if (cmd.Tag is Tuple<DependencyObject, ListItem, ListItem>)
-                            {
-                                Tuple<DependencyObject, ListItem, ListItem> data =
-                                    (Tuple<DependencyObject, ListItem, ListItem>)cmd.Tag;
-                                parent = data.Item1;
-                            }
-                            else if (cmd.Tag is Tuple<DependencyObject, Inline, Inline>)
-                            {
-                                Tuple<DependencyObject, Inline, Inline> data =
-                                    (Tuple<DependencyObject, Inline, Inline>)cmd.Tag;
-                                parent = data.Item1;
-                            }
-                            else if (cmd.Tag is Tuple<DependencyObject, Block, Block>)
-                            {
-                                Tuple<DependencyObject, Block, Block> data =
-                                    (Tuple<DependencyObject, Block, Block>)cmd.Tag;
-                                parent = data.Item1;
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                    }
-
-                    if (txtElem is TableRow)
-                    {
-                        if (parent is TableRowGroup)
-                        {
-                            if (done && ((TableRowGroup)parent).Rows.Contains((TableRow)txtElem))
-                            {
-                                cmd.Tag = new Tuple<DependencyObject, int>(parent, ((TableRowGroup)parent).Rows.IndexOf((TableRow)txtElem));
-
-                                ((TableRowGroup)parent).Rows.Remove((TableRow)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                int index = ((Tuple<DependencyObject, int>)cmd.Tag).Item2;
-                                if (index >= ((TableRowGroup)parent).Rows.Count)
-                                {
-                                    ((TableRowGroup)parent).Rows.Add((TableRow)txtElem);
-                                }
-                                else
-                                {
-                                    ((TableRowGroup)parent).Rows.Insert(index, (TableRow)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else
-                        {
-#if DEBUG
-                            Debugger.Break();
-#endif
-                        }
-                    }
-                    else if (txtElem is TableCell)
-                    {
-                        if (parent is TableRow)
-                        {
-                            if (done && ((TableRow)parent).Cells.Contains((TableCell)txtElem))
-                            {
-                                cmd.Tag = new Tuple<DependencyObject, int>(parent, ((TableRow)parent).Cells.IndexOf((TableCell)txtElem));
-
-                                ((TableRow)parent).Cells.Remove((TableCell)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                int index = ((Tuple<DependencyObject, int>)cmd.Tag).Item2;
-                                if (index >= ((TableRow)parent).Cells.Count)
-                                {
-                                    ((TableRow)parent).Cells.Add((TableCell)txtElem);
-                                }
-                                else
-                                {
-                                    ((TableRow)parent).Cells.Insert(index, (TableCell)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else
-                        {
-#if DEBUG
-                            Debugger.Break();
-#endif
-                        }
-                    }
-                    else if (txtElem is TableRowGroup)
-                    {
-                        if (parent is Table)
-                        {
-                            if (done && ((Table)parent).RowGroups.Contains((TableRowGroup)txtElem))
-                            {
-                                cmd.Tag = new Tuple<DependencyObject, int>(parent, ((Table)parent).RowGroups.IndexOf((TableRowGroup)txtElem));
-
-                                ((Table)parent).RowGroups.Remove((TableRowGroup)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                int index = ((Tuple<DependencyObject, int>)cmd.Tag).Item2;
-                                if (index >= ((Table)parent).RowGroups.Count)
-                                {
-                                    ((Table)parent).RowGroups.Add((TableRowGroup)txtElem);
-                                }
-                                else
-                                {
-                                    ((Table)parent).RowGroups.Insert(index, (TableRowGroup)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else
-                        {
-#if DEBUG
-                            Debugger.Break();
-#endif
-                        }
-                    }
-                    else if (txtElem is ListItem)
-                    {
-                        if (parent is List)
-                        {
-                            if (done && ((List)parent).ListItems.Contains((ListItem)txtElem))
-                            {
-                                if (((ListItem)txtElem).PreviousListItem != null)
-                                {
-                                    //listItemAfter
-
-                                    cmd.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, ((ListItem)txtElem).PreviousListItem, null);
-                                }
-                                else if (((ListItem)txtElem).NextListItem != null)
-                                {
-                                    //listItemBefore
-
-                                    cmd.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, null, ((ListItem)txtElem).NextListItem);
-                                }
-
-                                ((List)parent).ListItems.Remove((ListItem)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                var listItemAfter =
-                                    ((Tuple<DependencyObject, ListItem, ListItem>)cmd.Tag).Item2;
-
-                                var listItemBefore =
-                                    ((Tuple<DependencyObject, ListItem, ListItem>)cmd.Tag).Item3;
-
-                                if (listItemAfter != null)
-                                {
-                                    ((List)parent).ListItems.InsertAfter(listItemAfter, (ListItem)txtElem);
-                                }
-                                else if (listItemBefore != null)
-                                {
-                                    ((List)parent).ListItems.InsertBefore(listItemBefore, (ListItem)txtElem);
-                                }
-                                else
-                                {
-                                    ((List)parent).ListItems.Add((ListItem)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else
-                        {
-#if DEBUG
-                            Debugger.Break();
-#endif
-                        }
-                    }
-                    else if (txtElem is Inline)
-                    {
-                        if (parent is Paragraph)
-                        {
-                            if (done && ((Paragraph)parent).Inlines.Contains((Inline)txtElem))
-                            {
-                                if (((Inline)txtElem).PreviousInline != null)
-                                {
-                                    //inlineAfter
-
-                                    cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
-                                }
-                                else if (((Inline)txtElem).NextInline != null)
-                                {
-                                    //inlineBefore
-
-                                    cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
-                                }
-
-                                ((Paragraph)parent).Inlines.Remove((Inline)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                var inlineAfter =
-                                    ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item2;
-
-                                var inlineBefore =
-                                    ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item3;
-
-                                if (inlineAfter != null)
-                                {
-                                    ((Paragraph)parent).Inlines.InsertAfter(inlineAfter, (Inline)txtElem);
-                                }
-                                else if (inlineBefore != null)
-                                {
-                                    ((Paragraph)parent).Inlines.InsertBefore(inlineBefore, (Inline)txtElem);
-                                }
-                                else
-                                {
-                                    ((Paragraph)parent).Inlines.Add((Inline)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else if (parent is Span)
-                        {
-                            if (done && ((Span)parent).Inlines.Contains((Inline)txtElem))
-                            {
-                                if (((Inline)txtElem).PreviousInline != null)
-                                {
-                                    //inlineAfter
-
-                                    cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
-                                }
-                                else if (((Inline)txtElem).NextInline != null)
-                                {
-                                    //inlineBefore
-
-                                    cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
-                                }
-
-                                ((Span)parent).Inlines.Remove((Inline)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                var inlineAfter =
-                                    ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item2;
-
-                                var inlineBefore =
-                                    ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item3;
-
-                                if (inlineAfter != null)
-                                {
-                                    ((Span)parent).Inlines.InsertAfter(inlineAfter, (Inline)txtElem);
-                                }
-                                else if (inlineBefore != null)
-                                {
-                                    ((Span)parent).Inlines.InsertBefore(inlineBefore, (Inline)txtElem);
-                                }
-                                else
-                                {
-                                    ((Span)parent).Inlines.Add((Inline)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else if (parent is TextBlock)
-                        {
-                            if (done && ((TextBlock)parent).Inlines.Contains((Inline)txtElem))
-                            {
-                                if (((Inline)txtElem).PreviousInline != null)
-                                {
-                                    //inlineAfter
-
-                                    cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
-                                }
-                                else if (((Inline)txtElem).NextInline != null)
-                                {
-                                    //inlineBefore
-
-                                    cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
-                                }
-
-                                ((TextBlock)parent).Inlines.Remove((Inline)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                var inlineAfter =
-                                    ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item2;
-
-                                var inlineBefore =
-                                    ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item3;
-
-                                if (inlineAfter != null)
-                                {
-                                    ((TextBlock)parent).Inlines.InsertAfter(inlineAfter, (Inline)txtElem);
-                                }
-                                else if (inlineBefore != null)
-                                {
-                                    ((TextBlock)parent).Inlines.InsertBefore(inlineBefore, (Inline)txtElem);
-                                }
-                                else
-                                {
-                                    ((TextBlock)parent).Inlines.Add((Inline)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else
-                        {
-#if DEBUG
-                            Debugger.Break();
-#endif
-                        }
-                    }
-                    else if (txtElem is Block)
-                    {
-                        if (parent is FlowDocument)
-                        {
-                            if (done && ((FlowDocument)parent).Blocks.Contains((Block)txtElem))
-                            {
-                                if (((Block)txtElem).PreviousBlock != null)
-                                {
-                                    //blockAfter
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
-                                }
-                                else if (((Block)txtElem).NextBlock != null)
-                                {
-                                    //blockBefore
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
-                                }
-
-                                ((FlowDocument)parent).Blocks.Remove((Block)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                var blockAfter =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
-
-                                var blockBefore =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
-
-                                if (blockAfter != null)
-                                {
-                                    ((FlowDocument)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
-                                }
-                                else if (blockBefore != null)
-                                {
-                                    ((FlowDocument)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
-                                }
-                                else
-                                {
-                                    ((FlowDocument)parent).Blocks.Add((Block)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else if (parent is Section)
-                        {
-                            if (done && ((Section)parent).Blocks.Contains((Block)txtElem))
-                            {
-                                if (((Block)txtElem).PreviousBlock != null)
-                                {
-                                    //blockAfter
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
-                                }
-                                else if (((Block)txtElem).NextBlock != null)
-                                {
-                                    //blockBefore
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
-                                }
-
-                                ((Section)parent).Blocks.Remove((Block)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                var blockAfter =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
-
-                                var blockBefore =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
-
-                                if (blockAfter != null)
-                                {
-                                    ((Section)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
-                                }
-                                else if (blockBefore != null)
-                                {
-                                    ((Section)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
-                                }
-                                else
-                                {
-                                    ((Section)parent).Blocks.Add((Block)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else if (parent is ListItem)
-                        {
-                            if (done && ((ListItem)parent).Blocks.Contains((Block)txtElem))
-                            {
-                                if (((Block)txtElem).PreviousBlock != null)
-                                {
-                                    //blockAfter
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
-                                }
-                                else if (((Block)txtElem).NextBlock != null)
-                                {
-                                    //blockBefore
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
-                                }
-
-                                ((ListItem)parent).Blocks.Remove((Block)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                var blockAfter =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
-
-                                var blockBefore =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
-
-                                if (blockAfter != null)
-                                {
-                                    ((ListItem)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
-                                }
-                                else if (blockBefore != null)
-                                {
-                                    ((ListItem)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
-                                }
-                                else
-                                {
-                                    ((ListItem)parent).Blocks.Add((Block)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else if (parent is TableCell)
-                        {
-                            if (done && ((TableCell)parent).Blocks.Contains((Block)txtElem))
-                            {
-                                if (((Block)txtElem).PreviousBlock != null)
-                                {
-                                    //blockAfter
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
-                                }
-                                else if (((Block)txtElem).NextBlock != null)
-                                {
-                                    //blockBefore
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
-                                }
-
-                                ((TableCell)parent).Blocks.Remove((Block)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                var blockAfter =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
-
-                                var blockBefore =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
-
-                                if (blockAfter != null)
-                                {
-                                    ((TableCell)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
-                                }
-                                else if (blockBefore != null)
-                                {
-                                    ((TableCell)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
-                                }
-                                else
-                                {
-                                    ((TableCell)parent).Blocks.Add((Block)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else if (parent is Floater)
-                        {
-                            if (done && ((Floater)parent).Blocks.Contains((Block)txtElem))
-                            {
-                                if (((Block)txtElem).PreviousBlock != null)
-                                {
-                                    //blockAfter
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
-                                }
-                                else if (((Block)txtElem).NextBlock != null)
-                                {
-                                    //blockBefore
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
-                                }
-
-                                ((Floater)parent).Blocks.Remove((Block)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                var blockAfter =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
-
-                                var blockBefore =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
-
-                                if (blockAfter != null)
-                                {
-                                    ((Floater)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
-                                }
-                                else if (blockBefore != null)
-                                {
-                                    ((Floater)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
-                                }
-                                else
-                                {
-                                    ((Floater)parent).Blocks.Add((Block)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else if (parent is Figure)
-                        {
-                            if (done && ((Figure)parent).Blocks.Contains((Block)txtElem))
-                            {
-                                if (((Block)txtElem).PreviousBlock != null)
-                                {
-                                    //blockAfter
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
-                                }
-                                else if (((Block)txtElem).NextBlock != null)
-                                {
-                                    //blockBefore
-
-                                    cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
-                                }
-
-                                ((Figure)parent).Blocks.Remove((Block)txtElem);
-                            }
-                            else if (!done)
-                            {
-                                var blockAfter =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
-
-                                var blockBefore =
-                                    ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
-
-                                if (blockAfter != null)
-                                {
-                                    ((Figure)parent).Blocks.InsertAfter(blockAfter, (Block)txtElem);
-                                }
-                                else if (blockBefore != null)
-                                {
-                                    ((Figure)parent).Blocks.InsertBefore(blockBefore, (Block)txtElem);
-                                }
-                                else
-                                {
-                                    ((Figure)parent).Blocks.Add((Block)txtElem);
-                                }
-                            }
-                            else
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
-                        }
-                        else
-                        {
-#if DEBUG
-                            Debugger.Break();
-#endif
-                        }
-                    }
-                    else
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif
-                    }
+                    DocumentPaneView.detachFlowDocumentFragment(done, (TextElement)cmdTreeNode.Tag, cmd);
                 }
             }
 
@@ -807,7 +901,7 @@ namespace Tobi.Plugin.DocumentPane
             }
             else if (cmd is CompositeCommand)
             {
-                foreach (var childCommand in ((CompositeCommand) cmd).ChildCommands.ContentsAs_Enumerable)
+                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_Enumerable)
                 {
                     findAndUpdateTreeNodeAudioTextStatus(childCommand, done);
                 }
