@@ -1441,7 +1441,6 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (Convert.ToBoolean(radioPrepend.IsChecked))
                     {
-                        position = node.Children.Count; // append
                         position = 0; // prepend
 
                         parent = node;
