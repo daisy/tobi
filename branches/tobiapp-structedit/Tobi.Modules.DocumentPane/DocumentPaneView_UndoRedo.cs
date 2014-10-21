@@ -58,7 +58,7 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        public static void detachFlowDocumentFragment(bool done, TextElement txtElem, ObjectTag cmd)
+        public static void detachFlowDocumentFragment(bool done, TextElement txtElem, ObjectTag objectTagger)
         {
             DependencyObject parent = txtElem.Parent;
 
@@ -70,33 +70,37 @@ namespace Tobi.Plugin.DocumentPane
             {
                 DebugFix.Assert(parent == null);
 
-                DebugFix.Assert(cmd.Tag != null);
+                DebugFix.Assert(objectTagger.Tag != null);
                 //DebugFix.Assert(cmd.Tag is Tuple);
 
-                if (cmd.Tag != null)
+                if (objectTagger.Tag != null)
                 {
-                    if (cmd.Tag is Tuple<DependencyObject, int>)
+                    if (objectTagger.Tag is Tuple<DependencyObject, int>)
                     {
                         Tuple<DependencyObject, int> data =
-                            (Tuple<DependencyObject, int>)cmd.Tag;
+                            (Tuple<DependencyObject, int>)objectTagger.Tag;
                         parent = data.Item1;
+
+                        bool condition = parent is TableRowGroup && txtElem is TableRow
+                            || parent is TableRow && txtElem is TableCell;
+                        DebugFix.Assert(condition);
                     }
-                    else if (cmd.Tag is Tuple<DependencyObject, ListItem, ListItem>)
+                    else if (objectTagger.Tag is Tuple<DependencyObject, ListItem, ListItem>)
                     {
                         Tuple<DependencyObject, ListItem, ListItem> data =
-                            (Tuple<DependencyObject, ListItem, ListItem>)cmd.Tag;
+                            (Tuple<DependencyObject, ListItem, ListItem>)objectTagger.Tag;
                         parent = data.Item1;
                     }
-                    else if (cmd.Tag is Tuple<DependencyObject, Inline, Inline>)
+                    else if (objectTagger.Tag is Tuple<DependencyObject, Inline, Inline>)
                     {
                         Tuple<DependencyObject, Inline, Inline> data =
-                            (Tuple<DependencyObject, Inline, Inline>)cmd.Tag;
+                            (Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag;
                         parent = data.Item1;
                     }
-                    else if (cmd.Tag is Tuple<DependencyObject, Block, Block>)
+                    else if (objectTagger.Tag is Tuple<DependencyObject, Block, Block>)
                     {
                         Tuple<DependencyObject, Block, Block> data =
-                            (Tuple<DependencyObject, Block, Block>)cmd.Tag;
+                            (Tuple<DependencyObject, Block, Block>)objectTagger.Tag;
                         parent = data.Item1;
                     }
                     else
@@ -114,13 +118,13 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (done && ((TableRowGroup)parent).Rows.Contains((TableRow)txtElem))
                     {
-                        cmd.Tag = new Tuple<DependencyObject, int>(parent, ((TableRowGroup)parent).Rows.IndexOf((TableRow)txtElem));
+                        objectTagger.Tag = new Tuple<DependencyObject, int>(parent, ((TableRowGroup)parent).Rows.IndexOf((TableRow)txtElem));
 
                         ((TableRowGroup)parent).Rows.Remove((TableRow)txtElem);
                     }
                     else if (!done)
                     {
-                        int index = ((Tuple<DependencyObject, int>)cmd.Tag).Item2;
+                        int index = ((Tuple<DependencyObject, int>)objectTagger.Tag).Item2;
                         if (index >= ((TableRowGroup)parent).Rows.Count)
                         {
                             ((TableRowGroup)parent).Rows.Add((TableRow)txtElem);
@@ -150,13 +154,13 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (done && ((TableRow)parent).Cells.Contains((TableCell)txtElem))
                     {
-                        cmd.Tag = new Tuple<DependencyObject, int>(parent, ((TableRow)parent).Cells.IndexOf((TableCell)txtElem));
+                        objectTagger.Tag = new Tuple<DependencyObject, int>(parent, ((TableRow)parent).Cells.IndexOf((TableCell)txtElem));
 
                         ((TableRow)parent).Cells.Remove((TableCell)txtElem);
                     }
                     else if (!done)
                     {
-                        int index = ((Tuple<DependencyObject, int>)cmd.Tag).Item2;
+                        int index = ((Tuple<DependencyObject, int>)objectTagger.Tag).Item2;
                         if (index >= ((TableRow)parent).Cells.Count)
                         {
                             ((TableRow)parent).Cells.Add((TableCell)txtElem);
@@ -186,13 +190,13 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (done && ((Table)parent).RowGroups.Contains((TableRowGroup)txtElem))
                     {
-                        cmd.Tag = new Tuple<DependencyObject, int>(parent, ((Table)parent).RowGroups.IndexOf((TableRowGroup)txtElem));
+                        objectTagger.Tag = new Tuple<DependencyObject, int>(parent, ((Table)parent).RowGroups.IndexOf((TableRowGroup)txtElem));
 
                         ((Table)parent).RowGroups.Remove((TableRowGroup)txtElem);
                     }
                     else if (!done)
                     {
-                        int index = ((Tuple<DependencyObject, int>)cmd.Tag).Item2;
+                        int index = ((Tuple<DependencyObject, int>)objectTagger.Tag).Item2;
                         if (index >= ((Table)parent).RowGroups.Count)
                         {
                             ((Table)parent).RowGroups.Add((TableRowGroup)txtElem);
@@ -226,17 +230,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //listItemAfter
 
-                            cmd.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, ((ListItem)txtElem).PreviousListItem, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, ((ListItem)txtElem).PreviousListItem, null);
                         }
                         else if (((ListItem)txtElem).NextListItem != null)
                         {
                             //listItemBefore
 
-                            cmd.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, null, ((ListItem)txtElem).NextListItem);
+                            objectTagger.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, null, ((ListItem)txtElem).NextListItem);
                         }
                         else
                         {
-                            cmd.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, null, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, null, null);
                         }
 
                         ((List)parent).ListItems.Remove((ListItem)txtElem);
@@ -244,10 +248,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!done)
                     {
                         var listItemAfter =
-                            ((Tuple<DependencyObject, ListItem, ListItem>)cmd.Tag).Item2;
+                            ((Tuple<DependencyObject, ListItem, ListItem>)objectTagger.Tag).Item2;
 
                         var listItemBefore =
-                            ((Tuple<DependencyObject, ListItem, ListItem>)cmd.Tag).Item3;
+                            ((Tuple<DependencyObject, ListItem, ListItem>)objectTagger.Tag).Item3;
 
                         if (listItemAfter != null)
                         {
@@ -286,17 +290,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //inlineAfter
 
-                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
                         }
                         else if (((Inline)txtElem).NextInline != null)
                         {
                             //inlineBefore
 
-                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
+                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
                         }
                         else
                         {
-                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
                         }
 
                         ((Paragraph)parent).Inlines.Remove((Inline)txtElem);
@@ -304,10 +308,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!done)
                     {
                         var inlineAfter =
-                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item2;
+                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
 
                         var inlineBefore =
-                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item3;
+                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item3;
 
                         if (inlineAfter != null)
                         {
@@ -337,17 +341,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //inlineAfter
 
-                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
                         }
                         else if (((Inline)txtElem).NextInline != null)
                         {
                             //inlineBefore
 
-                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
+                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
                         }
                         else
                         {
-                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
                         }
 
                         ((Span)parent).Inlines.Remove((Inline)txtElem);
@@ -355,10 +359,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!done)
                     {
                         var inlineAfter =
-                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item2;
+                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
 
                         var inlineBefore =
-                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item3;
+                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item3;
 
                         if (inlineAfter != null)
                         {
@@ -388,17 +392,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //inlineAfter
 
-                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
                         }
                         else if (((Inline)txtElem).NextInline != null)
                         {
                             //inlineBefore
 
-                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
+                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
                         }
                         else
                         {
-                            cmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
                         }
 
                         ((TextBlock)parent).Inlines.Remove((Inline)txtElem);
@@ -406,10 +410,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!done)
                     {
                         var inlineAfter =
-                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item2;
+                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
 
                         var inlineBefore =
-                            ((Tuple<DependencyObject, Inline, Inline>)cmd.Tag).Item3;
+                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item3;
 
                         if (inlineAfter != null)
                         {
@@ -448,17 +452,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((FlowDocument)parent).Blocks.Remove((Block)txtElem);
@@ -466,10 +470,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!done)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -499,17 +503,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((Section)parent).Blocks.Remove((Block)txtElem);
@@ -517,10 +521,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!done)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -550,17 +554,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((ListItem)parent).Blocks.Remove((Block)txtElem);
@@ -568,10 +572,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!done)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -601,17 +605,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((TableCell)parent).Blocks.Remove((Block)txtElem);
@@ -619,10 +623,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!done)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -652,17 +656,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((Floater)parent).Blocks.Remove((Block)txtElem);
@@ -670,10 +674,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!done)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -703,17 +707,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            cmd.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((Figure)parent).Blocks.Remove((Block)txtElem);
@@ -721,10 +725,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!done)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item2;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)cmd.Tag).Item3;
+                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -850,7 +854,12 @@ namespace Tobi.Plugin.DocumentPane
                         );
                     converter.walkBookTreeAndGenerateFlowDocument(cmdTreeNode, parentTextElem);
 
+                    // TODO:
+                    // parentTextElem LAST CHILD
+
                     int j = tags.Count-1;
+                    var taggedObject = tags[j].Tag;
+                    //TODO: change anchor to LAST CHILD
 
                     // Restore temporarily-deleted next siblings
                     for (int i = 0; i < parent.Children.Count; i++)
