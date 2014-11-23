@@ -30,6 +30,18 @@ using System.Xml.Linq;
 
 namespace OpenXmlPowerTools
 {
+    public static class PtUtils
+    {
+        public static string NormalizeDirName(string dirName)
+        {
+            var d = dirName.Replace('\\', '/');
+            if (d[dirName.Length - 1] != '/' && d[dirName.Length - 1] != '\\')
+                return d + "/";
+            else
+                return d;
+        }
+    }
+
     public static class PtExtensions
     {
         public static string StringConcatenate(this IEnumerable<string> source)

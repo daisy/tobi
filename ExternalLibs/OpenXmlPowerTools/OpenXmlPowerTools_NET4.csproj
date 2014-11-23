@@ -74,6 +74,7 @@
     <Compile Include="TextReplacer.cs" />
     <Compile Include="WmlDocument.cs" />
     <Compile Include="WorksheetAccessor.cs" />
+	<Compile Include="OpenXmlRegex.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
