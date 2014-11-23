@@ -25,6 +25,7 @@ Version: 2.6.00
 using System;
 using System.IO;
 using System.IO.Packaging;
+using System.IO.Compression;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -284,23 +285,10 @@ namespace OpenXmlPowerTools
 
     public static class FlatOpc
     {
-        public static XDocument OpcToFlatOpc(string path)
+        private class FlatOpcTupple
         {
-            using (Package package = Package.Open(path))
-            {
-                XNamespace pkg = "http://schemas.microsoft.com/office/2006/xmlPackage";
-
-                XDeclaration declaration = new XDeclaration("1.0", "UTF-8", "yes");
-                XDocument doc = new XDocument(
-                    declaration,
-                    GetProcessingInstruction(path),
-                    new XElement(pkg + "package",
-                        new XAttribute(XNamespace.Xmlns + "pkg", pkg.ToString()),
-                        package.GetParts().Select(part => GetContentsAsXml(part))
-                    )
-                );
-                return doc;
-            }
+            public char FoCharacter;
+            public int FoChunk;
         }
 
         private static XElement GetContentsAsXml(PackagePart part)
@@ -332,20 +320,20 @@ namespace OpenXmlPowerTools
                     string base64String = (System.Convert.ToBase64String(byteArray))
                         .Select
                         (
-                            (c, i) => new
+                            (c, i) => new FlatOpcTupple()
                             {
-                                Character = c,
-                                Chunk = i / 76
+                                FoCharacter = c,
+                                FoChunk = i / 76
                             }
                         )
-                        .GroupBy(c => c.Chunk)
+                        .GroupBy(c => c.FoChunk)
                         .Aggregate(
                             new StringBuilder(),
                             (s, i) =>
                                 s.Append(
                                     i.Aggregate(
                                         new StringBuilder(),
-                                        (seed, it) => seed.Append(it.Character),
+                                        (seed, it) => seed.Append(it.FoCharacter),
                                         sb => sb.ToString()
                                     )
                                 )
@@ -364,15 +352,310 @@ namespace OpenXmlPowerTools
 
         private static XProcessingInstruction GetProcessingInstruction(string path)
         {
-            if (path.ToLower().EndsWith(".docx"))
+            var fi = new FileInfo(path);
+            if (IsWordprocessingML(fi.Extension))
                 return new XProcessingInstruction("mso-application",
                             "progid=\"Word.Document\"");
-            if (path.ToLower().EndsWith(".pptx"))
+            if (IsPresentationML(fi.Extension))
                 return new XProcessingInstruction("mso-application",
                             "progid=\"PowerPoint.Show\"");
+            if (IsSpreadsheetML(fi.Extension))
+                return new XProcessingInstruction("mso-application",
+                            "progid=\"Excel.Sheet\"");
             return null;
         }
 
+        public static XmlDocument OpcToXmlDocument(string fileName)
+        {
+            using (Package package = Package.Open(fileName))
+            {
+                XNamespace pkg = "http://schemas.microsoft.com/office/2006/xmlPackage";
+
+                XDeclaration declaration = new XDeclaration("1.0", "UTF-8", "yes");
+                XDocument doc = new XDocument(
+                    declaration,
+                    GetProcessingInstruction(fileName),
+                    new XElement(pkg + "package",
+                        new XAttribute(XNamespace.Xmlns + "pkg", pkg.ToString()),
+                        package.GetParts().Select(part => GetContentsAsXml(part))
+                    )
+                );
+                return GetXmlDocument(doc);
+            }
+        }
+
+        public static XDocument OpcToXDocument(string fileName)
+        {
+            using (Package package = Package.Open(fileName))
+            {
+                XNamespace pkg = "http://schemas.microsoft.com/office/2006/xmlPackage";
+
+                XDeclaration declaration = new XDeclaration("1.0", "UTF-8", "yes");
+                XDocument doc = new XDocument(
+                    declaration,
+                    GetProcessingInstruction(fileName),
+                    new XElement(pkg + "package",
+                        new XAttribute(XNamespace.Xmlns + "pkg", pkg.ToString()),
+                        package.GetParts().Select(part => GetContentsAsXml(part))
+                    )
+                );
+                return doc;
+            }
+        }
+
+        public static string[] OpcToText(string fileName)
+        {
+            using (Package package = Package.Open(fileName))
+            {
+                XNamespace pkg = "http://schemas.microsoft.com/office/2006/xmlPackage";
+
+                XDeclaration declaration = new XDeclaration("1.0", "UTF-8", "yes");
+                XDocument doc = new XDocument(
+                    declaration,
+                    GetProcessingInstruction(fileName),
+                    new XElement(pkg + "package",
+                        new XAttribute(XNamespace.Xmlns + "pkg", pkg.ToString()),
+                        package.GetParts().Select(part => GetContentsAsXml(part))
+                    )
+                );
+                return doc.ToString().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            }
+        }
+
+        private static XmlDocument GetXmlDocument(XDocument document)
+        {
+            using (XmlReader xmlReader = document.CreateReader())
+            {
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.Load(xmlReader);
+                if (document.Declaration != null)
+                {
+                    XmlDeclaration dec = xmlDoc.CreateXmlDeclaration(document.Declaration.Version,
+                        document.Declaration.Encoding, document.Declaration.Standalone);
+                    xmlDoc.InsertBefore(dec, xmlDoc.FirstChild);
+                }
+                return xmlDoc;
+            }
+        }
+
+        private static XDocument GetXDocument(this XmlDocument document)
+        {
+            XDocument xDoc = new XDocument();
+            using (XmlWriter xmlWriter = xDoc.CreateWriter())
+                document.WriteTo(xmlWriter);
+            XmlDeclaration decl =
+                document.ChildNodes.OfType<XmlDeclaration>().FirstOrDefault();
+            if (decl != null)
+                xDoc.Declaration = new XDeclaration(decl.Version, decl.Encoding,
+                    decl.Standalone);
+            return xDoc;
+        }
+
+        public static string[] WordprocessingExtensions = new[] {
+            ".docx",
+            ".docm",
+            ".dotx",
+            ".dotm",
+        };
+
+        public static bool IsWordprocessingML(string ext)
+        {
+            return WordprocessingExtensions.Contains(ext.ToLower());
+        }
+
+        public static string[] SpreadsheetExtensions = new[] {
+            ".xlsx",
+            ".xlsm",
+            ".xltx",
+            ".xltm",
+            ".xlam",
+        };
+
+        public static bool IsSpreadsheetML(string ext)
+        {
+            return SpreadsheetExtensions.Contains(ext.ToLower());
+        }
+
+        public static string[] PresentationExtensions = new[] {
+            ".pptx",
+            ".potx",
+            ".ppsx",
+            ".pptm",
+            ".potm",
+            ".ppsm",
+            ".ppam",
+        };
+
+        public static bool IsPresentationML(string ext)
+        {
+            return PresentationExtensions.Contains(ext.ToLower());
+        }
+
+        public static void FlatToOpc(XmlDocument doc, string outputPath)
+        {
+            XDocument xd = GetXDocument(doc);
+            FlatToOpc(xd, outputPath);
+        }
+
+        public static void FlatToOpc(string xmlText, string outputPath)
+        {
+            XDocument xd = XDocument.Parse(xmlText);
+            FlatToOpc(xd, outputPath);
+        }
+
+        public static void FlatToOpc(XDocument doc, string outputPath)
+        {
+            XNamespace pkg =
+                "http://schemas.microsoft.com/office/2006/xmlPackage";
+            XNamespace rel =
+                "http://schemas.openxmlformats.org/package/2006/relationships";
+
+            using (Package package = Package.Open(outputPath, FileMode.Create))
+            {
+                // add all parts (but not relationships)
+                foreach (var xmlPart in doc.Root
+                    .Elements()
+                    .Where(p =>
+                        (string)p.Attribute(pkg + "contentType") !=
+                        "application/vnd.openxmlformats-package.relationships+xml"))
+                {
+                    string name = (string)xmlPart.Attribute(pkg + "name");
+                    string contentType = (string)xmlPart.Attribute(pkg + "contentType");
+                    if (contentType.EndsWith("xml"))
+                    {
+                        Uri u = new Uri(name, UriKind.Relative);
+                        PackagePart part = package.CreatePart(u, contentType,
+                            CompressionOption.SuperFast);
+                        using (Stream str = part.GetStream(FileMode.Create))
+                        using (XmlWriter xmlWriter = XmlWriter.Create(str))
+                            xmlPart.Element(pkg + "xmlData")
+                                .Elements()
+                                .First()
+                                .WriteTo(xmlWriter);
+                    }
+                    else
+                    {
+                        Uri u = new Uri(name, UriKind.Relative);
+                        PackagePart part = package.CreatePart(u, contentType,
+                            CompressionOption.SuperFast);
+                        using (Stream str = part.GetStream(FileMode.Create))
+                        using (BinaryWriter binaryWriter = new BinaryWriter(str))
+                        {
+                            string base64StringInChunks =
+                                (string)xmlPart.Element(pkg + "binaryData");
+                            char[] base64CharArray = base64StringInChunks
+                                .Where(c => c != '\r' && c != '\n').ToArray();
+                            byte[] byteArray =
+                                System.Convert.FromBase64CharArray(base64CharArray,
+                                0, base64CharArray.Length);
+                            binaryWriter.Write(byteArray);
+                        }
+                    }
+                }
+
+                foreach (var xmlPart in doc.Root.Elements())
+                {
+                    string name = (string)xmlPart.Attribute(pkg + "name");
+                    string contentType = (string)xmlPart.Attribute(pkg + "contentType");
+                    if (contentType ==
+                        "application/vnd.openxmlformats-package.relationships+xml")
+                    {
+                        // add the package level relationships
+                        if (name == "/_rels/.rels")
+                        {
+                            foreach (XElement xmlRel in
+                                xmlPart.Descendants(rel + "Relationship"))
+                            {
+                                string id = (string)xmlRel.Attribute("Id");
+                                string type = (string)xmlRel.Attribute("Type");
+                                string target = (string)xmlRel.Attribute("Target");
+                                string targetMode =
+                                    (string)xmlRel.Attribute("TargetMode");
+                                if (targetMode == "External")
+                                    package.CreateRelationship(
+                                        new Uri(target, UriKind.Absolute),
+                                        TargetMode.External, type, id);
+                                else
+                                    package.CreateRelationship(
+                                        new Uri(target, UriKind.Relative),
+                                        TargetMode.Internal, type, id);
+                            }
+                        }
+                        else
+                        // add part level relationships
+                        {
+                            string directory = name.Substring(0, name.IndexOf("/_rels"));
+                            string relsFilename = name.Substring(name.LastIndexOf('/'));
+                            string filename =
+                                relsFilename.Substring(0, relsFilename.IndexOf(".rels"));
+                            PackagePart fromPart = package.GetPart(
+                                new Uri(directory + filename, UriKind.Relative));
+                            foreach (XElement xmlRel in
+                                xmlPart.Descendants(rel + "Relationship"))
+                            {
+                                string id = (string)xmlRel.Attribute("Id");
+                                string type = (string)xmlRel.Attribute("Type");
+                                string target = (string)xmlRel.Attribute("Target");
+                                string targetMode =
+                                    (string)xmlRel.Attribute("TargetMode");
+                                if (targetMode == "External")
+                                    fromPart.CreateRelationship(
+                                        new Uri(target, UriKind.Absolute),
+                                        TargetMode.External, type, id);
+                                else
+                                    fromPart.CreateRelationship(
+                                        new Uri(target, UriKind.Relative),
+                                        TargetMode.Internal, type, id);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public class Base64
+    {
+        public static string ConvertToBase64(string fileName)
+        {
+            byte[] ba = System.IO.File.ReadAllBytes(fileName);
+            string base64String = (System.Convert.ToBase64String(ba))
+                .Select
+                (
+                    (c, i) => new
+                    {
+                        Chunk = i / 76,
+                        Character = c
+                    }
+                )
+                .GroupBy(c => c.Chunk)
+                .Aggregate(
+                    new StringBuilder(),
+                    (s, i) =>
+                        s.Append(
+                            i.Aggregate(
+                                new StringBuilder(),
+                                (seed, it) => seed.Append(it.Character),
+                                sb => sb.ToString()
+                            )
+                        )
+                        .Append(Environment.NewLine),
+                    s =>
+                    {
+                        s.Length -= Environment.NewLine.Length;
+                        return s.ToString();
+                    }
+                );
+
+            return base64String;
+        }
+
+        public static byte[] ConvertFromBase64(string fileName, string b64)
+        {
+            string b64b = b64.Replace("\r\n", "");
+            byte[] ba = System.Convert.FromBase64String(b64b);
+            return ba;
+        }
     }
 
     public static class WordprocessingMLUtil
@@ -939,6 +1222,69 @@ namespace OpenXmlPowerTools
                 if (media1[n] != media2[n])
                     return false;
             return true;
+        }
+    }
+
+    public static class UriFixer
+    {
+        public static void FixInvalidUri(Stream fs, Func<string, Uri> invalidUriHandler)
+        {
+            XNamespace relNs = "http://schemas.openxmlformats.org/package/2006/relationships";
+            using (ZipArchive za = new ZipArchive(fs, ZipArchiveMode.Update))
+            {
+                foreach (var entry in za.Entries.ToList())
+                {
+                    if (!entry.Name.EndsWith(".rels"))
+                        continue;
+                    bool replaceEntry = false;
+                    XDocument entryXDoc = null;
+                    using (var entryStream = entry.Open())
+                    {
+                        try
+                        {
+                            entryXDoc = XDocument.Load(entryStream);
+                            if (entryXDoc.Root != null && entryXDoc.Root.Name.Namespace == relNs)
+                            {
+                                var urisToCheck = entryXDoc
+                                    .Descendants(relNs + "Relationship")
+                                    .Where(r => r.Attribute("TargetMode") != null && (string)r.Attribute("TargetMode") == "External");
+                                foreach (var rel in urisToCheck)
+                                {
+                                    var target = (string)rel.Attribute("Target");
+                                    if (target != null)
+                                    {
+                                        try
+                                        {
+                                            Uri uri = new Uri(target);
+                                        }
+                                        catch (UriFormatException)
+                                        {
+                                            Uri newUri = invalidUriHandler(target);
+                                            rel.Attribute("Target").Value = newUri.ToString();
+                                            replaceEntry = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch (XmlException)
+                        {
+                            continue;
+                        }
+                    }
+                    if (replaceEntry)
+                    {
+                        var fullName = entry.FullName;
+                        entry.Delete();
+                        var newEntry = za.CreateEntry(fullName);
+                        using (StreamWriter writer = new StreamWriter(newEntry.Open()))
+                        using (XmlWriter xmlWriter = XmlWriter.Create(writer))
+                        {
+                            entryXDoc.WriteTo(xmlWriter);
+                        }
+                    }
+                }
+            }
         }
     }
 
