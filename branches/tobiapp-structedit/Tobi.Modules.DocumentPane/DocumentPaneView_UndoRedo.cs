@@ -58,11 +58,11 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        public static void detachFlowDocumentFragment(bool done, TextElement txtElem, ObjectTag objectTagger)
+        public static void detachFlowDocumentFragment(bool doDetach, TextElement txtElem, ObjectTag objectTagger)
         {
             DependencyObject parent = txtElem.Parent;
 
-            if (done)
+            if (doDetach)
             {
                 DebugFix.Assert(parent != null);
             }
@@ -81,7 +81,8 @@ namespace Tobi.Plugin.DocumentPane
                             (Tuple<DependencyObject, int>)objectTagger.Tag;
                         parent = data.Item1;
 
-                        bool condition = parent is TableRowGroup && txtElem is TableRow
+                        bool condition = parent is Table && txtElem is TableRowGroup
+                            || parent is TableRowGroup && txtElem is TableRow
                             || parent is TableRow && txtElem is TableCell;
                         DebugFix.Assert(condition);
                     }
@@ -90,18 +91,27 @@ namespace Tobi.Plugin.DocumentPane
                         Tuple<DependencyObject, ListItem, ListItem> data =
                             (Tuple<DependencyObject, ListItem, ListItem>)objectTagger.Tag;
                         parent = data.Item1;
+
+                        bool condition = parent is List && txtElem is ListItem;
+                        DebugFix.Assert(condition);
                     }
                     else if (objectTagger.Tag is Tuple<DependencyObject, Inline, Inline>)
                     {
                         Tuple<DependencyObject, Inline, Inline> data =
                             (Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag;
                         parent = data.Item1;
+
+                        bool condition = (parent is Paragraph || parent is Span || parent is TextBlock) && txtElem is Inline;
+                        DebugFix.Assert(condition);
                     }
                     else if (objectTagger.Tag is Tuple<DependencyObject, Block, Block>)
                     {
                         Tuple<DependencyObject, Block, Block> data =
                             (Tuple<DependencyObject, Block, Block>)objectTagger.Tag;
                         parent = data.Item1;
+
+                        bool condition = (parent is FlowDocument || parent is Section || parent is ListItem || parent is TableCell || parent is Floater || parent is Figure) && txtElem is Block;
+                        DebugFix.Assert(condition);
                     }
                     else
                     {
@@ -112,20 +122,22 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }
 
+            DebugFix.Assert(parent != null);
+
             if (txtElem is TableRow)
             {
                 if (parent is TableRowGroup)
                 {
-                    if (done && ((TableRowGroup)parent).Rows.Contains((TableRow)txtElem))
+                    if (doDetach && ((TableRowGroup)parent).Rows.Contains((TableRow)txtElem))
                     {
                         objectTagger.Tag = new Tuple<DependencyObject, int>(parent, ((TableRowGroup)parent).Rows.IndexOf((TableRow)txtElem));
 
                         ((TableRowGroup)parent).Rows.Remove((TableRow)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         int index = ((Tuple<DependencyObject, int>)objectTagger.Tag).Item2;
-                        if (index >= ((TableRowGroup)parent).Rows.Count)
+                        if (index < 0 || index >= ((TableRowGroup)parent).Rows.Count)
                         {
                             ((TableRowGroup)parent).Rows.Add((TableRow)txtElem);
                         }
@@ -152,16 +164,16 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (parent is TableRow)
                 {
-                    if (done && ((TableRow)parent).Cells.Contains((TableCell)txtElem))
+                    if (doDetach && ((TableRow)parent).Cells.Contains((TableCell)txtElem))
                     {
                         objectTagger.Tag = new Tuple<DependencyObject, int>(parent, ((TableRow)parent).Cells.IndexOf((TableCell)txtElem));
 
                         ((TableRow)parent).Cells.Remove((TableCell)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         int index = ((Tuple<DependencyObject, int>)objectTagger.Tag).Item2;
-                        if (index >= ((TableRow)parent).Cells.Count)
+                        if (index < 0 || index >= ((TableRow)parent).Cells.Count)
                         {
                             ((TableRow)parent).Cells.Add((TableCell)txtElem);
                         }
@@ -188,16 +200,16 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (parent is Table)
                 {
-                    if (done && ((Table)parent).RowGroups.Contains((TableRowGroup)txtElem))
+                    if (doDetach && ((Table)parent).RowGroups.Contains((TableRowGroup)txtElem))
                     {
                         objectTagger.Tag = new Tuple<DependencyObject, int>(parent, ((Table)parent).RowGroups.IndexOf((TableRowGroup)txtElem));
 
                         ((Table)parent).RowGroups.Remove((TableRowGroup)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         int index = ((Tuple<DependencyObject, int>)objectTagger.Tag).Item2;
-                        if (index >= ((Table)parent).RowGroups.Count)
+                        if (index < 0 || index >= ((Table)parent).RowGroups.Count)
                         {
                             ((Table)parent).RowGroups.Add((TableRowGroup)txtElem);
                         }
@@ -224,7 +236,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (parent is List)
                 {
-                    if (done && ((List)parent).ListItems.Contains((ListItem)txtElem))
+                    if (doDetach && ((List)parent).ListItems.Contains((ListItem)txtElem))
                     {
                         if (((ListItem)txtElem).PreviousListItem != null)
                         {
@@ -245,7 +257,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         ((List)parent).ListItems.Remove((ListItem)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         var listItemAfter =
                             ((Tuple<DependencyObject, ListItem, ListItem>)objectTagger.Tag).Item2;
@@ -284,7 +296,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (parent is Paragraph)
                 {
-                    if (done && ((Paragraph)parent).Inlines.Contains((Inline)txtElem))
+                    if (doDetach && ((Paragraph)parent).Inlines.Contains((Inline)txtElem))
                     {
                         if (((Inline)txtElem).PreviousInline != null)
                         {
@@ -305,7 +317,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         ((Paragraph)parent).Inlines.Remove((Inline)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         var inlineAfter =
                             ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
@@ -335,7 +347,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (parent is Span)
                 {
-                    if (done && ((Span)parent).Inlines.Contains((Inline)txtElem))
+                    if (doDetach && ((Span)parent).Inlines.Contains((Inline)txtElem))
                     {
                         if (((Inline)txtElem).PreviousInline != null)
                         {
@@ -356,7 +368,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         ((Span)parent).Inlines.Remove((Inline)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         var inlineAfter =
                             ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
@@ -386,7 +398,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (parent is TextBlock)
                 {
-                    if (done && ((TextBlock)parent).Inlines.Contains((Inline)txtElem))
+                    if (doDetach && ((TextBlock)parent).Inlines.Contains((Inline)txtElem))
                     {
                         if (((Inline)txtElem).PreviousInline != null)
                         {
@@ -407,7 +419,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         ((TextBlock)parent).Inlines.Remove((Inline)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         var inlineAfter =
                             ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
@@ -446,7 +458,7 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (parent is FlowDocument)
                 {
-                    if (done && ((FlowDocument)parent).Blocks.Contains((Block)txtElem))
+                    if (doDetach && ((FlowDocument)parent).Blocks.Contains((Block)txtElem))
                     {
                         if (((Block)txtElem).PreviousBlock != null)
                         {
@@ -467,7 +479,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         ((FlowDocument)parent).Blocks.Remove((Block)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         var blockAfter =
                             ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
@@ -497,7 +509,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (parent is Section)
                 {
-                    if (done && ((Section)parent).Blocks.Contains((Block)txtElem))
+                    if (doDetach && ((Section)parent).Blocks.Contains((Block)txtElem))
                     {
                         if (((Block)txtElem).PreviousBlock != null)
                         {
@@ -518,7 +530,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         ((Section)parent).Blocks.Remove((Block)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         var blockAfter =
                             ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
@@ -548,7 +560,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (parent is ListItem)
                 {
-                    if (done && ((ListItem)parent).Blocks.Contains((Block)txtElem))
+                    if (doDetach && ((ListItem)parent).Blocks.Contains((Block)txtElem))
                     {
                         if (((Block)txtElem).PreviousBlock != null)
                         {
@@ -569,7 +581,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         ((ListItem)parent).Blocks.Remove((Block)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         var blockAfter =
                             ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
@@ -599,7 +611,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (parent is TableCell)
                 {
-                    if (done && ((TableCell)parent).Blocks.Contains((Block)txtElem))
+                    if (doDetach && ((TableCell)parent).Blocks.Contains((Block)txtElem))
                     {
                         if (((Block)txtElem).PreviousBlock != null)
                         {
@@ -620,7 +632,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         ((TableCell)parent).Blocks.Remove((Block)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         var blockAfter =
                             ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
@@ -650,7 +662,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (parent is Floater)
                 {
-                    if (done && ((Floater)parent).Blocks.Contains((Block)txtElem))
+                    if (doDetach && ((Floater)parent).Blocks.Contains((Block)txtElem))
                     {
                         if (((Block)txtElem).PreviousBlock != null)
                         {
@@ -671,7 +683,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         ((Floater)parent).Blocks.Remove((Block)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         var blockAfter =
                             ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
@@ -701,7 +713,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
                 else if (parent is Figure)
                 {
-                    if (done && ((Figure)parent).Blocks.Contains((Block)txtElem))
+                    if (doDetach && ((Figure)parent).Blocks.Contains((Block)txtElem))
                     {
                         if (((Block)txtElem).PreviousBlock != null)
                         {
@@ -722,7 +734,7 @@ namespace Tobi.Plugin.DocumentPane
 
                         ((Figure)parent).Blocks.Remove((Block)txtElem);
                     }
-                    else if (!done)
+                    else if (!doDetach)
                     {
                         var blockAfter =
                             ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
@@ -826,7 +838,7 @@ namespace Tobi.Plugin.DocumentPane
                     if (parentTextElem == null) return;
 
                     int toRemove = parent.Children.Count - 1 - pos;
-                    var tags = new List<ObjectTagger>(toRemove);
+                    var fakeCmds = new List<ObjectTagger>(toRemove);
 
                     // Temporarily delete next siblings
                     for (int i = parent.Children.Count-1; i >= 0; i--)
@@ -836,13 +848,15 @@ namespace Tobi.Plugin.DocumentPane
 
                         if (i > pos && childTreeNode.Tag is TextElement)
                         {
-                            var tag = new ObjectTagger();
-                            tags.Add(tag);
-                            DocumentPaneView.detachFlowDocumentFragment(true, (TextElement)childTreeNode.Tag, tag);
+                            var fakeCmd = new ObjectTagger();
+                            fakeCmds.Add(fakeCmd);
+                            DocumentPaneView.detachFlowDocumentFragment(true, (TextElement)childTreeNode.Tag, fakeCmd);
+
+                            DebugFix.Assert(fakeCmd.Tag != null);
                         }
                     }
 
-                    DebugFix.Assert(tags.Count == toRemove);
+                    DebugFix.Assert(fakeCmds.Count == toRemove);
 
                     var converter = new XukToFlowDocument(this,
                         cmdTreeNode,
@@ -852,14 +866,24 @@ namespace Tobi.Plugin.DocumentPane
                         m_ShellView,
                         m_UrakawaSession
                         );
-                    converter.walkBookTreeAndGenerateFlowDocument(cmdTreeNode, parentTextElem);
+                    TextElement newTextElem = converter.walkBookTreeAndGenerateFlowDocument(cmdTreeNode, parentTextElem);
 
-                    // TODO:
-                    // parentTextElem LAST CHILD
+                    DebugFix.Assert(newTextElem != null);
+                    if (newTextElem != null)
+                    {
+                        DebugFix.Assert(newTextElem.Parent != null); // already attached inside FlowDocument
 
-                    int j = tags.Count-1;
-                    var taggedObject = tags[j].Tag;
-                    //TODO: change anchor to LAST CHILD
+                        if (cmdTreeNode.Tag == newTextElem)
+                        {
+                            DebugFix.Assert(newTextElem.Tag == cmdTreeNode);
+                        }
+                        if (newTextElem.Tag == cmdTreeNode)
+                        {
+                            DebugFix.Assert(cmdTreeNode.Tag == newTextElem);
+                        }
+                    }
+
+                    int j = fakeCmds.Count - 1;
 
                     // Restore temporarily-deleted next siblings
                     for (int i = 0; i < parent.Children.Count; i++)
@@ -868,15 +892,73 @@ namespace Tobi.Plugin.DocumentPane
 
                         if (i > pos && childTreeNode.Tag is TextElement)
                         {
-                            DocumentPaneView.detachFlowDocumentFragment(false, (TextElement)childTreeNode.Tag, tags[j--]);
+                            ObjectTagger fakeCmd = fakeCmds[j--];
+                            // METHOD_1: shift all anchors to account for the newly-inserted TextElement (PROBLEM: newTextElem is not necessarily the equivalent of cmdTreeNode! (intermediary-inserted TextElements))
+                            // METHOD_2: reset anchors in Tuples => indicates "append" instruction
+
+                            var txtElem = (TextElement)childTreeNode.Tag;
+                            DependencyObject parentTxtElem = null;
+
+                            if (fakeCmd.Tag is Tuple<DependencyObject, int>)
+                            {
+                                Tuple<DependencyObject, int> data =
+                                    (Tuple<DependencyObject, int>)fakeCmd.Tag;
+                                parentTxtElem = data.Item1;
+
+                                bool condition = parentTxtElem is Table && txtElem is TableRowGroup
+                                    || parentTxtElem is TableRowGroup && txtElem is TableRow
+                                    || parentTxtElem is TableRow && txtElem is TableCell;
+                                DebugFix.Assert(condition);
+
+                                fakeCmd.Tag = new Tuple<DependencyObject, int>(parentTxtElem, -1); // reset
+                            }
+                            else if (fakeCmd.Tag is Tuple<DependencyObject, ListItem, ListItem>)
+                            {
+                                Tuple<DependencyObject, ListItem, ListItem> data =
+                                    (Tuple<DependencyObject, ListItem, ListItem>)fakeCmd.Tag;
+                                parentTxtElem = data.Item1;
+
+                                bool condition = parentTxtElem is List && txtElem is ListItem;
+                                DebugFix.Assert(condition);
+
+                                fakeCmd.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parentTxtElem, null, null); // reset
+                            }
+                            else if (fakeCmd.Tag is Tuple<DependencyObject, Inline, Inline>)
+                            {
+                                Tuple<DependencyObject, Inline, Inline> data =
+                                    (Tuple<DependencyObject, Inline, Inline>)fakeCmd.Tag;
+                                parentTxtElem = data.Item1;
+
+                                bool condition = (parentTxtElem is Paragraph || parentTxtElem is Span || parentTxtElem is TextBlock) && txtElem is Inline;
+                                DebugFix.Assert(condition);
+
+                                fakeCmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parentTxtElem, null, null); // reset
+                            }
+                            else if (fakeCmd.Tag is Tuple<DependencyObject, Block, Block>)
+                            {
+                                Tuple<DependencyObject, Block, Block> data =
+                                    (Tuple<DependencyObject, Block, Block>)fakeCmd.Tag;
+                                parentTxtElem = data.Item1;
+
+                                bool condition = (parentTxtElem is FlowDocument || parentTxtElem is Section || parentTxtElem is ListItem || parentTxtElem is TableCell || parentTxtElem is Floater || parentTxtElem is Figure) && txtElem is Block;
+                                DebugFix.Assert(condition);
+
+                                fakeCmd.Tag = new Tuple<DependencyObject, Block, Block>(parentTxtElem, null, null); // reset
+                            }
+                            else
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+
+                            DocumentPaneView.detachFlowDocumentFragment(false, txtElem, fakeCmd);
                         }
                     }
                 }
                 else if (cmdTreeNode.Tag is TextElement)
                 {
-                    if (add) done = !done;
-
-                    DocumentPaneView.detachFlowDocumentFragment(done, (TextElement)cmdTreeNode.Tag, cmd);
+                    DocumentPaneView.detachFlowDocumentFragment(add ? !done : done, (TextElement)cmdTreeNode.Tag, cmd);
                 }
             }
 

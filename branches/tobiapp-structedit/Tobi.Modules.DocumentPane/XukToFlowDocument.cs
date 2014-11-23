@@ -3293,7 +3293,7 @@ namespace Tobi.Plugin.DocumentPane
         }
 
 
-        public void walkBookTreeAndGenerateFlowDocument(TreeNode node, TextElement parent)
+        public TextElement walkBookTreeAndGenerateFlowDocument(TreeNode node, TextElement parent)
         {
             m_nTreeNode++;
 
@@ -3430,6 +3430,8 @@ namespace Tobi.Plugin.DocumentPane
                     && !string.IsNullOrEmpty(localName)
                     && localName.Equals("table", StringComparison.OrdinalIgnoreCase))
                 {
+                    DebugFix.Assert(parentNext is Table);
+
                     int n = ((Table)parentNext).Columns.Count;
                     foreach (TableCell cell in m_cellsToExpand)
                     {
@@ -3519,6 +3521,8 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 }
             }
+
+            return parentNext;
         }
 
         private FlowDirection setTextDirection(TreeNode.TextDirection dir, FrameworkElement el, Inline il, Block bl)
