@@ -1409,17 +1409,36 @@ namespace Tobi.Plugin.DocumentPane
                         Text = elementName
                     };
 
+                    var elementTextInput = new TextBox()
+                    {
+                        Text = txtMedia.Text
+                    };
+
                     var panel = new StackPanel
                     {
                         Orientation = Orientation.Vertical,
-                        HorizontalAlignment = HorizontalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Center,
                     };
-                    panel.Children.Add(radioPrepend);
-                    panel.Children.Add(radioAppend);
-                    panel.Children.Add(radioBefore);
-                    panel.Children.Add(radioAfter);
+
+                    if (node.GetTextMedia() != null)
+                    {
+                        radioBefore.IsChecked = true;
+                    }
+                    else
+                    {
+                        panel.Children.Add(radioPrepend);
+                        panel.Children.Add(radioAppend);
+                    }
+
+                    if (node.Parent != null)
+                    {
+                        panel.Children.Add(radioBefore);
+                        panel.Children.Add(radioAfter);
+                    }
+
                     panel.Children.Add(elementNameInput);
+                    panel.Children.Add(elementTextInput);
 
                     var windowPopup = new PopupModalWindow(m_ShellView,
                                                            UserInterfaceStrings.EscapeMnemonic("Insert TreeNode"),
@@ -1435,9 +1454,10 @@ namespace Tobi.Plugin.DocumentPane
                     }
 
                     elementName = elementNameInput.Text;
-
                     XmlProperty xmlProp = newNode.GetOrCreateXmlProperty();
                     xmlProp.SetQName(elementName, node.GetXmlNamespaceUri());
+
+                    txtMedia.Text = elementTextInput.Text;
 
                     if (Convert.ToBoolean(radioPrepend.IsChecked))
                     {
@@ -1480,7 +1500,7 @@ namespace Tobi.Plugin.DocumentPane
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
                     return node != null
-                        && node.GetTextMedia() == null
+                        //&& node.GetTextMedia() == null
                         //&& node.GetText() == null
                         ; // && node.Parent != null;
                 },
