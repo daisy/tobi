@@ -25,6 +25,18 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double CleanAudioMaxFileMegaBytes {
+            get {
+                return ((double)(this["CleanAudioMaxFileMegaBytes"]));
+            }
+            set {
+                this["CleanAudioMaxFileMegaBytes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("_1G")]
         public global::Tobi.Plugin.Urakawa.JavaXmx Pipeline2JavaMaxMem {
             get {

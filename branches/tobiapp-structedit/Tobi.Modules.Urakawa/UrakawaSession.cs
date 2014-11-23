@@ -481,6 +481,9 @@ namespace Tobi.Plugin.Urakawa
                 FileDataProvider.CreateDirectory(deletedDataFolderPath);
             }
 
+            double cleanAudioMaxFileMegaBytes = Settings.Default.CleanAudioMaxFileMegaBytes;
+
+
             bool cancelled = false;
 
             if (interactive)
@@ -488,7 +491,7 @@ namespace Tobi.Plugin.Urakawa
                 bool error = m_ShellView.RunModalCancellableProgressTask(true,
                                                                           Tobi_Plugin_Urakawa_Lang.CleaningUpDataFiles,
                                                                           new Cleaner(project.Presentations.Get(0),
-                                                                                      deletedDataFolderPath),
+                                                                                      deletedDataFolderPath, cleanAudioMaxFileMegaBytes),
                     //project.Presentations.Get(0).Cleanup();
                                                                           () =>
                                                                           {
@@ -513,7 +516,7 @@ namespace Tobi.Plugin.Urakawa
             else
             {
                 var cleaner = new Cleaner(project.Presentations.Get(0),
-                                          deletedDataFolderPath);
+                                          deletedDataFolderPath, cleanAudioMaxFileMegaBytes);
                 //cleaner.DoWork();
                 cleaner.Cleanup();
             }
