@@ -1,6 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
+
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi", "Tobi.csproj", "{64F90229-5944-4DBB-96A0-0E09E6BF5997}"
 	ProjectSection(ProjectDependencies) = postProject
 		{17831F3B-6B82-4916-BD2B-2CE2071EA622} = {17831F3B-6B82-4916-BD2B-2CE2071EA622}
@@ -114,6 +115,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaxNET", "ExternalLibs\SaxNET\SaxNET.csproj", "{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Tobi (NET3)", "Tobi_Install\Tobi_NET3.vdproj", "{9993B9BD-7F64-4FB9-B583-A51C41F0A1CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenXmlPowerTools", "ExternalLibs\OpenXmlPowerTools\OpenXmlPowerTools.csproj", "{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -638,6 +641,18 @@ Global
 		{9993B9BD-7F64-4FB9-B583-A51C41F0A1CD}.Release|Any CPU.Build.0 = Release
 		{9993B9BD-7F64-4FB9-B583-A51C41F0A1CD}.test|Any CPU.ActiveCfg = Release
 		{9993B9BD-7F64-4FB9-B583-A51C41F0A1CD}.test|Any CPU.Build.0 = Release
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Documentation|Any CPU.Build.0 = Debug|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.test|Any CPU.ActiveCfg = Release|Any CPU
+		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

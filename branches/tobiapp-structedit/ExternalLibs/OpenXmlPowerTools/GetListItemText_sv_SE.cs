@@ -194,7 +194,13 @@ namespace OpenXmlPowerTools
 		{
 			string levelAsString = levelNumber.ToString();
 
-			if (string.IsNullOrWhiteSpace(levelAsString))
+			if (
+#if NET4
+                string.IsNullOrWhiteSpace(levelAsString)
+#else
+                string.IsNullOrEmpty(levelAsString) || levelAsString.Trim().Length == 0
+#endif
+            )
 				return "";
 
 			if(levelAsString.EndsWith("1"))

@@ -14,8 +14,6 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System.Xml;
 using AudioLib;
-using DocumentFormat.OpenXml.Packaging;
-using OpenXmlPowerTools;
 using PipelineWSClient;
 using Saxon.Api;
 using Microsoft.Practices.Composite.Logging;
@@ -35,17 +33,10 @@ using urakawa.property.xml;
 using urakawa.xuk;
 using DocumentBuilder = Saxon.Api.DocumentBuilder;
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Xml.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using OpenXmlPowerTools;
+
+using System.Drawing;
 
 #if ENABLE_SHARPZIP
 using ICSharpCode.SharpZipLib.Zip;
@@ -226,7 +217,9 @@ namespace Tobi.Plugin.Urakawa
                 () =>
                 {
                     m_ShellView.RaiseEscapeEvent();
-
+#if !NET40
+                    messageBoxText("Word XML conversion", "This feature is only available in the .NET4 version of Tobi!", "Because of .NET3 limitations, this functionality is currently disabled in this version of Tobi. Please download and install Tobi .NET4 (this is recommended anyway).");
+#else
                     var dlg = new OpenFileDialog
                     {
                         FileName = @"",
@@ -360,6 +353,7 @@ namespace Tobi.Plugin.Urakawa
                         var htmlString = html.ToString(SaveOptions.None);
                         File.WriteAllText(htmlPath, htmlString, Encoding.UTF8);
                     }
+#endif
                 },
                 () => !isAudioRecording,
                 Settings_KeyGestures.Default,

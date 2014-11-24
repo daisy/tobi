@@ -2406,7 +2406,7 @@ namespace OpenXmlPowerTools
             .ToList();
         }
 
-        private static IEnumerable<object> GroupAndVerticallySpaceNumberedParagraphs(WordprocessingDocument wordDoc, HtmlConverterSettings settings,
+        private static IEnumerable<IEnumerable<object>> GroupAndVerticallySpaceNumberedParagraphs(WordprocessingDocument wordDoc, HtmlConverterSettings settings,
             IEnumerable<XElement> elements, decimal currentMarginLeft)
         {
             var grouped = elements

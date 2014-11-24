@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\DebugNET4\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NET4</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\ReleaseNET4\</OutputPath>
-    <DefineConstants>TRACE;NET4</DefineConstants>
+    <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -74,7 +74,7 @@
     <Compile Include="TextReplacer.cs" />
     <Compile Include="WmlDocument.cs" />
     <Compile Include="WorksheetAccessor.cs" />
-	<Compile Include="OpenXmlRegex.cs" />
+    <Compile Include="OpenXmlRegex.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
