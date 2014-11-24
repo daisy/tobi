@@ -37,6 +37,9 @@ using DocumentFormat.OpenXml.Packaging;
 using OpenXmlPowerTools;
 
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Xml.Linq;
+using System.Linq;
 
 #if ENABLE_SHARPZIP
 using ICSharpCode.SharpZipLib.Zip;
@@ -217,9 +220,9 @@ namespace Tobi.Plugin.Urakawa
                 () =>
                 {
                     m_ShellView.RaiseEscapeEvent();
-#if !NET40
-                    messageBoxText("Word XML conversion", "This feature is only available in the .NET4 version of Tobi!", "Because of .NET3 limitations, this functionality is currently disabled in this version of Tobi. Please download and install Tobi .NET4 (this is recommended anyway).");
-#else
+
+                    //messageBoxText("Word XML conversion", "This feature is only available in the .NET4 version of Tobi!", "Because of .NET3 limitations, this functionality is currently disabled in this version of Tobi. Please download and install Tobi .NET4 (this is recommended anyway).");
+
                     var dlg = new OpenFileDialog
                     {
                         FileName = @"",
@@ -282,56 +285,68 @@ namespace Tobi.Plugin.Urakawa
                             RestrictToSupportedLanguages = false,
                             RestrictToSupportedNumberingFormats = false,
                             ListItemImplementations = new Dictionary<string, Func<string, int, string, string>>()
-                        {
-                            {"fr-FR", ListItemTextGetter_fr_FR.GetListItemText},
-                            {"tr-TR", ListItemTextGetter_tr_TR.GetListItemText},
-                            {"ru-RU", ListItemTextGetter_ru_RU.GetListItemText},
-                            {"sv-SE", ListItemTextGetter_sv_SE.GetListItemText},
-                        },
+                            {
+                                {"fr-FR", ListItemTextGetter_fr_FR.GetListItemText},
+                                {"tr-TR", ListItemTextGetter_tr_TR.GetListItemText},
+                                {"ru-RU", ListItemTextGetter_ru_RU.GetListItemText},
+                                {"sv-SE", ListItemTextGetter_sv_SE.GetListItemText},
+                            },
                             ImageHandler = imageInfo =>
                             {
                                 ++imageCounter;
                                 string extension = imageInfo.ContentType.Split('/')[1].ToLower();
+
                                 ImageFormat imageFormat = null;
                                 if (extension == "png")
                                 {
-                                    // Convert png to jpeg.
-                                    extension = "gif";
-                                    imageFormat = ImageFormat.Gif;
+                                    imageFormat = ImageFormat.Png;
                                 }
                                 else if (extension == "gif")
+                                {
                                     imageFormat = ImageFormat.Gif;
+                                }
                                 else if (extension == "bmp")
+                                {
                                     imageFormat = ImageFormat.Bmp;
+                                }
                                 else if (extension == "jpeg")
+                                {
                                     imageFormat = ImageFormat.Jpeg;
+                                }
                                 else if (extension == "tiff")
                                 {
-                                    // Convert tiff to gif.
-                                    extension = "gif";
-                                    imageFormat = ImageFormat.Gif;
+                                    extension = "png";
+                                    imageFormat = ImageFormat.Png;
                                 }
                                 else if (extension == "x-wmf")
                                 {
-                                    extension = "wmf";
-                                    imageFormat = ImageFormat.Wmf;
+                                    extension = "png";
+                                    imageFormat = ImageFormat.Png;
                                 }
 
-                                // If the image format isn't one that we expect, ignore it,
-                                // and don't return markup for the link.
                                 if (imageFormat == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
                                     return null;
+                                }
 
                                 string imageFileName = "image_" + imageCounter.ToString() + "." + extension;
                                 string imageFilePath = Path.Combine(parentFolderPath, imageFileName);
+
                                 try
                                 {
                                     imageInfo.Bitmap.Save(imageFilePath, imageFormat);
                                 }
-                                catch (System.Runtime.InteropServices.ExternalException)
+                                catch (Exception ex)
                                 {
+#if DEBUG
+                                    Debugger.Break();
+#endif
                                     return null;
                                 }
+
                                 XElement img = new XElement(Xhtml.img,
                                     new XAttribute(NoNamespace.src, imageFileName),
                                     imageInfo.ImgStyleAttribute,
@@ -340,6 +355,8 @@ namespace Tobi.Plugin.Urakawa
                                 return img;
                             }
                         };
+
+
                         XElement html = HtmlConverter.ConvertToHtml(wDoc, settings);
 
                         // Note: the xhtml returned by ConvertToHtmlTransform contains objects of type
@@ -353,7 +370,6 @@ namespace Tobi.Plugin.Urakawa
                         var htmlString = html.ToString(SaveOptions.None);
                         File.WriteAllText(htmlPath, htmlString, Encoding.UTF8);
                     }
-#endif
                 },
                 () => !isAudioRecording,
                 Settings_KeyGestures.Default,
@@ -742,7 +758,7 @@ namespace Tobi.Plugin.Urakawa
 #if NET40
                                     IEnumerable<FileInfo> allFiles = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
 #else
-                                                FileInfo[] allFiles = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
+                                    FileInfo[] allFiles = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
 #endif
                                     foreach (FileInfo fileInfo in allFiles)
                                     {
