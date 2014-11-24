@@ -35,7 +35,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
@@ -45,12 +45,16 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ExternalLibs\OpenXmlPowerTools\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -67,6 +71,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider">
@@ -149,6 +154,10 @@
     <ProjectReference Include="..\ExternalLibs\MEF\Lib.MEF.csproj">
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
       <Name>Lib.MEF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalLibs\OpenXmlPowerTools\OpenXmlPowerTools.csproj">
+      <Project>{4aa5dd62-c9db-44e3-90c9-5abfd38ad346}</Project>
+      <Name>OpenXmlPowerTools</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tobi.Common\Tobi.Common.csproj">
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>

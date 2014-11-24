@@ -1574,17 +1574,24 @@ namespace OpenXmlPowerTools
                 FileInfo fileInfo = new FileInfo(oldPart.Uri.OriginalString);
                 ExtendedPart newPart = null;
 
+#if NET4
                 if (newContentPart is ChartColorStylePart)
                     newPart = ((ChartColorStylePart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
-                else if (newContentPart is ChartDrawingPart)
+                else
+#endif
+                if (newContentPart is ChartDrawingPart)
                     newPart = ((ChartDrawingPart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
                 else if (newContentPart is ChartPart)
                     newPart = ((ChartPart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
                 else if (newContentPart is ChartsheetPart)
                     newPart = ((ChartsheetPart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
-                else if (newContentPart is ChartStylePart)
+                else
+#if NET4
+                if (newContentPart is ChartStylePart)
                     newPart = ((ChartStylePart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
-                else if (newContentPart is CommentAuthorsPart)
+                else
+#endif
+                if (newContentPart is CommentAuthorsPart)
                     newPart = ((CommentAuthorsPart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
                 else if (newContentPart is ConnectionsPart)
                     newPart = ((ConnectionsPart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
@@ -1692,11 +1699,15 @@ namespace OpenXmlPowerTools
                     newPart = ((ThemePart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
                 else if (newContentPart is ThumbnailPart)
                     newPart = ((ThumbnailPart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
-                else if (newContentPart is TimeLineCachePart)
+                else
+#if NET4
+                if (newContentPart is TimeLineCachePart)
                     newPart = ((TimeLineCachePart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
                 else if (newContentPart is TimeLinePart)
                     newPart = ((TimeLinePart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
-                else if (newContentPart is UserDefinedTagsPart)
+                else
+#endif
+                if (newContentPart is UserDefinedTagsPart)
                     newPart = ((UserDefinedTagsPart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);
                 else if (newContentPart is VbaDataPart)
                     newPart = ((VbaDataPart)newContentPart).AddExtendedPart(oldPart.RelationshipType, oldPart.ContentType, fileInfo.Extension);

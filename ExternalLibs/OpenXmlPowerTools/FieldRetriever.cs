@@ -23,12 +23,110 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.Xml.Linq;
 using DocumentFormat.OpenXml.Packaging;
 
 namespace OpenXmlPowerTools
 {
+#if !NET40
+    public static class IEnumerableExtensions
+    {
+        public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> selector, bool checkLengths = true, bool fillMissing = false)
+        {
+            if (first == null) { throw new ArgumentNullException("first"); }
+            if (second == null) { throw new ArgumentNullException("second"); }
+            if (selector == null) { throw new ArgumentNullException("selector"); }
+
+            using (IEnumerator<TFirst> e1 = first.GetEnumerator())
+            {
+                using (IEnumerator<TSecond> e2 = second.GetEnumerator())
+                {
+                    while (true)
+                    {
+                        bool more1 = e1.MoveNext();
+                        bool more2 = e2.MoveNext();
+
+                        if (!more1 || !more2)
+                        { //one finished
+                            if (checkLengths && !fillMissing && (more1 || more2))
+                            { //checking length && not filling in missing values && ones not finished
+                                throw new Exception("Enumerables have different lengths (" + (more1 ? "first" : "second") + " is longer)");
+                            }
+
+                            //fill in missing values with default(Tx) if asked too
+                            if (fillMissing)
+                            {
+                                if (more1)
+                                {
+                                    while (e1.MoveNext())
+                                    {
+                                        yield return selector(e1.Current, default(TSecond));
+                                    }
+                                }
+                                else
+                                {
+                                    while (e2.MoveNext())
+                                    {
+                                        yield return selector(default(TFirst), e2.Current);
+                                    }
+                                }
+                            }
+
+                            yield break;
+                        }
+
+                        yield return selector(e1.Current, e2.Current);
+                    }
+                }
+            }
+        }
+
+        //    public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>
+        //(this IEnumerable<TFirst> first,
+        //IEnumerable<TSecond> second,
+        //Func<TFirst, TSecond, TResult> resultSelector)
+        //    {
+        //        if (first == null) throw new ArgumentNullException("first");
+        //        if (second == null) throw new ArgumentNullException("second");
+        //        if (resultSelector == null) throw new ArgumentNullException("resultSelector");
+        //        return ZipIterator(first, second, resultSelector);
+        //    }
+
+        //    private static IEnumerable<TResult> ZipIterator<TFirst, TSecond, TResult>
+        //        (IEnumerable<TFirst> first,
+        //        IEnumerable<TSecond> second,
+        //        Func<TFirst, TSecond, TResult> resultSelector)
+        //    {
+        //        using (IEnumerator<TFirst> e1 = first.GetEnumerator())
+        //        using (IEnumerator<TSecond> e2 = second.GetEnumerator())
+        //            while (e1.MoveNext() && e2.MoveNext())
+        //                yield return resultSelector(e1.Current, e2.Current);
+        //    }
+
+        //    public static IEnumerable<T> Zip<A, B, T>(
+        //this IEnumerable<A> seqA, IEnumerable<B> seqB, Func<A, B, T> func)
+        //    {
+        //        if (seqA == null) throw new ArgumentNullException("seqA");
+        //        if (seqB == null) throw new ArgumentNullException("seqB");
+
+        //        return Zip35Deferred(seqA, seqB, func);
+        //    }
+        //    private static IEnumerable<T> Zip35Deferred<A, B, T>(
+        //this IEnumerable<A> seqA, IEnumerable<B> seqB, Func<A, B, T> func)
+        //    {
+        //        using (var iteratorA = seqA.GetEnumerator())
+        //        using (var iteratorB = seqB.GetEnumerator())
+        //        {
+        //            while (iteratorA.MoveNext() && iteratorB.MoveNext())
+        //            {
+        //                yield return func(iteratorA.Current, iteratorB.Current);
+        //            }
+        //        }
+        //    }
+    }
+#endif
+
     public class FieldRetriever
     {
         public static string InstrText(XElement root, int id)

@@ -47,6 +47,19 @@ namespace Tobi.Plugin.DocumentPane
 {
     public partial class DocumentPaneView
     {
+        protected class FlowDocumentAnchorData<T1, T2, T3>
+        {
+            public T1 Item1 { get; private set; }
+            public T2 Item2 { get; private set; }
+            public T3 Item3 { get; private set; }
+            public FlowDocumentAnchorData(T1 item1, T2 item2, T3 item3)
+            {
+                Item1 = item1;
+                Item2 = item2;
+                Item3 = item3;
+            }
+        }
+
         private class ObjectTagger : ObjectTag
         {
             private object m_Tag = null;
@@ -71,14 +84,14 @@ namespace Tobi.Plugin.DocumentPane
                 DebugFix.Assert(parent == null);
 
                 DebugFix.Assert(objectTagger.Tag != null);
-                //DebugFix.Assert(cmd.Tag is Tuple);
+                //DebugFix.Assert(cmd.Tag is FlowDocumentAnchorData);
 
                 if (objectTagger.Tag != null)
                 {
-                    if (objectTagger.Tag is Tuple<DependencyObject, int>)
+                    if (objectTagger.Tag is FlowDocumentAnchorData<DependencyObject, int, Object>)
                     {
-                        Tuple<DependencyObject, int> data =
-                            (Tuple<DependencyObject, int>)objectTagger.Tag;
+                        FlowDocumentAnchorData<DependencyObject, int, Object> data =
+                            (FlowDocumentAnchorData<DependencyObject, int, Object>)objectTagger.Tag;
                         parent = data.Item1;
 
                         bool condition = parent is Table && txtElem is TableRowGroup
@@ -86,28 +99,28 @@ namespace Tobi.Plugin.DocumentPane
                             || parent is TableRow && txtElem is TableCell;
                         DebugFix.Assert(condition);
                     }
-                    else if (objectTagger.Tag is Tuple<DependencyObject, ListItem, ListItem>)
+                    else if (objectTagger.Tag is FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>)
                     {
-                        Tuple<DependencyObject, ListItem, ListItem> data =
-                            (Tuple<DependencyObject, ListItem, ListItem>)objectTagger.Tag;
+                        FlowDocumentAnchorData<DependencyObject, ListItem, ListItem> data =
+                            (FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>)objectTagger.Tag;
                         parent = data.Item1;
 
                         bool condition = parent is List && txtElem is ListItem;
                         DebugFix.Assert(condition);
                     }
-                    else if (objectTagger.Tag is Tuple<DependencyObject, Inline, Inline>)
+                    else if (objectTagger.Tag is FlowDocumentAnchorData<DependencyObject, Inline, Inline>)
                     {
-                        Tuple<DependencyObject, Inline, Inline> data =
-                            (Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag;
+                        FlowDocumentAnchorData<DependencyObject, Inline, Inline> data =
+                            (FlowDocumentAnchorData<DependencyObject, Inline, Inline>)objectTagger.Tag;
                         parent = data.Item1;
 
                         bool condition = (parent is Paragraph || parent is Span || parent is TextBlock) && txtElem is Inline;
                         DebugFix.Assert(condition);
                     }
-                    else if (objectTagger.Tag is Tuple<DependencyObject, Block, Block>)
+                    else if (objectTagger.Tag is FlowDocumentAnchorData<DependencyObject, Block, Block>)
                     {
-                        Tuple<DependencyObject, Block, Block> data =
-                            (Tuple<DependencyObject, Block, Block>)objectTagger.Tag;
+                        FlowDocumentAnchorData<DependencyObject, Block, Block> data =
+                            (FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag;
                         parent = data.Item1;
 
                         bool condition = (parent is FlowDocument || parent is Section || parent is ListItem || parent is TableCell || parent is Floater || parent is Figure) && txtElem is Block;
@@ -130,13 +143,13 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (doDetach && ((TableRowGroup)parent).Rows.Contains((TableRow)txtElem))
                     {
-                        objectTagger.Tag = new Tuple<DependencyObject, int>(parent, ((TableRowGroup)parent).Rows.IndexOf((TableRow)txtElem));
+                        objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, int, Object>(parent, ((TableRowGroup)parent).Rows.IndexOf((TableRow)txtElem), null);
 
                         ((TableRowGroup)parent).Rows.Remove((TableRow)txtElem);
                     }
                     else if (!doDetach)
                     {
-                        int index = ((Tuple<DependencyObject, int>)objectTagger.Tag).Item2;
+                        int index = ((FlowDocumentAnchorData<DependencyObject, int, Object>)objectTagger.Tag).Item2;
                         if (index < 0 || index >= ((TableRowGroup)parent).Rows.Count)
                         {
                             ((TableRowGroup)parent).Rows.Add((TableRow)txtElem);
@@ -166,13 +179,13 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (doDetach && ((TableRow)parent).Cells.Contains((TableCell)txtElem))
                     {
-                        objectTagger.Tag = new Tuple<DependencyObject, int>(parent, ((TableRow)parent).Cells.IndexOf((TableCell)txtElem));
+                        objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, int, Object>(parent, ((TableRow)parent).Cells.IndexOf((TableCell)txtElem), null);
 
                         ((TableRow)parent).Cells.Remove((TableCell)txtElem);
                     }
                     else if (!doDetach)
                     {
-                        int index = ((Tuple<DependencyObject, int>)objectTagger.Tag).Item2;
+                        int index = ((FlowDocumentAnchorData<DependencyObject, int, Object>)objectTagger.Tag).Item2;
                         if (index < 0 || index >= ((TableRow)parent).Cells.Count)
                         {
                             ((TableRow)parent).Cells.Add((TableCell)txtElem);
@@ -202,13 +215,13 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (doDetach && ((Table)parent).RowGroups.Contains((TableRowGroup)txtElem))
                     {
-                        objectTagger.Tag = new Tuple<DependencyObject, int>(parent, ((Table)parent).RowGroups.IndexOf((TableRowGroup)txtElem));
+                        objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, int, Object>(parent, ((Table)parent).RowGroups.IndexOf((TableRowGroup)txtElem), null);
 
                         ((Table)parent).RowGroups.Remove((TableRowGroup)txtElem);
                     }
                     else if (!doDetach)
                     {
-                        int index = ((Tuple<DependencyObject, int>)objectTagger.Tag).Item2;
+                        int index = ((FlowDocumentAnchorData<DependencyObject, int, Object>)objectTagger.Tag).Item2;
                         if (index < 0 || index >= ((Table)parent).RowGroups.Count)
                         {
                             ((Table)parent).RowGroups.Add((TableRowGroup)txtElem);
@@ -242,17 +255,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //listItemAfter
 
-                            objectTagger.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, ((ListItem)txtElem).PreviousListItem, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>(parent, ((ListItem)txtElem).PreviousListItem, null);
                         }
                         else if (((ListItem)txtElem).NextListItem != null)
                         {
                             //listItemBefore
 
-                            objectTagger.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, null, ((ListItem)txtElem).NextListItem);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>(parent, null, ((ListItem)txtElem).NextListItem);
                         }
                         else
                         {
-                            objectTagger.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parent, null, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>(parent, null, null);
                         }
 
                         ((List)parent).ListItems.Remove((ListItem)txtElem);
@@ -260,10 +273,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!doDetach)
                     {
                         var listItemAfter =
-                            ((Tuple<DependencyObject, ListItem, ListItem>)objectTagger.Tag).Item2;
+                            ((FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>)objectTagger.Tag).Item2;
 
                         var listItemBefore =
-                            ((Tuple<DependencyObject, ListItem, ListItem>)objectTagger.Tag).Item3;
+                            ((FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>)objectTagger.Tag).Item3;
 
                         if (listItemAfter != null)
                         {
@@ -302,17 +315,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //inlineAfter
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
                         }
                         else if (((Inline)txtElem).NextInline != null)
                         {
                             //inlineBefore
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
                         }
                         else
                         {
-                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parent, null, null);
                         }
 
                         ((Paragraph)parent).Inlines.Remove((Inline)txtElem);
@@ -320,10 +333,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!doDetach)
                     {
                         var inlineAfter =
-                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
+                            ((FlowDocumentAnchorData<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
 
                         var inlineBefore =
-                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item3;
+                            ((FlowDocumentAnchorData<DependencyObject, Inline, Inline>)objectTagger.Tag).Item3;
 
                         if (inlineAfter != null)
                         {
@@ -353,17 +366,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //inlineAfter
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
                         }
                         else if (((Inline)txtElem).NextInline != null)
                         {
                             //inlineBefore
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
                         }
                         else
                         {
-                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parent, null, null);
                         }
 
                         ((Span)parent).Inlines.Remove((Inline)txtElem);
@@ -371,10 +384,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!doDetach)
                     {
                         var inlineAfter =
-                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
+                            ((FlowDocumentAnchorData<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
 
                         var inlineBefore =
-                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item3;
+                            ((FlowDocumentAnchorData<DependencyObject, Inline, Inline>)objectTagger.Tag).Item3;
 
                         if (inlineAfter != null)
                         {
@@ -404,17 +417,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //inlineAfter
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parent, ((Inline)txtElem).PreviousInline, null);
                         }
                         else if (((Inline)txtElem).NextInline != null)
                         {
                             //inlineBefore
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parent, null, ((Inline)txtElem).NextInline);
                         }
                         else
                         {
-                            objectTagger.Tag = new Tuple<DependencyObject, Inline, Inline>(parent, null, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parent, null, null);
                         }
 
                         ((TextBlock)parent).Inlines.Remove((Inline)txtElem);
@@ -422,10 +435,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!doDetach)
                     {
                         var inlineAfter =
-                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
+                            ((FlowDocumentAnchorData<DependencyObject, Inline, Inline>)objectTagger.Tag).Item2;
 
                         var inlineBefore =
-                            ((Tuple<DependencyObject, Inline, Inline>)objectTagger.Tag).Item3;
+                            ((FlowDocumentAnchorData<DependencyObject, Inline, Inline>)objectTagger.Tag).Item3;
 
                         if (inlineAfter != null)
                         {
@@ -464,17 +477,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((FlowDocument)parent).Blocks.Remove((Block)txtElem);
@@ -482,10 +495,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!doDetach)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -515,17 +528,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((Section)parent).Blocks.Remove((Block)txtElem);
@@ -533,10 +546,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!doDetach)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -566,17 +579,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((ListItem)parent).Blocks.Remove((Block)txtElem);
@@ -584,10 +597,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!doDetach)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -617,17 +630,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((TableCell)parent).Blocks.Remove((Block)txtElem);
@@ -635,10 +648,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!doDetach)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -668,17 +681,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((Floater)parent).Blocks.Remove((Block)txtElem);
@@ -686,10 +699,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!doDetach)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -719,17 +732,17 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             //blockAfter
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, ((Block)txtElem).PreviousBlock, null);
                         }
                         else if (((Block)txtElem).NextBlock != null)
                         {
                             //blockBefore
 
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, ((Block)txtElem).NextBlock);
                         }
                         else
                         {
-                            objectTagger.Tag = new Tuple<DependencyObject, Block, Block>(parent, null, null);
+                            objectTagger.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parent, null, null);
                         }
 
                         ((Figure)parent).Blocks.Remove((Block)txtElem);
@@ -737,10 +750,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (!doDetach)
                     {
                         var blockAfter =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item2;
 
                         var blockBefore =
-                            ((Tuple<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
+                            ((FlowDocumentAnchorData<DependencyObject, Block, Block>)objectTagger.Tag).Item3;
 
                         if (blockAfter != null)
                         {
@@ -841,7 +854,7 @@ namespace Tobi.Plugin.DocumentPane
                     var fakeCmds = new List<ObjectTagger>(toRemove);
 
                     // Temporarily delete next siblings
-                    for (int i = parent.Children.Count-1; i >= 0; i--)
+                    for (int i = parent.Children.Count - 1; i >= 0; i--)
                     //for (int i = 0; i < parent.Children.Count; i++)
                     {
                         TreeNode childTreeNode = parent.Children.Get(i);
@@ -894,15 +907,15 @@ namespace Tobi.Plugin.DocumentPane
                         {
                             ObjectTagger fakeCmd = fakeCmds[j--];
                             // METHOD_1: shift all anchors to account for the newly-inserted TextElement (PROBLEM: newTextElem is not necessarily the equivalent of cmdTreeNode! (intermediary-inserted TextElements))
-                            // METHOD_2: reset anchors in Tuples => indicates "append" instruction
+                            // METHOD_2: reset anchors in FlowDocumentAnchorDatas => indicates "append" instruction
 
                             var txtElem = (TextElement)childTreeNode.Tag;
                             DependencyObject parentTxtElem = null;
 
-                            if (fakeCmd.Tag is Tuple<DependencyObject, int>)
+                            if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, int, Object>)
                             {
-                                Tuple<DependencyObject, int> data =
-                                    (Tuple<DependencyObject, int>)fakeCmd.Tag;
+                                FlowDocumentAnchorData<DependencyObject, int, Object> data =
+                                    (FlowDocumentAnchorData<DependencyObject, int, Object>)fakeCmd.Tag;
                                 parentTxtElem = data.Item1;
 
                                 bool condition = parentTxtElem is Table && txtElem is TableRowGroup
@@ -910,40 +923,40 @@ namespace Tobi.Plugin.DocumentPane
                                     || parentTxtElem is TableRow && txtElem is TableCell;
                                 DebugFix.Assert(condition);
 
-                                fakeCmd.Tag = new Tuple<DependencyObject, int>(parentTxtElem, -1); // reset
+                                fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, int, Object>(parentTxtElem, -1, null); // reset
                             }
-                            else if (fakeCmd.Tag is Tuple<DependencyObject, ListItem, ListItem>)
+                            else if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>)
                             {
-                                Tuple<DependencyObject, ListItem, ListItem> data =
-                                    (Tuple<DependencyObject, ListItem, ListItem>)fakeCmd.Tag;
+                                FlowDocumentAnchorData<DependencyObject, ListItem, ListItem> data =
+                                    (FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>)fakeCmd.Tag;
                                 parentTxtElem = data.Item1;
 
                                 bool condition = parentTxtElem is List && txtElem is ListItem;
                                 DebugFix.Assert(condition);
 
-                                fakeCmd.Tag = new Tuple<DependencyObject, ListItem, ListItem>(parentTxtElem, null, null); // reset
+                                fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>(parentTxtElem, null, null); // reset
                             }
-                            else if (fakeCmd.Tag is Tuple<DependencyObject, Inline, Inline>)
+                            else if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, Inline, Inline>)
                             {
-                                Tuple<DependencyObject, Inline, Inline> data =
-                                    (Tuple<DependencyObject, Inline, Inline>)fakeCmd.Tag;
+                                FlowDocumentAnchorData<DependencyObject, Inline, Inline> data =
+                                    (FlowDocumentAnchorData<DependencyObject, Inline, Inline>)fakeCmd.Tag;
                                 parentTxtElem = data.Item1;
 
                                 bool condition = (parentTxtElem is Paragraph || parentTxtElem is Span || parentTxtElem is TextBlock) && txtElem is Inline;
                                 DebugFix.Assert(condition);
 
-                                fakeCmd.Tag = new Tuple<DependencyObject, Inline, Inline>(parentTxtElem, null, null); // reset
+                                fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parentTxtElem, null, null); // reset
                             }
-                            else if (fakeCmd.Tag is Tuple<DependencyObject, Block, Block>)
+                            else if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, Block, Block>)
                             {
-                                Tuple<DependencyObject, Block, Block> data =
-                                    (Tuple<DependencyObject, Block, Block>)fakeCmd.Tag;
+                                FlowDocumentAnchorData<DependencyObject, Block, Block> data =
+                                    (FlowDocumentAnchorData<DependencyObject, Block, Block>)fakeCmd.Tag;
                                 parentTxtElem = data.Item1;
 
                                 bool condition = (parentTxtElem is FlowDocument || parentTxtElem is Section || parentTxtElem is ListItem || parentTxtElem is TableCell || parentTxtElem is Floater || parentTxtElem is Figure) && txtElem is Block;
                                 DebugFix.Assert(condition);
 
-                                fakeCmd.Tag = new Tuple<DependencyObject, Block, Block>(parentTxtElem, null, null); // reset
+                                fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parentTxtElem, null, null); // reset
                             }
                             else
                             {
