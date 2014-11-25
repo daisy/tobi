@@ -1663,9 +1663,16 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (String.IsNullOrEmpty(textMedia))
                 {
-                    var run = new Run("...");
-                    setTextDirection(node, null, run, null);
-                    data.Inlines.Add(run);
+                    if (textMedia != null) // empty string?
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        var run = new Run("...");
+                        setTextDirection(node, null, run, null);
+                        data.Inlines.Add(run);
+                    }
+
                     addInline(parent, data);
                 }
                 else
