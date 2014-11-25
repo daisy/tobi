@@ -1313,6 +1313,7 @@ namespace Tobi.Plugin.DocumentPane
 
                     var previous = node.GetPreviousSiblingWithText();
                     var next = node.GetNextSiblingWithText();
+                    var nodeParent = node.Parent;
 
                     var cmd = node.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
                     node.Presentation.UndoRedoManager.Execute(cmd);
@@ -1324,6 +1325,10 @@ namespace Tobi.Plugin.DocumentPane
                     else if (next != null)
                     {
                         m_UrakawaSession.PerformTreeNodeSelection(next);
+                    }
+                    else if (nodeParent != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(nodeParent);
                     }
                     else
                     {
@@ -1373,7 +1378,6 @@ namespace Tobi.Plugin.DocumentPane
                     Channel textChannel = node.Presentation.ChannelsManager.GetOrCreateTextChannel();
                     TextMedia txtMedia = node.Presentation.MediaFactory.CreateTextMedia();
                     txtMedia.Text = "INSERTED TEXT";
-                    chProp.SetMedia(textChannel, txtMedia);
 
                     int position = node.Children.Count; // append
                     position = 0; // prepend
@@ -1421,7 +1425,7 @@ namespace Tobi.Plugin.DocumentPane
                         VerticalAlignment = VerticalAlignment.Center,
                     };
 
-                    if (node.GetTextMedia() != null)
+                    if (node.GetTextMedia() != null && string.IsNullOrEmpty(node.GetXmlElementLocalName())) // text-only node
                     {
                         radioBefore.IsChecked = true;
                     }
@@ -1454,10 +1458,92 @@ namespace Tobi.Plugin.DocumentPane
                     }
 
                     elementName = elementNameInput.Text;
-                    XmlProperty xmlProp = newNode.GetOrCreateXmlProperty();
-                    xmlProp.SetQName(elementName, node.GetXmlNamespaceUri());
+                    if (!String.IsNullOrEmpty(elementName))
+                    {
+                        XmlProperty xmlProp = newNode.GetOrCreateXmlProperty();
+                        string uri = node.GetXmlNamespaceUri();
+                        if (string.IsNullOrEmpty(uri) && node.Parent != null)
+                        {
+                            uri = node.Parent.GetXmlNamespaceUri();
+                        }
+                        if (string.IsNullOrEmpty(uri))
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                            uri = "";
+                        }
+                        xmlProp.SetQName(elementName, uri);
+                    }
 
-                    txtMedia.Text = elementTextInput.Text;
+                    if (!String.IsNullOrEmpty(elementTextInput.Text))
+                    {
+                        txtMedia.Text = elementTextInput.Text;
+                        chProp.SetMedia(textChannel, txtMedia);
+                    }
+
+                    bool isCompositeCommand = false;
+                    if ((Convert.ToBoolean(radioPrepend.IsChecked) || Convert.ToBoolean(radioAppend.IsChecked)) && node.GetTextMedia() != null)
+                    {
+                        DebugFix.Assert(!string.IsNullOrEmpty(node.GetXmlElementLocalName()));
+
+                        TreeNode nodeParent = node.Parent;
+                        if (nodeParent == null)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                            return;
+                        }
+
+                        isCompositeCommand = true;
+                        nodeParent.Presentation.UndoRedoManager.StartTransaction("Extract text into new child TreeNode, then insert new node", "Extract text into child mixed XML content, and insert new TreeNode");
+
+                        var previous = node.GetPreviousSiblingWithText();
+                        var next = node.GetNextSiblingWithText();
+                        
+                        // Step (1) DETACH
+                        int pos = nodeParent.Children.IndexOf(node);
+                        var cmd1 = nodeParent.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
+                        nodeParent.Presentation.UndoRedoManager.Execute(cmd1);
+                        //node.Tag = null;
+
+                        if (previous != null)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(previous);
+                        }
+                        else if (next != null)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(next);
+                        }
+                        else if (nodeParent != null)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(nodeParent);
+                        }
+                        else
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(nodeParent.Presentation.RootNode);
+                        }
+
+                        // Step (2) CLONE AND EMPTY TEXT
+                        TreeNode nodeClone = node.Copy(true, true);
+                        ChannelsProperty cloneChProp = nodeClone.GetOrCreateChannelsProperty();
+                        cloneChProp.SetMedia(textChannel, null);
+                        var cmd2 = nodeParent.Presentation.CommandFactory.CreateTreeNodeInsertCommand(nodeClone, nodeParent, pos);
+                        nodeParent.Presentation.UndoRedoManager.Execute(cmd2);
+                        
+                        // Step (3) RE-ADD TEXT AS CHILD
+                        TreeNode newTextNode = nodeParent.Presentation.TreeNodeFactory.Create();
+                        ChannelsProperty newChProp = newTextNode.GetOrCreateChannelsProperty();
+                        //Channel newTextChannel = node.Presentation.ChannelFactory.CreateTextChannel();
+                        TextMedia newTxtMedia = nodeParent.Presentation.MediaFactory.CreateTextMedia();
+                        newTxtMedia.Text = node.GetTextMedia().Text; //node.GetTextFlattened()
+                        newChProp.SetMedia(textChannel, newTxtMedia);
+                        var cmd3 = nodeParent.Presentation.CommandFactory.CreateTreeNodeInsertCommand(newTextNode, nodeClone, 0);
+                        nodeParent.Presentation.UndoRedoManager.Execute(cmd3);
+
+                        node = nodeClone;
+                    }
 
                     if (Convert.ToBoolean(radioPrepend.IsChecked))
                     {
@@ -1488,6 +1574,11 @@ namespace Tobi.Plugin.DocumentPane
 
                     var cmd = node.Presentation.CommandFactory.CreateTreeNodeInsertCommand(newNode, parent, position);
                     node.Presentation.UndoRedoManager.Execute(cmd);
+
+                    if (isCompositeCommand)
+                    {
+                        node.Presentation.UndoRedoManager.EndTransaction();
+                    }
 
                     m_UrakawaSession.PerformTreeNodeSelection(newNode);
                 },
