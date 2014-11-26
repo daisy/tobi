@@ -397,6 +397,7 @@ namespace Tobi.Plugin.Descriptions
             if (eventt.Command is TreeNodeInsertCommand || eventt.Command is TreeNodeRemoveCommand)
             {
                 TreeNode node = (eventt.Command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)eventt.Command).TreeNode : ((TreeNodeRemoveCommand)eventt.Command).TreeNode;
+                bool done_ = (eventt.Command is TreeNodeInsertCommand) ? !done : done;
 
                 foreach (var describableTreeNode in DescriptionsNavigator_DescribableTreeNodes)
                 {
@@ -407,16 +408,8 @@ namespace Tobi.Plugin.Descriptions
                         describableTreeNode.InvalidateDescription();
                     }
                 }
-            }
-
-            if (eventt.Command is TreeNodeInsertCommand
-                || eventt.Command is TreeNodeRemoveCommand)
-            {
-                bool done_ = (eventt.Command is TreeNodeInsertCommand) ? !done : done;
-
-                TreeNode node = (eventt.Command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)eventt.Command).TreeNode : ((TreeNodeRemoveCommand)eventt.Command).TreeNode;
+            
                 checkTreeNodeFragmentRemoval(done_, node);
-
                 return;
             }
 
