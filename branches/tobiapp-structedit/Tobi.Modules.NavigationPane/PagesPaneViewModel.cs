@@ -16,6 +16,9 @@ using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
+using System.Text;
+using urakawa.property.xml;
+using urakawa.daisy;
 
 namespace Tobi.Plugin.NavigationPane
 {
@@ -220,6 +223,88 @@ namespace Tobi.Plugin.NavigationPane
             get { return _pagesNavigator; }
         }
 
+        private static bool isPageNumber(TreeNode treeNode)
+        {
+            string localName = treeNode.GetXmlElementLocalName();
+            if (!string.IsNullOrEmpty(localName))
+            {
+                if (localName.Equals("pagenum", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+
+                XmlProperty xmlProp = treeNode.GetXmlProperty();
+                //XmlAttribute xmlAttr = xmlProp.GetAttribute("type");
+                XmlAttribute xmlAttr = xmlProp.GetAttribute(DiagramContentModelHelper.NS_PREFIX_EPUB + ":type", DiagramContentModelHelper.NS_URL_EPUB);
+                if (xmlAttr != null)
+                {
+                    return xmlAttr.Value.Equals("pagebreak", StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            return false;
+        }
+
+        private static bool isPage(TreeNode node)
+        {
+            if (!isPageNumber(node)) return false;
+
+            string id = node.GetXmlElementId();
+
+            string pageID = null;
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                pageID = id;
+            }
+            else
+            {
+                TreeNode.StringChunkRange range = node.GetTextFlattened_();
+                if (range != null && range.First != null && !string.IsNullOrEmpty(range.First.Str))
+                {
+                    StringBuilder strBuilder = new StringBuilder(range.GetLength());
+                    TreeNode.ConcatStringChunks(range, -1, strBuilder);
+
+                    strBuilder.Replace(" ", "_");
+                    strBuilder.Insert(0, "id_tobipage_");
+
+                    pageID = strBuilder.ToString();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(pageID))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool checkTreeNodeFragmentRemoval(bool done, TreeNode node)
+        {
+            bool found = false;
+
+            if (isPage(node))
+            {
+                if (done)
+                {
+                    PagesNavigator.RemovePage(node);
+                }
+                else
+                {
+                    PagesNavigator.AddPage(node);
+                }
+                RaisePropertyChanged(() => HasNotPages);
+
+                found = true;
+            }
+            foreach (var child in node.Children.ContentsAs_Enumerable)
+            {
+                bool found_ = checkTreeNodeFragmentRemoval(done, child);
+                found = found || found_;
+            }
+
+            return found;
+        }
+
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
             if (!TheDispatcher.CheckAccess())
@@ -240,7 +325,16 @@ namespace Tobi.Plugin.NavigationPane
                            || eventt is TransactionCancelledEventArgs
                            ))
             {
-                Debug.Fail("This should never happen !!");
+                //Debug.Fail("This should never happen !!");
+                return;
+            }
+
+            if (!(eventt.Command is TreeNodeChangeTextCommand)
+                && !(eventt.Command is TreeNodeInsertCommand)
+                && !(eventt.Command is TreeNodeRemoveCommand)
+                && !(eventt.Command is CompositeCommand)
+                )
+            {
                 return;
             }
 
@@ -248,14 +342,31 @@ namespace Tobi.Plugin.NavigationPane
             {
                 DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
                 //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                return;
+                //return;
             }
 
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
             DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
 
-            var cmd = eventt.Command as TreeNodeChangeTextCommand;
+            if (eventt.Command is TreeNodeInsertCommand || eventt.Command is TreeNodeRemoveCommand)
+            {
+                TreeNode node = (eventt.Command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)eventt.Command).TreeNode : ((TreeNodeRemoveCommand)eventt.Command).TreeNode;
+                bool done_ = (eventt.Command is TreeNodeInsertCommand) ? !done : done;
 
+                foreach (var page in PagesNavigator_Pages)
+                {
+                    if ((eventt.Command is TreeNodeInsertCommand && !done) || (eventt.Command is TreeNodeRemoveCommand && done)
+                        || (node == page.TreeNode || node.IsDescendantOf(page.TreeNode)))
+                    {
+                        page.InvalidateName();
+                    }
+                }
+
+                checkTreeNodeFragmentRemoval(done_, node);
+                return;
+            }
+
+            var cmd = eventt.Command as TreeNodeChangeTextCommand;
             if (cmd == null) return;
 
             foreach (var page in PagesNavigator_Pages)

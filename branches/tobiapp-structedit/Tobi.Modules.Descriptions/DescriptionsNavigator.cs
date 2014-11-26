@@ -64,11 +64,11 @@ namespace Tobi.Plugin.Descriptions
             var describedTreeNode = new DescribableTreeNode(node);
 
             bool inserted = false;
-            foreach (DescribableTreeNode marked in DescribableTreeNodes)
+            foreach (DescribableTreeNode describableTreeNode in DescribableTreeNodes)
             {
-                if (node.IsBefore(marked.TreeNode))
+                if (node.IsBefore(describableTreeNode.TreeNode))
                 {
-                    var i = DescribableTreeNodes.IndexOf(marked);
+                    var i = DescribableTreeNodes.IndexOf(describableTreeNode);
 
                     if (!m_BackupTreeNodes.Contains(describedTreeNode))
                     {
@@ -95,7 +95,7 @@ namespace Tobi.Plugin.Descriptions
         public void RemoveDescribableTreeNode(TreeNode node)
         {
             DescribableTreeNode toRemove = null;
-            foreach (var describableTreeNode in DescribableTreeNodes)
+            foreach (DescribableTreeNode describableTreeNode in DescribableTreeNodes)
             {
                 if (describableTreeNode.TreeNode == node)
                 {

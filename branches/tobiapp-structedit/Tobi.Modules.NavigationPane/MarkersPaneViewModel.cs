@@ -432,6 +432,7 @@ namespace Tobi.Plugin.NavigationPane
             if (eventt.Command is TreeNodeInsertCommand || eventt.Command is TreeNodeRemoveCommand)
             {
                 TreeNode node = (eventt.Command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)eventt.Command).TreeNode : ((TreeNodeRemoveCommand)eventt.Command).TreeNode;
+                bool done_ = (eventt.Command is TreeNodeInsertCommand) ? !done : done;
 
                 foreach (var markedTreeNode in MarkersNavigator_MarkedTreeNodes)
                 {
@@ -441,14 +442,7 @@ namespace Tobi.Plugin.NavigationPane
                         markedTreeNode.InvalidateDescription();
                     }
                 }
-            }
-
-            if (eventt.Command is TreeNodeInsertCommand
-                || eventt.Command is TreeNodeRemoveCommand)
-            {
-                bool done_ = (eventt.Command is TreeNodeInsertCommand) ? !done : done;
-
-                TreeNode node = (eventt.Command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)eventt.Command).TreeNode : ((TreeNodeRemoveCommand)eventt.Command).TreeNode;
+            
                 if (checkTreeNodeFragmentRemoval(done_, node))
                 {
                     //RaisePropertyChanged(() => SelectedTreeNode);
