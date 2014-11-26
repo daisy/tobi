@@ -1000,6 +1000,11 @@ namespace Tobi.Plugin.AudioPane
                 }
                 InterruptAudioPlayerRecorder();
 
+                if (View != null)
+                {
+                    View.ResetAll();
+                }
+
                 if (AudioPlaybackStreamKeepAlive)
                 {
                     ensurePlaybackStreamIsDead();
@@ -1009,6 +1014,14 @@ namespace Tobi.Plugin.AudioPane
 
                 m_LastSetPlayBytePosition = -1;
 
+                m_StateToRestore = null;
+
+                //if (View != null)
+                //{
+                //    View.InvalidateWaveFormOverlay();
+                //}
+
+                //CommandRefresh.Execute();
                 return;
             }
 
