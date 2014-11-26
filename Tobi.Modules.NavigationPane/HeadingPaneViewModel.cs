@@ -16,6 +16,7 @@ using urakawa;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
+using urakawa.command;
 
 namespace Tobi.Plugin.NavigationPane
 {
@@ -297,19 +298,140 @@ namespace Tobi.Plugin.NavigationPane
                            || eventt is TransactionCancelledEventArgs
                            ))
             {
-                Debug.Fail("This should never happen !!");
+                //Debug.Fail("This should never happen !!");
                 return;
             }
+
+            if (!(eventt.Command is TreeNodeChangeTextCommand)
+                && !(eventt.Command is TreeNodeInsertCommand)
+                && !(eventt.Command is TreeNodeRemoveCommand)
+                && !(eventt.Command is CompositeCommand)
+                )
+            {
+                return;
+            }
+
 
             if (m_session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
             {
                 DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
                 //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                return;
+                //return;
             }
 
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
             DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
+
+
+
+
+            if (eventt.Command is CompositeCommand)
+            {
+                var compo = (CompositeCommand)eventt.Command;
+                bool allStructEdits = true;
+                foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
+                {
+                    if (!(command is TextNodeStructureEditCommand))
+                    {
+                        allStructEdits = false;
+                        break;
+                    }
+                }
+                //if (allStructEdits && compo.ChildCommands.Count > 0)
+                //{
+                //    cmd = compo.ChildCommands.Get(compo.ChildCommands.Count - 1); //last
+                //}
+                if (allStructEdits)
+                {
+                    //if (!done)
+                    //{
+                    //    for (var i = compo.ChildCommands.Count - 1; i >= 0; i--)
+                    //    {
+                    //        Command command = compo.ChildCommands.Get(i);
+
+                    //        TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
+                    //        bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
+
+                    //        foreach (var headingTreeNodeWrapper in HeadingsNavigator_Roots)
+                    //        {
+                    //            //if ((command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done)
+                    //            //    || (node == headingTreeNodeWrapper.WrappedTreeNode_LevelHeading
+                    //            //    || node == headingTreeNodeWrapper.WrappedTreeNode_Level
+                    //            //    || headingTreeNodeWrapper.WrappedTreeNode_LevelHeading != null && node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_LevelHeading)
+                    //            //    //|| node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_Level)
+                    //            //))
+                    //            if (true)
+                    //            {
+                    //                checkNodeTitleChanged(headingTreeNodeWrapper, node);
+                    //            }
+                    //        }
+                    //    }
+                    //}
+                    //else if (eventt is ReDoneEventArgs)
+                    //{
+                    //    //foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
+                    //    for (var i = 0; i < compo.ChildCommands.Count; i++)
+                    //    {
+                    //        Command command = compo.ChildCommands.Get(i);
+
+                    //        TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
+                    //        bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
+
+                    //        foreach (var headingTreeNodeWrapper in HeadingsNavigator_Roots)
+                    //        {
+                    //            //if ((command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done)
+                    //            //    || (node == headingTreeNodeWrapper.WrappedTreeNode_LevelHeading
+                    //            //    || node == headingTreeNodeWrapper.WrappedTreeNode_Level
+                    //            //    || headingTreeNodeWrapper.WrappedTreeNode_LevelHeading != null && node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_LevelHeading)
+                    //            //    //|| node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_Level)
+                    //            //))
+                    //            if (true)
+                    //            {
+                    //                checkNodeTitleChanged(headingTreeNodeWrapper, node);
+                    //            }
+                    //        }
+                    //    }
+                    //}
+
+                    View.UnloadProject();
+                    HeadingsNavigator = null;
+
+                    HeadingsNavigator = new HeadingsNavigator(m_session.DocumentProject, this);
+                    View.LoadProject();
+
+                    return;
+                }
+            }
+
+            var com = eventt.Command;
+            if (com is TreeNodeInsertCommand || com is TreeNodeRemoveCommand)
+            {
+                //TreeNode node = (com is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)com).TreeNode : ((TreeNodeRemoveCommand)com).TreeNode;
+                //bool done_ = (com is TreeNodeInsertCommand) ? !done : done;
+
+                //foreach (var headingTreeNodeWrapper in HeadingsNavigator_Roots)
+                //{
+                //    //if ((com is TreeNodeInsertCommand && !done) || (com is TreeNodeRemoveCommand && done)
+                //    //    || (node == headingTreeNodeWrapper.WrappedTreeNode_LevelHeading
+                //    //    || node == headingTreeNodeWrapper.WrappedTreeNode_Level
+                //    //    || headingTreeNodeWrapper.WrappedTreeNode_LevelHeading != null && node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_LevelHeading)
+                //    //    //|| node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_Level)
+                //    //))
+                //    if (true)
+                //    {
+                //        checkNodeTitleChanged(headingTreeNodeWrapper, node);
+                //    }
+                //}
+
+                View.UnloadProject();
+                HeadingsNavigator = null;
+
+                HeadingsNavigator = new HeadingsNavigator(m_session.DocumentProject, this);
+                View.LoadProject();
+
+                return;
+            }
+
 
             var cmd = eventt.Command as TreeNodeChangeTextCommand;
 

@@ -988,14 +988,33 @@ namespace Tobi.Plugin.AudioPane
                 return;
             }
 
-#if DEBUG
-            // TODO: refresh waveform correctly, depending on modified tree fragment (remove / insert)
-            if (!(eventt.Command is TreeNodeRemoveCommand)
-                && !(eventt.Command is TreeNodeInsertCommand)
-                && !allStructEdits)
+            if (eventt.Command is TreeNodeRemoveCommand
+                || eventt.Command is TreeNodeInsertCommand
+                || allStructEdits)
             {
-                Debugger.Break();
+                // TODO: refresh waveform correctly, depending on modified tree fragment (remove / insert)
+
+                if (View != null)
+                {
+                    View.CancelWaveFormLoad(false);
+                }
+                InterruptAudioPlayerRecorder();
+
+                if (AudioPlaybackStreamKeepAlive)
+                {
+                    ensurePlaybackStreamIsDead();
+                }
+
+                State.ResetAll();
+
+                m_LastSetPlayBytePosition = -1;
+
+                return;
             }
+
+
+#if DEBUG
+            Debugger.Break();
 #endif
 
             if (View != null)
