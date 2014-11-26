@@ -1022,6 +1022,10 @@ namespace Tobi.Plugin.AudioPane
                 //}
 
                 //CommandRefresh.Execute();
+                var sel = m_UrakawaSession.GetTreeNodeSelection();
+                //m_UrakawaSession.PerformTreeNodeSelection(sel.Item1, sel.Item2)
+                var selOld = new Tuple<TreeNode, TreeNode>(null, null);
+                OnTreeNodeSelectionChanged(new Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>(selOld, sel));
                 return;
             }
 
