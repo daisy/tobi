@@ -962,7 +962,7 @@ namespace Tobi.Plugin.DocumentPane
                            || eventt is TransactionCancelledEventArgs
                            ))
             {
-                Debug.Fail("This should never happen !!");
+                //Debug.Fail("This should never happen !!");
                 return;
             }
 
