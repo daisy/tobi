@@ -17,6 +17,7 @@ using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
+using AudioLib;
 
 namespace Tobi.Plugin.NavigationPane
 {
@@ -357,6 +358,32 @@ namespace Tobi.Plugin.NavigationPane
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
             //project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
         }
+
+        private bool checkTreeNodeFragmentRemoval(bool done, TreeNode node)
+        {
+            bool found = false;
+
+            if (node.IsMarked)
+            {
+                if (done)
+                {
+                    MarkersNavigator.RemoveMarkedTreeNode(node);
+                }
+                else
+                {
+                    MarkersNavigator.AddMarkedTreeNode(node);
+                }
+                found = true;
+            }
+            foreach (var child in node.Children.ContentsAs_Enumerable)
+            {
+                bool found_ = checkTreeNodeFragmentRemoval(done, child);
+                found = found || found_;
+            }
+
+            return found;
+        }
+
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
             if (!TheDispatcher.CheckAccess())
@@ -374,18 +401,60 @@ namespace Tobi.Plugin.NavigationPane
             if (!(eventt is DoneEventArgs
                   || eventt is UnDoneEventArgs
                   || eventt is ReDoneEventArgs
-                //|| eventt is TransactionEndedEventArgs
+                  || eventt is TransactionCancelledEventArgs
+                  || eventt is TransactionEndedEventArgs
                  ))
             {
-                Debug.Fail("This should never happen !!");
+                //Debug.Fail("This should never happen !!");
                 return;
             }
 
             if (!(eventt.Command is TreeNodeSetIsMarkedCommand)
                 && !(eventt.Command is TreeNodeChangeTextCommand)
+                && !(eventt.Command is TreeNodeInsertCommand)
+                && !(eventt.Command is TreeNodeRemoveCommand)
                 && !(eventt.Command is CompositeCommand)
                 )
             {
+                return;
+            }
+
+            if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
+            {
+                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+                //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
+                //return;
+            }
+
+            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
+            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
+            
+            if (eventt.Command is TreeNodeInsertCommand || eventt.Command is TreeNodeRemoveCommand)
+            {
+                TreeNode node = (eventt.Command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)eventt.Command).TreeNode : ((TreeNodeRemoveCommand)eventt.Command).TreeNode;
+
+                foreach (var markedTreeNode in MarkersNavigator_MarkedTreeNodes)
+                {
+                    if ((eventt.Command is TreeNodeInsertCommand && !done) || (eventt.Command is TreeNodeRemoveCommand && done)
+                        || (node == markedTreeNode.TreeNode || node.IsDescendantOf(markedTreeNode.TreeNode)))
+                    {
+                        markedTreeNode.InvalidateDescription();
+                    }
+                }
+            }
+
+            if (eventt.Command is TreeNodeInsertCommand
+                || eventt.Command is TreeNodeRemoveCommand)
+            {
+                bool done_ = (eventt.Command is TreeNodeInsertCommand) ? !done : done;
+
+                TreeNode node = (eventt.Command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)eventt.Command).TreeNode : ((TreeNodeRemoveCommand)eventt.Command).TreeNode;
+                if (checkTreeNodeFragmentRemoval(done_, node))
+                {
+                    //RaisePropertyChanged(() => SelectedTreeNode);
+                    RaisePropertyChanged(() => HasNotMarkers);
+                }
+
                 return;
             }
 
@@ -426,12 +495,15 @@ namespace Tobi.Plugin.NavigationPane
 
             RaisePropertyChanged(() => SelectedTreeNode);
 
-            var cmd = (TreeNodeSetIsMarkedCommand)eventt.Command;
+            if (eventt.Command is TreeNodeSetIsMarkedCommand)
+            {
+                var cmd = (TreeNodeSetIsMarkedCommand) eventt.Command;
 
-            if (cmd.TreeNode.IsMarked)
-                MarkersNavigator.AddMarkedTreeNode(cmd.TreeNode);
-            else
-                MarkersNavigator.RemoveMarkedTreeNode(cmd.TreeNode);
+                if (cmd.TreeNode.IsMarked)
+                    MarkersNavigator.AddMarkedTreeNode(cmd.TreeNode);
+                else
+                    MarkersNavigator.RemoveMarkedTreeNode(cmd.TreeNode);
+            }
 
             RaisePropertyChanged(() => HasNotMarkers);
         }
