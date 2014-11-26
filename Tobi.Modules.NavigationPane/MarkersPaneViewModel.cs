@@ -428,15 +428,34 @@ namespace Tobi.Plugin.NavigationPane
 
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
             DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
-            
-            if (eventt.Command is TreeNodeInsertCommand || eventt.Command is TreeNodeRemoveCommand)
+
+            var com = eventt.Command;
+            if (eventt.Command is CompositeCommand)
             {
-                TreeNode node = (eventt.Command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)eventt.Command).TreeNode : ((TreeNodeRemoveCommand)eventt.Command).TreeNode;
-                bool done_ = (eventt.Command is TreeNodeInsertCommand) ? !done : done;
+                var compo = (CompositeCommand)eventt.Command;
+                bool allStructEdits = true;
+                foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
+                {
+                    if (!(command is TextNodeStructureEditCommand))
+                    {
+                        allStructEdits = false;
+                        break;
+                    }
+                }
+                if (allStructEdits && compo.ChildCommands.Count > 0)
+                {
+                    com = compo.ChildCommands.Get(compo.ChildCommands.Count - 1);
+                }
+            }
+
+            if (com is TreeNodeInsertCommand || com is TreeNodeRemoveCommand)
+            {
+                TreeNode node = (com is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)com).TreeNode : ((TreeNodeRemoveCommand)com).TreeNode;
+                bool done_ = (com is TreeNodeInsertCommand) ? !done : done;
 
                 foreach (var markedTreeNode in MarkersNavigator_MarkedTreeNodes)
                 {
-                    if ((eventt.Command is TreeNodeInsertCommand && !done) || (eventt.Command is TreeNodeRemoveCommand && done)
+                    if ((com is TreeNodeInsertCommand && !done) || (com is TreeNodeRemoveCommand && done)
                         || (node == markedTreeNode.TreeNode || node.IsDescendantOf(markedTreeNode.TreeNode)))
                     {
                         markedTreeNode.InvalidateDescription();
