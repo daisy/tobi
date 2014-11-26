@@ -348,7 +348,6 @@ namespace Tobi.Plugin.NavigationPane
             bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
             DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
 
-            var com = eventt.Command;
             if (eventt.Command is CompositeCommand)
             {
                 var compo = (CompositeCommand)eventt.Command;
@@ -361,12 +360,61 @@ namespace Tobi.Plugin.NavigationPane
                         break;
                     }
                 }
-                if (allStructEdits && compo.ChildCommands.Count > 0)
+                //if (allStructEdits && compo.ChildCommands.Count > 0)
+                //{
+                //    cmd = compo.ChildCommands.Get(compo.ChildCommands.Count - 1); //last
+                //}
+                if (allStructEdits)
                 {
-                    com = compo.ChildCommands.Get(compo.ChildCommands.Count-1);
+                    if (!done)
+                    {
+                        for (var i = compo.ChildCommands.Count - 1; i >= 0; i--)
+                        {
+                            Command command = compo.ChildCommands.Get(i);
+
+                            TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
+                            bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
+
+                            foreach (var page in PagesNavigator_Pages)
+                            {
+                                if ((command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done)
+                                    || (node == page.TreeNode || node.IsDescendantOf(page.TreeNode)))
+                                {
+                                    page.InvalidateName();
+                                }
+                            }
+
+                            checkTreeNodeFragmentRemoval(done_, node);
+                        }
+                    }
+                    else if (eventt is ReDoneEventArgs)
+                    {
+                        //foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
+                        for (var i = 0; i < compo.ChildCommands.Count; i++)
+                        {
+                            Command command = compo.ChildCommands.Get(i);
+
+                            TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
+                            bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
+
+                            foreach (var page in PagesNavigator_Pages)
+                            {
+                                if ((command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done)
+                                    || (node == page.TreeNode || node.IsDescendantOf(page.TreeNode)))
+                                {
+                                    page.InvalidateName();
+                                }
+                            }
+
+                            checkTreeNodeFragmentRemoval(done_, node);
+                        }
+                    }
+
+                    return;
                 }
             }
 
+            var com = eventt.Command;
             if (com is TreeNodeInsertCommand || com is TreeNodeRemoveCommand)
             {
                 TreeNode node = (com is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)com).TreeNode : ((TreeNodeRemoveCommand)com).TreeNode;
