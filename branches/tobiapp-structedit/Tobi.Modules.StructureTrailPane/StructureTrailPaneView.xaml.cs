@@ -739,6 +739,8 @@ namespace Tobi.Plugin.StructureTrailPane
                 && !(eventt.Command is TreeNodeChangeTextCommand)
                 && !(eventt.Command is TreeNodeSetManagedAudioMediaCommand)
                 && !(eventt.Command is TreeNodeAudioStreamDeleteCommand)
+                && !(eventt.Command is TreeNodeRemoveCommand)
+                && !(eventt.Command is TreeNodeInsertCommand)
                 && !(eventt.Command is CompositeCommand)
                 )
             {

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -316,6 +317,34 @@ namespace Tobi.Plugin.Descriptions
             project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
             project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
         }
+
+        private bool checkTreeNodeFragmentRemoval(bool done, TreeNode node)
+        {
+            if (node.HasXmlProperty
+                && node.GetXmlElementLocalName().Equals("img", StringComparison.OrdinalIgnoreCase))
+            {
+                if (done)
+                {
+                    DescriptionsNavigator.RemoveDescribableTreeNode(node);
+                }
+                else
+                {
+                    DescriptionsNavigator.AddDescribableTreeNode(node);
+                }
+                RaisePropertyChanged(() => HasNotDescribableTreeNodes);
+
+                return true; // break
+            }
+            foreach (var child in node.Children.ContentsAs_Enumerable)
+            {
+                if (checkTreeNodeFragmentRemoval(done, child))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
         {
             if (!TheDispatcher.CheckAccess())
@@ -332,9 +361,10 @@ namespace Tobi.Plugin.Descriptions
                   || eventt is UnDoneEventArgs
                   || eventt is ReDoneEventArgs
                   || eventt is TransactionCancelledEventArgs
+                  || eventt is TransactionEndedEventArgs
                  ))
             {
-                Debug.Fail("This should never happen !!");
+                //Debug.Fail("This should never happen !!");
                 return;
             }
 
@@ -345,11 +375,52 @@ namespace Tobi.Plugin.Descriptions
                 && !(eventt.Command is AlternateContentSetManagedMediaCommand)
                 && !(eventt.Command is AlternateContentRemoveManagedMediaCommand)
                 && !(eventt.Command is TreeNodeChangeTextCommand)
+                && !(eventt.Command is TreeNodeInsertCommand)
+                && !(eventt.Command is TreeNodeRemoveCommand)
                 && !(eventt.Command is CompositeCommand)
                 )
             {
                 return;
             }
+
+
+            if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
+            {
+                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
+                //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
+                //return;
+            }
+
+            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
+            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
+
+            if (eventt.Command is TreeNodeInsertCommand || eventt.Command is TreeNodeRemoveCommand)
+            {
+                TreeNode node = (eventt.Command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)eventt.Command).TreeNode : ((TreeNodeRemoveCommand)eventt.Command).TreeNode;
+
+                foreach (var describableTreeNode in DescriptionsNavigator_DescribableTreeNodes)
+                {
+                    if ((eventt.Command is TreeNodeInsertCommand && !done) || (eventt.Command is TreeNodeRemoveCommand && done)
+                        || (node == describableTreeNode.TreeNode || node.IsDescendantOf(describableTreeNode.TreeNode)))
+                    {
+                        describableTreeNode.RaiseHasDescriptionChanged();
+                        describableTreeNode.InvalidateDescription();
+                    }
+                }
+            }
+
+            if (eventt.Command is TreeNodeInsertCommand
+                || eventt.Command is TreeNodeRemoveCommand)
+            {
+                bool done_ = (eventt.Command is TreeNodeInsertCommand) ? !done : done;
+
+                TreeNode node = (eventt.Command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)eventt.Command).TreeNode : ((TreeNodeRemoveCommand)eventt.Command).TreeNode;
+                checkTreeNodeFragmentRemoval(done_, node);
+
+                return;
+            }
+
+
 
             if (eventt.Command is TreeNodeChangeTextCommand)
             {

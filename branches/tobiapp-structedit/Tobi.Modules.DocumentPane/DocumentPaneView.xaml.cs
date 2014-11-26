@@ -3010,7 +3010,7 @@ namespace Tobi.Plugin.DocumentPane
                             || right == Double.MinValue || bottom == Double.MinValue)
                         {
 #if DEBUG
-                            Debugger.Break();
+//Debugger.Break();
 #endif
                         }
                         found = true;
