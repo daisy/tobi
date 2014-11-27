@@ -26,7 +26,7 @@ namespace Tobi.Plugin.NavigationPane
     {
         public RichDelegateCommand CommandToggleMark { get; private set; }
         public RichDelegateCommand CommandRemoveAllMarks { get; private set; }
-
+        
         #region Construction
 
         //        protected IUnityContainer Container { get; private set; }
