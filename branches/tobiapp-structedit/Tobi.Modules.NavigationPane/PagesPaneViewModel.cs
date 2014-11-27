@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
+using System.Net.NetworkInformation;
+using System.Windows;
 using System.Windows.Threading;
 using AudioLib;
 using Microsoft.Practices.Composite;
@@ -19,12 +21,16 @@ using urakawa.events.undo;
 using System.Text;
 using urakawa.property.xml;
 using urakawa.daisy;
+using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace Tobi.Plugin.NavigationPane
 {
     [Export(typeof(PagesPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
     public class PagesPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
     {
+        public RichDelegateCommand CommandRenumberPages { get; private set; }
+
         #region Construction
 
         //        protected IUnityContainer Container { get; private set; }
@@ -54,6 +60,140 @@ namespace Tobi.Plugin.NavigationPane
             m_session = session;
 
             m_Logger.Log("PagesPaneViewModel.initializeCommands", Category.Debug, Priority.Medium);
+
+            CommandRenumberPages = new RichDelegateCommand(
+                Tobi_Plugin_NavigationPane_Lang.CmdNavigationRenumberPages_ShortDesc,
+                Tobi_Plugin_NavigationPane_Lang.CmdNavigationRenumberPages_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("bookmark-new"),
+                () =>
+                {
+                    if (PagesNavigator_Pages.Count <= 0)
+                    {
+                        return;
+                    }
+
+                    var textBox_pageNumberStringPrefix = new TextBox()
+                   {
+                       Text = ""
+                   };
+
+                    var label_pageNumberStringPrefix = new TextBlock()
+                    {
+                        Text = Tobi_Plugin_NavigationPane_Lang.PageNumberPrefix + ": ",
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var panel_pageNumberStringPrefix = new DockPanel()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+                    label_pageNumberStringPrefix.SetValue(DockPanel.DockProperty, Dock.Left);
+                    panel_pageNumberStringPrefix.Children.Add(label_pageNumberStringPrefix);
+                    panel_pageNumberStringPrefix.Children.Add(textBox_pageNumberStringPrefix);
+
+                    var textBox_pageNumberIntegerStart = new TextBox()
+                   {
+                       Text = "1"
+                   };
+
+                    var label_pageNumberIntegerStart = new TextBlock()
+                    {
+                        Text = Tobi_Plugin_NavigationPane_Lang.PageNumberStart + ": ",
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var panel_pageNumberIntegerStart = new DockPanel()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+                    label_pageNumberIntegerStart.SetValue(DockPanel.DockProperty, Dock.Left);
+                    panel_pageNumberIntegerStart.Children.Add(label_pageNumberIntegerStart);
+                    panel_pageNumberIntegerStart.Children.Add(textBox_pageNumberIntegerStart);
+
+
+
+
+                    var panel = new StackPanel
+                    {
+                        Orientation = Orientation.Vertical,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+
+                    panel.Children.Add(panel_pageNumberStringPrefix);
+                    panel.Children.Add(panel_pageNumberIntegerStart);
+
+                    var windowPopup = new PopupModalWindow(m_ShellView,
+                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_NavigationPane_Lang.CmdNavigationRenumberPages_ShortDesc),
+                                                           panel,
+                                                           PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                           PopupModalWindow.DialogButton.Ok,
+                                                           false, 250, 160, null, 40, null);
+                    windowPopup.ShowModal();
+
+                    if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok)
+                    {
+                        return;
+                    }
+
+
+                    string prefix = "";
+                    if (!String.IsNullOrEmpty(textBox_pageNumberStringPrefix.Text))
+                    {
+                        prefix = textBox_pageNumberStringPrefix.Text;
+                    }
+
+                    int pageNumber = 1;
+                    if (!String.IsNullOrEmpty(textBox_pageNumberIntegerStart.Text))
+                    {
+                        try
+                        {
+                            pageNumber = Int32.Parse(textBox_pageNumberIntegerStart.Text);
+                        }
+                        catch (Exception ex)
+                        {
+                            return;
+                        }
+                    }
+
+
+
+
+                    var treeNodes = new List<TreeNode>(PagesNavigator_Pages.Count);
+                    foreach (Page marked in PagesNavigator_Pages)
+                    {
+                        treeNodes.Add(marked.TreeNode);
+                    }
+
+                    string pageNumberStr = "";
+
+                    m_session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_NavigationPane_Lang.CmdNavigationRenumberPages_ShortDesc, Tobi_Plugin_NavigationPane_Lang.CmdNavigationRenumberPages_LongDesc);
+                    foreach (TreeNode treeNode in treeNodes)
+                    {
+                        pageNumberStr = prefix + (pageNumber++);
+                        var cmd = treeNode.Presentation.CommandFactory.CreateTreeNodeChangeTextCommand(treeNode, pageNumberStr);
+                        treeNode.Presentation.UndoRedoManager.Execute(cmd);
+                    }
+                    m_session.DocumentProject.Presentations.Get(0).UndoRedoManager.EndTransaction();
+                },
+                () => m_session.DocumentProject != null && !m_session.isAudioRecording
+                     && !m_session.IsXukSpine, //SelectedTreeNode != null, //!m_UrakawaSession.IsSplitMaster &&
+                Settings_KeyGestures.Default,
+                null) //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_RemoveAllDocMarks)
+                ;
+
+            m_ShellView.RegisterRichCommand(CommandRenumberPages);
 
             CommandFindFocusPage = new RichDelegateCommand(
                 @"PAGES CommandFindFocus DUMMY TXT",
@@ -351,6 +491,7 @@ namespace Tobi.Plugin.NavigationPane
             if (eventt.Command is CompositeCommand)
             {
                 var compo = (CompositeCommand)eventt.Command;
+
                 bool allStructEdits = true;
                 foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
                 {
@@ -360,6 +501,41 @@ namespace Tobi.Plugin.NavigationPane
                         break;
                     }
                 }
+
+                bool allTextEdits = true;
+                foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
+                {
+                    if (!(command is TreeNodeChangeTextCommand))
+                    {
+                        allTextEdits = false;
+                        break;
+                    }
+                }
+
+                if (allTextEdits)
+                {
+                    foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
+                    {
+                        var comm = command as TreeNodeChangeTextCommand;
+                        DebugFix.Assert(comm != null);
+                        if (comm == null) continue;
+
+                        foreach (var page in PagesNavigator_Pages)
+                        {
+                            if (comm.TreeNode == page.TreeNode
+                                || comm.TreeNode.IsDescendantOf(page.TreeNode))
+                            {
+                                page.InvalidateName();
+                            }
+                        }
+                    }
+
+                    return;
+                }
+
+
+
+
                 //if (allStructEdits && compo.ChildCommands.Count > 0)
                 //{
                 //    cmd = compo.ChildCommands.Get(compo.ChildCommands.Count - 1); //last

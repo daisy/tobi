@@ -240,6 +240,21 @@
   <data name="RemoveAllMarkers" xml:space="preserve">
     <value>Remove all</value>
   </data>
+  <data name="RenumberPages" xml:space="preserve">
+    <value>Page numbers...</value>
+  </data>
+  <data name="PageNumberPrefix" xml:space="preserve">
+    <value>String prefix</value>
+  </data>
+  <data name="PageNumberStart" xml:space="preserve">
+    <value>Page start</value>
+  </data>
+  <data name="CmdNavigationRenumberPages_ShortDesc" xml:space="preserve">
+    <value>_Number page breaks</value>
+  </data>
+  <data name="CmdNavigationRenumberPages_LongDesc" xml:space="preserve">
+    <value>Adjust numbering of page breaks</value>
+  </data>
   <data name="CmdNavigationRemoveAllMarks_ShortDesc" xml:space="preserve">
     <value>_Remove all document marks</value>
   </data>
