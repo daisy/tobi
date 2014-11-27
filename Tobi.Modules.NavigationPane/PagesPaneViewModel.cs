@@ -23,11 +23,12 @@ using urakawa.property.xml;
 using urakawa.daisy;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using urakawa.undo;
 
 namespace Tobi.Plugin.NavigationPane
 {
     [Export(typeof(PagesPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class PagesPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
+    public class PagesPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification, UndoRedoManager.Hooker.Host
     {
         public RichDelegateCommand CommandRenumberPages { get; private set; }
 
@@ -445,182 +446,64 @@ namespace Tobi.Plugin.NavigationPane
             return found;
         }
 
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
+        private void InvalidatePages(TreeNode node)
+        {
+            foreach (var page in PagesNavigator_Pages)
+            {
+                if (node == page.TreeNode
+                    || node.IsDescendantOf(page.TreeNode))
+                {
+                    page.InvalidateName();
+                }
+            }
+        }
+
+        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TreeNodeChangeTextCommand command)
+        {
+            InvalidatePages(command.TreeNode);
+        }
+
+        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TextNodeStructureEditCommand command)
+        {
+            DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
+
+            //TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
+            TreeNode node = command.TreeNode;
+
+            InvalidatePages(node);
+
+            bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
+            checkTreeNodeFragmentRemoval(done_, node);
+        }
+
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
         {
             if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
                 return;
             }
 
-            //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs
-                           || eventt is TransactionCancelledEventArgs
-                           ))
+            if (command is CompositeCommand)
             {
-                //Debug.Fail("This should never happen !!");
-                return;
+#if DEBUG
+                Debugger.Break();
+#endif
             }
-
-            if (!(eventt.Command is TreeNodeChangeTextCommand)
-                && !(eventt.Command is TreeNodeInsertCommand)
-                && !(eventt.Command is TreeNodeRemoveCommand)
-                && !(eventt.Command is CompositeCommand)
-                )
+            else if (command is TreeNodeChangeTextCommand)
             {
-                return;
+                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, isTransactionActive, done, (TreeNodeChangeTextCommand)command);
             }
-
-            if (m_session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
+            else if (command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand)
             {
-                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                //return;
-            }
-
-            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
-
-            if (eventt.Command is CompositeCommand)
-            {
-                var compo = (CompositeCommand)eventt.Command;
-
-                bool allStructEdits = true;
-                foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
-                {
-                    if (!(command is TextNodeStructureEditCommand))
-                    {
-                        allStructEdits = false;
-                        break;
-                    }
-                }
-
-                bool allTextEdits = true;
-                foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
-                {
-                    if (!(command is TreeNodeChangeTextCommand))
-                    {
-                        allTextEdits = false;
-                        break;
-                    }
-                }
-
-                if (allTextEdits)
-                {
-                    foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
-                    {
-                        var comm = command as TreeNodeChangeTextCommand;
-                        DebugFix.Assert(comm != null);
-                        if (comm == null) continue;
-
-                        foreach (var page in PagesNavigator_Pages)
-                        {
-                            if (comm.TreeNode == page.TreeNode
-                                || comm.TreeNode.IsDescendantOf(page.TreeNode))
-                            {
-                                page.InvalidateName();
-                            }
-                        }
-                    }
-
-                    return;
-                }
-
-
-
-
-                //if (allStructEdits && compo.ChildCommands.Count > 0)
-                //{
-                //    cmd = compo.ChildCommands.Get(compo.ChildCommands.Count - 1); //last
-                //}
-                if (allStructEdits)
-                {
-                    if (!done)
-                    {
-                        for (var i = compo.ChildCommands.Count - 1; i >= 0; i--)
-                        {
-                            Command command = compo.ChildCommands.Get(i);
-
-                            TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
-                            bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
-
-                            foreach (var page in PagesNavigator_Pages)
-                            {
-                                if ((command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done)
-                                    || (node == page.TreeNode || node.IsDescendantOf(page.TreeNode)))
-                                {
-                                    page.InvalidateName();
-                                }
-                            }
-
-                            checkTreeNodeFragmentRemoval(done_, node);
-                        }
-                    }
-                    else if (eventt is ReDoneEventArgs)
-                    {
-                        //foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
-                        for (var i = 0; i < compo.ChildCommands.Count; i++)
-                        {
-                            Command command = compo.ChildCommands.Get(i);
-
-                            TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
-                            bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
-
-                            foreach (var page in PagesNavigator_Pages)
-                            {
-                                if ((command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done)
-                                    || (node == page.TreeNode || node.IsDescendantOf(page.TreeNode)))
-                                {
-                                    page.InvalidateName();
-                                }
-                            }
-
-                            checkTreeNodeFragmentRemoval(done_, node);
-                        }
-                    }
-
-                    return;
-                }
-            }
-
-            var com = eventt.Command;
-            if (com is TreeNodeInsertCommand || com is TreeNodeRemoveCommand)
-            {
-                TreeNode node = (com is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)com).TreeNode : ((TreeNodeRemoveCommand)com).TreeNode;
-                bool done_ = (com is TreeNodeInsertCommand) ? !done : done;
-
-                foreach (var page in PagesNavigator_Pages)
-                {
-                    if ((com is TreeNodeInsertCommand && !done) || (com is TreeNodeRemoveCommand && done)
-                        || (node == page.TreeNode || node.IsDescendantOf(page.TreeNode)))
-                    {
-                        page.InvalidateName();
-                    }
-                }
-
-                checkTreeNodeFragmentRemoval(done_, node);
-                return;
-            }
-
-            var cmd = eventt.Command as TreeNodeChangeTextCommand;
-            if (cmd == null) return;
-
-            foreach (var page in PagesNavigator_Pages)
-            {
-                if (cmd.TreeNode == page.TreeNode
-                    || cmd.TreeNode.IsDescendantOf(page.TreeNode))
-                {
-                    page.InvalidateName();
-                }
+                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, isTransactionActive, done, (TextNodeStructureEditCommand)command);
             }
         }
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
 
         private void onProjectLoaded(Project project)
         {
@@ -629,22 +512,15 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
-            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
 
             PagesNavigator = new PagesNavigator(View);
             View.LoadProject();
         }
         private void onProjectUnLoaded(Project project)
         {
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+            m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
 
             PagesNavigator = null;
             View.UnloadProject();
