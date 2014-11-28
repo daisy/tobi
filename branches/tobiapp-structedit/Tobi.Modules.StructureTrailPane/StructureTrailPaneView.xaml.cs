@@ -553,6 +553,8 @@ namespace Tobi.Plugin.StructureTrailPane
                 return;
             }
 
+            DebugFix.Assert(!isTransactionActive);
+
             if (command is CompositeCommand)
             {
 #if DEBUG

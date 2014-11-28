@@ -78,6 +78,8 @@ namespace Tobi.Plugin.Validator.Metadata
                 return;
             }
 
+            DebugFix.Assert(!isTransactionActive);
+
             if (command is CompositeCommand)
             {
 #if DEBUG
