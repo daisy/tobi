@@ -441,7 +441,7 @@ namespace Tobi.Plugin.Descriptions
 
         private void onProjectUnLoaded(Project project)
         {
-            m_UndoRedoManagerHooker.UnHook();
+            if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
             m_UndoRedoManagerHooker = null;
 
             View.UnloadProject();
