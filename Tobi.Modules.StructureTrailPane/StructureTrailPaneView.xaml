@@ -13,6 +13,21 @@
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
   <!--WindowBrushKey-->
 
+  <!-- Border.Resources>
+    <ContextMenu x:Key="contextMenu">
+      <ContextMenu.Resources>
+        <Style TargetType="{x:Type UI:MenuItemRichCommand}" BasedOn="{StaticResource {x:Type MenuItem}}">
+        </Style>
+      </ContextMenu.Resources>
+
+      <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandEditText}" x:Name="CommandEditText"/>
+      <Separator/>
+      <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandStructRemoveFragment}" x:Name="CommandStructRemoveFragment"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandStructInsertFragment}" x:Name="CommandStructInsertFragment"/>
+
+    </ContextMenu>
+  </Border.Resources -->
+  
   <WrapPanel
       
       Focusable="False"
