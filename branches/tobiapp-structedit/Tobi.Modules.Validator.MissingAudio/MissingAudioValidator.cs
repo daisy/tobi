@@ -169,7 +169,12 @@ namespace Tobi.Plugin.Validator.MissingAudio
             if (command is AudioEditCommand)
             {
                 var cmd = (AudioEditCommand)command;
+
                 node = cmd.TreeNode;
+                if (cmd is TreeNodeAudioStreamDeleteCommand)
+                {
+                    node = ((TreeNodeAudioStreamDeleteCommand)cmd).SelectionData.m_TreeNode;
+                }
             }
             else if (command is TreeNodeChangeTextCommand)
             {
