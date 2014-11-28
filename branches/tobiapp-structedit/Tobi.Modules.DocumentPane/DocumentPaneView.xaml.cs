@@ -2650,7 +2650,7 @@ namespace Tobi.Plugin.DocumentPane
                     return;
                 }
 
-                m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, true); // live transaction events, not final aggregated composite command! (TextElement command.Tag incremental build)
+                m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, true); // live transaction events (for TextElement command.Tag incremental build), also including final aggregated composite command! (must be skipped manually)
             }
 
             createFlowDocumentFromXuk(project);

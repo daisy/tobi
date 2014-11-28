@@ -1127,19 +1127,19 @@ namespace Tobi.Plugin.DocumentPane
             }
             else if (command is TreeNodeChangeTextCommand)
             {
-                if (!isTransactionActive || (eventt is TransactionEndedEventArgs))
+                if (!isTransactionActive)
                 {
                     OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, isTransactionActive, done, (TreeNodeChangeTextCommand)command);
                 }
             }
             else if (command is TextNodeStructureEditCommand)
             {
-                if (!isTransactionActive || (eventt is DoneEventArgs)) // live transaction events, not final aggregated composite command
+                if (!(eventt is TransactionEndedEventArgs)) // live events only (transaction or not) => all but the final aggregated composite command
                 {
                     OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, isTransactionActive, done, (TextNodeStructureEditCommand) command);
                 }
 
-                if (!isTransactionActive || (eventt is TransactionEndedEventArgs))
+                if (!isTransactionActive)
                 {
                     if (!command.IsTransaction()
                         || done && command.IsTransactionLast()
@@ -1205,7 +1205,7 @@ namespace Tobi.Plugin.DocumentPane
             }
             else if (command is AudioEditCommand)
             {
-                if (!isTransactionActive || (eventt is TransactionEndedEventArgs))
+                if (!isTransactionActive)
                 {
                     InvalidateAudioStatus(((AudioEditCommand)command).TreeNode);// TODO: test selectionData.TreeNode !!
                 }
