@@ -214,7 +214,7 @@ namespace Tobi.Plugin.Urakawa
                 m_DocumentProject = value;
                 if (m_DocumentProject != null)
                 {
-                    m_UndoRedoManagerHooker = m_DocumentProject.Presentations.Get(0).UndoRedoManager.Hook(this);
+                    m_UndoRedoManagerHooker = m_DocumentProject.Presentations.Get(0).UndoRedoManager.Hook(this, false);
                 }
                 RaisePropertyChanged(() => DocumentProject);
                 RaisePropertyChanged(() => IsDirty);

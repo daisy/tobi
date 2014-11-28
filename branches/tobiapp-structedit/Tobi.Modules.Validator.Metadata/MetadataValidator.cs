@@ -102,7 +102,7 @@ namespace Tobi.Plugin.Validator.Metadata
         {
             base.OnProjectLoaded(project);
 
-            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, false);
 
             Validate();
         }

@@ -441,7 +441,7 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
-            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, false);
 
             MarkersNavigator = new MarkersNavigator(View);
 
