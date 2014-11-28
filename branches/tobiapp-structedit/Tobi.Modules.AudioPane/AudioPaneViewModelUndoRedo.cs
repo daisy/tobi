@@ -323,8 +323,8 @@ namespace Tobi.Plugin.AudioPane
                 }
             }
 
-            TreeNode targetNode1 = list[0].CurrentTreeNode;
-            TreeNode targetNode2 = list[0].CurrentTreeNode == list[0].SelectionData.m_TreeNode ? null : list[0].SelectionData.m_TreeNode;
+            TreeNode targetNode1 = list[0].TreeNode;
+            TreeNode targetNode2 = list[0].TreeNode == list[0].SelectionData.m_TreeNode ? null : list[0].SelectionData.m_TreeNode;
 
             long byteStart = bytesBegin;
             long byteDur = bytesEnd - bytesBegin;

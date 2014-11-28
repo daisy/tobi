@@ -14,6 +14,7 @@ using urakawa.commands;
 using urakawa.core;
 using urakawa.daisy;
 using urakawa.events.undo;
+using urakawa.undo;
 using urakawa.xuk;
 
 #if USE_ISOLATED_STORAGE
@@ -25,7 +26,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
     /// <summary>
     /// The main validator class
     /// </summary>
-    public class MissingAudioValidator : AbstractValidator, IPartImportsSatisfiedNotification
+    public class MissingAudioValidator : AbstractValidator, IPartImportsSatisfiedNotification, UndoRedoManager.Hooker.Host
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -61,82 +62,14 @@ namespace Tobi.Plugin.Validator.MissingAudio
             m_Logger.Log(@"MissingAudioValidator initialized", Category.Debug, Priority.Medium);
         }
 
-        protected override void OnProjectLoaded(Project project)
-        {
-            if (m_Session.IsXukSpine)
-            {
-                return;
-            }
-
-            // WE MUST PREVENT THE BASE CLASS TO RESET THE VALIDATION ITEMS (WHICH WE JUST RECEIVED FROM THE FLOWDOC PARSER)
-            //base.OnProjectLoaded(project);
-
-            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-        }
-
-        protected override void OnProjectUnLoaded(Project project)
-        {
-            base.OnProjectUnLoaded(project);
-
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-        }
-
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
-        {
-            if (!Dispatcher.CurrentDispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
-                return;
-            }
-
-            //m_Logger.Log("MissingAudioValidator.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs
-                //|| eventt is TransactionEndedEventArgs
-                           ))
-            {
-                Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            //if (m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            //{
-            //    DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-            //    m_Logger.Log("AudioContentValidator.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-            //    return;
-            //}
-
-            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs; // || eventt is TransactionEndedEventArgs;
-
-            Command cmd = eventt.Command;
-
-            updateTreeNodeAudioStatus(cmd, done);
-        }
-
-        private void updateTreeNodeAudioStatus(TreeNode node)
+        private void updateTreeNodeAudioStatus(bool forceRemove, TreeNode node)
         {
             foreach (var childTreeNode in node.Children.ContentsAs_Enumerable)
             {
-                updateTreeNodeAudioStatus(childTreeNode);
+                updateTreeNodeAudioStatus(forceRemove, childTreeNode);
             }
 
-            if (!node.NeedsAudio())
-            {
-                return;
-            }
-
-            if (!node.HasOrInheritsAudio())
+            if (!forceRemove && node.NeedsAudio() && !node.HasOrInheritsAudio())
             {
                 bool alreadyInList = false;
                 foreach (var vItem in ValidationItems)
@@ -204,35 +137,80 @@ namespace Tobi.Plugin.Validator.MissingAudio
             }
         }
 
-        private void updateTreeNodeAudioStatus(Command cmd, bool done)
+
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
         {
-            if (cmd is ManagedAudioMediaInsertDataCommand)
+//            if (!Dispatcher.CheckAccess())
+//            {
+//#if DEBUG
+//                Debugger.Break();
+//#endif
+//                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+//                return;
+//            }
+
+            if (command is CompositeCommand)
             {
-                var command = (ManagedAudioMediaInsertDataCommand)cmd;
-                updateTreeNodeAudioStatus(command.TreeNode);
+#if DEBUG
+                Debugger.Break();
+#endif
             }
-            else if (cmd is TreeNodeSetManagedAudioMediaCommand)
+
+            //if (!command.IsTransaction()
+            //    || done && command.IsTransactionLast()
+            //    || !done && command.IsTransactionFirst()
+            //    )
+            //{
+            //}
+
+            TreeNode node = null;
+            bool forceRemove = false;
+
+            if (command is AudioEditCommand)
             {
-                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
-                updateTreeNodeAudioStatus(command.TreeNode);
+                var cmd = (AudioEditCommand)command;
+                node = cmd.TreeNode;
             }
-            else if (cmd is TreeNodeAudioStreamDeleteCommand)
+            else if (command is TreeNodeChangeTextCommand)
             {
-                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
-                updateTreeNodeAudioStatus(command.SelectionData.m_TreeNode);
+                var cmd = (TreeNodeChangeTextCommand)command;
+                node = cmd.TreeNode;
             }
-            else if (cmd is TreeNodeChangeTextCommand)
+            else if (command is TextNodeStructureEditCommand)
             {
-                var command = (TreeNodeChangeTextCommand)cmd;
-                updateTreeNodeAudioStatus(command.TreeNode);
+                var cmd = (TextNodeStructureEditCommand)command;
+                node = cmd.TreeNode;
+
+                forceRemove = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
             }
-            else if (cmd is CompositeCommand)
+
+            if (node != null)
             {
-                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_Enumerable)
-                {
-                    updateTreeNodeAudioStatus(childCommand, done);
-                }
+                updateTreeNodeAudioStatus(forceRemove, node);
             }
+        }
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
+
+        protected override void OnProjectLoaded(Project project)
+        {
+            if (m_Session.IsXukSpine)
+            {
+                return;
+            }
+
+            // WE MUST PREVENT THE BASE CLASS TO RESET THE VALIDATION ITEMS (WHICH WE JUST RECEIVED FROM THE FLOWDOC PARSER)
+            //base.OnProjectLoaded(project);
+
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
+        }
+
+        protected override void OnProjectUnLoaded(Project project)
+        {
+            base.OnProjectUnLoaded(project);
+
+            m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
         }
 
         public override string Name
