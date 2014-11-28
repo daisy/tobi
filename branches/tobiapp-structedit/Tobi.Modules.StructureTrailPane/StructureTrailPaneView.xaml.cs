@@ -117,6 +117,15 @@ namespace Tobi.Plugin.StructureTrailPane
 
                 butt.Click += OnBreadCrumbButtonClick;
 
+                // Doesn't really work from a user experience perspective, because the commands act on the globally-selected tree node, not the item under the mouse click
+                //if (butt.ContextMenu == null)
+                //{
+                //    butt.ContextMenu = (ContextMenu)this.Resources["contextMenu"];
+                //}
+                ////butt.ContextMenu.PlacementTarget = ui;
+                ////butt.ContextMenu.Placement = PlacementMode.Bottom;
+                ////butt.ContextMenu.IsOpen = true;
+
                 BreadcrumbPanel.Children.Add(butt);
 
                 if (counter < PathToCurrentTreeNode.Count && n.Children.Count > 0)
@@ -415,6 +424,21 @@ namespace Tobi.Plugin.StructureTrailPane
         //    }
         //}
 
+        [Import(typeof(IDocumentViewModel), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true, AllowDefault = true)]
+        private IDocumentViewModel m_DocumentViewModel;
+        public IDocumentViewModel DocumentViewModel
+        {
+            get
+            {
+                //        if (m_AudioViewModel == null)
+                //        {
+                //            m_AudioViewModel = m_Container.Resolve<IAudioViewModel>();
+                //            m_Container.IsRegistered(typeof (IAudioViewModel));
+                //        }
+                return m_DocumentViewModel;
+            }
+        }
+
         private void OnBreadCrumbButtonClick(object sender, RoutedEventArgs e)
         {
             var ui = sender as Button;
@@ -426,10 +450,10 @@ namespace Tobi.Plugin.StructureTrailPane
             if (!m_UrakawaSession.isAudioRecording)
             {
                 m_UrakawaSession.PerformTreeNodeSelection((TreeNode) ui.Tag);
+
+                CommandFocus.Execute();
             }
             //selectNode((TreeNode)ui.Tag, true);
-
-            CommandFocus.Execute();
         }
 
         private TextBlockWithAutomationPeer m_FocusStartElement;

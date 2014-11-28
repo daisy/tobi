@@ -187,7 +187,8 @@ namespace Tobi.Plugin.DocumentPane
     /// Interaction logic for DocumentPaneView.xaml
     /// </summary>
     [Export(typeof(DocumentPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class DocumentPaneView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx, IInputBindingManager, UndoRedoManager.Hooker.Host
+    [Export(typeof(IDocumentViewModel))]
+    public partial class DocumentPaneView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx, IInputBindingManager, UndoRedoManager.Hooker.Host, IDocumentViewModel
     {
         private readonly IRegionManager m_RegionManager;
 
@@ -1239,7 +1240,10 @@ namespace Tobi.Plugin.DocumentPane
                 () =>
                 {
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = selection.Item2 ?? selection.Item1;
+
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+                    
                     if (node == null) return;
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
@@ -1273,7 +1277,10 @@ namespace Tobi.Plugin.DocumentPane
                 () =>
                 {
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = selection.Item2 ?? selection.Item1;
+
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+                    
                     if (node == null) return;
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
@@ -1307,7 +1314,10 @@ namespace Tobi.Plugin.DocumentPane
                 () =>
                 {
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+                    
                     if (node == null) return;
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
@@ -1362,7 +1372,10 @@ namespace Tobi.Plugin.DocumentPane
                 () =>
                 {
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = selection.Item2 ?? selection.Item1;
+
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+                    
                     if (node == null) return;
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
