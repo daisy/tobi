@@ -26,6 +26,7 @@ using urakawa.core;
 using urakawa.daisy;
 using urakawa.events.undo;
 using urakawa.property.xml;
+using urakawa.undo;
 using urakawa.xuk;
 
 namespace Tobi.Plugin.StructureTrailPane
@@ -34,7 +35,7 @@ namespace Tobi.Plugin.StructureTrailPane
     /// Interaction logic for StructureTrailPaneView.xaml
     /// </summary>
     [Export(typeof(StructureTrailPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class StructureTrailPaneView // : INotifyPropertyChangedEx
+    public partial class StructureTrailPaneView : UndoRedoManager.Hooker.Host // : INotifyPropertyChangedEx
     {
         public static string getTreeNodeLabel(TreeNode node)
         {
@@ -566,14 +567,11 @@ namespace Tobi.Plugin.StructureTrailPane
             m_FocusStartElement2.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused("_");
             m_FocusStartElement2.ToolTip = Tobi_Plugin_StructureTrailPane_Lang.No_Document;
 
-            if (project == null) return;
-
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+            m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
         }
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
 
         private void OnProjectLoaded(Project project)
         {
@@ -602,11 +600,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
             if (project == null) return;
 
-            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
         }
 
         //private TreeNode m_CurrentTreeNode;
@@ -704,51 +698,43 @@ namespace Tobi.Plugin.StructureTrailPane
             refreshData(newTreeNodeSelection);
         }
 
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
         {
             if (!Dispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
                 return;
             }
 
-            //m_Logger.Log("StructureTrailView.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs
-                           || eventt is TransactionCancelledEventArgs
-                           ))
+            if (command is CompositeCommand)
             {
-                Debug.Fail("This should never happen !!");
-                return;
+#if DEBUG
+                Debugger.Break();
+#endif
             }
 
-            if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            {
-                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                //m_Logger.Log("StructureTrailView.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                return;
-            }
+            //if ((eventt.Command is ManagedAudioMediaInsertDataCommand)
+            //    || (eventt.Command is TreeNodeChangeTextCommand)
+            //    || (eventt.Command is TreeNodeSetManagedAudioMediaCommand)
+            //    || (eventt.Command is TreeNodeAudioStreamDeleteCommand)
+            //    || (eventt.Command is TreeNodeRemoveCommand)
+            //    || (eventt.Command is TreeNodeInsertCommand)
+            //    )
+            //{
+            //    return;
+            //}
 
-            if (!(eventt.Command is ManagedAudioMediaInsertDataCommand)
-                && !(eventt.Command is TreeNodeChangeTextCommand)
-                && !(eventt.Command is TreeNodeSetManagedAudioMediaCommand)
-                && !(eventt.Command is TreeNodeAudioStreamDeleteCommand)
-                && !(eventt.Command is TreeNodeRemoveCommand)
-                && !(eventt.Command is TreeNodeInsertCommand)
-                && !(eventt.Command is CompositeCommand)
+            if (!command.IsTransaction()
+                || done && command.IsTransactionLast()
+                || !done && command.IsTransactionFirst()
                 )
             {
-                return;
+                Tuple<TreeNode, TreeNode> newTreeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                refreshData(newTreeNodeSelection);
             }
-
-            Tuple<TreeNode, TreeNode> newTreeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-            refreshData(newTreeNodeSelection);
         }
     }
 }
