@@ -541,34 +541,33 @@ namespace Tobi.Plugin.StructureTrailPane
             //m_EventAggregator.GetEvent<EscapeEvent>().Subscribe(obj => CommandFocus.Execute(), EscapeEvent.THREAD_OPTION);
         }
 
-        private void OnProjectUnLoaded(Project project)
+
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
         {
             if (!Dispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
                 return;
             }
 
-            BreadcrumbPanel.Children.Clear();
-            BreadcrumbPanel.Background = SystemColors.ControlBrush;
-            BreadcrumbPanel.Children.Add(m_FocusStartElement);
-            BreadcrumbPanel.Children.Add(m_FocusStartElement2);
-            var tb = new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document)) { Margin = new Thickness(4, 2, 0, 2) };
-            //tb.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_StructureTrailPane_Lang.No_Document);
-            BreadcrumbPanel.Children.Add(tb);
+            if (command is CompositeCommand)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
 
-            PathToCurrentTreeNode = null;
-            m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(Tobi_Plugin_StructureTrailPane_Lang.No_Document);
-            m_FocusStartElement.ToolTip = Tobi_Plugin_StructureTrailPane_Lang.No_Document;
-
-            m_FocusStartElement2.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused("_");
-            m_FocusStartElement2.ToolTip = Tobi_Plugin_StructureTrailPane_Lang.No_Document;
-
-            m_UndoRedoManagerHooker.UnHook();
-            m_UndoRedoManagerHooker = null;
+            if (!command.IsTransaction()
+                || done && command.IsTransactionLast()
+                || !done && command.IsTransactionFirst()
+                )
+            {
+                Tuple<TreeNode, TreeNode> newTreeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+                refreshData(newTreeNodeSelection);
+            }
         }
 
         private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
@@ -601,6 +600,36 @@ namespace Tobi.Plugin.StructureTrailPane
             if (project == null) return;
 
             m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
+        }
+
+        private void OnProjectUnLoaded(Project project)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
+                return;
+            }
+
+            BreadcrumbPanel.Children.Clear();
+            BreadcrumbPanel.Background = SystemColors.ControlBrush;
+            BreadcrumbPanel.Children.Add(m_FocusStartElement);
+            BreadcrumbPanel.Children.Add(m_FocusStartElement2);
+            var tb = new TextBlock(new Run(Tobi_Plugin_StructureTrailPane_Lang.No_Document)) { Margin = new Thickness(4, 2, 0, 2) };
+            //tb.SetValue(AutomationProperties.NameProperty, Tobi_Plugin_StructureTrailPane_Lang.No_Document);
+            BreadcrumbPanel.Children.Add(tb);
+
+            PathToCurrentTreeNode = null;
+            m_FocusStartElement.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(Tobi_Plugin_StructureTrailPane_Lang.No_Document);
+            m_FocusStartElement.ToolTip = Tobi_Plugin_StructureTrailPane_Lang.No_Document;
+
+            m_FocusStartElement2.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused("_");
+            m_FocusStartElement2.ToolTip = Tobi_Plugin_StructureTrailPane_Lang.No_Document;
+
+            m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
         }
 
         //private TreeNode m_CurrentTreeNode;
@@ -696,45 +725,6 @@ namespace Tobi.Plugin.StructureTrailPane
             Tuple<TreeNode, TreeNode> newTreeNodeSelection = oldAndNewTreeNodeSelection.Item2;
 
             refreshData(newTreeNodeSelection);
-        }
-
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
-        {
-            if (!Dispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
-                return;
-            }
-
-            if (command is CompositeCommand)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-            }
-
-            //if ((eventt.Command is ManagedAudioMediaInsertDataCommand)
-            //    || (eventt.Command is TreeNodeChangeTextCommand)
-            //    || (eventt.Command is TreeNodeSetManagedAudioMediaCommand)
-            //    || (eventt.Command is TreeNodeAudioStreamDeleteCommand)
-            //    || (eventt.Command is TreeNodeRemoveCommand)
-            //    || (eventt.Command is TreeNodeInsertCommand)
-            //    )
-            //{
-            //    return;
-            //}
-
-            if (!command.IsTransaction()
-                || done && command.IsTransactionLast()
-                || !done && command.IsTransactionFirst()
-                )
-            {
-                Tuple<TreeNode, TreeNode> newTreeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-                refreshData(newTreeNodeSelection);
-            }
         }
     }
 }
