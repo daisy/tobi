@@ -399,6 +399,8 @@ namespace Tobi.Plugin.Descriptions
                 TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
                 return;
             }
+            
+            DebugFix.Assert(!isTransactionActive);
 
             if (command is CompositeCommand)
             {

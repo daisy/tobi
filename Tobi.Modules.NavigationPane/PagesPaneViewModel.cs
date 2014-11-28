@@ -489,6 +489,8 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
+            DebugFix.Assert(!isTransactionActive);
+
             if (command is CompositeCommand)
             {
 #if DEBUG
