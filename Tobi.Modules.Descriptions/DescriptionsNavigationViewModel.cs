@@ -414,7 +414,7 @@ namespace Tobi.Plugin.Descriptions
             {
                 OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, isTransactionActive, done, (TreeNodeChangeTextCommand)command);
             }
-            else if (command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand)
+            else if (command is TextNodeStructureEditCommand)
             {
                 OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, isTransactionActive, done, (TextNodeStructureEditCommand)command);
             }
