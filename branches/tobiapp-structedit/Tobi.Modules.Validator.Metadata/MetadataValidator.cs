@@ -18,6 +18,7 @@ using System;
 
 #if DEBUG
 using AudioLib;
+using urakawa.undo;
 #endif
 
 namespace Tobi.Plugin.Validator.Metadata
@@ -26,7 +27,7 @@ namespace Tobi.Plugin.Validator.Metadata
     /// The main validator class
     /// </summary>
     [Export(typeof(MetadataValidator)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class MetadataValidator : AbstractValidator, IPartImportsSatisfiedNotification
+    public class MetadataValidator : AbstractValidator, IPartImportsSatisfiedNotification, UndoRedoManager.Hooker.Host
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -66,15 +67,42 @@ namespace Tobi.Plugin.Validator.Metadata
             m_Logger.Log(@"MetadataValidator initialized", Category.Debug, Priority.Medium);
         }
 
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+        {
+            if (!Dispatcher.CurrentDispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+                return;
+            }
+
+            if (command is CompositeCommand)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+            else if (command is MetadataCommand)
+            {
+                if (!command.IsTransaction()
+                    || done && command.IsTransactionLast()
+                    || !done && command.IsTransactionFirst()
+                    )
+                {
+                    Validate();
+                }
+            }
+        }
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
+
         protected override void OnProjectLoaded(Project project)
         {
             base.OnProjectLoaded(project);
 
-            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
 
             Validate();
         }
@@ -83,80 +111,8 @@ namespace Tobi.Plugin.Validator.Metadata
         {
             base.OnProjectUnLoaded(project);
 
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
-        }
-
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
-        {
-            if (!Dispatcher.CurrentDispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
-                return;
-            }
-
-            //m_Logger.Log("MetadataValidator.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs
-                           || eventt is TransactionCancelledEventArgs
-                           ))
-            {
-                Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            //if (m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            //{
-            //    DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-            //    m_Logger.Log("AudioContentValidator.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-            //    return;
-            //}
-
-            //bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-
-            Command cmd = eventt.Command;
-
-            if (cmd is CompositeCommand)
-            {
-                if (isAllCommandsMetadata((CompositeCommand)cmd))
-                {
-                    Validate();
-                }
-            }
-            else if (isCommandMetadata(cmd))
-            {
-                Validate();
-            }
-        }
-
-        private bool isAllCommandsMetadata(CompositeCommand comp)
-        {
-            foreach (var cmd in comp.ChildCommands.ContentsAs_Enumerable)
-            {
-                if (!isCommandMetadata(cmd))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private bool isCommandMetadata(Command cmd)
-        {
-            return cmd is MetadataAddCommand
-                || cmd is MetadataRemoveCommand
-                || cmd is MetadataSetContentCommand
-                || cmd is MetadataSetIdCommand
-                || cmd is MetadataSetNameCommand;
+            if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
         }
 
         public override string Name
