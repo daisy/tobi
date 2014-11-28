@@ -206,7 +206,7 @@ namespace Tobi.Plugin.Urakawa
                 }
                 if (m_UndoRedoManagerHooker != null)
                 {
-                    m_UndoRedoManagerHooker.UnHook();
+                    if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
                     m_UndoRedoManagerHooker = null;
                 }
 

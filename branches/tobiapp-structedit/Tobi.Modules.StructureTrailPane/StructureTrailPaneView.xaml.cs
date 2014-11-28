@@ -628,7 +628,7 @@ namespace Tobi.Plugin.StructureTrailPane
             m_FocusStartElement2.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused("_");
             m_FocusStartElement2.ToolTip = Tobi_Plugin_StructureTrailPane_Lang.No_Document;
 
-            m_UndoRedoManagerHooker.UnHook();
+            if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
             m_UndoRedoManagerHooker = null;
         }
 

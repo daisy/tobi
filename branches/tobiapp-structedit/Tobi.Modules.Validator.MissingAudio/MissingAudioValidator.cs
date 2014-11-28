@@ -209,7 +209,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
         {
             base.OnProjectUnLoaded(project);
 
-            m_UndoRedoManagerHooker.UnHook();
+            if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
             m_UndoRedoManagerHooker = null;
         }
 
