@@ -790,270 +790,165 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private void updateTextStruct(Command cmd, bool done)
+        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TextNodeStructureEditCommand command)
         {
-            if (cmd is TextNodeStructureEditCommand)
+            DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
+
+            //TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
+            //TreeNode node = command.TreeNode;
+            //bool forceInvalidate = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
+            //bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
+
+            TreeNode cmdTreeNode = command.TreeNode;
+
+            // First time insert (no FlowDocument cross-referencing yet)
+            if ((command is TreeNodeInsertCommand) && cmdTreeNode.Tag == null)
             {
-                TreeNode cmdTreeNode = ((TextNodeStructureEditCommand)cmd).TreeNode;
+                // at undo (remove) time, there should already be FlowDocument tag!!
+                DebugFix.Assert(done);
+                DebugFix.Assert(cmdTreeNode.Parent != null);
 
-                bool remove = cmd is TreeNodeRemoveCommand;
-                bool add = cmd is TreeNodeInsertCommand;
+                TreeNode parent = ((TreeNodeInsertCommand)command).TreeNodeParent;
+                DebugFix.Assert(cmdTreeNode.Parent == parent);
 
-                // First time insert (no FlowDocument cross-referencing yet)
-                if (add && cmdTreeNode.Tag == null)
+                int pos = ((TreeNodeInsertCommand)command).TreeNodePos;
+                DebugFix.Assert(pos >= 0 && pos < parent.Children.Count);
+
+                var parentTextElem = parent.Tag as TextElement;
+                DebugFix.Assert(parentTextElem != null);
+                if (parentTextElem == null) return;
+
+                int toRemove = parent.Children.Count - 1 - pos;
+                var fakeCmds = new List<ObjectTagger>(toRemove);
+
+                // Temporarily delete next siblings
+                for (int i = parent.Children.Count - 1; i >= 0; i--)
+                //for (int i = 0; i < parent.Children.Count; i++)
                 {
-                    // at undo (remove) time, there should already be FlowDocument tag!!
-                    DebugFix.Assert(done);
-                    DebugFix.Assert(cmdTreeNode.Parent != null);
+                    TreeNode childTreeNode = parent.Children.Get(i);
 
-                    TreeNode parent = ((TreeNodeInsertCommand)cmd).TreeNodeParent;
-                    DebugFix.Assert(cmdTreeNode.Parent == parent);
-
-                    int pos = ((TreeNodeInsertCommand)cmd).TreeNodePos;
-                    DebugFix.Assert(pos >= 0 && pos < parent.Children.Count);
-
-                    var parentTextElem = parent.Tag as TextElement;
-                    DebugFix.Assert(parentTextElem != null);
-                    if (parentTextElem == null) return;
-
-                    int toRemove = parent.Children.Count - 1 - pos;
-                    var fakeCmds = new List<ObjectTagger>(toRemove);
-
-                    // Temporarily delete next siblings
-                    for (int i = parent.Children.Count - 1; i >= 0; i--)
-                    //for (int i = 0; i < parent.Children.Count; i++)
+                    if (i > pos && childTreeNode.Tag is TextElement)
                     {
-                        TreeNode childTreeNode = parent.Children.Get(i);
+                        var fakeCmd = new ObjectTagger();
+                        fakeCmds.Add(fakeCmd);
+                        DocumentPaneView.detachFlowDocumentFragment(true, (TextElement)childTreeNode.Tag, fakeCmd);
 
-                        if (i > pos && childTreeNode.Tag is TextElement)
-                        {
-                            var fakeCmd = new ObjectTagger();
-                            fakeCmds.Add(fakeCmd);
-                            DocumentPaneView.detachFlowDocumentFragment(true, (TextElement)childTreeNode.Tag, fakeCmd);
-
-                            DebugFix.Assert(fakeCmd.Tag != null);
-                        }
+                        DebugFix.Assert(fakeCmd.Tag != null);
                     }
+                }
 
-                    DebugFix.Assert(fakeCmds.Count == toRemove);
+                DebugFix.Assert(fakeCmds.Count == toRemove);
 
-                    var converter = new XukToFlowDocument(this,
-                        cmdTreeNode,
-                        TheFlowDocument,
-                        m_Logger,
-                        m_EventAggregator,
-                        m_ShellView,
-                        m_UrakawaSession
-                        );
-                    TextElement newTextElem = converter.walkBookTreeAndGenerateFlowDocument(cmdTreeNode, parentTextElem);
+                var converter = new XukToFlowDocument(this,
+                    cmdTreeNode,
+                    TheFlowDocument,
+                    m_Logger,
+                    m_EventAggregator,
+                    m_ShellView,
+                    m_UrakawaSession
+                    );
+                TextElement newTextElem = converter.walkBookTreeAndGenerateFlowDocument(cmdTreeNode, parentTextElem);
 
-                    DebugFix.Assert(newTextElem != null);
-                    if (newTextElem != null)
+                DebugFix.Assert(newTextElem != null);
+                if (newTextElem != null)
+                {
+                    DebugFix.Assert(newTextElem.Parent != null); // already attached inside FlowDocument
+
+                    if (cmdTreeNode.Tag == newTextElem)
                     {
-                        DebugFix.Assert(newTextElem.Parent != null); // already attached inside FlowDocument
-
-                        if (cmdTreeNode.Tag == newTextElem)
-                        {
-                            DebugFix.Assert(newTextElem.Tag == cmdTreeNode);
-                        }
-                        if (newTextElem.Tag == cmdTreeNode)
-                        {
-                            DebugFix.Assert(cmdTreeNode.Tag == newTextElem);
-                        }
+                        DebugFix.Assert(newTextElem.Tag == cmdTreeNode);
                     }
-
-                    int j = fakeCmds.Count - 1;
-
-                    // Restore temporarily-deleted next siblings
-                    for (int i = 0; i < parent.Children.Count; i++)
+                    if (newTextElem.Tag == cmdTreeNode)
                     {
-                        TreeNode childTreeNode = parent.Children.Get(i);
+                        DebugFix.Assert(cmdTreeNode.Tag == newTextElem);
+                    }
+                }
 
-                        if (i > pos && childTreeNode.Tag is TextElement)
+                int j = fakeCmds.Count - 1;
+
+                // Restore temporarily-deleted next siblings
+                for (int i = 0; i < parent.Children.Count; i++)
+                {
+                    TreeNode childTreeNode = parent.Children.Get(i);
+
+                    if (i > pos && childTreeNode.Tag is TextElement)
+                    {
+                        ObjectTagger fakeCmd = fakeCmds[j--];
+                        // METHOD_1: shift all anchors to account for the newly-inserted TextElement (PROBLEM: newTextElem is not necessarily the equivalent of cmdTreeNode! (intermediary-inserted TextElements))
+                        // METHOD_2: reset anchors in FlowDocumentAnchorDatas => indicates "append" instruction
+
+                        var txtElem = (TextElement)childTreeNode.Tag;
+                        DependencyObject parentTxtElem = null;
+
+                        if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, int, Object>)
                         {
-                            ObjectTagger fakeCmd = fakeCmds[j--];
-                            // METHOD_1: shift all anchors to account for the newly-inserted TextElement (PROBLEM: newTextElem is not necessarily the equivalent of cmdTreeNode! (intermediary-inserted TextElements))
-                            // METHOD_2: reset anchors in FlowDocumentAnchorDatas => indicates "append" instruction
+                            FlowDocumentAnchorData<DependencyObject, int, Object> data =
+                                (FlowDocumentAnchorData<DependencyObject, int, Object>)fakeCmd.Tag;
+                            parentTxtElem = data.Item1;
 
-                            var txtElem = (TextElement)childTreeNode.Tag;
-                            DependencyObject parentTxtElem = null;
+                            bool condition = parentTxtElem is Table && txtElem is TableRowGroup
+                                || parentTxtElem is TableRowGroup && txtElem is TableRow
+                                || parentTxtElem is TableRow && txtElem is TableCell;
+                            DebugFix.Assert(condition);
 
-                            if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, int, Object>)
-                            {
-                                FlowDocumentAnchorData<DependencyObject, int, Object> data =
-                                    (FlowDocumentAnchorData<DependencyObject, int, Object>)fakeCmd.Tag;
-                                parentTxtElem = data.Item1;
+                            fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, int, Object>(parentTxtElem, -1, null); // reset
+                        }
+                        else if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>)
+                        {
+                            FlowDocumentAnchorData<DependencyObject, ListItem, ListItem> data =
+                                (FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>)fakeCmd.Tag;
+                            parentTxtElem = data.Item1;
 
-                                bool condition = parentTxtElem is Table && txtElem is TableRowGroup
-                                    || parentTxtElem is TableRowGroup && txtElem is TableRow
-                                    || parentTxtElem is TableRow && txtElem is TableCell;
-                                DebugFix.Assert(condition);
+                            bool condition = parentTxtElem is List && txtElem is ListItem;
+                            DebugFix.Assert(condition);
 
-                                fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, int, Object>(parentTxtElem, -1, null); // reset
-                            }
-                            else if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>)
-                            {
-                                FlowDocumentAnchorData<DependencyObject, ListItem, ListItem> data =
-                                    (FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>)fakeCmd.Tag;
-                                parentTxtElem = data.Item1;
+                            fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>(parentTxtElem, null, null); // reset
+                        }
+                        else if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, Inline, Inline>)
+                        {
+                            FlowDocumentAnchorData<DependencyObject, Inline, Inline> data =
+                                (FlowDocumentAnchorData<DependencyObject, Inline, Inline>)fakeCmd.Tag;
+                            parentTxtElem = data.Item1;
 
-                                bool condition = parentTxtElem is List && txtElem is ListItem;
-                                DebugFix.Assert(condition);
+                            bool condition = (parentTxtElem is Paragraph || parentTxtElem is Span || parentTxtElem is TextBlock) && txtElem is Inline;
+                            DebugFix.Assert(condition);
 
-                                fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, ListItem, ListItem>(parentTxtElem, null, null); // reset
-                            }
-                            else if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, Inline, Inline>)
-                            {
-                                FlowDocumentAnchorData<DependencyObject, Inline, Inline> data =
-                                    (FlowDocumentAnchorData<DependencyObject, Inline, Inline>)fakeCmd.Tag;
-                                parentTxtElem = data.Item1;
+                            fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parentTxtElem, null, null); // reset
+                        }
+                        else if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, Block, Block>)
+                        {
+                            FlowDocumentAnchorData<DependencyObject, Block, Block> data =
+                                (FlowDocumentAnchorData<DependencyObject, Block, Block>)fakeCmd.Tag;
+                            parentTxtElem = data.Item1;
 
-                                bool condition = (parentTxtElem is Paragraph || parentTxtElem is Span || parentTxtElem is TextBlock) && txtElem is Inline;
-                                DebugFix.Assert(condition);
+                            bool condition = (parentTxtElem is FlowDocument || parentTxtElem is Section || parentTxtElem is ListItem || parentTxtElem is TableCell || parentTxtElem is Floater || parentTxtElem is Figure) && txtElem is Block;
+                            DebugFix.Assert(condition);
 
-                                fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, Inline, Inline>(parentTxtElem, null, null); // reset
-                            }
-                            else if (fakeCmd.Tag is FlowDocumentAnchorData<DependencyObject, Block, Block>)
-                            {
-                                FlowDocumentAnchorData<DependencyObject, Block, Block> data =
-                                    (FlowDocumentAnchorData<DependencyObject, Block, Block>)fakeCmd.Tag;
-                                parentTxtElem = data.Item1;
-
-                                bool condition = (parentTxtElem is FlowDocument || parentTxtElem is Section || parentTxtElem is ListItem || parentTxtElem is TableCell || parentTxtElem is Floater || parentTxtElem is Figure) && txtElem is Block;
-                                DebugFix.Assert(condition);
-
-                                fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parentTxtElem, null, null); // reset
-                            }
-                            else
-                            {
+                            fakeCmd.Tag = new FlowDocumentAnchorData<DependencyObject, Block, Block>(parentTxtElem, null, null); // reset
+                        }
+                        else
+                        {
 #if DEBUG
-                                Debugger.Break();
+                            Debugger.Break();
 #endif
-                            }
-
-                            DocumentPaneView.detachFlowDocumentFragment(false, txtElem, fakeCmd);
                         }
+
+                        DocumentPaneView.detachFlowDocumentFragment(false, txtElem, fakeCmd);
                     }
                 }
-                else if (cmdTreeNode.Tag is TextElement)
-                {
-                    DocumentPaneView.detachFlowDocumentFragment(add ? !done : done, (TextElement)cmdTreeNode.Tag, cmd);
-                }
             }
-        }
-
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
-        {
-            if (!Dispatcher.CheckAccess())
+            else if (cmdTreeNode.Tag is TextElement)
             {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
-                return;
+                DocumentPaneView.detachFlowDocumentFragment((command is TreeNodeInsertCommand) ? !done : done, (TextElement)cmdTreeNode.Tag, command);
             }
 
-            //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs
-                           || eventt is TransactionCancelledEventArgs
-                           ))
+            if (!command.IsTransaction()
+                || done && command.IsTransactionLast()
+                || !done && command.IsTransactionFirst()
+                )
             {
-                //Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            {
-                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                //return;
-            }
-
-            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
-
-            Command cmd = eventt.Command;
-
-            if (cmd is CompositeCommand)
-            {
-                var compo = (CompositeCommand)cmd;
-                bool allStructEdits = true;
-                foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
-                {
-                    if (!(command is TextNodeStructureEditCommand))
-                    {
-                        allStructEdits = false;
-                        break;
-                    }
-                }
-                //if (allStructEdits && compo.ChildCommands.Count > 0)
-                //{
-                //    cmd = compo.ChildCommands.Get(compo.ChildCommands.Count - 1); //last
-                //}
-                if (allStructEdits)
-                {
-                    if (!done)
-                    {
-                        for (var i = compo.ChildCommands.Count - 1; i >= 0; i--)
-                        {
-                            Command command = compo.ChildCommands.Get(i);
-
-                            updateTextStruct(command, done);
-
-                            var remove = command as TreeNodeRemoveCommand;
-                            var add = command as TreeNodeInsertCommand;
-
-                            if (remove != null)
-                            {
-                                m_UrakawaSession.PerformTreeNodeSelection(remove.TreeNode);
-                            }
-                            else if (add != null)
-                            {
-                                //m_UrakawaSession.PerformTreeNodeSelection(add.TreeNodeParent);
-                            }
-
-                            findAndUpdateTreeNodeAudioTextStatus(command, done);
-                        }
-                    }
-                    else if (eventt is ReDoneEventArgs)
-                    {
-                        //foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
-                        for (var i = 0; i < compo.ChildCommands.Count; i++)
-                        {
-                            Command command = compo.ChildCommands.Get(i);
-
-                            updateTextStruct(command, done);
-
-                            var remove = command as TreeNodeRemoveCommand;
-                            var add = command as TreeNodeInsertCommand;
-
-                            if (remove != null)
-                            {
-                                //m_UrakawaSession.PerformTreeNodeSelection(remove.TreeNodeParent);
-                            }
-                            else if (add != null && i == (compo.ChildCommands.Count - 1))
-                            {
-                                m_UrakawaSession.PerformTreeNodeSelection(add.TreeNode);
-                            }
-
-                            findAndUpdateTreeNodeAudioTextStatus(command, done);
-                        }
-                    }
-
-                    return;
-                }
-            }
-
-            updateTextStruct(cmd, done);
-
-            if (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs)
-            {
-                var removeCmd = cmd as TreeNodeRemoveCommand;
-                var addCmd = cmd as TreeNodeInsertCommand;
+                var removeCmd = command as TreeNodeRemoveCommand;
+                var addCmd = command as TreeNodeInsertCommand;
 
                 if (removeCmd != null)
                 {
@@ -1066,8 +961,17 @@ namespace Tobi.Plugin.DocumentPane
                         // TODO previous next text
                         // var previous = node.GetPreviousSiblingWithText();
                         // var next = node.GetNextSiblingWithText();
-                        
-                        m_UrakawaSession.PerformTreeNodeSelection(removeCmd.TreeNodeParent);
+                        TreeNode toSelect = removeCmd.TreeNodeParent;
+                        if (removeCmd.TreeNodePos >= 0 &&
+                            removeCmd.TreeNodePos < removeCmd.TreeNodeParent.Children.Count)
+                        {
+                            toSelect = removeCmd.TreeNodeParent.Children.Get(removeCmd.TreeNodePos);
+                        }
+                        else if (removeCmd.TreeNodeParent.Children.Count > 0)
+                        {
+                            toSelect = removeCmd.TreeNodeParent.Children.Get(removeCmd.TreeNodeParent.Children.Count-1);
+                        }
+                        m_UrakawaSession.PerformTreeNodeSelection(toSelect);
                     }
                 }
                 else if (addCmd != null)
@@ -1081,52 +985,25 @@ namespace Tobi.Plugin.DocumentPane
                         // TODO previous next text
                         // var previous = node.GetPreviousSiblingWithText();
                         // var next = node.GetNextSiblingWithText();
-
-                        m_UrakawaSession.PerformTreeNodeSelection(addCmd.TreeNodeParent);
+                        TreeNode toSelect = addCmd.TreeNodeParent;
+                        if (addCmd.TreeNodePos >= 0 &&
+                            addCmd.TreeNodePos < addCmd.TreeNodeParent.Children.Count)
+                        {
+                            toSelect = addCmd.TreeNodeParent.Children.Get(addCmd.TreeNodePos);
+                        }
+                        else if (addCmd.TreeNodeParent.Children.Count > 0)
+                        {
+                            toSelect = addCmd.TreeNodeParent.Children.Get(addCmd.TreeNodeParent.Children.Count - 1);
+                        }
+                        m_UrakawaSession.PerformTreeNodeSelection(toSelect);
                     }
                 }
             }
-
-            findAndUpdateTreeNodeAudioTextStatus(cmd, done);
         }
 
-        private void findAndUpdateTreeNodeAudioTextStatus(Command cmd, bool done)
+        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TreeNodeChangeTextCommand command)
         {
-            if (cmd is TreeNodeChangeTextCommand)
-            {
-                var command = (TreeNodeChangeTextCommand)cmd;
-                findAndUpdateTreeNodeText(command, done);
-            }
-            else if (cmd is ManagedAudioMediaInsertDataCommand)
-            {
-                var command = (ManagedAudioMediaInsertDataCommand)cmd;
-                findAndUpdateTreeNodeAudioStatus(command.TreeNode);
-            }
-            else if (cmd is TreeNodeSetManagedAudioMediaCommand)
-            {
-                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
-                findAndUpdateTreeNodeAudioStatus(command.TreeNode);
-            }
-            else if (cmd is TreeNodeAudioStreamDeleteCommand)
-            {
-                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
-                findAndUpdateTreeNodeAudioStatus(command.SelectionData.m_TreeNode);
-            }
-            else if (cmd is TreeNodeRemoveCommand)
-            {
-            }
-            else if (cmd is CompositeCommand)
-            {
-                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_Enumerable)
-                {
-                    findAndUpdateTreeNodeAudioTextStatus(childCommand, done);
-                }
-            }
-        }
-
-        private void findAndUpdateTreeNodeText(TreeNodeChangeTextCommand cmd, bool done)
-        {
-            TreeNode node = cmd.TreeNode;
+            TreeNode node = command.TreeNode;
 
             TextElement text = null;
             if (m_lastHighlighted != null && m_lastHighlighted.Tag == node)
@@ -1168,7 +1045,7 @@ namespace Tobi.Plugin.DocumentPane
                         //ThreadPool.QueueUserWorkItem(obj =>
                         Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
                         {
-                            run.Text = done ? cmd.NewText : cmd.OldText;
+                            run.Text = done ? command.NewText : command.OldText;
                         }));
                     }
                     else
@@ -1192,7 +1069,7 @@ namespace Tobi.Plugin.DocumentPane
                             //ThreadPool.QueueUserWorkItem(obj =>
                             Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
                             {
-                                tb.Text = done ? cmd.NewText : cmd.OldText;
+                                tb.Text = done ? command.NewText : command.OldText;
                             }));
                         }
                     }
@@ -1202,7 +1079,7 @@ namespace Tobi.Plugin.DocumentPane
                     TreeNode selected = selection.Item2 ?? selection.Item1;
                     if (selected != node)
                     {
-                        m_UrakawaSession.PerformTreeNodeSelection(node);
+                        //m_UrakawaSession.PerformTreeNodeSelection(node);
                     }
                     else
                     {
@@ -1212,11 +1089,11 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private void findAndUpdateTreeNodeAudioStatus(TreeNode node)
+        private void InvalidateAudioStatus(TreeNode node)
         {
             foreach (var childTreeNode in node.Children.ContentsAs_Enumerable)
             {
-                findAndUpdateTreeNodeAudioStatus(childTreeNode);
+                InvalidateAudioStatus(childTreeNode);
             }
 
             if (!node.NeedsAudio())
@@ -1261,6 +1138,37 @@ namespace Tobi.Plugin.DocumentPane
             //{
 
             //}));
+        }
+
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+                return;
+            }
+
+            if (command is CompositeCommand)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+            else if (command is TreeNodeChangeTextCommand)
+            {
+                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, isTransactionActive, done, (TreeNodeChangeTextCommand)command);
+            }
+            else if (command is TextNodeStructureEditCommand)
+            {
+                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, isTransactionActive, done, (TextNodeStructureEditCommand)command);
+            }
+            else if (command is AudioEditCommand)
+            {
+                InvalidateAudioStatus(((AudioEditCommand)command).TreeNode);// TODO: test selectionData.TreeNode !!
+            }
         }
     }
 }

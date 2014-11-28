@@ -44,6 +44,7 @@ using urakawa.media;
 using urakawa.property.alt;
 using urakawa.property.channel;
 using urakawa.property.xml;
+using urakawa.undo;
 using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
 
@@ -186,7 +187,7 @@ namespace Tobi.Plugin.DocumentPane
     /// Interaction logic for DocumentPaneView.xaml
     /// </summary>
     [Export(typeof(DocumentPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class DocumentPaneView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx, IInputBindingManager
+    public partial class DocumentPaneView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx, IInputBindingManager, UndoRedoManager.Hooker.Host
     {
         private readonly IRegionManager m_RegionManager;
 
@@ -2574,27 +2575,9 @@ namespace Tobi.Plugin.DocumentPane
         private Dictionary<string, TextElement> m_idLinkTargets;
         private Dictionary<string, List<TextElement>> m_idLinkSources;
 
-        private void OnProjectUnLoaded(Project project)
-        {
-            if (!Dispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
-                return;
-            }
-
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
-
-            OnProjectLoaded(null);
-        }
-
         //private bool m_FlowDocSelectionHooked;
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
 
         private void OnProjectLoaded(Project project)
         {
@@ -2667,11 +2650,7 @@ namespace Tobi.Plugin.DocumentPane
                     return;
                 }
 
-                project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+                m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
             }
 
             createFlowDocumentFromXuk(project);
@@ -2715,6 +2694,24 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }*/
 
+        }
+
+        private void OnProjectUnLoaded(Project project)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
+                return;
+            }
+
+
+            if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
+
+            OnProjectLoaded(null);
         }
 
         //private void resetFlowDocument()
