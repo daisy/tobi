@@ -17,11 +17,12 @@ using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
 using urakawa.command;
+using urakawa.undo;
 
 namespace Tobi.Plugin.NavigationPane
 {
     [Export(typeof(HeadingPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class HeadingPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
+    public class HeadingPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification, UndoRedoManager.Hooker.Host
     {
         //        protected IUnityContainer Container { get; private set; }
         private readonly IEventAggregator m_EventAggregator;
@@ -278,180 +279,13 @@ namespace Tobi.Plugin.NavigationPane
             get { return _headingsNavigator; }
         }
 
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
-        {
-            if (!TheDispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
-                return;
-            }
-
-            //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs
-                           || eventt is TransactionCancelledEventArgs
-                           ))
-            {
-                //Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            if (!(eventt.Command is TreeNodeChangeTextCommand)
-                && !(eventt.Command is TreeNodeInsertCommand)
-                && !(eventt.Command is TreeNodeRemoveCommand)
-                && !(eventt.Command is CompositeCommand)
-                )
-            {
-                return;
-            }
-
-
-            if (m_session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            {
-                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                //return;
-            }
-
-            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
-
-
-
-
-            if (eventt.Command is CompositeCommand)
-            {
-                var compo = (CompositeCommand)eventt.Command;
-                bool allStructEdits = true;
-                foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
-                {
-                    if (!(command is TextNodeStructureEditCommand))
-                    {
-                        allStructEdits = false;
-                        break;
-                    }
-                }
-                //if (allStructEdits && compo.ChildCommands.Count > 0)
-                //{
-                //    cmd = compo.ChildCommands.Get(compo.ChildCommands.Count - 1); //last
-                //}
-                if (allStructEdits)
-                {
-                    //if (!done)
-                    //{
-                    //    for (var i = compo.ChildCommands.Count - 1; i >= 0; i--)
-                    //    {
-                    //        Command command = compo.ChildCommands.Get(i);
-
-                    //        TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
-                    //        bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
-
-                    //        foreach (var headingTreeNodeWrapper in HeadingsNavigator_Roots)
-                    //        {
-                    //            //if ((command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done)
-                    //            //    || (node == headingTreeNodeWrapper.WrappedTreeNode_LevelHeading
-                    //            //    || node == headingTreeNodeWrapper.WrappedTreeNode_Level
-                    //            //    || headingTreeNodeWrapper.WrappedTreeNode_LevelHeading != null && node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_LevelHeading)
-                    //            //    //|| node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_Level)
-                    //            //))
-                    //            if (true)
-                    //            {
-                    //                checkNodeTitleChanged(headingTreeNodeWrapper, node);
-                    //            }
-                    //        }
-                    //    }
-                    //}
-                    //else if (eventt is ReDoneEventArgs)
-                    //{
-                    //    //foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
-                    //    for (var i = 0; i < compo.ChildCommands.Count; i++)
-                    //    {
-                    //        Command command = compo.ChildCommands.Get(i);
-
-                    //        TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
-                    //        bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
-
-                    //        foreach (var headingTreeNodeWrapper in HeadingsNavigator_Roots)
-                    //        {
-                    //            //if ((command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done)
-                    //            //    || (node == headingTreeNodeWrapper.WrappedTreeNode_LevelHeading
-                    //            //    || node == headingTreeNodeWrapper.WrappedTreeNode_Level
-                    //            //    || headingTreeNodeWrapper.WrappedTreeNode_LevelHeading != null && node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_LevelHeading)
-                    //            //    //|| node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_Level)
-                    //            //))
-                    //            if (true)
-                    //            {
-                    //                checkNodeTitleChanged(headingTreeNodeWrapper, node);
-                    //            }
-                    //        }
-                    //    }
-                    //}
-
-                    View.UnloadProject();
-                    HeadingsNavigator = null;
-
-                    HeadingsNavigator = new HeadingsNavigator(m_session.DocumentProject, this);
-                    View.LoadProject();
-
-                    return;
-                }
-            }
-
-            var com = eventt.Command;
-            if (com is TreeNodeInsertCommand || com is TreeNodeRemoveCommand)
-            {
-                //TreeNode node = (com is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)com).TreeNode : ((TreeNodeRemoveCommand)com).TreeNode;
-                //bool done_ = (com is TreeNodeInsertCommand) ? !done : done;
-
-                //foreach (var headingTreeNodeWrapper in HeadingsNavigator_Roots)
-                //{
-                //    //if ((com is TreeNodeInsertCommand && !done) || (com is TreeNodeRemoveCommand && done)
-                //    //    || (node == headingTreeNodeWrapper.WrappedTreeNode_LevelHeading
-                //    //    || node == headingTreeNodeWrapper.WrappedTreeNode_Level
-                //    //    || headingTreeNodeWrapper.WrappedTreeNode_LevelHeading != null && node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_LevelHeading)
-                //    //    //|| node.IsDescendantOf(headingTreeNodeWrapper.WrappedTreeNode_Level)
-                //    //))
-                //    if (true)
-                //    {
-                //        checkNodeTitleChanged(headingTreeNodeWrapper, node);
-                //    }
-                //}
-
-                View.UnloadProject();
-                HeadingsNavigator = null;
-
-                HeadingsNavigator = new HeadingsNavigator(m_session.DocumentProject, this);
-                View.LoadProject();
-
-                return;
-            }
-
-
-            var cmd = eventt.Command as TreeNodeChangeTextCommand;
-
-            if (cmd == null) return;
-
-            foreach (var headingTreeNodeWrapper in HeadingsNavigator_Roots)
-            {
-                checkNodeTitleChanged(headingTreeNodeWrapper, cmd.TreeNode);
-            }
-        }
-
         private void checkNodeTitleChanged(HeadingTreeNodeWrapper parent, TreeNode treeNode)
         {
-            //var wrappedNode = headingTreeNodeWrapper.WrappedTreeNode_LevelHeading ?? headingTreeNodeWrapper.WrappedTreeNode_Level;
-
-            if (
-                parent.WrappedTreeNode_LevelHeading != null
+            if (parent.WrappedTreeNode_LevelHeading != null
                 &&
                 (treeNode == parent.WrappedTreeNode_LevelHeading
-                   || treeNode.IsDescendantOf(parent.WrappedTreeNode_LevelHeading)))
+                || treeNode.IsDescendantOf(parent.WrappedTreeNode_LevelHeading))
+            )
             {
                 parent.InvalidateTitle();
             }
@@ -462,6 +296,64 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
+        private void InvalidateHeadings(TreeNode node)
+        {
+            foreach (var headingTreeNodeWrapper in HeadingsNavigator_Roots)
+            {
+                checkNodeTitleChanged(headingTreeNodeWrapper, node);
+            }
+        }
+
+        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TreeNodeChangeTextCommand command)
+        {
+            InvalidateHeadings(command.TreeNode);
+        }
+
+        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TextNodeStructureEditCommand command)
+        {
+            DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
+
+            //TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
+            //TreeNode node = command.TreeNode;
+            //bool forceInvalidate = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
+            //bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
+
+            View.UnloadProject();
+            HeadingsNavigator = null;
+
+            HeadingsNavigator = new HeadingsNavigator(m_session.DocumentProject, this);
+            View.LoadProject();
+        }
+
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+        {
+            if (!TheDispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+                return;
+            }
+
+            if (command is CompositeCommand)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+            else if (command is TreeNodeChangeTextCommand)
+            {
+                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, isTransactionActive, done, (TreeNodeChangeTextCommand)command);
+            }
+            else if (command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand)
+            {
+                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, isTransactionActive, done, (TextNodeStructureEditCommand)command);
+            }
+        }
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
+
         private void onProjectLoaded(Project project)
         {
             if (m_session.IsXukSpine)
@@ -469,11 +361,7 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
-            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
 
             HeadingsNavigator = new HeadingsNavigator(project, this);
 
@@ -482,11 +370,8 @@ namespace Tobi.Plugin.NavigationPane
 
         private void onProjectUnLoaded(Project project)
         {
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+            m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
 
             View.UnloadProject();
 

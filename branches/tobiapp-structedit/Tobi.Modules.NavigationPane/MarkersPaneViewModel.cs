@@ -18,11 +18,12 @@ using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
 using AudioLib;
+using urakawa.undo;
 
 namespace Tobi.Plugin.NavigationPane
 {
     [Export(typeof(MarkersPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class MarkersPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
+    public class MarkersPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification, UndoRedoManager.Hooker.Host
     {
         public RichDelegateCommand CommandToggleMark { get; private set; }
         public RichDelegateCommand CommandRemoveAllMarks { get; private set; }
@@ -328,36 +329,6 @@ namespace Tobi.Plugin.NavigationPane
         //}
 
         #region Events
-        private void onProjectLoaded(Project project)
-        {
-            if (m_UrakawaSession.IsXukSpine)
-            {
-                return;
-            }
-
-            MarkersNavigator = new MarkersNavigator(View);
-            View.LoadProject();
-
-            RaisePropertyChanged(() => SelectedTreeNode);
-
-            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-        }
-
-        private void onProjectUnLoaded(Project project)
-        {
-            View.UnloadProject();
-            MarkersNavigator = null;
-
-            RaisePropertyChanged(() => SelectedTreeNode);
-
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-        }
 
         private bool checkTreeNodeFragmentRemoval(bool done, TreeNode node)
         {
@@ -373,6 +344,8 @@ namespace Tobi.Plugin.NavigationPane
                 {
                     MarkersNavigator.AddMarkedTreeNode(node);
                 }
+                RaisePropertyChanged(() => HasNotMarkers);
+
                 found = true;
             }
             foreach (var child in node.Children.ContentsAs_Enumerable)
@@ -384,189 +357,108 @@ namespace Tobi.Plugin.NavigationPane
             return found;
         }
 
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
+        private void InvalidateMarkers(bool forceInvalidate, TreeNode node)
+        {
+            foreach (var markedTreeNode in MarkersNavigator_MarkedTreeNodes)
+            {
+                if (forceInvalidate
+                    || node == markedTreeNode.TreeNode
+                    || node.IsDescendantOf(markedTreeNode.TreeNode))
+                {
+                    markedTreeNode.InvalidateDescription();
+                }
+            }
+        }
+
+        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TreeNodeChangeTextCommand command)
+        {
+            InvalidateMarkers(false, command.TreeNode);
+        }
+
+        private void OnUndoRedoManagerChanged_TreeNodeSetIsMarkedCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TreeNodeSetIsMarkedCommand command)
+        {
+            if (command.TreeNode.IsMarked)
+                MarkersNavigator.AddMarkedTreeNode(command.TreeNode);
+            else
+                MarkersNavigator.RemoveMarkedTreeNode(command.TreeNode);
+
+            RaisePropertyChanged(() => HasNotMarkers);
+        }
+
+        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TextNodeStructureEditCommand command)
+        {
+            DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
+
+            //TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
+            TreeNode node = command.TreeNode;
+
+            bool forceInvalidate = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
+            InvalidateMarkers(forceInvalidate, node);
+            
+            bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
+            checkTreeNodeFragmentRemoval(done_, node);
+        }
+
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
         {
             if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal,
-                                  (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
                 return;
             }
 
-            //m_Logger.Log("MarkersPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                  || eventt is UnDoneEventArgs
-                  || eventt is ReDoneEventArgs
-                  || eventt is TransactionCancelledEventArgs
-                  || eventt is TransactionEndedEventArgs
-                 ))
+            if (command is CompositeCommand)
             {
-                //Debug.Fail("This should never happen !!");
-                return;
+#if DEBUG
+                Debugger.Break();
+#endif
             }
-
-            if (!(eventt.Command is TreeNodeSetIsMarkedCommand)
-                && !(eventt.Command is TreeNodeChangeTextCommand)
-                && !(eventt.Command is TreeNodeInsertCommand)
-                && !(eventt.Command is TreeNodeRemoveCommand)
-                && !(eventt.Command is CompositeCommand)
-                )
+            else if (command is TreeNodeSetIsMarkedCommand)
             {
-                return;
+                OnUndoRedoManagerChanged_TreeNodeSetIsMarkedCommand(eventt, isTransactionActive, done, (TreeNodeSetIsMarkedCommand)command);
             }
-
-            if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
+            else if (command is TreeNodeChangeTextCommand)
             {
-                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                //return;
+                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, isTransactionActive, done, (TreeNodeChangeTextCommand)command);
             }
-
-            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
-
-            if (eventt.Command is CompositeCommand)
+            else if (command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand)
             {
-                var compo = (CompositeCommand)eventt.Command;
-                bool allStructEdits = true;
-                foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
-                {
-                    if (!(command is TextNodeStructureEditCommand))
-                    {
-                        allStructEdits = false;
-                        break;
-                    }
-                }
-                //if (allStructEdits && compo.ChildCommands.Count > 0)
-                //{
-                //    cmd = compo.ChildCommands.Get(compo.ChildCommands.Count - 1); //last
-                //}
-                if (allStructEdits)
-                {
-                    if (!done)
-                    {
-                        for (var i = compo.ChildCommands.Count - 1; i >= 0; i--)
-                        {
-                            Command command = compo.ChildCommands.Get(i);
-
-                            TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
-                            bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
-
-                            foreach (var markedTreeNode in MarkersNavigator_MarkedTreeNodes)
-                            {
-                                if ((command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done)
-                                    || (node == markedTreeNode.TreeNode || node.IsDescendantOf(markedTreeNode.TreeNode)))
-                                {
-                                    markedTreeNode.InvalidateDescription();
-                                }
-                            }
-
-                            checkTreeNodeFragmentRemoval(done_, node);
-                        }
-                    }
-                    else if (eventt is ReDoneEventArgs)
-                    {
-                        //foreach (Command command in compo.ChildCommands.ContentsAs_Enumerable)
-                        for (var i = 0; i < compo.ChildCommands.Count; i++)
-                        {
-                            Command command = compo.ChildCommands.Get(i);
-
-                            TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
-                            bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
-
-                            foreach (var markedTreeNode in MarkersNavigator_MarkedTreeNodes)
-                            {
-                                if ((command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done)
-                                    || (node == markedTreeNode.TreeNode || node.IsDescendantOf(markedTreeNode.TreeNode)))
-                                {
-                                    markedTreeNode.InvalidateDescription();
-                                }
-                            }
-
-                            checkTreeNodeFragmentRemoval(done_, node);
-                        }
-                    }
-
-                    return;
-                }
-            }
-
-            var com = eventt.Command;
-            if (com is TreeNodeInsertCommand || com is TreeNodeRemoveCommand)
-            {
-                TreeNode node = (com is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)com).TreeNode : ((TreeNodeRemoveCommand)com).TreeNode;
-                bool done_ = (com is TreeNodeInsertCommand) ? !done : done;
-
-                foreach (var markedTreeNode in MarkersNavigator_MarkedTreeNodes)
-                {
-                    if ((com is TreeNodeInsertCommand && !done) || (com is TreeNodeRemoveCommand && done)
-                        || (node == markedTreeNode.TreeNode || node.IsDescendantOf(markedTreeNode.TreeNode)))
-                    {
-                        markedTreeNode.InvalidateDescription();
-                    }
-                }
-            
-                if (checkTreeNodeFragmentRemoval(done_, node))
-                {
-                    //RaisePropertyChanged(() => SelectedTreeNode);
-                    RaisePropertyChanged(() => HasNotMarkers);
-                }
-
-                return;
-            }
-
-            if (eventt.Command is CompositeCommand)
-            {
-                List<TreeNodeSetIsMarkedCommand> list = ((CompositeCommand)eventt.Command).GetChildCommandsAllType<TreeNodeSetIsMarkedCommand>();
-                if (list == null || list.Count <= 0)
-                {
-                    return;
-                }
-
-                foreach (TreeNodeSetIsMarkedCommand command in list)
-                {
-                    if (command.TreeNode.IsMarked)
-                        MarkersNavigator.AddMarkedTreeNode(command.TreeNode);
-                    else
-                        MarkersNavigator.RemoveMarkedTreeNode(command.TreeNode);
-                }
-
-                RaisePropertyChanged(() => HasNotMarkers);
-                return;
-            }
-
-            if (eventt.Command is TreeNodeChangeTextCommand)
-            {
-                var node = ((TreeNodeChangeTextCommand)eventt.Command).TreeNode;
-
-                foreach (var markedTreeNode in MarkersNavigator_MarkedTreeNodes)
-                {
-                    if (node == markedTreeNode.TreeNode
-                        || node.IsDescendantOf(markedTreeNode.TreeNode))
-                    {
-                        markedTreeNode.InvalidateDescription();
-                    }
-                }
-                return;
+                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, isTransactionActive, done, (TextNodeStructureEditCommand)command);
             }
 
             RaisePropertyChanged(() => SelectedTreeNode);
+        }
 
-            if (eventt.Command is TreeNodeSetIsMarkedCommand)
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
+
+        private void onProjectLoaded(Project project)
+        {
+            if (m_UrakawaSession.IsXukSpine)
             {
-                var cmd = (TreeNodeSetIsMarkedCommand) eventt.Command;
-
-                if (cmd.TreeNode.IsMarked)
-                    MarkersNavigator.AddMarkedTreeNode(cmd.TreeNode);
-                else
-                    MarkersNavigator.RemoveMarkedTreeNode(cmd.TreeNode);
+                return;
             }
 
-            RaisePropertyChanged(() => HasNotMarkers);
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
+
+            MarkersNavigator = new MarkersNavigator(View);
+
+            View.LoadProject();
+
+            RaisePropertyChanged(() => SelectedTreeNode);
+        }
+
+        private void onProjectUnLoaded(Project project)
+        {
+            m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
+
+            View.UnloadProject();
+            MarkersNavigator = null;
+
+            RaisePropertyChanged(() => SelectedTreeNode);
         }
 
         [NotifyDependsOn("MarkersNavigator")]
