@@ -67,18 +67,21 @@ namespace Tobi.Plugin.Validator.Metadata
             m_Logger.Log(@"MetadataValidator initialized", Category.Debug, Priority.Medium);
         }
 
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
         {
             if (!Dispatcher.CurrentDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
                 return;
             }
 
-            DebugFix.Assert(!isTransactionActive);
+            //if (isTransactionEndEvent)
+            //{
+            //    return;
+            //}
 
             if (command is CompositeCommand)
             {
@@ -88,10 +91,7 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             else if (command is MetadataCommand)
             {
-                if (!command.IsTransaction()
-                    || done && command.IsTransactionLast()
-                    || !done && command.IsTransactionFirst()
-                    )
+                if (isHeadOrTailOfTransactionOrSingleCommand)
                 {
                     Validate();
                 }
@@ -104,7 +104,7 @@ namespace Tobi.Plugin.Validator.Metadata
         {
             base.OnProjectLoaded(project);
 
-            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, false);
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
 
             Validate();
         }

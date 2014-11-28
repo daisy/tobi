@@ -542,18 +542,21 @@ namespace Tobi.Plugin.StructureTrailPane
         }
 
 
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
         {
             if (!Dispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
                 return;
             }
 
-            DebugFix.Assert(!isTransactionActive);
+            //if (isTransactionEndEvent)
+            //{
+            //    return;
+            //}
 
             if (command is CompositeCommand)
             {
@@ -562,10 +565,7 @@ namespace Tobi.Plugin.StructureTrailPane
 #endif
             }
 
-            if (!command.IsTransaction()
-                || done && command.IsTransactionLast()
-                || !done && command.IsTransactionFirst()
-                )
+            if (isHeadOrTailOfTransactionOrSingleCommand)
             {
                 Tuple<TreeNode, TreeNode> newTreeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
                 refreshData(newTreeNodeSelection);
@@ -601,7 +601,7 @@ namespace Tobi.Plugin.StructureTrailPane
 
             if (project == null) return;
 
-            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, false);
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
         }
 
         private void OnProjectUnLoaded(Project project)

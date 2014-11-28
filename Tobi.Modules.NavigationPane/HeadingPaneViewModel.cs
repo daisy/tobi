@@ -304,12 +304,15 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
-        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TreeNodeChangeTextCommand command)
+        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool done, TreeNodeChangeTextCommand command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
         {
-            InvalidateHeadings(command.TreeNode);
+            if (!isTransactionEndEvent)
+            {
+                InvalidateHeadings(command.TreeNode);
+            }
         }
 
-        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TextNodeStructureEditCommand command)
+        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool done, TextNodeStructureEditCommand command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
         {
             DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
 
@@ -318,10 +321,7 @@ namespace Tobi.Plugin.NavigationPane
             //bool forceInvalidate = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
             //bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
 
-            if (!command.IsTransaction()
-                || done && command.IsTransactionLast()
-                || !done && command.IsTransactionFirst()
-            )
+            if (isHeadOrTailOfTransactionOrSingleCommand)
             {
                 View.UnloadProject();
                 HeadingsNavigator = null;
@@ -331,18 +331,21 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
         {
             if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
                 return;
             }
-            
-            DebugFix.Assert(!isTransactionActive);
+
+            //if (isTransactionEndEvent)
+            //{
+            //    return;
+            //}
 
             if (command is CompositeCommand)
             {
@@ -352,11 +355,11 @@ namespace Tobi.Plugin.NavigationPane
             }
             else if (command is TreeNodeChangeTextCommand)
             {
-                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, isTransactionActive, done, (TreeNodeChangeTextCommand)command);
+                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, done, (TreeNodeChangeTextCommand)command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
             }
             else if (command is TextNodeStructureEditCommand)
             {
-                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, isTransactionActive, done, (TextNodeStructureEditCommand)command);
+                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, done, (TextNodeStructureEditCommand)command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
             }
         }
 
@@ -369,7 +372,7 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
-            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, false);
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
 
             HeadingsNavigator = new HeadingsNavigator(project, this);
 
