@@ -318,11 +318,17 @@ namespace Tobi.Plugin.NavigationPane
             //bool forceInvalidate = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
             //bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
 
-            View.UnloadProject();
-            HeadingsNavigator = null;
+            if (!command.IsTransaction()
+                || done && command.IsTransactionLast()
+                || !done && command.IsTransactionFirst()
+            )
+            {
+                View.UnloadProject();
+                HeadingsNavigator = null;
 
-            HeadingsNavigator = new HeadingsNavigator(m_session.DocumentProject, this);
-            View.LoadProject();
+                HeadingsNavigator = new HeadingsNavigator(m_session.DocumentProject, this);
+                View.LoadProject();
+            }
         }
 
         public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
