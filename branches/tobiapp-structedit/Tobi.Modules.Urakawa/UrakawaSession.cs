@@ -22,7 +22,10 @@ using urakawa;
 using urakawa.core;
 using urakawa.data;
 using urakawa.events;
+using urakawa.undo;
 using urakawa.xuk;
+using urakawa.command;
+using urakawa.events.undo;
 
 
 namespace Tobi.Plugin.Urakawa
@@ -37,7 +40,7 @@ namespace Tobi.Plugin.Urakawa
     /// Single shared instance (singleton) of a session to host the Urakawa SDK aurthoring data model.
     ///</summary>
     [Export(typeof(IUrakawaSession)), PartCreationPolicy(CreationPolicy.Shared)]
-    public sealed partial class UrakawaSession : PropertyChangedNotifyBase, IUrakawaSession, IPartImportsSatisfiedNotification
+    public sealed partial class UrakawaSession : PropertyChangedNotifyBase, IUrakawaSession, IPartImportsSatisfiedNotification, UndoRedoManager.Hooker.Host
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -184,6 +187,8 @@ namespace Tobi.Plugin.Urakawa
             }
         }
 
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
+
         private Project m_DocumentProject;
         public Project DocumentProject
         {
@@ -199,28 +204,17 @@ namespace Tobi.Plugin.Urakawa
                     m_TreeNode = null;
                     m_SubTreeNode = null;
                 }
-                if (m_DocumentProject != null)
+                if (m_UndoRedoManagerHooker != null)
                 {
-                    //m_DocumentProject.Changed -= OnDocumentProjectChanged;
-                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-                    //m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionStarted -= OnUndoRedoManagerChanged;
-                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+                    m_UndoRedoManagerHooker.UnHook();
+                    m_UndoRedoManagerHooker = null;
                 }
 
                 //IsDirty = false;
                 m_DocumentProject = value;
                 if (m_DocumentProject != null)
                 {
-                    //m_DocumentProject.Changed += OnDocumentProjectChanged;
-                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-                    //m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionStarted += OnUndoRedoManagerChanged;
-                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-                    m_DocumentProject.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+                    m_UndoRedoManagerHooker = m_DocumentProject.Presentations.Get(0).UndoRedoManager.Hook(this);
                 }
                 RaisePropertyChanged(() => DocumentProject);
                 RaisePropertyChanged(() => IsDirty);
@@ -293,60 +287,83 @@ namespace Tobi.Plugin.Urakawa
         }
 
         private DispatcherTimer m_undoAutoSaveIntervalTimer = null;
-        private void OnUndoRedoManagerChanged(object sender, DataModelChangedEventArgs e)
+
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
         {
-            if (m_undoAutoSaveIntervalTimer == null)
-            {
-                m_undoAutoSaveIntervalTimer = new DispatcherTimer(DispatcherPriority.Background);
-                m_undoAutoSaveIntervalTimer.Interval = TimeSpan.FromMilliseconds(1000);
-                m_undoAutoSaveIntervalTimer.Tick += (oo, ee) =>
-                {
-                    m_undoAutoSaveIntervalTimer.Stop();
-                    //m_scrollRefreshIntervalTimer = null;
+            //            if (!Dispatcher.CheckAccess())
+            //            {
+            //#if DEBUG
+            //                Debugger.Break();
+            //#endif
+            //                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+            //                return;
+            //            }
 
-                    if (!m_AutoSave_OFF
-                        && Settings.Default.EnableAutoSave
-                        && !string.IsNullOrEmpty(DocumentFilePath))
-                    {
-                        // The "OnUndoRedoManagerChanged" event is not broadcasted when 
-                        // Command.Execute() or Command.UnExecute() fails,
-                        // so we never auto-save a corrupted project.
-                        try
-                        {
-                            saveAuto();
-                        }
-                        catch (Exception ex)
-                        {
+            if (command is CompositeCommand)
+            {
 #if DEBUG
-                            Debugger.Break();
+                Debugger.Break();
 #endif
-                            Console.WriteLine(ex.Message);
-                            Console.WriteLine(ex.StackTrace);
+            }
+
+            if (!command.IsTransaction()
+                || done && command.IsTransactionLast()
+                || !done && command.IsTransactionFirst()
+                )
+            {
+                if (m_undoAutoSaveIntervalTimer == null)
+                {
+                    m_undoAutoSaveIntervalTimer = new DispatcherTimer(DispatcherPriority.Background);
+                    m_undoAutoSaveIntervalTimer.Interval = TimeSpan.FromMilliseconds(1000);
+                    m_undoAutoSaveIntervalTimer.Tick += (oo, ee) =>
+                    {
+                        m_undoAutoSaveIntervalTimer.Stop();
+                        //m_scrollRefreshIntervalTimer = null;
+
+                        if (!m_AutoSave_OFF
+                            && Settings.Default.EnableAutoSave
+                            && !string.IsNullOrEmpty(DocumentFilePath))
+                        {
+                            // The "OnUndoRedoManagerChanged" event is not broadcasted when 
+                            // Command.Execute() or Command.UnExecute() fails,
+                            // so we never auto-save a corrupted project.
+                            try
+                            {
+                                saveAuto();
+                            }
+                            catch (Exception ex)
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                                Console.WriteLine(ex.Message);
+                                Console.WriteLine(ex.StackTrace);
+                            }
+
+                            //Application.Current.MainWindow.Dispatcher.BeginInvoke(
+                            //DispatcherPriority.Background,
+                            //(Action)(() =>
+                            //{
+                            ///// SAVE HERE
+                            //}));
                         }
+                    };
+                    m_undoAutoSaveIntervalTimer.Start();
+                }
+                else if (m_undoAutoSaveIntervalTimer.IsEnabled)
+                {
+                    //restart
+                    m_undoAutoSaveIntervalTimer.Stop();
+                    m_undoAutoSaveIntervalTimer.Start();
+                }
+                else
+                {
+                    m_undoAutoSaveIntervalTimer.Start();
+                }
 
-                        //Application.Current.MainWindow.Dispatcher.BeginInvoke(
-                        //DispatcherPriority.Background,
-                        //(Action)(() =>
-                        //{
-                        ///// SAVE HERE
-                        //}));
-                    }
-                };
-                m_undoAutoSaveIntervalTimer.Start();
+                RaisePropertyChanged(() => IsDirty);
+                //IsDirty = m_DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo;
             }
-            else if (m_undoAutoSaveIntervalTimer.IsEnabled)
-            {
-                //restart
-                m_undoAutoSaveIntervalTimer.Stop();
-                m_undoAutoSaveIntervalTimer.Start();
-            }
-            else
-            {
-                m_undoAutoSaveIntervalTimer.Start();
-            }
-
-            RaisePropertyChanged(() => IsDirty);
-            //IsDirty = m_DocumentProject.Presentations.Get(0).UndoRedoManager.CanUndo;
         }
 
         //private void OnDocumentProjectChanged(object sender, DataModelChangedEventArgs e)
