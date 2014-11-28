@@ -446,11 +446,12 @@ namespace Tobi.Plugin.NavigationPane
             return found;
         }
 
-        private void InvalidatePages(TreeNode node)
+        private void InvalidatePages(bool forceInvalidate, TreeNode node)
         {
             foreach (var page in PagesNavigator_Pages)
             {
-                if (node == page.TreeNode
+                if (forceInvalidate
+                    || node == page.TreeNode
                     || node.IsDescendantOf(page.TreeNode))
                 {
                     page.InvalidateName();
@@ -460,7 +461,7 @@ namespace Tobi.Plugin.NavigationPane
 
         private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TreeNodeChangeTextCommand command)
         {
-            InvalidatePages(command.TreeNode);
+            InvalidatePages(false, command.TreeNode);
         }
 
         private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TextNodeStructureEditCommand command)
@@ -470,7 +471,8 @@ namespace Tobi.Plugin.NavigationPane
             //TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
             TreeNode node = command.TreeNode;
 
-            InvalidatePages(node);
+            bool forceInvalidate = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
+            InvalidatePages(forceInvalidate, node);
 
             bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
             checkTreeNodeFragmentRemoval(done_, node);
@@ -515,6 +517,7 @@ namespace Tobi.Plugin.NavigationPane
             m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
 
             PagesNavigator = new PagesNavigator(View);
+
             View.LoadProject();
         }
         private void onProjectUnLoaded(Project project)
