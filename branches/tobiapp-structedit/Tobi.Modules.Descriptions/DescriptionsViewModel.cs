@@ -105,18 +105,21 @@ namespace Tobi.Plugin.Descriptions
             RaisePropertyChanged(() => Descriptions);
         }
 
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
         {
             if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
                 return;
             }
 
-            DebugFix.Assert(!isTransactionActive);
+            if (isTransactionEndEvent)
+            {
+                return;
+            }
 
             if (command is CompositeCommand)
             {
@@ -152,7 +155,7 @@ namespace Tobi.Plugin.Descriptions
 
             if (project == null) return;
 
-            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, false);
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
         }
 
         private void OnProjectUnLoaded(Project project)

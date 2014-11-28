@@ -214,7 +214,7 @@ namespace Tobi.Plugin.Urakawa
                 m_DocumentProject = value;
                 if (m_DocumentProject != null)
                 {
-                    m_UndoRedoManagerHooker = m_DocumentProject.Presentations.Get(0).UndoRedoManager.Hook(this, false);
+                    m_UndoRedoManagerHooker = m_DocumentProject.Presentations.Get(0).UndoRedoManager.Hook(this);
                 }
                 RaisePropertyChanged(() => DocumentProject);
                 RaisePropertyChanged(() => IsDirty);
@@ -288,14 +288,14 @@ namespace Tobi.Plugin.Urakawa
 
         private DispatcherTimer m_undoAutoSaveIntervalTimer = null;
 
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
         {
             //            if (!Dispatcher.CheckAccess())
             //            {
             //#if DEBUG
             //                Debugger.Break();
             //#endif
-            //                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+            //                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
             //                return;
             //            }
 
@@ -306,10 +306,7 @@ namespace Tobi.Plugin.Urakawa
 #endif
             }
 
-            if (!command.IsTransaction()
-                || done && command.IsTransactionLast()
-                || !done && command.IsTransactionFirst()
-                )
+            if (isHeadOrTailOfTransactionOrSingleCommand)
             {
                 if (m_undoAutoSaveIntervalTimer == null)
                 {

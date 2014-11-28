@@ -816,8 +816,13 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TextNodeStructureEditCommand command)
+        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool done, TextNodeStructureEditCommand command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
         {
+            if (isTransactionEndEvent)
+            {
+                return;
+            }
+
             DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
 
             //TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
@@ -969,8 +974,13 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
-        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, TreeNodeChangeTextCommand command)
+        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool done, TreeNodeChangeTextCommand command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
         {
+            if (isTransactionEndEvent)
+            {
+                return;
+            }
+
             TreeNode node = command.TreeNode;
 
             TextElement text = null;
@@ -1108,18 +1118,21 @@ namespace Tobi.Plugin.DocumentPane
             //}));
         }
 
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool isTransactionActive, bool done, Command command)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
         {
             if (!Dispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, bool, Command>)OnUndoRedoManagerChanged, eventt, isTransactionActive, done, command);
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
                 return;
             }
-            
-            //DebugFix.Assert(!isTransactionActive);
+
+            //if (isTransactionEndEvent)
+            //{
+            //    return;
+            //}
 
             if (command is CompositeCommand)
             {
@@ -1129,87 +1142,75 @@ namespace Tobi.Plugin.DocumentPane
             }
             else if (command is TreeNodeChangeTextCommand)
             {
-                if (!isTransactionActive)
-                {
-                    OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, isTransactionActive, done, (TreeNodeChangeTextCommand)command);
-                }
+                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, done, (TreeNodeChangeTextCommand)command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
             }
             else if (command is TextNodeStructureEditCommand)
             {
-                if (!(eventt is TransactionEndedEventArgs)) // live events only (transaction or not) => all but the final aggregated composite command
-                {
-                    OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, isTransactionActive, done, (TextNodeStructureEditCommand) command);
-                }
+                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, done, (TextNodeStructureEditCommand)command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
 
-                if (!isTransactionActive)
+                if (isHeadOrTailOfTransactionOrSingleCommand)
                 {
-                    if (!command.IsTransaction()
-                        || done && command.IsTransactionLast()
-                        || !done && command.IsTransactionFirst()
-                        )
+                    var removeCmd = command as TreeNodeRemoveCommand;
+                    var addCmd = command as TreeNodeInsertCommand;
+
+                    if (removeCmd != null)
                     {
-                        var removeCmd = command as TreeNodeRemoveCommand;
-                        var addCmd = command as TreeNodeInsertCommand;
-
-                        if (removeCmd != null)
+                        if (!done)
                         {
-                            if (!done)
-                            {
-                                m_UrakawaSession.PerformTreeNodeSelection(removeCmd.TreeNode);
-                            }
-                            else
-                            {
-                                // TODO previous next text
-                                // var previous = node.GetPreviousSiblingWithText();
-                                // var next = node.GetNextSiblingWithText();
-                                TreeNode toSelect = removeCmd.TreeNodeParent;
-                                if (removeCmd.TreeNodePos >= 0 &&
-                                    removeCmd.TreeNodePos < removeCmd.TreeNodeParent.Children.Count)
-                                {
-                                    toSelect = removeCmd.TreeNodeParent.Children.Get(removeCmd.TreeNodePos);
-                                }
-                                else if (removeCmd.TreeNodeParent.Children.Count > 0)
-                                {
-                                    toSelect =
-                                        removeCmd.TreeNodeParent.Children.Get(removeCmd.TreeNodeParent.Children.Count -
-                                                                              1);
-                                }
-                                m_UrakawaSession.PerformTreeNodeSelection(toSelect);
-                            }
+                            m_UrakawaSession.PerformTreeNodeSelection(removeCmd.TreeNode);
                         }
-                        else if (addCmd != null)
+                        else
                         {
-                            if (done)
+                            // TODO previous next text
+                            // var previous = node.GetPreviousSiblingWithText();
+                            // var next = node.GetNextSiblingWithText();
+                            TreeNode toSelect = removeCmd.TreeNodeParent;
+                            if (removeCmd.TreeNodePos >= 0 &&
+                                removeCmd.TreeNodePos < removeCmd.TreeNodeParent.Children.Count)
                             {
-                                m_UrakawaSession.PerformTreeNodeSelection(addCmd.TreeNode);
+                                toSelect = removeCmd.TreeNodeParent.Children.Get(removeCmd.TreeNodePos);
                             }
-                            else
+                            else if (removeCmd.TreeNodeParent.Children.Count > 0)
                             {
-                                // TODO previous next text
-                                // var previous = node.GetPreviousSiblingWithText();
-                                // var next = node.GetNextSiblingWithText();
-                                TreeNode toSelect = addCmd.TreeNodeParent;
-                                if (addCmd.TreeNodePos >= 0 &&
-                                    addCmd.TreeNodePos < addCmd.TreeNodeParent.Children.Count)
-                                {
-                                    toSelect = addCmd.TreeNodeParent.Children.Get(addCmd.TreeNodePos);
-                                }
-                                else if (addCmd.TreeNodeParent.Children.Count > 0)
-                                {
-                                    toSelect =
-                                        addCmd.TreeNodeParent.Children.Get(addCmd.TreeNodeParent.Children.Count - 1);
-                                }
-                                m_UrakawaSession.PerformTreeNodeSelection(toSelect);
+                                toSelect =
+                                    removeCmd.TreeNodeParent.Children.Get(removeCmd.TreeNodeParent.Children.Count -
+                                                                          1);
                             }
+                            m_UrakawaSession.PerformTreeNodeSelection(toSelect);
+                        }
+                    }
+                    else if (addCmd != null)
+                    {
+                        if (done)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(addCmd.TreeNode);
+                        }
+                        else
+                        {
+                            // TODO previous next text
+                            // var previous = node.GetPreviousSiblingWithText();
+                            // var next = node.GetNextSiblingWithText();
+                            TreeNode toSelect = addCmd.TreeNodeParent;
+                            if (addCmd.TreeNodePos >= 0 &&
+                                addCmd.TreeNodePos < addCmd.TreeNodeParent.Children.Count)
+                            {
+                                toSelect = addCmd.TreeNodeParent.Children.Get(addCmd.TreeNodePos);
+                            }
+                            else if (addCmd.TreeNodeParent.Children.Count > 0)
+                            {
+                                toSelect =
+                                    addCmd.TreeNodeParent.Children.Get(addCmd.TreeNodeParent.Children.Count - 1);
+                            }
+                            m_UrakawaSession.PerformTreeNodeSelection(toSelect);
                         }
                     }
                 }
             }
             else if (command is AudioEditCommand)
             {
-                if (!isTransactionActive)
+                if (!isTransactionEndEvent)
                 {
-                    TreeNode node = ((AudioEditCommand) command).TreeNode;
+                    TreeNode node = ((AudioEditCommand)command).TreeNode;
                     if (command is TreeNodeAudioStreamDeleteCommand)
                     {
                         node = ((TreeNodeAudioStreamDeleteCommand)command).SelectionData.m_TreeNode;
