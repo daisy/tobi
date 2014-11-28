@@ -202,7 +202,7 @@ namespace Tobi.Plugin.Validator.MissingAudio
             // WE MUST PREVENT THE BASE CLASS TO RESET THE VALIDATION ITEMS (WHICH WE JUST RECEIVED FROM THE FLOWDOC PARSER)
             //base.OnProjectLoaded(project);
 
-            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, false);
         }
 
         protected override void OnProjectUnLoaded(Project project)

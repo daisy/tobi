@@ -149,7 +149,7 @@ namespace Tobi.Plugin.Descriptions
 
             if (project == null) return;
 
-            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, false);
         }
 
         private void OnProjectUnLoaded(Project project)

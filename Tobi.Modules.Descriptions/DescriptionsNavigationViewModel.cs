@@ -431,7 +431,7 @@ namespace Tobi.Plugin.Descriptions
                 return;
             }
 
-            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this, false);
 
             DescriptionsNavigator = new DescriptionsNavigator(View);
             View.LoadProject();
