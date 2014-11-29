@@ -169,6 +169,24 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert a numbered page break into the document.
+        /// </summary>
+        public static string CmdStructEditInsertPageBreak_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditInsertPageBreak_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert page break ....
+        /// </summary>
+        public static string CmdStructEditInsertPageBreak_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditInsertPageBreak_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restore the document fragment from the structure clipboard into the document.
         /// </summary>
         public static string CmdStructEditPasteFragment_LongDesc {
@@ -178,7 +196,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Paste fragment....
+        ///   Looks up a localized string similar to Paste fragment ....
         /// </summary>
         public static string CmdStructEditPasteFragment_ShortDesc {
             get {
@@ -426,6 +444,15 @@ namespace Tobi.Plugin.DocumentPane {
         public static string No_Document {
             get {
                 return ResourceManager.GetString("No_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page label (number).
+        /// </summary>
+        public static string PageLabel {
+            get {
+                return ResourceManager.GetString("PageLabel", resourceCulture);
             }
         }
         

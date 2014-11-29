@@ -172,6 +172,16 @@
     <value>Remove the selected fragment from the document</value>
   </data>
 
+  <data name="PageLabel" xml:space="preserve">
+    <value>Page label (number)</value>
+  </data>
+  <data name="CmdStructEditInsertPageBreak_ShortDesc" xml:space="preserve">
+    <value>Insert page break ...</value>
+  </data>
+  <data name="CmdStructEditInsertPageBreak_LongDesc" xml:space="preserve">
+    <value>Insert a numbered page break into the document</value>
+  </data>
+  
   <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
     <value>Insert node ... (DEV ONLY)</value>
   </data>
@@ -187,7 +197,7 @@
   </data>
 
   <data name="CmdStructEditPasteFragment_ShortDesc" xml:space="preserve">
-    <value>Paste fragment...</value>
+    <value>Paste fragment ...</value>
   </data>
   <data name="CmdStructEditPasteFragment_LongDesc" xml:space="preserve">
     <value>Restore the document fragment from the structure clipboard into the document</value>
