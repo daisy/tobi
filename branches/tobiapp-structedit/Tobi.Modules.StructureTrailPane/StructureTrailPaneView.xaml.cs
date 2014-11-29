@@ -111,7 +111,6 @@ namespace Tobi.Plugin.StructureTrailPane
 
                 var run = new Run(label)
                 {
-                    TextDecorations = TextDecorations.Underline
                 };
                 //run.SetValue(AutomationProperties.NameProperty, str);
                 butt.Content = run;
@@ -199,6 +198,10 @@ namespace Tobi.Plugin.StructureTrailPane
                     run.FontWeight = FontWeights.Heavy;
                     run.Background = SystemColors.ControlDarkDarkBrush;
                     run.Foreground = SystemColors.ControlBrush;
+                }
+                else
+                {
+                    run.FontWeightTextDecorations = TextDecorations.Underline;
                 }
 
                 butt.SetValue(AutomationProperties.NameProperty,

@@ -843,6 +843,7 @@ namespace Tobi.Plugin.DocumentPane
 
         private TreeNode m_TreeNodeFragmentClipboard = null;
 
+        public RichDelegateCommand CommandStructCopyFragment { get; private set; }
         public RichDelegateCommand CommandStructCutFragment { get; private set; }
         public RichDelegateCommand CommandStructPasteFragment { get; private set; }
 
@@ -1267,6 +1268,27 @@ namespace Tobi.Plugin.DocumentPane
             return true;
         }
 
+        public void stripXmlIds(TreeNode node)
+        {
+            XmlProperty xmlProp = node.GetXmlProperty();
+            if (xmlProp != null)
+            {
+                XmlAttribute idAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
+                if (idAttr == null)
+                {
+                    idAttr = xmlProp.GetAttribute("id");
+                }
+                if (idAttr != null)
+                {
+                    xmlProp.RemoveAttribute(idAttr);
+                }
+            }
+
+            foreach (var child in node.Children.ContentsAs_Enumerable)
+            {
+                stripXmlIds(child);
+            }
+        }
 
         ///<summary>
         /// Dependency-Injected constructor
@@ -1605,6 +1627,53 @@ namespace Tobi.Plugin.DocumentPane
                 );
 
             m_ShellView.RegisterRichCommand(CommandStructCutFragment);
+
+            //
+            CommandStructCopyFragment = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditCopyFragment_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditCopyFragment_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+
+                    if (node == null) return;
+
+                    //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+                    if (m_TreeNodeFragmentClipboard != null)
+                    {
+                        if (
+                            !askUser(Tobi_Plugin_DocumentPane_Lang.CmdStructEditCopyFragment_ShortDesc,
+                                Tobi_Plugin_DocumentPane_Lang.ConfirmStructureClipboard))
+                        {
+                            return;
+                        }
+                        m_TreeNodeFragmentClipboard = null;
+                    }
+
+
+                    // CANNOT remove tags, otherwise the undo for above remove command will fail!
+                    //node.FlushTags(); // ensure TextElement hierarchy gets re-created from scratch.
+                    // ... so we clone the TreeNode fragment (looses tags, text cache):
+
+                    m_TreeNodeFragmentClipboard = node.Copy(true, true);
+
+                    stripXmlIds(m_TreeNodeFragmentClipboard);
+                },
+                () =>
+                {
+                    return CommandStructRemoveFragment.CanExecute();
+                },
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditCutFragment)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandStructCopyFragment);
 
             //
 
