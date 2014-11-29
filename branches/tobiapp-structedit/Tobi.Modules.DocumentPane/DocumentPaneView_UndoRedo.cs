@@ -39,6 +39,7 @@ using urakawa.data;
 using urakawa.events.undo;
 using urakawa.media;
 using urakawa.property.alt;
+using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
