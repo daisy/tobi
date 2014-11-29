@@ -179,7 +179,7 @@ namespace Tobi.Plugin.NavigationPane
 
                     string pageNumberStr = "";
 
-                    m_session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_NavigationPane_Lang.CmdNavigationRenumberPages_ShortDesc, Tobi_Plugin_NavigationPane_Lang.CmdNavigationRenumberPages_LongDesc);
+                    m_session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_NavigationPane_Lang.CmdNavigationRenumberPages_ShortDesc, Tobi_Plugin_NavigationPane_Lang.CmdNavigationRenumberPages_LongDesc, "PAGE_BREAKS_RENUMBER");
                     foreach (TreeNode treeNode in treeNodes)
                     {
                         pageNumberStr = prefix + (pageNumber++);
@@ -459,12 +459,12 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
-        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool done, TreeNodeChangeTextCommand command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
+        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool done, TreeNodeChangeTextCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
             InvalidatePages(false, command.TreeNode);
         }
 
-        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool done, TextNodeStructureEditCommand command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
+        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool done, TextNodeStructureEditCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
             DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
 
@@ -478,14 +478,14 @@ namespace Tobi.Plugin.NavigationPane
             checkTreeNodeFragmentRemoval(done_, node);
         }
 
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
             if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
                 return;
             }
 
@@ -502,11 +502,11 @@ namespace Tobi.Plugin.NavigationPane
             }
             else if (command is TreeNodeChangeTextCommand)
             {
-                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, done, (TreeNodeChangeTextCommand)command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
+                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, done, (TreeNodeChangeTextCommand)command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
             }
             else if (command is TextNodeStructureEditCommand)
             {
-                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, done, (TextNodeStructureEditCommand)command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
+                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, done, (TextNodeStructureEditCommand)command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
             }
         }
 

@@ -1511,7 +1511,7 @@ namespace Tobi.Plugin.DocumentPane
                         }
 
                         isCompositeCommand = true;
-                        nodeParent.Presentation.UndoRedoManager.StartTransaction("Extract text into new child TreeNode, then insert new node", "Extract text into child mixed XML content, and insert new TreeNode");
+                        nodeParent.Presentation.UndoRedoManager.StartTransaction("Extract text into new child TreeNode, then insert new node", "Extract text into child mixed XML content, and insert new TreeNode", "DOC_TEXT_ONLY_NODE_INSERT");
 
                         var previous = node.GetPreviousSiblingWithText();
                         var next = node.GetNextSiblingWithText();

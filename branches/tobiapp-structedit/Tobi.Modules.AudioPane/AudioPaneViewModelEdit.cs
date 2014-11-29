@@ -46,6 +46,7 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandGenTTS_All { get; private set; }
         public RichDelegateCommand CommandDeleteAudioSelection { get; private set; }
 
+        public static readonly string COMMAND_TRANSATION_ID__AUDIO_SPLIT_SHIFT = "AUDIO_SPLIT_SHIFT";
         public RichDelegateCommand CommandSplitShift { get; private set; }
 
         public RichDelegateCommand CopyCommand { get; private set; }
@@ -681,7 +682,7 @@ namespace Tobi.Plugin.AudioPane
                     //else
                     //{
                     /// NOTE: WE NEED TO USE A WRAPPING TRANSACTION, EVEN IF COUNT == 1 ! (otherwise a super-transaction may prevent the processing of undo/redo refresh here in our client code)
-                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionDeleteAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionDeleteAudio_LongDesc);
+                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionDeleteAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionDeleteAudio_LongDesc, "AUDIO_WAVEFORM_DELETE_SELECTION");
 
                     foreach (TreeNodeAndStreamSelection selection in listOfTreeNodeAndStreamSelection)
                     {
@@ -904,7 +905,7 @@ namespace Tobi.Plugin.AudioPane
                     CommandSelectRight.Execute();
                     CopyCommand.Execute();
 
-                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionSplitAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionSplitAudio_LongDesc);
+                    m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionSplitAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionSplitAudio_LongDesc, COMMAND_TRANSATION_ID__AUDIO_SPLIT_SHIFT);
 
                     CommandDeleteAudioSelection.Execute();
                     //CutCommand.Execute();
@@ -1407,7 +1408,7 @@ namespace Tobi.Plugin.AudioPane
                 bytePositionInsert = State.Selection.SelectionBeginBytePosition;
 
                 transaction = true;
-                treeNode.Presentation.UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_LongDesc);
+                treeNode.Presentation.UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_ShortDesc, Tobi_Plugin_AudioPane_Lang.TransactionReplaceAudio_LongDesc, "AUDIO_WAVEFORM_OVERWRITE_SELECTION_OR_INSERT");
 
                 selData = getAudioSelectionData();
 
@@ -1759,116 +1760,6 @@ namespace Tobi.Plugin.AudioPane
             {
                 treeNode.Presentation.UndoRedoManager.EndTransaction();
             }
-
-
-            //if (audioMedia is ManagedAudioMedia)
-            //{
-            //    var managedAudioMedia = (ManagedAudioMedia)audioMedia;
-
-            //    double timeOffset = LastPlayHeadTime;
-            //    if (treeNodeSelection.Item2 != null)
-            //    {
-            //        var byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
-
-            //        long bytesRight;
-            //        long bytesLeft;
-            //        int index;
-            //        TreeNode subTreeNode;
-            //        bool match = State.Audio.FindInPlayStreamMarkers(byteOffset, out subTreeNode, out index, out bytesLeft, out bytesRight);
-
-            //        if (match)
-            //        {
-            //            if (treeNodeSelection.Item2 != subTreeNode
-            //                       && !treeNodeSelection.Item2.IsDescendantOf(subTreeNode))
-            //            {
-            //                //recordingStream.Close();
-            //                Debug.Fail("This should never happen !!!");
-            //                return;
-            //            }
-            //            timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - bytesLeft);
-            //        }
-            //        else
-            //        {
-            //            Debug.Fail("audio chunk not found ??");
-            //            return;
-            //        }
-            //    }
-
-
-            //    if (!managedAudioMedia.HasActualAudioMediaData)
-            //    {
-            //        Debug.Fail("This should never happen !!!");
-            //        //recordingStream.Close();
-            //        return;
-            //    }
-
-
-
-            //    //managedAudioMedia.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new Time(recordingDuration));
-            //    //recordingStream.Close();
-            //}
-            //else if (audioMedia is SequenceMedia)
-            //{
-            //    Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
-
-            //    var seqManAudioMedia = (SequenceMedia)audioMedia;
-
-            //    var byteOffset = State.Audio.ConvertMillisecondsToBytes(LastPlayHeadTime);
-
-            //    double timeOffset = 0;
-            //    long sumData = 0;
-            //    long sumDataPrev = 0;
-            //    foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_YieldEnumerable)
-            //    {
-            //        var manangedMediaSeqItem = (ManagedAudioMedia)media;
-            //        if (!manangedMediaSeqItem.HasActualAudioMediaData)
-            //        {
-            //            continue;
-            //        }
-
-            //        AudioMediaData audioData = manangedMediaSeqItem.AudioMediaData;
-            //        sumData += audioData.PCMFormat.Data.ConvertTimeToBytes(audioData.AudioDuration.AsMilliseconds);
-            //        if (byteOffset < sumData)
-            //        {
-            //            timeOffset = State.Audio.ConvertBytesToMilliseconds(byteOffset - sumDataPrev);
-
-            //            if (AudioPlaybackStreamKeepAlive)
-            //            {
-            //                ensurePlaybackStreamIsDead();
-            //            }
-
-            //            if (!manangedMediaSeqItem.HasActualAudioMediaData)
-            //            {
-            //                Debug.Fail("This should never happen !!!");
-            //                //recordingStream.Close();
-            //                return;
-            //            }
-
-            //            var command = treeNode.Presentation.CommandFactory.
-            //                CreateManagedAudioMediaInsertDataCommand(
-            //                treeNode, manMedia,
-            //                new Time(timeOffset),
-            //                treeNodeSelection.Item1); //manangedMediaSeqItem
-
-            //            treeNode.Presentation.UndoRedoManager.Execute(command);
-
-            //            //manangedMediaSeqItem.AudioMediaData.InsertAudioData(recordingStream, new Time(timeOffset), new Time(recordingDuration));
-            //            //recordingStream.Close();
-            //            break;
-            //        }
-            //        sumDataPrev = sumData;
-            //    }
-            //}
-
-
-
-
-
-
-            //SelectionBegin = (LastPlayHeadTime < 0 ? 0 : LastPlayHeadTime);
-            //SelectionEnd = SelectionBegin + recordingManagedAudioMedia.Duration.AsMilliseconds;
-
-            //ReloadWaveForm(); UndoRedoManager.Changed callback will take care of that.
         }
     }
 }

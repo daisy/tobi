@@ -67,14 +67,14 @@ namespace Tobi.Plugin.Validator.Metadata
             m_Logger.Log(@"MetadataValidator initialized", Category.Debug, Priority.Medium);
         }
 
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
             if (!Dispatcher.CurrentDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
                 return;
             }
 
@@ -91,7 +91,7 @@ namespace Tobi.Plugin.Validator.Metadata
             }
             else if (command is MetadataCommand)
             {
-                if (isHeadOrTailOfTransactionOrSingleCommand)
+                if (isNoTransactionOrTrailingEdge)
                 {
                     Validate();
                 }
