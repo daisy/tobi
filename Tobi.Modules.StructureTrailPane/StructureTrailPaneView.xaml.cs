@@ -573,7 +573,16 @@ namespace Tobi.Plugin.StructureTrailPane
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+
+#if NET40x
+                Dispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged,
+                    eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+#else
+                Dispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action)(() => OnUndoRedoManagerChanged(eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge))
+                    );
+#endif
                 return;
             }
 

@@ -15,11 +15,11 @@ using urakawa.events.undo;
 using urakawa.metadata.daisy;
 using urakawa.metadata;
 using System;
-
 #if DEBUG
 using AudioLib;
 using urakawa.undo;
 #endif
+using urakawa.undo;
 
 namespace Tobi.Plugin.Validator.Metadata
 {
@@ -74,7 +74,16 @@ namespace Tobi.Plugin.Validator.Metadata
 #if DEBUG
                 Debugger.Break();
 #endif
-                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+                
+#if NET40x
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged,
+                    eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+#else
+                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action)(() => OnUndoRedoManagerChanged(eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge))
+                    );
+#endif
                 return;
             }
 
