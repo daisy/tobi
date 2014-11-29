@@ -37,6 +37,7 @@ using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.daisy;
+using urakawa.daisy.export;
 using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.events.undo;
@@ -50,6 +51,7 @@ using Colors = System.Windows.Media.Colors;
 
 #if NET40
 using System.Windows.Shell;
+using System.Xml;
 #endif
 
 namespace Tobi.Plugin.DocumentPane
@@ -1022,12 +1024,163 @@ namespace Tobi.Plugin.DocumentPane
             return false;
         }
 
+        protected TreeNode buildTreeNodeFromXml(XmlNode xmlNode, Presentation presentation, TreeNode parentTreeNode)
+        {
+            XmlNodeType xmlType = xmlNode.NodeType;
+            switch (xmlType)
+            {
+                case XmlNodeType.Document:
+                    {
+                        XmlDocument xmlDoc = ((XmlDocument)xmlNode);
+                        TreeNode root = buildTreeNodeFromXml(xmlDoc.DocumentElement, presentation, parentTreeNode);
+                        return root;
+                    }
+                case XmlNodeType.Element:
+                    {
+                        TreeNode treeNode = presentation.TreeNodeFactory.Create();
 
+                        string prefix;
+                        string localName;
+                        XmlProperty.SplitLocalName(xmlNode.Name, out prefix, out localName);
+                        string uri = "";
+                        if (!string.IsNullOrEmpty(prefix))
+                        {
+                            uri = presentation.RootNode.GetXmlNamespaceUri(prefix);
+
+                            if (string.IsNullOrEmpty(uri))
+                            {
+                                uri = xmlNode.GetNamespaceOfPrefix(prefix);
+
+                                if (string.IsNullOrEmpty(uri))
+                                {
+                                    uri = xmlNode.NamespaceURI;
+                                }
+                            }
+                        }
+
+                        XmlProperty xmlProp = treeNode.GetOrCreateXmlProperty();
+                        xmlProp.SetQName(xmlNode.LocalName, uri);
+
+                        XmlAttributeCollection attributeCol = xmlNode.Attributes;
+                        if (attributeCol != null)
+                        {
+                            for (int i = 0; i < attributeCol.Count; i++)
+                            {
+                                XmlNode xmlAttr = attributeCol.Item(i);
+                                buildTreeNodeFromXml(xmlAttr, presentation, treeNode);
+                            }
+                        }
+
+                        if (parentTreeNode != null)
+                        {
+                            parentTreeNode.AppendChild(treeNode);
+                        }
+
+                        foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
+                        {
+                            buildTreeNodeFromXml(childXmlNode, presentation, treeNode);
+                        }
+
+                        return treeNode;
+                    }
+                case XmlNodeType.Attribute:
+                    {
+                        XmlProperty xmlProp = parentTreeNode.GetOrCreateXmlProperty();
+
+                        string prefix;
+                        string localName;
+                        XmlProperty.SplitLocalName(xmlNode.Name, out prefix, out localName);
+                        string uri = "";
+                        if (!string.IsNullOrEmpty(prefix))
+                        {
+                            uri = presentation.RootNode.GetXmlNamespaceUri(prefix);
+
+                            if (string.IsNullOrEmpty(uri))
+                            {
+                                uri = xmlNode.GetNamespaceOfPrefix(prefix);
+
+                                if (string.IsNullOrEmpty(uri))
+                                {
+                                    uri = xmlNode.NamespaceURI;
+                                }
+                            }
+                        }
+
+                        xmlProp.SetAttribute(xmlNode.LocalName, uri, xmlNode.Value);
+
+                        return null;
+                    }
+                //case XmlNodeType.Whitespace:
+                //case XmlNodeType.CDATA:
+                //case XmlNodeType.SignificantWhitespace:
+                case XmlNodeType.Text:
+                    {
+                        string text = xmlNode.Value;
+
+                        if (string.IsNullOrEmpty(text))
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif // DEBUG
+                            break; // switch+case
+                        }
+
+                        text = text.Replace(@"\r\n", @"\n");
+
+
+                        TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
+                        textMedia.Text = text;
+
+                        ChannelsProperty cProp = presentation.PropertyFactory.CreateChannelsProperty();
+                        cProp.SetMedia(presentation.ChannelsManager.GetOrCreateTextChannel(), textMedia);
+
+
+                        bool atLeastOneSiblingElement = false;
+                        foreach (XmlNode childXmlNode in xmlNode.ParentNode.ChildNodes)
+                        {
+                            XmlNodeType childXmlType = childXmlNode.NodeType;
+                            if (childXmlType == XmlNodeType.Element)
+                            {
+                                atLeastOneSiblingElement = true;
+                                break;
+                            }
+                        }
+
+                        if (atLeastOneSiblingElement)
+                        {
+                            TreeNode txtWrapperNode = presentation.TreeNodeFactory.Create();
+                            txtWrapperNode.AddProperty(cProp);
+                            parentTreeNode.AppendChild(txtWrapperNode);
+                        }
+                        else
+                        {
+                            AbstractTextMedia txtMedia = parentTreeNode.GetTextMedia();
+                            if (txtMedia == null)
+                            {
+                                parentTreeNode.AddProperty(cProp);
+                            }
+                            else
+                            {
+                                // Merge contiguous text chunks (occurs with script commented CDATA section in XHTML)
+                                txtMedia.Text += text;
+                            }
+                        }
+
+                        break; // switch+case
+                    }
+                default:
+                    {
+                        return null;
+                    }
+            }
+
+            return null;
+        }
 
         protected bool structureInsertDialog(TreeNode node, string title, string cmdShort, string cmdLong, string cmdId,
             TreeNode nodeToInsert,
             string initialNameInput, string initialTextInput, string labelNameInput, string labelTextInput,
-            Func<string, string, TreeNode> callback)
+            Func<string, string, string, TreeNode> callback)
         {
             //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
 
@@ -1139,12 +1292,26 @@ namespace Tobi.Plugin.DocumentPane
                 panel.Children.Add(panel_TextInput);
             }
 
+            var textbox = new TextBoxReadOnlyCaretVisible()
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                //TextReadOnly = info,
+
+                Text = "",
+                AcceptsReturn = true,
+                //AcceptsTab = true,
+                //TextWrapping = TextWrapping.WrapWithOverflow
+            };
+
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    title,
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 300, 200, null, 40, null);
+                                                   true, 350, 260, labelNameInput != null ? textbox : null, 200, null);
             windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok)
@@ -1155,7 +1322,7 @@ namespace Tobi.Plugin.DocumentPane
 
             if (nodeToInsert == null && callback != null)
             {
-                nodeToInsert = callback(elementNameInput.Text, elementTextInput.Text);
+                nodeToInsert = callback(elementNameInput.Text, elementTextInput.Text, textbox.Text);
             }
 
             if (nodeToInsert == null)
@@ -1173,7 +1340,7 @@ namespace Tobi.Plugin.DocumentPane
                 if (nodeParent == null)
                 {
 #if DEBUG
-                            Debugger.Break();
+                    Debugger.Break();
 #endif
                     return false;
                 }
@@ -1273,7 +1440,7 @@ namespace Tobi.Plugin.DocumentPane
             XmlProperty xmlProp = node.GetXmlProperty();
             if (xmlProp != null)
             {
-                XmlAttribute idAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
+                urakawa.property.xml.XmlAttribute idAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
                 if (idAttr == null)
                 {
                     idAttr = xmlProp.GetAttribute("id");
@@ -1804,8 +1971,101 @@ namespace Tobi.Plugin.DocumentPane
                         "TXT",
                         "Element name",
                         "Text content",
-(elementName, elementText) =>
+(elementName, elementText, xmlSource) =>
 {
+    if (!String.IsNullOrEmpty(xmlSource))
+    {
+        string xmlns_mathml = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_MATHML + "=\"" + DiagramContentModelHelper.NS_URL_MATHML + "\"";
+        string xmlns_svg = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_SVG + "=\"" + DiagramContentModelHelper.NS_URL_SVG + "\"";
+        string xmlns_epub = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_EPUB + "=\"" + DiagramContentModelHelper.NS_URL_EPUB + "\"";
+
+        string xmlns_xhtml = "xmlns=\"" + DiagramContentModelHelper.NS_URL_XHTML + "\"";
+        string xmlns_dtbook = "xmlns=\"" + "http://www.daisy.org/z3986/2005/dtbook/" + "\"";
+
+        string xmlSourceString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+        xmlSourceString += ("<root "
+            //+ XmlReaderWriterHelper.NS_PREFIX_XMLNS + "=\"" + node.Presentation.RootNode.GetXmlNamespaceUri() + "\""
+            + " "
+            + (html ? xmlns_xhtml : xmlns_dtbook)
+            + " "
+            + xmlns_mathml
+            + " "
+            + xmlns_svg
+            + " "
+            + xmlns_epub
+
+            + " >");
+
+        string strippedNS = xmlSource.Replace(xmlns_mathml, " ");
+        strippedNS = strippedNS.Replace(xmlns_svg, " ");
+        strippedNS = strippedNS.Replace(xmlns_epub, " ");
+        xmlSourceString += strippedNS;
+        xmlSourceString += "</root>";
+
+        //byte[] xmlSourceString_RawEncoded = Encoding.UTF8.GetBytes(xmlSourceString);
+        //MemoryStream stream = new MemoryStream();
+        //stream.Write(xmlSourceString_RawEncoded, 0, xmlSourceString_RawEncoded.Length);
+
+        //stream.Flush();
+
+        //stream.Seek(0, SeekOrigin.Begin);
+        //stream.Position = 0;
+
+        //XmlDocument fragmentDoc = new XmlDocument();
+        //fragmentDoc.XmlResolver = null;
+
+        ////XmlTextReader reader = new XmlTextReader(stream);
+        ////fragmentDoc.Load(reader);
+
+        //fragmentDoc.Load(stream);
+
+        ////fragmentDoc.LoadXml(xmlSourceString);
+
+
+        //XmlNode tobi = fragmentDoc.ChildNodes[1]; // skip XML declaration
+        //XmlNodeList children = tobi.ChildNodes;
+        //XmlNode[] xmlNodes = new XmlNode[children.Count];
+        //int i = 0;
+        //foreach (XmlNode child in children)
+        //{
+        //    xmlNodes[i] = child;
+        //    i++;
+        //}
+        //for (i = 0; i < xmlNodes.Length; i++)
+        //{
+        //    XmlNode child = xmlNodes[i];
+        //    XmlNode imported = htmlDocument.ImportNode(child, true);
+        //    tobi.RemoveChild(child);
+        //    textParentNode.AppendChild(imported);
+        //}
+
+        //normalizedDescriptionText = textParentNode.InnerXml;
+
+        XmlDocument xmldoc = XmlReaderWriterHelper.ParseXmlDocumentFromString(xmlSourceString, false, false);
+
+        //        try
+        //        {
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //#if DEBUG
+        //            Debugger.Break();
+        //#endif
+        //            return null;
+        //        }
+
+        TreeNode root = null;
+        if (xmldoc != null && xmldoc.DocumentElement != null && xmldoc.DocumentElement.FirstChild != null)
+        {
+            root = buildTreeNodeFromXml(xmldoc.DocumentElement.FirstChild, node.Presentation, null);
+        }
+        if (root != null)
+        {
+            stripXmlIds(root);
+        }
+        return root;
+    }
+
     if (String.IsNullOrEmpty(elementName))
     {
         return null;
@@ -1834,7 +2094,7 @@ namespace Tobi.Plugin.DocumentPane
         if (string.IsNullOrEmpty(uri))
         {
 #if DEBUG
-                            Debugger.Break();
+            Debugger.Break();
 #endif
             uri = "";
         }
@@ -1894,7 +2154,7 @@ namespace Tobi.Plugin.DocumentPane
                         "1",
                         null,
                         Tobi_Plugin_DocumentPane_Lang.PageLabel,
-(elementName, elementText) =>
+(elementName, elementText, xmlSource) =>
 {
     if (string.IsNullOrEmpty(elementText))
     {
@@ -1912,7 +2172,7 @@ namespace Tobi.Plugin.DocumentPane
     if (string.IsNullOrEmpty(uri))
     {
 #if DEBUG
-                            Debugger.Break();
+        Debugger.Break();
 #endif
         uri = "";
     }
@@ -2811,7 +3071,7 @@ namespace Tobi.Plugin.DocumentPane
 
             XmlProperty xmlProp = treeNode.GetXmlProperty();
 
-            XmlAttribute attrEpubType = xmlProp.GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
+            urakawa.property.xml.XmlAttribute attrEpubType = xmlProp.GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
             bool isNote = attrEpubType != null &&
                         (
                         "note".Equals(attrEpubType.Value, StringComparison.OrdinalIgnoreCase)
