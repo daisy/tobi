@@ -183,10 +183,10 @@
   </data>
   
   <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
-    <value>Insert node ... (DEV ONLY)</value>
+    <value>Insert custom XML... (advanced feature)</value>
   </data>
   <data name="CmdStructEditInsertFragment_LongDesc" xml:space="preserve">
-    <value>Insert simple document fragment (element name + text content) into the document (DEVELOPMENT TEST ONLY)</value>
+    <value>Add basic XML markup (element name + text content)</value>
   </data>
 
   <data name="CmdStructEditCutFragment_ShortDesc" xml:space="preserve">

@@ -151,7 +151,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert simple document fragment (element name + text content) into the document (DEVELOPMENT TEST ONLY).
+        ///   Looks up a localized string similar to Add basic XML markup (element name + text content).
         /// </summary>
         public static string CmdStructEditInsertFragment_LongDesc {
             get {
@@ -160,7 +160,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert node ... (DEV ONLY).
+        ///   Looks up a localized string similar to Insert custom XML... (advanced feature).
         /// </summary>
         public static string CmdStructEditInsertFragment_ShortDesc {
             get {
