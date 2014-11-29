@@ -72,6 +72,7 @@ namespace Tobi.Plugin.DocumentPane
         private int m_MenuBarId_5;
         private int m_MenuBarId_6;
         private int m_MenuBarId_7;
+        private int m_MenuBarId_8;
         protected override void OnMenuBarReady()
         {
             m_MenuBarId_2 = m_MenuBarView.AddMenuBarGroup(
@@ -102,9 +103,13 @@ namespace Tobi.Plugin.DocumentPane
                 Tobi_Common_Lang.Menu_Text, PreferredPosition.Last, true,
                 Tobi_Common_Lang.Menu_StructureEdit,
                 PreferredPosition.First, true,
-                new[] { m_DocView.CommandStructRemoveFragment, m_DocView.CommandStructInsertFragment
-                //    , m_DocView.CommandStructCutFragment, m_DocView.CommandStructPasteFragment
-                });
+                new[] { m_DocView.CommandStructRemoveFragment, m_DocView.CommandStructInsertFragment });
+
+            m_MenuBarId_8 = m_MenuBarView.AddMenuBarGroup(
+                Tobi_Common_Lang.Menu_Text, PreferredPosition.Last, true,
+                Tobi_Common_Lang.Menu_StructureEdit,
+                PreferredPosition.First, true,
+                new[] { m_DocView.CommandStructCutFragment, m_DocView.CommandStructPasteFragment });
             
             m_MenuBarId_4 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_View, PreferredPosition.Last, true,

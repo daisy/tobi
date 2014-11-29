@@ -148,32 +148,49 @@
     <value>Single phrase</value>
   </data>
 
+  <data name="ConfirmStructureClipboard" xml:space="preserve">
+    <value>Are you sure you want to overwrite the existing structure clipboard?</value>
+  </data>
+  
+  <data name="InsertDocFragmentFirstInside" xml:space="preserve">
+    <value>First inside</value>
+  </data>
+  <data name="InsertDocFragmentLastInside" xml:space="preserve">
+    <value>Last inside</value>
+  </data>
+  <data name="InsertDocFragmentBefore" xml:space="preserve">
+    <value>Before</value>
+  </data>
+  <data name="InsertDocFragmentAfter" xml:space="preserve">
+    <value>After</value>
+  </data>
+
   <data name="CmdStructEditRemoveFragment_ShortDesc" xml:space="preserve">
-    <value>Remove node</value>
+    <value>Delete fragment</value>
   </data>
   <data name="CmdStructEditRemoveFragment_LongDesc" xml:space="preserve">
-    <value>Delete document fragment</value>
+    <value>Remove the selected fragment from the document</value>
   </data>
 
   <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
-    <value>Insert node ...</value>
+    <value>Insert node ... (DEV ONLY)</value>
   </data>
   <data name="CmdStructEditInsertFragment_LongDesc" xml:space="preserve">
-    <value>Add document fragment</value>
+    <value>Insert simple document fragment (element name + text content) into the document (DEVELOPMENT TEST ONLY)</value>
   </data>
 
   <data name="CmdStructEditCutFragment_ShortDesc" xml:space="preserve">
-    <value>Cut node</value>
+    <value>Cut fragment</value>
   </data>
   <data name="CmdStructEditCutFragment_LongDesc" xml:space="preserve">
-    <value>Delete document fragment and save in clipboard</value>
+    <value>Remove the selected document fragment, and preserve in structure clipboard</value>
   </data>
 
   <data name="CmdStructEditPasteFragment_ShortDesc" xml:space="preserve">
-    <value>Paste node</value>
+    <value>Paste fragment...</value>
   </data>
   <data name="CmdStructEditPasteFragment_LongDesc" xml:space="preserve">
-    <value>Paste document fragment from clipboard</value>
+    <value>Restore the document fragment from the structure clipboard into the document</value>
   </data>
   
   <data name="CmdEditText_ShortDesc" xml:space="preserve">
