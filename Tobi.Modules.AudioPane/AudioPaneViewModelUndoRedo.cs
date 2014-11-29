@@ -338,29 +338,29 @@ namespace Tobi.Plugin.AudioPane
 
                 if (!done)
                 {
-                    DebugFix.Assert(!m_wasInitByRemove);
+                    DebugFix.Assert(!m_OnUndoRedoManagerChanged_wasInitByRemove);
                 }
 
                 if (!done // reverse => force scan backwards to beginning
-                    || m_targetNode1 == null // not reverse, first-time init
-                    || m_wasInitByRemove // not reverse, not first-time init, but deletion occured before addition (e.g. select waveform audio + paste over it)
+                    || m_OnUndoRedoManagerChanged_targetNode1 == null // not reverse, first-time init
+                    || m_OnUndoRedoManagerChanged_wasInitByRemove // not reverse, not first-time init, but deletion occured before addition (e.g. select waveform audio + paste over it)
                 )
                 {
-                    m_wasInitByRemove = false;
-                    m_wasInitByAdd = true;
+                    m_OnUndoRedoManagerChanged_wasInitByRemove = false;
+                    m_OnUndoRedoManagerChanged_wasInitByAdd = true;
 
-                    m_targetNode1 = command.CurrentTreeNode;
-                    m_targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
+                    m_OnUndoRedoManagerChanged_targetNode1 = command.CurrentTreeNode;
+                    m_OnUndoRedoManagerChanged_targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
 
-                    m_byteStart = command.BytePositionInsert;
+                    m_OnUndoRedoManagerChanged_byteStart = command.BytePositionInsert;
 
-                    if (done || m_targetNode1 == null)
-                        m_byteDur = 0;
+                    if (done || m_OnUndoRedoManagerChanged_targetNode1 == null)
+                        m_OnUndoRedoManagerChanged_byteDur = 0;
 
-                    m_done = done;
+                    m_OnUndoRedoManagerChanged_done = done;
                 }
 
-                m_byteDur += command.ManagedAudioMediaSource.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
+                m_OnUndoRedoManagerChanged_byteDur += command.ManagedAudioMediaSource.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
                     command.ManagedAudioMediaSource.Duration.AsLocalUnits);
             }
             else if (cmd is TreeNodeSetManagedAudioMediaCommand)
@@ -369,29 +369,29 @@ namespace Tobi.Plugin.AudioPane
 
                 if (!done)
                 {
-                    DebugFix.Assert(!m_wasInitByRemove);
+                    DebugFix.Assert(!m_OnUndoRedoManagerChanged_wasInitByRemove);
                 }
 
                 if (!done // reverse => force scan backwards to beginning
-                    || m_targetNode1 == null // not reverse, first-time init
-                    || m_wasInitByRemove // not reverse, not first-time init, but deletion occured before addition (e.g. select waveform audio + paste over it)
+                    || m_OnUndoRedoManagerChanged_targetNode1 == null // not reverse, first-time init
+                    || m_OnUndoRedoManagerChanged_wasInitByRemove // not reverse, not first-time init, but deletion occured before addition (e.g. select waveform audio + paste over it)
                 )
                 {
-                    m_wasInitByRemove = false;
-                    m_wasInitByAdd = true;
+                    m_OnUndoRedoManagerChanged_wasInitByRemove = false;
+                    m_OnUndoRedoManagerChanged_wasInitByAdd = true;
 
-                    m_targetNode1 = command.CurrentTreeNode;
-                    m_targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
+                    m_OnUndoRedoManagerChanged_targetNode1 = command.CurrentTreeNode;
+                    m_OnUndoRedoManagerChanged_targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
 
-                    m_byteStart = 0;
+                    m_OnUndoRedoManagerChanged_byteStart = 0;
 
-                    if (done || m_targetNode1 == null)
-                        m_byteDur = 0;
+                    if (done || m_OnUndoRedoManagerChanged_targetNode1 == null)
+                        m_OnUndoRedoManagerChanged_byteDur = 0;
 
-                    m_done = done;
+                    m_OnUndoRedoManagerChanged_done = done;
                 }
 
-                m_byteDur += command.ManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
+                m_OnUndoRedoManagerChanged_byteDur += command.ManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
                     command.ManagedAudioMedia.Duration.AsLocalUnits);
             }
             else if (cmd is TreeNodeAudioStreamDeleteCommand)
@@ -400,27 +400,27 @@ namespace Tobi.Plugin.AudioPane
 
                 if (done)
                 {
-                    DebugFix.Assert(!m_wasInitByAdd);
+                    DebugFix.Assert(!m_OnUndoRedoManagerChanged_wasInitByAdd);
                 }
 
                 if (!done // reverse => force scan backwards to beginning
-                    || m_targetNode1 == null // not reverse, first-time init
+                    || m_OnUndoRedoManagerChanged_targetNode1 == null // not reverse, first-time init
                 )
                 {
-                    if (done || m_targetNode1 == null || m_wasInitByAdd)
-                        m_byteDur = 0;
+                    if (done || m_OnUndoRedoManagerChanged_targetNode1 == null || m_OnUndoRedoManagerChanged_wasInitByAdd)
+                        m_OnUndoRedoManagerChanged_byteDur = 0;
 
-                    m_wasInitByAdd = false;
-                    m_wasInitByRemove = true;
+                    m_OnUndoRedoManagerChanged_wasInitByAdd = false;
+                    m_OnUndoRedoManagerChanged_wasInitByRemove = true;
 
-                    m_targetNode1 = command.TreeNode;
-                    m_targetNode2 = command.TreeNode == command.SelectionData.m_TreeNode
+                    m_OnUndoRedoManagerChanged_targetNode1 = command.TreeNode;
+                    m_OnUndoRedoManagerChanged_targetNode2 = command.TreeNode == command.SelectionData.m_TreeNode
                         ? null
                         : command.SelectionData.m_TreeNode;
 
-                    m_byteStart = 0;
+                    m_OnUndoRedoManagerChanged_byteStart = 0;
 
-                    m_done = !done;
+                    m_OnUndoRedoManagerChanged_done = !done;
                 }
 
                 long bytesBegin = 0;
@@ -440,18 +440,18 @@ namespace Tobi.Plugin.AudioPane
                     bytesEnd = command.SelectionData.m_LocalStreamRightMark;
                 }
 
-                m_byteStart += bytesBegin;
-                m_byteDur += (bytesEnd - bytesBegin);
+                m_OnUndoRedoManagerChanged_byteStart += bytesBegin;
+                m_OnUndoRedoManagerChanged_byteDur += (bytesEnd - bytesBegin);
             }
         }
 
-        private TreeNode m_targetNode1 = null;
-        private TreeNode m_targetNode2 = null;
-        private long m_byteStart = -1;
-        private long m_byteDur = 0;
-        private bool m_done = false;
-        private bool m_wasInitByRemove = false;
-        private bool m_wasInitByAdd = false;
+        private TreeNode m_OnUndoRedoManagerChanged_targetNode1 = null;
+        private TreeNode m_OnUndoRedoManagerChanged_targetNode2 = null;
+        private long m_OnUndoRedoManagerChanged_byteStart = -1;
+        private long m_OnUndoRedoManagerChanged_byteDur = 0;
+        private bool m_OnUndoRedoManagerChanged_done = false;
+        private bool m_OnUndoRedoManagerChanged_wasInitByRemove = false;
+        private bool m_OnUndoRedoManagerChanged_wasInitByAdd = false;
 
         public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
@@ -592,22 +592,22 @@ namespace Tobi.Plugin.AudioPane
 
                 if (isNoTransactionOrTrailingEdge)
                 {
-                    if (m_targetNode1 != null && m_byteStart >= 0 && (!m_done || m_byteDur > 0))
+                    if (m_OnUndoRedoManagerChanged_targetNode1 != null && m_OnUndoRedoManagerChanged_byteStart >= 0 && (!m_OnUndoRedoManagerChanged_done || m_OnUndoRedoManagerChanged_byteDur > 0))
                     {
-                        UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(m_targetNode1, m_targetNode2, m_byteStart, m_byteDur, m_done);
+                        UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(m_OnUndoRedoManagerChanged_targetNode1, m_OnUndoRedoManagerChanged_targetNode2, m_OnUndoRedoManagerChanged_byteStart, m_OnUndoRedoManagerChanged_byteDur, m_OnUndoRedoManagerChanged_done);
 
                         if (command.IsInTransaction() && command.TopTransactionId() == AudioPaneViewModel.COMMAND_TRANSATION_ID__AUDIO_SPLIT_SHIFT)
                         {
                             CommandClearSelection.Execute();
                         }
 
-                        m_targetNode1 = null;
-                        m_targetNode2 = null;
-                        m_byteStart = -1;
-                        m_byteDur = 0;
-                        m_done = false;
-                        m_wasInitByRemove = false;
-                        m_wasInitByAdd = false;
+                        m_OnUndoRedoManagerChanged_targetNode1 = null;
+                        m_OnUndoRedoManagerChanged_targetNode2 = null;
+                        m_OnUndoRedoManagerChanged_byteStart = -1;
+                        m_OnUndoRedoManagerChanged_byteDur = 0;
+                        m_OnUndoRedoManagerChanged_done = false;
+                        m_OnUndoRedoManagerChanged_wasInitByRemove = false;
+                        m_OnUndoRedoManagerChanged_wasInitByAdd = false;
                     }
                     else
                     {
