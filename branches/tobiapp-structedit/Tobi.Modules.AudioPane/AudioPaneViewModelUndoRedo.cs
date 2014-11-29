@@ -63,7 +63,7 @@ namespace Tobi.Plugin.AudioPane
 
                 Time diff = timeEnd.GetDifference(timeBegin);
 
-                ManagedAudioMedia manMedia = command.SelectionData.m_TreeNode.GetManagedAudioMedia();
+                ManagedAudioMedia manMedia = command.TreeNode.GetManagedAudioMedia();
                 if (manMedia == null)
                 {
                     DebugFix.Assert(done);
@@ -413,10 +413,10 @@ namespace Tobi.Plugin.AudioPane
                     m_OnUndoRedoManagerChanged_wasInitByAdd = false;
                     m_OnUndoRedoManagerChanged_wasInitByRemove = true;
 
-                    m_OnUndoRedoManagerChanged_targetNode1 = command.TreeNode;
-                    m_OnUndoRedoManagerChanged_targetNode2 = command.TreeNode == command.SelectionData.m_TreeNode
+                    m_OnUndoRedoManagerChanged_targetNode1 = command.CurrentTreeNode;
+                    m_OnUndoRedoManagerChanged_targetNode2 = command.CurrentTreeNode == command.TreeNode
                         ? null
-                        : command.SelectionData.m_TreeNode;
+                        : command.TreeNode;
 
                     m_OnUndoRedoManagerChanged_byteStart = 0;
 
