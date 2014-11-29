@@ -201,7 +201,7 @@ namespace Tobi.Plugin.StructureTrailPane
                 }
                 else
                 {
-                    run.FontWeightTextDecorations = TextDecorations.Underline;
+                    run.TextDecorations = TextDecorations.Underline;
                 }
 
                 butt.SetValue(AutomationProperties.NameProperty,
