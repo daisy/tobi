@@ -1211,10 +1211,6 @@ namespace Tobi.Plugin.DocumentPane
                 if (!isTransactionEndEvent)
                 {
                     TreeNode node = ((AudioEditCommand)command).TreeNode;
-                    if (command is TreeNodeAudioStreamDeleteCommand)
-                    {
-                        node = ((TreeNodeAudioStreamDeleteCommand)command).SelectionData.m_TreeNode;
-                    }
                     InvalidateAudioStatus(node);
                 }
             }
