@@ -100,6 +100,7 @@ namespace Tobi.Plugin.StructureTrailPane
                     Tag = n,
                     BorderThickness = new Thickness(0.0),
                     BorderBrush = null,
+                    //Padding = new Thickness(2, 4, 2, 4),
                     Background = Brushes.Transparent,
                     Foreground = (withMedia ? SystemColors.HighlightBrush : SystemColors.ControlDarkBrush),
                     Cursor = Cursors.Hand,
@@ -196,6 +197,8 @@ namespace Tobi.Plugin.StructureTrailPane
                 if (selected)
                 {
                     run.FontWeight = FontWeights.Heavy;
+                    run.Background = SystemColors.ControlDarkDarkBrush;
+                    run.Foreground = SystemColors.ControlBrush;
                 }
 
                 butt.SetValue(AutomationProperties.NameProperty,
