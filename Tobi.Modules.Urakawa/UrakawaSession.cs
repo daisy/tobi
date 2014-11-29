@@ -288,14 +288,14 @@ namespace Tobi.Plugin.Urakawa
 
         private DispatcherTimer m_undoAutoSaveIntervalTimer = null;
 
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
             //            if (!Dispatcher.CheckAccess())
             //            {
             //#if DEBUG
             //                Debugger.Break();
             //#endif
-            //                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
+            //                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
             //                return;
             //            }
 
@@ -306,7 +306,7 @@ namespace Tobi.Plugin.Urakawa
 #endif
             }
 
-            if (isHeadOrTailOfTransactionOrSingleCommand)
+            if (isNoTransactionOrTrailingEdge)
             {
                 if (m_undoAutoSaveIntervalTimer == null)
                 {

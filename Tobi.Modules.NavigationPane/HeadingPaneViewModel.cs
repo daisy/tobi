@@ -304,7 +304,7 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
-        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool done, TreeNodeChangeTextCommand command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
+        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool done, TreeNodeChangeTextCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
             if (!isTransactionEndEvent)
             {
@@ -312,7 +312,7 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
-        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool done, TextNodeStructureEditCommand command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
+        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool done, TextNodeStructureEditCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
             DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
 
@@ -321,7 +321,7 @@ namespace Tobi.Plugin.NavigationPane
             //bool forceInvalidate = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
             //bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
 
-            if (isHeadOrTailOfTransactionOrSingleCommand)
+            if (isNoTransactionOrTrailingEdge)
             {
                 View.UnloadProject();
                 HeadingsNavigator = null;
@@ -331,14 +331,14 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
-        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionActive, bool isTransactionEndEvent, bool isTransactionExitEvent, bool isHeadOrTailOfTransactionOrSingleCommand)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
             if (!TheDispatcher.CheckAccess())
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
                 return;
             }
 
@@ -355,11 +355,11 @@ namespace Tobi.Plugin.NavigationPane
             }
             else if (command is TreeNodeChangeTextCommand)
             {
-                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, done, (TreeNodeChangeTextCommand)command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
+                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, done, (TreeNodeChangeTextCommand)command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
             }
             else if (command is TextNodeStructureEditCommand)
             {
-                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, done, (TextNodeStructureEditCommand)command, isTransactionActive, isTransactionEndEvent, isTransactionExitEvent, isHeadOrTailOfTransactionOrSingleCommand);
+                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, done, (TextNodeStructureEditCommand)command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
             }
         }
 

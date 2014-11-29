@@ -73,7 +73,7 @@ namespace Tobi.Plugin.MetadataPane
             windowPopup.IgnoreEscape = true;
 
             m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
-                (Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_ShortDesc, Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_LongDesc);
+                (Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_ShortDesc, Tobi_Plugin_MetadataPane_Lang.TransactionMetadataEdit_LongDesc, "METADATA_EDIT");
 
             windowPopup.ShowModal();
 

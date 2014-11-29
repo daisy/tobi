@@ -15,516 +15,6 @@ namespace Tobi.Plugin.AudioPane
 {
     public partial class AudioPaneViewModel
     {
-        private void UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(TreeNode targetNode1, TreeNode targetNode2, long byteStart, long byteDur, bool done)
-        {
-            if (targetNode1 == null || targetNode2 != null && !targetNode2.IsDescendantOf(targetNode1))
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                return;
-            }
-
-            m_LastSetPlayBytePosition = -1;
-
-            //AudioPlayer_UpdateWaveFormPlayHead();
-            if (View != null)
-            {
-                View.RefreshUI_WaveFormPlayHead(true);
-            }
-
-            //RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
-
-
-            long byteOffset = 0;
-
-            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-
-            bool waveFormNeedsForcedRefresh = treeNodeSelection.Item1 == targetNode1;
-            if (waveFormNeedsForcedRefresh)
-            {
-                if (View != null)
-                {
-                    View.ResetAll();
-                }
-
-                if (AudioPlaybackStreamKeepAlive)
-                {
-                    ensurePlaybackStreamIsDead();
-                }
-                m_CurrentAudioStreamProvider();
-
-                byteOffset = computeByteOffset(targetNode1, targetNode2);
-
-                treeNodeSelection = m_UrakawaSession.PerformTreeNodeSelection(targetNode1, false, targetNode2);
-            }
-            else
-            {
-                m_StateToRestore = new StateToRestore
-                {
-                    SelectionBeginBytePosition = -1,
-                    SelectionEndBytePosition = -1,
-                    PlayHeadBytePosition = -1
-                };
-
-                treeNodeSelection = m_UrakawaSession.PerformTreeNodeSelection(targetNode1, false, targetNode2);
-
-                if (View != null)
-                {
-                    View.CancelWaveFormLoad(true);
-                }
-
-                if (treeNodeSelection.Item1 == targetNode1)
-                {
-                    byteOffset = computeByteOffset(targetNode1, targetNode2);
-                    //treeNodeSelection.Item2 == targetNode2
-
-                }
-            }
-
-            if (treeNodeSelection.Item1 != targetNode1)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                m_StateToRestore = new StateToRestore
-                {
-                    SelectionBeginBytePosition = -1,
-                    SelectionEndBytePosition = -1,
-                    PlayHeadBytePosition = 0
-                };
-
-                CommandRefresh.Execute();
-
-                return;
-            }
-
-            if (treeNodeSelection.Item2 != targetNode2)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-            }
-
-            long begin = byteOffset + byteStart;
-            if (done)
-            {
-                m_StateToRestore = new StateToRestore
-                {
-                    SelectionBeginBytePosition = begin,
-                    SelectionEndBytePosition = begin + byteDur,
-                    PlayHeadBytePosition = begin
-                };
-            }
-            else
-            {
-                m_StateToRestore = new StateToRestore
-                {
-                    SelectionBeginBytePosition = -1,
-                    SelectionEndBytePosition = -1,
-                    PlayHeadBytePosition = begin
-                };
-            }
-
-            CommandRefresh.Execute();
-        }
-
-        private long computeByteOffset(TreeNode targetNode1, TreeNode targetNode2)
-        {
-            long byteOffset = 0;
-
-            if (State.Audio.PlayStreamMarkers != null && targetNode2 != null)
-            {
-                ManagedAudioMedia mediaInPlayMarkers = targetNode2.GetManagedAudioMedia();
-
-                if (mediaInPlayMarkers == null)
-                {
-                    TreeNode prev = targetNode2.GetPreviousSiblingWithManagedAudio();
-                    if (prev != null && prev.IsDescendantOf(targetNode1))
-                    {
-                        ManagedAudioMedia prevAudio = prev.GetManagedAudioMedia();
-                        DebugFix.Assert(prevAudio != null);
-
-                        byteOffset = getByteOffset(prev, prevAudio);
-
-                        if (prevAudio != null)
-                        {
-                            byteOffset += prevAudio.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(prevAudio.AudioMediaData.AudioDuration.AsLocalUnits);
-                        }
-                    }
-                }
-                else
-                {
-                    byteOffset = getByteOffset(targetNode2, mediaInPlayMarkers);
-                }
-            }
-
-            return byteOffset;
-        }
-
-        //private void HandleInsertDelete(TreeNode currentTreeNode, TreeNode treeNode,
-        //    long byteInsert, long selectionBytes,
-        //    ManagedAudioMedia managedAudioMediaTarget,
-        //    bool done)
-        //{
-        //    if (View != null)
-        //    {
-        //        View.ResetAll();
-        //    }
-
-        //    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-        //    Tuple<TreeNode, TreeNode> treeNodeSelectionAfter = treeNodeSelection;
-
-        //    m_StateToRestore = null;
-
-        //    if (treeNodeSelection.Item1 != currentTreeNode
-        //        && treeNodeSelection.Item2 != currentTreeNode)
-        //    {
-        //        //StateToRestore? state = new StateToRestore
-        //        //{
-        //        //    SelectionBegin = m_StateToRestore.Value.SelectionBegin,
-        //        //    SelectionEnd = m_StateToRestore.Value.SelectionEnd,
-        //        //    LastPlayHeadTime = m_StateToRestore.Value.LastPlayHeadTime
-        //        //};
-
-        //        //State.CurrentTreeNode = null;
-
-        //        //Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-        //        //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(currentTreeNode);
-        //        m_UrakawaSession.PerformTreeNodeSelection(currentTreeNode);
-
-        //        treeNodeSelectionAfter = m_UrakawaSession.GetTreeNodeSelection();
-        //        if (treeNodeSelectionAfter.Item1 != currentTreeNode)
-        //        {
-        //            if (AudioPlaybackStreamKeepAlive)
-        //            {
-        //                ensurePlaybackStreamIsDead();
-        //            }
-        //            m_CurrentAudioStreamProvider();
-
-        //            CommandRefresh.Execute();
-        //        }
-
-        //        //m_StateToRestore = state;
-
-        //        //if (AudioPlaybackStreamKeepAlive)
-        //        //{
-        //        //    ensurePlaybackStreamIsDead();
-        //        //}
-
-        //        //State.ResetAll();
-        //        //State.CurrentTreeNode = commandCurrentTreeNode;
-        //        //m_CurrentAudioStreamProvider = m_AudioStreamProvider_TreeNode;
-
-        //        //m_CurrentAudioStreamProvider();
-        //    }
-        //    else
-        //    {
-        //        if (AudioPlaybackStreamKeepAlive)
-        //        {
-        //            ensurePlaybackStreamIsDead();
-        //        }
-        //        m_CurrentAudioStreamProvider();
-        //    }
-
-        //    //bool isTreeNodeInAudioWaveForm = State.IsTreeNodeShownInAudioWaveForm(treeNode);
-
-        //    //double timeOffset = isTreeNodeInAudioWaveForm && managedAudioMediaTarget != null
-        //    //                        ? getTimeOffset(treeNode, managedAudioMediaTarget)
-        //    //                        : 0;
-
-
-        //    long byteOffset = 0;
-        //    if (managedAudioMediaTarget == null)
-        //    {
-        //        TreeNode prev = treeNode.GetPreviousSiblingWithManagedAudio();
-        //        if (prev != null && prev.IsDescendantOf(currentTreeNode))
-        //        {
-        //            byteOffset = getByteOffset(prev, managedAudioMediaTarget);
-        //            ManagedAudioMedia prevAudio = prev.GetManagedAudioMedia();
-        //            DebugFix.Assert(prevAudio != null);
-        //            if (prevAudio != null)
-        //            {
-        //                byteOffset += prevAudio.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(prevAudio.AudioMediaData.AudioDuration.AsLocalUnits);
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        byteOffset = getByteOffset(treeNode, managedAudioMediaTarget);
-        //    }
-
-        //    if (done)
-        //    {
-        //        long begin = byteOffset + byteInsert;
-        //        m_StateToRestore = new StateToRestore
-        //        {
-        //            SelectionBeginBytePosition = begin,
-        //            SelectionEndBytePosition = begin + selectionBytes,
-        //            PlayHeadBytePosition = begin
-        //        };
-        //    }
-        //    else
-        //    {
-        //        m_StateToRestore = new StateToRestore
-        //        {
-        //            SelectionBeginBytePosition = -1,
-        //            SelectionEndBytePosition = -1,
-        //            PlayHeadBytePosition = byteOffset + byteInsert
-        //        };
-        //    }
-
-        //    if (treeNodeSelectionAfter.Item2 != treeNode
-        //        && treeNode != currentTreeNode)
-        //    {
-        //        //Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-        //        //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(treeNode);
-        //        m_UrakawaSession.PerformTreeNodeSelection(treeNode);
-
-        //        Tuple<TreeNode, TreeNode> treeNodeSelectionAfter2 = m_UrakawaSession.GetTreeNodeSelection();
-        //        DebugFix.Assert(treeNodeSelectionAfter2.Item2 == treeNode);
-        //    }
-
-        //    CommandRefresh.Execute();
-        //}
-
-        private void UndoRedoManagerChanged(List<TreeNodeAudioStreamDeleteCommand> list, bool done)
-        {
-            if (list.Count <= 0)
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-            }
-
-            //if (list.Count == 1)
-            //{
-            //    UndoRedoManagerChanged(list[0], done);
-            //    return;
-            //}
-
-            long bytesBegin = 0;
-            long bytesEnd = 0;
-
-            foreach (var cmd in list)
-            {
-                if (cmd.SelectionData.m_LocalStreamLeftMark > 0)
-                {
-                    bytesBegin += cmd.SelectionData.m_LocalStreamLeftMark;
-                }
-
-                if (cmd.SelectionData.m_LocalStreamRightMark <= 0)
-                {
-                    bytesEnd += cmd.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(cmd.OriginalManagedAudioMedia.AudioMediaData.AudioDuration.AsLocalUnits);
-                }
-                else
-                {
-                    bytesEnd += cmd.SelectionData.m_LocalStreamRightMark;
-                }
-            }
-
-            TreeNode targetNode1 = list[0].TreeNode;
-            TreeNode targetNode2 = list[0].TreeNode == list[0].SelectionData.m_TreeNode ? null : list[0].SelectionData.m_TreeNode;
-
-            long byteStart = bytesBegin;
-            long byteDur = bytesEnd - bytesBegin;
-
-            UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(targetNode1, targetNode2, byteStart, byteDur, !done);
-
-            //ManagedAudioMedia audioMedia = list[0].SelectionData.m_TreeNode.GetManagedAudioMedia();
-            //HandleInsertDelete(list[0].CurrentTreeNode,
-            //                   list[0].SelectionData.m_TreeNode,
-            //                   bytesBegin,
-            //                   bytesEnd - bytesBegin,
-            //                   audioMedia,
-            //                   !done);
-        }
-
-        //private void UndoRedoManagerChanged(TreeNodeAudioStreamDeleteCommand command, bool done)
-        //{
-        //    ManagedAudioMedia audioMedia = command.SelectionData.m_TreeNode.GetManagedAudioMedia();
-        //    if (audioMedia == null) // select ALL + delete ==> audio entirely removed
-        //    {
-        //        DebugFix.Assert(done); // can be the initial execute or the redo
-
-        //        DebugFix.Assert(command.SelectionData.m_LocalStreamLeftMark == 0);
-        //        DebugFix.Assert(command.SelectionData.m_LocalStreamRightMark == -1
-        //                     ||
-        //                     command.SelectionData.m_LocalStreamRightMark ==
-        //                     command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(command.OriginalManagedAudioMedia.AudioMediaData.AudioDuration.AsLocalUnits));
-        //    }
-
-        //    //if (audioMedia == null) // select ALL + delete ==> audio entirely removed
-        //    //{
-        //    //    if (View != null)
-        //    //    {
-        //    //        View.ResetAll();
-        //    //    }
-
-        //    //    //DebugFix.Assert(command.SelectionData.m_LocalStreamLeftMark == -1);
-        //    //    //DebugFix.Assert(command.SelectionData.m_LocalStreamRightMark == -1);
-
-        //    //    Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-
-        //    //    //m_StateToRestore = new StateToRestore
-        //    //    //{
-        //    //    //    SelectionBegin = -1,
-        //    //    //    SelectionEnd = -1,
-        //    //    //    LastPlayHeadTime = 0
-        //    //    //};
-        //    //    m_StateToRestore = null;
-
-        //    //    if (treeNodeSelection.Item1 != command.CurrentTreeNode)
-        //    //    {
-        //    //        //Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-        //    //        //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.CurrentTreeNode);
-        //    //        m_UrakawaSession.PerformTreeNodeSelection(command.CurrentTreeNode);
-        //    //    }
-        //    //    else
-        //    //    {
-        //    //        if (AudioPlaybackStreamKeepAlive)
-        //    //        {
-        //    //            ensurePlaybackStreamIsDead();
-        //    //        }
-        //    //        m_CurrentAudioStreamProvider();
-        //    //    }
-
-        //    //    Tuple<TreeNode, TreeNode> treeNodeSelectionAfter = m_UrakawaSession.GetTreeNodeSelection();
-
-        //    //    DebugFix.Assert(treeNodeSelectionAfter.Item1 == command.CurrentTreeNode);
-
-
-        //    //    if (command.SelectionData.m_TreeNode.IsDescendantOf(command.CurrentTreeNode)
-        //    //        && treeNodeSelectionAfter.Item2 != command.SelectionData.m_TreeNode)
-        //    //    {
-        //    //        //Logger.Log("-- PublishEvent [SubTreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-        //    //        //EventAggregator.GetEvent<SubTreeNodeSelectedEvent>().Publish(command.SelectionData.m_TreeNode);
-        //    //        m_UrakawaSession.PerformTreeNodeSelection(command.SelectionData.m_TreeNode);
-
-        //    //        Tuple<TreeNode, TreeNode> treeNodeSelectionAfter2 = m_UrakawaSession.GetTreeNodeSelection();
-        //    //        DebugFix.Assert(treeNodeSelectionAfter2.Item2 == command.SelectionData.m_TreeNode);
-        //    //    }
-
-        //    //    m_LastSetPlayBytePosition = -1;
-        //    //    //AudioPlayer_UpdateWaveFormPlayHead();
-        //    //    if (View != null)
-        //    //    {
-        //    //        View.RefreshUI_WaveFormPlayHead();
-        //    //    }
-
-        //    //    RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
-
-        //    //    CommandRefresh.Execute();
-        //    //    return;
-        //    //}
-
-        //    long bytesBegin = command.SelectionData.m_LocalStreamLeftMark == -1
-        //        ? 0
-        //        : command.SelectionData.m_LocalStreamLeftMark;
-
-        //    long bytesEnd = command.SelectionData.m_LocalStreamRightMark == -1
-        //        ?
-        //        (
-        //        audioMedia != null ?
-        //        audioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(audioMedia.AudioMediaData.AudioDuration.AsLocalUnits)
-        //        : command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(command.OriginalManagedAudioMedia.AudioMediaData.AudioDuration.AsLocalUnits)
-        //        )
-        //        : command.SelectionData.m_LocalStreamRightMark;
-
-        //    TreeNode targetNode1 = command.CurrentTreeNode;
-        //    TreeNode targetNode2 = command.CurrentTreeNode == command.SelectionData.m_TreeNode ? null : command.SelectionData.m_TreeNode;
-
-        //    long byteStart = bytesBegin;
-        //    long byteDur = bytesEnd - bytesBegin;
-
-        //    UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(targetNode1, targetNode2, byteStart, byteDur, !done);
-
-        //    //HandleInsertDelete(command.CurrentTreeNode,
-        //    //                   command.SelectionData.m_TreeNode,
-        //    //                   bytesBegin,
-        //    //                   bytesEnd - bytesBegin,
-        //    //                   audioMedia,
-        //    //                   !done);
-        //}
-
-        private void UndoRedoManagerChanged(ManagedAudioMediaInsertDataCommand command, bool done)
-        {
-            TreeNode targetNode1 = command.CurrentTreeNode;
-            TreeNode targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
-
-            long byteStart = command.BytePositionInsert;
-            long byteDur = command.ManagedAudioMediaSource.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(command.ManagedAudioMediaSource.Duration.AsLocalUnits);
-
-            UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(targetNode1, targetNode2, byteStart, byteDur, done);
-
-            //HandleInsertDelete(command.CurrentTreeNode,
-            //                   command.TreeNode,
-            //                   command.BytePositionInsert,
-            //                   command.ManagedAudioMediaSource.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(command.ManagedAudioMediaSource.Duration.AsLocalUnits),
-            //                   command.TreeNode.GetManagedAudioMedia(),
-            //                   done);
-        }
-
-        private void UndoRedoManagerChanged(TreeNodeSetManagedAudioMediaCommand command, bool done)
-        {
-            TreeNode targetNode1 = command.CurrentTreeNode;
-            TreeNode targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
-
-            long byteStart = 0;
-            long byteDur = command.ManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(command.ManagedAudioMedia.Duration.AsLocalUnits);
-
-            UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(targetNode1, targetNode2, byteStart, byteDur, done);
-
-            //HandleInsertDelete(command.CurrentTreeNode,
-            //                   command.TreeNode,
-            //                   0,
-            //                   command.ManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(command.ManagedAudioMedia.Duration.AsLocalUnits),
-            //                   command.TreeNode.GetManagedAudioMedia(),
-            //                   done);
-            return;
-
-            //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-
-            //if (command.TreeNode != treeNodeSelection.Item1)
-            //{
-            //    if (done)
-            //    {
-            //        m_StateToRestore = new StateToRestore
-            //        {
-            //            SelectionBegin = 0,
-            //            SelectionEnd = command.ManagedAudioMedia.Duration.AsMilliseconds,
-            //            LastPlayHeadTime = 0
-            //        };
-            //    }
-
-            //    Logger.Log("-- PublishEvent [TreeNodeSelectedEvent] AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-            //    //EventAggregator.GetEvent<TreeNodeSelectedEvent>().Publish(command.TreeNode);
-            //    m_UrakawaSession.PerformTreeNodeSelection(command.TreeNode);
-            //}
-            //else
-            //{
-            //    if (AudioPlaybackStreamKeepAlive)
-            //    {
-            //        ensurePlaybackStreamIsDead();
-            //        m_CurrentAudioStreamProvider();
-            //    }
-
-            //    if (done)
-            //    {
-            //        double timeOffset = getTimeOffset(command.TreeNode, command.ManagedAudioMedia);
-
-            //        m_StateToRestore = new StateToRestore
-            //        {
-            //            SelectionBegin = timeOffset,
-            //            SelectionEnd = timeOffset + command.ManagedAudioMedia.Duration.AsMilliseconds,
-            //            LastPlayHeadTime = timeOffset
-            //        };
-            //    }
-
-            //    CommandRefresh.Execute();
-            //}
-        }
-
         private void updateTotalDuration(Command cmd, bool done)
         {
             if (cmd is ManagedAudioMediaInsertDataCommand)
@@ -633,373 +123,126 @@ namespace Tobi.Plugin.AudioPane
                     TotalSessionAudioDurationInLocalUnits -= dur;
                 }
             }
-            else if (cmd is CompositeCommand)
+        }
+
+
+        private long getByteOffset(TreeNode treeNode, ManagedAudioMedia managedMedia)
+        {
+            //if (!State.IsTreeNodeShownInAudioWaveForm(treeNode))
+            //{
+            //    return 0;
+            //}
+
+            long byteOffset = 0;
+
+            //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+            if (State.Audio.PlayStreamMarkers != null)
             {
-                if (done)
+                long bytesRight;
+                long bytesLeft;
+                int index;
+                bool match = State.Audio.FindInPlayStreamMarkers(treeNode, out index, out bytesLeft, out bytesRight);
+
+                if (match)
                 {
-                    foreach (var childCommand in ((CompositeCommand) cmd).ChildCommands.ContentsAs_Enumerable)
+                    byteOffset = bytesLeft;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
+            if (managedMedia == null)
+            {
+                return byteOffset;
+            }
+
+#if ENABLE_SEQ_MEDIA
+
+            SequenceMedia seqManAudioMedia = treeNode.GetManagedAudioSequenceMedia();
+            if (seqManAudioMedia != null)
+            {
+                Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
+
+                foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_Enumerable)
+                {
+                    var manMedia = (ManagedAudioMedia)media;
+                    if (media == managedMedia)
                     {
-                        updateTotalDuration(childCommand, done);
+                        break;
+                    }
+                    byteOffset += manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(manMedia.Duration.AsLocalUnits);
+                }
+            }
+            
+#endif //ENABLE_SEQ_MEDIA
+
+            return byteOffset;
+        }
+
+        private long computeByteOffset(TreeNode targetNode1, TreeNode targetNode2)
+        {
+            long byteOffset = 0;
+
+            if (State.Audio.PlayStreamMarkers != null && targetNode2 != null)
+            {
+                ManagedAudioMedia mediaInPlayMarkers = targetNode2.GetManagedAudioMedia();
+
+                if (mediaInPlayMarkers == null)
+                {
+                    TreeNode prev = targetNode2.GetPreviousSiblingWithManagedAudio();
+                    if (prev != null && prev.IsDescendantOf(targetNode1))
+                    {
+                        ManagedAudioMedia prevAudio = prev.GetManagedAudioMedia();
+                        DebugFix.Assert(prevAudio != null);
+
+                        byteOffset = getByteOffset(prev, prevAudio);
+
+                        if (prevAudio != null)
+                        {
+                            byteOffset += prevAudio.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(prevAudio.AudioMediaData.AudioDuration.AsLocalUnits);
+                        }
                     }
                 }
                 else
                 {
-                    foreach (
-                        var childCommand in ((CompositeCommand) cmd).ChildCommands.ContentsAs_YieldEnumerableReversed)
-                    {
-                        updateTotalDuration(childCommand, done);
-                    }
+                    byteOffset = getByteOffset(targetNode2, mediaInPlayMarkers);
                 }
             }
-            else
-            {
-                //fine, could be other types of commands
-                //Debug.Fail("This should never happen !");
-            }
+
+            return byteOffset;
         }
 
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
+        private void UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(TreeNode targetNode1, TreeNode targetNode2, long byteStart, long byteDur, bool done)
         {
-            if (m_TTSGen)
-            {
-                return;
-            }
-
-            if (!TheDispatcher.CheckAccess())
+            if (targetNode1 == null || targetNode2 != null && !targetNode2.IsDescendantOf(targetNode1))
             {
 #if DEBUG
                 Debugger.Break();
 #endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
-                return;
-            }
-            //Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs
-                           || eventt is TransactionCancelledEventArgs
-                           ))
-            {
-                Debug.Fail("This should never happen !!");
                 return;
             }
 
+            m_LastSetPlayBytePosition = -1;
 
-            bool compCmdAudio = false;
-            bool allStructEdits = true;
-            if (eventt.Command is CompositeCommand)
-            {
-                foreach (var childCmd in ((CompositeCommand)eventt.Command).ChildCommands.ContentsAs_Enumerable)
-                {
-                    if (childCmd is ManagedAudioMediaInsertDataCommand
-                        || childCmd is TreeNodeSetManagedAudioMediaCommand
-                        || childCmd is TreeNodeAudioStreamDeleteCommand)
-                    {
-                        compCmdAudio = true;
-                        break;
-                    }
-                }
-
-                foreach (Command childCmd in ((CompositeCommand)eventt.Command).ChildCommands.ContentsAs_Enumerable)
-                {
-                    if (!(childCmd is TextNodeStructureEditCommand))
-                    {
-                        allStructEdits = false;
-                        break;
-                    }
-                }
-            }
-
-            if (!(eventt.Command is ManagedAudioMediaInsertDataCommand)
-                && !(eventt.Command is TreeNodeSetManagedAudioMediaCommand)
-                && !(eventt.Command is TreeNodeAudioStreamDeleteCommand)
-                && !(eventt.Command is TreeNodeChangeTextCommand)
-                && !(eventt.Command is TreeNodeRemoveCommand)
-                && !(eventt.Command is TreeNodeInsertCommand)
-                && !compCmdAudio
-                && !allStructEdits
-                )
-            {
-                return;
-            }
-
-            if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            {
-                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                //Logger.Log("AudioPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                return;
-            }
-
-            if (eventt is DoneEventArgs)
-            {
-                DebugFix.Assert(!(eventt.Command is CompositeCommand));
-            }
-            if (eventt.Command is CompositeCommand)
-            {
-                DebugFix.Assert(eventt is ReDoneEventArgs || eventt is UnDoneEventArgs || eventt is TransactionEndedEventArgs || eventt is TransactionCancelledEventArgs);
-            }
-
-            if (EventAggregator != null)
-            {
-                EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
-            }
-
-            if (eventt.Command is TreeNodeChangeTextCommand)
-            {
-                Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                if (selection.Item1 != null)
-                {
-                    if (((TreeNodeChangeTextCommand)eventt.Command).TreeNode == selection.Item1
-                        || ((TreeNodeChangeTextCommand)eventt.Command).TreeNode.IsDescendantOf(selection.Item1))
-                    {
-                        if (State.Audio.HasContent && State.Audio.PlayStreamMarkers != null)
-                        {
-                            if (true
-                                //State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextCacheRenderThreshold
-                                )
-                            {
-                                if (View != null)
-                                {
-                                    View.InvalidateWaveFormOverlay();
-                                }
-                            }
-                            else
-                            {
-                                CommandRefresh.Execute();
-                            }
-                        }
-                    }
-                }
-                return;
-            }
-
+            //AudioPlayer_UpdateWaveFormPlayHead();
             if (View != null)
             {
-                View.CancelWaveFormLoad(false);
-            }
-            InterruptAudioPlayerRecorder();
-
-            if (View != null)
-            {
-                View.CancelWaveFormLoad(true);
-            }
-            CommandPause.Execute();
-
-
-            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
-
-            // TODO allStructEdits or TreeNodeInsertCommand / TreeNodeRemoveCommand
-            updateTotalDuration(eventt.Command, done);
-
-            bool deselect = false;
-
-            Command cmd = eventt.Command;
-
-            Command firstInsertOrSetAudioCmd = null;
-            Command lastInsertOrSetAudioCmd = null;
-
-            if (cmd is CompositeCommand)
-            {
-                DebugFix.Assert(!(eventt is DoneEventArgs)
-                                &&
-                                (eventt is ReDoneEventArgs || eventt is UnDoneEventArgs ||
-                                 eventt is TransactionEndedEventArgs || eventt is TransactionCancelledEventArgs));
-                // during a transaction every single command is executed.
-
-                var command = (CompositeCommand)cmd;
-
-                //DebugFix.Assert(command.ChildCommands.Count > 0);
-                if (command.ChildCommands.Count == 0)
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                    return;
-                }
-
-                if (allStructEdits)
-                {
-                    // TODO
-                }
-                else if (compCmdAudio)
-                {
-                    if (command.ChildCommands.Count == 1)
-                    {
-                        cmd = command.ChildCommands.Get(0);
-                    }
-                    else
-                    {
-                        var list = command.GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
-                        if (list != null)
-                        {
-                            UndoRedoManagerChanged(list, done);
-                            return;
-                        }
-                        if (done)
-                        {
-                            var childCmd = command.ChildCommands.Get(command.ChildCommands.Count - 1);
-                            if (childCmd is ManagedAudioMediaInsertDataCommand
-                                || childCmd is TreeNodeSetManagedAudioMediaCommand)
-                            {
-                                cmd = childCmd;
-                            }
-
-                            foreach (var childCommand in command.ChildCommands.ContentsAs_Enumerable)
-                            {
-                                if (childCommand is ManagedAudioMediaInsertDataCommand
-                                    || childCommand is TreeNodeSetManagedAudioMediaCommand)
-                                {
-                                    if (firstInsertOrSetAudioCmd == null)
-                                    {
-                                        firstInsertOrSetAudioCmd = childCommand;
-                                    }
-                                    else
-                                    {
-                                        lastInsertOrSetAudioCmd = childCommand;
-                                    }
-                                }
-                            }
-
-                            if (firstInsertOrSetAudioCmd == lastInsertOrSetAudioCmd)
-                            {
-                                firstInsertOrSetAudioCmd = null;
-                                lastInsertOrSetAudioCmd = null;
-                            }
-                        }
-                        else
-                        {
-                            var childCmd = command.ChildCommands.Get(0);
-                            if (childCmd is CompositeCommand)
-                            {
-                                var list_ =
-                                    ((CompositeCommand) childCmd)
-                                        .GetChildCommandsAllType<TreeNodeAudioStreamDeleteCommand>();
-                                if (list_ != null)
-                                {
-                                    UndoRedoManagerChanged(list_, done);
-                                    return;
-                                }
-                            }
-                            else if (childCmd is TreeNodeAudioStreamDeleteCommand)
-                            {
-                                if (command.ChildCommands.Count == 2 &&
-                                    (command.ChildCommands.Get(1) is ManagedAudioMediaInsertDataCommand
-                                     || command.ChildCommands.Get(1) is TreeNodeSetManagedAudioMediaCommand))
-                                {
-                                    // split + shift
-                                    deselect = true;
-                                }
-                                cmd = childCmd;
-                            }
-                            else if (childCmd is TreeNodeSetManagedAudioMediaCommand)
-                            {
-                                cmd = childCmd;
-                            }
-                        }
-                    }
-                }
+                View.RefreshUI_WaveFormPlayHead(true);
             }
 
-            if ((cmd is ManagedAudioMediaInsertDataCommand || cmd is TreeNodeSetManagedAudioMediaCommand)
-                && firstInsertOrSetAudioCmd != null && lastInsertOrSetAudioCmd != null)
+            //RefreshWaveFormChunkMarkersForCurrentSubTreeNode(false);
+
+
+            long byteOffset = 0;
+
+            Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
+
+            bool waveFormNeedsForcedRefresh = treeNodeSelection.Item1 == targetNode1;
+            if (waveFormNeedsForcedRefresh)
             {
-                TreeNode targetNode1 = null;
-                TreeNode targetNode2 = null;
-
-                long byteStart = 0;
-                long byteDur = 0;
-
-                if (firstInsertOrSetAudioCmd is ManagedAudioMediaInsertDataCommand)
-                {
-                    var command = (ManagedAudioMediaInsertDataCommand)firstInsertOrSetAudioCmd;
-
-                    targetNode1 = command.CurrentTreeNode;
-                    targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
-
-                    byteStart = command.BytePositionInsert;
-
-                    //UndoRedoManagerChanged(command, done);
-                }
-                else if (firstInsertOrSetAudioCmd is TreeNodeSetManagedAudioMediaCommand)
-                {
-                    var command = (TreeNodeSetManagedAudioMediaCommand)firstInsertOrSetAudioCmd;
-
-                    targetNode1 = command.CurrentTreeNode;
-                    targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
-                    
-                    byteStart = 0;
-
-                    //UndoRedoManagerChanged(command, done);
-                }
-                else
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                }
-
-                foreach (var childCommand in ((CompositeCommand)eventt.Command).ChildCommands.ContentsAs_Enumerable)
-                {
-                    if (childCommand is TreeNodeSetManagedAudioMediaCommand)
-                    {
-                        var ccmd = ((TreeNodeSetManagedAudioMediaCommand) childCommand);
-                        byteDur += ccmd.ManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(ccmd.ManagedAudioMedia.Duration.AsLocalUnits);
-                    }
-                    if (childCommand is ManagedAudioMediaInsertDataCommand)
-                    {
-                        var ccmd = ((ManagedAudioMediaInsertDataCommand)childCommand);
-                        byteDur += ccmd.ManagedAudioMediaSource.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(ccmd.ManagedAudioMediaSource.Duration.AsLocalUnits);
-                    }
-                }
-
-                UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(targetNode1, targetNode2, byteStart, byteDur, done);
-                return;
-            }
-
-            if (cmd is ManagedAudioMediaInsertDataCommand)
-            {
-                var command = (ManagedAudioMediaInsertDataCommand)cmd;
-
-                UndoRedoManagerChanged(command, done);
-                return;
-            }
-
-            if (cmd is TreeNodeSetManagedAudioMediaCommand)
-            {
-                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
-
-                UndoRedoManagerChanged(command, done);
-                return;
-            }
-
-            if (cmd is TreeNodeAudioStreamDeleteCommand)
-            {
-                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
-
-                UndoRedoManagerChanged(new List<TreeNodeAudioStreamDeleteCommand>(new[] { command }), done);
-
-                if (deselect)
-                {
-                    CommandClearSelection.Execute();
-                }
-                return;
-            }
-
-            if (eventt.Command is TreeNodeRemoveCommand
-                || eventt.Command is TreeNodeInsertCommand
-                || allStructEdits)
-            {
-                // TODO: refresh waveform correctly, depending on modified tree fragment (remove / insert)
-
-                if (View != null)
-                {
-                    View.CancelWaveFormLoad(false);
-                }
-                InterruptAudioPlayerRecorder();
-
                 if (View != null)
                 {
                     View.ResetAll();
@@ -1009,23 +252,371 @@ namespace Tobi.Plugin.AudioPane
                 {
                     ensurePlaybackStreamIsDead();
                 }
+                m_CurrentAudioStreamProvider();
 
-                State.ResetAll();
+                byteOffset = computeByteOffset(targetNode1, targetNode2);
 
-                m_LastSetPlayBytePosition = -1;
+                treeNodeSelection = m_UrakawaSession.PerformTreeNodeSelection(targetNode1, false, targetNode2);
+            }
+            else
+            {
+                m_StateToRestore = new StateToRestore
+                {
+                    SelectionBeginBytePosition = -1,
+                    SelectionEndBytePosition = -1,
+                    PlayHeadBytePosition = -1
+                };
 
-                m_StateToRestore = null;
+                treeNodeSelection = m_UrakawaSession.PerformTreeNodeSelection(targetNode1, false, targetNode2);
 
-                //if (View != null)
-                //{
-                //    View.InvalidateWaveFormOverlay();
-                //}
+                if (View != null)
+                {
+                    View.CancelWaveFormLoad(true);
+                }
 
-                //CommandRefresh.Execute();
-                var sel = m_UrakawaSession.GetTreeNodeSelection();
-                //m_UrakawaSession.PerformTreeNodeSelection(sel.Item1, sel.Item2)
-                var selOld = new Tuple<TreeNode, TreeNode>(null, null);
-                OnTreeNodeSelectionChanged(new Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>(selOld, sel));
+                if (treeNodeSelection.Item1 == targetNode1)
+                {
+                    byteOffset = computeByteOffset(targetNode1, targetNode2);
+                    //treeNodeSelection.Item2 == targetNode2
+                }
+            }
+
+            if (treeNodeSelection.Item1 != targetNode1)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                m_StateToRestore = new StateToRestore
+                {
+                    SelectionBeginBytePosition = -1,
+                    SelectionEndBytePosition = -1,
+                    PlayHeadBytePosition = 0
+                };
+
+                CommandRefresh.Execute();
+
+                return;
+            }
+
+            if (treeNodeSelection.Item2 != targetNode2)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+
+            long begin = byteOffset + byteStart;
+            if (done)
+            {
+                m_StateToRestore = new StateToRestore
+                {
+                    SelectionBeginBytePosition = begin,
+                    SelectionEndBytePosition = begin + byteDur,
+                    PlayHeadBytePosition = begin
+                };
+            }
+            else
+            {
+                m_StateToRestore = new StateToRestore
+                {
+                    SelectionBeginBytePosition = -1,
+                    SelectionEndBytePosition = -1,
+                    PlayHeadBytePosition = begin
+                };
+            }
+
+            CommandRefresh.Execute();
+        }
+
+        private void OnUndoRedoManagerChanged_AudioEditCommand(UndoRedoManagerEventArgs eventt, bool done, AudioEditCommand cmd, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
+        {
+            DebugFix.Assert(!isTransactionEndEvent);
+
+            if (cmd is ManagedAudioMediaInsertDataCommand)
+            {
+                var command = (ManagedAudioMediaInsertDataCommand)cmd;
+
+                if (!done)
+                {
+                    DebugFix.Assert(!m_wasInitByRemove);
+                }
+
+                if (!done // reverse => force scan backwards to beginning
+                    || m_targetNode1 == null // not reverse, first-time init
+                    || m_wasInitByRemove // not reverse, not first-time init, but deletion occured before addition (e.g. select waveform audio + paste over it)
+                )
+                {
+                    m_wasInitByRemove = false;
+                    m_wasInitByAdd = true;
+
+                    m_targetNode1 = command.CurrentTreeNode;
+                    m_targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
+
+                    m_byteStart = command.BytePositionInsert;
+
+                    if (done || m_targetNode1 == null)
+                        m_byteDur = 0;
+
+                    m_done = done;
+                }
+
+                m_byteDur += command.ManagedAudioMediaSource.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
+                    command.ManagedAudioMediaSource.Duration.AsLocalUnits);
+            }
+            else if (cmd is TreeNodeSetManagedAudioMediaCommand)
+            {
+                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
+
+                if (!done)
+                {
+                    DebugFix.Assert(!m_wasInitByRemove);
+                }
+
+                if (!done // reverse => force scan backwards to beginning
+                    || m_targetNode1 == null // not reverse, first-time init
+                    || m_wasInitByRemove // not reverse, not first-time init, but deletion occured before addition (e.g. select waveform audio + paste over it)
+                )
+                {
+                    m_wasInitByRemove = false;
+                    m_wasInitByAdd = true;
+
+                    m_targetNode1 = command.CurrentTreeNode;
+                    m_targetNode2 = command.CurrentTreeNode == command.TreeNode ? null : command.TreeNode;
+
+                    m_byteStart = 0;
+
+                    if (done || m_targetNode1 == null)
+                        m_byteDur = 0;
+
+                    m_done = done;
+                }
+
+                m_byteDur += command.ManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
+                    command.ManagedAudioMedia.Duration.AsLocalUnits);
+            }
+            else if (cmd is TreeNodeAudioStreamDeleteCommand)
+            {
+                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
+
+                if (done)
+                {
+                    DebugFix.Assert(!m_wasInitByAdd);
+                }
+
+                if (!done // reverse => force scan backwards to beginning
+                    || m_targetNode1 == null // not reverse, first-time init
+                )
+                {
+                    if (done || m_targetNode1 == null || m_wasInitByAdd)
+                        m_byteDur = 0;
+
+                    m_wasInitByAdd = false;
+                    m_wasInitByRemove = true;
+
+                    m_targetNode1 = command.TreeNode;
+                    m_targetNode2 = command.TreeNode == command.SelectionData.m_TreeNode
+                        ? null
+                        : command.SelectionData.m_TreeNode;
+
+                    m_byteStart = 0;
+
+                    m_done = !done;
+                }
+
+                long bytesBegin = 0;
+                long bytesEnd = 0;
+
+                if (command.SelectionData.m_LocalStreamLeftMark > 0)
+                {
+                    bytesBegin = command.SelectionData.m_LocalStreamLeftMark;
+                }
+
+                if (command.SelectionData.m_LocalStreamRightMark <= 0)
+                {
+                    bytesEnd = command.OriginalManagedAudioMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(command.OriginalManagedAudioMedia.AudioMediaData.AudioDuration.AsLocalUnits);
+                }
+                else
+                {
+                    bytesEnd = command.SelectionData.m_LocalStreamRightMark;
+                }
+
+                m_byteStart += bytesBegin;
+                m_byteDur += (bytesEnd - bytesBegin);
+            }
+        }
+
+        private TreeNode m_targetNode1 = null;
+        private TreeNode m_targetNode2 = null;
+        private long m_byteStart = -1;
+        private long m_byteDur = 0;
+        private bool m_done = false;
+        private bool m_wasInitByRemove = false;
+        private bool m_wasInitByAdd = false;
+
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
+        {
+            if (!TheDispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+                return;
+            }
+
+            if (m_TTSGen)
+            {
+                return;
+            }
+
+            //if (isTransactionEndEvent)
+            //{
+            //    return;
+            //}
+
+            if (isNoTransactionOrTrailingEdge)
+            {
+                if (EventAggregator != null)
+                {
+                    EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.Ready);
+                }
+            }
+
+            if (command is CompositeCommand)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+            else if (command is TreeNodeChangeTextCommand)
+            {
+                if (!isTransactionEndEvent)
+                {
+                    var cmd = (TreeNodeChangeTextCommand)command;
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    if (selection.Item1 != null)
+                    {
+                        if (cmd.TreeNode == selection.Item1
+                            || (cmd.TreeNode.IsDescendantOf(selection.Item1)))
+                        {
+                            if (State.Audio.HasContent && State.Audio.PlayStreamMarkers != null)
+                            {
+                                if (true
+                                    //State.Audio.PlayStreamMarkers.Count <= Settings.Default.AudioWaveForm_TextCacheRenderThreshold
+                                    )
+                                {
+                                    if (View != null)
+                                    {
+                                        View.InvalidateWaveFormOverlay();
+                                    }
+                                }
+                                else
+                                {
+                                    CommandRefresh.Execute();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return;
+            }
+
+            if (!(command is TextNodeStructureEditCommand) && !(command is AudioEditCommand))
+            {
+                return;
+            }
+
+            if (!isTransactionEndEvent)
+            {
+                if (View != null)
+                {
+                    View.CancelWaveFormLoad(false);
+                }
+                InterruptAudioPlayerRecorder();
+
+                if (View != null)
+                {
+                    View.CancelWaveFormLoad(true);
+                }
+                CommandPause.Execute();
+
+
+                updateTotalDuration(command, done);
+            }
+
+            if (command is TextNodeStructureEditCommand)
+            {
+                if (isNoTransactionOrTrailingEdge)
+                {
+                    // TODO: this is currently brute-force => refresh waveform correctly, depending on modified tree fragment (remove / insert)
+
+                    if (View != null)
+                    {
+                        View.ResetAll();
+                    }
+
+                    if (AudioPlaybackStreamKeepAlive)
+                    {
+                        ensurePlaybackStreamIsDead();
+                    }
+
+                    State.ResetAll();
+
+                    m_LastSetPlayBytePosition = -1;
+
+                    m_StateToRestore = null;
+
+                    //if (View != null)
+                    //{
+                    //    View.InvalidateWaveFormOverlay();
+                    //}
+
+                    //CommandRefresh.Execute();
+
+                    var sel = m_UrakawaSession.GetTreeNodeSelection();
+                    //m_UrakawaSession.PerformTreeNodeSelection(sel.Item1, sel.Item2)
+                    var selOld = new Tuple<TreeNode, TreeNode>(null, null);
+                    OnTreeNodeSelectionChanged(new Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>(selOld, sel));
+                }
+
+                return;
+            }
+            else if (command is AudioEditCommand)
+            {
+                if (!isTransactionEndEvent)
+                {
+                    OnUndoRedoManagerChanged_AudioEditCommand(eventt, done, (AudioEditCommand) command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+                }
+
+                if (isNoTransactionOrTrailingEdge)
+                {
+                    if (m_targetNode1 != null && m_byteStart >= 0 && (!m_done || m_byteDur > 0))
+                    {
+                        UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(m_targetNode1, m_targetNode2, m_byteStart, m_byteDur, m_done);
+
+                        if (command.IsInTransaction() && command.TopTransactionId() == AudioPaneViewModel.COMMAND_TRANSATION_ID__AUDIO_SPLIT_SHIFT)
+                        {
+                            CommandClearSelection.Execute();
+                        }
+
+                        m_targetNode1 = null;
+                        m_targetNode2 = null;
+                        m_byteStart = -1;
+                        m_byteDur = 0;
+                        m_done = false;
+                        m_wasInitByRemove = false;
+                        m_wasInitByAdd = false;
+                    }
+                    else
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                    }
+                }
+
                 return;
             }
 
@@ -1040,11 +631,14 @@ namespace Tobi.Plugin.AudioPane
             }
 
             m_LastSetPlayBytePosition = 0;
+
             m_StateToRestore = null;
+
             if (AudioPlaybackStreamKeepAlive)
             {
                 ensurePlaybackStreamIsDead();
             }
+
             CommandRefresh.Execute();
         }
     }
