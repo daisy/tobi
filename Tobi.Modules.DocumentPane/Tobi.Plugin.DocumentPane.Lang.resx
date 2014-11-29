@@ -196,6 +196,13 @@
     <value>Remove the selected document fragment, and preserve in structure clipboard</value>
   </data>
 
+  <data name="CmdStructEditCopyFragment_ShortDesc" xml:space="preserve">
+    <value>Copy fragment</value>
+  </data>
+  <data name="CmdStructEditCopyFragment_LongDesc" xml:space="preserve">
+    <value>Make a copy of the selected document fragment into the structure clipboard</value>
+  </data>
+
   <data name="CmdStructEditPasteFragment_ShortDesc" xml:space="preserve">
     <value>Paste fragment ...</value>
   </data>

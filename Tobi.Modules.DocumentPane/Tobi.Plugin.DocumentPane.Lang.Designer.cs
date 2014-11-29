@@ -133,6 +133,24 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Make a copy of the selected document fragment into the structure clipboard.
+        /// </summary>
+        public static string CmdStructEditCopyFragment_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditCopyFragment_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy fragment.
+        /// </summary>
+        public static string CmdStructEditCopyFragment_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditCopyFragment_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove the selected document fragment, and preserve in structure clipboard.
         /// </summary>
         public static string CmdStructEditCutFragment_LongDesc {
