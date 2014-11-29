@@ -133,7 +133,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete document fragment and save in clipboard.
+        ///   Looks up a localized string similar to Remove the selected document fragment, and preserve in structure clipboard.
         /// </summary>
         public static string CmdStructEditCutFragment_LongDesc {
             get {
@@ -142,7 +142,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cut node.
+        ///   Looks up a localized string similar to Cut fragment.
         /// </summary>
         public static string CmdStructEditCutFragment_ShortDesc {
             get {
@@ -151,7 +151,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add document fragment.
+        ///   Looks up a localized string similar to Insert simple document fragment (element name + text content) into the document (DEVELOPMENT TEST ONLY).
         /// </summary>
         public static string CmdStructEditInsertFragment_LongDesc {
             get {
@@ -160,7 +160,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert node ....
+        ///   Looks up a localized string similar to Insert node ... (DEV ONLY).
         /// </summary>
         public static string CmdStructEditInsertFragment_ShortDesc {
             get {
@@ -169,7 +169,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Paste document fragment from clipboard.
+        ///   Looks up a localized string similar to Restore the document fragment from the structure clipboard into the document.
         /// </summary>
         public static string CmdStructEditPasteFragment_LongDesc {
             get {
@@ -178,7 +178,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Paste node.
+        ///   Looks up a localized string similar to Paste fragment....
         /// </summary>
         public static string CmdStructEditPasteFragment_ShortDesc {
             get {
@@ -187,7 +187,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete document fragment.
+        ///   Looks up a localized string similar to Remove the selected fragment from the document.
         /// </summary>
         public static string CmdStructEditRemoveFragment_LongDesc {
             get {
@@ -196,7 +196,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove node.
+        ///   Looks up a localized string similar to Delete fragment.
         /// </summary>
         public static string CmdStructEditRemoveFragment_ShortDesc {
             get {
@@ -304,6 +304,15 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to overwrite the existing structure clipboard?.
+        /// </summary>
+        public static string ConfirmStructureClipboard {
+            get {
+                return ResourceManager.GetString("ConfirmStructureClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Converting XUK markup ....
         /// </summary>
         public static string ConvertingXukToFlowDocument {
@@ -345,6 +354,42 @@ namespace Tobi.Plugin.DocumentPane {
         public static string Feature_Not_Available {
             get {
                 return ResourceManager.GetString("Feature_Not_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After.
+        /// </summary>
+        public static string InsertDocFragmentAfter {
+            get {
+                return ResourceManager.GetString("InsertDocFragmentAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before.
+        /// </summary>
+        public static string InsertDocFragmentBefore {
+            get {
+                return ResourceManager.GetString("InsertDocFragmentBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First inside.
+        /// </summary>
+        public static string InsertDocFragmentFirstInside {
+            get {
+                return ResourceManager.GetString("InsertDocFragmentFirstInside", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last inside.
+        /// </summary>
+        public static string InsertDocFragmentLastInside {
+            get {
+                return ResourceManager.GetString("InsertDocFragmentLastInside", resourceCulture);
             }
         }
         

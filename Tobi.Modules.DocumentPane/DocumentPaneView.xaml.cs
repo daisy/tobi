@@ -838,6 +838,9 @@ namespace Tobi.Plugin.DocumentPane
 
         public RichDelegateCommand CommandStructRemoveFragment { get; private set; }
         public RichDelegateCommand CommandStructInsertFragment { get; private set; }
+
+        private TreeNode m_TreeNodeFragmentClipboard = null;
+
         public RichDelegateCommand CommandStructCutFragment { get; private set; }
         public RichDelegateCommand CommandStructPasteFragment { get; private set; }
 
@@ -959,6 +962,61 @@ namespace Tobi.Plugin.DocumentPane
 
                 m_UrakawaSession.PerformTreeNodeSelection(toSelect, false, sub);
             }
+        }
+
+        private bool askUser(string message, string info)
+        {
+            m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
+
+            var label = new TextBlock
+            {
+                Text = message,
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var iconProvider = new ScalableGreyableImageProvider(
+                m_ShellView.LoadTangoIcon("help-browser"),
+                m_ShellView.MagnificationLevel);
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            panel.Children.Add(iconProvider.IconLarge);
+            panel.Children.Add(label);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+            var details = new TextBoxReadOnlyCaretVisible
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = info
+            };
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   message,
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.YesNo,
+                                                   PopupModalWindow.DialogButton.No,
+                                                   true, 360, 200, details, 40, null);
+
+            windowPopup.ShowModal();
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         ///<summary>
@@ -1243,23 +1301,55 @@ namespace Tobi.Plugin.DocumentPane
 
                     //TreeNode node = selection.Item2 ?? selection.Item1;
                     TreeNode node = selection.Item1; // TOP LEVEL!
-                    
+
                     if (node == null) return;
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
 
-                    //var cmd = node.Presentation.CommandFactory.CreateTreeNodeCutCommand(node);
-                    //node.Presentation.UndoRedoManager.Execute(cmd);
+                    if (m_TreeNodeFragmentClipboard != null)
+                    {
+                        if (
+                            !askUser(Tobi_Plugin_DocumentPane_Lang.CmdStructEditCutFragment_ShortDesc,
+                                Tobi_Plugin_DocumentPane_Lang.ConfirmStructureClipboard))
+                        {
+                            return;
+                        }
+                        m_TreeNodeFragmentClipboard = null;
+                    }
+
+                    var previous = node.GetPreviousSiblingWithText();
+                    var next = node.GetNextSiblingWithText();
+                    var nodeParent = node.Parent;
+
+                    var cmd = node.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
+                    node.Presentation.UndoRedoManager.Execute(cmd);
+
+                    if (previous != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(previous);
+                    }
+                    else if (next != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(next);
+                    }
+                    else if (nodeParent != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(nodeParent);
+                    }
+                    else
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(node.Presentation.RootNode);
+                    }
+
+                    // CANNOT remove tags, otherwise the undo for above remove command will fail!
+                    //node.FlushTags(); // ensure TextElement hierarchy gets re-created from scratch.
+                    // ... so we clone the TreeNode fragment (looses tags, text cache):
+
+                    m_TreeNodeFragmentClipboard = node.Copy(true, true);
                 },
                 () =>
                 {
-                    if (m_UrakawaSession.DocumentProject == null) return false;
-
-                    if (m_UrakawaSession.isAudioRecording) return false;
-
-                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = selection.Item2 ?? selection.Item1;
-                    return node != null;
+                    return CommandStructRemoveFragment.CanExecute();
                 },
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditCutFragment)
@@ -1280,23 +1370,183 @@ namespace Tobi.Plugin.DocumentPane
 
                     //TreeNode node = selection.Item2 ?? selection.Item1;
                     TreeNode node = selection.Item1; // TOP LEVEL!
-                    
+
                     if (node == null) return;
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
 
-                    //var cmd = node.Presentation.CommandFactory.CreateTreeNodePasteCommand(node);
-                    //node.Presentation.UndoRedoManager.Execute(cmd);
+                    //bool xml = node.GetXmlProperty() != null;
+
+                    int position = node.Children.Count; // append
+                    position = 0; // prepend
+
+                    TreeNode parent = node;
+
+                    var radioPrepend = new RadioButton()
+                    {
+                        Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentFirstInside,
+                        GroupName = "INSERT"
+                    };
+                    var radioAppend = new RadioButton()
+                    {
+                        Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentLastInside,
+                        GroupName = "INSERT"
+                    };
+                    var radioBefore = new RadioButton()
+                    {
+                        Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentBefore,
+                        GroupName = "INSERT"
+                    };
+                    var radioAfter = new RadioButton()
+                    {
+                        Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentAfter,
+                        GroupName = "INSERT"
+                    };
+
+                    radioPrepend.IsChecked = true;
+
+                    var panel = new StackPanel
+                    {
+                        Orientation = Orientation.Vertical,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+
+                    if (node.GetTextMedia() != null && string.IsNullOrEmpty(node.GetXmlElementLocalName())) // text-only node
+                    {
+                        radioBefore.IsChecked = true;
+                    }
+                    else
+                    {
+                        panel.Children.Add(radioPrepend);
+                        panel.Children.Add(radioAppend);
+                    }
+
+                    if (node.Parent != null)
+                    {
+                        panel.Children.Add(radioBefore);
+                        panel.Children.Add(radioAfter);
+                    }
+
+                    var windowPopup = new PopupModalWindow(m_ShellView,
+                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdStructEditInsertFragment_ShortDesc),
+                                                           panel,
+                                                           PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                           PopupModalWindow.DialogButton.Ok,
+                                                           false, 300, 200, null, 40, null);
+                    windowPopup.ShowModal();
+
+                    if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok)
+                    {
+                        return;
+                    }
+
+                    bool isCompositeCommand = false;
+                    if ((Convert.ToBoolean(radioPrepend.IsChecked) || Convert.ToBoolean(radioAppend.IsChecked)) && node.GetTextMedia() != null)
+                    {
+                        DebugFix.Assert(!string.IsNullOrEmpty(node.GetXmlElementLocalName()));
+
+                        TreeNode nodeParent = node.Parent;
+                        if (nodeParent == null)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                            return;
+                        }
+
+                        isCompositeCommand = true;
+                        nodeParent.Presentation.UndoRedoManager.StartTransaction("Extract text into new child TreeNode, then insert new node", "Extract text into child mixed XML content, and insert new TreeNode", "DOC_TEXT_ONLY_NODE_INSERT");
+
+                        var previous = node.GetPreviousSiblingWithText();
+                        var next = node.GetNextSiblingWithText();
+
+                        // Step (1) DETACH
+                        int pos = nodeParent.Children.IndexOf(node);
+                        var cmd1 = nodeParent.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
+                        nodeParent.Presentation.UndoRedoManager.Execute(cmd1);
+                        //node.Tag = null;
+
+                        if (previous != null)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(previous);
+                        }
+                        else if (next != null)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(next);
+                        }
+                        else if (nodeParent != null)
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(nodeParent);
+                        }
+                        else
+                        {
+                            m_UrakawaSession.PerformTreeNodeSelection(nodeParent.Presentation.RootNode);
+                        }
+
+                        // Step (2) CLONE AND EMPTY TEXT
+                        TreeNode nodeClone = node.Copy(true, true);
+                        Channel textChannel = node.Presentation.ChannelsManager.GetOrCreateTextChannel();
+                        ChannelsProperty cloneChProp = nodeClone.GetOrCreateChannelsProperty();
+                        cloneChProp.SetMedia(textChannel, null);
+                        var cmd2 = nodeParent.Presentation.CommandFactory.CreateTreeNodeInsertCommand(nodeClone, nodeParent, pos);
+                        nodeParent.Presentation.UndoRedoManager.Execute(cmd2);
+
+                        // Step (3) RE-ADD TEXT AS CHILD
+                        TreeNode newTextNode = nodeParent.Presentation.TreeNodeFactory.Create();
+                        ChannelsProperty newChProp = newTextNode.GetOrCreateChannelsProperty();
+                        //Channel newTextChannel = node.Presentation.ChannelFactory.CreateTextChannel();
+                        TextMedia newTxtMedia = nodeParent.Presentation.MediaFactory.CreateTextMedia();
+                        newTxtMedia.Text = node.GetTextMedia().Text; //node.GetTextFlattened()
+                        newChProp.SetMedia(textChannel, newTxtMedia);
+                        var cmd3 = nodeParent.Presentation.CommandFactory.CreateTreeNodeInsertCommand(newTextNode, nodeClone, 0);
+                        nodeParent.Presentation.UndoRedoManager.Execute(cmd3);
+
+                        node = nodeClone;
+                    }
+
+                    if (Convert.ToBoolean(radioPrepend.IsChecked))
+                    {
+                        position = 0; // prepend
+
+                        parent = node;
+                    }
+                    else if (Convert.ToBoolean(radioAppend.IsChecked))
+                    {
+                        position = node.Children.Count; // append
+
+                        parent = node;
+                    }
+                    else if (Convert.ToBoolean(radioBefore.IsChecked))
+                    {
+                        parent = node.Parent;
+                        if (parent == null) return;
+
+                        position = parent.Children.IndexOf(node);
+                    }
+                    else if (Convert.ToBoolean(radioAfter.IsChecked))
+                    {
+                        parent = node.Parent;
+                        if (parent == null) return;
+
+                        position = parent.Children.IndexOf(node) + 1;
+                    }
+
+                    var cmd = node.Presentation.CommandFactory.CreateTreeNodeInsertCommand(m_TreeNodeFragmentClipboard, parent, position);
+                    node.Presentation.UndoRedoManager.Execute(cmd);
+
+                    if (isCompositeCommand)
+                    {
+                        node.Presentation.UndoRedoManager.EndTransaction();
+                    }
+                    
+                    m_UrakawaSession.PerformTreeNodeSelection(m_TreeNodeFragmentClipboard);
+
+                    m_TreeNodeFragmentClipboard = null;
                 },
                 () =>
                 {
-                    if (m_UrakawaSession.DocumentProject == null) return false;
-
-                    if (m_UrakawaSession.isAudioRecording) return false;
-
-                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = selection.Item2 ?? selection.Item1;
-                    return node != null;
+                    return m_TreeNodeFragmentClipboard != null && CommandStructInsertFragment.CanExecute();
                 },
                 Settings_KeyGestures.Default,
                 null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditPasteFragment)
@@ -1400,22 +1650,22 @@ namespace Tobi.Plugin.DocumentPane
 
                     var radioPrepend = new RadioButton()
                     {
-                        Content = "First inside",
+                        Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentFirstInside,
                         GroupName = "INSERT"
                     };
                     var radioAppend = new RadioButton()
                     {
-                        Content = "Last inside",
+                        Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentLastInside,
                         GroupName = "INSERT"
                     };
                     var radioBefore = new RadioButton()
                     {
-                        Content = "Before",
+                        Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentBefore,
                         GroupName = "INSERT"
                     };
                     var radioAfter = new RadioButton()
                     {
-                        Content = "After",
+                        Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentAfter,
                         GroupName = "INSERT"
                     };
 
@@ -1459,7 +1709,7 @@ namespace Tobi.Plugin.DocumentPane
                     panel.Children.Add(elementTextInput);
 
                     var windowPopup = new PopupModalWindow(m_ShellView,
-                                                           UserInterfaceStrings.EscapeMnemonic("Insert TreeNode"),
+                                                           UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdStructEditInsertFragment_ShortDesc),
                                                            panel,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
