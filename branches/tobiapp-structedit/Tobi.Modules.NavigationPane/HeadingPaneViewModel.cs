@@ -338,7 +338,15 @@ namespace Tobi.Plugin.NavigationPane
 #if DEBUG
                 Debugger.Break();
 #endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged, eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+#if NET40x
+                TheDispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged,
+                    eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+#else
+                TheDispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action)(() => OnUndoRedoManagerChanged(eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge))
+                    );
+#endif
                 return;
             }
 
