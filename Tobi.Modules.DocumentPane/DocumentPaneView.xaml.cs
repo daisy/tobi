@@ -2057,7 +2057,15 @@ namespace Tobi.Plugin.DocumentPane
         TreeNode root = null;
         if (xmldoc != null && xmldoc.DocumentElement != null && xmldoc.DocumentElement.FirstChild != null)
         {
-            root = buildTreeNodeFromXml(xmldoc.DocumentElement.FirstChild, node.Presentation, null);
+            try
+            {
+                TreeNode.EnableTextCache = false;
+                root = buildTreeNodeFromXml(xmldoc.DocumentElement.FirstChild, node.Presentation, null);
+            }
+            finally
+            {
+                TreeNode.EnableTextCache = true;
+            }
         }
         if (root != null)
         {
