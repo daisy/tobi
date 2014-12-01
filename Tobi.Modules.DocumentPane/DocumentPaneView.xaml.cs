@@ -51,7 +51,7 @@ using Colors = System.Windows.Media.Colors;
 using System.Xml;
 
 #if NET40
-using System.Windows.Shell;
+//using System.Windows.Shell;
 #endif
 
 namespace Tobi.Plugin.DocumentPane
