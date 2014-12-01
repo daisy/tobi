@@ -48,10 +48,10 @@ using urakawa.property.xml;
 using urakawa.undo;
 using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
+using System.Xml;
 
 #if NET40
 using System.Windows.Shell;
-using System.Xml;
 #endif
 
 namespace Tobi.Plugin.DocumentPane
