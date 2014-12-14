@@ -18,6 +18,7 @@ using urakawa.daisy.import;
 using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
+using urakawa.undo;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -26,7 +27,7 @@ namespace Tobi.Plugin.AudioPane
     ///</summary>
     [Export(typeof(AudioPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
     [Export(typeof(IAudioViewModel))]
-    public partial class AudioPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification, IAudioViewModel
+    public partial class AudioPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification, UndoRedoManager.Hooker.Host, IAudioViewModel
     {
 #pragma warning disable 1591 // non-documented method
         public void OnImportsSatisfied()
@@ -1199,14 +1200,13 @@ m_Stream.Length);
 
             TotalDocumentAudioDurationInLocalUnits = 0;
 
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+            if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
 
             OnProjectLoaded(null);
         }
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
 
         public void OnProjectLoaded(Project project)
         {
@@ -1255,11 +1255,7 @@ m_Stream.Length);
                 false,
                 m_UrakawaSession.IsAcmCodecsDisabled);
 
-                project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+                m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
 
                 m_Recorder.RecordingDirectory = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath; //AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY
 
@@ -1293,62 +1289,6 @@ m_Stream.Length);
         #region Private Class Attributes
 
         private const bool AudioPlaybackStreamKeepAlive = true;
-
-        private long getByteOffset(TreeNode treeNode, ManagedAudioMedia managedMedia)
-        {
-            //if (!State.IsTreeNodeShownInAudioWaveForm(treeNode))
-            //{
-            //    return 0;
-            //}
-
-            long byteOffset = 0;
-
-            //Tuple<TreeNode, TreeNode> treeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
-
-            if (State.Audio.PlayStreamMarkers != null)
-            {
-                long bytesRight;
-                long bytesLeft;
-                int index;
-                bool match = State.Audio.FindInPlayStreamMarkers(treeNode, out index, out bytesLeft, out bytesRight);
-
-                if (match)
-                {
-                    byteOffset = bytesLeft;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-
-            if (managedMedia == null)
-            {
-                return byteOffset;
-            }
-
-#if ENABLE_SEQ_MEDIA
-
-            SequenceMedia seqManAudioMedia = treeNode.GetManagedAudioSequenceMedia();
-            if (seqManAudioMedia != null)
-            {
-                Debug.Fail("SequenceMedia is normally removed at import time...have you tried re-importing the DAISY book ?");
-
-                foreach (Media media in seqManAudioMedia.ChildMedias.ContentsAs_Enumerable)
-                {
-                    var manMedia = (ManagedAudioMedia)media;
-                    if (media == managedMedia)
-                    {
-                        break;
-                    }
-                    byteOffset += manMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(manMedia.Duration.AsLocalUnits);
-                }
-            }
-            
-#endif //ENABLE_SEQ_MEDIA
-
-            return byteOffset;
-        }
 
         #endregion Private Class Attributes
 

@@ -304,6 +304,15 @@ namespace Tobi.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit _structure.
+        /// </summary>
+        public static string Menu_StructureEdit {
+            get {
+                return ResourceManager.GetString("Menu_StructureEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Text.
         /// </summary>
         public static string Menu_Text {

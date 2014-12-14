@@ -627,8 +627,8 @@ namespace Tobi.Plugin.Urakawa
                     {
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedBy);
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedAt);
-                        
-#if ENABLE_INLINE_DIAGRAM
+
+#if ENABLE_DIAGRAM_LONGDESC_USER_CHOICE
                         rootPanel.Children.Add(panelImageDescriptions_HtmlLongDesc);
 #endif
 
@@ -669,6 +669,7 @@ namespace Tobi.Plugin.Urakawa
 #if ENABLE_DIAGRAM_LONGDESC_USER_CHOICE
                     Settings.Default.ExportImageDescriptions_HtmlLongDesc = checkBoxImageDescriptions_HtmlLongDesc.IsChecked.Value;
 #else
+                    // force longdesc export for now...
                     Settings.Default.ExportImageDescriptions_HtmlLongDesc = true;
 #endif
 

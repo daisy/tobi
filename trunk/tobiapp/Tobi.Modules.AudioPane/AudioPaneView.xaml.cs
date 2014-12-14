@@ -806,7 +806,7 @@ namespace Tobi.Plugin.AudioPane
                                         var treeNodeTarget = m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Right.m_TreeNode;
 
                                         //m_ViewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0)
-                                        treeNodeTarget.Presentation.UndoRedoManager.StartTransaction("waveform re-sync", "mouse sync of waveform chunk");
+                                        treeNodeTarget.Presentation.UndoRedoManager.StartTransaction("waveform re-sync", "mouse sync of waveform chunk", "AUDIO_WAVEFORM_MOUSE_DRAG_EDGE");
 
                                         m_ViewModel.CommandDeleteAudioSelection.Execute();
 
@@ -874,7 +874,7 @@ namespace Tobi.Plugin.AudioPane
                                         var treeNodeTarget = m_WaveFormTimeTicksAdorner.m_marker_MouseGrab_Left.m_TreeNode;
 
                                         //m_ViewModel.m_UrakawaSession.DocumentProject.Presentations.Get(0)
-                                        treeNodeTarget.Presentation.UndoRedoManager.StartTransaction("waveform re-sync", "mouse sync of waveform chunk");
+                                        treeNodeTarget.Presentation.UndoRedoManager.StartTransaction("waveform re-sync", "mouse sync of waveform chunk", "AUDIO_WAVEFORM_MOUSE_DRAG_EDGE");
 
                                         m_ViewModel.CommandDeleteAudioSelection.Execute();
 

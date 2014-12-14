@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Threading;
+using AudioLib;
 using Microsoft.Practices.Composite;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
@@ -17,11 +18,12 @@ using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
 using urakawa.property.xml;
+using urakawa.undo;
 
 namespace Tobi.Plugin.Descriptions
 {
     [Export(typeof(DescriptionsNavigationViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class DescriptionsNavigationViewModel : ViewModelBase, IPartImportsSatisfiedNotification
+    public class DescriptionsNavigationViewModel : ViewModelBase, IPartImportsSatisfiedNotification, UndoRedoManager.Hooker.Host
     {
         #region Construction
 
@@ -286,6 +288,156 @@ namespace Tobi.Plugin.Descriptions
         //}
 
         #region Events
+
+
+
+        private bool checkTreeNodeFragmentRemoval(bool done, TreeNode node)
+        {
+            if (node.HasXmlProperty
+                && node.GetXmlElementLocalName().Equals("img", StringComparison.OrdinalIgnoreCase))
+            {
+                if (done)
+                {
+                    DescriptionsNavigator.RemoveDescribableTreeNode(node);
+                }
+                else
+                {
+                    DescriptionsNavigator.AddDescribableTreeNode(node);
+                }
+                RaisePropertyChanged(() => HasNotDescribableTreeNodes);
+
+                return true; // break
+            }
+            foreach (var child in node.Children.ContentsAs_Enumerable)
+            {
+                if (checkTreeNodeFragmentRemoval(done, child))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        //if (treeNode.HasAlternateContentProperty && !treeNode.GetAlternateContentProperty().IsEmpty)
+        //{
+        //    bool treeNodeAlreadyRegistered = false;
+        //    foreach (var describableTreeNode in DescriptionsNavigator.DescribableTreeNodes)
+        //    {
+        //        if (describableTreeNode.TreeNode == treeNode)
+        //        {
+        //            treeNodeAlreadyRegistered = true;
+        //            break;
+        //        }
+        //    }
+        //    if (!treeNodeAlreadyRegistered)
+        //    {
+        //        DescriptionsNavigator.AddDescribableTreeNode(treeNode);
+        //    }
+        //}
+        //else
+        //{
+        //    DescribableTreeNode nodeToRemove = null;
+        //    foreach (var describableTreeNode in DescriptionsNavigator.DescribableTreeNodes)
+        //    {
+        //        if (describableTreeNode.TreeNode == treeNode)
+        //        {
+        //            nodeToRemove = describableTreeNode;
+        //            break;
+        //        }
+        //    }
+        //    if (nodeToRemove != null)
+        //    {
+        //        DescriptionsNavigator.RemoveDescribableTreeNode(nodeToRemove.TreeNode);
+        //    }
+        //}
+
+        private void InvalidateDescriptions(bool forceInvalidate, TreeNode node)
+        {
+            foreach (var describableTreeNode in DescriptionsNavigator_DescribableTreeNodes)
+            {
+                if (forceInvalidate
+                    || node == describableTreeNode.TreeNode
+                    || node.IsDescendantOf(describableTreeNode.TreeNode))
+                {
+                    describableTreeNode.RaiseHasDescriptionChanged();
+                    describableTreeNode.InvalidateDescription();
+                }
+            }
+        }
+
+        private void OnUndoRedoManagerChanged_AlternateContentCommand(UndoRedoManagerEventArgs eventt, bool done, AlternateContentCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
+        {
+            if (command.TreeNode != null) InvalidateDescriptions(false, command.TreeNode);
+        }
+
+        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool done, TreeNodeChangeTextCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
+        {
+            InvalidateDescriptions(false, command.TreeNode);
+        }
+
+        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool done, TextNodeStructureEditCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
+        {
+            DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
+
+            //TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
+            TreeNode node = command.TreeNode;
+
+            bool forceInvalidate = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
+            InvalidateDescriptions(forceInvalidate, node);
+
+            bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
+            checkTreeNodeFragmentRemoval(done_, node);
+        }
+
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
+        {
+            if (!TheDispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+
+#if NET40x
+                TheDispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged,
+                    eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+#else
+                TheDispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action)(() => OnUndoRedoManagerChanged(eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge))
+                    );
+#endif
+                return;
+            }
+
+            if (isTransactionEndEvent)
+            {
+                return;
+            }
+
+            if (command is CompositeCommand)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+            else if (command is AlternateContentCommand)
+            {
+                OnUndoRedoManagerChanged_AlternateContentCommand(eventt, done, (AlternateContentCommand)command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+            }
+            else if (command is TreeNodeChangeTextCommand)
+            {
+                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, done, (TreeNodeChangeTextCommand)command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+            }
+            else if (command is TextNodeStructureEditCommand)
+            {
+                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, done, (TextNodeStructureEditCommand)command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+            }
+
+            RaisePropertyChanged(() => SelectedTreeNode);
+        }
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
+
         private void onProjectLoaded(Project project)
         {
             if (m_UrakawaSession.IsXukSpine)
@@ -293,190 +445,23 @@ namespace Tobi.Plugin.Descriptions
                 return;
             }
 
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
+
             DescriptionsNavigator = new DescriptionsNavigator(View);
             View.LoadProject();
 
             RaisePropertyChanged(() => SelectedTreeNode);
-
-            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
         }
 
         private void onProjectUnLoaded(Project project)
         {
+            if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
+
             View.UnloadProject();
             DescriptionsNavigator = null;
 
             RaisePropertyChanged(() => SelectedTreeNode);
-
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
-        }
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
-        {
-            if (!TheDispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal,
-                                  (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
-                return;
-            }
-
-            if (!(eventt is DoneEventArgs
-                  || eventt is UnDoneEventArgs
-                  || eventt is ReDoneEventArgs
-                  || eventt is TransactionCancelledEventArgs
-                 ))
-            {
-                Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            if (!(eventt.Command is AlternateContentAddCommand)
-                && !(eventt.Command is AlternateContentRemoveCommand)
-                && !(eventt.Command is AlternateContentMetadataAddCommand)
-                && !(eventt.Command is AlternateContentMetadataRemoveCommand)
-                && !(eventt.Command is AlternateContentSetManagedMediaCommand)
-                && !(eventt.Command is AlternateContentRemoveManagedMediaCommand)
-                && !(eventt.Command is TreeNodeChangeTextCommand)
-                && !(eventt.Command is CompositeCommand)
-                )
-            {
-                return;
-            }
-
-            if (eventt.Command is TreeNodeChangeTextCommand)
-            {
-                var node = ((TreeNodeChangeTextCommand)eventt.Command).TreeNode;
-
-                foreach (var describableTreeNode in DescriptionsNavigator_DescribableTreeNodes)
-                {
-                    if (node == describableTreeNode.TreeNode
-                        || node.IsDescendantOf(describableTreeNode.TreeNode))
-                    {
-                        describableTreeNode.RaiseHasDescriptionChanged();
-                        describableTreeNode.InvalidateDescription();
-                    }
-                }
-                return;
-            }
-
-            RaisePropertyChanged(() => SelectedTreeNode);
-
-            TreeNode treeNode = null;
-
-            if (eventt.Command is CompositeCommand)
-            {
-                foreach (var childCmd in ((CompositeCommand)eventt.Command).ChildCommands.ContentsAs_Enumerable)
-                {
-                    if (childCmd is AlternateContentAddCommand)
-                    {
-                        treeNode = ((AlternateContentAddCommand)childCmd).TreeNode;
-                        break;
-                    }
-                    if (childCmd is AlternateContentRemoveCommand)
-                    {
-                        treeNode = ((AlternateContentRemoveCommand)childCmd).TreeNode;
-                        break;
-                    }
-                    if (childCmd is AlternateContentMetadataAddCommand)
-                    {
-                        treeNode = ((AlternateContentMetadataAddCommand)childCmd).TreeNode;
-                        break;
-                    }
-                    if (childCmd is AlternateContentMetadataRemoveCommand)
-                    {
-                        treeNode = ((AlternateContentMetadataRemoveCommand)childCmd).TreeNode;
-                        break;
-                    }
-                    if (childCmd is AlternateContentSetManagedMediaCommand)
-                    {
-                        treeNode = ((AlternateContentSetManagedMediaCommand)childCmd).TreeNode;
-                        break;
-                    }
-                    if (childCmd is AlternateContentRemoveManagedMediaCommand)
-                    {
-                        treeNode = ((AlternateContentRemoveManagedMediaCommand)childCmd).TreeNode;
-                        break;
-                    }
-                }
-            }
-            else if (eventt.Command is AlternateContentAddCommand)
-            {
-                treeNode = ((AlternateContentAddCommand)eventt.Command).TreeNode;
-            }
-            else if (eventt.Command is AlternateContentRemoveCommand)
-            {
-                treeNode = ((AlternateContentRemoveCommand)eventt.Command).TreeNode;
-            }
-            else if (eventt.Command is AlternateContentMetadataAddCommand)
-            {
-                treeNode = ((AlternateContentMetadataAddCommand)eventt.Command).TreeNode;
-            }
-            else if (eventt.Command is AlternateContentMetadataRemoveCommand)
-            {
-                treeNode = ((AlternateContentMetadataRemoveCommand)eventt.Command).TreeNode;
-            }
-            else if (eventt.Command is AlternateContentSetManagedMediaCommand)
-            {
-                treeNode = ((AlternateContentSetManagedMediaCommand)eventt.Command).TreeNode;
-            }
-            else if (eventt.Command is AlternateContentRemoveManagedMediaCommand)
-            {
-                treeNode = ((AlternateContentRemoveManagedMediaCommand)eventt.Command).TreeNode;
-            }
-
-            if (treeNode == null) return;
-
-            foreach (var describableTreeNode in DescriptionsNavigator_DescribableTreeNodes)
-            {
-                if (treeNode == describableTreeNode.TreeNode
-                    || treeNode.IsDescendantOf(describableTreeNode.TreeNode))
-                {
-                    describableTreeNode.RaiseHasDescriptionChanged();
-                    describableTreeNode.InvalidateDescription();
-                }
-            }
-
-
-            //if (treeNode.HasAlternateContentProperty && !treeNode.GetAlternateContentProperty().IsEmpty)
-            //{
-            //    bool treeNodeAlreadyRegistered = false;
-            //    foreach (var describableTreeNode in DescriptionsNavigator.DescribableTreeNodes)
-            //    {
-            //        if (describableTreeNode.TreeNode == treeNode)
-            //        {
-            //            treeNodeAlreadyRegistered = true;
-            //            break;
-            //        }
-            //    }
-            //    if (!treeNodeAlreadyRegistered)
-            //    {
-            //        DescriptionsNavigator.AddDescribableTreeNode(treeNode);
-            //    }
-            //}
-            //else
-            //{
-            //    DescribableTreeNode nodeToRemove = null;
-            //    foreach (var describableTreeNode in DescriptionsNavigator.DescribableTreeNodes)
-            //    {
-            //        if (describableTreeNode.TreeNode == treeNode)
-            //        {
-            //            nodeToRemove = describableTreeNode;
-            //            break;
-            //        }
-            //    }
-            //    if (nodeToRemove != null)
-            //    {
-            //        DescriptionsNavigator.RemoveDescribableTreeNode(nodeToRemove.TreeNode);
-            //    }
-            //}
         }
 
         [NotifyDependsOn("DescriptionsNavigator")]

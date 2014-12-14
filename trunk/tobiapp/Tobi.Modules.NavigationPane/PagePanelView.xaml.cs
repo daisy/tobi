@@ -227,5 +227,10 @@ namespace Tobi.Plugin.NavigationPane
                 FocusHelper.FocusBeginInvoke(item);
             }
         }
+
+        private void OnClick_ButtonRenumber(object sender, RoutedEventArgs e)
+        {
+            m_ViewModel.CommandRenumberPages.Execute();
+        }
     }
 }

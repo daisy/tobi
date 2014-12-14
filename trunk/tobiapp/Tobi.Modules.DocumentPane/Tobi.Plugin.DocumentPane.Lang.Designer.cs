@@ -133,6 +133,114 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Make a copy of the selected document fragment into the structure clipboard.
+        /// </summary>
+        public static string CmdStructEditCopyFragment_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditCopyFragment_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy fragment.
+        /// </summary>
+        public static string CmdStructEditCopyFragment_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditCopyFragment_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the selected document fragment, and preserve in structure clipboard.
+        /// </summary>
+        public static string CmdStructEditCutFragment_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditCutFragment_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cut fragment.
+        /// </summary>
+        public static string CmdStructEditCutFragment_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditCutFragment_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add basic XML markup (element name + text content).
+        /// </summary>
+        public static string CmdStructEditInsertFragment_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditInsertFragment_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert custom XML... (advanced feature).
+        /// </summary>
+        public static string CmdStructEditInsertFragment_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditInsertFragment_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert a numbered page break into the document.
+        /// </summary>
+        public static string CmdStructEditInsertPageBreak_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditInsertPageBreak_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert page break ....
+        /// </summary>
+        public static string CmdStructEditInsertPageBreak_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditInsertPageBreak_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore the document fragment from the structure clipboard into the document.
+        /// </summary>
+        public static string CmdStructEditPasteFragment_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditPasteFragment_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste fragment ....
+        /// </summary>
+        public static string CmdStructEditPasteFragment_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditPasteFragment_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the selected fragment from the document.
+        /// </summary>
+        public static string CmdStructEditRemoveFragment_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditRemoveFragment_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete fragment.
+        /// </summary>
+        public static string CmdStructEditRemoveFragment_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdStructEditRemoveFragment_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Contract the selection down one level in the document structure.
         /// </summary>
         public static string CmdStructureDown_LongDesc {
@@ -232,6 +340,15 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to overwrite the existing structure clipboard?.
+        /// </summary>
+        public static string ConfirmStructureClipboard {
+            get {
+                return ResourceManager.GetString("ConfirmStructureClipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Converting XUK markup ....
         /// </summary>
         public static string ConvertingXukToFlowDocument {
@@ -268,11 +385,56 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Element name.
+        /// </summary>
+        public static string ElementName {
+            get {
+                return ResourceManager.GetString("ElementName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This feature is not available..
         /// </summary>
         public static string Feature_Not_Available {
             get {
                 return ResourceManager.GetString("Feature_Not_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After.
+        /// </summary>
+        public static string InsertDocFragmentAfter {
+            get {
+                return ResourceManager.GetString("InsertDocFragmentAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before.
+        /// </summary>
+        public static string InsertDocFragmentBefore {
+            get {
+                return ResourceManager.GetString("InsertDocFragmentBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First inside.
+        /// </summary>
+        public static string InsertDocFragmentFirstInside {
+            get {
+                return ResourceManager.GetString("InsertDocFragmentFirstInside", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last inside.
+        /// </summary>
+        public static string InsertDocFragmentLastInside {
+            get {
+                return ResourceManager.GetString("InsertDocFragmentLastInside", resourceCulture);
             }
         }
         
@@ -309,6 +471,51 @@ namespace Tobi.Plugin.DocumentPane {
         public static string No_Document {
             get {
                 return ResourceManager.GetString("No_Document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page label (number).
+        /// </summary>
+        public static string PageLabel {
+            get {
+                return ResourceManager.GetString("PageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (note that this message is displayed only once per project session).
+        /// </summary>
+        public static string StructEditConfirmDetails {
+            get {
+                return ResourceManager.GetString("StructEditConfirmDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you aware of the implications when editing the structure of the document? This is currently an experimental feature that requires cautious use, because it modifies the XML markup of the document without automatically checking for syntax errors (DAISY DTBOOK / EPUB3 XHTML5). Please make sure that structural modifications do not create an invalid document!.
+        /// </summary>
+        public static string StructEditConfirmMessage {
+            get {
+                return ResourceManager.GetString("StructEditConfirmMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Structure editing warning!.
+        /// </summary>
+        public static string StructEditConfirmTitle {
+            get {
+                return ResourceManager.GetString("StructEditConfirmTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text content.
+        /// </summary>
+        public static string TextContent {
+            get {
+                return ResourceManager.GetString("TextContent", resourceCulture);
             }
         }
         

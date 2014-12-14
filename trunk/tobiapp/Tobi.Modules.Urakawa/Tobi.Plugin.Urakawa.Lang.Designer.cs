@@ -160,6 +160,24 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start a DAISY project from an MS Word document (*.docx file, WordML / OpenXML).
+        /// </summary>
+        public static string CmdImportDocx_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdImportDocx_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MS-Word to DAISY.
+        /// </summary>
+        public static string CmdImportDocx_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdImportDocx_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear the list of recently-opened files..
         /// </summary>
         public static string CmdMenuClearRecentFiles_LongDesc {

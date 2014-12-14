@@ -216,7 +216,7 @@ namespace Tobi.Plugin.Descriptions
             //    }));
 
             m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction
-                (Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc, Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_LongDesc);
+                (Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_ShortDesc, Tobi_Plugin_Descriptions_Lang.CmdEditDescriptions_LongDesc, "EDIT_IMAGE_DESCRIPTIONS");
 
 
             //Tuple<TreeNode, TreeNode> selection = m_Session.GetTreeNodeSelection();

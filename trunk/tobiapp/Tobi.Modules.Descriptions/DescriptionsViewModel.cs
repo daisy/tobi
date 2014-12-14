@@ -16,14 +16,16 @@ using urakawa.daisy;
 using urakawa.events.undo;
 using urakawa.metadata.daisy;
 using urakawa.property.alt;
+using urakawa.undo;
 using urakawa.xuk;
+using AudioLib;
 
 namespace Tobi.Plugin.Descriptions
 {/// <summary>
     /// ViewModel for the MetadataPane
     /// </summary>
     [Export(typeof(DescriptionsViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class DescriptionsViewModel : ViewModelBase, IPartImportsSatisfiedNotification
+    public partial class DescriptionsViewModel : ViewModelBase, IPartImportsSatisfiedNotification, UndoRedoManager.Hooker.Host
     {
 
 #pragma warning disable 1591 // non-documented method
@@ -103,16 +105,49 @@ namespace Tobi.Plugin.Descriptions
             RaisePropertyChanged(() => Descriptions);
         }
 
-
-        private void OnProjectUnLoaded(Project project)
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
+            if (!TheDispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
 
-            OnProjectLoaded(null);
+#if NET40x
+                TheDispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged,
+                    eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+#else
+                TheDispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action)(() => OnUndoRedoManagerChanged(eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge))
+                    );
+#endif
+                return;
+            }
+
+            if (isTransactionEndEvent)
+            {
+                return;
+            }
+
+            if (command is CompositeCommand)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+
+            //if (!command.IsTransaction()
+            //    || done && command.IsTransactionLast()
+            //    || !done && command.IsTransactionFirst()
+            //    )
+            //{
+            //}
+
         }
+
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
 
         private void OnProjectLoaded(Project project)
         {
@@ -129,48 +164,17 @@ namespace Tobi.Plugin.Descriptions
 
             if (project == null) return;
 
-            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
         }
 
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
+        private void OnProjectUnLoaded(Project project)
         {
-            if (!Dispatcher.CurrentDispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
-                return;
-            }
+            if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
 
-            //m_Logger.Log("MissingAudioValidator.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs
-                //|| eventt is TransactionEndedEventArgs
-                           ))
-            {
-                Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            //if (m_Session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            //{
-            //    DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-            //    m_Logger.Log("AudioContentValidator.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-            //    return;
-            //}
-
-            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs; // || eventt is TransactionEndedEventArgs;
-
-            Command cmd = eventt.Command;
-
-            //RaisePropertyChanged(() => Metadatas);
+            OnProjectLoaded(null);
         }
+
 
         public IEnumerable<AlternateContent> GetAltContents(string diagramElementName)
         {

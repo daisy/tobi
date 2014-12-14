@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DocumentPaneView_UndoRedo.cs" />
     <Compile Include="DocumentPaneView_FindTreeNode.cs" />
     <Compile Include="DocumentPaneView_WalkDocumentTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

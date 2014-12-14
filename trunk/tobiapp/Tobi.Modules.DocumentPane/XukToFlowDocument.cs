@@ -118,8 +118,8 @@ namespace Tobi.Plugin.DocumentPane
         protected readonly IEventAggregator EventAggregator;
         protected readonly IShellView ShellView;
 
-        private long m_nTreeNode;
-        private static Time m_totalAudioDuration;
+        private long m_nTreeNode = 0;
+        private static Time m_totalAudioDuration = Time.Zero;
 
         private static int COUNT = 0;
         ~XukToFlowDocument()
@@ -1663,9 +1663,16 @@ namespace Tobi.Plugin.DocumentPane
             {
                 if (String.IsNullOrEmpty(textMedia))
                 {
-                    var run = new Run("...");
-                    setTextDirection(node, null, run, null);
-                    data.Inlines.Add(run);
+                    if (textMedia != null) // empty string?
+                    {
+#if DEBUG
+                        Debugger.Break();
+#endif
+                        var run = new Run("...");
+                        setTextDirection(node, null, run, null);
+                        data.Inlines.Add(run);
+                    }
+
                     addInline(parent, data);
                 }
                 else
@@ -3293,7 +3300,7 @@ namespace Tobi.Plugin.DocumentPane
         }
 
 
-        private void walkBookTreeAndGenerateFlowDocument(TreeNode node, TextElement parent)
+        public TextElement walkBookTreeAndGenerateFlowDocument(TreeNode node, TextElement parent)
         {
             m_nTreeNode++;
 
@@ -3430,6 +3437,8 @@ namespace Tobi.Plugin.DocumentPane
                     && !string.IsNullOrEmpty(localName)
                     && localName.Equals("table", StringComparison.OrdinalIgnoreCase))
                 {
+                    DebugFix.Assert(parentNext is Table);
+
                     int n = ((Table)parentNext).Columns.Count;
                     foreach (TableCell cell in m_cellsToExpand)
                     {
@@ -3519,6 +3528,8 @@ namespace Tobi.Plugin.DocumentPane
                     }
                 }
             }
+
+            return parentNext;
         }
 
         private FlowDirection setTextDirection(TreeNode.TextDirection dir, FrameworkElement el, Inline il, Block bl)

@@ -28,6 +28,15 @@
 
       <UI:MenuItemRichCommand RichCommand="{Binding CommandEditText}" x:Name="CommandEditText"/>
       <Separator/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandStructRemoveFragment}" x:Name="CommandStructRemoveFragment"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandStructInsertFragment}" x:Name="CommandStructInsertFragment"/>
+      <Separator/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandStructCopyFragment}" x:Name="CommandStructCopyFragment"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandStructCutFragment}" x:Name="CommandStructCutFragment"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandStructPasteFragment}" x:Name="CommandStructPasteFragment"/>
+      <Separator/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandStructInsertPageBreak}" x:Name="CommandStructInsertPageBreak"/>
+      <Separator/>
       <UI:MenuItemRichCommand RichCommand="{Binding CommandFollowLink}" x:Name="CommandFollowLink"/>
       <UI:MenuItemRichCommand RichCommand="{Binding CommandUnFollowLink}" x:Name="CommandUnFollowLink"/>
       

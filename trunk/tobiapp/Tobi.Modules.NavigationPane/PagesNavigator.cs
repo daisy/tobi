@@ -19,10 +19,41 @@ namespace Tobi.Plugin.NavigationPane
             m_view = view;
         }
 
-        public void AddPage(TreeNode treeNode)
+        public void AddPage(TreeNode node)
         {
-            Pages.Add(new Page(treeNode));
+            RemovePage(node); // ensure no duplicate
+
+            bool inserted = false;
+            foreach (Page page in Pages)
+            {
+                if (node.IsBefore(page.TreeNode))
+                {
+                    Pages.Insert(Pages.IndexOf(page), new Page(node));
+                    inserted = true;
+                    break;
+                }
+            }
+            if (!inserted)
+            {
+                Pages.Add(new Page(node));
+            }
         }
+
+        public void RemovePage(TreeNode node)
+        {
+            Page toRemove = null;
+            foreach (Page page in Pages)
+            {
+                if (page.TreeNode == node)
+                {
+                    toRemove = page;
+                    break;
+                }
+            }
+            if (toRemove != null)
+                Pages.Remove(toRemove);
+        }
+
         public ObservableCollection<Page> Pages
         {
             get { return m_Pages; }

@@ -31,6 +31,16 @@ using urakawa.exception;
 using urakawa.media;
 using urakawa.property.xml;
 using urakawa.xuk;
+using DocumentBuilder = Saxon.Api.DocumentBuilder;
+
+using DocumentFormat.OpenXml.Packaging;
+using OpenXmlPowerTools;
+
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Xml.Linq;
+using System.Linq;
+
 #if ENABLE_SHARPZIP
 using ICSharpCode.SharpZipLib.Zip;
 #else
@@ -77,6 +87,7 @@ namespace Tobi.Plugin.Urakawa
         public RichDelegateCommand OpenCommand { get; private set; }
         public RichDelegateCommand ImportCommand { get; private set; }
         public RichDelegateCommand OpenConvertCommand { get; private set; }
+        public RichDelegateCommand DocXWordMLOpenXMLTransformCommand { get; private set; }
 
         private void initCommands_Open()
         {
@@ -201,6 +212,172 @@ namespace Tobi.Plugin.Urakawa
             m_ShellView.RegisterRichCommand(ImportCommand);
             //
 
+            DocXWordMLOpenXMLTransformCommand = new RichDelegateCommand(
+                Tobi_Plugin_Urakawa_Lang.CmdImportDocx_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdImportDocx_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon(@"preferences-desktop-font"),
+                () =>
+                {
+                    m_ShellView.RaiseEscapeEvent();
+
+                    //messageBoxText("Word XML conversion", "This feature is only available in the .NET4 version of Tobi!", "Because of .NET3 limitations, this functionality is currently disabled in this version of Tobi. Please download and install Tobi .NET4 (this is recommended anyway).");
+
+                    var dlg = new OpenFileDialog
+                    {
+                        FileName = @"",
+                        DefaultExt = @".docx",
+                        Multiselect = true,
+                        Filter = @"DOCX (*.docx)|*.docx",
+                        CheckFileExists = false,
+                        CheckPathExists = false,
+                        AddExtension = true,
+                        DereferenceLinks = true,
+                        Title =
+                            @"Tobi: " +
+                            UserInterfaceStrings.EscapeMnemonic(
+                                Tobi_Plugin_Urakawa_Lang.CmdImportDocx_ShortDesc)
+                    };
+
+                    bool? result = false;
+
+                    m_ShellView.DimBackgroundWhile(() => { result = dlg.ShowDialog(); });
+
+                    if (result == false)
+                    {
+                        return;
+                    }
+
+                    if (dlg.FileNames == null || dlg.FileNames.Length < 1)
+                    {
+                        return;
+                    }
+
+                    string ext = Path.GetExtension(dlg.FileNames[0]);
+
+                    if (string.IsNullOrEmpty(ext)
+                        || (
+                               !ext.Equals(".docx", StringComparison.OrdinalIgnoreCase)
+                           ))
+                    {
+                        return;
+                    }
+
+                    string parentFolderPath = Path.Combine(Path.GetDirectoryName(dlg.FileNames[0]), Path.GetFileName(dlg.FileNames[0]) + @"_HTML");
+                    if (!Directory.Exists(parentFolderPath))
+                    {
+                        FileDataProvider.CreateDirectory(parentFolderPath);
+                    }
+                    string htmlPath = Path.Combine(parentFolderPath, Path.GetFileNameWithoutExtension(dlg.FileNames[0]) + @".html");
+
+                    using (WordprocessingDocument wDoc = WordprocessingDocument.Open(dlg.FileNames[0], true))
+                    {
+                        int imageCounter = 0;
+                        var pageTitle = (string)wDoc.CoreFilePropertiesPart.GetXDocument().Descendants(DC.title).FirstOrDefault();
+                        if (pageTitle == null)
+                            pageTitle = Path.GetFileNameWithoutExtension(dlg.FileNames[0]);
+
+                        HtmlConverterSettings settings = new HtmlConverterSettings()
+                        {
+                            PageTitle = pageTitle,
+                            FabricateCssClasses = true,
+                            CssClassPrefix = "pt-",
+                            RestrictToSupportedLanguages = false,
+                            RestrictToSupportedNumberingFormats = false,
+                            ListItemImplementations = new Dictionary<string, Func<string, int, string, string>>()
+                            {
+                                {"fr-FR", ListItemTextGetter_fr_FR.GetListItemText},
+                                {"tr-TR", ListItemTextGetter_tr_TR.GetListItemText},
+                                {"ru-RU", ListItemTextGetter_ru_RU.GetListItemText},
+                                {"sv-SE", ListItemTextGetter_sv_SE.GetListItemText},
+                            },
+                            ImageHandler = imageInfo =>
+                            {
+                                ++imageCounter;
+                                string extension = imageInfo.ContentType.Split('/')[1].ToLower();
+
+                                ImageFormat imageFormat = null;
+                                if (extension == "png")
+                                {
+                                    imageFormat = ImageFormat.Png;
+                                }
+                                else if (extension == "gif")
+                                {
+                                    imageFormat = ImageFormat.Gif;
+                                }
+                                else if (extension == "bmp")
+                                {
+                                    imageFormat = ImageFormat.Bmp;
+                                }
+                                else if (extension == "jpeg")
+                                {
+                                    imageFormat = ImageFormat.Jpeg;
+                                }
+                                else if (extension == "tiff")
+                                {
+                                    extension = "png";
+                                    imageFormat = ImageFormat.Png;
+                                }
+                                else if (extension == "x-wmf")
+                                {
+                                    extension = "png";
+                                    imageFormat = ImageFormat.Png;
+                                }
+
+                                if (imageFormat == null)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return null;
+                                }
+
+                                string imageFileName = "image_" + imageCounter.ToString() + "." + extension;
+                                string imageFilePath = Path.Combine(parentFolderPath, imageFileName);
+
+                                try
+                                {
+                                    imageInfo.Bitmap.Save(imageFilePath, imageFormat);
+                                }
+                                catch (Exception ex)
+                                {
+#if DEBUG
+                                    Debugger.Break();
+#endif
+                                    return null;
+                                }
+
+                                XElement img = new XElement(Xhtml.img,
+                                    new XAttribute(NoNamespace.src, imageFileName),
+                                    imageInfo.ImgStyleAttribute,
+                                    imageInfo.AltText != null ?
+                                        new XAttribute(NoNamespace.alt, imageInfo.AltText) : null);
+                                return img;
+                            }
+                        };
+
+
+                        XElement html = HtmlConverter.ConvertToHtml(wDoc, settings);
+
+                        // Note: the xhtml returned by ConvertToHtmlTransform contains objects of type
+                        // XEntity.  PtOpenXmlUtil.cs define the XEntity class.  See
+                        // http://blogs.msdn.com/ericwhite/archive/2010/01/21/writing-entity-references-using-linq-to-xml.aspx
+                        // for detailed explanation.
+                        //
+                        // If you further transform the XML tree returned by ConvertToHtmlTransform, you
+                        // must do it correctly, or entities will not be serialized properly.
+
+                        var htmlString = html.ToString(SaveOptions.None);
+                        File.WriteAllText(htmlPath, htmlString, Encoding.UTF8);
+                    }
+                },
+                () => !isAudioRecording,
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_ImportDocx)
+                );
+
+            m_ShellView.RegisterRichCommand(DocXWordMLOpenXMLTransformCommand);
+            //
             OpenConvertCommand = new RichDelegateCommand(
                 Tobi_Plugin_Urakawa_Lang.CmdOpenConvert_ShortDesc,
                 Tobi_Plugin_Urakawa_Lang.CmdOpenConvert_LongDesc,
@@ -581,7 +758,7 @@ namespace Tobi.Plugin.Urakawa
 #if NET40
                                     IEnumerable<FileInfo> allFiles = dirInfo.EnumerateFiles("*.*", SearchOption.TopDirectoryOnly);
 #else
-                                                FileInfo[] allFiles = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
+                                    FileInfo[] allFiles = dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly);
 #endif
                                     foreach (FileInfo fileInfo in allFiles)
                                     {
@@ -1135,7 +1312,7 @@ namespace Tobi.Plugin.Urakawa
 
 
                         //var treeNode = TreeNode.EnsureTreeNodeHasNoSignificantTextOnlySiblings(false, DocumentProject.Presentations.Get(0).RootNode, null);
-                        
+
                         TreeNode treeNode = null;
                         var lname = DocumentProject.Presentations.Get(0).RootNode.GetXmlElementLocalName();
                         if (lname != null && (lname.Equals("math", StringComparison.OrdinalIgnoreCase) ||
