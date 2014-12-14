@@ -31,7 +31,7 @@
       <UI:MenuItemRichCommand RichCommand="{Binding CommandStructRemoveFragment}" x:Name="CommandStructRemoveFragment"/>
       <UI:MenuItemRichCommand RichCommand="{Binding CommandStructInsertFragment}" x:Name="CommandStructInsertFragment"/>
       <Separator/>
-      <UI:MenuItemRichCommand RichCommand="{Binding CommandStructCutFragment}" x:Name="CommandStructCopyFragment"/>
+      <UI:MenuItemRichCommand RichCommand="{Binding CommandStructCopyFragment}" x:Name="CommandStructCopyFragment"/>
       <UI:MenuItemRichCommand RichCommand="{Binding CommandStructCutFragment}" x:Name="CommandStructCutFragment"/>
       <UI:MenuItemRichCommand RichCommand="{Binding CommandStructPasteFragment}" x:Name="CommandStructPasteFragment"/>
       <Separator/>
