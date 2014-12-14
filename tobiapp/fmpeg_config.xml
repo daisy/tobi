@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fmpeg_configurations>
+<mp4>-i {0} -b:a {1} {2}</mp4>
+<amr>-i {0} -ar 8000 -ab {1} {2}</amr>
+<gpp_3>-i {0} -b 400k -acodec aac -strict experimental  -ac 1 -ar 16000 -ab {1} {2}</gpp_3>
+</fmpeg_configurations>
