@@ -60,33 +60,5 @@ namespace Tobi.Plugin.Validator
         {
             var validator = e.Validator.ValidationItems;
         }
-
-//        protected void OnProjectLoaded(Project project)
-//        {
-//            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-//            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-//            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-//            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-//        }
-
-//        protected void OnProjectUnLoaded(Project project)
-//        {
-//            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-//            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-//            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-//            //project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-//        }
-
-//        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs e)
-//        {
-//            if (!Dispatcher.CurrentDispatcher.CheckAccess())
-//            {
-//#if DEBUG
-//                Debugger.Break();
-//#endif
-//                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, e);
-//                return;
-//            }
-//        }
     }
 }

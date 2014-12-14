@@ -292,7 +292,7 @@ namespace Tobi.Plugin.Descriptions
                     chProp.SetMedia(textChannel, text1);
                 }
 
-                presentation.RootNode.XukInAfter_TextMediaCache();
+                //presentation.RootNode.XukInAfter_TextMediaCache();
 
                 var audioEventAggregator = new EventAggregator();
 

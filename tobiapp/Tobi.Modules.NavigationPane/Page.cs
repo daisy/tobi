@@ -95,38 +95,38 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
-        private static string extractString(Paragraph para)
-        {
-            StringBuilder str = new StringBuilder();
-            foreach (Inline inline in para.Inlines)
-            {
-                if (inline is Run)
-                {
-                    str.Append(((Run)inline).Text);
-                }
-                else if (inline is Span)
-                {
-                    str.Append(extractString((Span)inline));
-                }
-            }
-            return str.ToString();
-        }
+        //private static string extractString(Paragraph para)
+        //{
+        //    StringBuilder str = new StringBuilder();
+        //    foreach (Inline inline in para.Inlines)
+        //    {
+        //        if (inline is Run)
+        //        {
+        //            str.Append(((Run)inline).Text);
+        //        }
+        //        else if (inline is Span)
+        //        {
+        //            str.Append(extractString((Span)inline));
+        //        }
+        //    }
+        //    return str.ToString();
+        //}
 
-        private static string extractString(Span span)
-        {
-            StringBuilder str = new StringBuilder();
-            foreach (Inline inline in span.Inlines)
-            {
-                if (inline is Run)
-                {
-                    str.Append(((Run)inline).Text);
-                }
-                else if (inline is Span)
-                {
-                    str.Append(extractString((Span)inline));
-                }
-            }
-            return str.ToString();
-        }
+        //private static string extractString(Span span)
+        //{
+        //    StringBuilder str = new StringBuilder();
+        //    foreach (Inline inline in span.Inlines)
+        //    {
+        //        if (inline is Run)
+        //        {
+        //            str.Append(((Run)inline).Text);
+        //        }
+        //        else if (inline is Span)
+        //        {
+        //            str.Append(extractString((Span)inline));
+        //        }
+        //    }
+        //    return str.ToString();
+        //}
     }
 }

@@ -102,6 +102,14 @@ UI:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkTextBoxStyle}"
   </DockPanel>
   </Border>
 
+    <Button
+             DockPanel.Dock="Bottom"
+             Content="{x:Static local:Tobi_Plugin_NavigationPane_Lang.RenumberPages}"
+             Click="OnClick_ButtonRenumber"
+             Margin="4,2,4,2"
+          Control.TabIndex="1"
+              ToolTip="{x:Static local:Tobi_Plugin_NavigationPane_Lang.CmdNavigationRenumberPages_LongDesc}"
+  />
 
   <!--    <ListBox x:Name="ListView" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

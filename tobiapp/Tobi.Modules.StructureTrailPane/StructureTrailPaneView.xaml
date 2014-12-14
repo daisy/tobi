@@ -13,6 +13,7 @@
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
   <!--WindowBrushKey-->
 
+
   <WrapPanel
       
       Focusable="False"
@@ -21,5 +22,30 @@
              Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
              x:Name="BreadcrumbPanel" Orientation="Horizontal"
              >
-    </WrapPanel>
+
+    <WrapPanel.ContextMenu>
+      <ContextMenu x:Name="contextMenu">
+        <ContextMenu.Resources>
+          <Style TargetType="{x:Type UI:MenuItemRichCommand}" BasedOn="{StaticResource {x:Type MenuItem}}">
+          </Style>
+        </ContextMenu.Resources>
+
+        <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandEditText}" x:Name="CommandEditText"/>
+        <Separator/>
+        <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandStructRemoveFragment}" x:Name="CommandStructRemoveFragment"/>
+        <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandStructInsertFragment}" x:Name="CommandStructInsertFragment"/>
+        <Separator/>
+        <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandStructCopyFragment}" x:Name="CommandStructCopyFragment"/>
+        <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandStructCutFragment}" x:Name="CommandStructCutFragment"/>
+        <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandStructPasteFragment}" x:Name="CommandStructPasteFragment"/>
+        <Separator/>
+        <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandStructInsertPageBreak}" x:Name="CommandStructInsertPageBreak"/>
+        <Separator/>
+        <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandFollowLink}" x:Name="CommandFollowLink"/>
+        <UI:MenuItemRichCommand RichCommand="{Binding DocumentViewModel.CommandUnFollowLink}" x:Name="CommandUnFollowLink"/>
+
+      </ContextMenu>
+
+    </WrapPanel.ContextMenu>
+  </WrapPanel>
 </Border>

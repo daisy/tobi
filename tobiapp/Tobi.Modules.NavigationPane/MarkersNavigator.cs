@@ -43,7 +43,7 @@ namespace Tobi.Plugin.NavigationPane
         public void RemoveMarkedTreeNode(TreeNode node)
         {
             MarkedTreeNode toRemove = null;
-            foreach (var markedTreeNode in MarkedTreeNodes)
+            foreach (MarkedTreeNode markedTreeNode in MarkedTreeNodes)
             {
                 if (markedTreeNode.TreeNode == node)
                 {

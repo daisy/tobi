@@ -37,17 +37,21 @@ using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.daisy;
+using urakawa.daisy.export;
 using urakawa.daisy.import;
 using urakawa.data;
 using urakawa.events.undo;
 using urakawa.media;
 using urakawa.property.alt;
+using urakawa.property.channel;
 using urakawa.property.xml;
+using urakawa.undo;
 using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
+using System.Xml;
 
 #if NET40
-using System.Windows.Shell;
+//using System.Windows.Shell;
 #endif
 
 namespace Tobi.Plugin.DocumentPane
@@ -185,7 +189,8 @@ namespace Tobi.Plugin.DocumentPane
     /// Interaction logic for DocumentPaneView.xaml
     /// </summary>
     [Export(typeof(DocumentPaneView)), PartCreationPolicy(CreationPolicy.Shared)]
-    public partial class DocumentPaneView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx, IInputBindingManager
+    [Export(typeof(IDocumentViewModel))]
+    public partial class DocumentPaneView : IPartImportsSatisfiedNotification, INotifyPropertyChangedEx, IInputBindingManager, UndoRedoManager.Hooker.Host, IDocumentViewModel
     {
         private readonly IRegionManager m_RegionManager;
 
@@ -833,6 +838,17 @@ namespace Tobi.Plugin.DocumentPane
 
         public RichDelegateCommand CommandEditText { get; private set; }
 
+        public RichDelegateCommand CommandStructRemoveFragment { get; private set; }
+        public RichDelegateCommand CommandStructInsertFragment { get; private set; }
+
+        public RichDelegateCommand CommandStructInsertPageBreak { get; private set; }
+
+        private TreeNode m_TreeNodeFragmentClipboard = null;
+
+        public RichDelegateCommand CommandStructCopyFragment { get; private set; }
+        public RichDelegateCommand CommandStructCutFragment { get; private set; }
+        public RichDelegateCommand CommandStructPasteFragment { get; private set; }
+
         public RichDelegateCommand CommandFollowLink { get; private set; }
         public RichDelegateCommand CommandUnFollowLink { get; private set; }
 
@@ -853,6 +869,18 @@ namespace Tobi.Plugin.DocumentPane
         private readonly IUrakawaSession m_UrakawaSession;
 
         private readonly IShellView m_ShellView;
+
+        private bool checkDisplayStructEditWarning()
+        {
+            if (!m_ProjectLoadedFlag) return true;
+            
+            m_ProjectLoadedFlag = false;
+
+            return checkWithUser(Tobi_Plugin_DocumentPane_Lang.StructEditConfirmTitle,
+                Tobi_Plugin_DocumentPane_Lang.StructEditConfirmMessage,
+                    Tobi_Plugin_DocumentPane_Lang.StructEditConfirmDetails);
+        }
+
 
         public void BringIntoFocus()
         {
@@ -950,6 +978,555 @@ namespace Tobi.Plugin.DocumentPane
 
 
                 m_UrakawaSession.PerformTreeNodeSelection(toSelect, false, sub);
+            }
+        }
+
+        private bool checkWithUser(string title, string message, string info)
+        {
+            m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
+
+            var label = new TextBlock // TextBoxReadOnlyCaretVisible
+            {
+                //FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                //BorderThickness = new Thickness(1),
+                //Padding = new Thickness(6),
+
+                //TextReadOnly = message,
+                Text = message,
+
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            //var iconProvider = new ScalableGreyableImageProvider(
+            //    m_ShellView.LoadTangoIcon("help-browser"),
+            //    m_ShellView.MagnificationLevel);
+
+            //var panel = new StackPanel
+            //{
+            //    Orientation = Orientation.Horizontal,
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    VerticalAlignment = VerticalAlignment.Stretch,
+            //};
+            //panel.Children.Add(iconProvider.IconLarge);
+            //panel.Children.Add(label);
+            ////panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+            var details = new TextBoxReadOnlyCaretVisible
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = info
+            };
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   title,
+                                                   label,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 340, 260, details, 40, null);
+
+            windowPopup.ShowModal();
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        private bool askUser(string message, string info)
+        {
+            m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
+
+            var label = new TextBlock
+            {
+                Text = message,
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var iconProvider = new ScalableGreyableImageProvider(
+                m_ShellView.LoadTangoIcon("help-browser"),
+                m_ShellView.MagnificationLevel);
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            panel.Children.Add(iconProvider.IconLarge);
+            panel.Children.Add(label);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+            var details = new TextBoxReadOnlyCaretVisible
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = info
+            };
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   message,
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.YesNo,
+                                                   PopupModalWindow.DialogButton.No,
+                                                   true, 360, 200, details, 40, null);
+
+            windowPopup.ShowModal();
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        protected TreeNode buildTreeNodeFromXml(XmlNode xmlNode, Presentation presentation, TreeNode parentTreeNode)
+        {
+            XmlNodeType xmlType = xmlNode.NodeType;
+            switch (xmlType)
+            {
+                case XmlNodeType.Document:
+                    {
+                        XmlDocument xmlDoc = ((XmlDocument)xmlNode);
+                        TreeNode root = buildTreeNodeFromXml(xmlDoc.DocumentElement, presentation, parentTreeNode);
+                        return root;
+                    }
+                case XmlNodeType.Element:
+                    {
+                        TreeNode treeNode = presentation.TreeNodeFactory.Create();
+
+                        string prefix;
+                        string localName;
+                        XmlProperty.SplitLocalName(xmlNode.Name, out prefix, out localName);
+                        string uri = "";
+                        if (!string.IsNullOrEmpty(prefix))
+                        {
+                            uri = presentation.RootNode.GetXmlNamespaceUri(prefix);
+
+                            if (string.IsNullOrEmpty(uri))
+                            {
+                                uri = xmlNode.GetNamespaceOfPrefix(prefix);
+
+                                if (string.IsNullOrEmpty(uri))
+                                {
+                                    uri = xmlNode.NamespaceURI;
+                                }
+                            }
+                        }
+
+                        XmlProperty xmlProp = treeNode.GetOrCreateXmlProperty();
+                        xmlProp.SetQName(xmlNode.LocalName, uri);
+
+                        XmlAttributeCollection attributeCol = xmlNode.Attributes;
+                        if (attributeCol != null)
+                        {
+                            for (int i = 0; i < attributeCol.Count; i++)
+                            {
+                                XmlNode xmlAttr = attributeCol.Item(i);
+                                buildTreeNodeFromXml(xmlAttr, presentation, treeNode);
+                            }
+                        }
+
+                        if (parentTreeNode != null)
+                        {
+                            parentTreeNode.AppendChild(treeNode);
+                        }
+
+                        foreach (XmlNode childXmlNode in xmlNode.ChildNodes)
+                        {
+                            buildTreeNodeFromXml(childXmlNode, presentation, treeNode);
+                        }
+
+                        return treeNode;
+                    }
+                case XmlNodeType.Attribute:
+                    {
+                        XmlProperty xmlProp = parentTreeNode.GetOrCreateXmlProperty();
+
+                        string prefix;
+                        string localName;
+                        XmlProperty.SplitLocalName(xmlNode.Name, out prefix, out localName);
+                        string uri = "";
+                        if (!string.IsNullOrEmpty(prefix))
+                        {
+                            uri = presentation.RootNode.GetXmlNamespaceUri(prefix);
+
+                            if (string.IsNullOrEmpty(uri))
+                            {
+                                uri = xmlNode.GetNamespaceOfPrefix(prefix);
+
+                                if (string.IsNullOrEmpty(uri))
+                                {
+                                    uri = xmlNode.NamespaceURI;
+                                }
+                            }
+                        }
+
+                        xmlProp.SetAttribute(xmlNode.LocalName, uri, xmlNode.Value);
+
+                        return null;
+                    }
+                //case XmlNodeType.Whitespace:
+                //case XmlNodeType.CDATA:
+                //case XmlNodeType.SignificantWhitespace:
+                case XmlNodeType.Text:
+                    {
+                        string text = xmlNode.Value;
+
+                        if (string.IsNullOrEmpty(text))
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif // DEBUG
+                            break; // switch+case
+                        }
+
+                        text = text.Replace(@"\r\n", @"\n");
+
+
+                        TextMedia textMedia = presentation.MediaFactory.CreateTextMedia();
+                        textMedia.Text = text;
+
+                        ChannelsProperty cProp = presentation.PropertyFactory.CreateChannelsProperty();
+                        cProp.SetMedia(presentation.ChannelsManager.GetOrCreateTextChannel(), textMedia);
+
+
+                        bool atLeastOneSiblingElement = false;
+                        foreach (XmlNode childXmlNode in xmlNode.ParentNode.ChildNodes)
+                        {
+                            XmlNodeType childXmlType = childXmlNode.NodeType;
+                            if (childXmlType == XmlNodeType.Element)
+                            {
+                                atLeastOneSiblingElement = true;
+                                break;
+                            }
+                        }
+
+                        if (atLeastOneSiblingElement)
+                        {
+                            TreeNode txtWrapperNode = presentation.TreeNodeFactory.Create();
+                            txtWrapperNode.AddProperty(cProp);
+                            parentTreeNode.AppendChild(txtWrapperNode);
+                        }
+                        else
+                        {
+                            AbstractTextMedia txtMedia = parentTreeNode.GetTextMedia();
+                            if (txtMedia == null)
+                            {
+                                parentTreeNode.AddProperty(cProp);
+                            }
+                            else
+                            {
+                                // Merge contiguous text chunks (occurs with script commented CDATA section in XHTML)
+                                txtMedia.Text += text;
+                            }
+                        }
+
+                        break; // switch+case
+                    }
+                default:
+                    {
+                        return null;
+                    }
+            }
+
+            return null;
+        }
+
+        protected bool structureInsertDialog(TreeNode node, string title, string cmdShort, string cmdLong, string cmdId,
+            TreeNode nodeToInsert,
+            string initialNameInput, string initialTextInput, string labelNameInput, string labelTextInput,
+            Func<string, string, string, TreeNode> callback)
+        {
+            //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+            int position = node.Children.Count; // append
+            position = 0; // prepend
+
+            TreeNode parent = node;
+
+            var radioPrepend = new RadioButton()
+            {
+                Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentFirstInside,
+                GroupName = "INSERT"
+            };
+            var radioAppend = new RadioButton()
+            {
+                Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentLastInside,
+                GroupName = "INSERT"
+            };
+            var radioBefore = new RadioButton()
+            {
+                Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentBefore,
+                GroupName = "INSERT"
+            };
+            var radioAfter = new RadioButton()
+            {
+                Content = Tobi_Plugin_DocumentPane_Lang.InsertDocFragmentAfter,
+                GroupName = "INSERT"
+            };
+
+            radioPrepend.IsChecked = true;
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            if (node.GetTextMedia() != null && string.IsNullOrEmpty(node.GetXmlElementLocalName())) // text-only node
+            {
+                radioBefore.IsChecked = true;
+            }
+            else
+            {
+                panel.Children.Add(radioPrepend);
+                panel.Children.Add(radioAppend);
+            }
+
+            if (node.Parent != null)
+            {
+                panel.Children.Add(radioBefore);
+                panel.Children.Add(radioAfter);
+            }
+
+            var elementNameInput = new TextBox()
+            {
+                Text = string.IsNullOrEmpty(initialNameInput) ? "" : initialNameInput
+            };
+            var elementTextInput = new TextBox()
+            {
+                Text = string.IsNullOrEmpty(initialTextInput) ? "" : initialTextInput
+            };
+
+            if (labelNameInput != null)
+            {
+                var label_NameInput = new TextBlock()
+                {
+                    Text = labelNameInput + ": ",
+                    Margin = new Thickness(8, 0, 8, 0),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Focusable = true,
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                var panel_NameInput = new DockPanel()
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center,
+                };
+                label_NameInput.SetValue(DockPanel.DockProperty, Dock.Left);
+                panel_NameInput.Children.Add(label_NameInput);
+                panel_NameInput.Children.Add(elementNameInput);
+
+                panel.Children.Add(panel_NameInput);
+            }
+
+            if (labelTextInput != null)
+            {
+                var label_TextInput = new TextBlock()
+                {
+                    Text = labelTextInput + ": ",
+                    Margin = new Thickness(8, 0, 8, 0),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Focusable = true,
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                var panel_TextInput = new DockPanel()
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center,
+                };
+                label_TextInput.SetValue(DockPanel.DockProperty, Dock.Left);
+                panel_TextInput.Children.Add(label_TextInput);
+                panel_TextInput.Children.Add(elementTextInput);
+
+                panel.Children.Add(panel_TextInput);
+            }
+
+            var textbox = new TextBoxReadOnlyCaretVisible()
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                //TextReadOnly = info,
+
+                Text = "",
+                AcceptsReturn = true,
+                //AcceptsTab = true,
+                //TextWrapping = TextWrapping.WrapWithOverflow
+            };
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   title,
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 350, 260, labelNameInput != null ? textbox : null, 200, null);
+            windowPopup.ShowModal();
+
+            if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok)
+            {
+                return false;
+            }
+
+
+            if (nodeToInsert == null && callback != null)
+            {
+                nodeToInsert = callback(elementNameInput.Text, elementTextInput.Text, textbox.Text);
+            }
+
+            if (nodeToInsert == null)
+            {
+                return false;
+            }
+
+
+            bool isCompositeCommand = false;
+            if ((Convert.ToBoolean(radioPrepend.IsChecked) || Convert.ToBoolean(radioAppend.IsChecked)) && node.GetTextMedia() != null)
+            {
+                DebugFix.Assert(!string.IsNullOrEmpty(node.GetXmlElementLocalName()));
+
+                TreeNode nodeParent = node.Parent;
+                if (nodeParent == null)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return false;
+                }
+
+                isCompositeCommand = true;
+                nodeParent.Presentation.UndoRedoManager.StartTransaction(cmdShort, cmdLong, cmdId);
+
+                var previous = node.GetPreviousSiblingWithText();
+                var next = node.GetNextSiblingWithText();
+
+                // Step (1) DETACH
+                int pos = nodeParent.Children.IndexOf(node);
+                var cmd1 = nodeParent.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
+                nodeParent.Presentation.UndoRedoManager.Execute(cmd1);
+                //node.Tag = null;
+
+                if (previous != null)
+                {
+                    m_UrakawaSession.PerformTreeNodeSelection(previous);
+                }
+                else if (next != null)
+                {
+                    m_UrakawaSession.PerformTreeNodeSelection(next);
+                }
+                else if (nodeParent != null)
+                {
+                    m_UrakawaSession.PerformTreeNodeSelection(nodeParent);
+                }
+                else
+                {
+                    m_UrakawaSession.PerformTreeNodeSelection(nodeParent.Presentation.RootNode);
+                }
+
+                // Step (2) CLONE AND EMPTY TEXT
+                TreeNode nodeClone = node.Copy(true, true);
+                Channel textChannel = node.Presentation.ChannelsManager.GetOrCreateTextChannel();
+                ChannelsProperty cloneChProp = nodeClone.GetOrCreateChannelsProperty();
+                cloneChProp.SetMedia(textChannel, null);
+                var cmd2 = nodeParent.Presentation.CommandFactory.CreateTreeNodeInsertCommand(nodeClone, nodeParent, pos);
+                nodeParent.Presentation.UndoRedoManager.Execute(cmd2);
+
+                // Step (3) RE-ADD TEXT AS CHILD
+                TreeNode newTextNode = nodeParent.Presentation.TreeNodeFactory.Create();
+                ChannelsProperty newChProp = newTextNode.GetOrCreateChannelsProperty();
+                //Channel newTextChannel = node.Presentation.ChannelFactory.CreateTextChannel();
+                TextMedia newTxtMedia = nodeParent.Presentation.MediaFactory.CreateTextMedia();
+                newTxtMedia.Text = node.GetTextMedia().Text; //node.GetTextFlattened()
+                newChProp.SetMedia(textChannel, newTxtMedia);
+                var cmd3 = nodeParent.Presentation.CommandFactory.CreateTreeNodeInsertCommand(newTextNode, nodeClone, 0);
+                nodeParent.Presentation.UndoRedoManager.Execute(cmd3);
+
+                node = nodeClone;
+            }
+
+            if (Convert.ToBoolean(radioPrepend.IsChecked))
+            {
+                position = 0; // prepend
+
+                parent = node;
+            }
+            else if (Convert.ToBoolean(radioAppend.IsChecked))
+            {
+                position = node.Children.Count; // append
+
+                parent = node;
+            }
+            else if (Convert.ToBoolean(radioBefore.IsChecked))
+            {
+                parent = node.Parent;
+                if (parent == null) return false;
+
+                position = parent.Children.IndexOf(node);
+            }
+            else if (Convert.ToBoolean(radioAfter.IsChecked))
+            {
+                parent = node.Parent;
+                if (parent == null) return false;
+
+                position = parent.Children.IndexOf(node) + 1;
+            }
+
+            var cmd = node.Presentation.CommandFactory.CreateTreeNodeInsertCommand(nodeToInsert, parent, position);
+            node.Presentation.UndoRedoManager.Execute(cmd);
+
+            if (isCompositeCommand)
+            {
+                node.Presentation.UndoRedoManager.EndTransaction();
+            }
+
+            m_UrakawaSession.PerformTreeNodeSelection(nodeToInsert);
+
+            return true;
+        }
+
+        public void stripXmlIds(TreeNode node)
+        {
+            XmlProperty xmlProp = node.GetXmlProperty();
+            if (xmlProp != null)
+            {
+                urakawa.property.xml.XmlAttribute idAttr = xmlProp.GetAttribute(XmlReaderWriterHelper.XmlId, XmlReaderWriterHelper.NS_URL_XML);
+                if (idAttr == null)
+                {
+                    idAttr = xmlProp.GetAttribute("id");
+                }
+                if (idAttr != null)
+                {
+                    xmlProp.RemoveAttribute(idAttr);
+                }
+            }
+
+            foreach (var child in node.Children.ContentsAs_Enumerable)
+            {
+                stripXmlIds(child);
             }
         }
 
@@ -1221,6 +1798,520 @@ namespace Tobi.Plugin.DocumentPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_UnfollowLink));
 
             m_ShellView.RegisterRichCommand(CommandUnFollowLink);
+
+            //
+
+            CommandStructCutFragment = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditCutFragment_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditCutFragment_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+
+                    if (node == null) return;
+                    
+                    if (!checkDisplayStructEditWarning()) return;
+
+                    //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+                    if (m_TreeNodeFragmentClipboard != null)
+                    {
+                        if (
+                            !askUser(Tobi_Plugin_DocumentPane_Lang.CmdStructEditCutFragment_ShortDesc,
+                                Tobi_Plugin_DocumentPane_Lang.ConfirmStructureClipboard))
+                        {
+                            return;
+                        }
+                        m_TreeNodeFragmentClipboard = null;
+                    }
+
+                    var previous = node.GetPreviousSiblingWithText();
+                    var next = node.GetNextSiblingWithText();
+                    var nodeParent = node.Parent;
+
+                    var cmd = node.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
+                    node.Presentation.UndoRedoManager.Execute(cmd);
+
+                    if (previous != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(previous);
+                    }
+                    else if (next != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(next);
+                    }
+                    else if (nodeParent != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(nodeParent);
+                    }
+                    else
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(node.Presentation.RootNode);
+                    }
+
+                    // CANNOT remove tags, otherwise the undo for above remove command will fail!
+                    //node.FlushTags(); // ensure TextElement hierarchy gets re-created from scratch.
+                    // ... so we clone the TreeNode fragment (looses tags, text cache):
+
+                    m_TreeNodeFragmentClipboard = node.Copy(true, true);
+                },
+                () =>
+                {
+                    return CommandStructRemoveFragment.CanExecute();
+                },
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditCutFragment)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandStructCutFragment);
+
+            //
+            CommandStructCopyFragment = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditCopyFragment_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditCopyFragment_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+
+                    if (node == null) return;
+
+                    if (!checkDisplayStructEditWarning()) return;
+
+                    //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+                    if (m_TreeNodeFragmentClipboard != null)
+                    {
+                        if (
+                            !askUser(Tobi_Plugin_DocumentPane_Lang.CmdStructEditCopyFragment_ShortDesc,
+                                Tobi_Plugin_DocumentPane_Lang.ConfirmStructureClipboard))
+                        {
+                            return;
+                        }
+                        m_TreeNodeFragmentClipboard = null;
+                    }
+
+
+                    // CANNOT remove tags, otherwise the undo for above remove command will fail!
+                    //node.FlushTags(); // ensure TextElement hierarchy gets re-created from scratch.
+                    // ... so we clone the TreeNode fragment (looses tags, text cache):
+
+                    m_TreeNodeFragmentClipboard = node.Copy(true, true);
+
+                    stripXmlIds(m_TreeNodeFragmentClipboard);
+                },
+                () =>
+                {
+                    return CommandStructRemoveFragment.CanExecute();
+                },
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditCutFragment)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandStructCopyFragment);
+
+            //
+
+            CommandStructPasteFragment = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditPasteFragment_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditPasteFragment_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+
+                    if (node == null) return;
+
+                    if (!checkDisplayStructEditWarning()) return;
+
+                    if (structureInsertDialog(node,
+                        UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdStructEditPasteFragment_ShortDesc),
+                        "Extract text into new child TreeNode, then insert new node",
+                        "Extract text into child mixed XML content, and insert new TreeNode",
+                        "DOC_TEXT_ONLY_NODE_INSERT-PASTE",
+                        m_TreeNodeFragmentClipboard,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                        ))
+                    {
+                        m_TreeNodeFragmentClipboard = null;
+                    }
+                },
+                () =>
+                {
+                    return m_TreeNodeFragmentClipboard != null && CommandStructInsertFragment.CanExecute();
+                },
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditPasteFragment)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandStructPasteFragment);
+
+            //
+
+            CommandStructRemoveFragment = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditRemoveFragment_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditRemoveFragment_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+
+                    if (node == null) return;
+                    
+                    if (!checkDisplayStructEditWarning()) return;
+
+                    //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+                    var previous = node.GetPreviousSiblingWithText();
+                    var next = node.GetNextSiblingWithText();
+                    var nodeParent = node.Parent;
+
+                    var cmd = node.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
+                    node.Presentation.UndoRedoManager.Execute(cmd);
+
+                    if (previous != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(previous);
+                    }
+                    else if (next != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(next);
+                    }
+                    else if (nodeParent != null)
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(nodeParent);
+                    }
+                    else
+                    {
+                        m_UrakawaSession.PerformTreeNodeSelection(node.Presentation.RootNode);
+                    }
+                },
+                () =>
+                {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
+                    if (m_UrakawaSession.isAudioRecording) return false;
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    return node != null && node.Parent != null;
+                },
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditRemoveFragment)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandStructRemoveFragment);
+
+            //
+
+            CommandStructInsertFragment = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditInsertFragment_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditInsertFragment_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+
+                    if (node == null) return;
+
+                    if (!checkDisplayStructEditWarning()) return;
+
+                    bool html = node.Presentation.RootNode.GetXmlElementLocalName()
+                        .Equals("body", StringComparison.OrdinalIgnoreCase);
+
+                    if (structureInsertDialog(node,
+                        UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdStructEditInsertFragment_ShortDesc),
+                        "Extract text into new child TreeNode, then insert new node",
+                        "Extract text into child mixed XML content, and insert new TreeNode",
+                        "DOC_TEXT_ONLY_NODE_INSERT-CUSTOM",
+                        null,
+                        html ? "span" : "sent",
+                        "TXT",
+                        Tobi_Plugin_DocumentPane_Lang.ElementName,
+                        Tobi_Plugin_DocumentPane_Lang.TextContent,
+(elementName, elementText, xmlSource) =>
+{
+    if (!String.IsNullOrEmpty(xmlSource))
+    {
+        string xmlns_mathml = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_MATHML + "=\"" + DiagramContentModelHelper.NS_URL_MATHML + "\"";
+        string xmlns_svg = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_SVG + "=\"" + DiagramContentModelHelper.NS_URL_SVG + "\"";
+        string xmlns_epub = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_EPUB + "=\"" + DiagramContentModelHelper.NS_URL_EPUB + "\"";
+
+        string xmlns_xhtml = "xmlns=\"" + DiagramContentModelHelper.NS_URL_XHTML + "\"";
+        string xmlns_dtbook = "xmlns=\"" + "http://www.daisy.org/z3986/2005/dtbook/" + "\"";
+
+        string xmlSourceString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+        xmlSourceString += ("<root "
+            //+ XmlReaderWriterHelper.NS_PREFIX_XMLNS + "=\"" + node.Presentation.RootNode.GetXmlNamespaceUri() + "\""
+            + " "
+            + (html ? xmlns_xhtml : xmlns_dtbook)
+            + " "
+            + xmlns_mathml
+            + " "
+            + xmlns_svg
+            + " "
+            + xmlns_epub
+
+            + " >");
+
+        string strippedNS = xmlSource.Replace(xmlns_mathml, " ");
+        strippedNS = strippedNS.Replace(xmlns_svg, " ");
+        strippedNS = strippedNS.Replace(xmlns_epub, " ");
+        xmlSourceString += strippedNS;
+        xmlSourceString += "</root>";
+
+        //byte[] xmlSourceString_RawEncoded = Encoding.UTF8.GetBytes(xmlSourceString);
+        //MemoryStream stream = new MemoryStream();
+        //stream.Write(xmlSourceString_RawEncoded, 0, xmlSourceString_RawEncoded.Length);
+
+        //stream.Flush();
+
+        //stream.Seek(0, SeekOrigin.Begin);
+        //stream.Position = 0;
+
+        //XmlDocument fragmentDoc = new XmlDocument();
+        //fragmentDoc.XmlResolver = null;
+
+        ////XmlTextReader reader = new XmlTextReader(stream);
+        ////fragmentDoc.Load(reader);
+
+        //fragmentDoc.Load(stream);
+
+        ////fragmentDoc.LoadXml(xmlSourceString);
+
+
+        //XmlNode tobi = fragmentDoc.ChildNodes[1]; // skip XML declaration
+        //XmlNodeList children = tobi.ChildNodes;
+        //XmlNode[] xmlNodes = new XmlNode[children.Count];
+        //int i = 0;
+        //foreach (XmlNode child in children)
+        //{
+        //    xmlNodes[i] = child;
+        //    i++;
+        //}
+        //for (i = 0; i < xmlNodes.Length; i++)
+        //{
+        //    XmlNode child = xmlNodes[i];
+        //    XmlNode imported = htmlDocument.ImportNode(child, true);
+        //    tobi.RemoveChild(child);
+        //    textParentNode.AppendChild(imported);
+        //}
+
+        //normalizedDescriptionText = textParentNode.InnerXml;
+
+        XmlDocument xmldoc = XmlReaderWriterHelper.ParseXmlDocumentFromString(xmlSourceString, false, false);
+
+        //        try
+        //        {
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //#if DEBUG
+        //            Debugger.Break();
+        //#endif
+        //            return null;
+        //        }
+
+        TreeNode root = null;
+        if (xmldoc != null && xmldoc.DocumentElement != null && xmldoc.DocumentElement.FirstChild != null)
+        {
+            try
+            {
+                TreeNode.EnableTextCache = false;
+                root = buildTreeNodeFromXml(xmldoc.DocumentElement.FirstChild, node.Presentation, null);
+            }
+            finally
+            {
+                TreeNode.EnableTextCache = true;
+            }
+        }
+        if (root != null)
+        {
+            stripXmlIds(root);
+        }
+        return root;
+    }
+
+    if (String.IsNullOrEmpty(elementName))
+    {
+        return null;
+    }
+
+    TreeNode newNode = node.Presentation.TreeNodeFactory.Create();
+
+    if (!string.IsNullOrEmpty(elementText))
+    {
+        ChannelsProperty chProp = newNode.GetOrCreateChannelsProperty();
+        //Channel textChannel = node.Presentation.ChannelFactory.CreateTextChannel();
+        Channel textChannel = node.Presentation.ChannelsManager.GetOrCreateTextChannel();
+        TextMedia txtMedia = node.Presentation.MediaFactory.CreateTextMedia();
+        txtMedia.Text = elementText;
+        chProp.SetMedia(textChannel, txtMedia);
+    }
+
+    if (!String.IsNullOrEmpty(elementName))
+    {
+        XmlProperty xmlProp = newNode.GetOrCreateXmlProperty();
+        string uri = node.GetXmlNamespaceUri();
+        if (string.IsNullOrEmpty(uri) && node.Parent != null)
+        {
+            uri = node.Parent.GetXmlNamespaceUri();
+        }
+        if (string.IsNullOrEmpty(uri))
+        {
+#if DEBUG
+            Debugger.Break();
+#endif
+            uri = "";
+        }
+        xmlProp.SetQName(elementName, uri);
+    }
+
+    return newNode;
+}
+                        ))
+                    {
+                    }
+                },
+                () =>
+                {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
+                    if (m_UrakawaSession.isAudioRecording) return false;
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    return node != null
+                        //&& node.GetTextMedia() == null
+                        //&& node.GetText() == null
+                        ; // && node.Parent != null;
+                },
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditRemoveFragment)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandStructInsertFragment);
+            //
+
+            CommandStructInsertPageBreak = new RichDelegateCommand(
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditInsertPageBreak_ShortDesc,
+                Tobi_Plugin_DocumentPane_Lang.CmdStructEditInsertPageBreak_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadTangoIcon("accessories-text-editor"),
+                () =>
+                {
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1; // TOP LEVEL!
+
+                    if (node == null) return;
+
+                    if (!checkDisplayStructEditWarning()) return;
+
+                    bool html = node.Presentation.RootNode.GetXmlElementLocalName()
+                        .Equals("body", StringComparison.OrdinalIgnoreCase);
+
+                    if (structureInsertDialog(node,
+                        UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdStructEditInsertFragment_ShortDesc),
+                        "Extract text into new child TreeNode, then insert new node",
+                        "Extract text into child mixed XML content, and insert new TreeNode",
+                        "DOC_TEXT_ONLY_NODE_INSERT-PAGEBREAK",
+                        null,
+                        null,
+                        "1",
+                        null,
+                        Tobi_Plugin_DocumentPane_Lang.PageLabel,
+(elementName, elementText, xmlSource) =>
+{
+    if (string.IsNullOrEmpty(elementText))
+    {
+        return null;
+    }
+
+    TreeNode newNode = node.Presentation.TreeNodeFactory.Create();
+
+    XmlProperty xmlProp = newNode.GetOrCreateXmlProperty();
+    string uri = node.GetXmlNamespaceUri();
+    if (string.IsNullOrEmpty(uri) && node.Parent != null)
+    {
+        uri = node.Parent.GetXmlNamespaceUri();
+    }
+    if (string.IsNullOrEmpty(uri))
+    {
+#if DEBUG
+        Debugger.Break();
+#endif
+        uri = "";
+    }
+    xmlProp.SetQName(html ? "span" : "pagenum", uri);
+
+    if (html)
+    {
+        xmlProp.SetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB, "pagebreak");
+        xmlProp.SetAttribute("title", null, elementText);
+    }
+    else
+    {
+        xmlProp.SetAttribute("page", null, "normal");
+
+        ChannelsProperty chProp = newNode.GetOrCreateChannelsProperty();
+        //Channel textChannel = node.Presentation.ChannelFactory.CreateTextChannel();
+        Channel textChannel = node.Presentation.ChannelsManager.GetOrCreateTextChannel();
+        TextMedia txtMedia = node.Presentation.MediaFactory.CreateTextMedia();
+        txtMedia.Text = elementText;
+        chProp.SetMedia(textChannel, txtMedia);
+    }
+
+    return newNode;
+}
+                        ))
+                    {
+                    }
+                },
+                () =>
+                {
+                    if (m_UrakawaSession.DocumentProject == null) return false;
+
+                    if (m_UrakawaSession.isAudioRecording) return false;
+
+                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
+                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    return node != null
+                        //&& node.GetTextMedia() == null
+                        //&& node.GetText() == null
+                        ; // && node.Parent != null;
+                },
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_StructEditRemoveFragment)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandStructInsertPageBreak);
 
             //
             //
@@ -2073,7 +3164,7 @@ namespace Tobi.Plugin.DocumentPane
 
             XmlProperty xmlProp = treeNode.GetXmlProperty();
 
-            XmlAttribute attrEpubType = xmlProp.GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
+            urakawa.property.xml.XmlAttribute attrEpubType = xmlProp.GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
             bool isNote = attrEpubType != null &&
                         (
                         "note".Equals(attrEpubType.Value, StringComparison.OrdinalIgnoreCase)
@@ -2195,236 +3286,11 @@ namespace Tobi.Plugin.DocumentPane
         private Dictionary<string, TextElement> m_idLinkTargets;
         private Dictionary<string, List<TextElement>> m_idLinkSources;
 
-        private void findAndUpdateTreeNodeAudioTextStatus(Command cmd, bool done)
-        {
-            if (cmd is TreeNodeChangeTextCommand)
-            {
-                var command = (TreeNodeChangeTextCommand)cmd;
-                findAndUpdateTreeNodeText(command, done);
-            }
-            else if (cmd is ManagedAudioMediaInsertDataCommand)
-            {
-                var command = (ManagedAudioMediaInsertDataCommand)cmd;
-                findAndUpdateTreeNodeAudioStatus(command.TreeNode);
-            }
-            else if (cmd is TreeNodeSetManagedAudioMediaCommand)
-            {
-                var command = (TreeNodeSetManagedAudioMediaCommand)cmd;
-                findAndUpdateTreeNodeAudioStatus(command.TreeNode);
-            }
-            else if (cmd is TreeNodeAudioStreamDeleteCommand)
-            {
-                var command = (TreeNodeAudioStreamDeleteCommand)cmd;
-                findAndUpdateTreeNodeAudioStatus(command.SelectionData.m_TreeNode);
-            }
-            else if (cmd is CompositeCommand)
-            {
-                foreach (var childCommand in ((CompositeCommand)cmd).ChildCommands.ContentsAs_Enumerable)
-                {
-                    findAndUpdateTreeNodeAudioTextStatus(childCommand, done);
-                }
-            }
-        }
-
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
-        {
-            if (!Dispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
-                return;
-            }
-
-            //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs
-                           || eventt is TransactionCancelledEventArgs
-                           ))
-            {
-                Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            if (m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            {
-                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                return;
-            }
-
-            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
-
-            Command cmd = eventt.Command;
-
-            findAndUpdateTreeNodeAudioTextStatus(cmd, done);
-        }
-
-        private void findAndUpdateTreeNodeText(TreeNodeChangeTextCommand cmd, bool done)
-        {
-            TreeNode node = cmd.TreeNode;
-
-            TextElement text = null;
-            if (m_lastHighlighted != null && m_lastHighlighted.Tag == node)
-            {
-                text = m_lastHighlighted;
-            }
-            if (m_lastHighlightedSub != null && m_lastHighlightedSub.Tag == node)
-            {
-                text = m_lastHighlightedSub;
-            }
-            if (text == null)
-            {
-                text = FindTextElement(node);
-            }
-            if (text != null)
-            {
-                DebugFix.Assert(node == text.Tag);
-                if (node == text.Tag)
-                {
-                    //var media = node.GetTextMedia();
-                    //DebugFix.Assert(media != null);
-                    //DebugFix.Assert(!string.IsNullOrEmpty(media.Text));
-
-                    //Run run = VisualLogicalTreeWalkHelper.FindObjectInLogicalTreeWithMatchingType<Run>(text, null);
-                    Run run = null;
-                    foreach (var run_ in VisualLogicalTreeWalkHelper.FindObjectsInLogicalTreeWithMatchingType<Run>(text, null))
-                    {
-                        //if (run != null)
-                        //{
-                        //    run = null;
-                        //    Debug.Fail("WTF ?");
-                        //    break;
-                        //}
-                        run = run_;
-                        break;
-                    }
-                    if (run != null)
-                    {
-                        //ThreadPool.QueueUserWorkItem(obj =>
-                        Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
-                        {
-                            run.Text = done ? cmd.NewText : cmd.OldText;
-                        }));
-                    }
-                    else
-                    {
-#if DEBUG // Normally, the TextBlock's Run is picked-up with the code above, no need for the code below
-                        Debugger.Break();
-#endif
-                        TextBlock tb = null;
-                        foreach (var tb_ in VisualLogicalTreeWalkHelper.FindObjectsInLogicalTreeWithMatchingType<TextBlock>(text, null))
-                        {
-                            if (tb != null)
-                            {
-                                tb = null;
-                                Debug.Fail("WTF ?");
-                                break;
-                            }
-                            tb = tb_;
-                        }
-                        if (tb != null)
-                        {
-                            //ThreadPool.QueueUserWorkItem(obj =>
-                            Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
-                            {
-                                tb.Text = done ? cmd.NewText : cmd.OldText;
-                            }));
-                        }
-                    }
-
-
-                    Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode selected = selection.Item2 ?? selection.Item1;
-                    if (selected != node)
-                    {
-                        m_UrakawaSession.PerformTreeNodeSelection(node);
-                    }
-                    else
-                    {
-                        updateSimpleTextView(selected);
-                    }
-                }
-            }
-        }
-
-        private void findAndUpdateTreeNodeAudioStatus(TreeNode node)
-        {
-            foreach (var childTreeNode in node.Children.ContentsAs_Enumerable)
-            {
-                findAndUpdateTreeNodeAudioStatus(childTreeNode);
-            }
-
-            if (!node.NeedsAudio())
-            {
-                return;
-            }
-
-            TextElement text = null;
-            if (m_lastHighlighted != null && m_lastHighlighted.Tag == node)
-            {
-                text = m_lastHighlighted;
-            }
-            if (m_lastHighlightedSub != null && m_lastHighlightedSub.Tag == node)
-            {
-                text = m_lastHighlightedSub;
-            }
-            if (text == null)
-            {
-                text = FindTextElement(node);
-            }
-            if (text != null)
-            {
-                DebugFix.Assert(node == text.Tag);
-                if (node == text.Tag)
-                {
-                    XukToFlowDocument.SetForegroundColorAndCursorBasedOnTreeNodeTag(this, text, false);
-
-                    //DebugFix.Assert(noAudio == !node.HasOrInheritsAudio());
-
-                    //if (m_lastHighlighted == text)
-                    //{
-                    //    m_lastHighlighted_Foreground = text.Foreground;
-                    //}
-                    //if (m_lastHighlightedSub == text)
-                    //{
-                    //    m_lastHighlightedSub_Foreground = text.Foreground;
-                    //}
-                }
-            }
-            ////ThreadPool.QueueUserWorkItem(obj =>
-            //Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() =>
-            //{
-
-            //}));
-        }
-
-        private void OnProjectUnLoaded(Project project)
-        {
-            if (!Dispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
-                return;
-            }
-
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
-
-            OnProjectLoaded(null);
-        }
-
         //private bool m_FlowDocSelectionHooked;
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
+
+        private bool m_ProjectLoadedFlag = true;
 
         private void OnProjectLoaded(Project project)
         {
@@ -2436,6 +3302,8 @@ namespace Tobi.Plugin.DocumentPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
                 return;
             }
+
+             m_ProjectLoadedFlag = true;
 
             m_FindAndReplaceManager = null;
 
@@ -2497,11 +3365,7 @@ namespace Tobi.Plugin.DocumentPane
                     return;
                 }
 
-                project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-                project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+                m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
             }
 
             createFlowDocumentFromXuk(project);
@@ -2545,6 +3409,24 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }*/
 
+        }
+
+        private void OnProjectUnLoaded(Project project)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+                Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectUnLoaded, project);
+                return;
+            }
+
+
+            if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
+
+            OnProjectLoaded(null);
         }
 
         //private void resetFlowDocument()
@@ -2840,7 +3722,7 @@ namespace Tobi.Plugin.DocumentPane
                             || right == Double.MinValue || bottom == Double.MinValue)
                         {
 #if DEBUG
-                            Debugger.Break();
+                            //Debugger.Break();
 #endif
                         }
                         found = true;

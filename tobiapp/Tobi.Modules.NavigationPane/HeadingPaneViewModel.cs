@@ -16,11 +16,13 @@ using urakawa;
 using urakawa.commands;
 using urakawa.core;
 using urakawa.events.undo;
+using urakawa.command;
+using urakawa.undo;
 
 namespace Tobi.Plugin.NavigationPane
 {
     [Export(typeof(HeadingPaneViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
-    public class HeadingPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification
+    public class HeadingPaneViewModel : ViewModelBase, IPartImportsSatisfiedNotification, UndoRedoManager.Hooker.Host
     {
         //        protected IUnityContainer Container { get; private set; }
         private readonly IEventAggregator m_EventAggregator;
@@ -277,59 +279,13 @@ namespace Tobi.Plugin.NavigationPane
             get { return _headingsNavigator; }
         }
 
-        private void OnUndoRedoManagerChanged(object sender, UndoRedoManagerEventArgs eventt)
-        {
-            if (!TheDispatcher.CheckAccess())
-            {
-#if DEBUG
-                Debugger.Break();
-#endif
-                TheDispatcher.Invoke(DispatcherPriority.Normal, (Action<object, UndoRedoManagerEventArgs>)OnUndoRedoManagerChanged, sender, eventt);
-                return;
-            }
-
-            //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged", Category.Debug, Priority.Medium);
-
-            if (!(eventt is DoneEventArgs
-                           || eventt is UnDoneEventArgs
-                           || eventt is ReDoneEventArgs
-                           || eventt is TransactionEndedEventArgs
-                           || eventt is TransactionCancelledEventArgs
-                           ))
-            {
-                Debug.Fail("This should never happen !!");
-                return;
-            }
-
-            if (m_session.DocumentProject.Presentations.Get(0).UndoRedoManager.IsTransactionActive)
-            {
-                DebugFix.Assert(eventt is DoneEventArgs || eventt is TransactionEndedEventArgs);
-                //m_Logger.Log("DocumentPaneViewModel.OnUndoRedoManagerChanged (exit: ongoing TRANSACTION...)", Category.Debug, Priority.Medium);
-                return;
-            }
-
-            bool done = eventt is DoneEventArgs || eventt is ReDoneEventArgs || eventt is TransactionEndedEventArgs;
-            DebugFix.Assert(done == !(eventt is UnDoneEventArgs || eventt is TransactionCancelledEventArgs));
-
-            var cmd = eventt.Command as TreeNodeChangeTextCommand;
-
-            if (cmd == null) return;
-
-            foreach (var headingTreeNodeWrapper in HeadingsNavigator_Roots)
-            {
-                checkNodeTitleChanged(headingTreeNodeWrapper, cmd.TreeNode);
-            }
-        }
-
         private void checkNodeTitleChanged(HeadingTreeNodeWrapper parent, TreeNode treeNode)
         {
-            //var wrappedNode = headingTreeNodeWrapper.WrappedTreeNode_LevelHeading ?? headingTreeNodeWrapper.WrappedTreeNode_Level;
-
-            if (
-                parent.WrappedTreeNode_LevelHeading != null
+            if (parent.WrappedTreeNode_LevelHeading != null
                 &&
                 (treeNode == parent.WrappedTreeNode_LevelHeading
-                   || treeNode.IsDescendantOf(parent.WrappedTreeNode_LevelHeading)))
+                || treeNode.IsDescendantOf(parent.WrappedTreeNode_LevelHeading))
+            )
             {
                 parent.InvalidateTitle();
             }
@@ -340,6 +296,83 @@ namespace Tobi.Plugin.NavigationPane
             }
         }
 
+        private void InvalidateHeadings(TreeNode node)
+        {
+            foreach (var headingTreeNodeWrapper in HeadingsNavigator_Roots)
+            {
+                checkNodeTitleChanged(headingTreeNodeWrapper, node);
+            }
+        }
+
+        private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool done, TreeNodeChangeTextCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
+        {
+            if (!isTransactionEndEvent)
+            {
+                InvalidateHeadings(command.TreeNode);
+            }
+        }
+
+        private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool done, TextNodeStructureEditCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
+        {
+            DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
+
+            //TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
+            //TreeNode node = command.TreeNode;
+            //bool forceInvalidate = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
+            //bool done_ = (command is TreeNodeInsertCommand) ? !done : done;
+
+            if (isNoTransactionOrTrailingEdge)
+            {
+                View.UnloadProject();
+                HeadingsNavigator = null;
+
+                HeadingsNavigator = new HeadingsNavigator(m_session.DocumentProject, this);
+                View.LoadProject();
+            }
+        }
+
+        public void OnUndoRedoManagerChanged(UndoRedoManagerEventArgs eventt, bool done, Command command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
+        {
+            if (!TheDispatcher.CheckAccess())
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+#if NET40x
+                TheDispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged,
+                    eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+#else
+                TheDispatcher.Invoke(DispatcherPriority.Normal,
+                    (Action)(() => OnUndoRedoManagerChanged(eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge))
+                    );
+#endif
+                return;
+            }
+
+            //if (isTransactionEndEvent)
+            //{
+            //    return;
+            //}
+
+            if (command is CompositeCommand)
+            {
+#if DEBUG
+                Debugger.Break();
+#endif
+            }
+            else if (command is TreeNodeChangeTextCommand)
+            {
+                OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(eventt, done, (TreeNodeChangeTextCommand)command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+            }
+            else if (command is TextNodeStructureEditCommand)
+            {
+                OnUndoRedoManagerChanged_TextNodeStructureEditCommand(eventt, done, (TextNodeStructureEditCommand)command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+            }
+        }
+
+        private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
+
         private void onProjectLoaded(Project project)
         {
             if (m_session.IsXukSpine)
@@ -347,11 +380,7 @@ namespace Tobi.Plugin.NavigationPane
                 return;
             }
 
-            project.Presentations.Get(0).UndoRedoManager.CommandDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded += OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled += OnUndoRedoManagerChanged;
+            m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
 
             HeadingsNavigator = new HeadingsNavigator(project, this);
 
@@ -360,11 +389,8 @@ namespace Tobi.Plugin.NavigationPane
 
         private void onProjectUnLoaded(Project project)
         {
-            project.Presentations.Get(0).UndoRedoManager.CommandDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandReDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.CommandUnDone -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionEnded -= OnUndoRedoManagerChanged;
-            project.Presentations.Get(0).UndoRedoManager.TransactionCancelled -= OnUndoRedoManagerChanged;
+            if (m_UndoRedoManagerHooker != null) m_UndoRedoManagerHooker.UnHook();
+            m_UndoRedoManagerHooker = null;
 
             View.UnloadProject();
 
