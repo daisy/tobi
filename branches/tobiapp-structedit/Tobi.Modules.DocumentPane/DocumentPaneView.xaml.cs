@@ -870,6 +870,18 @@ namespace Tobi.Plugin.DocumentPane
 
         private readonly IShellView m_ShellView;
 
+        private bool checkDisplayStructEditWarning()
+        {
+            if (!m_ProjectLoadedFlag) return true;
+            
+            m_ProjectLoadedFlag = false;
+
+            return checkWithUser(Tobi_Plugin_DocumentPane_Lang.StructEditConfirmTitle,
+                Tobi_Plugin_DocumentPane_Lang.StructEditConfirmMessage,
+                    Tobi_Plugin_DocumentPane_Lang.StructEditConfirmDetails);
+        }
+
+
         public void BringIntoFocus()
         {
             if (FocusCollapsed.IsVisible)
@@ -969,6 +981,67 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        private bool checkWithUser(string title, string message, string info)
+        {
+            m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
+
+            var label = new TextBlock // TextBoxReadOnlyCaretVisible
+            {
+                //FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                //BorderThickness = new Thickness(1),
+                //Padding = new Thickness(6),
+
+                //TextReadOnly = message,
+                Text = message,
+
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            //var iconProvider = new ScalableGreyableImageProvider(
+            //    m_ShellView.LoadTangoIcon("help-browser"),
+            //    m_ShellView.MagnificationLevel);
+
+            //var panel = new StackPanel
+            //{
+            //    Orientation = Orientation.Horizontal,
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    VerticalAlignment = VerticalAlignment.Stretch,
+            //};
+            //panel.Children.Add(iconProvider.IconLarge);
+            //panel.Children.Add(label);
+            ////panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+            var details = new TextBoxReadOnlyCaretVisible
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = info
+            };
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   title,
+                                                   label,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 340, 260, details, 40, null);
+
+            windowPopup.ShowModal();
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                return true;
+            }
+
+            return false;
+        }
         private bool askUser(string message, string info)
         {
             m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
@@ -1741,6 +1814,8 @@ namespace Tobi.Plugin.DocumentPane
                     TreeNode node = selection.Item1; // TOP LEVEL!
 
                     if (node == null) return;
+                    
+                    if (!checkDisplayStructEditWarning()) return;
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
 
@@ -1810,6 +1885,8 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (node == null) return;
 
+                    if (!checkDisplayStructEditWarning()) return;
+
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
 
                     if (m_TreeNodeFragmentClipboard != null)
@@ -1858,6 +1935,8 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (node == null) return;
 
+                    if (!checkDisplayStructEditWarning()) return;
+
                     if (structureInsertDialog(node,
                         UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdStructEditPasteFragment_ShortDesc),
                         "Extract text into new child TreeNode, then insert new node",
@@ -1899,6 +1978,8 @@ namespace Tobi.Plugin.DocumentPane
                     TreeNode node = selection.Item1; // TOP LEVEL!
 
                     if (node == null) return;
+                    
+                    if (!checkDisplayStructEditWarning()) return;
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
 
@@ -1958,6 +2039,8 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (node == null) return;
 
+                    if (!checkDisplayStructEditWarning()) return;
+
                     bool html = node.Presentation.RootNode.GetXmlElementLocalName()
                         .Equals("body", StringComparison.OrdinalIgnoreCase);
 
@@ -1969,8 +2052,8 @@ namespace Tobi.Plugin.DocumentPane
                         null,
                         html ? "span" : "sent",
                         "TXT",
-                        "Element name",
-                        "Text content",
+                        Tobi_Plugin_DocumentPane_Lang.ElementName,
+                        Tobi_Plugin_DocumentPane_Lang.TextContent,
 (elementName, elementText, xmlSource) =>
 {
     if (!String.IsNullOrEmpty(xmlSource))
@@ -2148,6 +2231,8 @@ namespace Tobi.Plugin.DocumentPane
                     TreeNode node = selection.Item1; // TOP LEVEL!
 
                     if (node == null) return;
+
+                    if (!checkDisplayStructEditWarning()) return;
 
                     bool html = node.Presentation.RootNode.GetXmlElementLocalName()
                         .Equals("body", StringComparison.OrdinalIgnoreCase);
@@ -3205,6 +3290,8 @@ namespace Tobi.Plugin.DocumentPane
 
         private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
 
+        private bool m_ProjectLoadedFlag = true;
+
         private void OnProjectLoaded(Project project)
         {
             if (!Dispatcher.CheckAccess())
@@ -3215,6 +3302,8 @@ namespace Tobi.Plugin.DocumentPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
                 return;
             }
+
+             m_ProjectLoadedFlag = true;
 
             m_FindAndReplaceManager = null;
 

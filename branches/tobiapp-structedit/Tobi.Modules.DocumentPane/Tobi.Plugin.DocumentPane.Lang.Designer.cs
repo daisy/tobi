@@ -385,6 +385,15 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Element name.
+        /// </summary>
+        public static string ElementName {
+            get {
+                return ResourceManager.GetString("ElementName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This feature is not available..
         /// </summary>
         public static string Feature_Not_Available {
@@ -471,6 +480,42 @@ namespace Tobi.Plugin.DocumentPane {
         public static string PageLabel {
             get {
                 return ResourceManager.GetString("PageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (note that this message is displayed only once per project session).
+        /// </summary>
+        public static string StructEditConfirmDetails {
+            get {
+                return ResourceManager.GetString("StructEditConfirmDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you aware of the implications when editing the structure of the document? This is currently an experimental feature that requires cautious use, because it modifies the XML markup of the document without automatically checking for syntax errors (DAISY DTBOOK / EPUB3 XHTML5). Please make sure that structural modifications do not create an invalid document!.
+        /// </summary>
+        public static string StructEditConfirmMessage {
+            get {
+                return ResourceManager.GetString("StructEditConfirmMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Structure editing warning!.
+        /// </summary>
+        public static string StructEditConfirmTitle {
+            get {
+                return ResourceManager.GetString("StructEditConfirmTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text content.
+        /// </summary>
+        public static string TextContent {
+            get {
+                return ResourceManager.GetString("TextContent", resourceCulture);
             }
         }
         

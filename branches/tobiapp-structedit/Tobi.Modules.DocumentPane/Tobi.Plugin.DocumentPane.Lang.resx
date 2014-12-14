@@ -151,7 +151,7 @@
   <data name="ConfirmStructureClipboard" xml:space="preserve">
     <value>Are you sure you want to overwrite the existing structure clipboard?</value>
   </data>
-  
+
   <data name="InsertDocFragmentFirstInside" xml:space="preserve">
     <value>First inside</value>
   </data>
@@ -181,7 +181,15 @@
   <data name="CmdStructEditInsertPageBreak_LongDesc" xml:space="preserve">
     <value>Insert a numbered page break into the document</value>
   </data>
-  
+  <data name="ElementName" xml:space="preserve">
+    <value>Element name</value>
+  </data>
+  <data name="TextContent" xml:space="preserve">
+    <value>Text content</value>
+  </data>
+  <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
+    <value>Insert custom XML... (advanced feature)</value>
+  </data>
   <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
     <value>Insert custom XML... (advanced feature)</value>
   </data>
@@ -209,7 +217,15 @@
   <data name="CmdStructEditPasteFragment_LongDesc" xml:space="preserve">
     <value>Restore the document fragment from the structure clipboard into the document</value>
   </data>
-  
+  <data name="StructEditConfirmTitle" xml:space="preserve">
+    <value>Structure editing warning!</value>
+  </data>
+  <data name="StructEditConfirmMessage" xml:space="preserve">
+    <value>Are you aware of the implications when editing the structure of the document? This is currently an experimental feature that requires cautious use, because it modifies the XML markup of the document without automatically checking for syntax errors (DAISY DTBOOK / EPUB3 XHTML5). Please make sure that structural modifications do not create an invalid document!</value>
+  </data>
+  <data name="StructEditConfirmDetails" xml:space="preserve">
+    <value>(note that this message is displayed only once per project session)</value>
+  </data>
   <data name="CmdEditText_ShortDesc" xml:space="preserve">
     <value>Edit _text</value>
   </data>
