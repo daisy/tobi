@@ -751,6 +751,21 @@ namespace Tobi.Plugin.StructureTrailPane
 
             strBuilder.Insert(0, qNameStr);
 
+            if (newTreeNodeSelection.Item2 != null)
+            {
+                TreeNode containingTreeNode = newTreeNodeSelection.Item1;
+
+                string label2 = getTreeNodeLabel(containingTreeNode);
+
+                string qNameStr2 = (!containingTreeNode.HasXmlProperty
+                                      ? Tobi_Plugin_StructureTrailPane_Lang.NoXML
+                                      : String.Format(Tobi_Plugin_StructureTrailPane_Lang.XMLName, label2)
+                                 );
+
+                strBuilder.Insert(0, " >> ");
+
+                strBuilder.Insert(0, qNameStr2);
+            }
 
             string str = strBuilder.ToString(0, Math.Min(500, strBuilder.Length));
             m_FocusStartElement2.SetAccessibleNameAndNotifyScreenReaderAutomationIfKeyboardFocused(str);
