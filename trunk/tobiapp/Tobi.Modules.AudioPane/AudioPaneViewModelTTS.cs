@@ -468,7 +468,7 @@ namespace Tobi.Plugin.AudioPane
 
             m_UrakawaSession.AutoSave_OFF();
 
-            m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio, Tobi_Plugin_AudioPane_Lang.CmdAudioGenTTS_LongDesc, "AUDIO_TTS_GEN");
+            m_UrakawaSession.DocumentProject.Presentations.Get(0).UndoRedoManager.StartTransaction(Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio, Tobi_Plugin_AudioPane_Lang.CmdAudioGenTTS_LongDesc, COMMAND_TRANSATION_ID__AUDIO_TTS);
             try
             {
                 CommandSelectAll.Execute();

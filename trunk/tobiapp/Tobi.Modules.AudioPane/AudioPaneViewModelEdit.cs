@@ -47,6 +47,8 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandDeleteAudioSelection { get; private set; }
 
         public static readonly string COMMAND_TRANSATION_ID__AUDIO_SPLIT_SHIFT = "AUDIO_SPLIT_SHIFT";
+        public static readonly string COMMAND_TRANSATION_ID__AUDIO_TTS = "AUDIO_TTS_GEN";
+        
         public RichDelegateCommand CommandSplitShift { get; private set; }
 
         public RichDelegateCommand CopyCommand { get; private set; }
