@@ -594,7 +594,8 @@ namespace Tobi.Plugin.AudioPane
             }
             else if (command is AudioEditCommand)
             {
-                if (!isTransactionEndEvent)
+                if (!isTransactionEndEvent ||
+                    isNoTransactionOrTrailingEdge && command.IsInTransaction() && command.TopTransactionId() == AudioPaneViewModel.COMMAND_TRANSATION_ID__AUDIO_TTS)
                 {
                     OnUndoRedoManagerChanged_AudioEditCommand(eventt, done, (AudioEditCommand) command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
                 }
