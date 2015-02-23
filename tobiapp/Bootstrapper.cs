@@ -148,12 +148,14 @@ namespace Tobi
 
         public void usageReport(IShellView shellView)
         {
+            
             string defaultSettingValue = (string)Settings.Default.Properties["UserId"].DefaultValue;
             string settingValue = Tobi.Settings.Default.UserId;
             if (!String.IsNullOrEmpty(settingValue))
             {
                 settingValue = settingValue.Trim();
             }
+
             if (String.IsNullOrEmpty(settingValue) || settingValue.Equals(defaultSettingValue))
             {
                 String userid = askUser(shellView, Tobi_Lang.UserId_title, Tobi_Lang.UserId_message, Tobi_Lang.UserId_details);
@@ -164,10 +166,12 @@ namespace Tobi
                 if (String.IsNullOrEmpty(userid))
                 {
                     Tobi.Settings.Default.UserId = defaultSettingValue;
+                    settingValue = "";
                 }
                 else
                 {
                     Tobi.Settings.Default.UserId = userid;
+                    settingValue = userid;
                 }
             }
 
@@ -182,7 +186,7 @@ namespace Tobi
             url += "&datetimeutc=" + Uri.EscapeDataString(DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss_K", CultureInfo.InvariantCulture));
             url += "&os=" + Uri.EscapeDataString(ApplicationConstants.OS_INFORMATION);
             url += "&lang=" + Thread.CurrentThread.CurrentUICulture;
-            url += "&userid=" + Uri.EscapeDataString(Settings.Default.UserId);
+            url += "&userid=" + Uri.EscapeDataString(settingValue);
 
             // THIS BREAKS PRIVACY, so we don't 
             //string ipAddress = "";
