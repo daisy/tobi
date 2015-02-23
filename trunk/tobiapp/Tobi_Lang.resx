@@ -234,4 +234,13 @@
   <data name="CmdDocLocal_ShortDesc" xml:space="preserve">
     <value>_Local documentation</value>
   </data>
+  <data name="UserId_title" xml:space="preserve">
+    <value>User information</value>
+  </data>
+  <data name="UserId_message" xml:space="preserve">
+    <value>Please enter an email address (or personal / organisation name):</value>
+  </data>
+  <data name="UserId_details" xml:space="preserve">
+    <value>By default, Tobi usage statistics are anonymous. By adding a simple identifier, you are helping the Tobi development team process software feedback. Read more about privacy at http://www.daisy.org/tobi/privacy</value>
+  </data>
 </root>

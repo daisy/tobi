@@ -74,6 +74,169 @@ namespace Tobi
     /// </summary>
     public class Bootstrapper : UnityBootstrapper
     {
+        private string askUser(IShellView shellView, string title, string message, string info)
+        {
+            m_Logger.Log("Bootstrapper.askUser", Category.Debug, Priority.Medium);
+
+            var label = new TextBlock // TextBoxReadOnlyCaretVisible
+            {
+                //FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                //BorderThickness = new Thickness(1),
+                //Padding = new Thickness(6),
+
+                //TextReadOnly = message,
+                Text = message,
+                FontWeight = FontWeights.Bold,
+
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var input = new TextBox()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+                Text = ""
+            };
+
+            //var iconProvider = new ScalableGreyableImageProvider(
+            //    m_ShellView.LoadTangoIcon("help-browser"),
+            //    m_ShellView.MagnificationLevel);
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            //panel.Children.Add(iconProvider.IconLarge);
+            panel.Children.Add(label);
+            panel.Children.Add(input);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+
+            var details = new TextBoxReadOnlyCaretVisible
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = info
+            };
+
+            var windowPopup = new PopupModalWindow(shellView, // m_ShellView
+                                                   title,
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.YesNo,
+                                                   PopupModalWindow.DialogButton.Yes,
+                                                   true, 425, 160, details, 70, null);
+
+            windowPopup.ShowModal();
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                return input.Text;
+            }
+
+            return null;
+        }
+
+        public void usageReport(IShellView shellView)
+        {
+            string defaultSettingValue = (string)Settings.Default.Properties["UserId"].DefaultValue;
+            string settingValue = Tobi.Settings.Default.UserId;
+            if (!String.IsNullOrEmpty(settingValue))
+            {
+                settingValue = settingValue.Trim();
+            }
+            if (String.IsNullOrEmpty(settingValue) || settingValue.Equals(defaultSettingValue))
+            {
+                String userid = askUser(shellView, Tobi_Lang.UserId_title, Tobi_Lang.UserId_message, Tobi_Lang.UserId_details);
+                if (!String.IsNullOrEmpty(userid))
+                {
+                    userid = userid.Trim();
+                }
+                if (String.IsNullOrEmpty(userid))
+                {
+                    Tobi.Settings.Default.UserId = defaultSettingValue;
+                }
+                else
+                {
+                    Tobi.Settings.Default.UserId = userid;
+                }
+            }
+
+            //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
+
+            string url = ApplicationConstants.TOBI_ANON_USAGE_URI;
+
+            url += "?version=" + Uri.EscapeDataString(ApplicationConstants.APP_VERSION);
+            url += "&clickonce=" + (ApplicationDeployment.IsNetworkDeployed ? "true" :
+                (Debugger.IsAttached ? "VS" : "false"));
+            url += "&datetime=" + Uri.EscapeDataString(DateTime.Now.ToString("yyyy-MM-dd_HH:mm:ss_K", CultureInfo.InvariantCulture));
+            url += "&datetimeutc=" + Uri.EscapeDataString(DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss_K", CultureInfo.InvariantCulture));
+            url += "&os=" + Uri.EscapeDataString(ApplicationConstants.OS_INFORMATION);
+            url += "&lang=" + Thread.CurrentThread.CurrentUICulture;
+            url += "&userid=" + Uri.EscapeDataString(Settings.Default.UserId);
+
+            // THIS BREAKS PRIVACY, so we don't 
+            //string ipAddress = "";
+            //IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
+            //IPAddress[] ipAddresses = ipHostEntry.AddressList;
+            //for (int i = 0; i < ipAddresses.Length; i++)
+            //{
+            //    if (ipAddresses[i].AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
+            //    {
+            //        if (!IPAddress.IsLoopback(ipAddresses[i]))
+            //        {
+            //            ipAddress += string.Format("_{0}", ipAddresses[i]);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        ipAddress += string.Format("__{0}", ipAddresses[i]);
+            //    }
+            //}
+            //if (!string.IsNullOrEmpty(ipAddress))
+            //{
+            //    url += "&localip=" + Uri.EscapeDataString(ipAddress);
+            //}
+
+            if (Settings.Default.EnableAnonymousUsageReport)
+            {
+                var webClient = new WebClient { UseDefaultCredentials = true };
+                StreamReader streamReader = null;
+                try
+                {
+                    streamReader = new StreamReader(webClient.OpenRead(url), Encoding.UTF8);
+                    string str = streamReader.ReadToEnd();
+                    m_Logger.Log(str, Category.Info, Priority.High);
+                }
+                catch (Exception ex)
+                {
+                    m_Logger.Log(@"Can't query Tobi anonymous usage logger !", Category.Exception, Priority.High);
+                    ExceptionHandler.LogException(ex);
+                    //#if DEBUG
+                    //                Debugger.Break();
+                    //#endif // DEBUG
+                }
+                finally
+                {
+                    if (streamReader != null)
+                        streamReader.Close();
+                }
+            }
+            else
+            {
+                m_Logger.Log(@"Tobi anonymous usage logger has been DISABLED by user.", Category.Warn, Priority.High);
+            }
+        }
+
         /// <summary>
         /// We create our own logger from this constructor
         /// </summary>
@@ -169,70 +332,6 @@ namespace Tobi
                         //Console.WriteLine(item.CodeBase);
                     }
                 }
-            }
-
-            //http://blogs.msdn.com/yangxind/archive/2006/11/09/don-t-use-net-system-uri-unescapedatastring-in-url-decoding.aspx
-
-            string url = ApplicationConstants.TOBI_ANON_USAGE_URI;
-
-            url += "?version=" + Uri.EscapeDataString(ApplicationConstants.APP_VERSION);
-            url += "&clickonce=" + (ApplicationDeployment.IsNetworkDeployed ? "true" :
-                (Debugger.IsAttached ? "VS" : "false"));
-            url += "&datetime=" + Uri.EscapeDataString(DateTime.Now.ToString("yyyy-MM-dd_HH:mm:ss_K", CultureInfo.InvariantCulture));
-            url += "&datetimeutc=" + Uri.EscapeDataString(DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss_K", CultureInfo.InvariantCulture));
-            url += "&os=" + Uri.EscapeDataString(ApplicationConstants.OS_INFORMATION);
-            url += "&lang=" + Thread.CurrentThread.CurrentUICulture;
-
-            // THIS BREAKS PRIVACY, so we don't 
-            //string ipAddress = "";
-            //IPHostEntry ipHostEntry = Dns.GetHostEntry(Dns.GetHostName());
-            //IPAddress[] ipAddresses = ipHostEntry.AddressList;
-            //for (int i = 0; i < ipAddresses.Length; i++)
-            //{
-            //    if (ipAddresses[i].AddressFamily != System.Net.Sockets.AddressFamily.InterNetworkV6)
-            //    {
-            //        if (!IPAddress.IsLoopback(ipAddresses[i]))
-            //        {
-            //            ipAddress += string.Format("_{0}", ipAddresses[i]);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        ipAddress += string.Format("__{0}", ipAddresses[i]);
-            //    }
-            //}
-            //if (!string.IsNullOrEmpty(ipAddress))
-            //{
-            //    url += "&localip=" + Uri.EscapeDataString(ipAddress);
-            //}
-
-            if (Settings.Default.EnableAnonymousUsageReport)
-            {
-                var webClient = new WebClient { UseDefaultCredentials = true };
-                StreamReader streamReader = null;
-                try
-                {
-                    streamReader = new StreamReader(webClient.OpenRead(url), Encoding.UTF8);
-                    string str = streamReader.ReadToEnd();
-                    m_Logger.Log(str, Category.Info, Priority.High);
-                }
-                catch (Exception ex)
-                {
-                    m_Logger.Log(@"Can't query Tobi anonymous usage logger !", Category.Exception, Priority.High);
-                    ExceptionHandler.LogException(ex);
-                    //#if DEBUG
-                    //                Debugger.Break();
-                    //#endif // DEBUG
-                }
-                finally
-                {
-                    if (streamReader != null)
-                        streamReader.Close();
-                }
-            }
-            else
-            {
-                m_Logger.Log(@"Tobi anonymous usage logger has been DISABLED by user.", Category.Warn, Priority.High);
             }
 
 
@@ -438,6 +537,9 @@ namespace Tobi
             //var shellView = Container.Resolve<IShellView>();
             var shellView = MefContainer.GetExportedValue<IShellView>();
             shellView.Show();
+
+
+            usageReport(shellView);
 
             return shellView as DependencyObject;
         }
