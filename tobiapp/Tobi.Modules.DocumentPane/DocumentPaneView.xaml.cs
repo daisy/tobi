@@ -983,7 +983,7 @@ namespace Tobi.Plugin.DocumentPane
 
         private bool checkWithUser(string title, string message, string info)
         {
-            m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
+            m_Logger.Log("ShellView.checkWithUser", Category.Debug, Priority.Medium);
 
             var label = new TextBlock // TextBoxReadOnlyCaretVisible
             {
@@ -1042,6 +1042,7 @@ namespace Tobi.Plugin.DocumentPane
 
             return false;
         }
+        
         private bool askUser(string message, string info)
         {
             m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
