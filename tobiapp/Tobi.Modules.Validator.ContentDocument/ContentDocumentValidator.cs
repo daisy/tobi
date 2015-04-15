@@ -137,9 +137,34 @@ namespace Tobi.Plugin.Validator.ContentDocument
             //            m_DtdRegex.Reset();
             //#endif // DEBUG
 
-            if (m_DtdRegex.DtdRegexTable == null || m_DtdRegex.DtdRegexTable.Count == 0)
+            if (!Settings.Default.EnableMarkupValidation)
             {
-                m_DtdIdentifier = DTDs.DTDs.DTBOOK_2005_3_MATHML;
+                resetToValid();
+                return IsValid;
+            }
+
+            String dtdIdentifier = DTDs.DTDs.DTBOOK_2005_3_MATHML;
+
+            if (m_Session.DocumentProject != null && "body".Equals(m_Session.DocumentProject.Presentations.Get(0).RootNode.GetXmlElementLocalName(),
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                dtdIdentifier = DTDs.DTDs.HTML5;
+
+                //// TODO: a DTD does not exist per-say for HTML5 (as this is not an SGML-based markup language),
+                //// and Tobi's own HTML5 DTD hack does not cut it...just way too many false positives,
+                //// as well as incorrect handling of "transparent" elements that can have dual block inline content models.
+                //// So, the document is always considered valid.
+                resetToValid();
+                return IsValid;
+            }
+
+            bool dtdHasChanged = String.IsNullOrEmpty(m_DtdIdentifier) || m_DtdIdentifier != dtdIdentifier;
+
+            m_DtdIdentifier = dtdIdentifier;
+
+            if (dtdHasChanged || m_DtdRegex.DtdRegexTable == null || m_DtdRegex.DtdRegexTable.Count == 0)
+            {
+
                 loadDTD(m_DtdIdentifier);
 
                 string dtdCache = m_DtdIdentifier + ".cache";

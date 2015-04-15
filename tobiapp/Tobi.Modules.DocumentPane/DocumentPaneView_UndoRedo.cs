@@ -823,6 +823,8 @@ namespace Tobi.Plugin.DocumentPane
             {
                 return;
             }
+            
+            checkValid();
 
             DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
 
