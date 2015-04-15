@@ -145,6 +145,10 @@
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>
       <Name>Tobi.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tobi.Modules.Validator.ContentDocument\Tobi.Plugin.Validator.ContentDocument_NET4.csproj">
+      <Project>{4a42d266-ba34-4c4d-be37-ea49ce6aabab}</Project>
+      <Name>Tobi.Plugin.Validator.ContentDocument_NET4</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

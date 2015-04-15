@@ -49,6 +49,8 @@ using urakawa.undo;
 using urakawa.xuk;
 using Colors = System.Windows.Media.Colors;
 using System.Xml;
+using Tobi.Common.Validation;
+using Tobi.Plugin.Validator.ContentDocument;
 
 #if NET40
 //using System.Windows.Shell;
@@ -1531,6 +1533,53 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        protected bool checkValid()
+        {
+            if (!Tobi.Common.Settings.Default.EnableMarkupValidation) return true;
+
+            bool thereIsAtLeastOneError = false;
+            IValidator m_Validator = null;
+            if (m_Validators != null)
+            {
+                foreach (var validator in m_Validators)
+                {
+                    if (!(validator is ContentDocumentValidator)) continue;
+                    m_Validator = validator;
+                    break;
+                }
+            }
+            if (m_Validator != null)
+            {
+                m_Validator.Validate();
+
+                foreach (var validationItem in m_Validator.ValidationItems)
+                {
+                    if (validationItem.Severity == ValidationSeverity.Error)
+                    {
+                        thereIsAtLeastOneError = true;
+                        break;
+                    }
+                }
+            }
+
+            if (thereIsAtLeastOneError)
+            {
+                m_Logger.Log("Document structure edit VALIDATION error", Category.Debug, Priority.Medium);
+
+                if (m_EventAggregator != null)
+                {
+                    m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Publish(null);
+                }
+            }
+
+            return thereIsAtLeastOneError;
+        }
+
+        [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true)]
+        private IEnumerable<IValidator> m_Validators;
+
+        //private ContentDocumentValidator m_Validator;
+
         ///<summary>
         /// Dependency-Injected constructor
         ///</summary>
@@ -1542,8 +1591,14 @@ namespace Tobi.Plugin.DocumentPane
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IUrakawaSession urakawaSession,
             [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
-            IShellView shellView)
+            IShellView shellView
+            //,
+            //[Import(typeof(ContentDocumentValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = false)]
+            //ContentDocumentValidator validator
+            )
         {
+            //m_Validator = validator;
+
             m_PropertyChangeHandler = new PropertyChangedNotifyBase();
             m_PropertyChangeHandler.InitializeDependentProperties(this);
 
@@ -1838,6 +1893,8 @@ namespace Tobi.Plugin.DocumentPane
                     var cmd = node.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
                     node.Presentation.UndoRedoManager.Execute(cmd);
 
+                    //checkValid();
+
                     if (previous != null)
                     {
                         m_UrakawaSession.PerformTreeNodeSelection(previous);
@@ -1952,6 +2009,8 @@ namespace Tobi.Plugin.DocumentPane
                         ))
                     {
                         m_TreeNodeFragmentClipboard = null;
+
+                        //checkValid();
                     }
                 },
                 () =>
@@ -1990,6 +2049,8 @@ namespace Tobi.Plugin.DocumentPane
 
                     var cmd = node.Presentation.CommandFactory.CreateTreeNodeRemoveCommand(node);
                     node.Presentation.UndoRedoManager.Execute(cmd);
+
+                    //checkValid();
 
                     if (previous != null)
                     {
@@ -2197,6 +2258,7 @@ namespace Tobi.Plugin.DocumentPane
 }
                         ))
                     {
+                        //checkValid();
                     }
                 },
                 () =>
@@ -2293,6 +2355,7 @@ namespace Tobi.Plugin.DocumentPane
 }
                         ))
                     {
+                        //checkValid();
                     }
                 },
                 () =>
