@@ -1019,14 +1019,14 @@ namespace Tobi.Plugin.DocumentPane
             ////panel.Margin = new Thickness(8, 8, 8, 0);
 
 
-            var details = new TextBoxReadOnlyCaretVisible
+            var details = info != null ? new TextBoxReadOnlyCaretVisible
             {
                 FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
 
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(6),
                 TextReadOnly = info
-            };
+            } : null;
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    title,
@@ -1045,7 +1045,7 @@ namespace Tobi.Plugin.DocumentPane
             return false;
         }
         
-        private bool askUser(string message, string info)
+        private bool askUser(string title, string message, string info)
         {
             m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
 
@@ -1074,17 +1074,17 @@ namespace Tobi.Plugin.DocumentPane
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
 
-            var details = new TextBoxReadOnlyCaretVisible
+            var details = info != null ? new TextBoxReadOnlyCaretVisible
             {
                 FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
 
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(6),
                 TextReadOnly = info
-            };
+            } : null;
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   message,
+                                                   title,
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.No,
@@ -1533,9 +1533,15 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        private bool? m_valid = null;
+
         protected bool checkValid()
         {
-            if (!Tobi.Common.Settings.Default.EnableMarkupValidation) return true;
+            if (!Tobi.Common.Settings.Default.EnableMarkupValidation)
+            {
+                m_valid = true;
+                return true;
+            }
 
             bool thereIsAtLeastOneError = false;
             IValidator m_Validator = null;
@@ -1550,6 +1556,11 @@ namespace Tobi.Plugin.DocumentPane
             }
             if (m_Validator != null)
             {
+                if (m_valid == null) // first time since open
+                {
+                    m_valid = m_Validator.IsValid;
+                }
+
                 m_Validator.Validate();
 
                 foreach (var validationItem in m_Validator.ValidationItems)
@@ -1562,16 +1573,27 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }
 
-            if (thereIsAtLeastOneError)
+            if (thereIsAtLeastOneError && m_valid == true)
             {
                 m_Logger.Log("Document structure edit VALIDATION error", Category.Debug, Priority.Medium);
-
-                if (m_EventAggregator != null)
+                
+                if (
+                    //askUser(
+                    checkWithUser(
+                    Tobi_Plugin_DocumentPane_Lang.StructureEditValidationErrorAskDisplayDialog,
+                    Tobi_Plugin_DocumentPane_Lang.ConfirmDisplayValidationDialog,
+                    null
+                ))
                 {
-                    m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Publish(null);
+
+                    if (m_EventAggregator != null)
+                    {
+                        m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Publish(null);
+                    }
                 }
             }
 
+            m_valid = !thereIsAtLeastOneError;
             return thereIsAtLeastOneError;
         }
 
@@ -1878,8 +1900,13 @@ namespace Tobi.Plugin.DocumentPane
                     if (m_TreeNodeFragmentClipboard != null)
                     {
                         if (
-                            !askUser(Tobi_Plugin_DocumentPane_Lang.CmdStructEditCutFragment_ShortDesc,
-                                Tobi_Plugin_DocumentPane_Lang.ConfirmStructureClipboard))
+                            !
+                            //askUser(
+                            checkWithUser(
+                                Tobi_Plugin_DocumentPane_Lang.CmdStructEditCutFragment_ShortDesc,
+                                Tobi_Plugin_DocumentPane_Lang.ConfirmStructureClipboard,
+                                null
+                                ))
                         {
                             return;
                         }
@@ -1950,8 +1977,13 @@ namespace Tobi.Plugin.DocumentPane
                     if (m_TreeNodeFragmentClipboard != null)
                     {
                         if (
-                            !askUser(Tobi_Plugin_DocumentPane_Lang.CmdStructEditCopyFragment_ShortDesc,
-                                Tobi_Plugin_DocumentPane_Lang.ConfirmStructureClipboard))
+                            !
+                            //askUser(
+                            checkWithUser( 
+                                Tobi_Plugin_DocumentPane_Lang.CmdStructEditCopyFragment_ShortDesc,
+                                Tobi_Plugin_DocumentPane_Lang.ConfirmStructureClipboard,
+                                null
+                                ))
                         {
                             return;
                         }
@@ -3366,6 +3398,9 @@ namespace Tobi.Plugin.DocumentPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
                 return;
             }
+            
+            m_valid = null;
+            //checkValid();
 
              m_ProjectLoadedFlag = true;
 

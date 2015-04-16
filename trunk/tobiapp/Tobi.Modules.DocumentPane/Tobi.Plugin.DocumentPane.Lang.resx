@@ -148,8 +148,19 @@
     <value>Single phrase</value>
   </data>
 
+
+  <data name="StructureEditValidationErrorAskDisplayDialog" xml:space="preserve">
+    <value>Invalid structure edit</value>
+  </data>
+  <data name="ConfirmDisplayValidationDialog" xml:space="preserve">
+    <value>This edit creates an invalid document, would you like to see the markup error(s)?</value>
+  </data>
+
+
+
+
   <data name="ConfirmStructureClipboard" xml:space="preserve">
-    <value>Are you sure you want to overwrite the existing structure clipboard?</value>
+    <value>Do you confirm discarding the existing structure clipboard?</value>
   </data>
 
   <data name="InsertDocFragmentFirstInside" xml:space="preserve">
@@ -221,10 +232,10 @@
     <value>Structure editing warning!</value>
   </data>
   <data name="StructEditConfirmMessage" xml:space="preserve">
-    <value>Are you aware of the implications when editing the structure of the document? This is currently an experimental feature that requires cautious use, because it modifies the XML markup of the document without automatically checking for syntax errors (DAISY DTBOOK / EPUB3 XHTML5). Please make sure that structural modifications do not create an invalid document!</value>
+    <value>Please be aware that editing the structure of the document is an expert feature, and note that only the DAISY DTBOOK markup is checked for XML errors (not EPUB3 XHTML5). When exporting your project, make sure that the document is valid.</value>
   </data>
   <data name="StructEditConfirmDetails" xml:space="preserve">
-    <value>(note that this message is displayed only once per project session)</value>
+    <value>(this message will be displayed only once per project session)</value>
   </data>
   <data name="CmdEditText_ShortDesc" xml:space="preserve">
     <value>Edit _text</value>
