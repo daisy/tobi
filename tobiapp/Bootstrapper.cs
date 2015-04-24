@@ -74,7 +74,7 @@ namespace Tobi
     /// </summary>
     public class Bootstrapper : UnityBootstrapper
     {
-        private string askUser(IShellView shellView, string title, string message, string info)
+        private string askUser(IShellView shellView, string title, string message, string info, bool okcancel)
         {
             m_Logger.Log("Bootstrapper.askUser", Category.Debug, Priority.Medium);
 
@@ -132,7 +132,7 @@ namespace Tobi
             var windowPopup = new PopupModalWindow(shellView, // m_ShellView
                                                    title,
                                                    panel,
-                                                   PopupModalWindow.DialogButtonsSet.YesNo,
+                                                   okcancel ? PopupModalWindow.DialogButtonsSet.OkCancel : PopupModalWindow.DialogButtonsSet.YesNo,
                                                    PopupModalWindow.DialogButton.Yes,
                                                    true, 425, 160, details, 70, null);
 
@@ -158,7 +158,7 @@ namespace Tobi
 
             if (String.IsNullOrEmpty(settingValue) || settingValue.Equals(defaultSettingValue))
             {
-                String userid = askUser(shellView, Tobi_Lang.UserId_title, Tobi_Lang.UserId_message, Tobi_Lang.UserId_details);
+                String userid = askUser(shellView, Tobi_Lang.UserId_title, Tobi_Lang.UserId_message, Tobi_Lang.UserId_details, true);
                 if (!String.IsNullOrEmpty(userid))
                 {
                     userid = userid.Trim();
