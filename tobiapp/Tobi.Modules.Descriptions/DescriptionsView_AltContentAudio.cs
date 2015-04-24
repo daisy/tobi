@@ -694,7 +694,18 @@ namespace Tobi.Plugin.Descriptions
             if (medElement_MEDIAKIT_DIRECTSHOW != null)
             {
                 thereWasAMediaElement = true;
-                medElement_MEDIAKIT_DIRECTSHOW.Close();
+                try
+                {
+                    medElement_MEDIAKIT_DIRECTSHOW.Close();
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    bool breakpoint = true;
+#endif
+                    ; // NOOP (ignore)
+                }
+
                 medElement_MEDIAKIT_DIRECTSHOW = null;
             }
 #endif //ENABLE_WPF_MEDIAKIT
@@ -957,6 +968,15 @@ namespace Tobi.Plugin.Descriptions
                             + " \n("
                             + (ee.Exception != null ? ee.Exception.Message : ee.Message)
                             + ")");
+
+
+                        this.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                            (Action)(() =>
+                            {
+                                Common.Settings.Default.EnableMediaKit = false;
+                                resetAudioPlayer();
+                            }
+                            ));
                     }
                         );
 
@@ -1291,7 +1311,6 @@ namespace Tobi.Plugin.Descriptions
 
         private void stopAudioPlayer()
         {
-
             if (medElement_WINDOWS_MEDIA_PLAYER != null)
             {
                 if (medElement_WINDOWS_MEDIA_PLAYER.LoadedBehavior != MediaState.Manual)
@@ -1318,16 +1337,27 @@ namespace Tobi.Plugin.Descriptions
 #if ENABLE_WPF_MEDIAKIT
             if (medElement_MEDIAKIT_DIRECTSHOW != null)
             {
-                if (medElement_MEDIAKIT_DIRECTSHOW.LoadedBehavior != WPFMediaKit.DirectShow.MediaPlayers.MediaState.Manual)
+                try
                 {
-                    return;
-                }
+                    if (medElement_MEDIAKIT_DIRECTSHOW.LoadedBehavior !=
+                        WPFMediaKit.DirectShow.MediaPlayers.MediaState.Manual)
+                    {
+                        return;
+                    }
 
-                if (medElement_MEDIAKIT_DIRECTSHOW.IsPlaying)
+                    if (medElement_MEDIAKIT_DIRECTSHOW.IsPlaying)
+                    {
+                        _timer.Stop();
+                        medElement_MEDIAKIT_DIRECTSHOW.Pause();
+                        actionUpdateSliderFromVideoTime.Invoke();
+                    }
+                }
+                catch (Exception ex)
                 {
-                    _timer.Stop();
-                    medElement_MEDIAKIT_DIRECTSHOW.Pause();
-                    actionUpdateSliderFromVideoTime.Invoke();
+#if DEBUG
+                    bool breakpoint = true;
+#endif
+                    ; // NOOP (ignore)
                 }
             }
 #endif //ENABLE_WPF_MEDIAKIT
