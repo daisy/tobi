@@ -61,6 +61,15 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advanced XML.
+        /// </summary>
+        public static string AdvancedXmlInsert {
+            get {
+                return ResourceManager.GetString("AdvancedXmlInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Modify the text of the selected document phrase.
         /// </summary>
         public static string CmdEditText_LongDesc {
