@@ -238,7 +238,7 @@
     <value>User information</value>
   </data>
   <data name="UserId_message" xml:space="preserve">
-    <value>Please enter an email address (or personal / organisation name):</value>
+    <value>Please enter an email/name and role, for example: [name@domain.org (volunteer narrator)]</value>
   </data>
   <data name="UserId_details" xml:space="preserve">
     <value>By default, Tobi usage statistics are anonymous. By adding a simple identifier, you are helping the Tobi development team process software feedback. Read more about privacy at http://www.daisy.org/tobi/privacy</value>

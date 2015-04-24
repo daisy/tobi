@@ -403,7 +403,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please enter an email address (or personal / organisation name):.
+        ///   Looks up a localized string similar to Please enter an email/name and role, for example: [name@domain.org (volunteer narrator)].
         /// </summary>
         public static string UserId_message {
             get {
