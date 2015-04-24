@@ -479,7 +479,7 @@ namespace Tobi.Plugin.Descriptions
                 ManagedAudioMedia manMedia = presentation.RootNode.GetManagedAudioMedia();
                 if (manMedia != null)
                 {
-                    manMedia.AudioMediaData = null;
+                    manMedia.AudioMediaData = null; // so that this ManagedAudioMedia gets cleaned up (we copied the WAV above at m_ViewModel.SetDescriptionAudio(altContent, manMedia_)) 
                 }
 
                 string deletedDataFolderPath = audioSession.DataCleanup(false);
