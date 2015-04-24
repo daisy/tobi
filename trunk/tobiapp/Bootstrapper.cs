@@ -148,7 +148,6 @@ namespace Tobi
 
         public void usageReport(IShellView shellView)
         {
-            
             string defaultSettingValue = (string)Settings.Default.Properties["UserId"].DefaultValue;
             string settingValue = Tobi.Settings.Default.UserId;
             if (!String.IsNullOrEmpty(settingValue))
@@ -541,10 +540,6 @@ namespace Tobi
             //var shellView = Container.Resolve<IShellView>();
             var shellView = MefContainer.GetExportedValue<IShellView>();
             shellView.Show();
-
-
-            usageReport(shellView);
-
             return shellView as DependencyObject;
         }
 
@@ -796,6 +791,10 @@ namespace Tobi
             //        moduleManager.LoadModule(module.ModuleName);
             //    }
             //}
+
+
+
+            usageReport(shell);
         }
     }
 }
