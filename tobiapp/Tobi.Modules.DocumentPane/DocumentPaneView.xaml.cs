@@ -1255,7 +1255,7 @@ namespace Tobi.Plugin.DocumentPane
 
         protected bool structureInsertDialog(TreeNode node, string title, string cmdShort, string cmdLong, string cmdId,
             TreeNode nodeToInsert,
-            string initialNameInput, string initialTextInput, string labelNameInput, string labelTextInput,
+            string initialNameInput, string initialTextInput, string labelNameInput, string labelTextInput, string labelXmlInput,
             Func<string, string, string, TreeNode> callback)
         {
             //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
@@ -1368,6 +1368,7 @@ namespace Tobi.Plugin.DocumentPane
                 panel.Children.Add(panel_TextInput);
             }
 
+
             var textbox = new TextBoxReadOnlyCaretVisible()
             {
                 FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
@@ -1380,14 +1381,34 @@ namespace Tobi.Plugin.DocumentPane
                 AcceptsReturn = true,
                 //AcceptsTab = true,
                 //TextWrapping = TextWrapping.WrapWithOverflow
+
+                Height = 100
             };
+
+            bool showXmlSourceInputBox = labelNameInput != null;
+            if (showXmlSourceInputBox)
+            {
+                var label_XmlInput = new TextBlock()
+                {
+                    Text = labelXmlInput + ": ",
+                    Margin = new Thickness(8, 16, 8, 0),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Focusable = true,
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                panel.Children.Add(label_XmlInput);
+
+                panel.Children.Add(textbox);
+            }
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    title,
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 350, 260, labelNameInput != null ? textbox : null, 200, null);
+                                                   true, 350, showXmlSourceInputBox ? 400 : 260, null, 200, null);
             windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok)
@@ -2037,6 +2058,7 @@ namespace Tobi.Plugin.DocumentPane
                         null,
                         null,
                         null,
+                        null,
                         null
                         ))
                     {
@@ -2148,6 +2170,7 @@ namespace Tobi.Plugin.DocumentPane
                         "TXT",
                         Tobi_Plugin_DocumentPane_Lang.ElementName,
                         Tobi_Plugin_DocumentPane_Lang.TextContent,
+                        Tobi_Plugin_DocumentPane_Lang.AdvancedXmlInsert,
 (elementName, elementText, xmlSource) =>
 {
     if (!String.IsNullOrEmpty(xmlSource))
@@ -2342,6 +2365,7 @@ namespace Tobi.Plugin.DocumentPane
                         "1",
                         null,
                         Tobi_Plugin_DocumentPane_Lang.PageLabel,
+                        null,
 (elementName, elementText, xmlSource) =>
 {
     if (string.IsNullOrEmpty(elementText))

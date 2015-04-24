@@ -819,12 +819,15 @@ namespace Tobi.Plugin.DocumentPane
 
         private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool done, TextNodeStructureEditCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
+            if (isNoTransactionOrTrailingEdge) //!command.IsInTransaction() || isTransactionEndEvent && isNoTransactionOrTrailingEdge)
+            {
+                checkValid();
+            }
+
             if (isTransactionEndEvent)
             {
                 return;
             }
-            
-            checkValid();
 
             DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
 

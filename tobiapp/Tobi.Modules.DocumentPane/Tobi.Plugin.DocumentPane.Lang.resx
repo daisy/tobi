@@ -198,6 +198,10 @@
   <data name="TextContent" xml:space="preserve">
     <value>Text content</value>
   </data>
+  <data name="AdvancedXmlInsert" xml:space="preserve">
+    <value>Advanced XML</value>
+  </data>
+
   <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
     <value>Insert custom XML... (advanced feature)</value>
   </data>
