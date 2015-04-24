@@ -330,7 +330,10 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnUndoRedoManagerChanged_AudioEditCommand(UndoRedoManagerEventArgs eventt, bool done, AudioEditCommand cmd, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
-            DebugFix.Assert(!isTransactionEndEvent);
+#if DEBUG
+            DebugFix.Assert(!isTransactionEndEvent ||
+                    isNoTransactionOrTrailingEdge && cmd.IsInTransaction() && cmd.TopTransactionId() == AudioPaneViewModel.COMMAND_TRANSATION_ID__AUDIO_TTS);
+#endif
 
             if (cmd is ManagedAudioMediaInsertDataCommand)
             {

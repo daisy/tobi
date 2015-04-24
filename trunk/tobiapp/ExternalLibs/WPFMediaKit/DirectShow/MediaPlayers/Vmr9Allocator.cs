@@ -31,12 +31,12 @@ namespace WPFMediaKit.DirectShow.MediaPlayers
         /// <summary>
         /// Direct3D functions
         /// </summary>
-        private static IDirect3D9 m_d3d;
+        private IDirect3D9 m_d3d;
 
         /// <summary>
         /// Direct3D functions of Vista
         /// </summary>
-        private static IDirect3D9Ex m_d3dEx;
+        private IDirect3D9Ex m_d3dEx;
 
         /// <summary>
         /// The window handle, needed for D3D intialization
@@ -46,12 +46,12 @@ namespace WPFMediaKit.DirectShow.MediaPlayers
         /// <summary>
         /// The Direct3D device
         /// </summary>
-        private static IDirect3DDevice9 m_device;
+        private IDirect3DDevice9 m_device;
 
         /// <summary>
         /// Lock for instance's resources
         /// </summary>
-        private object m_instanceLock = new object();
+        private readonly object m_instanceLock = new object();
 
         /// <summary>
         /// Part of the "Dispose" pattern
@@ -92,13 +92,7 @@ namespace WPFMediaKit.DirectShow.MediaPlayers
         {
             m_hWnd = GetDesktopWindow();
 
-            /* Use the 9Ex for Vista */
-            if (IsVistaOrBetter)
-                Direct3D.Direct3DCreate9Ex(D3D_SDK_VERSION, out m_d3dEx);
-            else /* For XP */
-                m_d3d = Direct3D.Direct3DCreate9(D3D_SDK_VERSION);
-
-            CreateDevice();
+           
         }
 
         /// <summary>
@@ -106,6 +100,13 @@ namespace WPFMediaKit.DirectShow.MediaPlayers
         /// </summary>
         public Vmr9Allocator()
         {
+            /* Use the 9Ex for Vista */
+            if (IsVistaOrBetter)
+                Direct3D.Direct3DCreate9Ex(D3D_SDK_VERSION, out m_d3dEx);
+            else /* For XP */
+                m_d3d = Direct3D.Direct3DCreate9(D3D_SDK_VERSION);
+
+            CreateDevice();
         }
 
         /// <summary>
@@ -149,9 +150,30 @@ namespace WPFMediaKit.DirectShow.MediaPlayers
                 InvokeNewSurfaceEvent(IntPtr.Zero);
                 /* Pass a dummy cookie to TerminateDevice */
                 TerminateDevice(IntPtr.Zero);
-
+               
                 if (m_allocatorNotify != null)
+                {
                     Marshal.FinalReleaseComObject(m_allocatorNotify);
+                    m_allocatorNotify = null;
+                }
+
+                if (m_d3d != null)
+                {
+                    Marshal.FinalReleaseComObject(m_d3d);
+                    m_d3d = null;
+                }
+
+                if (m_d3dEx != null)
+                {
+                    Marshal.FinalReleaseComObject(m_d3dEx);
+                    m_d3dEx = null;
+                }
+
+                if (m_device != null)
+                {
+                    Marshal.FinalReleaseComObject(m_device);
+                    m_device = null;
+                }
             }
 
             m_disposed = true;
@@ -373,10 +395,7 @@ namespace WPFMediaKit.DirectShow.MediaPlayers
                 }
 
                 /* Nofity to our listeners we have new surfaces */
-                if (m_privateSurface != null)
-                    InvokeNewSurfaceEvent(GetComPointer(m_privateSurface));
-                else
-                    InvokeNewSurfaceEvent(DxSurfaces[0]);
+                InvokeNewSurfaceEvent(m_privateSurface != null ? GetComPointer(m_privateSurface) : DxSurfaces[0]);
 
                 return hr;
             }
@@ -474,7 +493,7 @@ namespace WPFMediaKit.DirectShow.MediaPlayers
         private static IntPtr GetComPointer(object comObj)
         {
             if (!Marshal.IsComObject(comObj))
-                throw new ArgumentException("The argument is not a COM object", "COMObj");
+                throw new ArgumentException("comObj");
 
             IntPtr pComObj = Marshal.GetIUnknownForObject(comObj);
 
@@ -508,7 +527,7 @@ namespace WPFMediaKit.DirectShow.MediaPlayers
         /// Creates a Direct3D device
         /// </summary>
         [MethodImpl(MethodImplOptions.Synchronized)]
-        private static void CreateDevice()
+        private void CreateDevice()
         {
             if (m_device != null)
                 return;

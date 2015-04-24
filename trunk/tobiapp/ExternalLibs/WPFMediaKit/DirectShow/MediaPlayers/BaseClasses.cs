@@ -546,7 +546,7 @@ namespace WPFMediaKit.DirectShow.MediaPlayers
             {
                 case EventCode.Complete:
                     InvokeMediaEnded(null);
-                    //DANIEL: StopGraphPollTimer();
+                    // TOBI StopGraphPollTimer();
                     break;
                 case EventCode.Paused:
                     break;
