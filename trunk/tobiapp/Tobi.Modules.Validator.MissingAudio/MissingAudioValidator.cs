@@ -238,6 +238,13 @@ namespace Tobi.Plugin.Validator.MissingAudio
             DebugFix.Assert(treeNode.NeedsAudio());
             DebugFix.Assert(!treeNode.HasOrInheritsAudio());
 
+            foreach (var valItem in ValidationItems)
+            {
+                // ensure no duplicates
+                if (valItem is MissingAudioValidationError && ((MissingAudioValidationError) valItem).Target == treeNode)
+                    return;
+            }
+
             var error = new MissingAudioValidationError(m_Session)
             {
                 Target = treeNode,

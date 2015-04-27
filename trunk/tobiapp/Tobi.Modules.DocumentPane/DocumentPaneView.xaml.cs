@@ -1960,10 +1960,7 @@ namespace Tobi.Plugin.DocumentPane
                         m_UrakawaSession.PerformTreeNodeSelection(node.Presentation.RootNode);
                     }
 
-                    // CANNOT remove tags, otherwise the undo for above remove command will fail!
-                    //node.FlushTags(); // ensure TextElement hierarchy gets re-created from scratch.
-                    // ... so we clone the TreeNode fragment (looses tags, text cache):
-
+                    // clone looses Tags and text cache (FlowDocument TextElement mapping gets recreated at paste time)
                     m_TreeNodeFragmentClipboard = node.Copy(true, true);
                 },
                 () =>
@@ -2011,11 +2008,7 @@ namespace Tobi.Plugin.DocumentPane
                         m_TreeNodeFragmentClipboard = null;
                     }
 
-
-                    // CANNOT remove tags, otherwise the undo for above remove command will fail!
-                    //node.FlushTags(); // ensure TextElement hierarchy gets re-created from scratch.
-                    // ... so we clone the TreeNode fragment (looses tags, text cache):
-
+                    // clone looses Tags and text cache (FlowDocument TextElement mapping gets recreated at paste time)
                     m_TreeNodeFragmentClipboard = node.Copy(true, true);
 
                     stripXmlIds(m_TreeNodeFragmentClipboard);
@@ -3464,6 +3457,8 @@ namespace Tobi.Plugin.DocumentPane
 
             if (project == null)
             {
+                m_TreeNodeFragmentClipboard = null;
+
                 SearchBox.Text = "";
                 SearchTerm = null;
                 CommandFocus.Execute();
