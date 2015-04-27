@@ -33,6 +33,7 @@ using urakawa;
 using urakawa.command;
 using urakawa.commands;
 using urakawa.core;
+using urakawa.core.visitor;
 using urakawa.daisy;
 using urakawa.daisy.import;
 using urakawa.data;
@@ -48,6 +49,7 @@ namespace Tobi.Plugin.DocumentPane
 {
     public partial class DocumentPaneView
     {
+#if ENABLE_STRUCT_EDIT_INCREMENTAL_FLOWDOC_REFRESH
         protected class FlowDocumentAnchorData<T1, T2, T3>
         {
             public T1 Item1 { get; private set; }
@@ -816,9 +818,29 @@ namespace Tobi.Plugin.DocumentPane
 #endif
             }
         }
+        
+#else //ENABLE_STRUCT_EDIT_INCREMENTAL_FLOWDOC_REFRESH
+    
+    //protected class ClearTagTreeNodeVisitor : ITreeNodeVisitor
+    //{
+    //    public bool PreVisit(TreeNode node)
+    //    {
+    //        node.Tag = null;
+
+    //        return true;
+    //    }
+
+    //    public void PostVisit(TreeNode node)
+    //    {
+    //    }
+    //}
+
+#endif //ENABLE_STRUCT_EDIT_INCREMENTAL_FLOWDOC_REFRESH
 
         private void OnUndoRedoManagerChanged_TextNodeStructureEditCommand(UndoRedoManagerEventArgs eventt, bool done, TextNodeStructureEditCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)
         {
+#if ENABLE_STRUCT_EDIT_INCREMENTAL_FLOWDOC_REFRESH
+            
             if (isNoTransactionOrTrailingEdge) //!command.IsInTransaction() || isTransactionEndEvent && isNoTransactionOrTrailingEdge)
             {
                 checkValid();
@@ -830,7 +852,7 @@ namespace Tobi.Plugin.DocumentPane
             }
 
             DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
-
+            
             //TreeNode node = (command is TreeNodeInsertCommand) ? ((TreeNodeInsertCommand)command).TreeNode : ((TreeNodeRemoveCommand)command).TreeNode;
             //TreeNode node = command.TreeNode;
             //bool forceInvalidate = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
@@ -978,6 +1000,41 @@ namespace Tobi.Plugin.DocumentPane
             {
                 DocumentPaneView.detachFlowDocumentFragment((command is TreeNodeInsertCommand) ? !done : done, (TextElement)cmdTreeNode.Tag, command);
             }
+            
+#else //ENABLE_STRUCT_EDIT_INCREMENTAL_FLOWDOC_REFRESH
+
+            if (!isTransactionEndEvent)
+            {
+                DebugFix.Assert(command is TreeNodeInsertCommand || command is TreeNodeRemoveCommand);
+            }
+
+            
+            if (isNoTransactionOrTrailingEdge) //!command.IsInTransaction() || isTransactionEndEvent && isNoTransactionOrTrailingEdge)
+            {
+                bool projectLoadedFlag = m_ProjectLoadedFlag;
+                TreeNode clipboard = m_TreeNodeFragmentClipboard;
+                bool? valid = m_valid;
+
+                OnProjectUnLoaded(m_UrakawaSession.DocumentProject);
+
+
+                //ClearTagTreeNodeVisitor clearTagVisitor = new ClearTagTreeNodeVisitor();
+                //m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode.AcceptDepthFirst(clearTagVisitor);
+                m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode.FlushTags();
+
+
+                OnProjectLoaded(m_UrakawaSession.DocumentProject);
+
+                m_ProjectLoadedFlag = projectLoadedFlag;
+                m_TreeNodeFragmentClipboard = clipboard;
+                m_valid = valid;
+
+
+                checkValid();
+            }
+
+#endif //ENABLE_STRUCT_EDIT_INCREMENTAL_FLOWDOC_REFRESH
+
         }
 
         private void OnUndoRedoManagerChanged_TreeNodeChangeTextCommand(UndoRedoManagerEventArgs eventt, bool done, TreeNodeChangeTextCommand command, bool isTransactionEndEvent, bool isNoTransactionOrTrailingEdge)

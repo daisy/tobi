@@ -427,7 +427,7 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw new Exception("The given parent TextElement is not valid in this context.");
+                //throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
 
@@ -550,7 +550,7 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw new Exception("The given parent TextElement is not valid in this context.");
+                //throw new Exception("The given parent TextElement is not valid in this context.");
             }
         }
 
@@ -942,7 +942,8 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw new Exception("Trying to add TableCell btu parent is not Table ??");
+                //throw new Exception("Trying to add TableCell btu parent is not Table ??");
+                return parent;
             }
         }
 
@@ -1204,7 +1205,7 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw new Exception("list item not in List ??");
+                //throw new Exception("list item not in List ??");
             }
             var data = new ListItem();
 
@@ -1348,7 +1349,8 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                     Debugger.Break();
 #endif
-                    throw new Exception("table row not in Table ??");
+                    //throw new Exception("table row not in Table ??");
+                    return parent;
                 }
             }
             //assumption based on the caller: when node.Children.Count != 0 then textMedia == null
@@ -1446,7 +1448,8 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                     Debugger.Break();
 #endif
-                    throw new Exception("table row not in Table ??");
+                    //throw new Exception("table row not in Table ??");
+                    return parent;
                 }
             }
         }
@@ -2495,7 +2498,7 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                 Debugger.Break();
 #endif
-                throw new Exception("Node has children or text exists when processing image ??");
+                //throw new Exception("Node has children or text exists when processing image ??");
             }
 
 
@@ -3342,7 +3345,7 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                         Debugger.Break();
 #endif
-                        throw new Exception("The given TreeNode has no children, has no XmlProperty, and has no TextMedia.");
+                        //throw new Exception("The given TreeNode has no children, has no XmlProperty, and has no TextMedia.");
                     }
                     else //childCount == 0 && qname == null && textMedia != null
                     {
@@ -3373,14 +3376,14 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                         Debugger.Break();
 #endif
-                        throw new Exception("The given TreeNode has children, has no XmlProperty, and has no TextMedia.");
+                        //throw new Exception("The given TreeNode has children, has no XmlProperty, and has no TextMedia.");
                     }
                     else //childCount != 0 && qname == null && textMedia != null
                     {
 #if DEBUG
                         Debugger.Break();
 #endif
-                        throw new Exception("The given TreeNode has children, has no XmlProperty, and has TextMedia.");
+                        //throw new Exception("The given TreeNode has children, has no XmlProperty, and has TextMedia.");
                     }
                 }
                 else //childCount != 0 && qname != null
@@ -3395,7 +3398,7 @@ namespace Tobi.Plugin.DocumentPane
 #if DEBUG
                         Debugger.Break();
 #endif
-                        throw new Exception("The given TreeNode has children, has XmlProperty, and has TextMedia.");
+                        //throw new Exception("The given TreeNode has children, has XmlProperty, and has TextMedia.");
                     }
                 }
 
