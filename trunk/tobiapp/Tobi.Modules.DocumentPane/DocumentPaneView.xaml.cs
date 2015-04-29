@@ -2437,6 +2437,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     TreeNode node = null;
                     string oldTxt = null;
+                    List<TreeNode> nodes = null;
                     if (m_TextElementForEdit != null)
                     {
                         DebugFix.Assert(m_TextElementForEdit.Tag is TreeNode);
@@ -2451,7 +2452,8 @@ namespace Tobi.Plugin.DocumentPane
                     else
                     {
                         Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                        node = selection.Item2 ?? selection.Item1;
+                        //node = selection.Item2 ?? selection.Item1;
+                        node = selection.Item1;
 
                         if (node != null)
                         {
@@ -2466,8 +2468,26 @@ namespace Tobi.Plugin.DocumentPane
 
                                     if (!string.IsNullOrEmpty(descendantNodeText))
                                     {
+                                        TreeNode originalRootNode = node;
+
                                         oldTxt = descendantNodeText;
                                         node = descendantNode;
+
+                                        TreeNode siblingNode = node;
+                                        while ((siblingNode = siblingNode.GetNextSiblingWithText()) != null)
+                                        {
+                                            if (!siblingNode.IsDescendantOf(originalRootNode))
+                                            {
+                                                break;
+                                            }
+
+                                            if (nodes == null)
+                                            {
+                                                nodes = new List<TreeNode>(2);
+                                                nodes.Add(node);
+                                            }
+                                            nodes.Add(siblingNode);
+                                        }
                                     }
 #if DEBUG
                                     else
@@ -2482,22 +2502,32 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (node == null) return;
 
-                    
-
-                    if (string.IsNullOrEmpty(oldTxt))
+                    if (nodes == null)
                     {
-                        oldTxt = "";
-                        //return;
+                        nodes = new List<TreeNode>(1);
+                        nodes.Add(node);
                     }
 
-                    string txt = showDialogTextEdit(oldTxt);
+                    foreach (TreeNode n in nodes)
+                    {
+                        oldTxt = TreeNodeChangeTextCommand.GetText(n);
 
-                    if (string.IsNullOrEmpty(txt) || txt == oldTxt) return;
+                        if (string.IsNullOrEmpty(oldTxt))
+                        {
+                            oldTxt = "";
+                            //return;
+                        }
 
-                    m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+                        string txt = showDialogTextEdit(oldTxt);
 
-                    var cmd = node.Presentation.CommandFactory.CreateTreeNodeChangeTextCommand(node, txt);
-                    node.Presentation.UndoRedoManager.Execute(cmd);
+                        if (txt == oldTxt) continue;
+                        if (string.IsNullOrEmpty(txt)) break;
+
+                        m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
+
+                        var cmd = n.Presentation.CommandFactory.CreateTreeNodeChangeTextCommand(n, txt);
+                        n.Presentation.UndoRedoManager.Execute(cmd);
+                    }
                 },
                 () =>
                 {
@@ -2506,7 +2536,8 @@ namespace Tobi.Plugin.DocumentPane
                     if (m_UrakawaSession.isAudioRecording) return false;
 
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
-                    TreeNode node = selection.Item2 ?? selection.Item1;
+                    //TreeNode node = selection.Item2 ?? selection.Item1;
+                    TreeNode node = selection.Item1;
                     return m_TextElementForEdit != null
                             || node != null
 
