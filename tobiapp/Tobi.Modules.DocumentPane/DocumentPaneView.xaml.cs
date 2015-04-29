@@ -2436,20 +2436,53 @@ namespace Tobi.Plugin.DocumentPane
                 () =>
                 {
                     TreeNode node = null;
+                    string oldTxt = null;
                     if (m_TextElementForEdit != null)
                     {
                         DebugFix.Assert(m_TextElementForEdit.Tag is TreeNode);
                         node = (TreeNode)m_TextElementForEdit.Tag;
                         m_TextElementForEdit = null;
+                        
+                        if (node != null)
+                        {
+                            oldTxt = TreeNodeChangeTextCommand.GetText(node);
+                        }
                     }
                     else
                     {
                         Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                         node = selection.Item2 ?? selection.Item1;
+
+                        if (node != null)
+                        {
+                            oldTxt = TreeNodeChangeTextCommand.GetText(node);
+                            
+                            if (string.IsNullOrEmpty(oldTxt))
+                            {
+                                TreeNode descendantNode = node.GetFirstDescendantWithText();
+                                if (descendantNode != null)
+                                {
+                                    string descendantNodeText = TreeNodeChangeTextCommand.GetText(descendantNode);
+
+                                    if (!string.IsNullOrEmpty(descendantNodeText))
+                                    {
+                                        oldTxt = descendantNodeText;
+                                        node = descendantNode;
+                                    }
+#if DEBUG
+                                    else
+                                    {
+                                        Debugger.Break();
+                                    }
+#endif
+                                }
+                            }
+                        }
                     }
+
                     if (node == null) return;
 
-                    string oldTxt = TreeNodeChangeTextCommand.GetText(node);
+                    
 
                     if (string.IsNullOrEmpty(oldTxt))
                     {
@@ -2475,7 +2508,11 @@ namespace Tobi.Plugin.DocumentPane
                     Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                     TreeNode node = selection.Item2 ?? selection.Item1;
                     return m_TextElementForEdit != null
-                            || node != null && !string.IsNullOrEmpty(TreeNodeChangeTextCommand.GetText(node));
+                            || node != null
+
+                            // Note: allow selection of ancestor, as leaf node will be automatically selected
+                            //&& !string.IsNullOrEmpty(TreeNodeChangeTextCommand.GetText(node))
+                            ;
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_EditPhraseText));
