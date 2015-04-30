@@ -61,7 +61,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Advanced XML.
+        ///   Looks up a localized string similar to ...alternatively, enter markup code below (experts only, make sure XML is valid!).
         /// </summary>
         public static string AdvancedXmlInsert {
             get {
@@ -358,7 +358,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you confirm discarding the existing structure clipboard?.
+        ///   Looks up a localized string similar to Confirm overwrite existing clipboard content?.
         /// </summary>
         public static string ConfirmStructureClipboard {
             get {

@@ -1399,6 +1399,15 @@ namespace Tobi.Plugin.DocumentPane
                 panel.Children.Add(radioAfter);
             }
 
+            if (labelNameInput != null || labelTextInput != null)
+            {
+                panel.Children.Add(new Separator()
+                {
+                    Height = 3,
+                    Margin = new Thickness(0, 8, 0, 0)
+                });
+            }
+
             var elementNameInput = new TextBox()
             {
                 Text = string.IsNullOrEmpty(initialNameInput) ? "" : initialNameInput
@@ -1413,7 +1422,7 @@ namespace Tobi.Plugin.DocumentPane
                 var label_NameInput = new TextBlock()
                 {
                     Text = labelNameInput + ": ",
-                    Margin = new Thickness(8, 0, 8, 0),
+                    Margin = new Thickness(0, 0, 8, 0),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     Focusable = true,
@@ -1424,6 +1433,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 10, 0, 0)
                 };
                 label_NameInput.SetValue(DockPanel.DockProperty, Dock.Left);
                 panel_NameInput.Children.Add(label_NameInput);
@@ -1437,7 +1447,7 @@ namespace Tobi.Plugin.DocumentPane
                 var label_TextInput = new TextBlock()
                 {
                     Text = labelTextInput + ": ",
-                    Margin = new Thickness(8, 0, 8, 0),
+                    Margin = new Thickness(0, 0, 8, 0),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     Focusable = true,
@@ -1448,7 +1458,13 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 4, 0, 0)
                 };
+                if (labelNameInput == null)
+                {
+                    panel_TextInput.Margin = new Thickness(0, 10, 0, 0);
+                }
+
                 label_TextInput.SetValue(DockPanel.DockProperty, Dock.Left);
                 panel_TextInput.Children.Add(label_TextInput);
                 panel_TextInput.Children.Add(elementTextInput);
@@ -1479,8 +1495,8 @@ namespace Tobi.Plugin.DocumentPane
                 var label_XmlInput = new TextBlock()
                 {
                     Text = labelXmlInput + ": ",
-                    Margin = new Thickness(8, 16, 8, 0),
-                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(0, 20, 8, 4),
+                    HorizontalAlignment = HorizontalAlignment.Left,
                     VerticalAlignment = VerticalAlignment.Center,
                     Focusable = true,
                     TextWrapping = TextWrapping.Wrap
@@ -1496,7 +1512,7 @@ namespace Tobi.Plugin.DocumentPane
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 350, showXmlSourceInputBox ? 400 : 260, null, 200, null);
+                                                   true, 350, showXmlSourceInputBox ? 370 : (labelNameInput == null && labelTextInput == null ? 170 : 220), null, 200, null);
             windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok)
