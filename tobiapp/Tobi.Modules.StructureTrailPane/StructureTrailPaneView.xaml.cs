@@ -62,6 +62,8 @@ namespace Tobi.Plugin.StructureTrailPane
 
         private void updateBreadcrumbPanel(Tuple<TreeNode, TreeNode> treeNodeSelection)
         {
+            bool keyboardFocusWithin = BreadcrumbPanel.IsKeyboardFocusWithin;
+
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
             BreadcrumbPanel.Children.Add(m_FocusStartElement2);
@@ -209,10 +211,15 @@ namespace Tobi.Plugin.StructureTrailPane
                     + (selected ? Tobi_Plugin_StructureTrailPane_Lang.Selected : "")
                     + (withMedia ? Tobi_Plugin_StructureTrailPane_Lang.Audio : ""));
 
+                //if (keyboardFocusWithin && selected)
+                //{
+                //    butt.Focus();
+                //}
+
                 counter++;
             }
 
-            if (firstTime)
+            if (firstTime || keyboardFocusWithin)
             {
                 CommandFocus.Execute();
             }
@@ -606,8 +613,15 @@ namespace Tobi.Plugin.StructureTrailPane
 
             if (isNoTransactionOrTrailingEdge)
             {
+                //bool keyboardFocusWithin = this.IsKeyboardFocusWithin;
+
                 Tuple<TreeNode, TreeNode> newTreeNodeSelection = m_UrakawaSession.GetTreeNodeSelection();
                 refreshData(newTreeNodeSelection);
+
+                //if (keyboardFocusWithin)
+                //{
+                //    CommandFocus.Execute();
+                //}
             }
         }
 
