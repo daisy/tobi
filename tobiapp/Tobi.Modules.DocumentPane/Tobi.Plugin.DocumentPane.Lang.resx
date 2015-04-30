@@ -160,7 +160,7 @@
 
 
   <data name="ConfirmStructureClipboard" xml:space="preserve">
-    <value>Do you confirm discarding the existing structure clipboard?</value>
+    <value>Confirm overwrite existing clipboard content?</value>
   </data>
 
   <data name="InsertDocFragmentFirstInside" xml:space="preserve">
@@ -199,7 +199,7 @@
     <value>Text content</value>
   </data>
   <data name="AdvancedXmlInsert" xml:space="preserve">
-    <value>Advanced XML</value>
+    <value>...alternatively, enter markup code below (experts only, make sure XML is valid!)</value>
   </data>
 
   <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
