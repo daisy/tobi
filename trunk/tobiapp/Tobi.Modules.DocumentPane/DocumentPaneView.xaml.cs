@@ -774,7 +774,7 @@ namespace Tobi.Plugin.DocumentPane
             m_PropertyChangeHandler.RaisePropertyChanged(() => CmdFindPreviousGlobal);
         }
 
-        private string showDialogTextEdit(string text)
+        private string showDialogTextEdit(int i, int count, string text)
         {
             m_Logger.Log("showDialogTextEdit", Category.Debug, Priority.Medium);
 
@@ -786,7 +786,7 @@ namespace Tobi.Plugin.DocumentPane
                               };
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdEditText_ShortDesc),
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdEditText_ShortDesc) + " (" + (i+1) + " / " + count + ")",
                                                    new ScrollViewer { Content = editBox },
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
@@ -875,7 +875,7 @@ namespace Tobi.Plugin.DocumentPane
         private bool checkDisplayStructEditWarning()
         {
             if (!m_ProjectLoadedFlag) return true;
-            
+
             m_ProjectLoadedFlag = false;
 
             return checkWithUser(Tobi_Plugin_DocumentPane_Lang.StructEditConfirmTitle,
@@ -1044,7 +1044,7 @@ namespace Tobi.Plugin.DocumentPane
 
             return false;
         }
-        
+
         private bool askUser(string title, string message, string info)
         {
             m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
@@ -1597,7 +1597,7 @@ namespace Tobi.Plugin.DocumentPane
             if (thereIsAtLeastOneError && m_valid == true)
             {
                 m_Logger.Log("Document structure edit VALIDATION error", Category.Debug, Priority.Medium);
-                
+
                 if (
                     //askUser(
                     checkWithUser(
@@ -1913,7 +1913,7 @@ namespace Tobi.Plugin.DocumentPane
                     TreeNode node = selection.Item1; // TOP LEVEL!
 
                     if (node == null) return;
-                    
+
                     if (!checkDisplayStructEditWarning()) return;
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
@@ -1997,7 +1997,7 @@ namespace Tobi.Plugin.DocumentPane
                         if (
                             !
                             //askUser(
-                            checkWithUser( 
+                            checkWithUser(
                                 Tobi_Plugin_DocumentPane_Lang.CmdStructEditCopyFragment_ShortDesc,
                                 Tobi_Plugin_DocumentPane_Lang.ConfirmStructureClipboard,
                                 null
@@ -2085,7 +2085,7 @@ namespace Tobi.Plugin.DocumentPane
                     TreeNode node = selection.Item1; // TOP LEVEL!
 
                     if (node == null) return;
-                    
+
                     if (!checkDisplayStructEditWarning()) return;
 
                     //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
@@ -2435,90 +2435,87 @@ namespace Tobi.Plugin.DocumentPane
                 m_ShellView.LoadTangoIcon("accessories-text-editor"),
                 () =>
                 {
-                    TreeNode node = null;
-                    string oldTxt = null;
-                    List<TreeNode> nodes = null;
+                    List<TreeNode> nodes = new List<TreeNode>(1);
+
                     if (m_TextElementForEdit != null)
                     {
                         DebugFix.Assert(m_TextElementForEdit.Tag is TreeNode);
-                        node = (TreeNode)m_TextElementForEdit.Tag;
+                        TreeNode node = (TreeNode)m_TextElementForEdit.Tag;
                         m_TextElementForEdit = null;
-                        
+
                         if (node != null)
                         {
-                            oldTxt = TreeNodeChangeTextCommand.GetText(node);
+                            nodes.Add(node);
                         }
                     }
                     else
                     {
                         Tuple<TreeNode, TreeNode> selection = m_UrakawaSession.GetTreeNodeSelection();
                         //node = selection.Item2 ?? selection.Item1;
-                        node = selection.Item1;
+                        TreeNode node = selection.Item1;
 
                         if (node != null)
                         {
-                            oldTxt = TreeNodeChangeTextCommand.GetText(node);
-                            
-                            if (string.IsNullOrEmpty(oldTxt))
+                            string text = TreeNodeChangeTextCommand.GetText(node);
+
+                            if (!string.IsNullOrEmpty(text))
+                            {
+                                nodes.Add(node);
+                            }
+                            else
                             {
                                 TreeNode descendantNode = node.GetFirstDescendantWithText();
                                 if (descendantNode != null)
                                 {
                                     string descendantNodeText = TreeNodeChangeTextCommand.GetText(descendantNode);
+                                    if (descendantNodeText != null)
+                                    {
+                                        descendantNodeText = descendantNodeText.Trim();
+                                    }
 
                                     if (!string.IsNullOrEmpty(descendantNodeText))
                                     {
-                                        TreeNode originalRootNode = node;
-
-                                        oldTxt = descendantNodeText;
-                                        node = descendantNode;
-
-                                        TreeNode siblingNode = node;
-                                        while ((siblingNode = siblingNode.GetNextSiblingWithText()) != null)
-                                        {
-                                            if (!siblingNode.IsDescendantOf(originalRootNode))
-                                            {
-                                                break;
-                                            }
-
-                                            if (nodes == null)
-                                            {
-                                                nodes = new List<TreeNode>(2);
-                                                nodes.Add(node);
-                                            }
-                                            nodes.Add(siblingNode);
-                                        }
+                                        nodes.Add(descendantNode);
                                     }
-#if DEBUG
-                                    else
+
+                                    TreeNode siblingNode = descendantNode;
+                                    while ((siblingNode = siblingNode.GetNextSiblingWithText()) != null)
                                     {
-                                        Debugger.Break();
+                                        if (!siblingNode.IsDescendantOf(node))
+                                        {
+                                            break;
+                                        }
+
+                                        string siblingNodeText = TreeNodeChangeTextCommand.GetText(siblingNode);
+                                        if (siblingNodeText != null)
+                                        {
+                                            siblingNodeText = siblingNodeText.Trim();
+                                        }
+                                        if (string.IsNullOrEmpty(siblingNodeText))
+                                        {
+                                            continue;
+                                        }
+
+                                        nodes.Add(siblingNode);
                                     }
-#endif
                                 }
                             }
                         }
                     }
 
-                    if (node == null) return;
 
-                    if (nodes == null)
+                    for (int i = 0; i < nodes.Count; i++)
                     {
-                        nodes = new List<TreeNode>(1);
-                        nodes.Add(node);
-                    }
+                        TreeNode n = nodes[i];
 
-                    foreach (TreeNode n in nodes)
-                    {
-                        oldTxt = TreeNodeChangeTextCommand.GetText(n);
+                        string oldTxt = TreeNodeChangeTextCommand.GetText(n);
 
                         if (string.IsNullOrEmpty(oldTxt))
                         {
                             oldTxt = "";
-                            //return;
                         }
 
-                        string txt = showDialogTextEdit(oldTxt);
+                        string txt = showDialogTextEdit(i, nodes.Count, oldTxt);
 
                         if (txt == oldTxt) continue;
                         if (string.IsNullOrEmpty(txt)) break;
@@ -2542,7 +2539,7 @@ namespace Tobi.Plugin.DocumentPane
                             || node != null
 
                             // Note: allow selection of ancestor, as leaf node will be automatically selected
-                            //&& !string.IsNullOrEmpty(TreeNodeChangeTextCommand.GetText(node))
+                        //&& !string.IsNullOrEmpty(TreeNodeChangeTextCommand.GetText(node))
                             ;
                 },
                 Settings_KeyGestures.Default,
@@ -3483,11 +3480,11 @@ namespace Tobi.Plugin.DocumentPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
                 return;
             }
-            
+
             m_valid = null;
             //checkValid();
 
-             m_ProjectLoadedFlag = true;
+            m_ProjectLoadedFlag = true;
 
             m_FindAndReplaceManager = null;
 
