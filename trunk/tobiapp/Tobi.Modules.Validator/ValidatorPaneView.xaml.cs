@@ -225,6 +225,25 @@ namespace Tobi.Plugin.Validator
         }
 
 
+
+        internal void SelectValidatorClass(string m_validatorClassToShow)
+        {
+            if (string.IsNullOrEmpty(m_validatorClassToShow)) return;
+
+            IValidator val = null;
+            foreach (var validator in m_ValidatorAggregator.Validators)
+            {
+                if (m_validatorClassToShow == validator.GetType().Name)
+                {
+                    val = validator;
+                    break;
+                }
+            }
+            if (val != null)
+            {
+                Tabs.SelectedItem = val;
+            }
+        }
     }
 
     [ValueConversion(typeof(ValidationSeverity), typeof(bool))]
