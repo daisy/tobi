@@ -786,7 +786,7 @@ namespace Tobi.Plugin.DocumentPane
                               };
 
             var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdEditText_ShortDesc) + " (" + (i+1) + " / " + count + ")",
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdEditText_ShortDesc) + " (" + (i + 1) + " / " + count + ")",
                                                    new ScrollViewer { Content = editBox },
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
@@ -1344,7 +1344,7 @@ namespace Tobi.Plugin.DocumentPane
         protected bool structureInsertDialog(TreeNode node, string title, string cmdShort, string cmdLong, string cmdId,
             TreeNode nodeToInsert,
             string initialNameInput, string initialTextInput, string labelNameInput, string labelTextInput, string labelXmlInput,
-            Func<string, string, string, TreeNode> callback)
+            Func<string, string, string, List<TreeNode>> callback)
         {
             //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
 
@@ -1520,10 +1520,15 @@ namespace Tobi.Plugin.DocumentPane
                 return false;
             }
 
+            List<TreeNode> nodesToInsert = null;
 
             if (nodeToInsert == null && callback != null)
             {
-                nodeToInsert = callback(elementNameInput.Text, elementTextInput.Text, textbox.Text);
+                nodesToInsert = callback(elementNameInput.Text, elementTextInput.Text, textbox.Text);
+                if (nodesToInsert != null && nodesToInsert.Count > 0)
+                {
+                    nodeToInsert = nodesToInsert[0];
+                }
             }
 
             if (nodeToInsert == null)
@@ -1623,8 +1628,24 @@ namespace Tobi.Plugin.DocumentPane
                 position = parent.Children.IndexOf(node) + 1;
             }
 
-            var cmd = node.Presentation.CommandFactory.CreateTreeNodeInsertCommand(nodeToInsert, parent, position);
-            node.Presentation.UndoRedoManager.Execute(cmd);
+            if (nodesToInsert != null && nodesToInsert.Count > 1 && !isCompositeCommand)
+            {
+                isCompositeCommand = true;
+                nodeToInsert.Presentation.UndoRedoManager.StartTransaction(cmdShort, cmdLong, cmdId);
+            }
+
+            if (nodesToInsert == null)
+            {
+                nodesToInsert = new List<TreeNode>(1);
+                nodesToInsert.Add(nodeToInsert);
+            }
+
+            foreach (TreeNode n in nodesToInsert)
+            {
+                var cmd = node.Presentation.CommandFactory.CreateTreeNodeInsertCommand(n, parent, position);
+                node.Presentation.UndoRedoManager.Execute(cmd);
+                position++;
+            }
 
             if (isCompositeCommand)
             {
@@ -2351,24 +2372,35 @@ namespace Tobi.Plugin.DocumentPane
         //            return null;
         //        }
 
-        TreeNode root = null;
+        List<TreeNode> list = new List<TreeNode>(1);
+
         if (xmldoc != null && xmldoc.DocumentElement != null && xmldoc.DocumentElement.FirstChild != null)
         {
             try
             {
                 TreeNode.EnableTextCache = false;
-                root = buildTreeNodeFromXml(xmldoc.DocumentElement.FirstChild, node.Presentation, null);
+
+                XmlNodeList children = xmldoc.DocumentElement.ChildNodes;
+                for (int i = 0; i < children.Count; i++)
+                {
+                    XmlNode child = children[i];
+
+                    TreeNode root = buildTreeNodeFromXml(child, node.Presentation, null);
+                    if (root != null)
+                    {
+                        stripXmlIds(root);
+                    }
+
+                    list.Add(root);
+                }
             }
             finally
             {
                 TreeNode.EnableTextCache = true;
             }
         }
-        if (root != null)
-        {
-            stripXmlIds(root);
-        }
-        return root;
+
+        return list;
     }
 
     if (String.IsNullOrEmpty(elementName))
@@ -2406,7 +2438,9 @@ namespace Tobi.Plugin.DocumentPane
         xmlProp.SetQName(elementName, uri);
     }
 
-    return newNode;
+    List<TreeNode> l = new List<TreeNode>(1);
+    l.Add(newNode);
+    return l;
 }
                         ))
                     {
@@ -2504,7 +2538,9 @@ namespace Tobi.Plugin.DocumentPane
         chProp.SetMedia(textChannel, txtMedia);
     }
 
-    return newNode;
+    List<TreeNode> list = new List<TreeNode>(1);
+    list.Add(newNode);
+    return list;
 }
                         ))
                     {
