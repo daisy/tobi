@@ -983,9 +983,97 @@ namespace Tobi.Plugin.DocumentPane
             }
         }
 
+        private bool checkWithUserValidation(string title, string message, string info)
+        {
+            m_Logger.Log("DocumentPaneView.checkWithUserValidation", Category.Debug, Priority.Medium);
+
+            var label = new TextBlock // TextBoxReadOnlyCaretVisible
+            {
+                //FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                //BorderThickness = new Thickness(1),
+                //Padding = new Thickness(6),
+
+                //TextReadOnly = message,
+                Text = message,
+
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+
+            var checkBox = new CheckBox
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+                IsThreeState = false,
+                IsChecked = Settings.Default.InvalidStructEdit_DoNotAskAgain,
+                VerticalAlignment = VerticalAlignment.Center,
+                Content = Tobi_Common_Lang.DoNotShowMessageAgain,
+                Margin = new Thickness(0, 16, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left,
+            };
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+            panel.Children.Add(label);
+            panel.Children.Add(checkBox);
+
+
+            //var iconProvider = new ScalableGreyableImageProvider(
+            //    m_ShellView.LoadTangoIcon("help-browser"),
+            //    m_ShellView.MagnificationLevel);
+
+            //var panel = new StackPanel
+            //{
+            //    Orientation = Orientation.Horizontal,
+            //    HorizontalAlignment = HorizontalAlignment.Left,
+            //    VerticalAlignment = VerticalAlignment.Stretch,
+            //};
+            //panel.Children.Add(iconProvider.IconLarge);
+            //panel.Children.Add(label);
+            ////panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+            var details = info != null ? new TextBoxReadOnlyCaretVisible
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(6),
+                TextReadOnly = info
+            } : null;
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   title,
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.YesNo,
+                                                   PopupModalWindow.DialogButton.Yes,
+                                                   true, 340, 170, details, 40, null);
+
+            windowPopup.ShowModal();
+
+            Settings.Default.InvalidStructEdit_DoNotAskAgain = checkBox.IsChecked.Value;
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private bool checkWithUser(string title, string message, string info)
         {
-            m_Logger.Log("ShellView.checkWithUser", Category.Debug, Priority.Medium);
+            m_Logger.Log("DocumentPaneView.checkWithUser", Category.Debug, Priority.Medium);
 
             var label = new TextBlock // TextBoxReadOnlyCaretVisible
             {
@@ -1045,60 +1133,60 @@ namespace Tobi.Plugin.DocumentPane
             return false;
         }
 
-        private bool askUser(string title, string message, string info)
-        {
-            m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
+        //private bool askUser(string title, string message, string info)
+        //{
+        //    m_Logger.Log("DocumentPaneView.askUser", Category.Debug, Priority.Medium);
 
-            var label = new TextBlock
-            {
-                Text = message,
-                Margin = new Thickness(8, 0, 8, 0),
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Focusable = true,
-                TextWrapping = TextWrapping.Wrap
-            };
+        //    var label = new TextBlock
+        //    {
+        //        Text = message,
+        //        Margin = new Thickness(8, 0, 8, 0),
+        //        HorizontalAlignment = HorizontalAlignment.Center,
+        //        VerticalAlignment = VerticalAlignment.Center,
+        //        Focusable = true,
+        //        TextWrapping = TextWrapping.Wrap
+        //    };
 
-            var iconProvider = new ScalableGreyableImageProvider(
-                m_ShellView.LoadTangoIcon("help-browser"),
-                m_ShellView.MagnificationLevel);
+        //    var iconProvider = new ScalableGreyableImageProvider(
+        //        m_ShellView.LoadTangoIcon("help-browser"),
+        //        m_ShellView.MagnificationLevel);
 
-            var panel = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Stretch,
-            };
-            panel.Children.Add(iconProvider.IconLarge);
-            panel.Children.Add(label);
-            //panel.Margin = new Thickness(8, 8, 8, 0);
+        //    var panel = new StackPanel
+        //    {
+        //        Orientation = Orientation.Horizontal,
+        //        HorizontalAlignment = HorizontalAlignment.Left,
+        //        VerticalAlignment = VerticalAlignment.Stretch,
+        //    };
+        //    panel.Children.Add(iconProvider.IconLarge);
+        //    panel.Children.Add(label);
+        //    //panel.Margin = new Thickness(8, 8, 8, 0);
 
 
-            var details = info != null ? new TextBoxReadOnlyCaretVisible
-            {
-                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+        //    var details = info != null ? new TextBoxReadOnlyCaretVisible
+        //    {
+        //        FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
 
-                BorderThickness = new Thickness(1),
-                Padding = new Thickness(6),
-                TextReadOnly = info
-            } : null;
+        //        BorderThickness = new Thickness(1),
+        //        Padding = new Thickness(6),
+        //        TextReadOnly = info
+        //    } : null;
 
-            var windowPopup = new PopupModalWindow(m_ShellView,
-                                                   title,
-                                                   panel,
-                                                   PopupModalWindow.DialogButtonsSet.YesNo,
-                                                   PopupModalWindow.DialogButton.No,
-                                                   true, 360, 200, details, 40, null);
+        //    var windowPopup = new PopupModalWindow(m_ShellView,
+        //                                           title,
+        //                                           panel,
+        //                                           PopupModalWindow.DialogButtonsSet.YesNo,
+        //                                           PopupModalWindow.DialogButton.No,
+        //                                           true, 360, 200, details, 40, null);
 
-            windowPopup.ShowModal();
+        //    windowPopup.ShowModal();
 
-            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
-            {
-                return true;
-            }
+        //    if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+        //    {
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         protected TreeNode buildTreeNodeFromXml(XmlNode xmlNode, Presentation presentation, TreeNode parentTreeNode)
         {
@@ -1598,15 +1686,15 @@ namespace Tobi.Plugin.DocumentPane
             {
                 m_Logger.Log("Document structure edit VALIDATION error", Category.Debug, Priority.Medium);
 
-                if (
+                if (!Settings.Default.InvalidStructEdit_DoNotAskAgain
+                    &&
                     //askUser(
-                    checkWithUser(
+                    checkWithUserValidation(
                     Tobi_Plugin_DocumentPane_Lang.StructureEditValidationErrorAskDisplayDialog,
                     Tobi_Plugin_DocumentPane_Lang.ConfirmDisplayValidationDialog,
                     null
                 ))
                 {
-
                     if (m_EventAggregator != null)
                     {
                         m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Publish(null);
@@ -3480,6 +3568,8 @@ namespace Tobi.Plugin.DocumentPane
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action<Project>)OnProjectLoaded, project);
                 return;
             }
+
+            Settings.Default.InvalidStructEdit_DoNotAskAgain = false;
 
             m_valid = null;
             //checkValid();

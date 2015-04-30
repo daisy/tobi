@@ -147,7 +147,7 @@ namespace Tobi
                                                    title,
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel, // PopupModalWindow.DialogButtonsSet.YesNo
-                                                   PopupModalWindow.DialogButton.Yes,
+                                                   PopupModalWindow.DialogButton.Ok, //PopupModalWindow.DialogButton.Yes
                                                    true, 425, 190, details, 70, null);
 
             windowPopup.ShowModal();
