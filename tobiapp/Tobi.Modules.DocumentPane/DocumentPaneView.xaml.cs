@@ -1713,7 +1713,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (m_EventAggregator != null)
                     {
-                        m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Publish(null);
+                        m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Publish(typeof(ContentDocumentValidator).Name);
                     }
                 }
             }

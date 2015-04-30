@@ -24,6 +24,8 @@ namespace Tobi.Plugin.Validator
 
         private readonly IEventAggregator m_EventAggregator;
 
+        private string m_validatorClassToShow = null;
+
         ///<summary>
         /// We inject a few dependencies in this constructor.
         /// The Initialize method is then normally called by the bootstrapper of the plugin framework.
@@ -51,8 +53,14 @@ namespace Tobi.Plugin.Validator
 
             m_ValidatorPaneView = view;
 
+            m_validatorClassToShow = null;
+
             m_EventAggregator.GetEvent<ValidationReportRequestEvent>().Subscribe(
-                obj => CommandShowValidator.Execute(),
+                validatorClassName =>
+                {
+                    m_validatorClassToShow = validatorClassName as String;
+                    CommandShowValidator.Execute();
+                },
                 ValidationReportRequestEvent.THREAD_OPTION);
 
 
@@ -130,6 +138,8 @@ namespace Tobi.Plugin.Validator
         private void ShowDialog()
         {
             m_Logger.Log("ValidatorPlugin.ShowDialog", Category.Debug, Priority.Medium);
+
+            m_ValidatorPaneView.SelectValidatorClass(m_validatorClassToShow);
 
             var windowPopup = new PopupModalWindow(m_ShellView,
                                                    UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Validator_Lang.CmdValidationCheck_ShortDesc),
