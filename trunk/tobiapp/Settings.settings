@@ -7,6 +7,9 @@
     <Setting Name="UserId" Type="System.String" Scope="User">
       <Value Profile="(Default)">***</Value>
     </Setting>
+    <Setting Name="UserId_DoNotAskAgain" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="WindowDisableUIAutomation" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
