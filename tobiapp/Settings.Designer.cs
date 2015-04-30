@@ -38,6 +38,18 @@ namespace Tobi {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UserId_DoNotAskAgain {
+            get {
+                return ((bool)(this["UserId_DoNotAskAgain"]));
+            }
+            set {
+                this["UserId_DoNotAskAgain"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool WindowDisableUIAutomation {
             get {
                 return ((bool)(this["WindowDisableUIAutomation"]));

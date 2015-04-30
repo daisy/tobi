@@ -74,9 +74,9 @@ namespace Tobi
     /// </summary>
     public class Bootstrapper : UnityBootstrapper
     {
-        private string askUser(IShellView shellView, string title, string message, string info, bool okcancel)
+        private string askUserId(IShellView shellView, string title, string message, string info)
         {
-            m_Logger.Log("Bootstrapper.askUser", Category.Debug, Priority.Medium);
+            m_Logger.Log("Bootstrapper.askUserId", Category.Debug, Priority.Medium);
 
             var label = new TextBlock // TextBoxReadOnlyCaretVisible
             {
@@ -113,10 +113,24 @@ namespace Tobi
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
             };
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+
             //panel.Children.Add(iconProvider.IconLarge);
             panel.Children.Add(label);
             panel.Children.Add(input);
-            //panel.Margin = new Thickness(8, 8, 8, 0);
+
+
+            var checkBox = new CheckBox
+            {
+                FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+                IsThreeState = false,
+                IsChecked = Settings.Default.UserId_DoNotAskAgain,
+                VerticalAlignment = VerticalAlignment.Center,
+                Content = Tobi_Common_Lang.DoNotShowMessageAgain,
+                Margin = new Thickness(0, 16, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left,
+            };
+            panel.Children.Add(checkBox);
 
 
 
@@ -132,11 +146,13 @@ namespace Tobi
             var windowPopup = new PopupModalWindow(shellView, // m_ShellView
                                                    title,
                                                    panel,
-                                                   okcancel ? PopupModalWindow.DialogButtonsSet.OkCancel : PopupModalWindow.DialogButtonsSet.YesNo,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel, // PopupModalWindow.DialogButtonsSet.YesNo
                                                    PopupModalWindow.DialogButton.Yes,
-                                                   true, 425, 160, details, 70, null);
+                                                   true, 425, 190, details, 70, null);
 
             windowPopup.ShowModal();
+
+            Settings.Default.UserId_DoNotAskAgain = checkBox.IsChecked.Value;
 
             if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
             {
@@ -157,7 +173,7 @@ namespace Tobi
 
             if (String.IsNullOrEmpty(settingValue) || settingValue.Equals(defaultSettingValue))
             {
-                String userid = askUser(shellView, Tobi_Lang.UserId_title, Tobi_Lang.UserId_message, Tobi_Lang.UserId_details, true);
+                String userid = Settings.Default.UserId_DoNotAskAgain ? "" : askUserId(shellView, Tobi_Lang.UserId_title, Tobi_Lang.UserId_message, Tobi_Lang.UserId_details);
                 if (!String.IsNullOrEmpty(userid))
                 {
                     userid = userid.Trim();
