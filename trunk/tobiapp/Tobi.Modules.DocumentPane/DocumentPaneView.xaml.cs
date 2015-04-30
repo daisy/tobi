@@ -3668,7 +3668,7 @@ namespace Tobi.Plugin.DocumentPane
 
                 SearchBox.Text = "";
                 SearchTerm = null;
-                CommandFocus.Execute();
+                //CommandFocus.Execute();
 
 #if false && DEBUG
                 FlowDocReader.Document = new FlowDocument(new Paragraph(new Run("Testing FlowDocument (DEBUG) （１）このテキストDAISY図書は，レベル５まであります。")));
