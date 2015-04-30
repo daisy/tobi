@@ -1014,6 +1014,7 @@ namespace Tobi.Plugin.DocumentPane
                 bool projectLoadedFlag = m_ProjectLoadedFlag;
                 TreeNode clipboard = m_TreeNodeFragmentClipboard;
                 bool? valid = m_valid;
+                bool invalidStructEditDoNotAskAgain = Settings.Default.InvalidStructEdit_DoNotAskAgain;
 
                 OnProjectUnLoaded(m_UrakawaSession.DocumentProject);
 
@@ -1028,7 +1029,7 @@ namespace Tobi.Plugin.DocumentPane
                 m_ProjectLoadedFlag = projectLoadedFlag;
                 m_TreeNodeFragmentClipboard = clipboard;
                 m_valid = valid;
-
+                Settings.Default.InvalidStructEdit_DoNotAskAgain = invalidStructEditDoNotAskAgain;
 
                 checkValid();
             }
