@@ -199,7 +199,7 @@
     <value>Text content</value>
   </data>
   <data name="AdvancedXmlInsert" xml:space="preserve">
-    <value>...alternatively, enter markup code below (experts only, make sure XML is valid!)</value>
+    <value>Alternatively, XML experts can enter markup below, please ensure it is valid XML</value>
   </data>
 
   <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
