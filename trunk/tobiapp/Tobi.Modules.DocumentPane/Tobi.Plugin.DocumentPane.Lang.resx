@@ -153,7 +153,7 @@
     <value>Invalid structure edit</value>
   </data>
   <data name="ConfirmDisplayValidationDialog" xml:space="preserve">
-    <value>This edit creates an invalid document, would you like to see the markup error(s)?</value>
+    <value>The document XML is invalid, would you like to see the markup error(s)?</value>
   </data>
 
 

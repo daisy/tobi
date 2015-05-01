@@ -1512,7 +1512,7 @@ namespace Tobi.Plugin.DocumentPane
                                                    panel,
                                                    PopupModalWindow.DialogButtonsSet.OkCancel,
                                                    PopupModalWindow.DialogButton.Ok,
-                                                   true, 350, showXmlSourceInputBox ? 370 : (labelNameInput == null && labelTextInput == null ? 170 : 220), null, 200, null);
+                                                   true, 350, showXmlSourceInputBox ? 380 : (labelNameInput == null && labelTextInput == null ? 170 : 220), null, 200, null);
             windowPopup.ShowModal();
 
             if (windowPopup.ClickedDialogButton != PopupModalWindow.DialogButton.Ok)
@@ -1719,7 +1719,7 @@ namespace Tobi.Plugin.DocumentPane
                 }
             }
 
-            if (thereIsAtLeastOneError && m_valid == true)
+            if (thereIsAtLeastOneError) // && m_valid == true)
             {
                 m_Logger.Log("Document structure edit VALIDATION error", Category.Debug, Priority.Medium);
 
