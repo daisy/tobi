@@ -349,7 +349,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This edit creates an invalid document, would you like to see the markup error(s)?.
+        ///   Looks up a localized string similar to The document XML is invalid, would you like to see the markup error(s)?.
         /// </summary>
         public static string ConfirmDisplayValidationDialog {
             get {
