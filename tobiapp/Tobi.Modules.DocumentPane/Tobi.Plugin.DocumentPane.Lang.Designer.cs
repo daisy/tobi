@@ -61,7 +61,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ...alternatively, enter markup code below (experts only, make sure XML is valid!).
+        ///   Looks up a localized string similar to Alternatively, XML experts can enter markup below, please ensure it is valid XML.
         /// </summary>
         public static string AdvancedXmlInsert {
             get {
