@@ -9,7 +9,18 @@ namespace Tobi.Plugin.DocumentPane
         private TextElement FindTextElement(TreeNode node)
         {
             var te = node.Tag as TextElement;
-            if (te != null) return te;
+            if (te != null)
+            {
+                if (te.Parent == null && node.Parent != null)
+                {
+                    //orphan not attached to FlowDocument (Block / Inline insertion fail?)
+#if DEBUG
+                    Debugger.Break();
+#endif
+                    return null;
+                }
+                return te;
+            }
 
 #if DEBUG
             //Debugger.Break();

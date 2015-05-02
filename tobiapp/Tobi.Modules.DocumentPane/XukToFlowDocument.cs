@@ -3431,7 +3431,20 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (parentNext != null)
                     {
-                        walkBookTreeAndGenerateFlowDocument(node.Children.Get(i), parentNext);
+                        TreeNode child = node.Children.Get(i);
+                        walkBookTreeAndGenerateFlowDocument(child, parentNext);
+                        if (child.Tag != null && child.Tag is TextElement)
+                        {
+                            TextElement te = (TextElement)child.Tag;
+                            if (te.Parent == null)
+                            {
+                                //orphan not attached to FlowDocument (Block / Inline insertion fail?)
+#if DEBUG
+                                Debugger.Break();
+#endif
+                                child.Tag = null;
+                            }
+                        }
                     }
                 }
 
