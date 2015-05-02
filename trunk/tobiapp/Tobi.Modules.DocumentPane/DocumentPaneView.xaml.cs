@@ -3835,6 +3835,27 @@ namespace Tobi.Plugin.DocumentPane
                 //Debugger.Break();
 #endif //DEBUG
                 Console.WriteLine(@"TextElement not rendered for TreeNode: " + newTreeNodeSelection.Item1.ToString());
+
+                TreeNode treeNodeAncestor = newTreeNodeSelection.Item1.Parent;
+                while (treeNodeAncestor != null)
+                {
+                    if (treeNodeAncestor.Tag != null && treeNodeAncestor.Tag is TextElement)
+                    {
+                        TextElement te = (TextElement) treeNodeAncestor.Tag;
+
+                        clearLastHighlighteds();
+
+                        m_TextElementForEdit = null;
+
+                        doLastHighlightedOnly(te, false);
+
+                        scrollToView(te);
+                        return;
+                    }
+
+                    treeNodeAncestor = treeNodeAncestor.Parent;
+                }
+
                 return;
             }
 
@@ -3859,6 +3880,27 @@ namespace Tobi.Plugin.DocumentPane
                     Debugger.Break();
 #endif //DEBUG
                     Console.WriteLine(@"TextElement not rendered for TreeNode: " + newTreeNodeSelection.Item2.ToString());
+
+                    TreeNode treeNodeAncestor = newTreeNodeSelection.Item2.Parent;
+                    while (treeNodeAncestor != null)
+                    {
+                        if (treeNodeAncestor.Tag != null && treeNodeAncestor.Tag is TextElement)
+                        {
+                            TextElement te = (TextElement)treeNodeAncestor.Tag;
+
+                            clearLastHighlighteds();
+
+                            m_TextElementForEdit = null;
+
+                            doLastHighlightedOnly(te, false);
+
+                            scrollToView(te);
+                            return;
+                        }
+
+                        treeNodeAncestor = treeNodeAncestor.Parent;
+                    }
+
                     return;
                 }
             }
