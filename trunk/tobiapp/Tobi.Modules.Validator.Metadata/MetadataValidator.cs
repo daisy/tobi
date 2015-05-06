@@ -111,6 +111,11 @@ namespace Tobi.Plugin.Validator.Metadata
 
         protected override void OnProjectLoaded(Project project)
         {
+            if (m_Session.IsXukSpine)
+            {
+                return;
+            }
+
             base.OnProjectLoaded(project);
 
             m_UndoRedoManagerHooker = project.Presentations.Get(0).UndoRedoManager.Hook(this);
@@ -138,6 +143,11 @@ namespace Tobi.Plugin.Validator.Metadata
 
         public override bool Validate()
         {
+            if (m_Session.IsXukSpine)
+            {
+                return true;
+            }
+
             bool isValid = true;
 
             if (m_Session.DocumentProject != null)
