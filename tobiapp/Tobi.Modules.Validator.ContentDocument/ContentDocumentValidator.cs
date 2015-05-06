@@ -63,12 +63,12 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         protected override void OnProjectLoaded(Project project)
         {
-            base.OnProjectLoaded(project);
-
             if (m_Session.IsXukSpine)
             {
                 return;
             }
+
+            base.OnProjectLoaded(project);
 
             //ThreadPool.QueueUserWorkItem(
             //    delegate(Object o) // or: (foo) => {} (LAMBDA)
@@ -133,6 +133,11 @@ namespace Tobi.Plugin.Validator.ContentDocument
 
         public override bool Validate()
         {
+            if (m_Session.IsXukSpine)
+            {
+                return true;
+            }
+
             //#if DEBUG
             //            m_DtdRegex.Reset();
             //#endif // DEBUG

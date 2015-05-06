@@ -255,6 +255,11 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
         public override bool Validate()
         {
+            if (m_Session.IsXukSpine)
+            {
+                return true;
+            }
+
             return IsValid;
         }
     }
