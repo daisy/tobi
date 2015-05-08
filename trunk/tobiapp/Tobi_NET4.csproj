@@ -35,7 +35,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://data.daisy.org/projects/tobi/install/net4/</InstallUrl>
+    <InstallUrl>http://www.daisy.org/projects/tobi/install/net-4/</InstallUrl>
     <SupportUrl>http://data.daisy.org/projects/tobi/ClickOnce-Help.html</SupportUrl>
     <ErrorReportUrl>http://data.daisy.org/projects/tobi/ClickOnce-Error.html</ErrorReportUrl>
     <ProductName>Tobi %28.NET 4%29</ProductName>

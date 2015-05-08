@@ -35,7 +35,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://data.daisy.org/projects/tobi/install/net3/</InstallUrl>
+    <InstallUrl>http://www.daisy.org/projects/tobi/install/net-3/</InstallUrl>
     <SupportUrl>http://data.daisy.org/projects/tobi/ClickOnce-Help.html</SupportUrl>
     <ErrorReportUrl>http://data.daisy.org/projects/tobi/ClickOnce-Error.html</ErrorReportUrl>
     <ProductName>Tobi %28.NET 3%29</ProductName>
