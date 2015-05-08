@@ -20,7 +20,7 @@
     <StartupObject>Tobi.App</StartupObject>
     <ApplicationIcon>Tobi.ico</ApplicationIcon>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <ManifestCertificateThumbprint>94DCC3F7E46706487111A1EDDB7F8A8F51D6594E</ManifestCertificateThumbprint>
     <ManifestKeyFile>Tobi_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
