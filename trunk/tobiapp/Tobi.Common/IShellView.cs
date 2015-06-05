@@ -8,9 +8,16 @@ using AudioLib;
 using Microsoft.Practices.Composite;
 using Tobi.Common.MVVM;
 using System;
+using System.Diagnostics;
 using System.Windows.Media;
 using Tobi.Common.MVVM.Command;
 using System.Management;
+using urakawa.data;
+using urakawa.ExternalFiles;
+
+#if USE_ISOLATED_STORAGE
+using System.IO.IsolatedStorage;
+#endif //USE_ISOLATED_STORAGE
 
 namespace Tobi.Common
 {
@@ -26,14 +33,47 @@ namespace Tobi.Common
 
         public static readonly string DOTNET_INFO;
 
+        private static string STORAGE_FOLDER_PATH = ExternalFilesDataManager.STORAGE_FOLDER_PATH;
+
         static ApplicationConstants()
         {
             //Directory.GetCurrentDirectory()
             //string apppath = (new FileInfo(Assembly.GetExecutingAssembly().CodeBase)).DirectoryName;
             //AppDomain.CurrentDomain.BaseDirectory
 
-            string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            LOG_FILE_PATH = currentAssemblyDirectoryName + @"\" + LOG_FILE_NAME;
+            if (String.IsNullOrEmpty(STORAGE_FOLDER_PATH))
+            {
+                //static ExternalFilesDataManager not initialised on time!
+#if DEBUG
+                Debugger.Break();
+#endif
+
+#if USE_ISOLATED_STORAGE
+                    using (IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForApplication())
+                    {
+                        store.CreateDirectory(dirName);
+
+                        FieldInfo fi = store.GetType().GetField("m_RootDir", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                        STORAGE_FOLDER_PATH = (string)fi.GetValue(store)
+                            + Path.DirectorySeparatorChar
+                            + ExternalFilesDataManager.STORAGE_FOLDER_NAME;
+                    }
+#else
+                STORAGE_FOLDER_PATH = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                      Path.DirectorySeparatorChar + ExternalFilesDataManager.STORAGE_FOLDER_NAME;
+
+                if (!Directory.Exists(STORAGE_FOLDER_PATH))
+                {
+                    FileDataProvider.CreateDirectory(STORAGE_FOLDER_PATH);
+                }
+#endif //USE_ISOLATED_STORAGE
+            }
+
+            //string currentAssemblyDirectoryName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            LOG_FILE_PATH = STORAGE_FOLDER_PATH + Path.DirectorySeparatorChar + LOG_FILE_NAME; //@"\"
+
             APP_VERSION = GetVersion();
 
             string coreLibVersion = null;
