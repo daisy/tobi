@@ -103,7 +103,7 @@ namespace Tobi.Plugin.DocumentPane
                 {
                     if (m_ImageSource == null)
                     {
-                        string dir = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
+                        string dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); //Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
                         var filename = Path.Combine(dir, @"paper_tile_texture.jpg");
                         if (File.Exists(filename))
                         {
@@ -3076,7 +3076,7 @@ namespace Tobi.Plugin.DocumentPane
 
         private Block createWelcomeEmptyFlowDoc()
         {
-            string dirPath = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
+            string dirPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); //Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
 
             string imgPath = Path.Combine(dirPath, "daisy.svg");
             ImageSource imageSource = AutoGreyableImage.GetSVGOrBitmapImageSource(imgPath);
@@ -3567,7 +3567,7 @@ namespace Tobi.Plugin.DocumentPane
             }
             if (!service.IsEnabled)
             {
-                string dir = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH);
+                string dir = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH); // Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
                 var filename = Path.Combine(dir, @"annotations.xml");
 
                 try

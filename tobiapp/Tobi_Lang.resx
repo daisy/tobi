@@ -145,13 +145,13 @@
     <value>_Application executable and log</value>
   </data>
   <data name="CmdOpenTobiFolder_LongDesc" xml:space="preserve">
-    <value>Open a file browser where the Tobi.exe application is run from (and where Tobi.log resides).</value>
+    <value>Open a file browser where the Tobi.exe application is run from.</value>
   </data>
   <data name="CmdOpenTobiIsolatedStorage_ShortDesc" xml:space="preserve">
     <value>_Private storage space</value>
   </data>
   <data name="CmdOpenTobiIsolatedStorage_LongDesc" xml:space="preserve">
-    <value>Open a file browser where Tobi's system files are located.</value>
+    <value>Open a file browser where Tobi's system files are located (including Tobi.log).</value>
   </data>
   <data name="CmdOpenTobiSettingsFolder_ShortDesc" xml:space="preserve">
     <value>_User settings</value>

@@ -214,7 +214,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open a file browser where the Tobi.exe application is run from (and where Tobi.log resides)..
+        ///   Looks up a localized string similar to Open a file browser where the Tobi.exe application is run from..
         /// </summary>
         public static string CmdOpenTobiFolder_LongDesc {
             get {
@@ -232,7 +232,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open a file browser where Tobi&apos;s system files are located..
+        ///   Looks up a localized string similar to Open a file browser where Tobi&apos;s system files are located (including Tobi.log)..
         /// </summary>
         public static string CmdOpenTobiIsolatedStorage_LongDesc {
             get {
