@@ -855,6 +855,10 @@ namespace Tobi.Plugin.Urakawa
                  Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                  Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
                  IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, Settings.Default.ExportGenerateSmilNotes);
+                
+                //TODO? Tobi does not use AddSectionNameToAudioFileName(),
+                // but max limit could be used for AbstractBasePublishAudioVisitor.GetCurrentAudioFileUri()
+                ((Daisy3_Export)converter).AudioFileNameCharsLimit = 20;
             }
 
             bool error = m_ShellView.RunModalCancellableProgressTask(true,
