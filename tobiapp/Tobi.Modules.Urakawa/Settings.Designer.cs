@@ -85,6 +85,30 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AudioExportFileNameTitle {
+            get {
+                return ((bool)(this["AudioExportFileNameTitle"]));
+            }
+            set {
+                this["AudioExportFileNameTitle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public double AudioExportFileNameTitleMaxLength {
+            get {
+                return ((double)(this["AudioExportFileNameTitleMaxLength"]));
+            }
+            set {
+                this["AudioExportFileNameTitleMaxLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool Pipeline2OldExe {
             get {
