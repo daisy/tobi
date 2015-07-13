@@ -309,6 +309,9 @@ Do you want to continue ?</value>
   <data name="ExportImageDescriptions_inlineTextAudio" xml:space="preserve">
     <value>Inline HTML5 text / audio:</value>
   </data>
+  <data name="ExportAddAudioFileNameHeadings" xml:space="preserve">
+    <value>Add headings to audio filenames: </value>
+  </data>
   <data name="ExportGenerateSmilNotes" xml:space="preserve">
     <value>Generate SMIL note references: </value>
   </data>

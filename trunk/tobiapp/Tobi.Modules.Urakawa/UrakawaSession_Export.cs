@@ -607,6 +607,35 @@ namespace Tobi.Plugin.Urakawa
 
 
 
+                    var labelAudioExportFileName = new TextBlock
+                    {
+                        Text = Tobi_Plugin_Urakawa_Lang.ExportAddAudioFileNameHeadings,
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    var checkBoxAudioExportFileName = new CheckBox
+                    {
+                        IsThreeState = false,
+                        IsChecked = Settings.Default.AudioExportFileNameSectionHeading,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+                    var panelAudioExportFileName = new StackPanel
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Horizontal,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+                    panelAudioExportFileName.Children.Add(labelAudioExportFileName);
+                    panelAudioExportFileName.Children.Add(checkBoxAudioExportFileName);
+                    
+
+
+                    
+
 
 
 
@@ -640,14 +669,16 @@ namespace Tobi.Plugin.Urakawa
                     if (!isEPUB)
                     {
                         rootPanel.Children.Add(panelGenSmilNote);
+                        rootPanel.Children.Add(panelAudioExportFileName);
                     }
+
 
                     var windowPopup_ = new PopupModalWindow(m_ShellView,
                                                            UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ExportSettings),
                                                            rootPanel,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           false, 300, isEPUB ? 290 : 250, null, 40, null);
+                                                           false, 300, isEPUB ? 290 : 290, null, 40, null);
 
                     windowPopup_.EnableEnterKeyDefault = true;
 
@@ -721,6 +752,9 @@ namespace Tobi.Plugin.Urakawa
                         Settings.Default.AudioExportMp3Bitrate = Mp3BitRate.kbps_320;
                     }
 
+
+                    Settings.Default.AudioExportFileNameSectionHeading =
+                        checkBoxAudioExportFileName.IsChecked.Value;
 
                     string rootFolder = Path.GetDirectoryName(DocumentFilePath);
 
@@ -857,8 +891,8 @@ namespace Tobi.Plugin.Urakawa
                  IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, Settings.Default.ExportGenerateSmilNotes);
 
                 //See AddSectionNameToAudioFileName()
-                ((Daisy3_Export)converter).AudioFileNameCharsLimit = (int)Math.Round(Settings.Default.AudioExportFileNameTitleMaxLength);
-                ((Daisy3_Export)converter).AddSectionNameToAudioFile = Settings.Default.AudioExportFileNameTitle;
+                ((Daisy3_Export)converter).AudioFileNameCharsLimit = (int)Math.Round(Settings.Default.AudioExportFileNameSectionHeadingMaxLength);
+                ((Daisy3_Export)converter).AddSectionNameToAudioFile = Settings.Default.AudioExportFileNameSectionHeading;
             }
 
             bool error = m_ShellView.RunModalCancellableProgressTask(true,

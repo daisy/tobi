@@ -86,24 +86,24 @@ namespace Tobi.Plugin.Urakawa {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AudioExportFileNameTitle {
+        public bool AudioExportFileNameSectionHeading {
             get {
-                return ((bool)(this["AudioExportFileNameTitle"]));
+                return ((bool)(this["AudioExportFileNameSectionHeading"]));
             }
             set {
-                this["AudioExportFileNameTitle"] = value;
+                this["AudioExportFileNameSectionHeading"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("15")]
-        public double AudioExportFileNameTitleMaxLength {
+        public double AudioExportFileNameSectionHeadingMaxLength {
             get {
-                return ((double)(this["AudioExportFileNameTitleMaxLength"]));
+                return ((double)(this["AudioExportFileNameSectionHeadingMaxLength"]));
             }
             set {
-                this["AudioExportFileNameTitleMaxLength"] = value;
+                this["AudioExportFileNameSectionHeadingMaxLength"] = value;
             }
         }
         
