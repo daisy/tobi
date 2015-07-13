@@ -17,10 +17,10 @@
     <Setting Name="Pipeline2Url" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://localhost:8181</Value>
     </Setting>
-    <Setting Name="AudioExportFileNameTitle" Type="System.Boolean" Scope="User">
+    <Setting Name="AudioExportFileNameSectionHeading" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="AudioExportFileNameTitleMaxLength" Type="System.Double" Scope="User">
+    <Setting Name="AudioExportFileNameSectionHeadingMaxLength" Type="System.Double" Scope="User">
       <Value Profile="(Default)">15</Value>
     </Setting>
     <Setting Name="Pipeline2OldExe" Type="System.Boolean" Scope="User">
