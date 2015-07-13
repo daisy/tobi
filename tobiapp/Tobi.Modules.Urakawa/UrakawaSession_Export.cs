@@ -892,7 +892,9 @@ namespace Tobi.Plugin.Urakawa
 
                 //See AddSectionNameToAudioFileName()
                 ((Daisy3_Export)converter).AudioFileNameCharsLimit = (int)Math.Round(Settings.Default.AudioExportFileNameSectionHeadingMaxLength);
-                ((Daisy3_Export)converter).AddSectionNameToAudioFile = Settings.Default.AudioExportFileNameSectionHeading;
+
+                // AddSectionNameToAudioFile is for OBI!!
+                ((Daisy3_Export)converter).IsAdjustAudioFileNameEnabled = Settings.Default.AudioExportFileNameSectionHeading;
             }
 
             bool error = m_ShellView.RunModalCancellableProgressTask(true,
