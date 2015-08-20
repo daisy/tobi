@@ -291,6 +291,8 @@ namespace Tobi
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
             m_Logger.Log(@"[Tobi user config folder: " + Path.GetDirectoryName(config.FilePath) + @"]", Category.Info, Priority.High);
 
+#if ENABLE_LOG_DESKTOP_SHORTCUT
+
             string logPath = Path.Combine(appFolder, "Tobi.log");
             string iconPath = Path.Combine(appFolder, "Shortcut.ico");
             string shortcutToLogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
@@ -336,6 +338,8 @@ namespace Tobi
 #endif
             }
 #endif // DEBUG
+
+#endif //ENABLE_LOG_DESKTOP_SHORTCUT
 
             foreach (Assembly item in AppDomain.CurrentDomain.GetAssemblies())
             {
