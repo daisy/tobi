@@ -165,6 +165,9 @@
   <data name="AudioAutoPlay" xml:space="preserve">
     <value>Autoplay</value>
   </data>
+  <data name="AudioRecordOverwrite" xml:space="preserve">
+    <value>Record overwrite</value>
+  </data>
   <data name="AudioRecordPlayPreview" xml:space="preserve">
     <value>Preview before record</value>
   </data>
@@ -392,6 +395,12 @@
   </data>
   <data name="CmdAudioStepForward_LongDesc" xml:space="preserve">
     <value>Jumpd to the audio chunk following the cursor</value>
+  </data>
+  <data name="CmdAudioToggleRecordOverwrite_ShortDesc" xml:space="preserve">
+    <value>Toggle record overwrite</value>
+  </data>
+  <data name="CmdAudioToggleRecordOverwrite_LongDesc" xml:space="preserve">
+    <value>Enable / disable recording overwrite mode</value>
   </data>
   <data name="CmdAudioTogglePlayPreviewBeforeRecord_ShortDesc" xml:space="preserve">
     <value>Toggle record preview</value>

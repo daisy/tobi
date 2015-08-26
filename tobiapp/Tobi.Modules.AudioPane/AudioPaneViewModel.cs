@@ -407,6 +407,19 @@ m_Stream.Length);
                 m_Player.UseSoundTouch = Settings.Default.Audio_PlayKeepPitch;
                 m_Player.Resume();
             }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_EnableRecordOverwrite))
+            {
+                RaisePropertyChanged(() => RecordOverwriteString);
+            }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_EnablePlayPreviewBeforeRecord))
+            {
+                RaisePropertyChanged(() => RecordPlayPreviewString);
+            }
+            //else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_AutoPlayAfterSplit))
+            //{
+            //    RaisePropertyChanged(() => IsAutoPlayString);
+            //}
+
 
 
 

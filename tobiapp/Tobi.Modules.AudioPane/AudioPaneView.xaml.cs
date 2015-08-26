@@ -2142,6 +2142,21 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+        private void OnMouseUp_RecordOverwrite(object sender, MouseButtonEventArgs e)
+        {
+            //Settings.Default.Audio_EnableRecordOverwrite = !Settings.Default.Audio_EnableRecordOverwrite;
+            m_ViewModel.CommandToggleRecordOverwrite.Execute();
+        }
+
+        private void OnKeyUp_RecordOverwrite(object sender, KeyEventArgs e)
+        {
+            var key = (e.Key == Key.System ? e.SystemKey : (e.Key == Key.ImeProcessed ? e.ImeProcessedKey : e.Key));
+
+            if (key == Key.Return)
+            {
+                OnMouseUp_RecordOverwrite(null, null);
+            }
+        }
 
         private void OnMouseUp_AutoPlay(object sender, MouseButtonEventArgs e)
         {

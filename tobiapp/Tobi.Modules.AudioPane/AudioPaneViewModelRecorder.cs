@@ -41,7 +41,8 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandStopRecordAndContinue { get; private set; }
 
         public RichDelegateCommand CommandTogglePlayPreviewBeforeRecord { get; private set; }
-
+        public RichDelegateCommand CommandToggleRecordOverwrite { get; private set; }
+        
         public RichDelegateCommand CommandStartMonitor { get; private set; }
         public RichDelegateCommand CommandStopMonitor { get; private set; }
 
@@ -394,6 +395,29 @@ namespace Tobi.Plugin.AudioPane
 
             m_ShellView.RegisterRichCommand(CommandTogglePlayPreviewBeforeRecord);
             //
+            CommandToggleRecordOverwrite = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioToggleRecordOverwrite_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioToggleRecordOverwrite_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeGionIcon("Gion_music-player"),
+                () =>
+                {
+                    Settings.Default.Audio_EnableRecordOverwrite =
+                        !Settings.Default.Audio_EnableRecordOverwrite;
+
+                    RaisePropertyChanged(() => RecordOverwriteString);
+
+                    if (EventAggregator != null)
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.AudioRecordOverwrite + (Settings.Default.Audio_EnableRecordOverwrite ? " [ON]" : " [OFF]"));
+                    }
+                },
+                () => true,
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_TogglePlayPreviewBeforeRecord)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandToggleRecordOverwrite);
         }
 
         private long m_RecordAfterPlayOverwriteSelection = -1;

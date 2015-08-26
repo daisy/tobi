@@ -400,12 +400,18 @@ namespace Tobi.Plugin.AudioPane
         //    }
         //}
 
-        
-      
-        
+
+
+
         public string RecordPlayPreviewString
         {
             get { return Tobi_Plugin_AudioPane_Lang.AudioRecordPlayPreview + (Settings.Default.Audio_EnablePlayPreviewBeforeRecord ? " [ON]" : " [OFF]"); }
+        }
+
+
+        public string RecordOverwriteString
+        {
+            get { return Tobi_Plugin_AudioPane_Lang.AudioRecordOverwrite + (Settings.Default.Audio_EnableRecordOverwrite ? " [ON]" : " [OFF]"); }
         }
 
 
