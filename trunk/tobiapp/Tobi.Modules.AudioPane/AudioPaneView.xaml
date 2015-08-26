@@ -1188,7 +1188,19 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                     HorizontalAlignment="Right"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
 
-      <TextBlock
+                <TextBlock
+                 Focusable="True" VerticalAlignment="Center"
+                 Text="{Binding RecordOverwriteString, Mode=OneWay}"
+MouseUp="OnMouseUp_RecordOverwrite"
+KeyUp="OnKeyUp_RecordOverwrite"
+                 />
+
+                <TextBlock
+        
+        Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+        VerticalAlignment="Center" Text=" | "/>
+
+                <TextBlock
                  Focusable="True" VerticalAlignment="Center"
                  Text="{Binding RecordPlayPreviewString, Mode=OneWay}"
 MouseUp="OnMouseUp_RecordPlayPreview"
