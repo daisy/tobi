@@ -20,6 +20,9 @@
     <Setting Name="Audio_PlayKeepPitch" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="Audio_EnableRecordOverwrite" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="Audio_EnablePlayPreviewBeforeRecord" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>

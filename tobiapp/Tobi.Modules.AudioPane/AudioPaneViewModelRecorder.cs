@@ -183,8 +183,26 @@ namespace Tobi.Plugin.AudioPane
                         SetRecordAfterPlayOverwriteSelection(-1);
 
                         punchIn = true;
+
                         CommandPause.Execute();
+
                         CommandSelectRight.Execute();
+                    }
+                    else if (Settings.Default.Audio_EnableRecordOverwrite
+                                && !IsSelectionSet)
+                    {
+                        SetRecordAfterPlayOverwriteSelection(-1);
+
+                        punchIn = true;
+
+                        if (PlayBytePosition >= 0)
+                        {
+                            CommandSelectRight.Execute();
+                        }
+                        else
+                        {
+                            CommandSelectAll.Execute();
+                        }
                     }
 
                     if (IsWaveFormLoading && View != null)
@@ -788,7 +806,7 @@ namespace Tobi.Plugin.AudioPane
 
                                 if (!Settings.Default.Audio_DisableSingleWavFileRecord)
                                 {
-                                    //??
+                                    // NOOP
                                 }
                                 else
                                 {
@@ -816,7 +834,12 @@ namespace Tobi.Plugin.AudioPane
                                     m_UrakawaSession.PerformTreeNodeSelection(treeNodeSelectionNew.Item1, false, treeNodeSelectionNew.Item2);
                                 }
                                 //CommandPlay.Execute();
-                                //CommandSelectAll.Execute();
+                                
+                                if (Settings.Default.Audio_EnableRecordOverwrite)
+                                {
+                                    CommandSelectAll.Execute();
+                                    CommandStartRecord.Execute();
+                                }
                             }
                         }
                         else
