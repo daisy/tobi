@@ -880,6 +880,13 @@ namespace Tobi.Plugin.Descriptions
                     {
                         if (medElement_WINDOWS_MEDIA_PLAYER == null) return;
 
+                        if (!medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.HasTimeSpan)
+                        {
+                            AudioTimeLabel.Text = "??";
+                            AudioTimeSlider.Maximum = 1.0;
+                            return;
+                        }
+
                         double durationMS = medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
                         AudioTimeLabel.Text = Time.Format_Standard(medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan);
 
@@ -1217,13 +1224,20 @@ namespace Tobi.Plugin.Descriptions
 
                 if (doNotUpdateVideoTimeWhenSliderChanges || !_timer.IsEnabled)
                 {
-                    double durationMS = medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
+                    if (!medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.HasTimeSpan)
+                    {
+                        AudioTimeLabel.Text = "?!";
+                    }
+                    else
+                    {
+                        double durationMS = medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
 
-                    AudioTimeLabel.Text = String.Format(
-                        "{0} / {1}",
-                        Time.Format_Standard(timeSpan),
-                        Time.Format_Standard(medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan)
-                        );
+                        AudioTimeLabel.Text = String.Format(
+                            "{0} / {1}",
+                            Time.Format_Standard(timeSpan),
+                            Time.Format_Standard(medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan)
+                            );
+                    }
                 }
 
                 if (doNotUpdateVideoTimeWhenSliderChanges)
@@ -1394,8 +1408,8 @@ namespace Tobi.Plugin.Descriptions
                     //medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Begin();
                     //medElement_WINDOWS_MEDIA_PLAYER.Clock.Controller.Pause();
                 }
-
-                double durationMS = medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
+                
+                double durationMS = !medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.HasTimeSpan ? 1.0 : medElement_WINDOWS_MEDIA_PLAYER.NaturalDuration.TimeSpan.TotalMilliseconds;
                 double timeMS =
                     medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime == null
                     || !medElement_WINDOWS_MEDIA_PLAYER.Clock.CurrentTime.HasValue
