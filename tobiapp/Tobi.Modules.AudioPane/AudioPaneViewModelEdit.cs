@@ -48,7 +48,7 @@ namespace Tobi.Plugin.AudioPane
 
         public static readonly string COMMAND_TRANSATION_ID__AUDIO_SPLIT_SHIFT = "AUDIO_SPLIT_SHIFT";
         public static readonly string COMMAND_TRANSATION_ID__AUDIO_TTS = "AUDIO_TTS_GEN";
-        
+
         public RichDelegateCommand CommandSplitShift { get; private set; }
 
         public RichDelegateCommand CopyCommand { get; private set; }
@@ -570,7 +570,7 @@ namespace Tobi.Plugin.AudioPane
                        && m_UrakawaSession.DocumentProject != null
                        && (IsSimpleMode || treeNodeSelection.Item1.HasXmlProperty)
                        && treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
-                        //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
+                       //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
                        ;
 
                     //// because we change the selection in the execute code
@@ -624,9 +624,9 @@ namespace Tobi.Plugin.AudioPane
                        && !IsWaveFormLoading
                        && !IsPlaying
                        && m_UrakawaSession.DocumentProject != null
-                        //&& (IsSimpleMode || treeNodeSelection.Item1.HasXmlProperty)
-                        //&& treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
-                        //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
+                       //&& (IsSimpleMode || treeNodeSelection.Item1.HasXmlProperty)
+                       //&& treeNodeSelection.Item1.GetFirstAncestorWithManagedAudio() == null
+                       //&& treeNodeSelection.Item1.GetFirstDescendantWithManagedAudio() == null
                        ;
 
                     //// because we change the selection in the execute code
@@ -729,7 +729,7 @@ namespace Tobi.Plugin.AudioPane
                         && (!IsMonitoring || IsMonitoringAlways)
                         && !IsRecording
                          && State.Audio.PlayStreamMarkers != null
-                        //&& IsSelectionSet
+                         //&& IsSelectionSet
                          && State.Audio.HasContent;
                 },
                 Settings_KeyGestures.Default,
@@ -755,7 +755,7 @@ namespace Tobi.Plugin.AudioPane
                         && (!IsMonitoring || IsMonitoringAlways)
                         && !IsRecording
                          && State.Audio.PlayStreamMarkers != null
-                        //&& IsSelectionSet
+                         //&& IsSelectionSet
                          && State.Audio.HasContent;
                 },
                 Settings_KeyGestures.Default,
@@ -781,7 +781,7 @@ namespace Tobi.Plugin.AudioPane
                         && (!IsMonitoring || IsMonitoringAlways)
                         && !IsRecording
                          && State.Audio.PlayStreamMarkers != null
-                        //&& IsSelectionSet
+                         //&& IsSelectionSet
                          && State.Audio.HasContent;
                 },
                 Settings_KeyGestures.Default,
@@ -807,7 +807,7 @@ namespace Tobi.Plugin.AudioPane
                         && (!IsMonitoring || IsMonitoringAlways)
                         && !IsRecording
                          && State.Audio.PlayStreamMarkers != null
-                        //&& IsSelectionSet
+                         //&& IsSelectionSet
                          && State.Audio.HasContent;
                 },
                 Settings_KeyGestures.Default,
@@ -833,7 +833,7 @@ namespace Tobi.Plugin.AudioPane
                         && (!IsMonitoring || IsMonitoringAlways)
                         && !IsRecording
                          && State.Audio.PlayStreamMarkers != null
-                        //&& IsSelectionSet
+                         //&& IsSelectionSet
                          && State.Audio.HasContent;
                 },
                 Settings_KeyGestures.Default,
@@ -969,7 +969,7 @@ namespace Tobi.Plugin.AudioPane
                    && (IsSimpleMode || node.HasXmlProperty)
                    && node.GetFirstAncestorWithManagedAudio() == null
                    && node.GetFirstDescendantWithManagedAudio() == null
-                //&& node.GetManagedAudioMedia() == null
+                   //&& node.GetManagedAudioMedia() == null
                    ;
         }
 
@@ -1401,12 +1401,12 @@ namespace Tobi.Plugin.AudioPane
 
             long bytePositionInsert = 0;
 
-            //TODO: should this be configurable?
-            AudioSelectionOverwriteMode audioSelectionOverwriteMode =
-                AudioSelectionOverwriteMode.DeleteAndMapStretchConsecutiveChunks;
-
             if (IsSelectionSet)
             {
+                //TODO: should this be configurable?
+                AudioSelectionOverwriteMode audioSelectionOverwriteMode =
+                    AudioSelectionOverwriteMode.DeleteAndMapStretchConsecutiveChunks;
+
                 bytePositionInsert = State.Selection.SelectionBeginBytePosition;
 
                 transaction = true;
@@ -1414,6 +1414,7 @@ namespace Tobi.Plugin.AudioPane
 
                 selData = getAudioSelectionData();
 
+                // Backup before audio removal / deletion!!
                 List<Time> selDataCachedDurations = null;
                 if (selData != null && selData.Count > 0)
                 {
@@ -1430,7 +1431,29 @@ namespace Tobi.Plugin.AudioPane
                         }
                         else
                         {
-                            selDataCachedDurations.Add(mm.AudioMediaData.AudioDuration);
+                            if (treeNodeAndStreamSelection.m_LocalStreamLeftMark < 0 &&
+                                treeNodeAndStreamSelection.m_LocalStreamRightMark < 0)
+                            {
+                                selDataCachedDurations.Add(mm.AudioMediaData.AudioDuration);
+                            }
+                            else
+                            {
+                                long begin = treeNodeAndStreamSelection.m_LocalStreamLeftMark;
+                                long end = treeNodeAndStreamSelection.m_LocalStreamRightMark;
+
+                                if (begin < 0)
+                                {
+                                    begin = 0;
+                                }
+                                if (end <= 0)
+                                {
+                                    end = mm.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(mm.AudioMediaData.AudioDuration.AsLocalUnits);
+                                }
+
+                                Time timeDiff =
+                                    new Time(mm.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(end - begin));
+                                selDataCachedDurations.Add(timeDiff);
+                            }
                         }
                     }
                 }
@@ -1504,15 +1527,7 @@ namespace Tobi.Plugin.AudioPane
                         if (audioSelectionOverwriteMode == AudioSelectionOverwriteMode.DeleteAndMapStretchConsecutiveChunks)
                         {
                             Time selDuration = new Time(0);
-                            //foreach (var treeNodeAndStreamSelection in selData)
-                            //{
-                            //    ManagedAudioMedia selManMed =
-                            //        treeNodeAndStreamSelection.m_TreeNode.GetManagedAudioMedia();
-                            //    if (selManMed != null)
-                            //    {
-                            //        selDuration.Add(selManMed.AudioMediaData.AudioDuration);
-                            //    }
-                            //}
+
                             foreach (var dur in selDataCachedDurations)
                             {
                                 selDuration.Add(dur);
@@ -1548,21 +1563,7 @@ namespace Tobi.Plugin.AudioPane
                                 break;
                             }
 
-                            Time implicitEnd = selDataCachedDurations[count];
-                            if (treeNodeAndStreamSelection.m_LocalStreamLeftMark != -1 &&
-                                treeNodeAndStreamSelection.m_LocalStreamLeftMark != 0)
-                            {
-                                //implicitEnd = new Time(selDataCachedDurations[count]);
-                                //implicitEnd.Substract(
-                                //    new Time(
-                                //        manMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(
-                                //            treeNodeAndStreamSelection.m_LocalStreamLeftMark)));
-
-                                implicitEnd = new Time(selDataCachedDurations[count].AsLocalUnits - manMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(treeNodeAndStreamSelection.m_LocalStreamLeftMark));
-                            }
-                            Time timeEnd = treeNodeAndStreamSelection.m_LocalStreamRightMark == -1
-                    ? implicitEnd
-                    : new Time(manMedia.AudioMediaData.PCMFormat.Data.ConvertBytesToTime(treeNodeAndStreamSelection.m_LocalStreamRightMark));
+                            Time timeEnd = selDataCachedDurations[count].Copy();
 
                             if (audioSelectionOverwriteMode == AudioSelectionOverwriteMode.DeleteAndMapStretchConsecutiveChunks)
                             {
@@ -1644,10 +1645,17 @@ namespace Tobi.Plugin.AudioPane
                                 long lastByte = selManMedia.AudioMediaData.PCMFormat.Data.ConvertTimeToBytes(
                                     selManMedia.AudioMediaData.AudioDuration.AsLocalUnits);
 
+                                long bytePosInsert = count == 0 ?
+                                                        (selData.Count == 1 ?
+                                                        (treeNodeAndStreamSelection.m_LocalStreamLeftMark != -1 ? treeNodeAndStreamSelection.m_LocalStreamLeftMark : 0)
+                                                        : lastByte
+                                                        )
+                                                    : 0;
+
                                 var command_ = treeNode.Presentation.CommandFactory.
                                        CreateManagedAudioMediaInsertDataCommand(
                                            treeNode_, manMediaChunk,
-                                           count == 0 ? lastByte : 0,
+                                           bytePosInsert,
                                            treeNodeSelection.Item1);
 
                                 treeNode.Presentation.UndoRedoManager.Execute(command_);
