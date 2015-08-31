@@ -142,7 +142,7 @@
     <value>Close the application</value>
   </data>
   <data name="CmdOpenTobiFolder_ShortDesc" xml:space="preserve">
-    <value>_Application executable and log</value>
+    <value>_Application executable</value>
   </data>
   <data name="CmdOpenTobiFolder_LongDesc" xml:space="preserve">
     <value>Open a file browser where the Tobi.exe application is run from.</value>
