@@ -51,9 +51,11 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="DocumentFormat.OpenXml">
       <HintPath>..\ExternalLibs\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenXmlPowerTools">
+      <HintPath>..\ExternalLibs\OpenXmlPowerTools.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
     </Reference>
@@ -68,6 +70,9 @@
     <Reference Include="System.Core">
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Packaging">
+      <HintPath>..\ExternalLibs\System.IO.Packaging.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
@@ -151,10 +156,6 @@
     <ProjectReference Include="..\ExternalLibs\MEF\Lib.MEF_NET4.csproj">
       <Project>{A36AEF66-2411-4225-B68E-F2D29368A31B}</Project>
       <Name>Lib.MEF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExternalLibs\OpenXmlPowerTools\OpenXmlPowerTools_NET4.csproj">
-      <Project>{4aa5dd62-c9db-44e3-90c9-5abfd38ad346}</Project>
-      <Name>OpenXmlPowerTools_NET4</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tobi.Common\Tobi.Common_NET4.csproj">
       <Project>{3C21BB69-0F81-47D2-88E6-E4C08AD1460B}</Project>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi_NET4", "Tobi_NET4.csproj", "{64F90229-5944-4DBB-96A0-0E09E6BF5997}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -114,8 +114,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFMediaKit_NET4", "ExternalLibs\WPFMediaKit\WPFMediaKit_NET4.csproj", "{6030628D-EE93-4D61-B6BE-8B6AE99F3935}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaxNET_NET4", "ExternalLibs\SaxNET\SaxNET_NET4.csproj", "{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenXmlPowerTools_NET4", "ExternalLibs\OpenXmlPowerTools\OpenXmlPowerTools_NET4.csproj", "{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Tobi (NET4)", "Tobi_Install\Tobi_NET4_Installer.vdproj", "{2745F524-1387-4903-A985-3DE1E593C316}"
 EndProject
@@ -637,18 +635,6 @@ Global
 		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.test|Any CPU.ActiveCfg = Release|Any CPU
 		{15655D56-6C48-4F93-AD3A-D0DEA9A79B19}.test|Any CPU.Build.0 = Release|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Documentation|Any CPU.ActiveCfg = Debug|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Documentation|Any CPU.Build.0 = Debug|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Minimal Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Minimal Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Release with Code Analysis|Any CPU.ActiveCfg = Release|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Release with Code Analysis|Any CPU.Build.0 = Release|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.test|Any CPU.ActiveCfg = Release|Any CPU
-		{4AA5DD62-C9DB-44E3-90C9-5ABFD38AD346}.test|Any CPU.Build.0 = Release|Any CPU
 		{2745F524-1387-4903-A985-3DE1E593C316}.Debug|Any CPU.ActiveCfg = Debug
 		{2745F524-1387-4903-A985-3DE1E593C316}.Debug|Any CPU.Build.0 = Debug
 		{2745F524-1387-4903-A985-3DE1E593C316}.Documentation|Any CPU.ActiveCfg = Debug
