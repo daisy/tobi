@@ -48,6 +48,8 @@ namespace Tobi.Plugin.AudioPane
 
         private bool m_RecordAndContinue = false;
 
+        private bool m_punchInRecordOverSelection = false;
+        
         //#if !DISABLE_SINGLE_RECORD_FILE
         private long m_RecordAndContinue_StopBytePos = -1;
         private bool m_RecordAndContinue_StopSingleFileRecord = false;
@@ -178,12 +180,12 @@ namespace Tobi.Plugin.AudioPane
 
                     IsAutoPlay = false;
 
-                    bool punchIn = false;
+                    m_punchInRecordOverSelection = false;
                     if (IsPlaying) // Punch-in recording
                     {
                         SetRecordAfterPlayOverwriteSelection(-1);
 
-                        punchIn = true;
+                        m_punchInRecordOverSelection = true;
 
                         CommandPause.Execute();
 
@@ -194,7 +196,7 @@ namespace Tobi.Plugin.AudioPane
                     {
                         SetRecordAfterPlayOverwriteSelection(-1);
 
-                        punchIn = true;
+                        m_punchInRecordOverSelection = true;
 
                         if (PlayBytePosition >= 0)
                         {
@@ -231,7 +233,7 @@ namespace Tobi.Plugin.AudioPane
                             return;
                         }
 
-                        if (!punchIn) // let's check auto punch in/out based on audio selection
+                        if (!m_punchInRecordOverSelection) // let's check auto punch in/out based on audio selection
                         {
                             var bytesForRequiredOffsetTime =
                                 m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.
