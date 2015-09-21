@@ -1403,9 +1403,11 @@ namespace Tobi.Plugin.AudioPane
 
             if (IsSelectionSet)
             {
-                //TODO: should this be configurable?
                 AudioSelectionOverwriteMode audioSelectionOverwriteMode =
+                    m_punchInRecordOverSelection ? AudioSelectionOverwriteMode.DeleteAndInsertAtLeftEdge :
                     AudioSelectionOverwriteMode.DeleteAndMapStretchConsecutiveChunks;
+
+                m_punchInRecordOverSelection = false;
 
                 bytePositionInsert = State.Selection.SelectionBeginBytePosition;
 
