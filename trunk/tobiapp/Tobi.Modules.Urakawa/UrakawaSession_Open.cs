@@ -33,8 +33,10 @@ using urakawa.property.xml;
 using urakawa.xuk;
 using DocumentBuilder = Saxon.Api.DocumentBuilder;
 
+#if ENABLE_OOXML
 using DocumentFormat.OpenXml.Packaging;
 using OpenXmlPowerTools;
+#endif
 
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -87,7 +89,10 @@ namespace Tobi.Plugin.Urakawa
         public RichDelegateCommand OpenCommand { get; private set; }
         public RichDelegateCommand ImportCommand { get; private set; }
         public RichDelegateCommand OpenConvertCommand { get; private set; }
+
+#if ENABLE_OOXML
         public RichDelegateCommand DocXWordMLOpenXMLTransformCommand { get; private set; }
+#endif
 
         private void initCommands_Open()
         {
@@ -211,7 +216,7 @@ namespace Tobi.Plugin.Urakawa
 
             m_ShellView.RegisterRichCommand(ImportCommand);
             //
-
+#if ENABLE_OOXML
             DocXWordMLOpenXMLTransformCommand = new RichDelegateCommand(
                 Tobi_Plugin_Urakawa_Lang.CmdImportDocx_ShortDesc,
                 Tobi_Plugin_Urakawa_Lang.CmdImportDocx_LongDesc,
@@ -377,6 +382,7 @@ namespace Tobi.Plugin.Urakawa
                 );
 
             m_ShellView.RegisterRichCommand(DocXWordMLOpenXMLTransformCommand);
+#endif
             //
             OpenConvertCommand = new RichDelegateCommand(
                 Tobi_Plugin_Urakawa_Lang.CmdOpenConvert_ShortDesc,
