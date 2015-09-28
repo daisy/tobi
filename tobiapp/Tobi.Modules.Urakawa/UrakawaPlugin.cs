@@ -75,7 +75,9 @@ namespace Tobi.Plugin.Urakawa
                         m_UrakawaSession.OpenCommand,
                         m_UrakawaSession.ImportCommand,
                         m_UrakawaSession.OpenConvertCommand,
+#if ENABLE_OOXML
                         m_UrakawaSession.DocXWordMLOpenXMLTransformCommand,
+#endif
                         m_UrakawaSession.OpenRecentCommand
                     });
 

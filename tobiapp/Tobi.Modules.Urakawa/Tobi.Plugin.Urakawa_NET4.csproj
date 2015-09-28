@@ -51,12 +51,6 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DocumentFormat.OpenXml">
-      <HintPath>..\ExternalLibs\DocumentFormat.OpenXml.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenXmlPowerTools">
-      <HintPath>..\ExternalLibs\OpenXmlPowerTools.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore">
     </Reference>
     <Reference Include="PresentationFramework">
