@@ -514,7 +514,8 @@ namespace Tobi.Plugin.Urakawa
                 bool error = m_ShellView.RunModalCancellableProgressTask(true,
                                                                           Tobi_Plugin_Urakawa_Lang.CleaningUpDataFiles,
                                                                           new Cleaner(project.Presentations.Get(0),
-                                                                                      deletedDataFolderPath, cleanAudioMaxFileMegaBytes),
+                                                                                      deletedDataFolderPath, cleanAudioMaxFileMegaBytes,
+                                                                                      Settings.Default.EnableCleanupFileReuse),
                     //project.Presentations.Get(0).Cleanup();
                                                                           () =>
                                                                           {
@@ -539,7 +540,7 @@ namespace Tobi.Plugin.Urakawa
             else
             {
                 var cleaner = new Cleaner(project.Presentations.Get(0),
-                                          deletedDataFolderPath, cleanAudioMaxFileMegaBytes);
+                                          deletedDataFolderPath, cleanAudioMaxFileMegaBytes, Settings.Default.EnableCleanupFileReuse);
                 //cleaner.DoWork();
                 cleaner.Cleanup();
             }
