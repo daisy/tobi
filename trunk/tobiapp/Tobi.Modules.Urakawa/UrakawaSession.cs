@@ -515,7 +515,7 @@ namespace Tobi.Plugin.Urakawa
                                                                           Tobi_Plugin_Urakawa_Lang.CleaningUpDataFiles,
                                                                           new Cleaner(project.Presentations.Get(0),
                                                                                       deletedDataFolderPath, cleanAudioMaxFileMegaBytes,
-                                                                                      Settings.Default.EnableCleanupFileReuse),
+                                                                                      Settings.Default.CleanAudioOptimizeFileUsage),
                     //project.Presentations.Get(0).Cleanup();
                                                                           () =>
                                                                           {
@@ -540,7 +540,7 @@ namespace Tobi.Plugin.Urakawa
             else
             {
                 var cleaner = new Cleaner(project.Presentations.Get(0),
-                                          deletedDataFolderPath, cleanAudioMaxFileMegaBytes, Settings.Default.EnableCleanupFileReuse);
+                                          deletedDataFolderPath, cleanAudioMaxFileMegaBytes, Settings.Default.CleanAudioOptimizeFileUsage);
                 //cleaner.DoWork();
                 cleaner.Cleanup();
             }
