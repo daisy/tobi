@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.Urakawa" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="EnableCleanupFileReuse" Type="System.Boolean" Scope="User">
+    <Setting Name="CleanAudioOptimizeFileUsage" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="CleanAudioMaxFileMegaBytes" Type="System.Double" Scope="User">

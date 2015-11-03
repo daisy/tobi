@@ -26,12 +26,12 @@ namespace Tobi.Plugin.Urakawa {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool EnableCleanupFileReuse {
+        public bool CleanAudioOptimizeFileUsage {
             get {
-                return ((bool)(this["EnableCleanupFileReuse"]));
+                return ((bool)(this["CleanAudioOptimizeFileUsage"]));
             }
             set {
-                this["EnableCleanupFileReuse"] = value;
+                this["CleanAudioOptimizeFileUsage"] = value;
             }
         }
         
