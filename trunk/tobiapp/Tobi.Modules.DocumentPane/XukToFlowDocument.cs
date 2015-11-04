@@ -3243,7 +3243,11 @@ namespace Tobi.Plugin.DocumentPane
                 case "col":
                 case "colgroup":
                     {
-                        Debug.Fail(String.Format(@"DTBook element not yet supported [{0}]", localName));
+                        Console.WriteLine(String.Format(@"DTBook element not yet supported [{0}]", localName));
+#if DEBUG
+                        //Debugger.Break();
+                        bool debug = true; // place breakpoint here
+#endif
                         break;
                     }
                 case "span":
