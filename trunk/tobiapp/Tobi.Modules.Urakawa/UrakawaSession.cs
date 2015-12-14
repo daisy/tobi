@@ -147,7 +147,8 @@ namespace Tobi.Plugin.Urakawa
 
         public RichDelegateCommand OpenDocumentFolderCommand { get; private set; }
 
-        public RichDelegateCommand DataCleanupCommand { get; private set; }
+        public RichDelegateCommand DataCleanupStrictCommand { get; private set; }
+        public RichDelegateCommand DataCleanupOptimizeCommand { get; private set; }
 
         public bool isAudioActive
         {
@@ -449,21 +450,35 @@ namespace Tobi.Plugin.Urakawa
 
             m_ShellView.RegisterRichCommand(CloseCommand);
             //
-            DataCleanupCommand = new RichDelegateCommand(
-                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ShortDesc,
-                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_LongDesc,
+            DataCleanupStrictCommand = new RichDelegateCommand(
+                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_STRICT_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_STRICT_LongDesc,
                 null, // KeyGesture obtained from settings (see last parameters below)
                 m_ShellView.LoadGnomeNeuIcon(@"Neu_user-trash-full"),
-                () => DataCleanup(true),
+                () => DataCleanup(true, false),
                 () => DocumentProject != null && !isAudioRecording
                 && !IsXukSpine,
                 Settings_KeyGestures.Default,
-                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DataCleanup));
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DataCleanupStrict)
+                );
 
-            m_ShellView.RegisterRichCommand(DataCleanupCommand);
+            m_ShellView.RegisterRichCommand(DataCleanupStrictCommand);
+            //
+            DataCleanupOptimizeCommand = new RichDelegateCommand(
+                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_OPTIMIZED_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_OPTIMIZED_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadGnomeNeuIcon(@"Neu_user-trash-full"),
+                () => DataCleanup(true, true),
+                () => DataCleanupStrictCommand.CanExecute(),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DataCleanupOptimize)
+                );
+
+            m_ShellView.RegisterRichCommand(DataCleanupOptimizeCommand);
         }
 
-        public string DataCleanup(bool interactive)
+        public string DataCleanup(bool interactive, bool cleanAudioOptimizeFiles)
         {
             // Backup before close.
             string docPath = DocumentFilePath;
@@ -504,9 +519,8 @@ namespace Tobi.Plugin.Urakawa
                 FileDataProvider.CreateDirectory(deletedDataFolderPath);
             }
 
-            double cleanAudioMaxFileMegaBytes = Settings.Default.CleanAudioMaxFileMegaBytes;
-
-
+            double cleanAudioMaxFileMegaBytes = Settings.Default.CleanAudioOptimizeMaxMegaBytes;
+            
             bool cancelled = false;
 
             if (interactive)
@@ -515,7 +529,7 @@ namespace Tobi.Plugin.Urakawa
                                                                           Tobi_Plugin_Urakawa_Lang.CleaningUpDataFiles,
                                                                           new Cleaner(project.Presentations.Get(0),
                                                                                       deletedDataFolderPath, cleanAudioMaxFileMegaBytes,
-                                                                                      Settings.Default.CleanAudioOptimizeFileUsage),
+                                                                                      cleanAudioOptimizeFiles),
                     //project.Presentations.Get(0).Cleanup();
                                                                           () =>
                                                                           {
@@ -540,7 +554,7 @@ namespace Tobi.Plugin.Urakawa
             else
             {
                 var cleaner = new Cleaner(project.Presentations.Get(0),
-                                          deletedDataFolderPath, cleanAudioMaxFileMegaBytes, Settings.Default.CleanAudioOptimizeFileUsage);
+                                          deletedDataFolderPath, cleanAudioMaxFileMegaBytes, cleanAudioOptimizeFiles);
                 //cleaner.DoWork();
                 cleaner.Cleanup();
             }

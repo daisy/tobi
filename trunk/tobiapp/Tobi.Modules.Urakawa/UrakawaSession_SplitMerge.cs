@@ -575,7 +575,7 @@ namespace Tobi.Plugin.Urakawa
 
                     //int total = counter + 1;
 
-                    string deletedDataFolderPath = m_session.DataCleanup(false);
+                    string deletedDataFolderPath = m_session.DataCleanup(false, false);
 
                     if (!string.IsNullOrEmpty(deletedDataFolderPath) && Directory.Exists(deletedDataFolderPath))
                     {
@@ -917,7 +917,7 @@ namespace Tobi.Plugin.Urakawa
 
                     try
                     {
-                        string deletedDataFolderPath_ = m_session.DataCleanup(false);
+                        string deletedDataFolderPath_ = m_session.DataCleanup(false, false);
 
                         if (!string.IsNullOrEmpty(deletedDataFolderPath_) && Directory.Exists(deletedDataFolderPath_))
                         {
@@ -1243,7 +1243,7 @@ namespace Tobi.Plugin.Urakawa
 
                     try
                     {
-                        string deletedDataFolderPath = DataCleanup(false);
+                        string deletedDataFolderPath = DataCleanup(false, false);
 
                         if (!string.IsNullOrEmpty(deletedDataFolderPath) && Directory.Exists(deletedDataFolderPath))
                         {

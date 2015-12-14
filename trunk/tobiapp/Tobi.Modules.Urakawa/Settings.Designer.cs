@@ -25,25 +25,13 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool CleanAudioOptimizeFileUsage {
-            get {
-                return ((bool)(this["CleanAudioOptimizeFileUsage"]));
-            }
-            set {
-                this["CleanAudioOptimizeFileUsage"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double CleanAudioMaxFileMegaBytes {
+        public double CleanAudioOptimizeMaxMegaBytes {
             get {
-                return ((double)(this["CleanAudioMaxFileMegaBytes"]));
+                return ((double)(this["CleanAudioOptimizeMaxMegaBytes"]));
             }
             set {
-                this["CleanAudioMaxFileMegaBytes"] = value;
+                this["CleanAudioOptimizeMaxMegaBytes"] = value;
             }
         }
         
