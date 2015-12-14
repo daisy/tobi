@@ -5,7 +5,7 @@
   </Profiles>
   <Settings>
     <Setting Name="Keyboard_DataCleanupStrict" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] D</Value>
+      <Value Profile="(Default)">[ CTRL ALT ] D</Value>
     </Setting>
     <Setting Name="Keyboard_DataCleanupOptimize" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ALT ] D</Value>
