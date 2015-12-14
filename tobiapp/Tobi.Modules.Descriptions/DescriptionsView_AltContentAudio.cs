@@ -482,7 +482,7 @@ namespace Tobi.Plugin.Descriptions
                     manMedia.AudioMediaData = null; // so that this ManagedAudioMedia gets cleaned up (we copied the WAV above at m_ViewModel.SetDescriptionAudio(altContent, manMedia_)) 
                 }
 
-                string deletedDataFolderPath = audioSession.DataCleanup(false);
+                string deletedDataFolderPath = audioSession.DataCleanup(false, false);
                 string[] files = Directory.GetFiles(deletedDataFolderPath);
                 if (files.Length != 0)
                 {

@@ -29,8 +29,8 @@ namespace Tobi.Plugin.Urakawa
         private bool askUserCleanup()
         {
             return askUser(
-                UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ShortDesc) + @"?",
-                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_LongDesc);
+                UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_STRICT_ShortDesc) + @"?",
+                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_STRICT_LongDesc);
         }
 
         private bool askUser(string message, string info)
@@ -96,7 +96,7 @@ namespace Tobi.Plugin.Urakawa
             bool doCleanup = interactive && askUserCleanup();
             if (doCleanup)
             {
-                DataCleanup(true);
+                DataCleanup(true, false);
             }
 
             string ext = IsXukSpine ? OpenXukAction.XUK_SPINE_EXTENSION : OpenXukAction.XUK_EXTENSION;
