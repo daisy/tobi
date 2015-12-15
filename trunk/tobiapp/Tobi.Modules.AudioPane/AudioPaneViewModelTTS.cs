@@ -8,8 +8,11 @@ using Microsoft.Practices.Composite.Logging;
 using urakawa.core;
 using System.Speech.AudioFormat;
 using System.Speech.Synthesis;
+using System.Text;
 using System.Threading;
+using System.Windows;
 using urakawa.data;
+using urakawa.ExternalFiles;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -58,7 +61,7 @@ namespace Tobi.Plugin.AudioPane
 
                 int i = 0;
 
-            tryagain:
+                tryagain:
                 i++;
 
                 var filePath = Path.Combine(OutputDirectory, "tts_" + m_ttsFileNameCounter + DataProviderFactory.AUDIO_WAV_EXTENSION);
@@ -173,10 +176,12 @@ namespace Tobi.Plugin.AudioPane
     public class AudioTTSGeneratorAutoAdvance : DualCancellableProgressReporter
     {
         private readonly AudioPaneViewModel m_viewModel;
+        private readonly Dictionary<string, string> m_ttsVoiceMap;
 
-        public AudioTTSGeneratorAutoAdvance(AudioPaneViewModel viewModel)
+        public AudioTTSGeneratorAutoAdvance(AudioPaneViewModel viewModel, Dictionary<string, string> ttsVoiceMap)
         {
             m_viewModel = viewModel;
+            m_ttsVoiceMap = ttsVoiceMap;
         }
 
         public override void DoWork()
@@ -204,7 +209,7 @@ namespace Tobi.Plugin.AudioPane
             try
             {
                 TreeNode adjustedNode = null;
-            next:
+                next:
 
                 if (m_viewModel.IsSimpleMode)
                 {
@@ -295,6 +300,41 @@ namespace Tobi.Plugin.AudioPane
 #if DEBUG
                 DebugFix.Assert(TreeNode.GetLengthStringChunks(adjustedNode.GetTextFlattened_()) != 0);
 #endif
+
+                try
+                {
+                    m_viewModel.m_SpeechSynthesizer.SelectVoice(Settings.Default.Audio_TTS_Voice);
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
+                var adjustedNodeName = adjustedNode.GetXmlElementLocalName();
+                if (adjustedNodeName != null)
+                {
+                    foreach (string elementName in m_ttsVoiceMap.Keys)
+                    {
+                        if (elementName.Equals(adjustedNodeName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            string voiceName = m_ttsVoiceMap[elementName];
+                            try
+                            {
+                                m_viewModel.m_SpeechSynthesizer.SelectVoice(voiceName);
+                            }
+                            catch (Exception ex)
+                            {
+#if DEBUG
+                                Debugger.Break();
+#endif
+                            }
+
+                            break;
+                        }
+                    }
+                }
+
 
                 var converter = new AudioTTSGenerator(text, pcmFormat.Data, m_viewModel.m_Recorder.RecordingDirectory, m_viewModel.m_SpeechSynthesizer);
 
@@ -456,14 +496,116 @@ namespace Tobi.Plugin.AudioPane
 
     public partial class AudioPaneViewModel
     {
+        public static readonly string TTS_VOICE_MAPPING_DIRECTORY =
+            Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, "TTS");
+        public static readonly string TTS_VOICE_MAPPING_FILE =
+            Path.Combine(TTS_VOICE_MAPPING_DIRECTORY, "voices.txt");
+
+        public Dictionary<string, string> readTTSVoicesMapping()
+        {
+            Dictionary<string, string> ttsVoiceMap = new Dictionary<string, string>();
+
+            string prefix_VOICE = "[TTS_VOICE]";
+
+            List<VoiceInfo> voices = TTSVoices;
+            
+            if (!File.Exists(TTS_VOICE_MAPPING_FILE))
+            {
+                if (!Directory.Exists(TTS_VOICE_MAPPING_DIRECTORY))
+                {
+                    FileDataProvider.CreateDirectory(TTS_VOICE_MAPPING_DIRECTORY);
+                }
+
+                StreamWriter streamWriter = new StreamWriter(TTS_VOICE_MAPPING_FILE, false, Encoding.UTF8);
+                try
+                {
+                    foreach (VoiceInfo voice in voices)
+                    {
+                        streamWriter.WriteLine(prefix_VOICE + " " + voice.Name);
+                        streamWriter.WriteLine("element_name_1");
+                        streamWriter.WriteLine("element_name_2");
+                        streamWriter.WriteLine("etc.");
+                        streamWriter.WriteLine("");
+
+                        //// useless for now, could be used when ttsVoiceMap is hard-coded here?
+                        //foreach (String key in ttsVoiceMap.Keys)
+                        //{
+                        //    string name = ttsVoiceMap[key];
+                        //    if (name.Equals(voice.Name, StringComparison.Ordinal))
+                        //    {
+                        //        streamWriter.WriteLine(key);
+                        //    }
+                        //}
+                    }
+                }
+                finally
+                {
+                    streamWriter.Close();
+                }
+            }
+            else
+            {
+                StreamReader streamReader = new StreamReader(TTS_VOICE_MAPPING_FILE, Encoding.UTF8);
+                try
+                {
+                    string currentVoice = null;
+
+                    string line;
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        line = line.Trim();
+                        if (string.IsNullOrEmpty(line)) continue;
+
+                        if (line.StartsWith(prefix_VOICE))
+                        {
+                            currentVoice = line.Substring(prefix_VOICE.Length).Trim();
+
+                            if (!string.IsNullOrEmpty(currentVoice))
+                            {
+                                bool found = false;
+                                foreach (VoiceInfo voice in voices)
+                                {
+                                    if (currentVoice.Equals(voice.Name, StringComparison.Ordinal))
+                                    {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (!found)
+                                {
+                                    currentVoice = null;
+                                }
+                            }
+                        }
+                        else if (!string.IsNullOrEmpty(currentVoice))
+                        {
+                            if (ttsVoiceMap.ContainsKey(line))
+                            {
+                                ttsVoiceMap.Remove(line);
+                            }
+                            ttsVoiceMap.Add(line, currentVoice);
+                        }
+                    }
+                }
+                finally
+                {
+                    streamReader.Close();
+                }
+            }
+
+            return ttsVoiceMap;
+        }
+
         private void CommandGenTTS_All_Execute()
         {
             m_UrakawaSession.PerformTreeNodeSelection(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, false, null);
             CommandGenTTS_Execute();
         }
-
+        
         private void CommandGenTTS_Execute()
         {
+            Dictionary<string, string> ttsVoiceMap = readTTSVoicesMapping();
+
             bool cancelled = false;
 
             m_UrakawaSession.AutoSave_OFF();
@@ -477,7 +619,7 @@ namespace Tobi.Plugin.AudioPane
 
                 m_TTSGen = true;
 
-                var converter = new AudioTTSGeneratorAutoAdvance(this);
+                var converter = new AudioTTSGeneratorAutoAdvance(this, ttsVoiceMap);
 
                 bool error = m_ShellView.RunModalCancellableProgressTask(true,
                     Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio,

@@ -444,6 +444,9 @@
   <data name="ComboLabel_TTS" xml:space="preserve">
     <value>TTS:</value>
   </data>
+  <data name="TTSVoiceMapping" xml:space="preserve">
+    <value>Synthetic speech voice mapping</value>
+  </data>
   <data name="Speak" xml:space="preserve">
     <value>Speak</value>
   </data>

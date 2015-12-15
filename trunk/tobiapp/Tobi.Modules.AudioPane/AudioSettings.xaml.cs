@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Speech.Synthesis;
 using System.Windows;
@@ -22,6 +23,12 @@ namespace Tobi.Plugin.AudioPane
         {
             private set;
             get;
+        }
+
+        private void OnClick_ButtonTTSVoices(object sender, RoutedEventArgs e)
+        {
+            Dictionary<string, string> ttsVoiceMap = ViewModel.readTTSVoicesMapping();
+            ViewModel.m_ShellView.ExecuteShellProcess(AudioPaneViewModel.TTS_VOICE_MAPPING_DIRECTORY);
         }
 
         private void OnClick_ButtonSpeak(object sender, RoutedEventArgs e)

@@ -21,6 +21,7 @@
     <RowDefinition Height="Auto"/>
     <RowDefinition Height="Auto"/>
     <RowDefinition Height="Auto"/>
+    <RowDefinition Height="Auto"/>
   </Grid.RowDefinitions>
   
       <TextBlock x:Name="LabelOutputDevices"
@@ -186,7 +187,17 @@
                 Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.Speak}"
                 Click="OnClick_ButtonSpeak"
                 >
-    
+
+  </Button>
+  <Button
+    x:Name="ButtonTTSVoiceMapping"
+                VerticalAlignment="Center"  HorizontalAlignment="Stretch"
+  Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                Focusable="True"  Margin="0, 0, 0, 0"
+                Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.TTSVoiceMapping}"
+                Click="OnClick_ButtonTTSVoices"
+                >
+
   </Button>
 
 </Grid>
