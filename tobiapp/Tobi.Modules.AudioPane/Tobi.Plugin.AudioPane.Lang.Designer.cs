@@ -1294,6 +1294,15 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Synthetic speech voice mapping.
+        /// </summary>
+        public static string TTSVoiceMapping {
+            get {
+                return ResourceManager.GetString("TTSVoiceMapping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Waveform loaded..
         /// </summary>
         public static string WaveformLoaded {
