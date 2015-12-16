@@ -1294,7 +1294,7 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Synthetic speech voice mapping.
+        ///   Looks up a localized string similar to Synthetic voice mapping ....
         /// </summary>
         public static string TTSVoiceMapping {
             get {

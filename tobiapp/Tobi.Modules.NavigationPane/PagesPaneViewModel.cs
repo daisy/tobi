@@ -93,6 +93,7 @@ namespace Tobi.Plugin.NavigationPane
                     {
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(0, 0, 0, 18)
                     };
                     label_pageNumberStringPrefix.SetValue(DockPanel.DockProperty, Dock.Left);
                     panel_pageNumberStringPrefix.Children.Add(label_pageNumberStringPrefix);
@@ -117,6 +118,7 @@ namespace Tobi.Plugin.NavigationPane
                     {
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(0, 0, 0, 0)
                     };
                     label_pageNumberIntegerStart.SetValue(DockPanel.DockProperty, Dock.Left);
                     panel_pageNumberIntegerStart.Children.Add(label_pageNumberIntegerStart);

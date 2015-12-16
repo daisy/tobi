@@ -122,7 +122,7 @@ namespace Tobi.Plugin.AudioPane
                                                            new AudioSettings(this),
                                                            PopupModalWindow.DialogButtonsSet.Close,
                                                            PopupModalWindow.DialogButton.Close,
-                                                           true, 420, 200, null, 0,null);
+                                                           true, 420, 220, null, 0,null);
                     windowPopup.EnableEnterKeyDefault = true;
                     windowPopup.ShowFloating(()=>
                         {
