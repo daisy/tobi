@@ -106,7 +106,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Optimized delete of unused project data (keeps fully-used WAV files, gathers fragmented audio if max size limit is configured).
+        ///   Looks up a localized string similar to Optimized cleanup of unused project data (keeps fully-used WAV files, assembles fragmented audio if max size limit is configured).
         /// </summary>
         public static string CmdDataCleanup_OPTIMIZED_LongDesc {
             get {
@@ -115,7 +115,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cleanup (_optimize).
+        ///   Looks up a localized string similar to Cleanup (_optimized).
         /// </summary>
         public static string CmdDataCleanup_OPTIMIZED_ShortDesc {
             get {
@@ -124,7 +124,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Strict delete of unused project data (always creates fresh WAV files, gathers contiguous audio if max size limit is configured).
+        ///   Looks up a localized string similar to Complete cleanup of unused project data (always creates fresh WAV files, assembles contiguous audio if max size limit is configured).
         /// </summary>
         public static string CmdDataCleanup_STRICT_LongDesc {
             get {
@@ -133,7 +133,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cleanup (_strict).
+        ///   Looks up a localized string similar to Cleanup (_complete).
         /// </summary>
         public static string CmdDataCleanup_STRICT_ShortDesc {
             get {

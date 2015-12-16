@@ -27,7 +27,7 @@
       <TextBlock x:Name="LabelOutputDevices"
                   VerticalAlignment="Center"  HorizontalAlignment="Left"
                  Grid.Row="0" Grid.Column="0"
-                 Focusable="True" Margin="6, 0, 6, 0"
+                 Focusable="True" Margin="6, 0, 6, 18"
                Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Playback}"/>
       <ComboBox
                       VerticalAlignment="Top"  HorizontalAlignment="Stretch"
@@ -36,7 +36,7 @@
             SelectedItem="{Binding OutputDevice, Mode=TwoWay}"
             
             SelectedValuePath="Name"
-            Margin="2"
+            
             VirtualizingStackPanel.IsVirtualizing="False"
             IsEnabled="{Binding CanSwapOutputDevice, Mode=OneWay}"
             AutomationProperties.LabeledBy="{Binding ElementName=LabelOutputDevices}"
@@ -82,7 +82,7 @@
     <TextBlock x:Name="LabelInputDevices"
                   VerticalAlignment="Center"  HorizontalAlignment="Left"
                Grid.Row="1" Grid.Column="0"
-               Focusable="True"  Margin="6, 0, 6, 0" 
+               Focusable="True"  Margin="6, 0, 6, 18" 
                Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_Recording}"/>
   <ComboBox
                   VerticalAlignment="Top"  HorizontalAlignment="Stretch"
@@ -90,7 +90,7 @@
     ItemsSource="{Binding InputDevices, Mode=OneWay}"
               SelectedItem="{Binding InputDevice, Mode=TwoWay}"
               SelectedValuePath="Name"
-              Margin="2"
+              
               VirtualizingStackPanel.IsVirtualizing="False"
               IsEnabled="{Binding CanSwapInputDevice, Mode=OneWay}"
               AutomationProperties.LabeledBy="{Binding ElementName=LabelInputDevices}">
@@ -132,7 +132,7 @@
   <TextBlock x:Name="LabelTTSVoices"
                   VerticalAlignment="Center"  HorizontalAlignment="Left"
              Grid.Row="2" Grid.Column="0"
-             Focusable="True"  Margin="6, 0, 6, 0" 
+             Focusable="True"  Margin="6, 0, 6, 8" 
              Text="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.ComboLabel_TTS}"/>
   <ComboBox
     x:Name="ComboTTSVoices"
@@ -141,7 +141,7 @@
     ItemsSource="{Binding TTSVoices, Mode=OneWay}"
             SelectedItem="{Binding TTSVoice, Mode=TwoWay}"
             SelectedValuePath="Name"
-            Margin="2"
+            
             VirtualizingStackPanel.IsVirtualizing="False"
             AutomationProperties.LabeledBy="{Binding ElementName=LabelTTSVoices}">
     <!--DisplayMemberPath="Name"-->
@@ -181,7 +181,7 @@
 
   <Button
     x:Name="ButtonTTSVoices"
-                VerticalAlignment="Center"  HorizontalAlignment="Right"
+                VerticalAlignment="Top"  HorizontalAlignment="Right"
   Grid.Row="2" Grid.Column="2"
                 Focusable="True"  Margin="6, 0, 0, 0"
                 Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.Speak}"
@@ -191,7 +191,7 @@
   </Button>
   <Button
     x:Name="ButtonTTSVoiceMapping"
-                VerticalAlignment="Center"  HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"  HorizontalAlignment="Stretch"
   Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
                 Focusable="True"  Margin="0, 0, 0, 0"
                 Content="{x:Static AudioPane:Tobi_Plugin_AudioPane_Lang.TTSVoiceMapping}"
