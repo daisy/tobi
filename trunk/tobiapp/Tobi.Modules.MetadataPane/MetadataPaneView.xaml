@@ -89,15 +89,26 @@
   </DockPanel.Resources>
 
     <DockPanel  DockPanel.Dock="Bottom" LastChildFill="True">
-    <Button DockPanel.Dock="Right"
-            Margin="50, 0, 0, 0"
-            Padding="4,4,4,4"
-      Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Add_new}"
-            HorizontalAlignment="Left" VerticalAlignment="Top"
-            Width="Auto"
-            Click="AddButton_OnClick"
-             Control.TabIndex="111"
+      <StackPanel DockPanel.Dock="Right" Orientation="Vertical">
+        <Button
+                Margin="50, 0, 0, 0"
+                Padding="4,4,4,4"
+          Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Add_new}"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Width="Auto"
+                Click="AddButton_OnClick"
+                 Control.TabIndex="111"
             />
+        <Button
+  Margin="50, 18, 0, 0"
+  Padding="4,4,4,4"
+      Content="{x:Static local:Tobi_Plugin_MetadataPane_Lang.Import}"
+  HorizontalAlignment="Right" VerticalAlignment="Top"
+  Width="Auto"
+  Click="ImportButton_OnClick"
+   Control.TabIndex="112"
+            />
+      </StackPanel>
       
       <GroupBox x:Name="groupBox" VerticalAlignment="Top"
                     HorizontalAlignment="Left"
