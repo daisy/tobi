@@ -221,7 +221,20 @@ namespace Tobi.Plugin.MetadataPane
             NotifyingMetadataItem metadata = button.DataContext as NotifyingMetadataItem;
             m_ViewModel.RemoveMetadata(metadata);
         }
+        
+        private void ImportButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            m_ViewModel.ImportMetadata();
 
+            ObservableCollection<NotifyingMetadataItem> metadataItems =
+                m_ViewModel.MetadataCollection.Metadatas;
+            if (metadataItems.Count > 0)
+            {
+                NotifyingMetadataItem metadata = metadataItems[metadataItems.Count - 1];
+                SetSelectedListItem(metadata);
+            }
+
+        }
         private void AddButton_OnClick(object sender, RoutedEventArgs e)
         {
             m_ViewModel.AddEmptyMetadata();

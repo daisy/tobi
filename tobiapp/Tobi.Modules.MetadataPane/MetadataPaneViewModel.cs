@@ -2,16 +2,23 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.MVVM;
+using Tobi.Common.UI;
 using Tobi.Common.Validation;
 using Tobi.Plugin.Validator.Metadata;
 using urakawa;
 using urakawa.metadata;
 using urakawa.metadata.daisy;
 using urakawa.commands;
+using urakawa.data;
+using urakawa.ExternalFiles;
 
 namespace Tobi.Plugin.MetadataPane
 {
@@ -36,9 +43,13 @@ namespace Tobi.Plugin.MetadataPane
 
         private readonly IUrakawaSession m_UrakawaSession;
 
+        public readonly IShellView m_ShellView;
+
         [ImportingConstructor]
         public MetadataPaneViewModel(
             IEventAggregator eventAggregator,
+            [Import(typeof(IShellView), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
+            IShellView shellView,
             ILoggerFacade logger,
             [Import(typeof(IUrakawaSession), RequiredCreationPolicy = CreationPolicy.Shared, AllowDefault = false)]
             IUrakawaSession session,
@@ -51,6 +62,7 @@ namespace Tobi.Plugin.MetadataPane
 
             m_Validator = validator;
             m_UrakawaSession = session;
+            m_ShellView = shellView;
 
             m_MetadataCollection = null;
 
@@ -186,6 +198,228 @@ namespace Tobi.Plugin.MetadataPane
                 (metadata);
             presentation.UndoRedoManager.Execute(cmd);
         }
+
+        public static readonly string METADATA_IMPORT_DIRECTORY =
+            Path.Combine(ExternalFilesDataManager.STORAGE_FOLDER_PATH, "METADATA");
+        public static readonly string METADATA_IMPORT_FILE =
+            Path.Combine(METADATA_IMPORT_DIRECTORY, "metadata-import.txt");
+
+        public List<Tuple<string, string>> readMetadataImport(out string text)
+        {
+            text = "";
+
+            List<Tuple<string, string>> metadatas = new List<Tuple<string, string>>();
+
+            if (!File.Exists(METADATA_IMPORT_FILE))
+            {
+                if (!Directory.Exists(METADATA_IMPORT_DIRECTORY))
+                {
+                    FileDataProvider.CreateDirectory(METADATA_IMPORT_DIRECTORY);
+                }
+
+                StreamWriter streamWriter = new StreamWriter(METADATA_IMPORT_FILE, false, Encoding.UTF8);
+                try
+                {
+                    string line = "//";
+                    streamWriter.WriteLine(line);
+                    text += (line + '\n');
+
+                    line = "// PLEASE EDIT THIS EXAMPLE (CHANGES WILL BE SAVED)";
+                    streamWriter.WriteLine(line);
+                    text += (line + '\n');
+
+                    line = "//";
+                    streamWriter.WriteLine(line);
+                    text += (line + '\n');
+
+                    line = "// Each metadata item is a [ key + value ] pair.";
+                    streamWriter.WriteLine(line);
+                    text += (line + '\n');
+
+                    line = "//     [key] on one line";
+                    streamWriter.WriteLine(line);
+                    text += (line + '\n');
+
+                    line = "//     [value] on the next line";
+                    streamWriter.WriteLine(line);
+                    text += (line + '\n');
+
+                    line = "// (empty lines are ignored)";
+                    streamWriter.WriteLine(line);
+                    text += (line + '\n');
+
+                    line = "//";
+                    streamWriter.WriteLine(line);
+                    text += (line + '\n');
+
+                    line = "";
+                    streamWriter.WriteLine(line);
+                    text += (line + '\n');
+
+
+                    string key = "dc:Creator";
+                    string value = "Firstname Surname";
+                    metadatas.Add(new Tuple<string, string>(key, value));
+                    streamWriter.WriteLine(key);
+                    text += (key + '\n');
+                    streamWriter.WriteLine(value);
+                    text += (value + '\n');
+                    streamWriter.WriteLine("");
+                    text += ("" + '\n');
+
+                    key = "dc:Title";
+                    value = "The Title";
+                    metadatas.Add(new Tuple<string, string>(key, value));
+                    streamWriter.WriteLine(key);
+                    text += (key + '\n');
+                    streamWriter.WriteLine(value);
+                    text += (value + '\n');
+                    streamWriter.WriteLine("");
+                    text += ("" + '\n');
+
+                    key = "dc:Identifier";
+                    value = "UUID";
+                    metadatas.Add(new Tuple<string, string>(key, value));
+                    streamWriter.WriteLine(key);
+                    text += (key + '\n');
+                    streamWriter.WriteLine(value);
+                    text += (value + '\n');
+                    streamWriter.WriteLine("");
+                    text += ("" + '\n');
+                }
+                finally
+                {
+                    streamWriter.Close();
+                }
+            }
+            else
+            {
+                StreamReader streamReader = new StreamReader(METADATA_IMPORT_FILE, Encoding.UTF8);
+                try
+                {
+                    string key = null;
+                    string value = null;
+
+                    string line;
+                    while ((line = streamReader.ReadLine()) != null)
+                    {
+                        text += (line + '\n');
+                        line = line.Trim();
+                        if (string.IsNullOrEmpty(line)) continue;
+                        if (line.StartsWith("//")) continue;
+
+                        if (string.IsNullOrEmpty(key))
+                        {
+                            key = line;
+                        }
+                        else
+                        {
+                            value = line;
+
+                            metadatas.Add(new Tuple<string, string>(key, value));
+
+                            key = null;
+                            value = null;
+                        }
+                    }
+                }
+                finally
+                {
+                    streamReader.Close();
+                }
+            }
+
+            return metadatas;
+        }
+
+        public void ImportMetadata()
+        {
+            //m_ShellView.ExecuteShellProcess(MetadataPaneViewModel.METADATA_IMPORT_DIRECTORY);
+
+            string text;
+            List<Tuple<string, string>> metadatas = readMetadataImport(out text);
+
+            var editBox = new TextBoxReadOnlyCaretVisible
+            {
+                Text = text,
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.WrapWithOverflow
+            };
+
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_MetadataPane_Lang.Import),
+                                                   new ScrollViewer { Content = editBox },
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 500, 600, null, 40, null);
+
+            windowPopup.EnableEnterKeyDefault = false;
+
+            editBox.Loaded += new RoutedEventHandler((sender, ev) =>
+            {
+                //editBox.SelectAll();
+                FocusHelper.FocusBeginInvoke(editBox);
+            });
+
+            windowPopup.ShowModal();
+
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                if (!string.IsNullOrEmpty(editBox.Text))
+                {
+                    StreamWriter streamWriter = new StreamWriter(METADATA_IMPORT_FILE, false, Encoding.UTF8);
+                    try
+                    {
+                        streamWriter.Write(editBox.Text);
+                    }
+                    finally
+                    {
+                        streamWriter.Close();
+                    }
+
+                    string newText;
+                    metadatas = readMetadataImport(out newText);
+                    //DebugFix.assert(newText.Equals(editBox.Text, StringComparison.Ordinal));
+
+                    Presentation presentation = m_UrakawaSession.DocumentProject.Presentations.Get(0);
+
+                    foreach (Tuple<string, string> md in metadatas)
+                    {
+                        List<NotifyingMetadataItem> toRemove = new List<NotifyingMetadataItem>();
+                        foreach (NotifyingMetadataItem m in this.MetadataCollection.Metadatas)
+                        {
+                            if (m.Name.Equals(md.Item1, StringComparison.Ordinal))
+                            {
+                                if (!m.Definition.IsRepeatable)
+                                {
+                                    if (!toRemove.Contains(m))
+                                    {
+                                        toRemove.Add(m);
+                                    }
+                                }
+                            }
+                        }
+                        foreach (var m in toRemove)
+                        {
+                            RemoveMetadata(m);
+                        }
+
+                        Metadata metadata = presentation.MetadataFactory.CreateMetadata();
+                        metadata.NameContentAttribute = new MetadataAttribute
+                        {
+                            Name = md.Item1,
+                            NamespaceUri = "",
+                            Value = md.Item2
+                        };
+                        MetadataAddCommand cmd = presentation.CommandFactory.CreateMetadataAddCommand
+                            (metadata);
+                        presentation.UndoRedoManager.Execute(cmd);
+                    }
+                }
+            }
+        }
+
 
         public string GetViewModelDebugStringForMetaData()
         {
