@@ -69,7 +69,16 @@ namespace Tobi.Plugin.AudioPane
 
                     if (currentVoice != null)
                     {
-                        ViewModel.m_SpeechSynthesizer.SelectVoice(currentVoice.Name);
+                        try
+                        {
+                            ViewModel.m_SpeechSynthesizer.SelectVoice(currentVoice.Name);
+                        }
+                        catch (Exception ex_)
+                        {
+#if DEBUG
+                            Debugger.Break();
+#endif
+                        }
                     }
 
                     if (ev.Cancelled)
@@ -92,7 +101,16 @@ namespace Tobi.Plugin.AudioPane
 
                 ViewModel.m_SpeechSynthesizer.SetOutputToDefaultAudioDevice();
 
-                ViewModel.m_SpeechSynthesizer.SelectVoice(ViewModel.TTSVoice.Name);
+                try
+                {
+                    ViewModel.m_SpeechSynthesizer.SelectVoice(ViewModel.TTSVoice.Name);
+                }
+                catch (Exception ex_)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
 
                 //ButtonTTSVoices.IsEnabled = false;
                 ComboTTSVoices.IsEnabled = false;
