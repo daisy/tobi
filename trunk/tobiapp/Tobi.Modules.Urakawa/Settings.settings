@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="CleanAudioMaxMegaBytes" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">8</Value>
+      <Value Profile="(Default)">40</Value>
     </Setting>
     <Setting Name="Pipeline2JavaMaxMem" Type="Tobi.Plugin.Urakawa.JavaXmx" Scope="User">
       <Value Profile="(Default)">_1G</Value>

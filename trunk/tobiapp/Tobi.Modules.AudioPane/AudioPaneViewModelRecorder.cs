@@ -250,7 +250,7 @@ namespace Tobi.Plugin.AudioPane
                             {
                                 var playbackStartBytePos =
                                     m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.
-                                        Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStepPlayPreview * 2 * AudioLibPCMFormat.TIME_UNIT);
+                                        Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_PlayPreviewTimeStep * 2 * AudioLibPCMFormat.TIME_UNIT);
                                 playbackStartBytePos = PlayBytePosition - playbackStartBytePos;
                                 if (playbackStartBytePos < 0)
                                 {

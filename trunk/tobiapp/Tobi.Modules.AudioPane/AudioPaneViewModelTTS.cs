@@ -501,8 +501,10 @@ namespace Tobi.Plugin.AudioPane
         public static readonly string TTS_VOICE_MAPPING_FILE =
             Path.Combine(TTS_VOICE_MAPPING_DIRECTORY, "voices.txt");
 
-        public Dictionary<string, string> readTTSVoicesMapping()
+        public Dictionary<string, string> readTTSVoicesMapping(out string text)
         {
+            text = "";
+
             Dictionary<string, string> ttsVoiceMap = new Dictionary<string, string>();
 
             string prefix_VOICE = "[TTS_VOICE]";
@@ -519,13 +521,27 @@ namespace Tobi.Plugin.AudioPane
                 StreamWriter streamWriter = new StreamWriter(TTS_VOICE_MAPPING_FILE, false, Encoding.UTF8);
                 try
                 {
+                    string line = null;
                     foreach (VoiceInfo voice in voices)
                     {
-                        streamWriter.WriteLine(prefix_VOICE + " " + voice.Name);
-                        streamWriter.WriteLine("element_name_1");
-                        streamWriter.WriteLine("element_name_2");
-                        streamWriter.WriteLine("etc.");
+                        line = prefix_VOICE + " " + voice.Name;
+                        streamWriter.WriteLine(line);
+                        text += (line + '\n');
+
+                        line = "element_name_1";
+                        streamWriter.WriteLine(line);
+                        text += (line + '\n');
+
+                        line = "element_name_2";
+                        streamWriter.WriteLine(line);
+                        text += (line + '\n');
+
+                        line = "etc.";
+                        streamWriter.WriteLine(line);
+                        text += (line + '\n');
+
                         streamWriter.WriteLine("");
+                        text += ("" + '\n');
 
                         //// useless for now, could be used when ttsVoiceMap is hard-coded here?
                         //foreach (String key in ttsVoiceMap.Keys)
@@ -553,6 +569,8 @@ namespace Tobi.Plugin.AudioPane
                     string line;
                     while ((line = streamReader.ReadLine()) != null)
                     {
+                        text += (line + '\n');
+
                         line = line.Trim();
                         if (string.IsNullOrEmpty(line)) continue;
 
@@ -604,7 +622,8 @@ namespace Tobi.Plugin.AudioPane
         
         private void CommandGenTTS_Execute()
         {
-            Dictionary<string, string> ttsVoiceMap = readTTSVoicesMapping();
+            string text;
+            Dictionary<string, string> ttsVoiceMap = readTTSVoicesMapping(out text);
 
             bool cancelled = false;
 

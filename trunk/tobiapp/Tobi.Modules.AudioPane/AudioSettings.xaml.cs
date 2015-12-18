@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Speech.Synthesis;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using Tobi.Common;
+using Tobi.Common.UI;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -27,8 +31,55 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnClick_ButtonTTSVoices(object sender, RoutedEventArgs e)
         {
-            Dictionary<string, string> ttsVoiceMap = ViewModel.readTTSVoicesMapping();
-            ViewModel.m_ShellView.ExecuteShellProcess(AudioPaneViewModel.TTS_VOICE_MAPPING_DIRECTORY);
+            //ViewModel.m_ShellView.ExecuteShellProcess(AudioPaneViewModel.TTS_VOICE_MAPPING_DIRECTORY);
+
+            string text;
+            Dictionary<string, string> ttsVoiceMap = ViewModel.readTTSVoicesMapping(out text);
+
+            var editBox = new TextBoxReadOnlyCaretVisible
+            {
+                Text = text,
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.WrapWithOverflow
+            };
+
+            var windowPopup = new PopupModalWindow(ViewModel.m_ShellView,
+                                                   UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_AudioPane_Lang.TTSVoiceMapping),
+                                                   new ScrollViewer { Content = editBox },
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Ok,
+                                                   true, 500, 600, null, 40, null);
+
+            windowPopup.EnableEnterKeyDefault = false;
+
+            editBox.Loaded += new RoutedEventHandler((send, ev) =>
+            {
+                //editBox.SelectAll();
+                FocusHelper.FocusBeginInvoke(editBox);
+            });
+
+            windowPopup.ShowModal();
+
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                if (!string.IsNullOrEmpty(editBox.Text))
+                {
+                    StreamWriter streamWriter = new StreamWriter(AudioPaneViewModel.TTS_VOICE_MAPPING_FILE, false, Encoding.UTF8);
+                    try
+                    {
+                        streamWriter.Write(editBox.Text);
+                    }
+                    finally
+                    {
+                        streamWriter.Close();
+                    }
+
+                    string newText;
+                    ttsVoiceMap = ViewModel.readTTSVoicesMapping(out newText);
+                    //DebugFix.assert(newText.Equals(editBox.Text, StringComparison.Ordinal));
+                }
+            }
         }
 
         private void OnClick_ButtonSpeak(object sender, RoutedEventArgs e)
