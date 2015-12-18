@@ -170,7 +170,7 @@ Press OK to ignore, or CANCEL to see the issues.</value>
     <value>Confirm delete files? (cannot be undone)</value>
   </data>
   <data name="CmdDataCleanup_STRICT_ShortDesc" xml:space="preserve">
-    <value>Cleanup (_complete)</value>
+    <value>Cleanup (com_plete)</value>
   </data>
   <data name="CmdDataCleanup_STRICT_LongDesc" xml:space="preserve">
     <value>Complete cleanup of unused project data (always creates fresh WAV files, assembles contiguous audio if max size limit is configured)</value>

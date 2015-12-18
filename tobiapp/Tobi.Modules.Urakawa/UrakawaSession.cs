@@ -519,7 +519,7 @@ namespace Tobi.Plugin.Urakawa
                 FileDataProvider.CreateDirectory(deletedDataFolderPath);
             }
 
-            double cleanAudioMaxFileMegaBytes = Settings.Default.CleanAudioOptimizeMaxMegaBytes;
+            double cleanAudioMaxFileMegaBytes = Settings.Default.CleanAudioMaxMegaBytes;
             
             bool cancelled = false;
 
