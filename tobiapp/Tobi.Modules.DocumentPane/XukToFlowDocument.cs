@@ -3442,9 +3442,9 @@ namespace Tobi.Plugin.DocumentPane
                             TextElement te = (TextElement)child.Tag;
                             if (te.Parent == null)
                             {
-                                //orphan not attached to FlowDocument (Block / Inline insertion fail?)
+                                //empty bold, italic, etc. are ignored!
 #if DEBUG
-                                Debugger.Break();
+                                //Debugger.Break();
 #endif
                                 child.Tag = null;
                             }
