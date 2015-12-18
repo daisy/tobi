@@ -289,13 +289,13 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("500")]
-        public double AudioWaveForm_TimeStepPlayPreview {
+        [global::System.Configuration.DefaultSettingValueAttribute("1500")]
+        public double AudioWaveForm_PlayPreviewTimeStep {
             get {
-                return ((double)(this["AudioWaveForm_TimeStepPlayPreview"]));
+                return ((double)(this["AudioWaveForm_PlayPreviewTimeStep"]));
             }
             set {
-                this["AudioWaveForm_TimeStepPlayPreview"] = value;
+                this["AudioWaveForm_PlayPreviewTimeStep"] = value;
             }
         }
         

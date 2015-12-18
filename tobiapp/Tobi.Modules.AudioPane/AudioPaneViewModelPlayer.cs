@@ -308,13 +308,13 @@ namespace Tobi.Plugin.AudioPane
             long to = 0;
             if (left)
             {
-                from = Math.Max(0, PlayBytePosition - State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStepPlayPreview * 2 * AudioLibPCMFormat.TIME_UNIT));
+                from = Math.Max(0, PlayBytePosition - State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_PlayPreviewTimeStep * 2 * AudioLibPCMFormat.TIME_UNIT));
                 to = PlayBytePosition;
             }
             else
             {
                 from = PlayBytePosition;
-                to = Math.Min(State.Audio.DataLength, PlayBytePosition + State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_TimeStepPlayPreview * 2 * AudioLibPCMFormat.TIME_UNIT));
+                to = Math.Min(State.Audio.DataLength, PlayBytePosition + State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_PlayPreviewTimeStep * 2 * AudioLibPCMFormat.TIME_UNIT));
             }
 
             if (from == to)

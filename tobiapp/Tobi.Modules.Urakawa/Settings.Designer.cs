@@ -25,7 +25,7 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("40")]
         public double CleanAudioMaxMegaBytes {
             get {
                 return ((double)(this["CleanAudioMaxMegaBytes"]));
