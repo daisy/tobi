@@ -301,6 +301,18 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public double AudioWaveForm_JumpTimeStep {
+            get {
+                return ((double)(this["AudioWaveForm_JumpTimeStep"]));
+            }
+            set {
+                this["AudioWaveForm_JumpTimeStep"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("RenderTargetBitmap")]
         public global::Tobi.Plugin.AudioPane.WaveFormRenderMethod AudioWaveForm_RenderMethod {
             get {
