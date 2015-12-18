@@ -166,7 +166,7 @@
     <value>Add new item</value>
   </data>
   <data name="Import" xml:space="preserve">
-    <value>Import metadata...</value>
+    <value>Import defaults...</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>

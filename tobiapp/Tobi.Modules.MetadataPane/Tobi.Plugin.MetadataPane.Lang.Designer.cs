@@ -160,7 +160,7 @@ namespace Tobi.Plugin.MetadataPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import metadata....
+        ///   Looks up a localized string similar to Import defaults....
         /// </summary>
         public static string Import {
             get {
