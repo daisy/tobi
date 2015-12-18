@@ -180,6 +180,8 @@ namespace Tobi.Plugin.AudioPane
 
                     IsAutoPlay = false;
 
+                    bool allowPlayPreview = false;
+
                     m_punchInRecordOverSelection = false;
                     if (IsPlaying) // Punch-in recording
                     {
@@ -200,6 +202,8 @@ namespace Tobi.Plugin.AudioPane
 
                         if (PlayBytePosition >= 0)
                         {
+                            allowPlayPreview = true;
+
                             CommandSelectRight.Execute();
                         }
                         else
@@ -233,7 +237,7 @@ namespace Tobi.Plugin.AudioPane
                             return;
                         }
 
-                        if (!m_punchInRecordOverSelection) // let's check auto punch in/out based on audio selection
+                        if (!m_punchInRecordOverSelection || allowPlayPreview) // let's check auto punch in/out based on audio selection
                         {
                             var bytesForRequiredOffsetTime =
                                 m_UrakawaSession.DocumentProject.Presentations.Get(0).MediaDataManager.DefaultPCMFormat.
