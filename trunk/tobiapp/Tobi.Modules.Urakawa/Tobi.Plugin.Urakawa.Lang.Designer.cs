@@ -133,7 +133,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cleanup (_complete).
+        ///   Looks up a localized string similar to Cleanup (com_plete).
         /// </summary>
         public static string CmdDataCleanup_STRICT_ShortDesc {
             get {

@@ -2,8 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Tobi.Plugin.Urakawa" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="CleanAudioOptimizeMaxMegaBytes" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="CleanAudioMaxMegaBytes" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">8</Value>
     </Setting>
     <Setting Name="Pipeline2JavaMaxMem" Type="Tobi.Plugin.Urakawa.JavaXmx" Scope="User">
       <Value Profile="(Default)">_1G</Value>
