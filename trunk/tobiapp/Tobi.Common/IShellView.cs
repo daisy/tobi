@@ -28,7 +28,13 @@ namespace Tobi.Common
 
         public const string TOBI_ANON_USAGE_URI = "http://data.daisy.org/projects/tobi/Tobi_AnonymousUsageLogger.php";
 
-        public const string LOG_FILE_NAME = "Tobi.log";
+        public const string LOG_FILE_NAME =
+#if NET40
+"Tobi_NET4.log"
+#else
+"Tobi_NET3.log"
+#endif
+            ;
         public static readonly string LOG_FILE_PATH;
 
         public static readonly string DOTNET_INFO;
