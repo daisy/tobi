@@ -59,16 +59,16 @@ namespace Tobi
             //standardErr.AutoFlush = true;
             //Console.SetError(standardErr);
 
-            if (File.Exists(ApplicationConstants.LOG_FILE_PATH))
-            {
-                // Remark: the following logging messages go to the System.Out, and that's it (not to any file target). We initialize file redirect later on (see below).
+            //if (File.Exists(ApplicationConstants.LOG_FILE_PATH))
+            //{
+            //    // Remark: the following logging messages go to the System.Out, and that's it (not to any file target). We initialize file redirect later on (see below).
 
-                Console.WriteLine("Deleting log file [" + ApplicationConstants.LOG_FILE_PATH + "]...");
-                File.Delete(ApplicationConstants.LOG_FILE_PATH);
-                Console.WriteLine("File deleted [" + ApplicationConstants.LOG_FILE_PATH + "].");
+            //    Console.WriteLine("Deleting log file [" + ApplicationConstants.LOG_FILE_PATH + "]...");
+            //    File.Delete(ApplicationConstants.LOG_FILE_PATH);
+            //    Console.WriteLine("File deleted [" + ApplicationConstants.LOG_FILE_PATH + "].");
 
-                Thread.Sleep(100);
-            }
+            //    Thread.Sleep(100);
+            //}
 
 #if (BITFACTORY)
             
