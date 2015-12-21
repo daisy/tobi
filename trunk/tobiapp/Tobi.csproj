@@ -35,7 +35,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://data.daisy.org/projects/tobi/install/net_3/</InstallUrl>
+    <InstallUrl>http://data.daisy.org/projects/tobi/install/net-3/</InstallUrl>
     <SupportUrl>http://data.daisy.org/projects/tobi/ClickOnce-Help.html</SupportUrl>
     <ErrorReportUrl>http://data.daisy.org/projects/tobi/ClickOnce-Error.html</ErrorReportUrl>
     <ProductName>Tobi %28.NET 3%29</ProductName>
@@ -237,7 +237,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Tobi.pfx" />
-    <None Include="Tobi_TemporaryKey.pfx" />
     <AppDesigner Include="Properties\" />
     <Content Include="daisy.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -389,7 +388,6 @@
     <Content Include="tpbnarrator.res">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Tobi_TemporaryKey_.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\urakawa-sdk\trunk\csharp\audio\AudioLib\AudioLib.csproj">
