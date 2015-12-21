@@ -285,15 +285,15 @@ namespace Tobi
 
             string appFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            m_Logger.Log(@"[Tobi app data folder: " + ExternalFilesDataManager.STORAGE_FOLDER_PATH + @"]", Category.Info, Priority.High);
-            m_Logger.Log(@"[Tobi exe/log folder: " + appFolder + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[Tobi app data and log folder: " + ExternalFilesDataManager.STORAGE_FOLDER_PATH + @"]", Category.Info, Priority.High);
+            m_Logger.Log(@"[Tobi exe folder: " + appFolder + @"]", Category.Info, Priority.High);
 
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
             m_Logger.Log(@"[Tobi user config folder: " + Path.GetDirectoryName(config.FilePath) + @"]", Category.Info, Priority.High);
 
 //#if ENABLE_LOG_DESKTOP_SHORTCUT
 
-            string logPath = Path.Combine(appFolder, "Tobi.log");
+            string logPath = ApplicationConstants.LOG_FILE_PATH; //Path.Combine(appFolder, ApplicationConstants.LOG_FILE_NAME);
             string iconPath = Path.Combine(appFolder, "Shortcut.ico");
             string shortcutToLogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
 #if NET40
