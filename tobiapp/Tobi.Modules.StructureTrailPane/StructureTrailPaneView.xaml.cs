@@ -70,13 +70,7 @@ namespace Tobi.Plugin.StructureTrailPane
             BreadcrumbPanel.Children.Add(m_FocusStartElement2);
 
             bool firstTime = PathToCurrentTreeNode == null;
-
-
-            Console.WriteLine("keyboardFocusWithin: " + keyboardFocusWithin);
-            Console.WriteLine("firstIsFocused: " + m_FocusStartElement.IsKeyboardFocused);
-            Console.WriteLine("secondIsFocused: " + secondIsFocused);
-            Console.WriteLine("firstTime: " + firstTime);
-
+            
             TreeNode treeNodeSel = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
             if (true) // this was too confusing for the user: firstTime || !PathToCurrentTreeNode.Contains(treeNodeSel))
             {
