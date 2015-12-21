@@ -63,12 +63,19 @@ namespace Tobi.Plugin.StructureTrailPane
         private void updateBreadcrumbPanel(Tuple<TreeNode, TreeNode> treeNodeSelection)
         {
             bool keyboardFocusWithin = BreadcrumbPanel.IsKeyboardFocusWithin;
+            bool secondIsFocused = keyboardFocusWithin && m_FocusStartElement2.IsKeyboardFocused; // ! m_FocusStartElement.IsKeyboardFocused
 
             BreadcrumbPanel.Children.Clear();
             BreadcrumbPanel.Children.Add(m_FocusStartElement);
             BreadcrumbPanel.Children.Add(m_FocusStartElement2);
 
             bool firstTime = PathToCurrentTreeNode == null;
+
+
+            Console.WriteLine("keyboardFocusWithin: " + keyboardFocusWithin);
+            Console.WriteLine("firstIsFocused: " + m_FocusStartElement.IsKeyboardFocused);
+            Console.WriteLine("secondIsFocused: " + secondIsFocused);
+            Console.WriteLine("firstTime: " + firstTime);
 
             TreeNode treeNodeSel = treeNodeSelection.Item2 ?? treeNodeSelection.Item1;
             if (true) // this was too confusing for the user: firstTime || !PathToCurrentTreeNode.Contains(treeNodeSel))
@@ -221,7 +228,14 @@ namespace Tobi.Plugin.StructureTrailPane
 
             if (firstTime || keyboardFocusWithin)
             {
-                CommandFocus.Execute();
+                if (secondIsFocused)
+                {
+                    FocusHelper.FocusBeginInvoke(m_FocusStartElement2);
+                }
+                else
+                {
+                    CommandFocus.Execute();
+                }
             }
         }
 
@@ -234,10 +248,10 @@ namespace Tobi.Plugin.StructureTrailPane
             }
             if (!m_UrakawaSession.isAudioRecording)
             {
-                m_UrakawaSession.PerformTreeNodeSelection((TreeNode) ui.Tag);
+                m_UrakawaSession.PerformTreeNodeSelection((TreeNode)ui.Tag);
             }
             //selectNode(wrapper.TreeNode, true);
-
+            
             CommandFocus.Execute();
         }
 
@@ -462,8 +476,8 @@ namespace Tobi.Plugin.StructureTrailPane
 
             if (!m_UrakawaSession.isAudioRecording)
             {
-                m_UrakawaSession.PerformTreeNodeSelection((TreeNode) ui.Tag);
-
+                m_UrakawaSession.PerformTreeNodeSelection((TreeNode)ui.Tag);
+                
                 CommandFocus.Execute();
             }
             //selectNode((TreeNode)ui.Tag, true);
@@ -756,7 +770,7 @@ namespace Tobi.Plugin.StructureTrailPane
             strBuilder.Insert(0, audioInfo);
             strBuilder.Insert(0, " ");
 
-            string label =  getTreeNodeLabel(treeNode);
+            string label = getTreeNodeLabel(treeNode);
 
             string qNameStr = (!treeNode.HasXmlProperty
                                   ? Tobi_Plugin_StructureTrailPane_Lang.NoXML
