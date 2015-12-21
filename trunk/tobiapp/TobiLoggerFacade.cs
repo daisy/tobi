@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Windows;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
 using Tobi.Common.UI;
@@ -97,7 +98,19 @@ namespace Tobi
             // for each Write operation, which obviously is a massive performance bottleneck.
 
             //m_FileWriter = File.CreateText(UserInterfaceStrings.LOG_FILE_PATH);
-            FileStream fileStream = new FileStream(ApplicationConstants.LOG_FILE_PATH, FileMode.Create, FileAccess.Write, FileShare.Read);
+            FileStream fileStream = null;
+            try
+            {
+                fileStream = new FileStream(ApplicationConstants.LOG_FILE_PATH, FileMode.Create, FileAccess.Write,
+                    FileShare.Read);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Please delete [" + ApplicationConstants.LOG_FILE_NAME + "] and launch Tobi again. Full file path: [" + ApplicationConstants.LOG_FILE_PATH + "]");
+                MessageBox.Show(ex.Message);
+
+                throw ex;
+            }
 
 #if (false && DEBUG) // We want clickable code line numbers in the debugger output window, but we don't want to spam the log file with this info.
             m_FileWriter = new CodeLocationTextWriter(new StreamWriter(fileStream));
@@ -107,14 +120,14 @@ namespace Tobi
 #endif
 
             var listener = new TextWriterTraceListener(m_FileWriter)
-                               {
-                                   //                TraceOutputOptions = TraceOptions.DateTime
-                                   //                                     | TraceOptions.LogicalOperationStack
-                                   //                                     | TraceOptions.Timestamp
-                                   //#if (DEBUG)
-                                   // | TraceOptions.Callstack
-                                   //#endif
-                               };
+            {
+                //                TraceOutputOptions = TraceOptions.DateTime
+                //                                     | TraceOptions.LogicalOperationStack
+                //                                     | TraceOptions.Timestamp
+                //#if (DEBUG)
+                // | TraceOptions.Callstack
+                //#endif
+            };
 
             // Works for DEBUG too, no need for a second set of listeners
             Trace.Listeners.Add(listener);
@@ -148,27 +161,27 @@ namespace Tobi
 #endif
         }
 
-//        ~TobiLoggerFacade()
-//        {
-//            string msg = string.Format("Finalized: ({0})", GetType().Name);
-//            Console.WriteLine(msg);
+        //        ~TobiLoggerFacade()
+        //        {
+        //            string msg = string.Format("Finalized: ({0})", GetType().Name);
+        //            Console.WriteLine(msg);
 
-//            //Trace.Flush();
-//            //Debug.Flush();
+        //            //Trace.Flush();
+        //            //Debug.Flush();
 
-//            try
-//            {
-//                m_FileWriter.WriteLine("-- GC --");
-//                m_FileWriter.Flush();
-//                m_FileWriter.Close();
-//            }
-//            catch (Exception ex)
-//            {
-//#if DEBUG
-//                Debugger.Break();
-//#endif //DEBUG
-//            }
-//        }
+        //            try
+        //            {
+        //                m_FileWriter.WriteLine("-- GC --");
+        //                m_FileWriter.Flush();
+        //                m_FileWriter.Close();
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //#if DEBUG
+        //                Debugger.Break();
+        //#endif //DEBUG
+        //            }
+        //        }
 
         #region ILoggerFacade Members
 
