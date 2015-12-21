@@ -106,8 +106,25 @@ namespace Tobi
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Please delete [" + ApplicationConstants.LOG_FILE_NAME + "] and launch Tobi again. Full file path: [" + ApplicationConstants.LOG_FILE_PATH + "]");
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("1) Press the OK button (the file explorer will open to the file location: [" + ApplicationConstants.LOG_FILE_PATH + "]).\n\n2) Then delete [" + ApplicationConstants.LOG_FILE_NAME + "].\n\n3) Then launch Tobi again.");
+                //MessageBox.Show(ex.Message);
+
+                string dir = Path.GetDirectoryName(ApplicationConstants.LOG_FILE_PATH); // Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+
+                // Shell.ExecuteShellProcess()
+                var process = new Process
+                {
+                    StartInfo =
+                {
+                    FileName = dir,
+                    RedirectStandardError = false, // We can't redirect messages when shell-execute
+                    RedirectStandardOutput = false, // We can't redirect messages when shell-execute
+                    UseShellExecute = true,
+                    WindowStyle = ProcessWindowStyle.Normal,
+                    Arguments = ""
+                }
+                };
+                process.Start();
 
                 throw ex;
             }
