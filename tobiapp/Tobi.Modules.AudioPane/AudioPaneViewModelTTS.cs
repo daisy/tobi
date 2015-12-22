@@ -140,6 +140,9 @@ namespace Tobi.Plugin.AudioPane
                 //    }
                 //};
 
+//TODO: remove this!
+Console.WriteLine(@"TTS GEN: " + Text);
+
                 SpeechSynthesizer.SpeakAsync(Text);
                 manualResetEvent.WaitOne();
 
