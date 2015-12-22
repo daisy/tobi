@@ -19,6 +19,7 @@ using urakawa.media;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
 using urakawa.undo;
+using System.Speech.Synthesis;
 
 namespace Tobi.Plugin.AudioPane
 {
@@ -248,33 +249,83 @@ m_Stream.Length);
             Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
         }
 
+        public void SelectVoiceTTS(string voice)
+        {
+            Logger.Log("AudioPaneViewModel.SelectVoiceTTS", Category.Debug, Priority.Medium);
+            Logger.Log(voice, Category.Debug, Priority.Medium);
+
+            if (!string.IsNullOrEmpty(voice) && voice.Equals(m_SpeechSynthesizer.Voice.Name, StringComparison.Ordinal))
+            {
+                Logger.Log("AudioPaneViewModel.SelectVoiceTTS ALREADY SET", Category.Debug, Priority.Medium);
+                return;
+            }
+
+            List<VoiceInfo> voices = TTSVoices;
+
+            bool found = false;
+            foreach (var voiceInfo in TTSVoices)
+            {
+                Logger.Log("----", Category.Debug, Priority.Medium);
+                Logger.Log(voiceInfo.Name, Category.Debug, Priority.Medium);
+                Logger.Log(voiceInfo.Description, Category.Debug, Priority.Medium);
+                Logger.Log(voiceInfo.Id, Category.Debug, Priority.Medium);
+                foreach (var key in voiceInfo.AdditionalInfo.Keys)
+                {
+                    Logger.Log(key + " - " + voiceInfo.AdditionalInfo[key], Category.Debug, Priority.Medium);
+                }
+
+                if (!string.IsNullOrEmpty(voice) && voice.Equals(voiceInfo.Name, StringComparison.Ordinal))
+                {
+                    Logger.Log("AudioPaneViewModel.SelectVoiceTTS FOUND", Category.Debug, Priority.Medium);
+                    found = true;
+                    
+                    break;
+                }
+            }
+
+            if (!found && voices.Count > 0)
+            {
+                voice = voices[0].Name;
+
+                Logger.Log("AudioPaneViewModel.SelectVoiceTTS NOT FOUND, use first:", Category.Debug, Priority.Medium);
+                Logger.Log(voice, Category.Debug, Priority.Medium);
+            }
+
+            if (!string.IsNullOrEmpty(voice))
+            {
+                try
+                {
+                    m_SpeechSynthesizer.SelectVoice(voice);
+                    Logger.Log("AudioPaneViewModel.SelectVoiceTTS DONE", Category.Debug, Priority.Medium);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log("AudioPaneViewModel.SelectVoiceTTS Settings.Default.Audio_TTS_Voice EX 1", Category.Debug, Priority.Medium);
+                    Logger.Log(ex.Message, Category.Debug, Priority.Medium);
+#if DEBUG
+                        Debugger.Break();
+#endif
+                }
+            }
+        }
 
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!e.PropertyName.StartsWith(@"AudioWaveForm_")
-                && !e.PropertyName.StartsWith(@"Audio_")) return;
+                && !e.PropertyName.StartsWith(@"Audio_"))
+                return;
 
             if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_TTS_Voice))
             {
-                try
-                {
-                    m_SpeechSynthesizer.SelectVoice(Settings.Default.Audio_TTS_Voice);
+                Logger.Log("AudioPaneViewModel.OnSettingsPropertyChanged Settings.Default.Audio_TTS_Voice 1", Category.Debug, Priority.Medium);
 
-                    if (m_SpeechSynthesizer.Voice.Name != Settings.Default.Audio_TTS_Voice)
-                        Settings.Default.Audio_TTS_Voice = m_SpeechSynthesizer.Voice.Name; // will generate a call to OnSettingsPropertyChanged again
-                }
-                catch (Exception ex)
+                SelectVoiceTTS(Settings.Default.Audio_TTS_Voice);
+
+                if (m_SpeechSynthesizer.Voice.Name != Settings.Default.Audio_TTS_Voice)
                 {
-                    try
-                    {
-                        Settings.Default.Audio_TTS_Voice = m_SpeechSynthesizer.Voice.Name;
-                    }
-                    catch (Exception ex_)
-                    {
-#if DEBUG
-                        Debugger.Break();
-#endif
-                    }
+                    Logger.Log("AudioPaneViewModel.OnSettingsPropertyChanged Settings.Default.Audio_TTS_Voice 2", Category.Debug, Priority.Medium);
+                    Settings.Default.Audio_TTS_Voice = m_SpeechSynthesizer.Voice.Name;
+                    // will generate a call to OnSettingsPropertyChanged again
                 }
             }
             else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_InputDevice))
@@ -777,35 +828,36 @@ m_Stream.Length);
 
             OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_TTS_Voice)));
             //m_SpeechSynthesizer.AddLexicon();
-
+            
             m_ShellView.DeviceArrived += new EventHandler(OnDeviceArrived);
             m_ShellView.DeviceRemoved += new EventHandler(OnDeviceRemoved);
-
+            
             m_Player = new AudioPlayer(AudioPlaybackStreamKeepAlive, true);
-
+            
             OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_OutputDevice)));
             //m_Player.SetOutputDevice(GetWindowsFormsHookControl(), Settings.Default.Audio_OutputDevice);
             //Settings.Default.Audio_OutputDevice = m_Player.OutputDevice.Name;
+            
             Settings.Default.Save();
-
+            
             m_Player.StateChanged += OnStateChanged_Player;
             m_Player.AudioPlaybackFinished += OnAudioPlaybackFinished;
             m_PreviousOutputDevices = m_Player.OutputDevices;
 
             //m_Player.ResetVuMeter += OnPlayerResetVuMeter;
-
+            
             m_Recorder = new AudioRecorder();
-
+            
             OnSettingsPropertyChanged(this, new PropertyChangedEventArgs(GetMemberName(() => Settings.Default.Audio_InputDevice)));
             //m_Recorder.SetInputDevice(Settings.Default.Audio_InputDevice);
             //Settings.Default.Audio_InputDevice = m_Recorder.InputDevice.Name;
             Settings.Default.Save();
-
+            
             m_Recorder.StateChanged += OnStateChanged_Recorder;
             m_Recorder.AudioRecordingFinished += OnAudioRecordingFinished;
             m_Recorder.RecordingDirectory = AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY; // Directory.GetCurrentDirectory();
             m_PreviousInputDevices = m_Recorder.InputDevices;
-
+            
             //m_Recorder.ResetVuMeter += OnRecorderResetVuMeter;
 
             m_VuMeter = new VuMeter(m_Player, m_Recorder);
@@ -817,7 +869,7 @@ m_Stream.Length);
             PeakMeterBarDataCh1.ValueDb = Double.NegativeInfinity;
             PeakMeterBarDataCh2.ValueDb = Double.NegativeInfinity;
             m_PeakMeterValues = new double[2];
-
+            
             m_AudioFormatConvertorSession_NoProject =
                 new AudioFormatConvertorSession(AudioFormatConvertorSession.TEMP_AUDIO_DIRECTORY, null, false, m_UrakawaSession.IsAcmCodecsDisabled);
         }
@@ -1489,7 +1541,7 @@ m_Stream.Length);
 
                 if (IsPlaying
                     || PlayBytePosition >= 0 && (
-                    //m_Player.CurrentState == AudioPlayer.State.Paused ||
+                                                 //m_Player.CurrentState == AudioPlayer.State.Paused ||
                                                  IsStopped
                                              ))
                 {
