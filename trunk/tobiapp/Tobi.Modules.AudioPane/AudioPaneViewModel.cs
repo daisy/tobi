@@ -251,32 +251,32 @@ m_Stream.Length);
 
         public void SelectVoiceTTS(string voice)
         {
-            Logger.Log("AudioPaneViewModel.SelectVoiceTTS", Category.Debug, Priority.Medium);
-            Logger.Log(voice, Category.Debug, Priority.Medium);
-
             if (!string.IsNullOrEmpty(voice) && voice.Equals(m_SpeechSynthesizer.Voice.Name, StringComparison.Ordinal))
             {
-                Logger.Log("AudioPaneViewModel.SelectVoiceTTS ALREADY SET", Category.Debug, Priority.Medium);
+                //Logger.Log("AudioPaneViewModel.SelectVoiceTTS ALREADY SET", Category.Debug, Priority.Medium);
                 return;
             }
+
+            //Logger.Log("AudioPaneViewModel.SelectVoiceTTS", Category.Debug, Priority.Medium);
+            //Logger.Log(voice, Category.Debug, Priority.Medium);
 
             List<VoiceInfo> voices = TTSVoices;
 
             bool found = false;
             foreach (var voiceInfo in TTSVoices)
             {
-                Logger.Log("----", Category.Debug, Priority.Medium);
-                Logger.Log(voiceInfo.Name, Category.Debug, Priority.Medium);
-                Logger.Log(voiceInfo.Description, Category.Debug, Priority.Medium);
-                Logger.Log(voiceInfo.Id, Category.Debug, Priority.Medium);
-                foreach (var key in voiceInfo.AdditionalInfo.Keys)
-                {
-                    Logger.Log(key + " - " + voiceInfo.AdditionalInfo[key], Category.Debug, Priority.Medium);
-                }
+                //Logger.Log("----", Category.Debug, Priority.Medium);
+                //Logger.Log(voiceInfo.Name, Category.Debug, Priority.Medium);
+                //Logger.Log(voiceInfo.Description, Category.Debug, Priority.Medium);
+                //Logger.Log(voiceInfo.Id, Category.Debug, Priority.Medium);
+                //foreach (var key in voiceInfo.AdditionalInfo.Keys)
+                //{
+                //    Logger.Log(key + " - " + voiceInfo.AdditionalInfo[key], Category.Debug, Priority.Medium);
+                //}
 
                 if (!string.IsNullOrEmpty(voice) && voice.Equals(voiceInfo.Name, StringComparison.Ordinal))
                 {
-                    Logger.Log("AudioPaneViewModel.SelectVoiceTTS FOUND", Category.Debug, Priority.Medium);
+                    //Logger.Log("AudioPaneViewModel.SelectVoiceTTS FOUND", Category.Debug, Priority.Medium);
                     found = true;
                     
                     break;
@@ -296,7 +296,7 @@ m_Stream.Length);
                 try
                 {
                     m_SpeechSynthesizer.SelectVoice(voice);
-                    Logger.Log("AudioPaneViewModel.SelectVoiceTTS DONE", Category.Debug, Priority.Medium);
+                    //Logger.Log("AudioPaneViewModel.SelectVoiceTTS DONE", Category.Debug, Priority.Medium);
                 }
                 catch (Exception ex)
                 {
