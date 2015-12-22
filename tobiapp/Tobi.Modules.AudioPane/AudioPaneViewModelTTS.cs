@@ -301,16 +301,9 @@ namespace Tobi.Plugin.AudioPane
                 DebugFix.Assert(TreeNode.GetLengthStringChunks(adjustedNode.GetTextFlattened_()) != 0);
 #endif
 
-                try
-                {
-                    m_viewModel.m_SpeechSynthesizer.SelectVoice(Settings.Default.Audio_TTS_Voice);
-                }
-                catch (Exception ex)
-                {
-#if DEBUG
-                    Debugger.Break();
-#endif
-                }
+                m_viewModel.SelectVoiceTTS(Settings.Default.Audio_TTS_Voice);
+                //m_viewModel.m_SpeechSynthesizer.SelectVoice(Settings.Default.Audio_TTS_Voice);
+
                 var adjustedNodeName = adjustedNode.GetXmlElementLocalName();
                 if (adjustedNodeName != null)
                 {
@@ -319,16 +312,9 @@ namespace Tobi.Plugin.AudioPane
                         if (elementName.Equals(adjustedNodeName, StringComparison.OrdinalIgnoreCase))
                         {
                             string voiceName = m_ttsVoiceMap[elementName];
-                            try
-                            {
-                                m_viewModel.m_SpeechSynthesizer.SelectVoice(voiceName);
-                            }
-                            catch (Exception ex)
-                            {
-#if DEBUG
-                                Debugger.Break();
-#endif
-                            }
+
+                            m_viewModel.SelectVoiceTTS(voiceName);
+                            //m_viewModel.m_SpeechSynthesizer.SelectVoice(voiceName);
 
                             break;
                         }
@@ -510,7 +496,7 @@ namespace Tobi.Plugin.AudioPane
             string prefix_VOICE = "[TTS_VOICE]";
 
             List<VoiceInfo> voices = TTSVoices;
-            
+
             if (!File.Exists(TTS_VOICE_MAPPING_FILE))
             {
                 if (!Directory.Exists(TTS_VOICE_MAPPING_DIRECTORY))
@@ -619,7 +605,7 @@ namespace Tobi.Plugin.AudioPane
             m_UrakawaSession.PerformTreeNodeSelection(m_UrakawaSession.DocumentProject.Presentations.Get(0).RootNode, false, null);
             CommandGenTTS_Execute();
         }
-        
+
         private void CommandGenTTS_Execute()
         {
             string text;
