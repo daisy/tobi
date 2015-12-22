@@ -550,12 +550,15 @@ Console.WriteLine(@"TTS GEN: " + Text);
             }
             else
             {
+                List<string> voicesPresent = new List<string>();
+
+                string line = null;
+
                 StreamReader streamReader = new StreamReader(TTS_VOICE_MAPPING_FILE, Encoding.UTF8);
                 try
                 {
                     string currentVoice = null;
 
-                    string line;
                     while ((line = streamReader.ReadLine()) != null)
                     {
                         text += (line + '\n');
@@ -566,6 +569,10 @@ Console.WriteLine(@"TTS GEN: " + Text);
                         if (line.StartsWith(prefix_VOICE))
                         {
                             currentVoice = line.Substring(prefix_VOICE.Length).Trim();
+                            if (!voicesPresent.Contains(currentVoice))
+                            {
+                                voicesPresent.Add(currentVoice);
+                            }
 
                             if (!string.IsNullOrEmpty(currentVoice))
                             {
@@ -597,6 +604,30 @@ Console.WriteLine(@"TTS GEN: " + Text);
                 finally
                 {
                     streamReader.Close();
+                }
+                
+                foreach (VoiceInfo voice in voices)
+                {
+                    if (voicesPresent.Contains(voice.Name))
+                    {
+                        continue;
+                    }
+
+                    text += ("" + '\n');
+
+                    line = prefix_VOICE + " " + voice.Name;
+                    text += (line + '\n');
+
+                    line = "element_name_1";
+                    text += (line + '\n');
+
+                    line = "element_name_2";
+                    text += (line + '\n');
+
+                    line = "etc.";
+                    text += (line + '\n');
+
+                    text += ("" + '\n');
                 }
             }
 

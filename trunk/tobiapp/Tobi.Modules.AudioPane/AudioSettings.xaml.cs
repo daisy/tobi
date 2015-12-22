@@ -63,22 +63,26 @@ namespace Tobi.Plugin.AudioPane
 
             if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
             {
-                if (!string.IsNullOrEmpty(editBox.Text))
+                string str = editBox.Text;
+                if (string.IsNullOrEmpty(str))
                 {
-                    StreamWriter streamWriter = new StreamWriter(AudioPaneViewModel.TTS_VOICE_MAPPING_FILE, false, Encoding.UTF8);
-                    try
-                    {
-                        streamWriter.Write(editBox.Text);
-                    }
-                    finally
-                    {
-                        streamWriter.Close();
-                    }
-
-                    string newText;
-                    ttsVoiceMap = ViewModel.readTTSVoicesMapping(out newText);
-                    //DebugFix.assert(newText.Equals(editBox.Text, StringComparison.Ordinal));
+                    str = " ";
                 }
+
+                StreamWriter streamWriter = new StreamWriter(AudioPaneViewModel.TTS_VOICE_MAPPING_FILE, false, Encoding.UTF8);
+                try
+                {
+                    streamWriter.Write(str);
+                }
+                finally
+                {
+                    streamWriter.Close();
+                }
+
+                string newText;
+                ttsVoiceMap = ViewModel.readTTSVoicesMapping(out newText);
+                //DebugFix.assert(newText.Equals(editBox.Text, StringComparison.Ordinal));
+
             }
         }
 
