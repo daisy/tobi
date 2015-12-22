@@ -219,6 +219,10 @@ namespace Tobi.Plugin.AudioPane
 
             //m_viewModel.m_UrakawaSession.PerformanceFlag = true;
 
+#if !ENABLE_TTS_SPEAK_PROGRESS
+            int percent = 0;
+#endif
+
             bool initial = true;
             try
             {
@@ -335,6 +339,13 @@ namespace Tobi.Plugin.AudioPane
                     }
                 }
 
+#if !ENABLE_TTS_SPEAK_PROGRESS
+                percent += 10;
+                if (percent > 100) percent = 10;
+
+                string msg = Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio + " [" + (text.Length > 20 ? text.Substring(0, 19) + "..." : text) + "]";
+                reportProgress_Throttle(percent, msg);
+#endif
 
                 var converter = new AudioTTSGenerator(text, pcmFormat.Data, m_viewModel.m_Recorder.RecordingDirectory, m_viewModel.m_SpeechSynthesizer);
 
