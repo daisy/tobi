@@ -46,7 +46,10 @@ namespace Tobi.Plugin.AudioPane
 
         public override void DoWork()
         {
+#if ENABLE_TTS_SPEAK_PROGRESS
             EventHandler<SpeakProgressEventArgs> delegateProgress = null;
+#endif
+
             EventHandler<SpeakCompletedEventArgs> delegateCompleted = null;
             try
             {
@@ -84,7 +87,8 @@ namespace Tobi.Plugin.AudioPane
                 var manualResetEvent = new ManualResetEvent(false);
 
                 bool done = false;
-
+                
+#if ENABLE_TTS_SPEAK_PROGRESS
                 string msg = Tobi_Plugin_AudioPane_Lang.GeneratingTTSAudio + " [" + (Text.Length > 20 ? Text.Substring(0, 19) + "..." : Text) + "]";
 
                 delegateProgress = (sender, ev) =>
@@ -108,7 +112,9 @@ namespace Tobi.Plugin.AudioPane
 
                     reportProgress_Throttle(percent, msg);
                 };
+
                 SpeechSynthesizer.SpeakProgress += delegateProgress;
+#endif
 
                 delegateCompleted = (sender, ev) =>
                 {
@@ -139,7 +145,7 @@ namespace Tobi.Plugin.AudioPane
                 //        manualResetEvent.Set();
                 //    }
                 //};
-                
+
                 //Console.WriteLine(@"TTS GEN: " + Text);
 
                 SpeechSynthesizer.SpeakAsync(Text);
@@ -148,7 +154,10 @@ namespace Tobi.Plugin.AudioPane
                 done = true;
 
                 SpeechSynthesizer.SpeakCompleted -= delegateCompleted;
+
+#if ENABLE_TTS_SPEAK_PROGRESS
                 SpeechSynthesizer.SpeakProgress -= delegateProgress;
+#endif
 
                 Thread.Sleep(100); // TTS flush buffers
 
@@ -167,10 +176,13 @@ namespace Tobi.Plugin.AudioPane
                 {
                     SpeechSynthesizer.SpeakCompleted -= delegateCompleted;
                 }
+
+#if ENABLE_TTS_SPEAK_PROGRESS
                 if (delegateProgress != null)
                 {
                     SpeechSynthesizer.SpeakProgress -= delegateProgress;
                 }
+#endif
             }
         }
     }
@@ -604,7 +616,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     streamReader.Close();
                 }
-                
+
                 foreach (VoiceInfo voice in voices)
                 {
                     if (voicesPresent.Contains(voice.Name))
