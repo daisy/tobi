@@ -20,6 +20,8 @@ namespace Tobi.Plugin.AudioPane
         {
             ViewModel = viewModel;
             DataContext = ViewModel;
+            ViewModel.SelectVoiceTTS(Settings.Default.Audio_TTS_Voice);
+
             InitializeComponent();
         }
 
