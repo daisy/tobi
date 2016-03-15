@@ -181,6 +181,18 @@ Press OK to ignore, or CANCEL to see the issues.</value>
   <data name="CmdDataCleanup_OPTIMIZED_LongDesc" xml:space="preserve">
     <value>Optimized cleanup of unused project data (keeps fully-used WAV files, assembles fragmented audio if max size limit is configured)</value>
   </data>
+  <data name="CmdDataCleanup_ROLLBACK_ShortDesc" xml:space="preserve">
+    <value>Cleanup _Rollback</value>
+  </data>
+  <data name="CmdDataCleanup_ROLLBACK_LongDesc" xml:space="preserve">
+    <value>Try to undo the latest cleanup (only possible if unused files were not deleted)</value>
+  </data>
+  <data name="CleanupRollbackNoDeletedFiles" xml:space="preserve">
+    <value>Cannot find previously-deleted files. Nothing to recover. Cleanup rollback is cancelled.</value>
+  </data>
+  <data name="CleanupRollbackWarning" xml:space="preserve">
+    <value>Restore project state immediately before last cleanup?</value>
+  </data>
   <data name="OpenSpine" xml:space="preserve">
     <value>Open EPUB spine</value>
   </data>
