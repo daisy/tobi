@@ -351,6 +351,9 @@ namespace Tobi.Plugin.Descriptions
                 windowPopup.AddInputBinding(audioViewModel.CommandRewind.KeyBinding);
                 windowPopup.AddInputBinding(audioViewModel.CommandFastForward.KeyBinding);
 
+                windowPopup.AddInputBinding(audioViewModel.CommandRewindX.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandFastForwardX.KeyBinding);
+
                 windowPopup.AddInputBinding(audioViewModel.CommandGotoBegining.KeyBinding);
                 windowPopup.AddInputBinding(audioViewModel.CommandGotoEnd.KeyBinding);
 

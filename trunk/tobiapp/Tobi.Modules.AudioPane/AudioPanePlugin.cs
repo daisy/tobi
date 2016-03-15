@@ -242,8 +242,10 @@ namespace Tobi.Plugin.AudioPane
                  {
                      m_AudioPaneViewModel.CommandGotoBegining,
                      m_AudioPaneViewModel.CommandStepBack,
+                     m_AudioPaneViewModel.CommandRewindX,
                      m_AudioPaneViewModel.CommandRewind,
                      m_AudioPaneViewModel.CommandFastForward,
+                     m_AudioPaneViewModel.CommandFastForwardX,
                      m_AudioPaneViewModel.CommandStepForward,
                      m_AudioPaneViewModel.CommandGotoEnd
                  });

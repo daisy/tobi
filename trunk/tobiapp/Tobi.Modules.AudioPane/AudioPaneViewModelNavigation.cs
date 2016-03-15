@@ -16,6 +16,8 @@ namespace Tobi.Plugin.AudioPane
         public RichDelegateCommand CommandStepForward { get; private set; }
         public RichDelegateCommand CommandRewind { get; private set; }
         public RichDelegateCommand CommandFastForward { get; private set; }
+        public RichDelegateCommand CommandRewindX { get; private set; }
+        public RichDelegateCommand CommandFastForwardX { get; private set; }
 
         private void initializeCommands_Navigation()
         {
@@ -256,6 +258,68 @@ namespace Tobi.Plugin.AudioPane
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GoBack));
 
             m_ShellView.RegisterRichCommand(CommandRewind);
+            //
+            CommandFastForwardX = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioFastForwardX_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioFastForwardX_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("media-seek-forward"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandFastForwardX", Category.Debug, Priority.Medium);
+
+                    CommandPause.Execute();
+
+                    long newBytesPosition = PlayBytePosition + State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_JumpTimeStepX * AudioLibPCMFormat.TIME_UNIT);
+                    if (newBytesPosition > State.Audio.DataLength)
+                    {
+                        newBytesPosition = State.Audio.DataLength;
+                        AudioCues.PlayBeep();
+                    }
+
+                    if (IsAutoPlay)
+                    {
+                        State.Selection.ClearSelection();
+                    }
+
+                    PlayBytePosition = newBytesPosition;
+                },
+                () => CommandFastForward.CanExecute(),
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GoForwardX));
+
+            m_ShellView.RegisterRichCommand(CommandFastForwardX);
+            //
+            CommandRewindX = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioRewindX_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioRewindX_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadTangoIcon("media-seek-backward"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandRewindX", Category.Debug, Priority.Medium);
+
+                    CommandPause.Execute();
+
+                    long newTimeBytePosition = PlayBytePosition - State.Audio.GetCurrentPcmFormat().Data.ConvertTimeToBytes((long)Settings.Default.AudioWaveForm_JumpTimeStepX * AudioLibPCMFormat.TIME_UNIT);
+                    if (newTimeBytePosition < 0)
+                    {
+                        newTimeBytePosition = 0;
+                        AudioCues.PlayBeep();
+                    }
+
+                    if (IsAutoPlay)
+                    {
+                        State.Selection.ClearSelection();
+                    }
+
+                    PlayBytePosition = newTimeBytePosition;
+                },
+                () => CommandRewind.CanExecute() ,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_GoBackX));
+
+            m_ShellView.RegisterRichCommand(CommandRewindX);
         }
     }
 }

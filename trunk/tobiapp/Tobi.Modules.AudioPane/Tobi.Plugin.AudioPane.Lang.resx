@@ -249,6 +249,12 @@
   <data name="CmdAudioFastForward_LongDesc" xml:space="preserve">
     <value>Jump forward by a pre-defined time increment</value>
   </data>
+  <data name="CmdAudioFastForwardX_ShortDesc" xml:space="preserve">
+    <value>Step forward (more)</value>
+  </data>
+  <data name="CmdAudioFastForwardX_LongDesc" xml:space="preserve">
+    <value>Jump forward by a pre-defined time increment (longer)</value>
+  </data>
   <data name="CmdAudioFitFull_ShortDesc" xml:space="preserve">
     <value>_Fit into view</value>
   </data>
@@ -353,6 +359,12 @@
   </data>
   <data name="CmdAudioRewind_LongDesc" xml:space="preserve">
     <value>Jump backwards by a pre-defined time increment</value>
+  </data>
+  <data name="CmdAudioRewindX_ShortDesc" xml:space="preserve">
+    <value>Step back (more)</value>
+  </data>
+  <data name="CmdAudioRewindX_LongDesc" xml:space="preserve">
+    <value>Jump backwards by a pre-defined time increment (longer)</value>
   </data>
   <data name="CmdAudioSelectNextChunk_ShortDesc" xml:space="preserve">
     <value>Select _next chunk</value>
