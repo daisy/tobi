@@ -88,6 +88,24 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot find previously-deleted files. Nothing to recover. Cleanup rollback is cancelled..
+        /// </summary>
+        public static string CleanupRollbackNoDeletedFiles {
+            get {
+                return ResourceManager.GetString("CleanupRollbackNoDeletedFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore project state immediately before last cleanup?.
+        /// </summary>
+        public static string CleanupRollbackWarning {
+            get {
+                return ResourceManager.GetString("CleanupRollbackWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close the current project.
         /// </summary>
         public static string CmdClose_LongDesc {
@@ -120,6 +138,24 @@ namespace Tobi.Plugin.Urakawa {
         public static string CmdDataCleanup_OPTIMIZED_ShortDesc {
             get {
                 return ResourceManager.GetString("CmdDataCleanup_OPTIMIZED_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try to undo the latest cleanup (only possible if unused files were not deleted).
+        /// </summary>
+        public static string CmdDataCleanup_ROLLBACK_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdDataCleanup_ROLLBACK_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cleanup _Rollback.
+        /// </summary>
+        public static string CmdDataCleanup_ROLLBACK_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdDataCleanup_ROLLBACK_ShortDesc", resourceCulture);
             }
         }
         

@@ -33,6 +33,51 @@ namespace Tobi.Plugin.Urakawa
                 Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_STRICT_LongDesc);
         }
 
+        private bool askUserAlt(string title, string message)
+        {
+            m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);
+
+            var label = new TextBlock
+            {
+                Text = message,
+                Margin = new Thickness(8, 0, 8, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Focusable = true,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            var iconProvider = new ScalableGreyableImageProvider(
+                m_ShellView.LoadTangoIcon("dialog-warning"), //help-browser
+                m_ShellView.MagnificationLevel);
+
+            var panel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Stretch,
+            };
+            panel.Children.Add(iconProvider.IconLarge);
+            panel.Children.Add(label);
+            //panel.Margin = new Thickness(8, 8, 8, 0);
+            
+            var windowPopup = new PopupModalWindow(m_ShellView,
+                                                   title,
+                                                   panel,
+                                                   PopupModalWindow.DialogButtonsSet.OkCancel,
+                                                   PopupModalWindow.DialogButton.Cancel,
+                                                   true, 400, 200, null, 40, null);
+
+            windowPopup.ShowModal();
+
+            if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private bool askUser(string message, string info)
         {
             m_Logger.Log("ShellView.askUser", Category.Debug, Priority.Medium);

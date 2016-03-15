@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -26,6 +27,7 @@ using urakawa.undo;
 using urakawa.xuk;
 using urakawa.command;
 using urakawa.events.undo;
+using urakawa.ExternalFiles;
 
 
 namespace Tobi.Plugin.Urakawa
@@ -149,6 +151,7 @@ namespace Tobi.Plugin.Urakawa
 
         public RichDelegateCommand DataCleanupStrictCommand { get; private set; }
         public RichDelegateCommand DataCleanupOptimizeCommand { get; private set; }
+        public RichDelegateCommand DataCleanupRollbackCommand { get; private set; }
 
         public bool isAudioActive
         {
@@ -297,15 +300,15 @@ namespace Tobi.Plugin.Urakawa
             //                Debugger.Break();
             //#endif
 
-//#if NET40x
-//                TheDispatcher.Invoke(DispatcherPriority.Normal,
-//                    (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged,
-//                    eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
-//#else
-//            TheDispatcher.Invoke(DispatcherPriority.Normal,
-//                (Action)(() => OnUndoRedoManagerChanged(eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge))
-//                );
-//#endif
+            //#if NET40x
+            //                TheDispatcher.Invoke(DispatcherPriority.Normal,
+            //                    (Action<UndoRedoManagerEventArgs, bool, Command, bool, bool>)OnUndoRedoManagerChanged,
+            //                    eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge);
+            //#else
+            //            TheDispatcher.Invoke(DispatcherPriority.Normal,
+            //                (Action)(() => OnUndoRedoManagerChanged(eventt, done, command, isTransactionEndEvent, isNoTransactionOrTrailingEdge))
+            //                );
+            //#endif
             //                return;
             //            }
 
@@ -476,6 +479,225 @@ namespace Tobi.Plugin.Urakawa
                 );
 
             m_ShellView.RegisterRichCommand(DataCleanupOptimizeCommand);
+            //
+            DataCleanupRollbackCommand = new RichDelegateCommand(
+                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ROLLBACK_ShortDesc,
+                Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ROLLBACK_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                m_ShellView.LoadGnomeNeuIcon(@"Neu_user-trash-full"),
+                () => DataCleanupRollback(),
+                () => DataCleanupStrictCommand.CanExecute(),
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_DataCleanupRollback)
+                );
+
+            m_ShellView.RegisterRichCommand(DataCleanupRollbackCommand);
+        }
+
+        public static readonly string CLEANUP_ROLLBACK_XUK_BACKUP_FILENAME = "TOBI_cleanup_rollback.xuk";
+        public static readonly string CLEANUP_ROLLBACK_DATA_FILENAME = "TOBI_cleanup_rollback.txt";
+
+        public void DataCleanupRollback()
+        {
+
+            if (!askUserAlt(
+                UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ROLLBACK_ShortDesc) + @"?",
+                //Tobi_Plugin_Urakawa_Lang.CmdDataCleanup_ROLLBACK_LongDesc
+                Tobi_Plugin_Urakawa_Lang.CleanupRollbackWarning
+                )
+                )
+            {
+                return;
+            }
+
+            string docPath = DocumentFilePath;
+            Project project = DocumentProject;
+
+            // Closing is REQUIRED ! 
+            PopupModalWindow.DialogButton button = CheckSaveDirtyAndClose(
+                PopupModalWindow.DialogButtonsSet.OkCancel, "data cleanup rollback");
+            if (!PopupModalWindow.IsButtonOkYesApply(button))
+            {
+                return;
+            }
+
+            //// XukStrings maintains a pointer to the last-created Project instance!
+            //// (which was closed / reset to null with CheckSaveDirtyAndClose)
+            //XukStrings.RelocateProjectReference(project);
+
+            project.Presentations.Get(0).UndoRedoManager.FlushCommands();
+            //RaisePropertyChanged(()=>IsDirty);
+
+            // ==> SAVED AND CLOSED (clipboard removed), undo-redo removed.
+
+            var dataFolderPath = project.Presentations.Get(0).DataProviderManager.DataFileDirectoryFullPath;
+
+            const string DELETED = "__DELETED";
+
+            var deletedDataFolderPath = Path.Combine(dataFolderPath, DELETED + Path.DirectorySeparatorChar);
+
+            var cleanupRollbackXukBackupFilePath = Path.Combine(deletedDataFolderPath, CLEANUP_ROLLBACK_XUK_BACKUP_FILENAME);
+            var cleanupRollbackDataFilePath = Path.Combine(deletedDataFolderPath, CLEANUP_ROLLBACK_DATA_FILENAME);
+
+            if (//!Directory.Exists(deletedDataFolderPath)
+                //|| (Directory.GetFiles(deletedDataFolderPath).Length == 0 && Directory.GetDirectories(deletedDataFolderPath).Length == 0)
+                !File.Exists(cleanupRollbackXukBackupFilePath)
+                || !File.Exists(cleanupRollbackDataFilePath)
+                )
+            {
+                messageBoxAlert(Tobi_Plugin_Urakawa_Lang.CleanupRollbackNoDeletedFiles, null);
+
+                DocumentFilePath = null;
+                DocumentProject = null;
+                //XukStrings.NullifyProjectReference();
+
+                try
+                {
+                    OpenFile(docPath);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.Handle(ex, false, m_ShellView);
+                }
+
+                return;
+            }
+
+            var docPath_ = docPath.Replace(".xuk", "_CLEANUP_ROLLBACKED.xuk");
+            if (File.Exists(docPath_))
+            {
+                File.Delete(docPath_);
+            }
+            File.Move(docPath, docPath_);
+            try
+            {
+                File.SetAttributes(docPath_, FileAttributes.Normal);
+            }
+            catch
+            {
+            }
+
+            File.Move(cleanupRollbackXukBackupFilePath, docPath);
+            try
+            {
+                File.SetAttributes(docPath, FileAttributes.Normal);
+            }
+            catch
+            {
+            }
+
+
+            var deletedFiles = Directory.GetFiles(deletedDataFolderPath);
+            //var deletedFolders = Directory.GetDirectories(deletedDataFolderPath);
+
+            if (deletedFiles.Length != 0)
+            {
+                foreach (string filePath in deletedFiles)
+                {
+                    var fileName = Path.GetFileName(filePath);
+
+                    if (fileName.Equals(CLEANUP_ROLLBACK_XUK_BACKUP_FILENAME, StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    if (fileName.Equals(CLEANUP_ROLLBACK_DATA_FILENAME, StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    var filePathDest = Path.Combine(dataFolderPath, fileName);
+                    DebugFix.Assert(!File.Exists(filePathDest));
+                    if (!File.Exists(filePathDest))
+                    {
+                        try
+                        {
+                            File.Move(filePath, filePathDest);
+                            File.SetAttributes(filePathDest, FileAttributes.Normal);
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+            }
+
+            StreamReader streamReader = new StreamReader(cleanupRollbackDataFilePath, Encoding.UTF8);
+            try
+            {
+                string line = null;
+                string originalFileName = null;
+                
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    line = line.Trim();
+                    if (string.IsNullOrEmpty(line)) continue;
+
+                    if (String.IsNullOrEmpty(originalFileName))
+                    {
+                        originalFileName = line;
+                    }
+                    else
+                    {
+                        string newFileName = line;
+
+                        var filePathSource = Path.Combine(dataFolderPath, newFileName);
+                        DebugFix.Assert(File.Exists(filePathSource));
+
+                        var filePathDest = Path.Combine(dataFolderPath, originalFileName);
+                        DebugFix.Assert(!File.Exists(filePathDest));
+
+                        try
+                        {
+                            File.Move(filePathSource, filePathDest);
+                            File.SetAttributes(filePathDest, FileAttributes.Normal);
+                        }
+                        catch
+                        {
+                        }
+
+                        originalFileName = null;
+                    }
+                }
+            }
+            finally
+            {
+                streamReader.Close();
+            }
+            //File.Delete(cleanupRollbackDataFilePath);
+
+            String randomStr = Path.GetRandomFileName().Replace('.','_');
+            var cleanupRollbackDataFilePath_ = Path.Combine(dataFolderPath, randomStr + "_" + CLEANUP_ROLLBACK_DATA_FILENAME);
+            if (File.Exists(cleanupRollbackDataFilePath_))
+            {
+                File.Delete(cleanupRollbackDataFilePath_);
+            }
+
+            try
+            {
+                File.Move(cleanupRollbackDataFilePath, cleanupRollbackDataFilePath_);
+                File.SetAttributes(cleanupRollbackDataFilePath_, FileAttributes.Normal);
+            }
+            catch
+            {
+            }
+
+            // deleted data folder should be totally empty
+            m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+
+
+            DocumentFilePath = null;
+            DocumentProject = null;
+            //XukStrings.NullifyProjectReference();
+
+            try
+            {
+                OpenFile(docPath);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, false, m_ShellView);
+            }
         }
 
         public string DataCleanup(bool interactive, bool cleanAudioOptimizeFiles)
@@ -519,18 +741,51 @@ namespace Tobi.Plugin.Urakawa
                 FileDataProvider.CreateDirectory(deletedDataFolderPath);
             }
 
+            var cleanupRollbackXukBackupFilePath = Path.Combine(deletedDataFolderPath, CLEANUP_ROLLBACK_XUK_BACKUP_FILENAME);
+            var cleanupRollbackDataFilePath = Path.Combine(deletedDataFolderPath, CLEANUP_ROLLBACK_DATA_FILENAME);
+
+            var createRollbackData = (interactive && !string.IsNullOrEmpty(docPath));
+            if (createRollbackData)
+            {
+                if (File.Exists(cleanupRollbackXukBackupFilePath))
+                {
+                    File.Delete(cleanupRollbackXukBackupFilePath);
+                }
+                File.Copy(docPath, cleanupRollbackXukBackupFilePath);
+
+
+
+                //if (File.Exists(cleanupRollbackDataFilePath))
+                //{
+                //    File.Delete(cleanupRollbackDataFilePath);
+                //}
+                StreamWriter streamWriter = new StreamWriter(cleanupRollbackDataFilePath, false, Encoding.UTF8);
+                try
+                {
+                    string line = "";
+                    streamWriter.WriteLine(line);
+                }
+                finally
+                {
+                    streamWriter.Close();
+                }
+            }
+
             double cleanAudioMaxFileMegaBytes = Settings.Default.CleanAudioMaxMegaBytes;
-            
+
             bool cancelled = false;
+
+            Cleaner cleaner = null;
 
             if (interactive)
             {
+                cleaner = new Cleaner(project.Presentations.Get(0),
+                    deletedDataFolderPath, cleanAudioMaxFileMegaBytes,
+                    cleanAudioOptimizeFiles);
                 bool error = m_ShellView.RunModalCancellableProgressTask(true,
                                                                           Tobi_Plugin_Urakawa_Lang.CleaningUpDataFiles,
-                                                                          new Cleaner(project.Presentations.Get(0),
-                                                                                      deletedDataFolderPath, cleanAudioMaxFileMegaBytes,
-                                                                                      cleanAudioOptimizeFiles),
-                    //project.Presentations.Get(0).Cleanup();
+                                                                          cleaner,
+                                                                          //project.Presentations.Get(0).Cleanup();
                                                                           () =>
                                                                           {
                                                                               m_Logger.Log(@"CANCELLED",
@@ -553,191 +808,229 @@ namespace Tobi.Plugin.Urakawa
             }
             else
             {
-                var cleaner = new Cleaner(project.Presentations.Get(0),
+                cleaner = new Cleaner(project.Presentations.Get(0),
                                           deletedDataFolderPath, cleanAudioMaxFileMegaBytes, cleanAudioOptimizeFiles);
                 //cleaner.DoWork();
                 cleaner.Cleanup();
             }
 
-            if (cancelled)
+            if (createRollbackData)
             {
-                // We restore the old one, not cleaned-up (or partially...).
-
-                var deletedFiles = Directory.GetFiles(deletedDataFolderPath);
-                var deletedFolders = Directory.GetDirectories(deletedDataFolderPath);
-
-                if (deletedFiles.Length != 0 || deletedFolders.Length != 0)
-                {
-                    foreach (string filePath in deletedFiles)
-                    {
-                        var fileName = Path.GetFileName(filePath);
-                        var filePathDest = Path.Combine(dataFolderPath, fileName);
-                        DebugFix.Assert(!File.Exists(filePathDest));
-                        if (!File.Exists(filePathDest))
-                        {
-                            try
-                            {
-                                File.Move(filePath, filePathDest);
-                                File.SetAttributes(filePathDest, FileAttributes.Normal);
-                            }
-                            catch
-                            {
-                            }
-                        }
-                    }
-                }
-
-                m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
-
-                DocumentFilePath = null;
-                DocumentProject = null;
-                //XukStrings.NullifyProjectReference();
-
+                StreamWriter streamWriter = new StreamWriter(cleanupRollbackDataFilePath, false, Encoding.UTF8);
                 try
                 {
-                    OpenFile(docPath);
+                    List<Tuple<String, String>> listOfRenamings = cleaner.GetListOfRenamedFiles();
+                    foreach (Tuple<String, String> renamedFile in listOfRenamings)
+                    {
+                        streamWriter.WriteLine(renamedFile.Item1); // original filename
+                        streamWriter.WriteLine(renamedFile.Item2); // renamed filename
+                        streamWriter.WriteLine("");
+                        streamWriter.WriteLine("");
+                    }
                 }
-                catch (Exception ex)
+                finally
                 {
-                    ExceptionHandler.Handle(ex, false, m_ShellView);
+                    streamWriter.Close();
                 }
             }
-            else
+
+            if (cancelled)
             {
-                var listOfDataProviderFiles = new List<string>();
-                foreach (var dataProvider in project.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_Enumerable)
+                if (createRollbackData)
                 {
-                    var fileDataProvider = dataProvider as FileDataProvider;
-                    if (fileDataProvider == null) continue;
-
-                    listOfDataProviderFiles.Add(fileDataProvider.DataFileRelativePath);
+                    DataCleanupRollback();
                 }
-
-
-                bool folderIsShowing = false;
-
-                if (interactive)
+                else
                 {
-                    if (Directory.GetFiles(deletedDataFolderPath).Length != 0 || Directory.GetDirectories(deletedDataFolderPath).Length != 0)
-                    {
-                        folderIsShowing = true;
+                    // We restore the old one, not cleaned-up (or partially...).
 
-                        m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+                    var deletedFiles = Directory.GetFiles(deletedDataFolderPath);
+                    var deletedFolders = Directory.GetDirectories(deletedDataFolderPath);
+
+                    if (deletedFiles.Length != 0 || deletedFolders.Length != 0)
+                    {
+                        foreach (string filePath in deletedFiles)
+                        {
+                            var fileName = Path.GetFileName(filePath);
+
+                            if (fileName.Equals(CLEANUP_ROLLBACK_XUK_BACKUP_FILENAME, StringComparison.Ordinal))
+                            {
+                                continue;
+                            }
+
+                            if (fileName.Equals(CLEANUP_ROLLBACK_DATA_FILENAME, StringComparison.Ordinal))
+                            {
+                                continue;
+                            }
+
+                            var filePathDest = Path.Combine(dataFolderPath, fileName);
+                            DebugFix.Assert(!File.Exists(filePathDest));
+                            if (!File.Exists(filePathDest))
+                            {
+                                try
+                                {
+                                    File.Move(filePath, filePathDest);
+                                    File.SetAttributes(filePathDest, FileAttributes.Normal);
+                                }
+                                catch
+                                {
+                                }
+                            }
+                        }
+                    }
+
+                    m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+
+                    DocumentFilePath = null;
+                    DocumentProject = null;
+                    //XukStrings.NullifyProjectReference();
+
+                    try
+                    {
+                        OpenFile(docPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        ExceptionHandler.Handle(ex, false, m_ShellView);
                     }
                 }
 
-                foreach (string filePath in Directory.GetFiles(dataFolderPath))
+                return deletedDataFolderPath;
+            }
+
+            var listOfDataProviderFiles = new List<string>();
+            foreach (var dataProvider in project.Presentations.Get(0).DataProviderManager.ManagedObjects.ContentsAs_Enumerable)
+            {
+                var fileDataProvider = dataProvider as FileDataProvider;
+                if (fileDataProvider == null) continue;
+
+                listOfDataProviderFiles.Add(fileDataProvider.DataFileRelativePath);
+            }
+
+
+            bool folderIsShowing = false;
+
+            if (interactive)
+            {
+                if (Directory.GetFiles(deletedDataFolderPath).Length != 0 || Directory.GetDirectories(deletedDataFolderPath).Length != 0)
+                {
+                    folderIsShowing = true;
+
+                    m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+                }
+            }
+
+            foreach (string filePath in Directory.GetFiles(dataFolderPath))
+            {
+                var fileName = Path.GetFileName(filePath);
+                if (!listOfDataProviderFiles.Contains(fileName))
+                {
+                    var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
+                    DebugFix.Assert(!File.Exists(filePathDest));
+                    if (!File.Exists(filePathDest))
+                    {
+                        File.Move(filePath, filePathDest);
+                        try
+                        {
+                            File.SetAttributes(filePathDest, FileAttributes.Normal);
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(docPath))
+            {
+                string projectDirRoot = Path.GetDirectoryName(docPath);
+                string projectFileName = Path.GetFileName(docPath);
+
+                foreach (string filePath in Directory.GetFiles(projectDirRoot))
                 {
                     var fileName = Path.GetFileName(filePath);
-                    if (!listOfDataProviderFiles.Contains(fileName))
-                    {
-                        var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
-                        DebugFix.Assert(!File.Exists(filePathDest));
-                        if (!File.Exists(filePathDest))
-                        {
-                            File.Move(filePath, filePathDest);
-                            try
-                            {
-                                File.SetAttributes(filePathDest, FileAttributes.Normal);
-                            }
-                            catch
-                            {
-                            }
-                        }
-                    }
-                }
 
-                if (!string.IsNullOrEmpty(docPath))
-                {
-                    string projectDirRoot = Path.GetDirectoryName(docPath);
-                    string projectFileName = Path.GetFileName(docPath);
-
-                    foreach (string filePath in Directory.GetFiles(projectDirRoot))
-                    {
-                        var fileName = Path.GetFileName(filePath);
-
-                        if (projectFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            continue;
-                        }
-
-                        if (fileName.StartsWith(projectFileName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
-
-                            if (File.Exists(filePathDest))
-                            {
-                                File.Delete(filePathDest);
-                            }
-                            File.Move(filePath, filePathDest);
-                            try
-                            {
-                                File.SetAttributes(filePathDest, FileAttributes.Normal);
-                            }
-                            catch
-                            {
-                            }
-                        }
-                    }
-                }
-
-                string normalised_deletedDataFolderPath = FileDataProvider.NormaliseFullFilePath(deletedDataFolderPath);
-
-                foreach (string dirPath in Directory.GetDirectories(dataFolderPath
-                    //, "*", SearchOption.TopDirectoryOnly
-                    ))
-                {
-                    string normalised_dirPath = FileDataProvider.NormaliseFullFilePath(dirPath);
-
-                    if (normalised_dirPath == normalised_deletedDataFolderPath
-                        || dirPath.EndsWith(DELETED))
+                    if (projectFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
                     {
                         continue;
                     }
-                    var dirPathDest = Path.Combine(deletedDataFolderPath, Path.GetFileName(dirPath));
-                    DebugFix.Assert(!File.Exists(dirPathDest));
-                    if (!File.Exists(dirPathDest))
+
+                    if (fileName.StartsWith(projectFileName, StringComparison.OrdinalIgnoreCase))
                     {
-                        Directory.Move(normalised_dirPath.Replace('/', '\\'), dirPathDest);
-                    }
+                        var filePathDest = Path.Combine(deletedDataFolderPath, fileName);
 
-                    //try
-                    //{
-                    //    FileDataProvider.DeleteDirectory(dirPath);
-                    //}
-                    //catch
-                    //{
-                    //    m_Logger.Log(@"FileDataProvider.DeleteDirectory!!" + dirPath, Category.Debug, Priority.Medium);
-                    //}
-                }
-
-                if (interactive)
-                {
-                    if (!folderIsShowing && (Directory.GetFiles(deletedDataFolderPath).Length != 0 || Directory.GetDirectories(deletedDataFolderPath).Length != 0))
-                    {
-                        m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
-                    }
-
-                    // We must now save the modified cleaned-up doc
-
-                    DocumentFilePath = docPath;
-                    DocumentProject = project;
-                    //XukStrings.RelocateProjectReference(DocumentProject);
-
-                    if (save(false))
-                    {
-                        DocumentFilePath = null;
-                        DocumentProject = null;
-                        //XukStrings.NullifyProjectReference();
-
+                        if (File.Exists(filePathDest))
+                        {
+                            File.Delete(filePathDest);
+                        }
+                        File.Move(filePath, filePathDest);
                         try
                         {
-                            OpenFile(docPath);
+                            File.SetAttributes(filePathDest, FileAttributes.Normal);
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            ExceptionHandler.Handle(ex, false, m_ShellView);
                         }
+                    }
+                }
+            }
+
+            string normalised_deletedDataFolderPath = FileDataProvider.NormaliseFullFilePath(deletedDataFolderPath);
+
+            foreach (string dirPath in Directory.GetDirectories(dataFolderPath
+                //, "*", SearchOption.TopDirectoryOnly
+                ))
+            {
+                string normalised_dirPath = FileDataProvider.NormaliseFullFilePath(dirPath);
+
+                if (normalised_dirPath == normalised_deletedDataFolderPath
+                    || dirPath.EndsWith(DELETED))
+                {
+                    continue;
+                }
+                var dirPathDest = Path.Combine(deletedDataFolderPath, Path.GetFileName(dirPath));
+                DebugFix.Assert(!File.Exists(dirPathDest));
+                if (!File.Exists(dirPathDest))
+                {
+                    Directory.Move(normalised_dirPath.Replace('/', '\\'), dirPathDest);
+                }
+
+                //try
+                //{
+                //    FileDataProvider.DeleteDirectory(dirPath);
+                //}
+                //catch
+                //{
+                //    m_Logger.Log(@"FileDataProvider.DeleteDirectory!!" + dirPath, Category.Debug, Priority.Medium);
+                //}
+            }
+
+            if (interactive)
+            {
+                if (!folderIsShowing && (Directory.GetFiles(deletedDataFolderPath).Length != 0 || Directory.GetDirectories(deletedDataFolderPath).Length != 0))
+                {
+                    m_ShellView.ExecuteShellProcess(deletedDataFolderPath);
+                }
+
+                // We must now save the modified cleaned-up doc
+
+                DocumentFilePath = docPath;
+                DocumentProject = project;
+                //XukStrings.RelocateProjectReference(DocumentProject);
+
+                if (save(false))
+                {
+                    DocumentFilePath = null;
+                    DocumentProject = null;
+                    //XukStrings.NullifyProjectReference();
+
+                    try
+                    {
+                        OpenFile(docPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        ExceptionHandler.Handle(ex, false, m_ShellView);
                     }
                 }
             }
@@ -838,13 +1131,13 @@ namespace Tobi.Plugin.Urakawa
                 //panel.Margin = new Thickness(8, 8, 8, 0);
 
                 var details = new TextBoxReadOnlyCaretVisible
-                    {
-                        FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+                {
+                    FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
 
-                        BorderThickness = new Thickness(1),
-                        Padding = new Thickness(6),
-                        TextReadOnly = Tobi_Plugin_Urakawa_Lang.UnsavedChangesDetails
-                    };
+                    BorderThickness = new Thickness(1),
+                    Padding = new Thickness(6),
+                    TextReadOnly = Tobi_Plugin_Urakawa_Lang.UnsavedChangesDetails
+                };
 
                 var windowPopup = new PopupModalWindow(m_ShellView,
                                                        UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.UnsavedChanges) + (string.IsNullOrEmpty(role) ? "" : " (" + role + ")"),

@@ -57,6 +57,7 @@ namespace Tobi.Plugin.Urakawa
         private int m_MenuBarId_4;
         private int m_MenuBarId_5;
         private int m_MenuBarId_55;
+        private int m_MenuBarId_555;
         private int m_MenuBarId_6 = -1;
         private int m_MenuBarId_7;
         private int m_MenuBarId_9;
@@ -124,6 +125,11 @@ namespace Tobi.Plugin.Urakawa
                 Tobi_Common_Lang.Menu_Edit, PreferredPosition.Any, false,
                 null, PreferredPosition.First, true,
                 new[] { m_UrakawaSession.DataCleanupOptimizeCommand });
+
+            m_MenuBarId_555 = m_MenuBarView.AddMenuBarGroup(
+                Tobi_Common_Lang.Menu_Edit, PreferredPosition.Any, false,
+                null, PreferredPosition.First, true,
+                new[] { m_UrakawaSession.DataCleanupRollbackCommand });
 
 
             m_MenuBarId_7 = m_MenuBarView.AddMenuBarGroup(
@@ -197,6 +203,7 @@ namespace Tobi.Plugin.Urakawa
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Edit, m_MenuBarId_4);
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Edit, m_MenuBarId_5);
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Edit, m_MenuBarId_55);
+                m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Edit, m_MenuBarId_555);
 
                 m_MenuBarView.RemoveMenuBarGroup(Tobi_Common_Lang.Menu_Edit, m_MenuBarId_10);
 
