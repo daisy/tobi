@@ -322,6 +322,24 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Jump forward by a pre-defined time increment (longer).
+        /// </summary>
+        public static string CmdAudioFastForwardX_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioFastForwardX_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step forward (more).
+        /// </summary>
+        public static string CmdAudioFastForwardX_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioFastForwardX_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bring the entire audio content into full view.
         /// </summary>
         public static string CmdAudioFitFull_LongDesc {
@@ -660,6 +678,24 @@ namespace Tobi.Plugin.AudioPane {
         public static string CmdAudioRewind_ShortDesc {
             get {
                 return ResourceManager.GetString("CmdAudioRewind_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jump backwards by a pre-defined time increment (longer).
+        /// </summary>
+        public static string CmdAudioRewindX_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioRewindX_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step back (more).
+        /// </summary>
+        public static string CmdAudioRewindX_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioRewindX_ShortDesc", resourceCulture);
             }
         }
         

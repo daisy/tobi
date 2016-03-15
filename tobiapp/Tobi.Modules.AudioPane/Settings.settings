@@ -74,6 +74,9 @@
     <Setting Name="AudioWaveForm_JumpTimeStep" Type="System.Double" Scope="User">
       <Value Profile="(Default)">500</Value>
     </Setting>
+    <Setting Name="AudioWaveForm_JumpTimeStepX" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
     <Setting Name="AudioWaveForm_RenderMethod" Type="Tobi.Plugin.AudioPane.WaveFormRenderMethod" Scope="User">
       <Value Profile="(Default)">RenderTargetBitmap</Value>
     </Setting>
