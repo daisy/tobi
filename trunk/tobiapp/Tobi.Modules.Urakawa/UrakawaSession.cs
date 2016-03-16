@@ -819,11 +819,11 @@ namespace Tobi.Plugin.Urakawa
                 StreamWriter streamWriter = new StreamWriter(cleanupRollbackDataFilePath, false, Encoding.UTF8);
                 try
                 {
-                    List<Tuple<String, String>> listOfRenamings = cleaner.GetListOfRenamedFiles();
-                    foreach (Tuple<String, String> renamedFile in listOfRenamings)
+                    List<Cleaner.OriginalRenamedFilenameTuple> listOfRenamings = cleaner.GetListOfRenamedFiles();
+                    foreach (Cleaner.OriginalRenamedFilenameTuple renamedFile in listOfRenamings)
                     {
-                        streamWriter.WriteLine(renamedFile.Item1); // original filename
-                        streamWriter.WriteLine(renamedFile.Item2); // renamed filename
+                        streamWriter.WriteLine(renamedFile.m_original);
+                        streamWriter.WriteLine(renamedFile.m_renamed);
                         streamWriter.WriteLine("");
                         streamWriter.WriteLine("");
                     }
