@@ -21,7 +21,7 @@
     <ApplicationIcon>Tobi.ico</ApplicationIcon>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <SignManifests>true</SignManifests>
-    <ManifestCertificateThumbprint>0053895EB3167539CC30BB218162EBAACA5679B8</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>04A0A425E909F108B2D9D3E9CC238861C1DD4C45</ManifestCertificateThumbprint>
     <ManifestKeyFile>Tobi.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <NoWin32Manifest>true</NoWin32Manifest>
