@@ -1250,22 +1250,76 @@ namespace Tobi.Plugin.Urakawa
             {
                 Settings.Default.Pipeline2Path = pipeline_ExePath;
 
-                double version = 1.7;
+                //double version = 1.7;
+                string version = "1.7";
+                bool versionIsLessThanRequired = false;
+
                 string filePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(pipeline_ExePath)), "etc\\system.properties");
                 if (File.Exists(filePath))
                 {
-                    string content = File.ReadAllText(filePath);
                     string match = "org.daisy.pipeline.version";
-                    int index = content.IndexOf(match);
-                    if (index >= 0)
+
+                    //string content = File.ReadAllText(filePath);
+                    //int index = content.IndexOf(match);
+                    //if (index >= 0)
+                    //{
+                    //    string vStr = content.Substring(index + match.Length + 1, 3);
+                    //    version = Double.Parse(vStr);
+                    //}
+
+                    StreamReader streamReader = new StreamReader(filePath, Encoding.UTF8);
+                    try
                     {
-                        string vStr = content.Substring(index + match.Length + 1, 3);
-                        version = Double.Parse(vStr);
+                        string line = null;
+
+                        while ((line = streamReader.ReadLine()) != null)
+                        {
+                            line = line.Trim();
+                            if (string.IsNullOrEmpty(line)) continue;
+                            if (!line.StartsWith(match)) continue;
+
+                            version = line.Substring(match.Length + 1);
+                            if (string.IsNullOrEmpty(version)) break;
+
+                            string[] versionString_SplitDash = version.Split('-');
+                            if (versionString_SplitDash == null || versionString_SplitDash.Length < 1) break;
+
+                            string versionString_WithoutExtension = versionString_SplitDash[0];
+                            string[] versionString_WithoutExtension_SplitDot = versionString_WithoutExtension.Split('.');
+                            if (versionString_WithoutExtension_SplitDot == null || versionString_WithoutExtension_SplitDot.Length < 1) break;
+
+
+                            string firstDigit = versionString_WithoutExtension_SplitDot[0];
+                            if (Double.Parse(firstDigit) < 1)
+                            {
+                                versionIsLessThanRequired = true;
+                                break;
+                            }
+                            if (Double.Parse(firstDigit) >= 2)
+                            {
+                                break;
+                            }
+
+                            if (versionString_WithoutExtension_SplitDot.Length < 2) break;
+                            string secondDigit = versionString_WithoutExtension_SplitDot[1];
+                            if (Double.Parse(secondDigit) < 7)
+                            {
+                                versionIsLessThanRequired = true;
+                                break;
+                            }
+
+                            break;
+                        }
+                    }
+                    finally
+                    {
+                        streamReader.Close();
                     }
                 }
-                if (version < 1.7)
+                //if (version < 1.7)
+                if (versionIsLessThanRequired)
                 {
-                    messageBoxText("Pipeline2", Tobi_Plugin_Urakawa_Lang.PleaseUpgradePipeline, "Pipeline2 v" + version + " (>= 1.7)\n\nhttp://daisy.org/pipeline2");
+                    messageBoxText("Pipeline2", Tobi_Plugin_Urakawa_Lang.PleaseUpgradePipeline + " (>= 1.7)", "Pipeline2 v" + version + "\n\nhttp://daisy.org/pipeline2");
                     return null;
                 }
             }
