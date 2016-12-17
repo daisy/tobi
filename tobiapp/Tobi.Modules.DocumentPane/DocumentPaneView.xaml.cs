@@ -1341,9 +1341,11 @@ namespace Tobi.Plugin.DocumentPane
             return null;
         }
 
-        protected bool structureInsertDialog(TreeNode node, string title, string cmdShort, string cmdLong, string cmdId,
+        protected bool structureInsertDialog(TreeNode node, string title,
+            string cmdShort, string cmdLong, string cmdId,
             TreeNode nodeToInsert,
-            string initialNameInput, string initialTextInput, string labelNameInput, string labelTextInput, string labelXmlInput,
+            string initialNameInput, string initialTextInput, string xmlSourceInitial,
+            string labelNameInput, string labelTextInput, string labelXmlInput,
             Func<string, string, string, List<TreeNode>> callback)
         {
             //m_EventAggregator.GetEvent<EscapeEvent>().Publish(null);
@@ -1481,7 +1483,7 @@ namespace Tobi.Plugin.DocumentPane
                 Padding = new Thickness(6),
                 //TextReadOnly = info,
 
-                Text = "",
+                Text = xmlSourceInitial,
                 AcceptsReturn = true,
                 //AcceptsTab = true,
                 //TextWrapping = TextWrapping.WrapWithOverflow
@@ -1745,6 +1747,193 @@ namespace Tobi.Plugin.DocumentPane
 
         [ImportMany(typeof(IValidator), RequiredCreationPolicy = CreationPolicy.Shared, AllowRecomposition = true)]
         private IEnumerable<IValidator> m_Validators;
+
+        private void CommandStructInsertFragment_Do(TreeNode node, string xmlSourceInitial)
+        {
+            bool html = node.Presentation.RootNode.GetXmlElementLocalName()
+                .Equals("body", StringComparison.OrdinalIgnoreCase);
+
+            if (structureInsertDialog(node,
+                UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdStructEditInsertFragment_ShortDesc),
+                "Extract text into new child TreeNode, then insert new node",
+                "Extract text into child mixed XML content, and insert new TreeNode",
+                "DOC_TEXT_ONLY_NODE_INSERT-CUSTOM",
+                null,
+                html ? "span" : "sent",
+                "TXT",
+                xmlSourceInitial,
+                Tobi_Plugin_DocumentPane_Lang.ElementName,
+                Tobi_Plugin_DocumentPane_Lang.TextContent,
+                Tobi_Plugin_DocumentPane_Lang.AdvancedXmlInsert,
+(elementName, elementText, xmlSource) =>
+{
+if (!String.IsNullOrEmpty(xmlSource))
+{
+string xmlns_mathml = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_MATHML + "=\"" + DiagramContentModelHelper.NS_URL_MATHML + "\"";
+string xmlns_svg = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_SVG + "=\"" + DiagramContentModelHelper.NS_URL_SVG + "\"";
+string xmlns_epub = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_EPUB + "=\"" + DiagramContentModelHelper.NS_URL_EPUB + "\"";
+
+string xmlns_xhtml = "xmlns=\"" + DiagramContentModelHelper.NS_URL_XHTML + "\"";
+string xmlns_dtbook = "xmlns=\"" + "http://www.daisy.org/z3986/2005/dtbook/" + "\"";
+
+string xmlSourceString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+xmlSourceString += ("<root "
+    //+ XmlReaderWriterHelper.NS_PREFIX_XMLNS + "=\"" + node.Presentation.RootNode.GetXmlNamespaceUri() + "\""
+    + " "
+    + (html ? xmlns_xhtml : xmlns_dtbook)
+    + " "
+    + xmlns_mathml
+    + " "
+    + xmlns_svg
+    + " "
+    + xmlns_epub
+
+    + " >");
+
+string strippedNS = xmlSource.Replace(xmlns_mathml, " ");
+strippedNS = strippedNS.Replace(xmlns_svg, " ");
+strippedNS = strippedNS.Replace(xmlns_epub, " ");
+xmlSourceString += strippedNS;
+xmlSourceString += "</root>";
+
+        //byte[] xmlSourceString_RawEncoded = Encoding.UTF8.GetBytes(xmlSourceString);
+        //MemoryStream stream = new MemoryStream();
+        //stream.Write(xmlSourceString_RawEncoded, 0, xmlSourceString_RawEncoded.Length);
+
+        //stream.Flush();
+
+        //stream.Seek(0, SeekOrigin.Begin);
+        //stream.Position = 0;
+
+        //XmlDocument fragmentDoc = new XmlDocument();
+        //fragmentDoc.XmlResolver = null;
+
+        ////XmlTextReader reader = new XmlTextReader(stream);
+        ////fragmentDoc.Load(reader);
+
+        //fragmentDoc.Load(stream);
+
+        ////fragmentDoc.LoadXml(xmlSourceString);
+
+
+        //XmlNode tobi = fragmentDoc.ChildNodes[1]; // skip XML declaration
+        //XmlNodeList children = tobi.ChildNodes;
+        //XmlNode[] xmlNodes = new XmlNode[children.Count];
+        //int i = 0;
+        //foreach (XmlNode child in children)
+        //{
+        //    xmlNodes[i] = child;
+        //    i++;
+        //}
+        //for (i = 0; i < xmlNodes.Length; i++)
+        //{
+        //    XmlNode child = xmlNodes[i];
+        //    XmlNode imported = htmlDocument.ImportNode(child, true);
+        //    tobi.RemoveChild(child);
+        //    textParentNode.AppendChild(imported);
+        //}
+
+        //normalizedDescriptionText = textParentNode.InnerXml;
+
+        XmlDocument xmldoc = null;
+
+try
+{
+    xmldoc = XmlReaderWriterHelper.ParseXmlDocumentFromString(xmlSourceString, false, false);
+}
+catch (Exception ex)
+{
+#if DEBUG
+            Debugger.Break();
+#endif
+    if (checkWithUser(Tobi_Plugin_DocumentPane_Lang.XmlErrorTryAgain, ex.Message, xmlSource))
+    {
+        //CommandStructInsertFragment.Execute();
+        CommandStructInsertFragment_Do(node, xmlSource);
+    }
+    else
+    {
+        return null;
+    }
+}
+
+
+
+List<TreeNode> list = new List<TreeNode>(1);
+
+if (xmldoc != null && xmldoc.DocumentElement != null && xmldoc.DocumentElement.FirstChild != null)
+{
+    try
+    {
+        TreeNode.EnableTextCache = false;
+
+        XmlNodeList children = xmldoc.DocumentElement.ChildNodes;
+        for (int i = 0; i < children.Count; i++)
+        {
+            XmlNode child = children[i];
+
+            TreeNode root = buildTreeNodeFromXml(child, node.Presentation, null);
+            if (root != null)
+            {
+                stripXmlIds(root);
+            }
+
+            list.Add(root);
+        }
+    }
+    finally
+    {
+        TreeNode.EnableTextCache = true;
+    }
+}
+
+return list;
+}
+
+if (String.IsNullOrEmpty(elementName))
+{
+return null;
+}
+
+TreeNode newNode = node.Presentation.TreeNodeFactory.Create();
+
+if (!string.IsNullOrEmpty(elementText))
+{
+ChannelsProperty chProp = newNode.GetOrCreateChannelsProperty();
+        //Channel textChannel = node.Presentation.ChannelFactory.CreateTextChannel();
+        Channel textChannel = node.Presentation.ChannelsManager.GetOrCreateTextChannel();
+TextMedia txtMedia = node.Presentation.MediaFactory.CreateTextMedia();
+txtMedia.Text = elementText;
+chProp.SetMedia(textChannel, txtMedia);
+}
+
+if (!String.IsNullOrEmpty(elementName))
+{
+XmlProperty xmlProp = newNode.GetOrCreateXmlProperty();
+string uri = node.GetXmlNamespaceUri();
+if (string.IsNullOrEmpty(uri) && node.Parent != null)
+{
+    uri = node.Parent.GetXmlNamespaceUri();
+}
+if (string.IsNullOrEmpty(uri))
+{
+#if DEBUG
+            Debugger.Break();
+#endif
+            uri = "";
+}
+xmlProp.SetQName(elementName, uri);
+}
+
+List<TreeNode> l = new List<TreeNode>(1);
+l.Add(newNode);
+return l;
+}
+                ))
+            {
+                //checkValid();
+            }
+        }
 
         //private ContentDocumentValidator m_Validator;
 
@@ -2174,6 +2363,7 @@ namespace Tobi.Plugin.DocumentPane
                         m_TreeNodeFragmentClipboard,
                         null,
                         null,
+                        "",
                         null,
                         null,
                         null,
@@ -2275,177 +2465,7 @@ namespace Tobi.Plugin.DocumentPane
 
                     if (!checkDisplayStructEditWarning()) return;
 
-                    bool html = node.Presentation.RootNode.GetXmlElementLocalName()
-                        .Equals("body", StringComparison.OrdinalIgnoreCase);
-
-                    if (structureInsertDialog(node,
-                        UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_DocumentPane_Lang.CmdStructEditInsertFragment_ShortDesc),
-                        "Extract text into new child TreeNode, then insert new node",
-                        "Extract text into child mixed XML content, and insert new TreeNode",
-                        "DOC_TEXT_ONLY_NODE_INSERT-CUSTOM",
-                        null,
-                        html ? "span" : "sent",
-                        "TXT",
-                        Tobi_Plugin_DocumentPane_Lang.ElementName,
-                        Tobi_Plugin_DocumentPane_Lang.TextContent,
-                        Tobi_Plugin_DocumentPane_Lang.AdvancedXmlInsert,
-(elementName, elementText, xmlSource) =>
-{
-    if (!String.IsNullOrEmpty(xmlSource))
-    {
-        string xmlns_mathml = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_MATHML + "=\"" + DiagramContentModelHelper.NS_URL_MATHML + "\"";
-        string xmlns_svg = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_SVG + "=\"" + DiagramContentModelHelper.NS_URL_SVG + "\"";
-        string xmlns_epub = XmlReaderWriterHelper.NS_PREFIX_XMLNS + ":" + DiagramContentModelHelper.NS_PREFIX_EPUB + "=\"" + DiagramContentModelHelper.NS_URL_EPUB + "\"";
-
-        string xmlns_xhtml = "xmlns=\"" + DiagramContentModelHelper.NS_URL_XHTML + "\"";
-        string xmlns_dtbook = "xmlns=\"" + "http://www.daisy.org/z3986/2005/dtbook/" + "\"";
-
-        string xmlSourceString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-        xmlSourceString += ("<root "
-            //+ XmlReaderWriterHelper.NS_PREFIX_XMLNS + "=\"" + node.Presentation.RootNode.GetXmlNamespaceUri() + "\""
-            + " "
-            + (html ? xmlns_xhtml : xmlns_dtbook)
-            + " "
-            + xmlns_mathml
-            + " "
-            + xmlns_svg
-            + " "
-            + xmlns_epub
-
-            + " >");
-
-        string strippedNS = xmlSource.Replace(xmlns_mathml, " ");
-        strippedNS = strippedNS.Replace(xmlns_svg, " ");
-        strippedNS = strippedNS.Replace(xmlns_epub, " ");
-        xmlSourceString += strippedNS;
-        xmlSourceString += "</root>";
-
-        //byte[] xmlSourceString_RawEncoded = Encoding.UTF8.GetBytes(xmlSourceString);
-        //MemoryStream stream = new MemoryStream();
-        //stream.Write(xmlSourceString_RawEncoded, 0, xmlSourceString_RawEncoded.Length);
-
-        //stream.Flush();
-
-        //stream.Seek(0, SeekOrigin.Begin);
-        //stream.Position = 0;
-
-        //XmlDocument fragmentDoc = new XmlDocument();
-        //fragmentDoc.XmlResolver = null;
-
-        ////XmlTextReader reader = new XmlTextReader(stream);
-        ////fragmentDoc.Load(reader);
-
-        //fragmentDoc.Load(stream);
-
-        ////fragmentDoc.LoadXml(xmlSourceString);
-
-
-        //XmlNode tobi = fragmentDoc.ChildNodes[1]; // skip XML declaration
-        //XmlNodeList children = tobi.ChildNodes;
-        //XmlNode[] xmlNodes = new XmlNode[children.Count];
-        //int i = 0;
-        //foreach (XmlNode child in children)
-        //{
-        //    xmlNodes[i] = child;
-        //    i++;
-        //}
-        //for (i = 0; i < xmlNodes.Length; i++)
-        //{
-        //    XmlNode child = xmlNodes[i];
-        //    XmlNode imported = htmlDocument.ImportNode(child, true);
-        //    tobi.RemoveChild(child);
-        //    textParentNode.AppendChild(imported);
-        //}
-
-        //normalizedDescriptionText = textParentNode.InnerXml;
-
-        XmlDocument xmldoc = XmlReaderWriterHelper.ParseXmlDocumentFromString(xmlSourceString, false, false);
-
-        //        try
-        //        {
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //#if DEBUG
-        //            Debugger.Break();
-        //#endif
-        //            return null;
-        //        }
-
-        List<TreeNode> list = new List<TreeNode>(1);
-
-        if (xmldoc != null && xmldoc.DocumentElement != null && xmldoc.DocumentElement.FirstChild != null)
-        {
-            try
-            {
-                TreeNode.EnableTextCache = false;
-
-                XmlNodeList children = xmldoc.DocumentElement.ChildNodes;
-                for (int i = 0; i < children.Count; i++)
-                {
-                    XmlNode child = children[i];
-
-                    TreeNode root = buildTreeNodeFromXml(child, node.Presentation, null);
-                    if (root != null)
-                    {
-                        stripXmlIds(root);
-                    }
-
-                    list.Add(root);
-                }
-            }
-            finally
-            {
-                TreeNode.EnableTextCache = true;
-            }
-        }
-
-        return list;
-    }
-
-    if (String.IsNullOrEmpty(elementName))
-    {
-        return null;
-    }
-
-    TreeNode newNode = node.Presentation.TreeNodeFactory.Create();
-
-    if (!string.IsNullOrEmpty(elementText))
-    {
-        ChannelsProperty chProp = newNode.GetOrCreateChannelsProperty();
-        //Channel textChannel = node.Presentation.ChannelFactory.CreateTextChannel();
-        Channel textChannel = node.Presentation.ChannelsManager.GetOrCreateTextChannel();
-        TextMedia txtMedia = node.Presentation.MediaFactory.CreateTextMedia();
-        txtMedia.Text = elementText;
-        chProp.SetMedia(textChannel, txtMedia);
-    }
-
-    if (!String.IsNullOrEmpty(elementName))
-    {
-        XmlProperty xmlProp = newNode.GetOrCreateXmlProperty();
-        string uri = node.GetXmlNamespaceUri();
-        if (string.IsNullOrEmpty(uri) && node.Parent != null)
-        {
-            uri = node.Parent.GetXmlNamespaceUri();
-        }
-        if (string.IsNullOrEmpty(uri))
-        {
-#if DEBUG
-            Debugger.Break();
-#endif
-            uri = "";
-        }
-        xmlProp.SetQName(elementName, uri);
-    }
-
-    List<TreeNode> l = new List<TreeNode>(1);
-    l.Add(newNode);
-    return l;
-}
-                        ))
-                    {
-                        //checkValid();
-                    }
+                    CommandStructInsertFragment_Do(node, "");
                 },
                 () =>
                 {
@@ -2493,6 +2513,7 @@ namespace Tobi.Plugin.DocumentPane
                         "DOC_TEXT_ONLY_NODE_INSERT-PAGEBREAK",
                         null,
                         null,
+                        "",
                         "1",
                         null,
                         Tobi_Plugin_DocumentPane_Lang.PageLabel,
