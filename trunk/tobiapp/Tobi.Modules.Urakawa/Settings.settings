@@ -44,6 +44,9 @@
     <Setting Name="ExportImageDescriptions_AriaDescribedAt" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="ExportImageDescriptions_AriaDetails" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
     <Setting Name="ExportImageDescriptions_HtmlLongDesc" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>

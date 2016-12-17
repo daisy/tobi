@@ -318,6 +318,9 @@ Do you want to continue ?</value>
   <data name="ExportImageDescriptions_AriaDescribedAt" xml:space="preserve">
     <value>Use ARIA "described-at":</value>
   </data>
+  <data name="ExportImageDescriptions_AriaDetails" xml:space="preserve">
+    <value>Use ARIA "details":</value>
+  </data>
   <data name="ExportImageDescriptions_AriaDescribedBy" xml:space="preserve">
     <value>Use ARIA "described-by":</value>
   </data>

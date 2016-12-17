@@ -194,6 +194,18 @@ namespace Tobi.Plugin.Urakawa {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ExportImageDescriptions_AriaDetails {
+            get {
+                return ((bool)(this["ExportImageDescriptions_AriaDetails"]));
+            }
+            set {
+                this["ExportImageDescriptions_AriaDetails"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ExportImageDescriptions_HtmlLongDesc {
             get {
                 return ((bool)(this["ExportImageDescriptions_HtmlLongDesc"]));
