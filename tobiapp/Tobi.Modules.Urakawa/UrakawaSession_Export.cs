@@ -388,6 +388,8 @@ namespace Tobi.Plugin.Urakawa
                         TextWrapping = TextWrapping.Wrap
                     };
 
+#if ENABLE_DIAGRAM_DESCRIBEDAT_USER_CHOICE
+
                     var checkBoxImageDescriptions_AriaDescribedAt = new CheckBox
                     {
                         IsThreeState = false,
@@ -405,6 +407,42 @@ namespace Tobi.Plugin.Urakawa
                     };
                     panelImageDescriptions_AriaDescribedAt.Children.Add(labelImageDescriptions_AriaDescribedAt);
                     panelImageDescriptions_AriaDescribedAt.Children.Add(checkBoxImageDescriptions_AriaDescribedAt);
+                    
+#endif //ENABLE_DIAGRAM_DESCRIBEDAT_USER_CHOICE
+
+
+                    
+                    var labelImageDescriptions_AriaDetails = new TextBlock
+                    {
+                        Text = Tobi_Plugin_Urakawa_Lang.ExportImageDescriptions_AriaDetails,
+                        Margin = new Thickness(8, 0, 8, 0),
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var checkBoxImageDescriptions_AriaDetails = new CheckBox
+                    {
+                        IsThreeState = false,
+                        IsChecked = Settings.Default.ExportImageDescriptions_AriaDetails,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    };
+
+                    var panelImageDescriptions_AriaDetails = new StackPanel
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Horizontal,
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(0, 0, 12, 0),
+                    };
+                    panelImageDescriptions_AriaDetails.Children.Add(labelImageDescriptions_AriaDetails);
+                    panelImageDescriptions_AriaDetails.Children.Add(checkBoxImageDescriptions_AriaDetails);
+
+
+
+
 
 
 
@@ -435,6 +473,7 @@ namespace Tobi.Plugin.Urakawa
                     };
                     panelImageDescriptions_AriaDescribedBy.Children.Add(labelImageDescriptions_AriaDescribedBy);
                     panelImageDescriptions_AriaDescribedBy.Children.Add(checkBoxImageDescriptions_AriaDescribedBy);
+
 
 
 
@@ -523,7 +562,10 @@ namespace Tobi.Plugin.Urakawa
                     {
                         checkBoxIncludeImageDescriptions.Checked += new RoutedEventHandler((sender, ev) =>
                         {
+#if ENABLE_DIAGRAM_DESCRIBEDAT_USER_CHOICE
                             checkBoxImageDescriptions_AriaDescribedAt.IsEnabled = true;
+#endif
+                            checkBoxImageDescriptions_AriaDetails.IsEnabled = true;
                             checkBoxImageDescriptions_AriaDescribedBy.IsEnabled = true;
 #if ENABLE_DIAGRAM_LONGDESC_USER_CHOICE
                             checkBoxImageDescriptions_HtmlLongDesc.IsEnabled = true;
@@ -535,7 +577,10 @@ namespace Tobi.Plugin.Urakawa
                         });
                         checkBoxIncludeImageDescriptions.Unchecked += new RoutedEventHandler((sender, ev) =>
                         {
+#if ENABLE_DIAGRAM_DESCRIBEDAT_USER_CHOICE
                             checkBoxImageDescriptions_AriaDescribedAt.IsEnabled = false;
+#endif
+                            checkBoxImageDescriptions_AriaDetails.IsEnabled = false;
                             checkBoxImageDescriptions_AriaDescribedBy.IsEnabled = false;
 #if ENABLE_DIAGRAM_LONGDESC_USER_CHOICE
                             checkBoxImageDescriptions_HtmlLongDesc.IsEnabled = false;
@@ -655,7 +700,11 @@ namespace Tobi.Plugin.Urakawa
                     if (isEPUB)
                     {
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedBy);
+
+#if ENABLE_DIAGRAM_DESCRIBEDAT_USER_CHOICE
                         rootPanel.Children.Add(panelImageDescriptions_AriaDescribedAt);
+#endif
+                        rootPanel.Children.Add(panelImageDescriptions_AriaDetails);
 
 #if ENABLE_DIAGRAM_LONGDESC_USER_CHOICE
                         rootPanel.Children.Add(panelImageDescriptions_HtmlLongDesc);
@@ -678,7 +727,7 @@ namespace Tobi.Plugin.Urakawa
                                                            rootPanel,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           false, 300, isEPUB ? 290 : 290, null, 40, null);
+                                                           false, 300, isEPUB ? 300 : 290, null, 40, null);
 
                     windowPopup_.EnableEnterKeyDefault = true;
 
@@ -694,7 +743,13 @@ namespace Tobi.Plugin.Urakawa
 
                     Settings.Default.ExportIncludeImageDescriptions = checkBoxIncludeImageDescriptions.IsChecked.Value;
 
+#if ENABLE_DIAGRAM_DESCRIBEDAT_USER_CHOICE
                     Settings.Default.ExportImageDescriptions_AriaDescribedAt = checkBoxImageDescriptions_AriaDescribedAt.IsChecked.Value;
+#else
+                    // force 
+                    Settings.Default.ExportImageDescriptions_AriaDescribedAt = false;
+#endif
+                    Settings.Default.ExportImageDescriptions_AriaDetails = checkBoxImageDescriptions_AriaDetails.IsChecked.Value;
                     Settings.Default.ExportImageDescriptions_AriaDescribedBy = checkBoxImageDescriptions_AriaDescribedBy.IsChecked.Value;
 
 #if ENABLE_DIAGRAM_LONGDESC_USER_CHOICE
@@ -877,6 +932,7 @@ namespace Tobi.Plugin.Urakawa
                      IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, exportSpineItemProjectPath,
                      Settings.Default.MediaOverlayPlaybackActiveCSS,
                     Settings.Default.ExportImageDescriptions_AriaDescribedAt,
+                    Settings.Default.ExportImageDescriptions_AriaDetails,
                     Settings.Default.ExportImageDescriptions_AriaDescribedBy,
                     Settings.Default.ExportImageDescriptions_HtmlLongDesc,
                     Settings.Default.ExportImageDescriptions_inlineTextAudio);

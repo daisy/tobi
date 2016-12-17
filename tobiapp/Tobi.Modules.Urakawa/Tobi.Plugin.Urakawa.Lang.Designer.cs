@@ -547,6 +547,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use ARIA &quot;details&quot;:.
+        /// </summary>
+        public static string ExportImageDescriptions_AriaDetails {
+            get {
+                return ResourceManager.GetString("ExportImageDescriptions_AriaDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use HTML &quot;longdesc&quot;:.
         /// </summary>
         public static string ExportImageDescriptions_HtmlLongDesc {
