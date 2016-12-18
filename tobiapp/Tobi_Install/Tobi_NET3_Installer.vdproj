@@ -2844,7 +2844,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Tobi_NET3.resources, Version=2.6.0.0, Culture=es, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Tobi_NET3.resources, Version=2.6.1.0, Culture=es, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_2268868D24DF4A039435DA23FAF7B833"
@@ -3363,7 +3363,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Tobi_NET3.resources, Version=2.6.0.0, Culture=fr, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Tobi_NET3.resources, Version=2.6.1.0, Culture=fr, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_5B3A53B08E464C89A67A95D976AB083C"
@@ -6188,15 +6188,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Tobi (NET3)"
-        "ProductCode" = "8:{F79FF248-769B-4657-94BE-0E0F6F0A515B}"
-        "PackageCode" = "8:{99AB760F-DFDB-4ADF-988D-1E5CF774A165}"
+        "ProductCode" = "8:{092531B5-E63E-422B-87DD-7959746D3534}"
+        "PackageCode" = "8:{9A682EED-804F-4741-8594-1138BB52469F}"
         "UpgradeCode" = "8:{2F5EA56E-A940-4B5D-9362-2309A907FA11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:02.06.0000"
+        "ProductVersion" = "8:02.06.1000"
         "Manufacturer" = "8:DAISY Consortium"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://daisy.org/tobi"
@@ -6311,7 +6311,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2699327728A24D7DA4BFFDFB49F801F3"
             {
-            "Name" = "8:Tobi 2.6.0 (NET3) [offline installed]"
+            "Name" = "8:Tobi 2.6.1 (NET3) [offline installed]"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -6339,7 +6339,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CBE561907C1C4D1A8F4FB21D8C589275"
             {
-            "Name" = "8:Tobi 2.6.0 (NET3) [offline installed]"
+            "Name" = "8:Tobi 2.6.1 (NET3) [offline installed]"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
