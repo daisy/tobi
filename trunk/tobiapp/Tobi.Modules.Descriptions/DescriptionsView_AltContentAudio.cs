@@ -206,8 +206,9 @@ namespace Tobi.Plugin.Descriptions
 
             try
             {
+#if ENABLE_AUDIO_PREVIEW_PLAYER
                 stopAudioPlayer();
-
+#endif //ENABLE_AUDIO_PREVIEW_PLAYER
 
 
                 var pres = m_Session.DocumentProject.Presentations.Get(0);
@@ -510,8 +511,9 @@ namespace Tobi.Plugin.Descriptions
                     FileDataProvider.DeleteDirectory(dir);
                 }
 
-
+#if ENABLE_AUDIO_PREVIEW_PLAYER
                 resetAudioPlayer();
+#endif //ENABLE_AUDIO_PREVIEW_PLAYER
             }
             finally
             {
@@ -527,14 +529,16 @@ namespace Tobi.Plugin.Descriptions
         {
             if (DescriptionsListView.SelectedIndex < 0) return;
             AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
-
+#if ENABLE_AUDIO_PREVIEW_PLAYER
             stopAudioPlayer();
+#endif //ENABLE_AUDIO_PREVIEW_PLAYER
 
             m_ViewModel.SetDescriptionAudio(altContent, null);
 
             DescriptionsListView.Items.Refresh();
-
+#if ENABLE_AUDIO_PREVIEW_PLAYER
             resetAudioPlayer();
+#endif //ENABLE_AUDIO_PREVIEW_PLAYER
         }
 
 
@@ -660,13 +664,14 @@ namespace Tobi.Plugin.Descriptions
         //#endif // DEBUG
         //        }
 
-        //        public void AddSubInputBindingManager(IInputBindingManager ibm)
-        //        {
-        //#if DEBUG
-        //            Debugger.Break();
-        //#endif // DEBUG
-        //        }
+//        public void AddSubInputBindingManager(IInputBindingManager ibm)
+//        {
+//#if DEBUG
+//            Debugger.Break();
+//#endif // DEBUG
+//        }
 
+#if ENABLE_AUDIO_PREVIEW_PLAYER
 
         private MediaElement medElement_WINDOWS_MEDIA_PLAYER = null;
 #if ENABLE_WPF_MEDIAKIT
@@ -1475,5 +1480,7 @@ namespace Tobi.Plugin.Descriptions
             }
 #endif //ENABLE_WPF_MEDIAKIT
         }
+
+#endif //ENABLE_AUDIO_PREVIEW_PLAYER
     }
 }

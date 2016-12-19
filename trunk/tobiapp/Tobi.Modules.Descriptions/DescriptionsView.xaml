@@ -2689,16 +2689,18 @@ Padding="6,3,6,3"
                           IsEnabled="{Binding HasDescriptionAudio}"
                     Click="OnClick_ButtonClearAudio"/>
                 </StackPanel>
+                
+<!-- #if ENABLE_AUDIO_PREVIEW_PLAYER -->
 
-                <DockPanel
-                  LastChildFill="True"
-                  HorizontalAlignment="Stretch"
-                         VerticalAlignment="Center">
                   <!--<StackPanel
                 Orientation="Horizontal"          >
 
               </StackPanel>-->
 
+  <!-- DockPanel
+                  LastChildFill="True"
+                  HorizontalAlignment="Stretch"
+                         VerticalAlignment="Center">
                   <Button
                   DockPanel.Dock="Left"
                           FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
@@ -2738,14 +2740,16 @@ Padding="6,3,6,3"
                 LargeChange="1000"
                 SmallChange="500"
                         />
-                  <!-- 
+                 
+                </DockPanel -->
+              
+ <!-- 
               TickFrequency="25"
               Delay="500"
               Interval="15"
               -->
-                </DockPanel>
+                
               </DockPanel>
-
             </TabItem>
 
 
