@@ -16,7 +16,9 @@ namespace Tobi.Plugin.Descriptions
         private void OnSelectionChanged_DescriptionsList(object sender, SelectionChangedEventArgs e)
         {
             m_ViewModel.SetSelectedAlternateContent((AlternateContent)DescriptionsListView.SelectedItem);
+#if ENABLE_AUDIO_PREVIEW_PLAYER
             resetAudioPlayer();
+#endif //ENABLE_AUDIO_PREVIEW_PLAYER
         }
 
 
