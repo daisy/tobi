@@ -185,8 +185,13 @@ namespace Tobi.Plugin.Descriptions
             text = Regex.Replace(text, @"\s+", " ");
             return text;
         }
-
+        
         private void OnClick_ButtonAddEditAudio(object sender, RoutedEventArgs e)
+        {
+            loadAudioWaveformEditorPopupWindow(false);
+        }
+
+        private void loadAudioWaveformEditorPopupWindow(bool playOnOpen)
         {
             if (DescriptionsListView.SelectedIndex < 0) return;
             AlternateContent altContent = (AlternateContent)DescriptionsListView.SelectedItem;
@@ -437,6 +442,10 @@ namespace Tobi.Plugin.Descriptions
                         //var tuple = new Tuple<Tuple<TreeNode, TreeNode>, Tuple<TreeNode, TreeNode>>(oldTreeNodeSelection, treeNodeSelection);
                         //m_audioViewModel.OnTreeNodeSelectionChanged(tuple);
 
+                        if (playOnOpen)
+                        {
+                            audioViewModel.CommandPlay.Execute();
+                        }
                     }));
 
                 Application.Current.MainWindow.Cursor = Cursors.Arrow;
@@ -664,12 +673,12 @@ namespace Tobi.Plugin.Descriptions
         //#endif // DEBUG
         //        }
 
-//        public void AddSubInputBindingManager(IInputBindingManager ibm)
-//        {
-//#if DEBUG
-//            Debugger.Break();
-//#endif // DEBUG
-//        }
+        //        public void AddSubInputBindingManager(IInputBindingManager ibm)
+        //        {
+        //#if DEBUG
+        //            Debugger.Break();
+        //#endif // DEBUG
+        //        }
 
 #if ENABLE_AUDIO_PREVIEW_PLAYER
 
@@ -1480,7 +1489,11 @@ namespace Tobi.Plugin.Descriptions
             }
 #endif //ENABLE_WPF_MEDIAKIT
         }
-
+#else
+        private void OnClick_ButtonAudioPlay(object sender, RoutedEventArgs e)
+        {
+            loadAudioWaveformEditorPopupWindow(true);
+        }
 #endif //ENABLE_AUDIO_PREVIEW_PLAYER
     }
 }

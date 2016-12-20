@@ -2692,6 +2692,19 @@ Padding="6,3,6,3"
                 
 <!-- #if ENABLE_AUDIO_PREVIEW_PLAYER -->
 
+                  <Button
+                  HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"
+                    
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="1"
+                    x:Name="ButtonAudioPlay"
+                        
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioPlay}"
+                          IsEnabled="{Binding HasDescriptionAudio}"
+                    Click="OnClick_ButtonAudioPlay"
+                Margin="0,0,0,0"/>
+                
                   <!--<StackPanel
                 Orientation="Horizontal"          >
 
