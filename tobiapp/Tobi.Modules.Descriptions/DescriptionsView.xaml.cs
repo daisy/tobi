@@ -644,6 +644,8 @@ namespace Tobi.Plugin.Descriptions
         private ScalableGreyableImageProvider m_iconAudioHigh4 = null;
         private ScalableGreyableImageProvider m_iconAudioHigh5 = null;
 
+        private ScalableGreyableImageProvider m_iconAudioHigh6 = null;
+
         private ScalableGreyableImageProvider m_iconAudioMuted1 = null;
         private ScalableGreyableImageProvider m_iconAudioMuted2 = null;
         private ScalableGreyableImageProvider m_iconAudioMuted3 = null;
@@ -677,6 +679,9 @@ namespace Tobi.Plugin.Descriptions
 
                 m_iconAudioHigh5 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-low"), m_ShellView.MagnificationLevel);
                 ButtonAudio_TactileImage.Content = m_iconAudioHigh5.IconMedium;
+
+                m_iconAudioHigh6 = new ScalableGreyableImageProvider(LoadTangoIcon("audio-volume-low"), m_ShellView.MagnificationLevel);
+                AudioIcon.Content = m_iconAudioHigh6.IconMedium;
             }
 
             if (m_iconAudioMuted1 == null)
@@ -702,6 +707,7 @@ namespace Tobi.Plugin.Descriptions
             m_iconAudioHigh3.IconDrawScale = m_ShellView.MagnificationLevel;
             m_iconAudioHigh4.IconDrawScale = m_ShellView.MagnificationLevel;
             m_iconAudioHigh5.IconDrawScale = m_ShellView.MagnificationLevel;
+            m_iconAudioHigh6.IconDrawScale = m_ShellView.MagnificationLevel;
 
             m_iconAudioMuted1.IconDrawScale = m_ShellView.MagnificationLevel;
             m_iconAudioMuted2.IconDrawScale = m_ShellView.MagnificationLevel;

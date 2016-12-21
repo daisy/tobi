@@ -70,6 +70,24 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add/edit....
+        /// </summary>
+        public static string AudioAddEdit {
+            get {
+                return ResourceManager.GetString("AudioAddEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string AudioClear {
+            get {
+                return ResourceManager.GetString("AudioClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Audio (click to edit).
         /// </summary>
         public static string AudioIcon {

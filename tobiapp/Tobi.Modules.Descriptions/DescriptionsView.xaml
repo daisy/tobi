@@ -2668,14 +2668,39 @@ Padding="6,3,6,3"
                 <StackPanel Orientation="Horizontal"
                             DockPanel.Dock="Bottom"
                     HorizontalAlignment="Stretch">
+
+                  <!-- #if ENABLE_AUDIO_PREVIEW_PLAYER -->
+                  <Label
+                  HorizontalAlignment="Stretch"
+                         VerticalAlignment="Center"
+                    Focusable="False"
+                    x:Name="AudioIcon"
+                        
+                          Content="ZXZXZ"
+                          IsEnabled="False"
+                Margin="4,4,0,0"/>
+
+                  <Button
+                  HorizontalAlignment="Stretch"
+                         VerticalAlignment="Center"
+                    
+                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                         Control.TabIndex="1"
+                    x:Name="ButtonAudioPlay"
+                        
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioPlay}"
+                          IsEnabled="{Binding HasDescriptionAudio}"
+                    Click="OnClick_ButtonAudioPlay"
+                Margin="4,4,0,0"/>
+                  
                   <Button
                           FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                          Control.TabIndex="4"
                     x:Name="ButtonAddEditAudio"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
-                          Margin="0,4,0,0"
-                          Content="Add/edit..."
+                          Margin="4,4,0,0"
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioAddEdit}"
                         
                     Click="OnClick_ButtonAddEditAudio"/>
                   <Button
@@ -2685,25 +2710,11 @@ Padding="6,3,6,3"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
                           Margin="4,4,0,0"
-                          Content="Clear"
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioClear}"
                           IsEnabled="{Binding HasDescriptionAudio}"
                     Click="OnClick_ButtonClearAudio"/>
                 </StackPanel>
                 
-<!-- #if ENABLE_AUDIO_PREVIEW_PLAYER -->
-
-                  <Button
-                  HorizontalAlignment="Stretch"
-                         VerticalAlignment="Stretch"
-                    
-                          FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                         Control.TabIndex="1"
-                    x:Name="ButtonAudioPlay"
-                        
-                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AudioPlay}"
-                          IsEnabled="{Binding HasDescriptionAudio}"
-                    Click="OnClick_ButtonAudioPlay"
-                Margin="0,0,0,0"/>
                 
                   <!--<StackPanel
                 Orientation="Horizontal"          >
