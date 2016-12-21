@@ -120,6 +120,12 @@
   <data name="AudioPlay" xml:space="preserve">
     <value>Play</value>
   </data>
+  <data name="AudioClear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="AudioAddEdit" xml:space="preserve">
+    <value>Add/edit...</value>
+  </data>
   <data name="CmdEditDescriptions_LongDesc" xml:space="preserve">
     <value>Modify the description(s) of the selected document item</value>
   </data>
