@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CmdSwitchNarratorView_ShortDesc" xml:space="preserve">
-    <value>Fenêtre du _narrateur</value>
+    <value>Fenêtre de _production</value>
   </data>
   <data name="CmdSwitchNarratorView_LongDesc" xml:space="preserve">
-    <value>Ouvrir / fermer la fenêtre du narrateur audio</value>
+    <value>Ouvre / ferme la fenêtre dédiée à la production audio</value>
   </data>
   <data name="CmdTextOnlyViewToggle_ShortDesc" xml:space="preserve">
     <value>Une seule _phrase de texte</value>
@@ -133,37 +133,131 @@
     <value>_Réduire la sélection</value>
   </data>
   <data name="CmdStructureDown_LongDesc" xml:space="preserve">
-    <value>Réduire la sélection un niveau plus bas dans la structure du document</value>
+    <value>Réduit la sélection un niveau plus bas dans la structure du document</value>
   </data>
   <data name="CmdStructureUp_ShortDesc" xml:space="preserve">
     <value>D_évelopper la sélection</value>
   </data>
   <data name="CmdStructureUp_LongDesc" xml:space="preserve">
-    <value>Augmenter la sélection un niveau plus haut dans la structure du document</value>
+    <value>Agrandit la sélection un niveau plus haut dans la structure du document</value>
   </data>
   <data name="NarratorView" xml:space="preserve">
-    <value>Vue du Narrateur</value>
+    <value>Volet de production</value>
   </data>
   <data name="TextOnly" xml:space="preserve">
     <value>Une seule phrase</value>
+  </data>
+  
+
+  <data name="StructureEditValidationErrorAskDisplayDialog" xml:space="preserve">
+    <value>Modification de structure incorrecte</value>
+  </data>
+  <data name="ConfirmDisplayValidationDialog" xml:space="preserve">
+    <value>Le document XML est incorrect, souhaitez-vous visualiser les erreurs dans le code ?</value>
+  </data>
+
+
+
+
+  <data name="ConfirmStructureClipboard" xml:space="preserve">
+    <value>Confirmer l'écrasement du contenu présent dans le presse-papiers ?</value>
+  </data>
+
+  <data name="InsertDocFragmentFirstInside" xml:space="preserve">
+    <value>En première position</value>
+  </data>
+  <data name="InsertDocFragmentLastInside" xml:space="preserve">
+    <value>En dernière position</value>
+  </data>
+  <data name="InsertDocFragmentBefore" xml:space="preserve">
+    <value>Avant</value>
+  </data>
+  <data name="InsertDocFragmentAfter" xml:space="preserve">
+    <value>Après</value>
+  </data>
+
+<data name="CmdStructEditRemoveFragment_ShortDesc" xml:space="preserve">
+    <value>Supprimer fragment</value>
+  </data>
+  <data name="CmdStructEditRemoveFragment_LongDesc" xml:space="preserve">
+    <value>Supprime le fragment sélectionné du document</value>
+  </data>
+
+  <data name="PageLabel" xml:space="preserve">
+    <value>Intitulé de page (numéro)</value>
+  </data>
+  <data name="CmdStructEditInsertPageBreak_ShortDesc" xml:space="preserve">
+    <value>Insérer saut de page ...</value>
+  </data>
+  <data name="CmdStructEditInsertPageBreak_LongDesc" xml:space="preserve">
+    <value>Insère un saut de page numéroté dans le document</value>
+  </data>
+  <data name="ElementName" xml:space="preserve">
+    <value>Nom d'élément</value>
+  </data>
+  <data name="TextContent" xml:space="preserve">
+    <value>Contenu texte</value>
+  </data>
+  <data name="AdvancedXmlInsert" xml:space="preserve">
+    <value>Au besoin, les experts en XML peuvent ici coder directement, en s'assurant bien de la validité du XML</value>
+  </data>
+
+  <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
+    <value>Insérer du XML personnalisé... (fonction avancée)</value>
+  </data>
+  <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
+    <value>Insérer du XML personnalisé... (fonction avancée)</value>
+  </data>
+  <data name="CmdStructEditInsertFragment_LongDesc" xml:space="preserve">
+    <value>Ajoute des balises standards XML (nom d'élément + contenu texte)</value>
+  </data>
+
+  <data name="CmdStructEditCutFragment_ShortDesc" xml:space="preserve">
+    <value>Couper fragment</value>
+  </data>
+  <data name="CmdStructEditCutFragment_LongDesc" xml:space="preserve">
+    <value>Enlève le fragment sélectionné du document, tout en le conservant dans le presse-papiers de la structure</value>
+  </data>
+
+  <data name="CmdStructEditCopyFragment_ShortDesc" xml:space="preserve">
+    <value>Copier fragment</value>
+  </data>
+  <data name="CmdStructEditCopyFragment_LongDesc" xml:space="preserve">
+    <value>Copie le fragment sélectionné du document dans le presse-papiers de la structure</value>
+  </data>
+
+  <data name="CmdStructEditPasteFragment_ShortDesc" xml:space="preserve">
+    <value>Coller fragment ...</value>
+  </data>
+  <data name="CmdStructEditPasteFragment_LongDesc" xml:space="preserve">
+    <value>Insère le fragment de document présent dans le presse-papiers de la structure dans le document en cours d'utilisation</value>
+  </data>
+  <data name="StructEditConfirmTitle" xml:space="preserve">
+    <value>Avertissement de modification de structure!</value>
+  </data>
+  <data name="StructEditConfirmMessage" xml:space="preserve">
+    <value>Attention : modifier la structure du document est une fonctionnalité réservée aux utilisateurs avancés ; par ailleurs, la détection d'erreurs XML ne prend en compte que les balises DAISY DTBOOK (pas XHTML5 EPUB3). Au moment de l'exportation de votre projet, assurez-vous de la validité du document.</value>
+  </data>
+  <data name="StructEditConfirmDetails" xml:space="preserve">
+    <value>(Ce message ne sera afficher qu'une seule fois par session de projet)</value>
   </data>
   <data name="CmdEditText_ShortDesc" xml:space="preserve">
     <value>Modifier le _texte</value>
   </data>
   <data name="CmdEditText_LongDesc" xml:space="preserve">
-    <value>Modifier le texte de la phrase sélectionnée dans le document</value>
+    <value>Modifie le texte de la phrase sélectionnée dans le document</value>
   </data>
   <data name="CmdFollowLink_ShortDesc" xml:space="preserve">
     <value>Suivre le _lien</value>
   </data>
   <data name="CmdFollowLink_LongDesc" xml:space="preserve">
-    <value>Suivre le lien hypertexte dans le document</value>
+    <value>Suit le lien hypertexte dans le document</value>
   </data>
   <data name="CmdUnfollowLink_ShortDesc" xml:space="preserve">
     <value>_Retour au lien</value>
   </data>
   <data name="CmdUnfollowLink_LongDesc" xml:space="preserve">
-    <value>Revenir au lien hypertexte qui pointe vers l'emplacement actuel dans le document</value>
+    <value>Revient au lien hypertexte qui pointe vers l'emplacement actuel dans le document</value>
   </data>
   <data name="DocumentPanePlugin_Name" xml:space="preserve">
     <value>Volet document.</value>
@@ -172,13 +266,13 @@
     <value>Sélectionner la phrase _suivante</value>
   </data>
   <data name="CmdEventSwitchNext_LongDesc" xml:space="preserve">
-    <value>Sélectionner le morceau de texte suivant dans le document</value>
+    <value>Sélectionne le fragment de texte suivant dans le document</value>
   </data>
   <data name="CmdEventSwitchPrevious_ShortDesc" xml:space="preserve">
     <value>Sélectionner la phrase _précédente</value>
   </data>
   <data name="CmdEventSwitchPrevious_LongDesc" xml:space="preserve">
-    <value>Sélectionner le morceau de texte précédent dans le document</value>
+    <value>Sélectionne le fragment de texte précédent dans le document</value>
   </data>
   <data name="Feature_Not_Available" xml:space="preserve">
     <value>Cette fonction n'est pas disponible.</value>
@@ -190,7 +284,7 @@
     <value>Aucun document.</value>
   </data>
   <data name="DocumentPanePlugin_Description" xml:space="preserve">
-    <value>La visionneuse de document</value>
+    <value>La visionneuse de plubication de document</value>
   </data>
   <data name="CreatingFlowDocument" xml:space="preserve">
     <value>Interprétation du document...</value>
@@ -200,5 +294,8 @@
   </data>
   <data name="CmdTxtFocus_ShortDesc" xml:space="preserve">
     <value>Barre d'outils _document</value>
+  </data>
+<data name="MathMLSelectToShow" xml:space="preserve">
+    <value>Rappel : MathML sera affiché lors de la sélection</value>
   </data>
 </root>

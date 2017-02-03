@@ -124,13 +124,13 @@
     <value>Ouvrir la boîte de dialogue de validation</value>
   </data>
   <data name="ValidatorPlugin_Description" xml:space="preserve">
-    <value>Un cadre pour valider le modèle de données d'un projet Urakawa SDK publié.</value>
+    <value>Un framework pour valider le modèle de données d'un projet conçu à l'aide du SDK Urakawa.</value>
   </data>
   <data name="ValidatorPlugin_Name" xml:space="preserve">
     <value>Validateur de publication.</value>
   </data>
   <data name="ClipboardEndOfValidatorReport" xml:space="preserve">
-    <value>Fin du rapport {0}.
+    <value>Fin du rapport pour {0}.
     
     </value>
     <comment>{0} = validator name</comment>
@@ -147,12 +147,12 @@
     </value>
   </data>
   <data name="ClipboardNoErrors" xml:space="preserve">
-    <value>Aucunes erreurs signalées
+    <value>Aucune erreur signalée
     
     </value>
   </data>
   <data name="ClipboardTotalErrorCount" xml:space="preserve">
-    <value>Erreurs totales : {0}</value>
+    <value>Nombre total d'erreurs : {0}</value>
     <comment>{0} = number of errors</comment>
   </data>
   <data name="ClipboardValidatorEntry" xml:space="preserve">
@@ -165,9 +165,9 @@
     <value>Contenus copiés dans le presse papier.</value>
   </data>
   <data name="CopyAllLink" xml:space="preserve">
-    <value>Copier tous les détails d'erreur dans le presse papier</value>
+    <value>Copier l'ensemble des informations détaillées concernant les erreur dans le presse papier</value>
   </data>
   <data name="CopyLink" xml:space="preserve">
-    <value>Copier les détails dans le presse papier</value>
+    <value>Copier les informations détaillées dans le presse papier</value>
   </data>
 </root>

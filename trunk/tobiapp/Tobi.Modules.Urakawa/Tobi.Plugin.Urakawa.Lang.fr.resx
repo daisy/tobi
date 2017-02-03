@@ -118,83 +118,155 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="UrakawaPlugin_Description" xml:space="preserve">
-    <value>Un environnement pour l’ouverture et l’enregistrement du modèle de donnée d’un projet Urakawa SDK.</value>
+    <value>Un environnement pour l’ouverture et la sauvegarde d'un modèle de donnée d’un projet Urakawa SDK.</value>
   </data>
   <data name="OpenSaveAsQuestion" xml:space="preserve">
-    <value>Voulez-vous ouvrir le projet enregistré ?</value>
+    <value>Voulez-vous ouvrir le projet sauvegardé ?</value>
   </data>
   <data name="OpenSaveAsQuestion_" xml:space="preserve">
-    <value>Ouvrir le projet enregistré ?</value>
+    <value>Ouvrir le projet sauvegardé ?</value>
   </data>
   <data name="CmdOpenDocumentFolder_ShortDesc" xml:space="preserve">
-    <value>Projet en _cours</value>
+    <value>Projet _actuel</value>
   </data>
   <data name="CmdOpenDocumentFolder_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'explorateur de fichiers à l'emplacement du projet actuellement chargé.</value>
+    <value>Ouvre l'explorateur de fichiers à l'emplacement du projet en cours d'utilisation.</value>
   </data>
   <data name="CannotOpenLocalFile" xml:space="preserve">
     <value>Impossible d'ouvrir le fichier.</value>
   </data>
   <data name="CannotOpenLocalFile_" xml:space="preserve">
-    <value>Echec d'ouverture du fichier !</value>
+    <value>L'ouverture du fichier a échoué !</value>
   </data>
   <data name="ValidationIssuesConfirmExport_Title" xml:space="preserve">
     <value>Problèmes de validation</value>
   </data>
   <data name="ValidationIssuesConfirmExport" xml:space="preserve">
-    <value>Il y a des problèmes de validation.
+    <value>Des problèmes liés à la validation ont été détectés.
 Appuyez sur OK pour ignorer, ou ANNULER pour afficher les problèmes.</value>
   </data>
   <data name="DeleteRecentFile_Short" xml:space="preserve">
-    <value>Supprimer les éléments sélectionnés</value>
+    <value>Retirer les éléments sélectionnés</value>
   </data>
   <data name="DeleteRecentFile_Long" xml:space="preserve">
-    <value>Supprimer les éléments sélectionnés de la liste des fichiers récents</value>
+    <value>Retire les éléments sélectionnés de la liste des fichiers récents</value>
   </data>
   <data name="RecentFileName" xml:space="preserve">
     <value>Nom</value>
   </data>
   <data name="RecentFileLocation" xml:space="preserve">
-    <value>Chemin du fichier</value>
+    <value>Chemin d'accès du fichier</value>
   </data>
   <data name="CmdClose_ShortDesc" xml:space="preserve">
     <value>_Fermer</value>
   </data>
   <data name="CmdClose_LongDesc" xml:space="preserve">
-    <value>Fermez le projet en cours</value>
+    <value>Ferme le projet en cours d'utilisation</value>
   </data>
-  <data name="CmdDataCleanup_ShortDesc" xml:space="preserve">
-    <value>_Nettoyage</value>
+<data name="DeleteSplitFiles" xml:space="preserve">
+    <value>Supprimer définitivement les fichiers fractionnés ?</value>
+  </data>
+  <data name="DeleteSplitFilesConfirm" xml:space="preserve">
+    <value>Confirmez-vous la suppressions des fichiers ? (ils ne pourront être restaurés)</value>
+  </data>
+    <data name="CmdDataCleanup_ShortDesc" xml:space="preserve">
+    <value>_Nettoyage (complet)</value>
   </data>
   <data name="CmdDataCleanup_LongDesc" xml:space="preserve">
-    <value>Supprimer les fichiers de données non utilisés par le projet en cours</value>
+    <value>Nettoie en profondeur les données inutilisées du projet (crée toujours de nouveaux fichiers .WAV, rassemble des fragments sonores qui se suivent si la limite maximum est définie)</value>
+  </data>
+  <data name="CmdDataCleanup_OPTIMIZED_ShortDesc" xml:space="preserve">
+    <value>Nettoyage (_rapide)</value>
+  </data>
+  <data name="CmdDataCleanup_OPTIMIZED_LongDesc" xml:space="preserve">
+    <value>Nettoie superficiellement les données inutilisées du projet (garde les fichiers .WAV en l'état, rassemble les fragments audio si la limite maximum est définie)</value>
+  </data>
+  <data name="CmdDataCleanup_ROLLBACK_ShortDesc" xml:space="preserve">
+    <value>_Restaurer avant nettoyage</value>
+  </data>
+  <data name="CmdDataCleanup_ROLLBACK_LongDesc" xml:space="preserve">
+    <value>Tente de revenir à l'état antérieur au dernier nettoyage (seulement disponible si les fichiers inutilisés n'ont pas été supprimés)</value>
+  </data>
+  <data name="CleanupRollbackNoDeletedFiles" xml:space="preserve">
+    <value>Aucun fichier antérieur/supprimé n'a pu être trouvé. Rien ne peut être récupéré. La restauration est annulée.</value>
+  </data>
+  <data name="CleanupRollbackWarning" xml:space="preserve">
+    <value>Restaurer le projet à l'état antérieur au dernier nettoyage ?</value>
+  </data>
+  <data name="OpenSpine" xml:space="preserve">
+    <value>Ouvrir la structure EPUB</value>
+  </data>
+  <data name="ExportFullEpub" xml:space="preserve">
+    <value>Exporter vers full EPUB</value>
   </data>
   <data name="CmdExport_ShortDesc" xml:space="preserve">
     <value>_Exporter...</value>
   </data>
   <data name="CmdExport_LongDesc" xml:space="preserve">
-    <value>Exporter le projet en cours...</value>
+    <value>Exporte le projet en cours d'utilisation...</value>
   </data>
   <data name="CmdMenuClearRecentFiles_ShortDesc" xml:space="preserve">
     <value>_Effacer</value>
   </data>
   <data name="CmdMenuClearRecentFiles_LongDesc" xml:space="preserve">
-    <value>Effacer la liste des fichiers récemment ouverts.</value>
+    <value>Efface la liste des fichiers ouverts récemment.</value>
   </data>
   <data name="Menu_OpenRecent" xml:space="preserve">
     <value>Ouvrir récent</value>
+  </data>
+  <data name="IsSplitMaster" xml:space="preserve">
+    <value>Vous êtes dans un "master" fractionné/fusionné, ne le modifiez pas !</value>
+  </data>
+  <data name="IsSplitSub" xml:space="preserve">
+    <value>Ce projet fait parti d'un "master" fractionné/fusionné (peut être modifié)</value>
+  </data>
+  <data name="SplitMasterNoAudio" xml:space="preserve">
+    <value>Un point de fractionnement/fusionnement ne peut comporter d'anciens fragments audio !</value>
+  </data>
+  <data name="MergeEpubNoParts" xml:space="preserve">
+    <value>Aucun de ces éléments de structure de projet Epub ne semble avoir été fractionné + fusionné.</value>
+  </data>
+  <data name="SplitNothing" xml:space="preserve">
+    <value>Rien à fractionner (pensez à positionner votre marqueur de document).</value>
+  </data>
+  <data name="Menu_SplitMergeProject" xml:space="preserve">
+    <value>Projet à fractionner / fusionner</value>
+  </data>
+  <data name="CmdSplitProject_ShortDesc" xml:space="preserve">
+    <value>_Fractionner...</value>
+  </data>
+  <data name="CmdSplitProject_LongDesc" xml:space="preserve">
+    <value>Divise le projet "master" en cours d'utilisation en sous-projets (en vue d'une distribution à plusieurs donneurs de voix)</value>
+  </data>
+  <data name="ShowMerged" xml:space="preserve">
+    <value>Afficher les éléments de structure fusionnés</value>
+  </data>
+  <data name="Merged" xml:space="preserve">
+    <value>FUSIONNÉ(S)</value>
+  </data>
+  <data name="MergeEPUB" xml:space="preserve">
+    <value>Fusionner full EPUB</value>
+  </data>
+  <data name="MergeEPUB_Finished" xml:space="preserve">
+    <value>Note : ceci est l'EPUB finalisé et fusionné (dossier séparé)</value>
+  </data>
+  <data name="CmdMergeProject_ShortDesc" xml:space="preserve">
+    <value>_Fusionner...</value>
+  </data>
+  <data name="CmdMergeProject_LongDesc" xml:space="preserve">
+    <value>Rassemble plusieurs sous-projets dans le projet master d'origine</value>
   </data>
   <data name="CmdOpenRecent_ShortDesc" xml:space="preserve">
     <value>Ouvrir _récent...</value>
   </data>
   <data name="CmdOpenRecent_LongDesc" xml:space="preserve">
-    <value>Ouvrir la boîte de dialogue des fichiers récents</value>
+    <value>Ouvre la boîte de dialogue des fichiers récents</value>
   </data>
   <data name="CmdShowXukSpine_ShortDesc" xml:space="preserve">
-    <value>Ossature du _projet...</value>
+    <value>Structure du _projet...</value>
   </data>
   <data name="CmdShowXukSpine_LongDesc" xml:space="preserve">
-    <value>Ouvrir la boîte de dialogue Ossature du projet</value>
+    <value>Ouvre la boîte de dialogue Structure du projet</value>
   </data>
   <data name="UrakawaOpenAction_ShortDesc" xml:space="preserve">
     <value>Ouverture du fichier XUK...</value>
@@ -203,19 +275,25 @@ Appuyez sur OK pour ignorer, ou ANNULER pour afficher les problèmes.</value>
     <value>_Ouvrir</value>
   </data>
   <data name="CmdOpen_LongDesc" xml:space="preserve">
-    <value>Ouvrir un projet existant</value>
+    <value>Ouvre un projet existant</value>
   </data>
   <data name="CmdImport_ShortDesc" xml:space="preserve">
     <value>_Importer</value>
   </data>
   <data name="CmdImport_LongDesc" xml:space="preserve">
-    <value>Importer un document pour créer un nouveau projet</value>
+    <value>Importe un document pour créer un nouveau projet</value>
   </data>
   <data name="CmdOpenConvert_ShortDesc" xml:space="preserve">
     <value>DAISY vers EPUB3</value>
   </data>
   <data name="CmdOpenConvert_LongDesc" xml:space="preserve">
-    <value>Convertir de DAISY vers EPUB3</value>
+    <value>Convertit de DAISY vers EPUB3</value>
+  </data>
+  <data name="CmdImportDocx_ShortDesc" xml:space="preserve">
+    <value>MS-Word vers DAISY</value>
+  </data>
+  <data name="CmdImportDocx_LongDesc" xml:space="preserve">
+    <value>Démarre un projet DAISY à partir d'un  document Microsoft Word (*.docx, WordML / OpenXML)</value>
   </data>
   <data name="Overwrite" xml:space="preserve">
     <value>_Ecraser</value>
@@ -237,6 +315,24 @@ Voulez-vous continuer ?</value>
   <data name="ExportIncludeImageDescriptions" xml:space="preserve">
     <value>Inclure/fusionner les descriptions d'images : </value>
   </data>
+<data name="ExportImageDescriptions_AriaDescribedAt" xml:space="preserve">
+    <value>Utiliser ARIA "described-at":</value>
+  </data>
+  <data name="ExportImageDescriptions_AriaDescribedBy" xml:space="preserve">
+    <value>Utiliser ARIA "described-by":</value>
+  </data>
+  <data name="ExportImageDescriptions_HtmlLongDesc" xml:space="preserve">
+    <value>Utiliser HTML "longdesc":</value>
+  </data>
+  <data name="ExportImageDescriptions_inlineTextAudio" xml:space="preserve">
+    <value>Traiter HTML5 text / audio:</value>
+  </data>
+    <data name="ExportAddAudioFileNameHeadings" xml:space="preserve">
+    <value>Ajouter les titres au noms de fichiers audio : </value>
+  </data>
+  <data name="ExportGenerateSmilNotes" xml:space="preserve">
+    <value>Produire SMIL pour les références de note: </value>
+  </data>
   <data name="ExportEncodeMp3" xml:space="preserve">
     <value>Encoder en MP3: </value>
   </data>
@@ -244,7 +340,7 @@ Voulez-vous continuer ?</value>
     <value>Stéréo: </value>
   </data>
   <data name="UseSourceAudioFormatTip" xml:space="preserve">
-    <value>Si la source importée provient d’un livre parlé avec une narration existante, son format audio d'origine peut être préservé en cochant la case ci-dessus.</value>
+    <value>Si la source importée provient d’un livre parlé, son format audio d'origine peut être préservé en cochant la case ci-dessus.</value>
   </data>
   <data name="UseSourceAudioFormat" xml:space="preserve">
     <value>Conserver le format audio de la source : </value>
@@ -252,26 +348,29 @@ Voulez-vous continuer ?</value>
   <data name="UrakawaOpenAction_LongDesc" xml:space="preserve">
     <value>Analyse du contenu XML du fichier XUK...</value>
   </data>
+  <data name="Size" xml:space="preserve">
+    <value>Taille</value>
+  </data>
   <data name="CmdRedo_ShortDesc" xml:space="preserve">
     <value>_Rétablir</value>
   </data>
   <data name="CmdRedo_LongDesc" xml:space="preserve">
-    <value>Exécuter la dernière action annulée</value>
+    <value>Exécute la dernière action annulée</value>
   </data>
   <data name="RunningTask" xml:space="preserve">
     <value>Veuillez patienter...</value>
   </data>
   <data name="CmdSave_ShortDesc" xml:space="preserve">
-    <value>_Enregistrer</value>
+    <value>_Sauvegarder</value>
   </data>
   <data name="CmdSaveAs_ShortDesc" xml:space="preserve">
-    <value>Enregistrer _sous...</value>
+    <value>Sauvegarder _sous...</value>
   </data>
   <data name="CmdSaveAs_LongDesc" xml:space="preserve">
-    <value>Enregistrez le projet en cours sous...</value>
+    <value>Sauvegarde le projet actuel sous...</value>
   </data>
   <data name="CmdSave_LongDesc" xml:space="preserve">
-    <value>Enregistrer le projet en cours</value>
+    <value>Sauvegarde le projet en cours</value>
   </data>
   <data name="CmdUndo_ShortDesc" xml:space="preserve">
     <value>_Annuler</value>
@@ -280,18 +379,18 @@ Voulez-vous continuer ?</value>
     <value>Annuler la dernière action</value>
   </data>
   <data name="UnsavedChanges" xml:space="preserve">
-    <value>_Enregistrer avant de fermer</value>
+    <value>_Sauvegarder avant de fermer</value>
   </data>
   <data name="UnsavedChangesConfirm" xml:space="preserve">
-    <value>Il existe des modifications non enregistrées.
-Voulez-vous enregistrer le projet maintenant ?</value>
+    <value>Certaines modifications n'ont pas été sauvegardées.
+Souhaitez-vous sauvegarder le projet maintenant ?</value>
   </data>
   <data name="UnsavedChangesDetails" xml:space="preserve">
-    <value>Si vous fermez le projet sans enregistrer,
+    <value>Si vous fermez le projet sans sauvegarder,
 les modifications seront perdues !</value>
   </data>
   <data name="UrakawaPlugin_Name" xml:space="preserve">
-    <value>Gestionnaire de session Urakawa SDK.</value>
+    <value>Gestionnaire de session SDK Urakawa.</value>
   </data>
   <data name="Importing" xml:space="preserve">
     <value>Importation en cours...</value>
@@ -300,24 +399,33 @@ les modifications seront perdues !</value>
     <value>Exportation en cours...</value>
   </data>
   <data name="CleaningUpDataFiles" xml:space="preserve">
-    <value>Nettoyage des fichiers de données...</value>
+    <value>Nettoyage des fichiers de données en cours...</value>
   </data>
   <data name="CopyingDataFiles" xml:space="preserve">
-    <value>Copie des fichiers de données...</value>
+    <value>Copie des fichiers de données en cours...</value>
   </data>
   <data name="Saved" xml:space="preserve">
-    <value>Enregistré.</value>
+    <value>Sauvegardé.</value>
   </data>
   <data name="UrakawaSaveAction_ShortDesc" xml:space="preserve">
-    <value>Enregistrement du fichier XUK...</value>
+    <value>Sauvegarde du fichier XUK en cours...</value>
   </data>
   <data name="UrakawaSaveAction_LongDesc" xml:space="preserve">
-    <value>Sauvegarde du projet XML (fichier XUK)...</value>
+    <value>Sauvegarde du projet au format XML (.XUK) en cours...</value>
   </data>
   <data name="UrakawaSession_OpenFile" xml:space="preserve">
     <value>Ouvrir le fichier</value>
   </data>
   <data name="UrakawaSession_SavePath" xml:space="preserve">
-    <value>Chemin du fichier : {0}</value>
+    <value>Chemin d'accès du fichier : {0}</value>
+  </data>
+<data name="WarningFilePathLength_Title" xml:space="preserve">
+    <value>Chemin d'accès trop long!</value>
+  </data>
+  <data name="WarningFilePathLength" xml:space="preserve">
+    <value>Veuillez choisir un chemin d'accès de fichier plus court ({0} caractères maximum).</value>
+  </data>
+  <data name="PleaseUpgradePipeline" xml:space="preserve">
+    <value>Veuillez installer la dernière version du Pipeline2</value>
   </data>
 </root>

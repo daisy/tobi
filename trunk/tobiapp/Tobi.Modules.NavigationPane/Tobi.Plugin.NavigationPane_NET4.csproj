@@ -192,7 +192,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Tobi.Plugin.NavigationPane.Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi.Plugin.NavigationPane.Lang.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tobi.Plugin.NavigationPane.Lang.es.resx" />
     <EmbeddedResource Include="Tobi.Plugin.NavigationPane.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

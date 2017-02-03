@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CheckUnCheckAll" xml:space="preserve">
-    <value>Cocher / décocher tout</value>
+    <value>Tout cocher / décocher</value>
   </data>
   <data name="ToggleVisibility" xml:space="preserve">
     <value>Afficher/masquer</value>
@@ -127,7 +127,7 @@
     <value>_Appliquer</value>
   </data>
   <data name="UnhandledException" xml:space="preserve">
-    <value>Une erreur s'est produite.{0}Le message d'erreur est affiché ci-dessous.{0}Vous pouvez également ouvrir le fichier '{1}' situé ici: [ {2} ].</value>
+    <value>Oups... un problème est survenu.{0}Le message d'erreur est affiché ci-dessous.{0}Vous pouvez retrouver ce message dans le fichier '{1}' situé ici: [ {2} ].</value>
   </data>
   <data name="SearchKeywords" xml:space="preserve">
     <value>rechercher des mots-clés</value>
@@ -136,7 +136,7 @@
     <value>Rechercher : </value>
   </data>
   <data name="Menu_Find" xml:space="preserve">
-    <value>Re_chercher</value>
+    <value>Rec_hercher</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>_Annuler</value>
@@ -145,16 +145,16 @@
     <value>_Fermer</value>
   </data>
   <data name="CmdDetailsCollapse_ShortDesc" xml:space="preserve">
-    <value>Cac_her les détails</value>
+    <value>Mas_quer les détails</value>
   </data>
   <data name="CmdDetailsCollapse_LongDesc" xml:space="preserve">
-    <value>Cacher le détail des informations</value>
+    <value>Masquer les informations détaillées</value>
   </data>
   <data name="CmdDetailsExpand_ShortDesc" xml:space="preserve">
     <value>_Afficher les détails</value>
   </data>
   <data name="CmdDetailsExpand_LongDesc" xml:space="preserve">
-    <value>Afficher le détail des informations</value>
+    <value>Afficher les informations détaillées</value>
   </data>
   <data name="Menu_Audio" xml:space="preserve">
     <value>_Audio</value>
@@ -164,6 +164,9 @@
   </data>
   <data name="Menu_AudioRecording" xml:space="preserve">
     <value>_Enregistrement</value>
+  </data>
+  <data name="Menu_AudioProcessing" xml:space="preserve">
+    <value>_Traitement</value>
   </data>
   <data name="NotFound" xml:space="preserve">
     <value>Non trouvé</value>
@@ -195,6 +198,9 @@
   <data name="Menu_Text" xml:space="preserve">
     <value>_Texte</value>
   </data>
+  <data name="Menu_StructureEdit" xml:space="preserve">
+    <value>Éditer la _structure</value>
+  </data>
   <data name="Menu_BrowseFolder" xml:space="preserve">
     <value>_Parcourir les dossiers</value>
   </data>
@@ -220,12 +226,15 @@
     <value>_Aide</value>
   </data>
   <data name="TextSyncGranularity" xml:space="preserve">
-    <value>Ajustement automatique du détail</value>
+    <value>Ajustement automatique de la granularité</value>
   </data>
   <data name="CmdToggleTextSyncGranularity_ShortDesc" xml:space="preserve">
-    <value>Sync du detail de texte on/off</value>
+    <value>Granularité en fonction du texte on/off</value>
   </data>
   <data name="CmdToggleTextSyncGranularity_LongDesc" xml:space="preserve">
-    <value>Activer / désactiver la synchronisation du détail de texte (quand désactiver, le détail le plus fin est utiliser, sinon le détail est automatiquement ajusté en fonction du contexte)</value>
+    <value>Active / désactive la granularité en fonction  du texte (lorsque  désactiver, la granularité la  plus fine est utilisée, dans le cas contraire cette granularité est automatiquement ajustée en fonction du contenu)</value>
+  </data>
+<data name="DoNotShowMessageAgain" xml:space="preserve">
+    <value>Ne plus afficher ce message</value>
   </data>
 </root>
