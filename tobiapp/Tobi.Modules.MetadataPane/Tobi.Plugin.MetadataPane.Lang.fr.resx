@@ -121,7 +121,7 @@
     <value>L'éditeur des métadonnées de publication</value>
   </data>
   <data name="MetadataPanePlugin_Name" xml:space="preserve">
-    <value>Panneau d'édition des métadonnées</value>
+    <value>Volet d'édition des métadonnées</value>
   </data>
   <data name="Content" xml:space="preserve">
     <value>Contenu</value>
@@ -133,16 +133,16 @@
     <value>Nom</value>
   </data>
   <data name="Metadata_Occurence" xml:space="preserve">
-    <value>Occurrence :</value>
+    <value>Événement :</value>
   </data>
   <data name="TransactionMetadataEdit_ShortDesc" xml:space="preserve">
     <value>Éditeur de métadonnées</value>
   </data>
   <data name="TransactionMetadataEdit_LongDesc" xml:space="preserve">
-    <value>Modifications des métadonnées</value>
+    <value>Édition des métadonnées</value>
   </data>
   <data name="Optional" xml:space="preserve">
-    <value>Optionnel</value>
+    <value>Facultatif</value>
   </data>
   <data name="PrimaryIdentifier" xml:space="preserve">
     <value>ID</value>
@@ -151,19 +151,22 @@
     <value>Recommandé</value>
   </data>
   <data name="Required" xml:space="preserve">
-    <value>Requis</value>
+    <value>Obligatoire</value>
   </data>
   <data name="CmdShowMetadata_ShortDesc" xml:space="preserve">
     <value>Modifier les _métadonnées...</value>
   </data>
   <data name="CmdShowMetadata_LongDesc" xml:space="preserve">
-    <value>Ouvrir l'éditeur de métadonnées</value>
+    <value>Ouvre l'éditeur de métadonnées</value>
   </data>
   <data name="SummaryOfErrors" xml:space="preserve">
     <value>Résumé des erreurs</value>
   </data>
   <data name="Add_new" xml:space="preserve">
     <value>Ajouter un nouvel élément</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Importer les valeurs par défaut...</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>Supprimer</value>
@@ -172,7 +175,7 @@
     <value>Supprimer cet élément</value>
   </data>
   <data name="Delete_Tooltip2" xml:space="preserve">
-    <value>Impossible de supprimer cet élément requis (sauf si doublons)</value>
+    <value>Impossible de supprimer cet élément obligatoire (sauf s'il est en double)</value>
   </data>
   <data name="Errors" xml:space="preserve">
     <value>Erreurs</value>
@@ -194,7 +197,7 @@
     <comment>{0} = error description</comment>
   </data>
   <data name="IsPrimaryIdentifier" xml:space="preserve">
-    <value>Est l'identifiant primaire.</value>
+    <value>Est l'identifiant principal.</value>
   </data>
   <data name="NoErrors" xml:space="preserve">
     <value>Aucune erreur.</value>

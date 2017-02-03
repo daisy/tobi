@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ResetItems_Short" xml:space="preserve">
-    <value>RAZ des sélections</value>
+    <value>Réinitialiser les éléments sélectionnés</value>
   </data>
   <data name="ResetItems_Long" xml:space="preserve">
     <value>Restaurer la valeur par défaut des éléments sélectionnés</value>
@@ -127,28 +127,28 @@
     <value>_Préférences</value>
   </data>
   <data name="Cmd_DisplayEditor" xml:space="preserve">
-    <value>Ouvrir la boîte de dialogue des paramètres d'application</value>
+    <value>Ouvrir la boîte de dialogue des paramètres de l'application</value>
   </data>
   <data name="Find" xml:space="preserve">
     <value>Rechercher :</value>
   </data>
   <data name="InvalidKeyboardShortcut" xml:space="preserve">
-    <value>Raccourci clavier non valide.</value>
+    <value>Raccourci clavier incorrect.</value>
   </data>
   <data name="InvalidEnumValue" xml:space="preserve">
-    <value>Valeur d'énumération non valide, devrait être : ({0})</value>
+    <value>Valeur d'énumération erronée, elle devrait être définie comme suit : ({0})</value>
   </data>
   <data name="InvalidTextAlignment" xml:space="preserve">
-    <value>Alignement du texte non valide (devrait être : Centrer, Gauche, Droit, Justifier).</value>
+    <value>Alignement du texte incorrect (doit se définir comme : Centrer, Gauche, Droit, Justifier).</value>
   </data>
   <data name="InvalidNumericValue" xml:space="preserve">
-    <value>Valeur numérique non valide.</value>
+    <value>Valeur numérique incorrecte.</value>
   </data>
   <data name="NumericValueOutOfRange" xml:space="preserve">
-    <value>Valeur numérique hors champ [0, 999999999].</value>
+    <value>Valeur numérique en dehors de la plage [0, 999999999].</value>
   </data>
   <data name="NumericValueOutOfRange9999" xml:space="preserve">
-    <value>Valeur numérique hors champ [-999999999, 999999999].</value>
+    <value>Valeur numérique en dehors de la plage [-999999999, 999999999].</value>
   </data>
   <data name="Preferences" xml:space="preserve">
     <value>_Préférences</value>
@@ -163,22 +163,22 @@
     <value>Préférences de l'application.</value>
   </data>
   <data name="Settings_OriginalValue" xml:space="preserve">
-    <value>Original: {0}</value>
+    <value>Valeur d'origine: {0}</value>
   </data>
   <data name="ShortcutAlreadyUsed" xml:space="preserve">
     <value>Raccourci déjà utilisé par : {0}</value>
   </data>
   <data name="StringCannotBeEmpty" xml:space="preserve">
-    <value>La chaîne ne peut pas être vide.</value>
+    <value>Ce champ doit être complété.</value>
   </data>
   <data name="StringCannotJustBeSeparators" xml:space="preserve">
-    <value>La chaîne ne peut pas être simplement constituée de séparateurs (par exemple des espaces).</value>
+    <value>La saisie doit comprendre autre chose que des séparateurs (ne pas contenir que  des espaces par exemple).</value>
   </data>
   <data name="ValueNotEmpty" xml:space="preserve">
-    <value>La valeur ne peut être vide.</value>
+    <value>La valeur doit être renseignée.</value>
   </data>
   <data name="Default" xml:space="preserve">
-    <value>Défaut</value>
+    <value>Par défaut</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Nom</value>

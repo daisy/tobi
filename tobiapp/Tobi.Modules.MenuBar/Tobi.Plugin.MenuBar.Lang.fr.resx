@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MenubarPlugin_Description" xml:space="preserve">
-    <value>Le menu contenant les commandes de l'application.</value>
+    <value>Le menu qui contient les commandes de l'application.</value>
   </data>
   <data name="MenubarPlugin_Name" xml:space="preserve">
     <value>Barre de menu de l'application.</value>

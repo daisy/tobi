@@ -124,7 +124,7 @@
     <value>Contenu audio manquant</value>
   </data>
   <data name="MissingAudioMessage" xml:space="preserve">
-    <value>Élement &lt;{0}&gt; audio absent</value>
+    <value>Il manque l'élément &lt;{0}&gt;</value>
     <comment>{0} = element name</comment>
   </data>
   <data name="MissingAudioMessage2" xml:space="preserve">
@@ -138,7 +138,7 @@ L'élément &lt;{0}&gt; n'a pas de contenu audio associé.
     <comment>{0} = element name, {1} = element xml</comment>
   </data>
   <data name="MissingAudioValidator_Description" xml:space="preserve">
-    <value>Rapports de contenu texte sans son associé</value>
+    <value>Il y a du texte sans audio associé</value>
   </data>
   <data name="MissingAudioValidator_Name" xml:space="preserve">
     <value>Audio manquant</value>

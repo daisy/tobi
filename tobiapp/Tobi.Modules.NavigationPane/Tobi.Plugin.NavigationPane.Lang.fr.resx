@@ -124,7 +124,7 @@
     <value>Modifier le Titre</value>
   </data>
   <data name="HeadingEdit_" xml:space="preserve">
-    <value>Veuillez entrer une nouvelle valeur pour ce titre.</value>
+    <value>Veuillez saisir la nouvelle valeur pour ce titre.</value>
   </data>
   <data name="HeadingNavigationPlugin_Description" xml:space="preserve">
     <value>Le volet de navigation</value>
@@ -145,34 +145,34 @@
     <value>(Aucun titre)</value>
   </data>
   <data name="PageFindNext" xml:space="preserve">
-    <value>Recherche suivante</value>
+    <value>Rechercher le suivant</value>
   </data>
   <data name="PageFindNext_" xml:space="preserve">
-    <value>Rechercher l'élément correspondant suivant dans la liste des pages</value>
+    <value>Rechercher l'élément suivant dans la liste des pages</value>
   </data>
   <data name="PageFindNext_FAILURE" xml:space="preserve">
-    <value>Auncune autre correspondance trouvée</value>
+    <value>Aucune autre correspondance trouvée</value>
   </data>
   <data name="PageFindPrev" xml:space="preserve">
-    <value>Recherche précédente</value>
+    <value>Rechercher le précédent</value>
   </data>
   <data name="PageFindPrev_" xml:space="preserve">
-    <value>Rechercher l'élément correspondant précédent dans la liste des pages</value>
+    <value>Rechercher l'élément précédent dans la liste des pages</value>
   </data>
   <data name="PageFindPrev_FAILURE" xml:space="preserve">
     <value>Aucune autre correspondance trouvée</value>
   </data>
   <data name="MarkersNavigationPlugin_Description" xml:space="preserve">
-    <value>Le Plugin des marqueurs de navigation</value>
+    <value>Le navigateur de marqeurs</value>
   </data>
   <data name="MarkersNavigationPlugin_Name" xml:space="preserve">
-    <value>Plugin marqueurs de navigation</value>
+    <value>Navigateur de marqueurs</value>
   </data>
   <data name="PageNavigationPlugin_Description" xml:space="preserve">
-    <value>Le Plugin navigation de page</value>
+    <value>Le navigateur de page</value>
   </data>
   <data name="PageNavigationPlugin_Name" xml:space="preserve">
-    <value>Plugin navigation de page</value>
+    <value>Navigateur de page</value>
   </data>
   <data name="TreeCollapse" xml:space="preserve">
     <value>Ré_duire</value>
@@ -205,19 +205,19 @@
     <value>Développer l'élément courant dans l'arborescence</value>
   </data>
   <data name="TreeFindNext" xml:space="preserve">
-    <value>Recherche suivante</value>
+    <value>Rechercher le suivant</value>
   </data>
   <data name="TreeFindNext_" xml:space="preserve">
-    <value>Rechercher l'élément correspondant suivant dans l'arborescence</value>
+    <value>Rechercher l'élément suivant dans l'arborescence</value>
   </data>
   <data name="TreeFindNext_FAILURE" xml:space="preserve">
     <value>Aucune autre correspondance trouvée</value>
   </data>
   <data name="TreeFindPrev" xml:space="preserve">
-    <value>Recherche précédente</value>
+    <value>Rechercher le précédent</value>
   </data>
   <data name="TreeFindPrev_" xml:space="preserve">
-    <value>Rechercher l'élément correspondant précédent dans l'arborescence</value>
+    <value>Rechercher l'élément  précédent dans l'arborescence</value>
   </data>
   <data name="TreeFindPrev_FAILURE" xml:space="preserve">
     <value>Aucune autre correspondance trouvée</value>
@@ -231,13 +231,40 @@
   <data name="Marks" xml:space="preserve">
     <value>Marques</value>
   </data>
-  <data name="Marked" xml:space="preserve">
+<data name="Menu_Markers" xml:space="preserve">
+    <value>_Marques dans le document</value>
+  </data>
+    <data name="Marked" xml:space="preserve">
     <value>Marqué</value>
   </data>
+  <data name="RemoveAllMarkers" xml:space="preserve">
+    <value>Retirer tout</value>
+  </data>
+  <data name="RenumberPages" xml:space="preserve">
+    <value>Numéros de pages...</value>
+  </data>
+  <data name="PageNumberPrefix" xml:space="preserve">
+    <value>Chaîne pour préfix</value>
+  </data>
+  <data name="PageNumberStart" xml:space="preserve">
+    <value>Page de départ</value>
+  </data>
+  <data name="CmdNavigationRenumberPages_ShortDesc" xml:space="preserve">
+    <value>_Numéros et saut de page</value>
+  </data>
+  <data name="CmdNavigationRenumberPages_LongDesc" xml:space="preserve">
+    <value>Ajuste la numérotation en fonction des sauts de pages</value>
+  </data>
+  <data name="CmdNavigationRemoveAllMarks_ShortDesc" xml:space="preserve">
+    <value>_Retirer toutes les marques dans le document</value>
+  </data>
+  <data name="CmdNavigationRemoveAllMarks_LongDesc" xml:space="preserve">
+    <value>Enlève toutes les marques présentes dans le document</value>
+  </data>
   <data name="CmdNavigationToggleMark_ShortDesc" xml:space="preserve">
-    <value>_Marqueur de document on/off</value>
+    <value>_Marques de document on/off</value>
   </data>
   <data name="CmdNavigationToggleMark_LongDesc" xml:space="preserve">
-    <value>Activer / désactiver le marqueur sur l'élément de texte sélectionné</value>
+    <value>Active / désactive le marqueur sur l'élément de texte sélectionné</value>
   </data>
 </root>

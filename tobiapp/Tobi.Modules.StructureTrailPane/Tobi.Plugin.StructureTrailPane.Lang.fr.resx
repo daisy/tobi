@@ -133,13 +133,13 @@
     <value>Pas de XML</value>
   </data>
   <data name="No_Document" xml:space="preserve">
-    <value>Pas de document.</value>
+    <value>Aucun document.</value>
   </data>
   <data name="Selected" xml:space="preserve">
     <value>, Sélectionné.</value>
   </data>
   <data name="StructureTrailPanePlugin_Description" xml:space="preserve">
-    <value>La visionneuse de document de publication</value>
+    <value>La visionneuse du document de publication</value>
   </data>
   <data name="StructureTrailPanePlugin_Name" xml:space="preserve">
     <value>Volet document.</value>

@@ -136,24 +136,30 @@
     <value>Audio (cliquez pour éditer)</value>
   </data>
   <data name="LongDescriptionHelp" xml:space="preserve">
-    <value>La description longue fournit la description principale de l'image, du graphique ou de la structure visuelle associée. Elle doit par conséquent contenir une explication très complète de l'élément référencé. Consultez l'aide sur la description sommaire pour des informations sur la manière d'inclure une description compacte.</value>
+    <value>La description longue fournit une description complète associée à l'image, au graphique ou à la structure visuelle. Elle doit donc contenir une explication compréhensible de l'élément auquel elle se rapporte. Rendez-vous dans Description sommaire pour des informations sur la façon de rédiger une description ramassée.</value>
   </data>
   <data name="SummaryDescriptionHelp" xml:space="preserve">
-    <value>La description sommaire fournit une version plus courte et plus succincte que la description longue principale.</value>
+    <value>La description sommaire fournit une version plus courte et plus succincte que celle incluse dans la Description longue.</value>
   </data>
   <data name="SimplifiedDescriptionHelp" xml:space="preserve">
-    <value>La description en langage simplifié fournit une version simplifiée de la description longue principale.</value>
+    <value>La description en langage simplifié fournit une version simplifiée de celle  incluse dans la Description longue.</value>
   </data>
   <data name="TactileImageHelp" xml:space="preserve">
-    <value>L'image tactile fournit une image alternative à l'image source, et peut être associée en option à une explication. À l'aide de l'éditeur avancé, il est possible de spécifier une ou plusieurs images tactiles identiques pour différentes méthodes de production, distinguées par leur attribut rôle (par exemple, une pour les productions en thermogonflage et une autre pour les imprimés en reliefs).</value>
+    <value>L'image tactile fournit une image alternative à l'image source, et peut être associée en option à une aide à l'exploration. En utilisant l'éditeur avancé, il est possible de spécifier une ou plusieurs images tactiles identiques pour différentes méthodes de production, distinguées par leur attribut rôle (par exemple, une pour les productions en thermogonflage et une autre pour les impressions en relief).</value>
   </data>
   <data name="SimplifiedImageHelp" xml:space="preserve">
-    <value>L'image simplifiée fournit une version simplifiée de l'image source, et peut être associée à une explication. À l'aide de l'éditeur avancé, il est possible de spécifier une ou plusieurs images simplifiées identiques dans différents formats.</value>
+    <value>L'image simplifiée fournit une version simplifiée de l'image source, et peut être associée à une aide à l'exploration. En utilisant l'éditeur avancé, il est possible de spécifier une ou plusieurs images simplifiées identiques dans différents formats.</value>
   </data>
   <data name="TourHelp" xml:space="preserve">
-    <value>L'explication associée à un graphique tactile ou une image alternative simplifiée fournit une orientation et explique comment explorer les images de manière conceptuelle.</value>
+    <value>L'aide à l'exploration associée à un graphique tactile ou à une image alternative simplifiée fournit une aide à l'orientation et propose une méthode pour explorer les images.</value>
   </data>
   <data name="EditAdvanced" xml:space="preserve">
-    <value>Editer en mode avancé...</value>
+    <value>Éditer en mode avancé...</value>
+  </data>
+<data name="FilterEmptyAlt" xml:space="preserve">
+    <value>Afficher les Alt vides</value>
+  </data>
+  <data name="AddEdit" xml:space="preserve">
+    <value>Ajouter / éditer ...</value>
   </data>
 </root>
