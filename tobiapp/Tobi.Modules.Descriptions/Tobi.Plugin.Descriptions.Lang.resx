@@ -171,4 +171,124 @@
   <data name="AddEdit" xml:space="preserve">
     <value>Add / edit ...</value>
   </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="AlternativeImages" xml:space="preserve">
+    <value>Alternative images</value>
+  </data>
+  <data name="AttributeAlreadyExists" xml:space="preserve">
+    <value>This attribute already exists.</value>
+  </data>
+  <data name="Attributes" xml:space="preserve">
+    <value>Attributes</value>
+  </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Audio</value>
+  </data>
+  <data name="AutomaticallyID" xml:space="preserve">
+    <value>Automatically rename linked identifiers?\n(recommended)</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>Content</value>
+  </data>
+  <data name="Descriptions" xml:space="preserve">
+    <value>Descriptions</value>
+  </data>
+  <data name="DIAGRAMElementName" xml:space="preserve">
+    <value>DIAGRAM element name</value>
+  </data>
+  <data name="DuplicateAttribute" xml:space="preserve">
+    <value>Duplicate attribute!</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="EditAttribute" xml:space="preserve">
+    <value>Edit attribute</value>
+  </data>
+  <data name="EditDescriptionText" xml:space="preserve">
+    <value>Edit description text</value>
+  </data>
+  <data name="EnterTextPlaceholder" xml:space="preserve">
+    <value>[enter text here]</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="FirstSelectImage" xml:space="preserve">
+    <value>You must first select an image to describe.</value>
+  </data>
+  <data name="Image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="LongDescription" xml:space="preserve">
+    <value>Long description</value>
+  </data>
+  <data name="Metadata" xml:space="preserve">
+    <value>Metadata</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NoIssues" xml:space="preserve">
+    <value>No issues detected.</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Open...</value>
+  </data>
+  <data name="OpenDiagramXml" xml:space="preserve">
+    <value>Open DIAGRAM XML file</value>
+  </data>
+  <data name="OpenImage" xml:space="preserve">
+    <value>Open image</value>
+  </data>
+  <data name="Property" xml:space="preserve">
+    <value>Property</value>
+  </data>
+  <data name="RefactorIdentifiers" xml:space="preserve">
+    <value>Refactor identifiers?</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="SimplifiedImage" xml:space="preserve">
+    <value>Simplified image</value>
+  </data>
+  <data name="SimplifiedLanguage" xml:space="preserve">
+    <value>Simplified language</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="SwitchToAdvancedEditor" xml:space="preserve">
+    <value>Switch to advanced editor</value>
+  </data>
+  <data name="SwitchToBasicEditor" xml:space="preserve">
+    <value>Switch to basic editor</value>
+  </data>
+  <data name="TactileImage" xml:space="preserve">
+    <value>Tactile image</value>
+  </data>
+  <data name="Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="TextDescriptions" xml:space="preserve">
+    <value>Text descriptions</value>
+  </data>
+  <data name="Tour" xml:space="preserve">
+    <value>Tour</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Value</value>
+  </data>
 </root>

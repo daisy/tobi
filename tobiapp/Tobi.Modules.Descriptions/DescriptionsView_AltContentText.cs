@@ -69,7 +69,7 @@ namespace Tobi.Plugin.Descriptions
             string oldTxt = altContent.Text != null ? altContent.Text.Text : "";
 
             // returns null only when dialog is cancelled, otherwise trimmed string (potentially empty)
-            string txt = showTextEditorPopupDialog(oldTxt, "Edit description text");
+            string txt = showTextEditorPopupDialog(oldTxt, Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.EditDescriptionText);
 
             if (txt == null) return; // cancel
             if (txt == "" || txt == oldTxt) return;

@@ -83,7 +83,7 @@ namespace Tobi.Plugin.Descriptions
         {
             var label = new TextBlock
             {
-                Text = "Automatically rename linked identifiers?\n(recommended)",
+                Text = Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.AutomaticallyID,
                 Margin = new Thickness(8, 0, 8, 0),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -104,7 +104,7 @@ namespace Tobi.Plugin.Descriptions
             //panel.Margin = new Thickness(8, 8, 8, 0);
 
             var popup = new PopupModalWindow(m_ShellView,
-                                                 UserInterfaceStrings.EscapeMnemonic("Refactor identifiers?"),
+                                                 UserInterfaceStrings.EscapeMnemonic(Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.RefactorIdentifiers),
                                                  panel,
                                                  PopupModalWindow.DialogButtonsSet.YesNo,
                                                  PopupModalWindow.DialogButton.Yes,
@@ -139,7 +139,7 @@ namespace Tobi.Plugin.Descriptions
             {
                 var label = new TextBlock
                 {
-                    Text = "You must first select an image to describe.",
+                    Text = Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.FirstSelectImage,
                     Margin = new Thickness(8, 0, 8, 0),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
@@ -555,7 +555,7 @@ namespace Tobi.Plugin.Descriptions
                 CheckPathExists = false,
                 AddExtension = true,
                 DereferenceLinks = true,
-                Title = "Tobi: " + "Open DIAGRAM XML file"
+                Title = "Tobi: " + Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.OpenDiagramXml
             };
 
             bool? result = false;
@@ -730,7 +730,7 @@ namespace Tobi.Plugin.Descriptions
             }
         }
 
-        private string TEXTFIELD_WATERMARK = "[enter text here]";
+        private string TEXTFIELD_WATERMARK = Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.EnterTextPlaceholder;
 
         ~DescriptionsView()
         {
