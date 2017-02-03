@@ -72,7 +72,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttrTEMP, out newName, out newValue, true, false, invalidSyntax);
+                ok = showMetadataAttributeEditorPopupDialog(Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.Name, Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.Value, mdAttrTEMP, out newName, out newValue, true, false, invalidSyntax);
 
                 if (!ok)
                 {
@@ -112,7 +112,7 @@ namespace Tobi.Plugin.Descriptions
                 {
                     var label = new TextBlock
                     {
-                        Text = "This attribute already exists.",
+                        Text = Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.AttributeAlreadyExists,
                         Margin = new Thickness(8, 0, 8, 0),
                         HorizontalAlignment = HorizontalAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Center,
@@ -133,7 +133,7 @@ namespace Tobi.Plugin.Descriptions
                     //panel.Margin = new Thickness(8, 8, 8, 0);
 
                     var windowPopup = new PopupModalWindow(m_ShellView,
-                                                         UserInterfaceStrings.EscapeMnemonic("Duplicate attribute!"),
+                                                         UserInterfaceStrings.EscapeMnemonic(Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.DuplicateAttribute),
                                                          panel,
                                                          PopupModalWindow.DialogButtonsSet.Ok,
                                                          PopupModalWindow.DialogButton.Ok,
@@ -216,7 +216,7 @@ namespace Tobi.Plugin.Descriptions
                 )
             )
             {
-                ok = showMetadataAttributeEditorPopupDialog("Name", "Value", mdAttr, out newName, out newValue, true, false, invalidSyntax);
+                ok = showMetadataAttributeEditorPopupDialog(Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.Name, Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.Value, mdAttr, out newName, out newValue, true, false, invalidSyntax);
                 mdAttr.Name = newName;
                 mdAttr.Value = newValue;
                 if (!string.IsNullOrEmpty(newName) && !string.IsNullOrEmpty(newValue))
@@ -241,7 +241,7 @@ namespace Tobi.Plugin.Descriptions
                 {
                     var label = new TextBlock
                     {
-                        Text = "This attribute already exists.",
+                        Text = Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.AttributeAlreadyExists,
                         Margin = new Thickness(8, 0, 8, 0),
                         HorizontalAlignment = HorizontalAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Center,
@@ -262,7 +262,7 @@ namespace Tobi.Plugin.Descriptions
                     //panel.Margin = new Thickness(8, 8, 8, 0);
 
                     var windowPopup = new PopupModalWindow(m_ShellView,
-                                                         UserInterfaceStrings.EscapeMnemonic("Duplicate attribute!"),
+                                                         UserInterfaceStrings.EscapeMnemonic(Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.DuplicateAttribute),
                                                          panel,
                                                          PopupModalWindow.DialogButtonsSet.Ok,
                                                          PopupModalWindow.DialogButton.Ok,

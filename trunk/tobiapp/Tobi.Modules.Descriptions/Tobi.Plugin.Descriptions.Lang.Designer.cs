@@ -61,11 +61,56 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add / edit ....
         /// </summary>
         public static string AddEdit {
             get {
                 return ResourceManager.GetString("AddEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alternative images.
+        /// </summary>
+        public static string AlternativeImages {
+            get {
+                return ResourceManager.GetString("AlternativeImages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This attribute already exists..
+        /// </summary>
+        public static string AttributeAlreadyExists {
+            get {
+                return ResourceManager.GetString("AttributeAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attributes.
+        /// </summary>
+        public static string Attributes {
+            get {
+                return ResourceManager.GetString("Attributes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio.
+        /// </summary>
+        public static string Audio {
+            get {
+                return ResourceManager.GetString("Audio", resourceCulture);
             }
         }
         
@@ -106,6 +151,24 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Automatically rename linked identifiers?\n(recommended).
+        /// </summary>
+        public static string AutomaticallyID {
+            get {
+                return ResourceManager.GetString("AutomaticallyID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string Clear {
+            get {
+                return ResourceManager.GetString("Clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Modify the description(s) of the selected document item.
         /// </summary>
         public static string CmdEditDescriptions_LongDesc {
@@ -120,6 +183,24 @@ namespace Tobi.Plugin.Descriptions {
         public static string CmdEditDescriptions_ShortDesc {
             get {
                 return ResourceManager.GetString("CmdEditDescriptions_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content.
+        /// </summary>
+        public static string Content {
+            get {
+                return ResourceManager.GetString("Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Descriptions.
+        /// </summary>
+        public static string Descriptions {
+            get {
+                return ResourceManager.GetString("Descriptions", resourceCulture);
             }
         }
         
@@ -142,11 +223,74 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DIAGRAM element name.
+        /// </summary>
+        public static string DIAGRAMElementName {
+            get {
+                return ResourceManager.GetString("DIAGRAMElementName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate attribute!.
+        /// </summary>
+        public static string DuplicateAttribute {
+            get {
+                return ResourceManager.GetString("DuplicateAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit in advanced mode....
         /// </summary>
         public static string EditAdvanced {
             get {
                 return ResourceManager.GetString("EditAdvanced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit attribute.
+        /// </summary>
+        public static string EditAttribute {
+            get {
+                return ResourceManager.GetString("EditAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit description text.
+        /// </summary>
+        public static string EditDescriptionText {
+            get {
+                return ResourceManager.GetString("EditDescriptionText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [enter text here].
+        /// </summary>
+        public static string EnterTextPlaceholder {
+            get {
+                return ResourceManager.GetString("EnterTextPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string Export {
+            get {
+                return ResourceManager.GetString("Export", resourceCulture);
             }
         }
         
@@ -160,11 +304,65 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must first select an image to describe..
+        /// </summary>
+        public static string FirstSelectImage {
+            get {
+                return ResourceManager.GetString("FirstSelectImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image.
+        /// </summary>
+        public static string Image {
+            get {
+                return ResourceManager.GetString("Image", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string Import {
+            get {
+                return ResourceManager.GetString("Import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Long description.
+        /// </summary>
+        public static string LongDescription {
+            get {
+                return ResourceManager.GetString("LongDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The long description provides the primary description of the associated image, graphic or visually-oriented structure. It should therefore contain a comprehensive explanation of the referenced item. See the summary description for information on how to include a compact description..
         /// </summary>
         public static string LongDescriptionHelp {
             get {
                 return ResourceManager.GetString("LongDescriptionHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata.
+        /// </summary>
+        public static string Metadata {
+            get {
+                return ResourceManager.GetString("Metadata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
@@ -178,11 +376,92 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No issues detected..
+        /// </summary>
+        public static string NoIssues {
+            get {
+                return ResourceManager.GetString("NoIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notes.
+        /// </summary>
+        public static string Notes {
+            get {
+                return ResourceManager.GetString("Notes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open....
+        /// </summary>
+        public static string Open {
+            get {
+                return ResourceManager.GetString("Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open DIAGRAM XML file.
+        /// </summary>
+        public static string OpenDiagramXml {
+            get {
+                return ResourceManager.GetString("OpenDiagramXml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open image.
+        /// </summary>
+        public static string OpenImage {
+            get {
+                return ResourceManager.GetString("OpenImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property.
+        /// </summary>
+        public static string Property {
+            get {
+                return ResourceManager.GetString("Property", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refactor identifiers?.
+        /// </summary>
+        public static string RefactorIdentifiers {
+            get {
+                return ResourceManager.GetString("RefactorIdentifiers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string Remove {
+            get {
+                return ResourceManager.GetString("Remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The simplified language description provides a simplified version of the primary long description..
         /// </summary>
         public static string SimplifiedDescriptionHelp {
             get {
                 return ResourceManager.GetString("SimplifiedDescriptionHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Simplified image.
+        /// </summary>
+        public static string SimplifiedImage {
+            get {
+                return ResourceManager.GetString("SimplifiedImage", resourceCulture);
             }
         }
         
@@ -196,11 +475,56 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Simplified language.
+        /// </summary>
+        public static string SimplifiedLanguage {
+            get {
+                return ResourceManager.GetString("SimplifiedLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Summary.
+        /// </summary>
+        public static string Summary {
+            get {
+                return ResourceManager.GetString("Summary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The summary description provides a shorter, more succinct version of the primary long description..
         /// </summary>
         public static string SummaryDescriptionHelp {
             get {
                 return ResourceManager.GetString("SummaryDescriptionHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch to advanced editor.
+        /// </summary>
+        public static string SwitchToAdvancedEditor {
+            get {
+                return ResourceManager.GetString("SwitchToAdvancedEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch to basic editor.
+        /// </summary>
+        public static string SwitchToBasicEditor {
+            get {
+                return ResourceManager.GetString("SwitchToBasicEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tactile image.
+        /// </summary>
+        public static string TactileImage {
+            get {
+                return ResourceManager.GetString("TactileImage", resourceCulture);
             }
         }
         
@@ -214,11 +538,47 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Text.
+        /// </summary>
+        public static string Text {
+            get {
+                return ResourceManager.GetString("Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text descriptions.
+        /// </summary>
+        public static string TextDescriptions {
+            get {
+                return ResourceManager.GetString("TextDescriptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tour.
+        /// </summary>
+        public static string Tour {
+            get {
+                return ResourceManager.GetString("Tour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The tour description associated with a tactile graphic or a simplified alternative image provides orientation, and explains how to conceptually explore the images..
         /// </summary>
         public static string TourHelp {
             get {
                 return ResourceManager.GetString("TourHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string Value {
+            get {
+                return ResourceManager.GetString("Value", resourceCulture);
             }
         }
     }

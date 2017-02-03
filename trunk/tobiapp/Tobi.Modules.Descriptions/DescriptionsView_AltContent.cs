@@ -41,7 +41,7 @@ namespace Tobi.Plugin.Descriptions
                 // returns null only when dialog is cancelled, otherwise trimmed string (potentially empty)
                 descriptionName = showLineEditorPopupDialog(
                     txt,
-                    "DIAGRAM element name",
+                    Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.DIAGRAMElementName,
                     DiagramContentModelHelper.DIAGRAM_ElementNames,
                     invalidSyntax);
                 txt = descriptionName;

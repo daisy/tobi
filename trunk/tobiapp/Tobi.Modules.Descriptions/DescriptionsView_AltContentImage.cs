@@ -28,7 +28,7 @@ namespace Tobi.Plugin.Descriptions
                 CheckPathExists = false,
                 AddExtension = true,
                 DereferenceLinks = true,
-                Title = "Tobi: " + "Open image"
+                Title = "Tobi: " + Tobi.Plugin.Descriptions.Tobi_Plugin_Descriptions_Lang.OpenImage
             };
 
             bool? result = false;

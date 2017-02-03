@@ -73,7 +73,7 @@
       
             Style="{StaticResource ToolBarButtonBaseStyle}"
           
-               Content="Switch to basic editor"
+               Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SwitchToBasicEditor}"
                Click="OnClick_ButtonGoBasic"
                Padding="4,2,4,2"
                Margin="4,2,4,0"
@@ -94,7 +94,7 @@
       
           Style="{StaticResource ToolBarButtonBaseStyle}"
           
-             Content="Switch to advanced editor"
+             Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SwitchToAdvancedEditor}"
              Click="OnClick_ButtonGoAdvanced"
              Padding="4,2,4,2"
              Margin="4,2,4,0"
@@ -133,7 +133,7 @@
         
         Click="OnClick_ButtonImport"
         KeyUp="OnKeyUp_ButtonImport">
-        <Run Text="Import"/>
+        <Run Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Import}"/>
       </Hyperlink>
     </TextBlock>
 
@@ -156,7 +156,7 @@
         
             Click="OnClick_ButtonExport"
             KeyUp="OnKeyUp_ButtonExport">
-            <Run Text="Export"/>
+            <Run Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Export}"/>
           </Hyperlink>
         </TextBlock>
         
@@ -217,7 +217,7 @@
                 HorizontalAlignment="Stretch"
               >
 
-      <TabItem Header="Text descriptions">
+      <TabItem Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TextDescriptions}">
     <DockPanel
       KeyboardNavigation.TabNavigation="Local"
    
@@ -279,7 +279,7 @@
             </Hyperlink.Style>
             <Run
             FontWeight="Bold"
-            Text="Long Description"></Run>
+            Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.LongDescription}"></Run>
           </Hyperlink>
 
         </GroupBox.Header>
@@ -297,7 +297,7 @@
           VerticalAlignment="Center"
           HorizontalAlignment="Left"
                 Margin="0,4,0,0"
-                Content="Edit"
+                Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Edit}"
                       
           Click="OnClick_ButtonEditText_LongDesc"/>
         <Button
@@ -307,7 +307,7 @@
           VerticalAlignment="Center"
           HorizontalAlignment="Left"
                 Margin="4,4,0,0"
-                Content="Clear"
+                Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Clear}"
                 IsEnabled="{Binding HasDescriptionText_LongDesc}"
           Click="OnClick_ButtonRemoveText_LongDesc"/>
 
@@ -489,7 +489,7 @@
             </Hyperlink.Style>
             <Run
             FontWeight="Bold"
-            Text="Summary"></Run>
+            Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Summary}"></Run>
           </Hyperlink>
 
         </GroupBox.Header>
@@ -506,7 +506,7 @@
               VerticalAlignment="Center"
               HorizontalAlignment="Left"
                     Margin="0,4,0,0"
-                    Content="Edit"
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Edit}"
                       
               Click="OnClick_ButtonEditText_Summary"/>
             <Button
@@ -516,7 +516,7 @@
               VerticalAlignment="Center"
               HorizontalAlignment="Left"
                     Margin="4,4,0,0"
-                    Content="Clear"
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Clear}"
                     IsEnabled="{Binding HasDescriptionText_Summary}"
               Click="OnClick_ButtonRemoveText_Summary"/>
 
@@ -695,7 +695,7 @@
               </Hyperlink.Style>
               <Run
               FontWeight="Bold"
-              Text="Simplified Language"></Run>
+              Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SimplifiedLanguage}"></Run>
             </Hyperlink>
           </GroupBox.Header>
 
@@ -710,7 +710,7 @@
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                       Margin="0,4,0,0"
-                      Content="Edit"
+                      Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Edit}"
                       
                 Click="OnClick_ButtonEditText_SimplifiedLanguage"/>
               <Button
@@ -720,7 +720,7 @@
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                       Margin="4,4,0,0"
-                      Content="Clear"
+                      Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Clear}"
                       IsEnabled="{Binding HasDescriptionText_SimplifiedLanguage}"
                 Click="OnClick_ButtonRemoveText_SimplifiedLanguage"/>
 
@@ -886,7 +886,7 @@
           <GroupBox.Header>
 
             <TextBlock
-            Text="Notes"
+            Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Notes}"
         
             Focusable="true"
             FontWeight="Bold"
@@ -897,7 +897,7 @@
           </GroupBox.Header>
 
           <TextBlock
-          Text="No issues detected."
+          Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoIssues}"
         
           Focusable="true"
           FontWeight="Bold"
@@ -926,7 +926,7 @@ Padding="6,3,6,3"
               FontWeight="Bold"
                     KeyboardNavigation.IsTabStop="True"
                     KeyboardNavigation.TabIndex="1"
-                        Text="Notes"/>
+                        Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Notes}"/>
           </GroupBox.Header>
 
           <ScrollViewer
@@ -954,7 +954,7 @@ Padding="6,3,6,3"
 
       </TabItem>
 
-      <TabItem Header="Alternative Images">
+      <TabItem Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.AlternativeImages}">
 
         <DockPanel
           KeyboardNavigation.TabNavigation="Local"
@@ -1047,7 +1047,7 @@ Padding="6,3,6,3"
                       </Hyperlink.Style>
                       <Run
                       FontWeight="Bold"
-                      Text="Simplified Image"></Run>
+                      Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.SimplifiedImage}"></Run>
                     </Hyperlink>
                     </TextBlock>
                     
@@ -1062,7 +1062,7 @@ Padding="6,3,6,3"
                       VerticalAlignment="Bottom"
                       HorizontalAlignment="Stretch"
                             Margin="0,4,0,0"
-                            Content="Open..."
+                            Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Open}"
                         
                       Click="OnClick_ButtonOpenImage_Simplified"/>
                     <Button
@@ -1072,7 +1072,7 @@ Padding="6,3,6,3"
                       VerticalAlignment="Bottom"
                       HorizontalAlignment="Stretch"
                             Margin="4,4,0,0"
-                            Content="Clear"
+                            Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Clear}"
                             IsEnabled="{Binding HasDescriptionImage_Simplified}"
                       Click="OnClick_ButtonClearImage_Simplified"/>
 
@@ -1205,7 +1205,7 @@ Padding="6,3,6,3"
                         </Hyperlink.Style>
                         <Run
                         FontWeight="Bold"
-                        Text="Tour"></Run>
+                        Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Tour}"></Run>
                       </Hyperlink>
                     </TextBlock>
                     <StackPanel Orientation="Horizontal"
@@ -1218,7 +1218,7 @@ Padding="6,3,6,3"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                           Margin="0,4,0,0"
-                          Content="Edit"
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Edit}"
                       
                     Click="OnClick_ButtonEditText_SimplifiedImage"/>
                   <Button
@@ -1226,7 +1226,7 @@ Padding="6,3,6,3"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                           Margin="4,4,0,0"
-                          Content="Clear"
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Clear}"
                           IsEnabled="{Binding HasDescriptionText_SimplifiedImage}"
                     Click="OnClick_ButtonClearText_SimplifiedImage"
                     
@@ -1443,7 +1443,7 @@ Padding="6,3,6,3"
                     </Hyperlink.Style>
                     <Run
                     FontWeight="Bold"
-                    Text="Tactile Image"></Run>
+                    Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.TactileImage}"></Run>
                   </Hyperlink>
                   </TextBlock>
                   <StackPanel Orientation="Horizontal"
@@ -1457,7 +1457,7 @@ Padding="6,3,6,3"
                       VerticalAlignment="Bottom"
                       HorizontalAlignment="Stretch"
                             Margin="0,4,0,0"
-                            Content="Open..."
+                            Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Open}"
                         
                       Click="OnClick_ButtonOpenImage_Tactile"/>
                     <Button
@@ -1467,7 +1467,7 @@ Padding="6,3,6,3"
                       VerticalAlignment="Bottom"
                       HorizontalAlignment="Stretch"
                             Margin="4,4,0,0"
-                            Content="Clear"
+                            Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Clear}"
                             IsEnabled="{Binding HasDescriptionImage_Tactile}"
                       Click="OnClick_ButtonClearImage_Tactile"/>
 
@@ -1601,7 +1601,7 @@ Padding="6,3,6,3"
                     </Hyperlink.Style>
                     <Run
                     FontWeight="Bold"
-                    Text="Tour"></Run>
+                    Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Tour}"></Run>
                   </Hyperlink>
                   </TextBlock>
                     
@@ -1615,7 +1615,7 @@ Padding="6,3,6,3"
                       VerticalAlignment="Bottom"
                       HorizontalAlignment="Stretch"
                             Margin="0,4,0,0"
-                            Content="Edit"
+                            Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Edit}"
                       
                       Click="OnClick_ButtonEditText_TactileImage"/>
                     <Button
@@ -1623,7 +1623,7 @@ Padding="6,3,6,3"
                       VerticalAlignment="Bottom"
                       HorizontalAlignment="Stretch"
                             Margin="4,4,0,0"
-                            Content="Clear"
+                            Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Clear}"
                             IsEnabled="{Binding HasDescriptionText_TactileImage}"
                       Click="OnClick_ButtonClearText_TactileImage"
                     
@@ -1795,7 +1795,7 @@ MinHeight="40"
               <GroupBox.Header>
 
                 <TextBlock
-                Text="Notes"
+                Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Notes}"
         
                 Focusable="true"
                 FontWeight="Bold"
@@ -1806,7 +1806,7 @@ MinHeight="40"
               </GroupBox.Header>
 
               <TextBlock
-              Text="No issues detected."
+              Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoIssues}"
         
               Focusable="true"
               FontWeight="Bold"
@@ -1835,7 +1835,7 @@ Padding="6,3,6,3"
                   FontWeight="Bold"
                         KeyboardNavigation.IsTabStop="True"
                         KeyboardNavigation.TabIndex="1"
-                            Text="Notes"/>
+                            Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Notes}"/>
               </GroupBox.Header>
 
               <ScrollViewer
@@ -1879,7 +1879,7 @@ Padding="6,3,6,3"
     
     Visibility="{Binding ShowAdvancedEditor, Mode=OneWay, Converter={XAML:BooleanToVisibilityConverter}}"
               >
-    <TabItem Header="Metadata">
+    <TabItem Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Metadata}">
 
       <DockPanel LastChildFill="true">
 
@@ -1910,7 +1910,7 @@ Padding="6,3,6,3"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
                     Margin="0,4,0,0"
-                    Content="Add"
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Add}"
 
               Click="OnClick_ButtonAddMetadata"/>
             <Button
@@ -1920,7 +1920,7 @@ Padding="6,3,6,3"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
                     Margin="4,4,4,0"
-                    Content="Edit"
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Edit}"
                    IsEnabled="{Binding HasMetadata}"
               Click="OnClick_ButtonEditMetadata"/>
             <Button
@@ -1930,7 +1930,7 @@ Padding="6,3,6,3"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
                     Margin="0,4,0,0"
-                    Content="Remove"
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Remove}"
 IsEnabled="{Binding HasMetadata}"
               Click="OnClick_ButtonRemoveMetadata"/>
           </StackPanel>
@@ -1963,12 +1963,12 @@ IsEnabled="{Binding HasMetadata}"
             <ListView.View>
               <GridView AllowsColumnReorder="false">
 
-                <UI:SortableGridViewColumn Header="Property"
+                <UI:SortableGridViewColumn Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Property}"
                                 SortPropertyName="NameContentAttribute.Name"
                                 DisplayMemberBinding="{Binding NameContentAttribute.Name, Mode=OneWay}"
                                              Width="150"/>
 
-                <UI:SortableGridViewColumn Header="Content"
+                <UI:SortableGridViewColumn Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Content}"
                                 SortPropertyName="NameContentAttribute.Value"
                                 DisplayMemberBinding="{Binding NameContentAttribute.Value, Mode=OneWay}"
                                              Width="150"/>
@@ -2130,7 +2130,7 @@ IsEnabled="{Binding HasMetadata}"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
                     Margin="0,4,0,0"
-                    Content="Add"
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Add}"
                     
               Click="OnClick_ButtonAddMetadataAttr"/>
             <Button
@@ -2141,7 +2141,7 @@ IsEnabled="{Binding HasMetadata}"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
                     Margin="4,4,4,0"
-                    Content="Edit"
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Edit}"
                     IsEnabled="{Binding HasMetadataAttrs}"
               Click="OnClick_ButtonEditMetadataAttr"/>
             <Button
@@ -2151,7 +2151,7 @@ IsEnabled="{Binding HasMetadata}"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
                     Margin="0,4,0,0"
-                    Content="Remove"
+                    Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Remove}"
                     IsEnabled="{Binding HasMetadataAttrs}"
               Click="OnClick_ButtonRemoveMetadataAttr"/>
           </StackPanel>
@@ -2183,12 +2183,12 @@ AlternationCount="2"
           <ListView.View>
             <GridView AllowsColumnReorder="false">
 
-              <UI:SortableGridViewColumn Header="Name"
+              <UI:SortableGridViewColumn Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Name}"
                               SortPropertyName="Name"
                               DisplayMemberBinding="{Binding Name, Mode=OneWay}"
                                            Width="150"/>
 
-              <UI:SortableGridViewColumn Header="Value"
+              <UI:SortableGridViewColumn Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Value}"
                               SortPropertyName="Value"
                               DisplayMemberBinding="{Binding Value, Mode=OneWay}"
                                            Width="150"/>
@@ -2348,7 +2348,7 @@ KeyboardNavigation.TabNavigation="Local"
           <GroupBox.Header>
 
             <TextBlock
-            Text="Notes"
+            Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Notes}"
         
             Focusable="true"
             FontWeight="Bold"
@@ -2359,7 +2359,7 @@ KeyboardNavigation.TabNavigation="Local"
           </GroupBox.Header>
 
           <TextBlock
-          Text="No issues detected."
+          Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoIssues}"
         
           Focusable="true"
           FontWeight="Bold"
@@ -2390,7 +2390,7 @@ Padding="6,3,6,3"
               FontWeight="Bold"
                     KeyboardNavigation.IsTabStop="True"
                     KeyboardNavigation.TabIndex="1"
-                        Text="Notes"/>
+                        Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Notes}"/>
           </GroupBox.Header>
 
           <ScrollViewer
@@ -2419,7 +2419,7 @@ Padding="6,3,6,3"
     </TabItem>
     
     
-    <TabItem Header="Descriptions" x:Name="TabItem_Descriptions">
+    <TabItem Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Descriptions}" x:Name="TabItem_Descriptions">
 
       <DockPanel LastChildFill="true">
 
@@ -2451,7 +2451,7 @@ Padding="6,3,6,3"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Stretch"
                       Margin="0,4,0,0"
-                      Content="Add"
+                      Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Add}"
                     
                 Click="OnClick_ButtonAddDescription"/>
               <Button
@@ -2461,7 +2461,7 @@ Padding="6,3,6,3"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Stretch"
                       Margin="4,4,0,0"
-                      Content="Remove"
+                      Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Remove}"
                       IsEnabled="{Binding HasDescriptions}"
                 Click="OnClick_ButtonRemoveDescription"/>
             </StackPanel>
@@ -2605,7 +2605,7 @@ Padding="6,3,6,3"
             </TabControl.Resources>
 
 
-            <TabItem Header="Text" x:Name="TabItem_Text">
+            <TabItem Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Text}" x:Name="TabItem_Text">
               <DockPanel LastChildFill="True"
           KeyboardNavigation.TabNavigation="Local">
                 <StackPanel Orientation="Horizontal"
@@ -2618,7 +2618,7 @@ Padding="6,3,6,3"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
                           Margin="0,4,0,0"
-                          Content="Edit"
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Edit}"
                       
                     Click="OnClick_ButtonEditText"/>
                   <Button
@@ -2628,7 +2628,7 @@ Padding="6,3,6,3"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
                           Margin="4,4,0,0"
-                          Content="Clear"
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Clear}"
                           IsEnabled="{Binding HasDescriptionText}"
                     Click="OnClick_ButtonClearText"/>
                 </StackPanel>
@@ -2651,7 +2651,7 @@ Padding="6,3,6,3"
 
 
 
-            <TabItem Header="Audio" x:Name="TabItem_Audio">
+            <TabItem Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Audio}" x:Name="TabItem_Audio">
 
               <DockPanel LastChildFill="True"
                          x:Name="AudioMediaElementContainer"
@@ -2777,7 +2777,7 @@ Padding="6,3,6,3"
             </TabItem>
 
 
-                            <TabItem Header="Image" x:Name="TabItem_Image">
+                            <TabItem Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Image}" x:Name="TabItem_Image">
                                 <DockPanel LastChildFill="True"
           KeyboardNavigation.TabNavigation="Local">
 
@@ -2797,7 +2797,7 @@ Padding="6,3,6,3"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
                           Margin="0,4,0,0"
-                          Content="Open..."
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Open}"
                         
                     Click="OnClick_ButtonOpenImage"/>
                                         <Button
@@ -2807,7 +2807,7 @@ Padding="6,3,6,3"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
                           Margin="4,4,0,0"
-                          Content="Clear"
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Clear}"
                           IsEnabled="{Binding HasDescriptionImage}"
                     Click="OnClick_ButtonClearImage"/>
                                     </StackPanel>
@@ -2844,7 +2844,7 @@ Padding="6,3,6,3"
                             </TabItem>
 
 
-                            <TabItem Header="Attributes" x:Name="TabItem_Attributes">
+                            <TabItem Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Attributes}" x:Name="TabItem_Attributes">
 
               <DockPanel LastChildFill="True"
           KeyboardNavigation.TabNavigation="Local">
@@ -2859,7 +2859,7 @@ Padding="6,3,6,3"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
                           Margin="0,4,0,0"
-                          Content="Add"
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Add}"
 
                     Click="OnClick_ButtonAddMetadataAltContent"/>
                   <Button
@@ -2869,7 +2869,7 @@ Padding="6,3,6,3"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
                           Margin="4,4,4,0"
-                          Content="Edit"
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Edit}"
   IsEnabled="{Binding HasDescriptionMetadata}"
                     Click="OnClick_ButtonEditMetadataAltContent"/>
                   <Button
@@ -2879,7 +2879,7 @@ Padding="6,3,6,3"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
                           Margin="0,4,0,0"
-                          Content="Remove"
+                          Content="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Remove}"
   IsEnabled="{Binding HasDescriptionMetadata}"
                     Click="OnClick_ButtonRemoveMetadataAltContent"/>
                 </StackPanel>
@@ -2910,12 +2910,12 @@ Padding="6,3,6,3"
                   <ListView.View>
                     <GridView AllowsColumnReorder="false">
 
-                      <UI:SortableGridViewColumn Header="Name"
+                      <UI:SortableGridViewColumn Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Name}"
                                       SortPropertyName="NameContentAttribute.Name"
                                       DisplayMemberBinding="{Binding NameContentAttribute.Name, Mode=OneWay}"
                                                    Width="150"/>
 
-                      <UI:SortableGridViewColumn Header="Value"
+                      <UI:SortableGridViewColumn Header="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Value}"
                                       SortPropertyName="NameContentAttribute.Value"
                                       DisplayMemberBinding="{Binding NameContentAttribute.Value, Mode=OneWay}"
                                                    Width="150"/>
@@ -3075,7 +3075,7 @@ MinHeight="40"
             <GroupBox.Header>
 
               <TextBlock
-              Text="Notes"
+              Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Notes}"
         
               Focusable="true"
               FontWeight="Bold"
@@ -3086,7 +3086,7 @@ MinHeight="40"
             </GroupBox.Header>
 
             <TextBlock
-            Text="No issues detected."
+            Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.NoIssues}"
         
             Focusable="true"
             FontWeight="Bold"
@@ -3117,7 +3117,7 @@ Padding="6,3,6,3"
               FontWeight="Bold"
                       KeyboardNavigation.IsTabStop="True"
                       KeyboardNavigation.TabIndex="1"
-                          Text="Notes"/>
+                          Text="{x:Static Descriptions:Tobi_Plugin_Descriptions_Lang.Notes}"/>
             </GroupBox.Header>
 
             <ScrollViewer
