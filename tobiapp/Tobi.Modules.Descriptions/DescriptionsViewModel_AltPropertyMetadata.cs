@@ -288,7 +288,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Some identifiers are invalid: ";
+                    message += Tobi_Plugin_Descriptions_Lang.InvalidIDs;
+                    message += " ";
                     message += strInvalidIDS;
                 }
             }
@@ -313,7 +314,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Some identifiers are duplicated (this may be valid if used for grouping metadata): ";
+                    message += Tobi_Plugin_Descriptions_Lang.DuplicatedIDs;
+                    message += " ";
                     message += strDupIDS;
                 }
             }
@@ -338,7 +340,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Some identifiers are referenced, but are missing: ";
+                    message += Tobi_Plugin_Descriptions_Lang.MissingIDs;
+                    message += " ";
                     message += strMissingIDS;
                 }
             }
@@ -363,7 +366,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Some language tags are invalid: ";
+                    message += Tobi_Plugin_Descriptions_Lang.InvalidLanguageTags;
+                    message += " ";
                     message += strInvalidLangs;
                 }
             }
@@ -388,7 +392,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Some dates appear to be invalid: ";
+                    message += Tobi_Plugin_Descriptions_Lang.InvalidDates;
+                    message += " ";
                     message += strInvalidDates;
                 }
             }

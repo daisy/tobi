@@ -232,11 +232,38 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to - Invalid syntax for DIAGRAM elements: .
+        /// </summary>
+        public static string DiagramElementsInvalidSyntax {
+            get {
+                return ResourceManager.GetString("DiagramElementsInvalidSyntax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - Unknown DIAGRAM elements:.
+        /// </summary>
+        public static string DiagramUnknownElements {
+            get {
+                return ResourceManager.GetString("DiagramUnknownElements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate attribute!.
         /// </summary>
         public static string DuplicateAttribute {
             get {
                 return ResourceManager.GetString("DuplicateAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - Some identifiers are duplicated (this may be valid if used for grouping objects):.
+        /// </summary>
+        public static string DuplicatedIDs {
+            get {
+                return ResourceManager.GetString("DuplicatedIDs", resourceCulture);
             }
         }
         
@@ -331,6 +358,78 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to - Some dates seem invalid:.
+        /// </summary>
+        public static string InvalidDates {
+            get {
+                return ResourceManager.GetString("InvalidDates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - Some identifiers are invalid:.
+        /// </summary>
+        public static string InvalidIDs {
+            get {
+                return ResourceManager.GetString("InvalidIDs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - Some language tags are invalid:.
+        /// </summary>
+        public static string InvalidLanguageTags {
+            get {
+                return ResourceManager.GetString("InvalidLanguageTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (has other data).
+        /// </summary>
+        public static string LongDescHasOtherData {
+            get {
+                return ResourceManager.GetString("LongDescHasOtherData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (has other data, see advanced editor).
+        /// </summary>
+        public static string LongDescHasOtherDataAdvanced {
+            get {
+                return ResourceManager.GetString("LongDescHasOtherDataAdvanced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - No long description is specified..
+        /// </summary>
+        public static string LongDescMissing {
+            get {
+                return ResourceManager.GetString("LongDescMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - There are more than one long description.
+        /// </summary>
+        public static string LongDescMoreThanOne {
+            get {
+                return ResourceManager.GetString("LongDescMoreThanOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - The long description shouldn&apos;t have an image..
+        /// </summary>
+        public static string LongDescNoImage {
+            get {
+                return ResourceManager.GetString("LongDescNoImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Long description.
         /// </summary>
         public static string LongDescription {
@@ -349,11 +448,29 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to - The long description text is missing..
+        /// </summary>
+        public static string LongDescTextMissing {
+            get {
+                return ResourceManager.GetString("LongDescTextMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Metadata.
         /// </summary>
         public static string Metadata {
             get {
                 return ResourceManager.GetString("Metadata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - Some identifiers are referenced, but are missing:.
+        /// </summary>
+        public static string MissingIDs {
+            get {
+                return ResourceManager.GetString("MissingIDs", resourceCulture);
             }
         }
         
@@ -466,6 +583,24 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to - The simplified image has audio but no corresponding tour..
+        /// </summary>
+        public static string SimplifiedImageAudioNoTour {
+            get {
+                return ResourceManager.GetString("SimplifiedImageAudioNoTour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to which will be grouped if they have the same identifier and share the same tour..
+        /// </summary>
+        public static string SimplifiedImageGroupID {
+            get {
+                return ResourceManager.GetString("SimplifiedImageGroupID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The simplified image provides a simplified version of the source image, optionally associated with an explanatory tour. Using the advanced editor, it is possible to specify one or more identical simplified images, in different formats..
         /// </summary>
         public static string SimplifiedImageHelp {
@@ -475,11 +610,74 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to - The simplified image is missing..
+        /// </summary>
+        public static string SimplifiedImageMissing {
+            get {
+                return ResourceManager.GetString("SimplifiedImageMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - Image is missing for simplified image..
+        /// </summary>
+        public static string SimplifiedImageMissingImage {
+            get {
+                return ResourceManager.GetString("SimplifiedImageMissingImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - There are more than one simplified image.
+        /// </summary>
+        public static string SimplifiedImageMoreThanOne {
+            get {
+                return ResourceManager.GetString("SimplifiedImageMoreThanOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - Tour text is recommended for simplified image..
+        /// </summary>
+        public static string SimplifiedImageTourRecommended {
+            get {
+                return ResourceManager.GetString("SimplifiedImageTourRecommended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Simplified language.
         /// </summary>
         public static string SimplifiedLanguage {
             get {
                 return ResourceManager.GetString("SimplifiedLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - There are more than one simplified language.
+        /// </summary>
+        public static string SimplifiedLanguageMoreThanOne {
+            get {
+                return ResourceManager.GetString("SimplifiedLanguageMoreThanOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - The simplified language shouldn&apos;t have an image..
+        /// </summary>
+        public static string SimplifiedLanguageNoImage {
+            get {
+                return ResourceManager.GetString("SimplifiedLanguageNoImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - The simplified language text is missing..
+        /// </summary>
+        public static string SimplifiedLanguageTextMissing {
+            get {
+                return ResourceManager.GetString("SimplifiedLanguageTextMissing", resourceCulture);
             }
         }
         
@@ -498,6 +696,33 @@ namespace Tobi.Plugin.Descriptions {
         public static string SummaryDescriptionHelp {
             get {
                 return ResourceManager.GetString("SummaryDescriptionHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - There are more than one summary.
+        /// </summary>
+        public static string SummaryMoreThanOne {
+            get {
+                return ResourceManager.GetString("SummaryMoreThanOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - The summary shouldn&apos;t have an image..
+        /// </summary>
+        public static string SummaryNoImage {
+            get {
+                return ResourceManager.GetString("SummaryNoImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - The summary text is missing..
+        /// </summary>
+        public static string SummaryTextMissing {
+            get {
+                return ResourceManager.GetString("SummaryTextMissing", resourceCulture);
             }
         }
         
@@ -529,11 +754,56 @@ namespace Tobi.Plugin.Descriptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to - The tactile image has audio but no corresponding tour..
+        /// </summary>
+        public static string TactileImageAudioNoTour {
+            get {
+                return ResourceManager.GetString("TactileImageAudioNoTour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The tactile image provides an alternative image to the source image, optionally associated with an explanatory tour. Using the advanced editor, it is possible to specify one or more identical tactile images for different production methods, differentiated by their role attribute (e.g., one for swell paper production and another for stereolithograph printing)..
         /// </summary>
         public static string TactileImageHelp {
             get {
                 return ResourceManager.GetString("TactileImageHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - The tactile image is missing..
+        /// </summary>
+        public static string TactileImageMissing {
+            get {
+                return ResourceManager.GetString("TactileImageMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - Image is missing for tactile image..
+        /// </summary>
+        public static string TactileImageMissingImage {
+            get {
+                return ResourceManager.GetString("TactileImageMissingImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - There are more than one tactile image.
+        /// </summary>
+        public static string TactileImageMoreThanOne {
+            get {
+                return ResourceManager.GetString("TactileImageMoreThanOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to - Tour text is recommended for tactile image..
+        /// </summary>
+        public static string TactileImageTourRecommended {
+            get {
+                return ResourceManager.GetString("TactileImageTourRecommended", resourceCulture);
             }
         }
         
