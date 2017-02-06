@@ -202,7 +202,7 @@
     <value>Nom d'élément DIAGRAM</value>
   </data>
   <data name="DuplicateAttribute" xml:space="preserve">
-    <value>Attribut en double!</value>
+    <value>Attribut en double !</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Éditer</value>
@@ -288,7 +288,97 @@
   <data name="Tour" xml:space="preserve">
     <value>Guide</value>
   </data>
+  <data name="LongDescMissing" xml:space="preserve">
+    <value>- Description longue manquante.</value>
+  </data>
   <data name="Value" xml:space="preserve">
     <value>Valeur</value>
+  </data>
+  <data name="LongDescMoreThanOne" xml:space="preserve">
+    <value>- Il y a plus qu'une seule description longue</value>
+  </data>
+  <data name="LongDescTextMissing" xml:space="preserve">
+    <value>- Le texte de la description longue est manquant.</value>
+  </data>
+  <data name="LongDescHasOtherData" xml:space="preserve">
+    <value>(il y a d'autres données)</value>
+  </data>
+  <data name="LongDescNoImage" xml:space="preserve">
+    <value>- La description longue ne devrait pas avoir d'image.</value>
+  </data>
+  <data name="SummaryMoreThanOne" xml:space="preserve">
+    <value>Il y a plus q'un seul résumé</value>
+  </data>
+  <data name="SummaryTextMissing" xml:space="preserve">
+    <value>- Le texte du résumé est manquant.</value>
+  </data>
+  <data name="SummaryNoImage" xml:space="preserve">
+    <value>- Le résumé ne devrait pas avoir d'image.</value>
+  </data>
+  <data name="SimplifiedImageMoreThanOne" xml:space="preserve">
+    <value>- Il y a plus qu'une seule image simplifiée</value>
+  </data>
+  <data name="SimplifiedLanguageTextMissing" xml:space="preserve">
+    <value>- Le texte de la langue simplifiée est manquant.</value>
+  </data>
+  <data name="SimplifiedLanguageNoImage" xml:space="preserve">
+    <value>- La langue simplifiée ne devrait pas avoir d'image.</value>
+  </data>
+  <data name="SimplifiedLanguageMoreThanOne" xml:space="preserve">
+    <value>- Il y a plus qu'une seule langue simplifiée</value>
+  </data>
+  <data name="SimplifiedImageGroupID" xml:space="preserve">
+    <value>qui seront groupées si elles ont le meme identifiant et guide</value>
+  </data>
+  <data name="SimplifiedImageAudioNoTour" xml:space="preserve">
+    <value>- L'image simplifiée a de l'audio mais pas de guide correspondant</value>
+  </data>
+  <data name="SimplifiedImageMissingImage" xml:space="preserve">
+    <value>- L'image simplifiée n'a pas d'image.</value>
+  </data>
+  <data name="SimplifiedImageTourRecommended" xml:space="preserve">
+    <value>- Le guide est recommendé pour l'image simplifiée</value>
+  </data>
+  <data name="TactileImageMoreThanOne" xml:space="preserve">
+    <value>- Il y a plus qu'une seule image tactile</value>
+  </data>
+  <data name="TactileImageAudioNoTour" xml:space="preserve">
+    <value>- L'image tactile a de l'audio mais pas de guide correspondant.</value>
+  </data>
+  <data name="TactileImageMissingImage" xml:space="preserve">
+    <value>- L'image tactile n'a pas d'image.</value>
+  </data>
+  <data name="TactileImageTourRecommended" xml:space="preserve">
+    <value>- Le guide est recommendé pour l'image tactile</value>
+  </data>
+  <data name="DiagramUnknownElements" xml:space="preserve">
+    <value>- Elements DIAGRAM inconnus:</value>
+  </data>
+  <data name="DiagramElementsInvalidSyntax" xml:space="preserve">
+    <value>- Syntaxe invalide pour élements DIAGRAM:</value>
+  </data>
+  <data name="InvalidIDs" xml:space="preserve">
+    <value>- Certains identifiants sont invalides:</value>
+  </data>
+  <data name="DuplicatedIDs" xml:space="preserve">
+    <value>- Certains élements sont dupliqués (ceci peut etre valide si utilisé pour grouper des objets):</value>
+  </data>
+  <data name="MissingIDs" xml:space="preserve">
+    <value>- Certains identifiants sont référencés, mais sont manquants:</value>
+  </data>
+  <data name="InvalidLanguageTags" xml:space="preserve">
+    <value>- Certains codes de langue sont invalides:</value>
+  </data>
+  <data name="SimplifiedImageMissing" xml:space="preserve">
+    <value>- L'image simplifiée est manquante</value>
+  </data>
+  <data name="LongDescHasOtherDataAdvanced" xml:space="preserve">
+    <value>(il y a d'autres données, voir l'éditeur avancé)</value>
+  </data>
+  <data name="TactileImageMissing" xml:space="preserve">
+    <value>- L'image tactile est manquante</value>
+  </data>
+  <data name="InvalidDates" xml:space="preserve">
+    <value>- Certaines dates semblent invalides:</value>
   </data>
 </root>

@@ -211,7 +211,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- It is recommended to specify a tour for the simplified image.";
+                        message += Tobi_Plugin_Descriptions_Lang.SimplifiedImageTourRecommended;
                     }
                 }
 
@@ -234,10 +234,11 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The simplified image is missing.";
+                        message += Tobi_Plugin_Descriptions_Lang.SimplifiedImageMissing;
                         if (otherDataInAdvancedMode)
                         {
-                            message += " (has other data, see advanced editor)";
+                            message += " ";
+                            message += Tobi_Plugin_Descriptions_Lang.LongDescHasOtherDataAdvanced;
                         }
                     }
                 }
@@ -268,7 +269,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The simplified image has audio but no corresponding tour.";
+                        message += Tobi_Plugin_Descriptions_Lang.SimplifiedImageAudioNoTour;
                     }
                 }
             }
@@ -287,7 +288,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- It is recommended to specify a tour for the tactile image.";
+                        message += Tobi_Plugin_Descriptions_Lang.TactileImageTourRecommended;
                     }
                 }
                 bool otherDataInAdvancedMode = altContent.Audio != null
@@ -309,10 +310,11 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The tactile image is missing.";
+                        message += Tobi_Plugin_Descriptions_Lang.TactileImageMissing;
                         if (otherDataInAdvancedMode)
                         {
-                            message += " (has other data, see advanced editor)";
+                            message += " ";
+                            message += Tobi_Plugin_Descriptions_Lang.LongDescHasOtherDataAdvanced;
                         }
                     }
                 }
@@ -343,7 +345,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The tactile image has audio but no corresponding tour.";
+                        message += Tobi_Plugin_Descriptions_Lang.TactileImageAudioNoTour;
                     }
                 }
             }

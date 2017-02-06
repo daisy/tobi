@@ -288,7 +288,97 @@
   <data name="Tour" xml:space="preserve">
     <value>Tour</value>
   </data>
+  <data name="LongDescMissing" xml:space="preserve">
+    <value>- No long description is specified.</value>
+  </data>
   <data name="Value" xml:space="preserve">
     <value>Value</value>
+  </data>
+  <data name="LongDescMoreThanOne" xml:space="preserve">
+    <value>- There are more than one long description</value>
+  </data>
+  <data name="LongDescTextMissing" xml:space="preserve">
+    <value>- The long description text is missing.</value>
+  </data>
+  <data name="LongDescHasOtherData" xml:space="preserve">
+    <value>(has other data)</value>
+  </data>
+  <data name="LongDescNoImage" xml:space="preserve">
+    <value>- The long description shouldn't have an image.</value>
+  </data>
+  <data name="SummaryMoreThanOne" xml:space="preserve">
+    <value>- There are more than one summary</value>
+  </data>
+  <data name="SummaryTextMissing" xml:space="preserve">
+    <value>- The summary text is missing.</value>
+  </data>
+  <data name="SummaryNoImage" xml:space="preserve">
+    <value>- The summary shouldn't have an image.</value>
+  </data>
+  <data name="SimplifiedImageMoreThanOne" xml:space="preserve">
+    <value>- There are more than one simplified image</value>
+  </data>
+  <data name="SimplifiedLanguageTextMissing" xml:space="preserve">
+    <value>- The simplified language text is missing.</value>
+  </data>
+  <data name="SimplifiedLanguageNoImage" xml:space="preserve">
+    <value>- The simplified language shouldn't have an image.</value>
+  </data>
+  <data name="SimplifiedLanguageMoreThanOne" xml:space="preserve">
+    <value>- There are more than one simplified language</value>
+  </data>
+  <data name="SimplifiedImageGroupID" xml:space="preserve">
+    <value>which will be grouped if they have the same identifier and share the same tour.</value>
+  </data>
+  <data name="SimplifiedImageAudioNoTour" xml:space="preserve">
+    <value>- The simplified image has audio but no corresponding tour.</value>
+  </data>
+  <data name="SimplifiedImageMissingImage" xml:space="preserve">
+    <value>- Image is missing for simplified image.</value>
+  </data>
+  <data name="SimplifiedImageTourRecommended" xml:space="preserve">
+    <value>- Tour text is recommended for simplified image.</value>
+  </data>
+  <data name="TactileImageMoreThanOne" xml:space="preserve">
+    <value>- There are more than one tactile image</value>
+  </data>
+  <data name="TactileImageAudioNoTour" xml:space="preserve">
+    <value>- The tactile image has audio but no corresponding tour.</value>
+  </data>
+  <data name="TactileImageMissingImage" xml:space="preserve">
+    <value>- Image is missing for tactile image.</value>
+  </data>
+  <data name="TactileImageTourRecommended" xml:space="preserve">
+    <value>- Tour text is recommended for tactile image.</value>
+  </data>
+  <data name="DiagramUnknownElements" xml:space="preserve">
+    <value>- Unknown DIAGRAM elements:</value>
+  </data>
+  <data name="DiagramElementsInvalidSyntax" xml:space="preserve">
+    <value>- Invalid syntax for DIAGRAM elements: </value>
+  </data>
+  <data name="InvalidIDs" xml:space="preserve">
+    <value>- Some identifiers are invalid:</value>
+  </data>
+  <data name="DuplicatedIDs" xml:space="preserve">
+    <value>- Some identifiers are duplicated (this may be valid if used for grouping objects):</value>
+  </data>
+  <data name="MissingIDs" xml:space="preserve">
+    <value>- Some identifiers are referenced, but are missing:</value>
+  </data>
+  <data name="InvalidLanguageTags" xml:space="preserve">
+    <value>- Some language tags are invalid:</value>
+  </data>
+  <data name="SimplifiedImageMissing" xml:space="preserve">
+    <value>- The simplified image is missing.</value>
+  </data>
+  <data name="LongDescHasOtherDataAdvanced" xml:space="preserve">
+    <value>(has other data, see advanced editor)</value>
+  </data>
+  <data name="TactileImageMissing" xml:space="preserve">
+    <value>- The tactile image is missing.</value>
+  </data>
+  <data name="InvalidDates" xml:space="preserve">
+    <value>- Some dates seem invalid:</value>
   </data>
 </root>

@@ -218,7 +218,7 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- A long description must be specified.";
+                    message += Tobi_Plugin_Descriptions_Lang.LongDescMissing;
                 }
             }
             else
@@ -242,7 +242,8 @@ namespace Tobi.Plugin.Descriptions
                 //        message += "- The long description has no text.";
                 //        if (otherDataInAdvancedMode)
                 //        {
-                //            message += " (has other data, see advanced editor)";
+                //message += " ";
+                //message += Tobi_Plugin_Descriptions_Lang.LongDescHasOtherDataAdvanced;
                 //        }
                 //    }
                 //}
@@ -283,10 +284,11 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The summary has no text.";
+                        message += Tobi_Plugin_Descriptions_Lang.SummaryTextMissing;
                         if (otherDataInAdvancedMode)
                         {
-                            message += " (has other data, see advanced editor)";
+                            message += " ";
+                            message += Tobi_Plugin_Descriptions_Lang.LongDescHasOtherDataAdvanced;
                         }
                     }
                 }
@@ -327,10 +329,11 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The simplified language has no text.";
+                        message += Tobi_Plugin_Descriptions_Lang.SimplifiedLanguageTextMissing;
                         if (otherDataInAdvancedMode)
                         {
-                            message += " (has other data, see advanced editor)";
+                            message += " ";
+                            message += Tobi_Plugin_Descriptions_Lang.LongDescHasOtherDataAdvanced;
                         }
                     }
                 }

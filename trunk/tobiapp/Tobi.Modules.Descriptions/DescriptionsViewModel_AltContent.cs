@@ -125,7 +125,7 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- No long description is specified.";
+                    message += Tobi_Plugin_Descriptions_Lang.LongDescMissing;
                 }
             }
             else if (count > 1)
@@ -140,7 +140,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- There are more than one long description (";
+                    message += Tobi_Plugin_Descriptions_Lang.LongDescMoreThanOne;
+                    message += "(";
                     message += count;
                     message += ")";
                 }
@@ -183,7 +184,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The long description text is missing.";
+                        message += Tobi_Plugin_Descriptions_Lang.LongDescTextMissing;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -192,7 +193,8 @@ namespace Tobi.Plugin.Descriptions
                         }
                         if (otherDataInAdvancedMode)
                         {
-                            message += " (has other data)";
+                            message += " ";
+                            message += Tobi_Plugin_Descriptions_Lang.LongDescHasOtherData;
                         }
                     }
                 }
@@ -212,7 +214,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The long description shouldn't have an image.";
+                        message += Tobi_Plugin_Descriptions_Lang.LongDescNoImage;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -254,7 +256,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- There are more than one summary (";
+                    message += Tobi_Plugin_Descriptions_Lang.SummaryMoreThanOne;
+                    message += " (";
                     message += count;
                     message += ")";
                 }
@@ -297,7 +300,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The summary text is missing.";
+                        message += Tobi_Plugin_Descriptions_Lang.SummaryTextMissing;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -306,7 +309,8 @@ namespace Tobi.Plugin.Descriptions
                         }
                         if (otherDataInAdvancedMode)
                         {
-                            message += " (has other data)";
+                            message += " ";
+                            message += Tobi_Plugin_Descriptions_Lang.LongDescHasOtherData;
                         }
                     }
                 }
@@ -326,7 +330,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The summary shouldn't have an image.";
+                        message += Tobi_Plugin_Descriptions_Lang.SummaryNoImage;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -354,7 +358,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- There are more than one simplified language (";
+                    message += Tobi_Plugin_Descriptions_Lang.SimplifiedLanguageMoreThanOne;
+                    message += " (";
                     message += count;
                     message += ")";
                 }
@@ -397,7 +402,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The simplified language text is missing.";
+                        message += Tobi_Plugin_Descriptions_Lang.SimplifiedLanguageTextMissing;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -406,7 +411,8 @@ namespace Tobi.Plugin.Descriptions
                         }
                         if (otherDataInAdvancedMode)
                         {
-                            message += " (has other data)";
+                            message += " ";
+                            message += Tobi_Plugin_Descriptions_Lang.LongDescHasOtherData;
                         }
                     }
                 }
@@ -426,7 +432,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The simplified language shouldn't have an image.";
+                        message += Tobi_Plugin_Descriptions_Lang.SimplifiedLanguageNoImage;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -454,9 +460,11 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- There are more than one simplified image (";
+                    message += Tobi_Plugin_Descriptions_Lang.SimplifiedImageMoreThanOne;
+                    message += " (";
                     message += count;
-                    message += "), which will be grouped if they have the same identifier and share the same tour.";
+                    message += "), ";
+                    message += Tobi_Plugin_Descriptions_Lang.SimplifiedImageGroupID;
                 }
             }
 
@@ -474,7 +482,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The simplified image has audio but no corresponding tour.";
+                        message += Tobi_Plugin_Descriptions_Lang.SimplifiedImageAudioNoTour;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -502,7 +510,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- Image is missing for simplified image.";
+                        message += Tobi_Plugin_Descriptions_Lang.SimplifiedImageMissingImage;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -511,7 +519,8 @@ namespace Tobi.Plugin.Descriptions
                         }
                         if (otherDataInAdvancedMode)
                         {
-                            message += " (has other data)";
+                            message += " ";
+                            message += Tobi_Plugin_Descriptions_Lang.LongDescHasOtherData;
                         }
                     }
                 }
@@ -532,7 +541,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- Tour text is recommended for simplified image.";
+                        message += Tobi_Plugin_Descriptions_Lang.SimplifiedImageTourRecommended;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -560,9 +569,11 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- There are more than one tactile image (";
+                    message += Tobi_Plugin_Descriptions_Lang.TactileImageMoreThanOne;
+                    message += " (";
                     message += count;
-                    message += "), which will be grouped if they have the same identifier and share the same tour.";
+                    message += "), ";
+                    message += Tobi_Plugin_Descriptions_Lang.SimplifiedImageGroupID;
                 }
             }
 
@@ -580,7 +591,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- The tactile image has audio but no corresponding tour.";
+                        message += Tobi_Plugin_Descriptions_Lang.TactileImageAudioNoTour;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -608,7 +619,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- Image is missing for tactile image.";
+                        message += Tobi_Plugin_Descriptions_Lang.TactileImageMissingImage;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -617,7 +628,8 @@ namespace Tobi.Plugin.Descriptions
                         }
                         if (otherDataInAdvancedMode)
                         {
-                            message += " (has other data)";
+                            message += " ";
+                            message += Tobi_Plugin_Descriptions_Lang.LongDescHasOtherData;
                         }
                     }
                 }
@@ -638,7 +650,7 @@ namespace Tobi.Plugin.Descriptions
                     first = false;
                     if (message != null)
                     {
-                        message += "- Tour text is recommended for tactile image.";
+                        message += Tobi_Plugin_Descriptions_Lang.TactileImageTourRecommended;
 
                         string xmlId = GetXmlID(altContent);
                         if (!String.IsNullOrEmpty(xmlId))
@@ -669,7 +681,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Unknown DIAGRAM elements: ";
+                    message += Tobi_Plugin_Descriptions_Lang.DiagramUnknownElements;
+                    message += " ";
                     message += strUnknownDIAGRAMs;
                 }
             }
@@ -694,7 +707,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Invalid syntax for DIAGRAM elements: ";
+                    message += Tobi_Plugin_Descriptions_Lang.DiagramElementsInvalidSyntax;
+                    message += " ";
                     message += strInvalidDIAGRAMs;
                 }
             }
@@ -719,7 +733,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Some identifiers are invalid: ";
+                    message += Tobi_Plugin_Descriptions_Lang.InvalidIDs;
+                    message += " ";
                     message += strInvalidIDS;
                 }
             }
@@ -744,7 +759,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Some identifiers are duplicated (this may be valid if used for grouping image objects): ";
+                    message += Tobi_Plugin_Descriptions_Lang.DuplicatedIDs;
+                    message += " ";
                     message += strDupIDS;
                 }
             }
@@ -769,7 +785,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Some identifiers are referenced, but are missing: ";
+                    message += Tobi_Plugin_Descriptions_Lang.MissingIDs;
+                    message += " ";
                     message += strMissingIDS;
                 }
             }
@@ -794,7 +811,8 @@ namespace Tobi.Plugin.Descriptions
                 first = false;
                 if (message != null)
                 {
-                    message += "- Some language tags are invalid: ";
+                    message += Tobi_Plugin_Descriptions_Lang.InvalidLanguageTags;
+                    message += " ";
                     message += strInvalidLangs;
                 }
             }
