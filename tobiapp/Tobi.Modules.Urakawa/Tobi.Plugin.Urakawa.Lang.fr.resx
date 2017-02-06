@@ -163,17 +163,11 @@ Appuyez sur OK pour ignorer, ou ANNULER pour afficher les problèmes.</value>
   <data name="CmdClose_LongDesc" xml:space="preserve">
     <value>Ferme le projet en cours d'utilisation</value>
   </data>
-<data name="DeleteSplitFiles" xml:space="preserve">
+  <data name="DeleteSplitFiles" xml:space="preserve">
     <value>Supprimer définitivement les fichiers fractionnés ?</value>
   </data>
   <data name="DeleteSplitFilesConfirm" xml:space="preserve">
     <value>Confirmez-vous la suppressions des fichiers ? (ils ne pourront être restaurés)</value>
-  </data>
-    <data name="CmdDataCleanup_ShortDesc" xml:space="preserve">
-    <value>_Nettoyage (complet)</value>
-  </data>
-  <data name="CmdDataCleanup_LongDesc" xml:space="preserve">
-    <value>Nettoie en profondeur les données inutilisées du projet (crée toujours de nouveaux fichiers .WAV, rassemble des fragments sonores qui se suivent si la limite maximum est définie)</value>
   </data>
   <data name="CmdDataCleanup_OPTIMIZED_ShortDesc" xml:space="preserve">
     <value>Nettoyage (_rapide)</value>
@@ -315,7 +309,7 @@ Voulez-vous continuer ?</value>
   <data name="ExportIncludeImageDescriptions" xml:space="preserve">
     <value>Inclure/fusionner les descriptions d'images : </value>
   </data>
-<data name="ExportImageDescriptions_AriaDescribedAt" xml:space="preserve">
+  <data name="ExportImageDescriptions_AriaDescribedAt" xml:space="preserve">
     <value>Utiliser ARIA "described-at":</value>
   </data>
   <data name="ExportImageDescriptions_AriaDescribedBy" xml:space="preserve">
@@ -327,7 +321,7 @@ Voulez-vous continuer ?</value>
   <data name="ExportImageDescriptions_inlineTextAudio" xml:space="preserve">
     <value>Traiter HTML5 text / audio:</value>
   </data>
-    <data name="ExportAddAudioFileNameHeadings" xml:space="preserve">
+  <data name="ExportAddAudioFileNameHeadings" xml:space="preserve">
     <value>Ajouter les titres au noms de fichiers audio : </value>
   </data>
   <data name="ExportGenerateSmilNotes" xml:space="preserve">
@@ -419,7 +413,7 @@ les modifications seront perdues !</value>
   <data name="UrakawaSession_SavePath" xml:space="preserve">
     <value>Chemin d'accès du fichier : {0}</value>
   </data>
-<data name="WarningFilePathLength_Title" xml:space="preserve">
+  <data name="WarningFilePathLength_Title" xml:space="preserve">
     <value>Chemin d'accès trop long!</value>
   </data>
   <data name="WarningFilePathLength" xml:space="preserve">
@@ -427,5 +421,14 @@ les modifications seront perdues !</value>
   </data>
   <data name="PleaseUpgradePipeline" xml:space="preserve">
     <value>Veuillez installer la dernière version du Pipeline2</value>
+  </data>
+  <data name="CmdDataCleanup_STRICT_ShortDesc" xml:space="preserve">
+    <value>_Nettoyage (complet)</value>
+  </data>
+  <data name="CmdDataCleanup_STRICT_LongDesc" xml:space="preserve">
+    <value>Nettoie en profondeur les données inutilisées du projet (crée toujours de nouveaux fichiers .WAV, rassemble des fragments sonores qui se suivent si la limite maximum est définie)</value>
+  </data>
+  <data name="ExportImageDescriptions_AriaDetails" xml:space="preserve">
+    <value>Utiliser ARIA "details":</value>
   </data>
 </root>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tobi_NET4", "Tobi_NET4.csproj", "{64F90229-5944-4DBB-96A0-0E09E6BF5997}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -652,6 +652,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		RESX_SaveFilesImmediatelyUponChange = False
 		SelectedEnterpriseLibraryConfigurationSet = EntLib41Src
 	EndGlobalSection
 EndGlobal

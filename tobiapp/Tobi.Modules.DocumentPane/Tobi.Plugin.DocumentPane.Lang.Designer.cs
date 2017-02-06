@@ -187,7 +187,7 @@ namespace Tobi.Plugin.DocumentPane {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert custom XML... (advanced feature).
+        ///   Looks up a localized string similar to Insert custom XML ... (advanced feature).
         /// </summary>
         public static string CmdStructEditInsertFragment_ShortDesc {
             get {

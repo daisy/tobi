@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -104,17 +103,11 @@
   <data name="CmdClose_LongDesc" xml:space="preserve">
     <value>Cerrar el proyecto actual</value>
   </data>
-  <data name="CmdDataCleanup_ShortDesc" xml:space="preserve">
-    <value>_Limpiar</value>
-  </data>
   <data name="DeleteSplitFiles" xml:space="preserve">
     <value>Eliminar permanentemente los archivos divididos?</value>
   </data>
   <data name="DeleteSplitFilesConfirm" xml:space="preserve">
     <value>Confirmar la eliminación de archivos? (no se puede deshacer)</value>
-  </data>
-  <data name="CmdDataCleanup_LongDesc" xml:space="preserve">
-    <value>Eliminar archivos de datos no utilizados por el proyecto actual</value>
   </data>
   <data name="CmdExport_ShortDesc" xml:space="preserve">
     <value>_Exportar...</value>
@@ -305,5 +298,11 @@ Los cambios se perderán !</value>
   </data>
   <data name="PleaseUpgradePipeline" xml:space="preserve">
     <value>Por favor, instale la última versión Pipeline2</value>
+  </data>
+  <data name="CmdDataCleanup_STRICT_ShortDesc" xml:space="preserve">
+    <value>Limpiar</value>
+  </data>
+  <data name="CmdDataCleanup_STRICT_LongDesc" xml:space="preserve">
+    <value>Eliminar archivos de datos no utilizados por el proyecto actual</value>
   </data>
 </root>
