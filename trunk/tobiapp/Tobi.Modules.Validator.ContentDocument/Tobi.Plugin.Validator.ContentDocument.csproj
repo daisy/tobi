@@ -105,6 +105,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Tobi.Plugin.Validator.ContentDocument.Lang.fr.resx" />
     <EmbeddedResource Include="Tobi.Plugin.Validator.ContentDocument.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Tobi.Plugin.Validator.ContentDocument.Lang.Designer.cs</LastGenOutput>
