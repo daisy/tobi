@@ -150,22 +150,15 @@
   <data name="TextOnly" xml:space="preserve">
     <value>Single phrase</value>
   </data>
-
-
   <data name="StructureEditValidationErrorAskDisplayDialog" xml:space="preserve">
     <value>Invalid structure edit</value>
   </data>
   <data name="ConfirmDisplayValidationDialog" xml:space="preserve">
     <value>The document XML is invalid, would you like to see the markup error(s)?</value>
   </data>
-
-
-
-
   <data name="ConfirmStructureClipboard" xml:space="preserve">
     <value>Confirm overwrite existing clipboard content?</value>
   </data>
-
   <data name="InsertDocFragmentFirstInside" xml:space="preserve">
     <value>First inside</value>
   </data>
@@ -178,14 +171,12 @@
   <data name="InsertDocFragmentAfter" xml:space="preserve">
     <value>After</value>
   </data>
-
   <data name="CmdStructEditRemoveFragment_ShortDesc" xml:space="preserve">
     <value>Delete fragment</value>
   </data>
   <data name="CmdStructEditRemoveFragment_LongDesc" xml:space="preserve">
     <value>Remove the selected fragment from the document</value>
   </data>
-
   <data name="PageLabel" xml:space="preserve">
     <value>Page label (number)</value>
   </data>
@@ -204,31 +195,24 @@
   <data name="AdvancedXmlInsert" xml:space="preserve">
     <value>Alternatively, XML experts can enter markup below, please ensure it is valid XML</value>
   </data>
-
   <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
-    <value>Insert custom XML... (advanced feature)</value>
-  </data>
-  <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
-    <value>Insert custom XML... (advanced feature)</value>
+    <value>Insert custom XML ... (advanced feature)</value>
   </data>
   <data name="CmdStructEditInsertFragment_LongDesc" xml:space="preserve">
     <value>Add basic XML markup (element name + text content)</value>
   </data>
-
   <data name="CmdStructEditCutFragment_ShortDesc" xml:space="preserve">
     <value>Cut fragment</value>
   </data>
   <data name="CmdStructEditCutFragment_LongDesc" xml:space="preserve">
     <value>Remove the selected document fragment, and preserve in structure clipboard</value>
   </data>
-
   <data name="CmdStructEditCopyFragment_ShortDesc" xml:space="preserve">
     <value>Copy fragment</value>
   </data>
   <data name="CmdStructEditCopyFragment_LongDesc" xml:space="preserve">
     <value>Make a copy of the selected document fragment into the structure clipboard</value>
   </data>
-
   <data name="CmdStructEditPasteFragment_ShortDesc" xml:space="preserve">
     <value>Paste fragment ...</value>
   </data>

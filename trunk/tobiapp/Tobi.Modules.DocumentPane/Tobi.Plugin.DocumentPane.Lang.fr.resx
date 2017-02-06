@@ -147,22 +147,15 @@
   <data name="TextOnly" xml:space="preserve">
     <value>Une seule phrase</value>
   </data>
-  
-
   <data name="StructureEditValidationErrorAskDisplayDialog" xml:space="preserve">
     <value>Modification de structure incorrecte</value>
   </data>
   <data name="ConfirmDisplayValidationDialog" xml:space="preserve">
     <value>Le document XML est incorrect, souhaitez-vous visualiser les erreurs dans le code ?</value>
   </data>
-
-
-
-
   <data name="ConfirmStructureClipboard" xml:space="preserve">
     <value>Confirmer l'écrasement du contenu présent dans le presse-papiers ?</value>
   </data>
-
   <data name="InsertDocFragmentFirstInside" xml:space="preserve">
     <value>En première position</value>
   </data>
@@ -175,14 +168,12 @@
   <data name="InsertDocFragmentAfter" xml:space="preserve">
     <value>Après</value>
   </data>
-
-<data name="CmdStructEditRemoveFragment_ShortDesc" xml:space="preserve">
+  <data name="CmdStructEditRemoveFragment_ShortDesc" xml:space="preserve">
     <value>Supprimer fragment</value>
   </data>
   <data name="CmdStructEditRemoveFragment_LongDesc" xml:space="preserve">
     <value>Supprime le fragment sélectionné du document</value>
   </data>
-
   <data name="PageLabel" xml:space="preserve">
     <value>Intitulé de page (numéro)</value>
   </data>
@@ -201,31 +192,24 @@
   <data name="AdvancedXmlInsert" xml:space="preserve">
     <value>Au besoin, les experts en XML peuvent ici coder directement, en s'assurant bien de la validité du XML</value>
   </data>
-
   <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
-    <value>Insérer du XML personnalisé... (fonction avancée)</value>
-  </data>
-  <data name="CmdStructEditInsertFragment_ShortDesc" xml:space="preserve">
-    <value>Insérer du XML personnalisé... (fonction avancée)</value>
+    <value>Insérer du XML personnalisé ... (fonction avancée)</value>
   </data>
   <data name="CmdStructEditInsertFragment_LongDesc" xml:space="preserve">
     <value>Ajoute des balises standards XML (nom d'élément + contenu texte)</value>
   </data>
-
   <data name="CmdStructEditCutFragment_ShortDesc" xml:space="preserve">
     <value>Couper fragment</value>
   </data>
   <data name="CmdStructEditCutFragment_LongDesc" xml:space="preserve">
     <value>Enlève le fragment sélectionné du document, tout en le conservant dans le presse-papiers de la structure</value>
   </data>
-
   <data name="CmdStructEditCopyFragment_ShortDesc" xml:space="preserve">
     <value>Copier fragment</value>
   </data>
   <data name="CmdStructEditCopyFragment_LongDesc" xml:space="preserve">
     <value>Copie le fragment sélectionné du document dans le presse-papiers de la structure</value>
   </data>
-
   <data name="CmdStructEditPasteFragment_ShortDesc" xml:space="preserve">
     <value>Coller fragment ...</value>
   </data>
@@ -295,7 +279,10 @@
   <data name="CmdTxtFocus_ShortDesc" xml:space="preserve">
     <value>Barre d'outils _document</value>
   </data>
-<data name="MathMLSelectToShow" xml:space="preserve">
+  <data name="MathMLSelectToShow" xml:space="preserve">
     <value>Rappel : MathML sera affiché lors de la sélection</value>
+  </data>
+  <data name="XmlErrorTryAgain" xml:space="preserve">
+    <value>Erreur XML, re-essayer?</value>
   </data>
 </root>
