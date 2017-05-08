@@ -1912,7 +1912,15 @@ namespace Tobi.Plugin.AudioPane
 
                     bool drawNET3 = false;
 #if NET40
-                    if (imageAndDraw.m_image.Width <= 2048) // should always work because waveform tiles are small
+                    // TODO: there is a BitmapCache "UI redraw freeze" bug in WPF related to hardware GPU acceleration, when screen lock out+in, or even just UAC prompt, or CTRL-ALT_DEL + cancel.
+                    // The current workaround is to configure Tobi with WpfSoftwareRender (app preferences),
+                    // or to manually kill dwm.exe or programmatically with DwmEnableComposition(0) !! (which flickers the entire desktop, not just the Tobi app).
+                    // Note that this affects not only the main window, also the waveform display in image description audio recorder.
+                    // Another solution would be to disable BitmapCache entirely,
+                    // but .NET4 rendering performance would suffer...
+                    // or maybe just to disable it when the "UI redraw freeze" bug is detected...
+                    // but how to detect it? (mouse / keyboard interaction still functions properly, it's only the redraw that fails)
+                    if (false && imageAndDraw.m_image.Width <= 2048) // should always work because waveform tiles are small
                     {
                         //if (useVectorResize() && imageAndDraw.m_drawingImage != null)
                         //{
