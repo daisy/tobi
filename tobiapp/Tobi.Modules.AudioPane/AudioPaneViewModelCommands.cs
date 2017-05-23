@@ -23,6 +23,16 @@ namespace Tobi.Plugin.AudioPane
 
         public RichDelegateCommand CommandZoomSelection { get; private set; }
         public RichDelegateCommand CommandZoomFitFull { get; private set; }
+        public RichDelegateCommand CommandZoom_0 { get; private set; }
+        public RichDelegateCommand CommandZoom_1 { get; private set; }
+        public RichDelegateCommand CommandZoom_2 { get; private set; }
+        public RichDelegateCommand CommandZoom_3 { get; private set; }
+        public RichDelegateCommand CommandZoom_4 { get; private set; }
+        public RichDelegateCommand CommandZoom_5 { get; private set; }
+        public RichDelegateCommand CommandZoom_6 { get; private set; }
+        public RichDelegateCommand CommandZoom_7 { get; private set; }
+        public RichDelegateCommand CommandZoom_8 { get; private set; }
+        public RichDelegateCommand CommandZoom_9 { get; private set; }
         public RichDelegateCommand CommandRefresh { get; private set; }
         public RichDelegateCommand CommandStopPlayMonitorRecord { get; private set; }
 
@@ -105,8 +115,190 @@ namespace Tobi.Plugin.AudioPane
                 //&& !IsWaveFormLoading,
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ZoomFitFull));
+            //Settings_KeyGestures.Default.Keyboard_Audio_Zoom_0
 
             m_ShellView.RegisterRichCommand(CommandZoomFitFull);
+            //
+            CommandZoom_0 = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioFitFull_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioFitFull_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
+                () =>
+                {
+                    //Logger.Log("AudioPaneViewModel.CommandZoom_0", Category.Debug, Priority.Medium);
+                    //View.ZoomFitFull();
+
+                    CommandZoomFitFull.Execute();
+                },
+                () => CommandZoomFitFull.CanExecute(),
+                //&& !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Zoom_0));
+
+            m_ShellView.RegisterRichCommand(CommandZoom_0);
+            //
+            CommandZoom_1 = new RichDelegateCommand(
+                "Zoom 1",
+                "Zoom 1",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandZoom_1", Category.Debug, Priority.Medium);
+
+                    View.Zoom_1();
+                },
+                () => CommandZoomFitFull.CanExecute(),
+                //&& !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Zoom_1));
+
+            m_ShellView.RegisterRichCommand(CommandZoom_1);
+            //
+            CommandZoom_2 = new RichDelegateCommand(
+                "Zoom 2",
+                "Zoom 2",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandZoom_2", Category.Debug, Priority.Medium);
+
+                    View.Zoom_2();
+                },
+                () => CommandZoomFitFull.CanExecute(),
+                //&& !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Zoom_2));
+
+            m_ShellView.RegisterRichCommand(CommandZoom_2);
+            //
+            CommandZoom_3 = new RichDelegateCommand(
+                "Zoom 3",
+                "Zoom 3",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandZoom_3", Category.Debug, Priority.Medium);
+
+                    View.Zoom_3();
+                },
+                () => CommandZoomFitFull.CanExecute(),
+                //&& !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Zoom_3));
+
+            m_ShellView.RegisterRichCommand(CommandZoom_3);
+            //
+            CommandZoom_4 = new RichDelegateCommand(
+                "Zoom 4",
+                "Zoom 4",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandZoom_4", Category.Debug, Priority.Medium);
+
+                    View.Zoom_4();
+                },
+                () => CommandZoomFitFull.CanExecute(),
+                //&& !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Zoom_4));
+
+            m_ShellView.RegisterRichCommand(CommandZoom_4);
+            //
+            CommandZoom_5 = new RichDelegateCommand(
+                "Zoom 5",
+                "Zoom 5",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandZoom_5", Category.Debug, Priority.Medium);
+
+                    View.Zoom_5();
+                },
+                () => CommandZoomFitFull.CanExecute(),
+                //&& !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Zoom_5));
+
+            m_ShellView.RegisterRichCommand(CommandZoom_5);
+            //
+            CommandZoom_6 = new RichDelegateCommand(
+                "Zoom 6",
+                "Zoom 6",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandZoom_6", Category.Debug, Priority.Medium);
+
+                    View.Zoom_6();
+                },
+                () => CommandZoomFitFull.CanExecute(),
+                //&& !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Zoom_6));
+
+            m_ShellView.RegisterRichCommand(CommandZoom_6);
+            //
+            CommandZoom_7 = new RichDelegateCommand(
+                "Zoom 7",
+                "Zoom 7",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandZoom_7", Category.Debug, Priority.Medium);
+
+                    View.Zoom_7();
+                },
+                () => CommandZoomFitFull.CanExecute(),
+                //&& !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Zoom_7));
+
+            m_ShellView.RegisterRichCommand(CommandZoom_7);
+            //
+            CommandZoom_8 = new RichDelegateCommand(
+                "Zoom 8",
+                "Zoom 8",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandZoom_8", Category.Debug, Priority.Medium);
+
+                    View.Zoom_8();
+                },
+                () => CommandZoomFitFull.CanExecute(),
+                //&& !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Zoom_8));
+
+            m_ShellView.RegisterRichCommand(CommandZoom_8);
+            //
+            CommandZoom_9 = new RichDelegateCommand(
+                "Zoom 9",
+                "Zoom 9",
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeNeuIcon("Neu_utilities-system-monitor"),
+                () =>
+                {
+                    Logger.Log("AudioPaneViewModel.CommandZoom_9", Category.Debug, Priority.Medium);
+
+                    View.Zoom_9();
+                },
+                () => CommandZoomFitFull.CanExecute(),
+                //&& !IsWaveFormLoading,
+                Settings_KeyGestures.Default,
+                PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_Zoom_9));
+
+            m_ShellView.RegisterRichCommand(CommandZoom_9);
             //
             CommandAudioSettings = new RichDelegateCommand(
                 Tobi_Plugin_AudioPane_Lang.CmdAudioSettings_ShortDesc,

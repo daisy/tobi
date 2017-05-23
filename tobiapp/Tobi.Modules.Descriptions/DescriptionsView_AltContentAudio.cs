@@ -373,6 +373,16 @@ namespace Tobi.Plugin.Descriptions
 
                 windowPopup.AddInputBinding(audioViewModel.CommandZoomFitFull.KeyBinding);
                 windowPopup.AddInputBinding(audioViewModel.CommandZoomSelection.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoom_0.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoom_1.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoom_2.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoom_3.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoom_4.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoom_5.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoom_6.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoom_7.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoom_8.KeyBinding);
+                windowPopup.AddInputBinding(audioViewModel.CommandZoom_9.KeyBinding);
 
                 windowPopup.AddInputBinding(audioSession.UndoCommand.KeyBinding);
                 windowPopup.AddInputBinding(audioSession.RedoCommand.KeyBinding);

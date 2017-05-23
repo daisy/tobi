@@ -12,7 +12,7 @@ namespace Tobi.Plugin.AudioPane {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.0.1.0")]
     public sealed partial class Settings_KeyGestures : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings_KeyGestures defaultInstance = ((Settings_KeyGestures)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings_KeyGestures())));
@@ -68,6 +68,126 @@ namespace Tobi.Plugin.AudioPane {
             }
             set {
                 this["Keyboard_Edit_Audio_Externally"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] 0")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Zoom_0 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Zoom_0"]));
+            }
+            set {
+                this["Keyboard_Audio_Zoom_0"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] 1")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Zoom_1 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Zoom_1"]));
+            }
+            set {
+                this["Keyboard_Audio_Zoom_1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] 2")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Zoom_2 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Zoom_2"]));
+            }
+            set {
+                this["Keyboard_Audio_Zoom_2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] 3")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Zoom_3 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Zoom_3"]));
+            }
+            set {
+                this["Keyboard_Audio_Zoom_3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] 4")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Zoom_4 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Zoom_4"]));
+            }
+            set {
+                this["Keyboard_Audio_Zoom_4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] 5")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Zoom_5 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Zoom_5"]));
+            }
+            set {
+                this["Keyboard_Audio_Zoom_5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] 6")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Zoom_6 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Zoom_6"]));
+            }
+            set {
+                this["Keyboard_Audio_Zoom_6"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] 7")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Zoom_7 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Zoom_7"]));
+            }
+            set {
+                this["Keyboard_Audio_Zoom_7"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] 8")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Zoom_8 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Zoom_8"]));
+            }
+            set {
+                this["Keyboard_Audio_Zoom_8"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] 9")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_Zoom_9 {
+            get {
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_Zoom_9"]));
+            }
+            set {
+                this["Keyboard_Audio_Zoom_9"] = value;
             }
         }
         

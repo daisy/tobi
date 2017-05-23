@@ -16,6 +16,36 @@
     <Setting Name="Keyboard_Edit_Audio_Externally" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] J</Value>
     </Setting>
+    <Setting Name="Keyboard_Audio_Zoom_0" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] 0</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_Zoom_1" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] 1</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_Zoom_2" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] 2</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_Zoom_3" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] 3</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_Zoom_4" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] 4</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_Zoom_5" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] 5</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_Zoom_6" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] 6</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_Zoom_7" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] 7</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_Zoom_8" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] 8</Value>
+    </Setting>
+    <Setting Name="Keyboard_Audio_Zoom_9" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ CTRL ] 9</Value>
+    </Setting>
     <Setting Name="Keyboard_Edit_Audio_Effect1" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ SHIFT CTRL ] 1</Value>
     </Setting>

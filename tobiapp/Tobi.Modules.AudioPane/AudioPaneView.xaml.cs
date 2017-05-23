@@ -202,7 +202,7 @@ namespace Tobi.Plugin.AudioPane
                     m_ViewModel.CommandStartMonitor.Execute();
                 }
             }
-            else if (key == Key.D0)
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_Zoom_0.Key)
             {
                 //if (m_ViewModel.CommandZoomSelection.CanExecute())
                 //{
@@ -213,90 +213,129 @@ namespace Tobi.Plugin.AudioPane
                     m_ViewModel.CommandZoomFitFull.Execute();
                 }
             }
-            else if (key == Key.D1)
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_Zoom_1.Key)
             {
-                if (m_ViewModel.CommandZoomFitFull.CanExecute())
-                {
-                    this.ZoomMax();
-                }
+                Zoom_1();
             }
-            else if (key == Key.D9)
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_Zoom_9.Key)
             {
-                if (m_ViewModel.CommandZoomFitFull.CanExecute())
-                {
-                    this.ZoomMin();
-                }
+                Zoom_9();
             }
             // [2-8] 7 keys between 1 and 9 => 8 segments in slider zoom control
-            else if (key == Key.D2)
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_Zoom_2.Key)
             {
-                if (m_ViewModel.CommandZoomFitFull.CanExecute())
-                {
-                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
-                    double step = range / 8;
-                    this.ZoomSlider.Value = step * 7;
-                }
+                Zoom_2();
             }
-            else if (key == Key.D3)
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_Zoom_3.Key)
             {
-                if (m_ViewModel.CommandZoomFitFull.CanExecute())
-                {
-                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
-                    double step = range / 8;
-                    this.ZoomSlider.Value = step * 6;
-                }
+                Zoom_3();
             }
-            else if (key == Key.D4)
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_Zoom_4.Key)
             {
-                if (m_ViewModel.CommandZoomFitFull.CanExecute())
-                {
-                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
-                    double step = range / 8;
-                    this.ZoomSlider.Value = step * 5;
-                }
+                Zoom_4();
             }
-
-            else if (key == Key.D5)
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_Zoom_5.Key)
             {
-                if (m_ViewModel.CommandZoomFitFull.CanExecute())
-                {
-                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
-                    double step = range / 8;
-                    this.ZoomSlider.Value = step * 4;
-                }
+                Zoom_5();
             }
-
-            else if (key == Key.D6)
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_Zoom_6.Key)
             {
-                if (m_ViewModel.CommandZoomFitFull.CanExecute())
-                {
-                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
-                    double step = range / 8;
-                    this.ZoomSlider.Value = step * 3;
-                }
+                Zoom_6();
             }
-            else if (key == Key.D7)
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_Zoom_7.Key)
             {
-                if (m_ViewModel.CommandZoomFitFull.CanExecute())
-                {
-                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
-                    double step = range / 8;
-                    this.ZoomSlider.Value = step * 2;
-                }
+                Zoom_7();
             }
-            else if (key == Key.D8)
+            else if (key == Settings_KeyGestures.Default.Keyboard_Audio_Zoom_8.Key)
             {
-                if (m_ViewModel.CommandZoomFitFull.CanExecute())
-                {
-                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
-                    double step = range / 8;
-                    this.ZoomSlider.Value = step * 1;
-                }
+                Zoom_8();
             }
         }
 
         #region Construction
 
+
+        public void Zoom_1()
+        {
+            m_Logger.Log("AudioPaneView.Zoom_1", Category.Debug, Priority.Medium);
+
+            if (m_ViewModel.CommandZoomFitFull.CanExecute())
+            {
+                this.ZoomMax();
+            }
+        }
+        public void Zoom_9()
+        {
+            m_Logger.Log("AudioPaneView.Zoom_9", Category.Debug, Priority.Medium);
+
+            if (m_ViewModel.CommandZoomFitFull.CanExecute())
+            {
+                this.ZoomMin();
+            }
+        }
+        public void Zoom_8()
+        {
+            if (m_ViewModel.CommandZoomFitFull.CanExecute())
+            {
+                double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                double step = range / 8;
+                this.ZoomSlider.Value = step * 1;
+            }
+        }
+        public void Zoom_7()
+        {
+            if (m_ViewModel.CommandZoomFitFull.CanExecute())
+            {
+                double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                double step = range / 8;
+                this.ZoomSlider.Value = step * 2;
+            }
+        }
+        public void Zoom_6()
+        {
+            if (m_ViewModel.CommandZoomFitFull.CanExecute())
+            {
+                double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                double step = range / 8;
+                this.ZoomSlider.Value = step * 3;
+            }
+        }
+        public void Zoom_5()
+        {
+            if (m_ViewModel.CommandZoomFitFull.CanExecute())
+            {
+                double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                double step = range / 8;
+                this.ZoomSlider.Value = step * 4;
+            }
+        }
+        public void Zoom_4()
+        {
+            if (m_ViewModel.CommandZoomFitFull.CanExecute())
+            {
+                double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                double step = range / 8;
+                this.ZoomSlider.Value = step * 5;
+            }
+        }
+        public void Zoom_3()
+        {
+            if (m_ViewModel.CommandZoomFitFull.CanExecute())
+            {
+                double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                double step = range / 8;
+                this.ZoomSlider.Value = step * 6;
+            }
+        }
+        public void Zoom_2()
+        {
+            if (m_ViewModel.CommandZoomFitFull.CanExecute())
+            {
+                double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                double step = range / 8;
+                this.ZoomSlider.Value = step * 7;
+            }
+        }
 
         public void InitGraphicalCommandBindings()
         {

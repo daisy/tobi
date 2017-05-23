@@ -39,6 +39,16 @@
         void InvalidateWaveFormOverlay();
         void ZoomFitFull();
         void InitGraphicalCommandBindings();
+        //void Zoom_0();
+        void Zoom_1();
+        void Zoom_2();
+        void Zoom_3();
+        void Zoom_4();
+        void Zoom_5();
+        void Zoom_6();
+        void Zoom_7();
+        void Zoom_8();
+        void Zoom_9();
 
         void SetSelectionBytes(long begin, long end);
         void CancelWaveFormLoad(bool interruptDrawingToo);
