@@ -374,7 +374,10 @@ namespace Tobi.Plugin.Urakawa
 
             DocumentProject.PrettyFormat = Settings.Default.XUK_PrettyFormat;
 
-            var action = new SaveXukAction(DocumentProject, DocumentProject, uri, !Settings.Default.EnableAutoSave)
+            var action = new SaveXukAction(DocumentProject, DocumentProject, uri,
+                //(autoSave && Settings.Default.EnableAutoSaveProject) ||
+                !Settings.Default.EnableAutoBackupProject
+                )
             {
                 ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_ShortDesc,
                 LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_LongDesc
@@ -402,13 +405,13 @@ namespace Tobi.Plugin.Urakawa
 
                     if (DocumentFilePath == saveAsDocumentFilePath)
                     {
-                        DebugFix.Assert(!autoSave);
+                        DebugFix.Assert(!autoSave || Settings.Default.EnableAutoSaveProject);
 
                         string saving = DocumentFilePath + SAVING_EXT;
 
                         if (File.Exists(saving))
                         {
-                            if (Settings.Default.EnableAutoSave)
+                            if (Settings.Default.EnableAutoBackupProject)
                             {
                                 SaveXukAction.Backup(DocumentFilePath);
                             }
@@ -446,7 +449,8 @@ namespace Tobi.Plugin.Urakawa
                         {
                             if (File.Exists(saveAsDocumentFilePath))
                             {
-                                if (Settings.Default.EnableAutoSave && !autoSave)
+                                if ((Settings.Default.EnableAutoBackupProject || Settings.Default.EnableAutoSaveProject)
+                                    && !autoSave)
                                 {
                                     SaveXukAction.Backup(saveAsDocumentFilePath);
                                 }

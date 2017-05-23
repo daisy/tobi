@@ -26,8 +26,11 @@
     <Setting Name="Pipeline2OldExe" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="EnableAutoSave" Type="System.Boolean" Scope="User">
+    <Setting Name="EnableAutoBackupProject" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="EnableAutoSaveProject" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="EnableRecentFilesMenu" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

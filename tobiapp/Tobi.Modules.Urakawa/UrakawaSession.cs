@@ -331,7 +331,7 @@ namespace Tobi.Plugin.Urakawa
                         //m_scrollRefreshIntervalTimer = null;
 
                         if (!m_AutoSave_OFF
-                            && Settings.Default.EnableAutoSave
+                            && (Settings.Default.EnableAutoBackupProject || Settings.Default.EnableAutoSaveProject)
                             && !string.IsNullOrEmpty(DocumentFilePath))
                         {
                             // The "OnUndoRedoManagerChanged" event is not broadcasted when 
@@ -339,7 +339,15 @@ namespace Tobi.Plugin.Urakawa
                             // so we never auto-save a corrupted project.
                             try
                             {
-                                saveAuto();
+                                if (Settings.Default.EnableAutoSaveProject)
+                                {
+                                    //save(true);
+                                    saveAs(DocumentFilePath, true, true);
+                                }
+                                else
+                                {
+                                    saveAuto();
+                                }
                             }
                             catch (Exception ex)
                             {
