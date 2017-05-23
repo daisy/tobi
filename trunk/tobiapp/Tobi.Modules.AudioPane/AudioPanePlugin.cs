@@ -120,7 +120,16 @@ namespace Tobi.Plugin.AudioPane
                 new[]
                  {
                      m_AudioPaneViewModel.CommandZoomSelection,
-                     m_AudioPaneViewModel.CommandZoomFitFull
+                     m_AudioPaneViewModel.CommandZoomFitFull,
+                     m_AudioPaneViewModel.CommandZoom_1,
+                     m_AudioPaneViewModel.CommandZoom_2,
+                     m_AudioPaneViewModel.CommandZoom_3,
+                     m_AudioPaneViewModel.CommandZoom_4,
+                     m_AudioPaneViewModel.CommandZoom_5,
+                     m_AudioPaneViewModel.CommandZoom_6,
+                     m_AudioPaneViewModel.CommandZoom_7,
+                     m_AudioPaneViewModel.CommandZoom_8,
+                     m_AudioPaneViewModel.CommandZoom_9,
                  });
             m_MenuBarId_14 = m_MenuBarView.AddMenuBarGroup(
                 Tobi_Common_Lang.Menu_Audio, PreferredPosition.Last, true,
