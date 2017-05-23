@@ -124,6 +124,15 @@ namespace Tobi.Plugin.AudioPane {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select after record.
+        /// </summary>
+        public static string AudioSelectAfterRecord {
+            get {
+                return ResourceManager.GetString("AudioSelectAfterRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Switch autoplay mode on/off.
         /// </summary>
         public static string CmdAudioAutoPlay_LongDesc {
@@ -948,6 +957,24 @@ namespace Tobi.Plugin.AudioPane {
         public static string CmdAudioToggleRecordOverwrite_ShortDesc {
             get {
                 return ResourceManager.GetString("CmdAudioToggleRecordOverwrite_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable / disable automatic selection after recording.
+        /// </summary>
+        public static string CmdAudioToggleSelectAfterRecord_LongDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioToggleSelectAfterRecord_LongDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle select after record.
+        /// </summary>
+        public static string CmdAudioToggleSelectAfterRecord_ShortDesc {
+            get {
+                return ResourceManager.GetString("CmdAudioToggleSelectAfterRecord_ShortDesc", resourceCulture);
             }
         }
         

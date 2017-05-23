@@ -1190,6 +1190,18 @@ Value="{StaticResource DisabledForegroundBrush}"/>
 
                 <TextBlock
                  Focusable="True" VerticalAlignment="Center"
+                 Text="{Binding SelectAfterRecordString, Mode=OneWay}"
+MouseUp="OnMouseUp_SelectAfterRecord"
+KeyUp="OnKeyUp_SelectAfterRecord"
+                 />
+
+                <TextBlock
+        
+        Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+        VerticalAlignment="Center" Text=" | "/>
+
+                <TextBlock
+                 Focusable="True" VerticalAlignment="Center"
                  Text="{Binding RecordOverwriteString, Mode=OneWay}"
 MouseUp="OnMouseUp_RecordOverwrite"
 KeyUp="OnKeyUp_RecordOverwrite"

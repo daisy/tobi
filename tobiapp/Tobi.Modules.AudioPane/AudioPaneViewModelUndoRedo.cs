@@ -215,7 +215,7 @@ namespace Tobi.Plugin.AudioPane
             return byteOffset;
         }
 
-        private void UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(TreeNode targetNode1, TreeNode targetNode2, long byteStart, long byteDur, bool done)
+        private void UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(TreeNode targetNode1, TreeNode targetNode2, long byteStart, long byteDur, bool done, bool deselectAndPosEnd)
         {
             if (targetNode1 == null || targetNode2 != null && !targetNode2.IsDescendantOf(targetNode1))
             {
@@ -306,12 +306,21 @@ namespace Tobi.Plugin.AudioPane
             }
 
             long begin = byteOffset + byteStart;
-            if (done)
+            if (deselectAndPosEnd)
+            {
+                m_StateToRestore = new StateToRestore
+                {
+                    SelectionBeginBytePosition = -1,
+                    SelectionEndBytePosition = -1,
+                    PlayHeadBytePosition = byteDur + begin
+                };
+            }
+            else if (done)
             {
                 m_StateToRestore = new StateToRestore
                 {
                     SelectionBeginBytePosition = begin,
-                    SelectionEndBytePosition = begin + byteDur,
+                    SelectionEndBytePosition = byteDur + begin,
                     PlayHeadBytePosition = begin
                 };
             }
@@ -607,7 +616,10 @@ namespace Tobi.Plugin.AudioPane
                 {
                     if (m_OnUndoRedoManagerChanged_targetNode1 != null && m_OnUndoRedoManagerChanged_byteStart >= 0 && (!m_OnUndoRedoManagerChanged_done || m_OnUndoRedoManagerChanged_byteDur > 0))
                     {
-                        UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(m_OnUndoRedoManagerChanged_targetNode1, m_OnUndoRedoManagerChanged_targetNode2, m_OnUndoRedoManagerChanged_byteStart, m_OnUndoRedoManagerChanged_byteDur, m_OnUndoRedoManagerChanged_done);
+                        bool deselectAndPosEnd = Settings.Default.Audio_DisableSelectAfterRecord &&
+                                                 m_DeferredRecordingDataItems != null && // hack to detect actual recording operation, rather than REDO
+                                                 m_OnUndoRedoManagerChanged_done && m_OnUndoRedoManagerChanged_wasInitByAdd;
+                        UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(m_OnUndoRedoManagerChanged_targetNode1, m_OnUndoRedoManagerChanged_targetNode2, m_OnUndoRedoManagerChanged_byteStart, m_OnUndoRedoManagerChanged_byteDur, m_OnUndoRedoManagerChanged_done, deselectAndPosEnd);
 
                         if (command.IsInTransaction() && command.TopTransactionId() == AudioPaneViewModel.COMMAND_TRANSATION_ID__AUDIO_SPLIT_SHIFT)
                         {
