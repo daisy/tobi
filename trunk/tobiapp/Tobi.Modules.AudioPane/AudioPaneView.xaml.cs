@@ -202,6 +202,97 @@ namespace Tobi.Plugin.AudioPane
                     m_ViewModel.CommandStartMonitor.Execute();
                 }
             }
+            else if (key == Key.D0)
+            {
+                //if (m_ViewModel.CommandZoomSelection.CanExecute())
+                //{
+                //    m_ViewModel.CommandZoomSelection.Execute();
+                //}
+                if (m_ViewModel.CommandZoomFitFull.CanExecute())
+                {
+                    m_ViewModel.CommandZoomFitFull.Execute();
+                }
+            }
+            else if (key == Key.D1)
+            {
+                if (m_ViewModel.CommandZoomFitFull.CanExecute())
+                {
+                    this.ZoomMax();
+                }
+            }
+            else if (key == Key.D9)
+            {
+                if (m_ViewModel.CommandZoomFitFull.CanExecute())
+                {
+                    this.ZoomMin();
+                }
+            }
+            // [2-8] 7 keys between 1 and 9 => 8 segments in slider zoom control
+            else if (key == Key.D2)
+            {
+                if (m_ViewModel.CommandZoomFitFull.CanExecute())
+                {
+                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                    double step = range / 8;
+                    this.ZoomSlider.Value = step * 7;
+                }
+            }
+            else if (key == Key.D3)
+            {
+                if (m_ViewModel.CommandZoomFitFull.CanExecute())
+                {
+                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                    double step = range / 8;
+                    this.ZoomSlider.Value = step * 6;
+                }
+            }
+            else if (key == Key.D4)
+            {
+                if (m_ViewModel.CommandZoomFitFull.CanExecute())
+                {
+                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                    double step = range / 8;
+                    this.ZoomSlider.Value = step * 5;
+                }
+            }
+
+            else if (key == Key.D5)
+            {
+                if (m_ViewModel.CommandZoomFitFull.CanExecute())
+                {
+                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                    double step = range / 8;
+                    this.ZoomSlider.Value = step * 4;
+                }
+            }
+
+            else if (key == Key.D6)
+            {
+                if (m_ViewModel.CommandZoomFitFull.CanExecute())
+                {
+                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                    double step = range / 8;
+                    this.ZoomSlider.Value = step * 3;
+                }
+            }
+            else if (key == Key.D7)
+            {
+                if (m_ViewModel.CommandZoomFitFull.CanExecute())
+                {
+                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                    double step = range / 8;
+                    this.ZoomSlider.Value = step * 2;
+                }
+            }
+            else if (key == Key.D8)
+            {
+                if (m_ViewModel.CommandZoomFitFull.CanExecute())
+                {
+                    double range = this.ZoomSlider.Maximum - this.ZoomSlider.Minimum;
+                    double step = range / 8;
+                    this.ZoomSlider.Value = step * 1;
+                }
+            }
         }
 
         #region Construction
@@ -1031,21 +1122,22 @@ namespace Tobi.Plugin.AudioPane
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
+            bool fast = isShiftKeyDown();
 
             if (!isControlKeyDown())
             {
                 ScrollViewer scv = (ScrollViewer)sender; // WaveFormScroll
-                scv.ScrollToHorizontalOffset(scv.HorizontalOffset - e.Delta);
+                scv.ScrollToHorizontalOffset(scv.HorizontalOffset + (fast ? 5 : 1) * e.Delta);
                 return;
             }
 
             if (e.Delta > 0)
             {
-                ZoomDecrease();
+                ZoomDecrease(fast);
             }
             else
             {
-                ZoomIncrease();
+                ZoomIncrease(fast);
             }
         }
 
@@ -1823,8 +1915,8 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
-        public void ZoomIncreaseOrDecrease(bool decrease)
-        {            
+        public void ZoomIncreaseOrDecrease(bool decrease, bool fast)
+        {
             if (!m_ViewModel.State.Audio.HasContent)
             {
                 // ZoomFitFull();
@@ -1834,7 +1926,7 @@ namespace Tobi.Plugin.AudioPane
             double widthToUse = WaveFormScroll.ViewportWidth;
 
             double delta = ZoomSlider.Maximum - ZoomSlider.Minimum;
-            double step = delta / 10;
+            double step = delta / (fast ? 10.0 : 40.0);
             double value = ZoomSlider.Value;
             if (decrease)
             {
@@ -1857,18 +1949,31 @@ namespace Tobi.Plugin.AudioPane
             ZoomSlider.Value = value;
         }
 
-        public void ZoomIncrease()
+        public void ZoomMin()
+        {
+            m_Logger.Log("AudioPaneView.ZoomMin", Category.Debug, Priority.Medium);
+
+            ZoomSlider.Value = ZoomSlider.Minimum;
+        }
+        public void ZoomMax()
+        {
+            m_Logger.Log("AudioPaneView.ZoomMax", Category.Debug, Priority.Medium);
+
+            ZoomSlider.Value = ZoomSlider.Maximum;
+        }
+
+        public void ZoomIncrease(bool fast)
         {
             m_Logger.Log("AudioPaneView.ZoomIncrease", Category.Debug, Priority.Medium);
 
-            ZoomIncreaseOrDecrease(false);
+            ZoomIncreaseOrDecrease(false, fast);
         }
 
-        public void ZoomDecrease()
+        public void ZoomDecrease(bool fast)
         {
             m_Logger.Log("AudioPaneView.ZoomDecrease", Category.Debug, Priority.Medium);
 
-            ZoomIncreaseOrDecrease(true);
+            ZoomIncreaseOrDecrease(true, fast);
         }
 
         public void ZoomFitFull()
@@ -2154,6 +2259,15 @@ namespace Tobi.Plugin.AudioPane
         private bool isShiftKeyDown()
         {
             return (Keyboard.Modifiers & ModifierKeys.Shift) != ModifierKeys.None;
+
+            //Keyboard.IsKeyDown(Key.LeftShift)
+            //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
+            // (System.Windows.Forms.Control.ModifierKeys & Keys.Control) != Keys.None;
+        }
+
+        private bool isAltKeyDown()
+        {
+            return (Keyboard.Modifiers & ModifierKeys.Alt) != ModifierKeys.None;
 
             //Keyboard.IsKeyDown(Key.LeftShift)
             //System.Windows.Forms.Control.ModifierKeys == Keys.Control;
