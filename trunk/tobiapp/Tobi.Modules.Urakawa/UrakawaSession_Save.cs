@@ -374,10 +374,10 @@ namespace Tobi.Plugin.Urakawa
 
             DocumentProject.PrettyFormat = Settings.Default.XUK_PrettyFormat;
 
-            var action = new SaveXukAction(DocumentProject, DocumentProject, uri,
-                //(autoSave && Settings.Default.EnableAutoSaveProject) ||
-                !Settings.Default.EnableAutoBackupProject
-                )
+            bool skipDatedBackup = !Settings.Default.EnableAutoBackupProject
+                              //&& !(autoSave && Settings.Default.EnableAutoSaveProject)
+                              ;
+            var action = new SaveXukAction(DocumentProject, DocumentProject, uri, skipDatedBackup)
             {
                 ShortDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_ShortDesc,
                 LongDescription = Tobi_Plugin_Urakawa_Lang.UrakawaSaveAction_LongDesc
