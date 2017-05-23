@@ -415,6 +415,8 @@ Value="{StaticResource DisabledForegroundBrush}"/>
     <ScrollViewer x:Name="WaveFormScroll"
                   RenderTransformOrigin="0.5,0.5"
                   
+             PreviewMouseWheel="OnMouseWheel"
+
                   DockPanel.Dock="Bottom"
                   VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Visible"
@@ -449,7 +451,7 @@ Value="{StaticResource DisabledForegroundBrush}"/>
                MouseUp="OnWaveFormMouseUp"
                MouseLeave="OnWaveFormMouseLeave"
                MouseEnter="OnWaveFormMouseEnter"
-
+              
               Background="{Binding Converter={XAML:ColorToBrushConverter}, Source={x:Static AudioPane:Settings.Default}, Path=AudioWaveForm_Color_Back, Mode=OneWay}"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Left"

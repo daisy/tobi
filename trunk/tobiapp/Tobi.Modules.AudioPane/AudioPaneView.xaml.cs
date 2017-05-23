@@ -1027,6 +1027,28 @@ namespace Tobi.Plugin.AudioPane
             }
         }
 
+
+        private void OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            e.Handled = true;
+
+            if (!isControlKeyDown())
+            {
+                ScrollViewer scv = (ScrollViewer)sender; // WaveFormScroll
+                scv.ScrollToHorizontalOffset(scv.HorizontalOffset - e.Delta);
+                return;
+            }
+
+            if (e.Delta > 0)
+            {
+                ZoomDecrease();
+            }
+            else
+            {
+                ZoomIncrease();
+            }
+        }
+
         private void OnResetPeakOverloadCountCh1(object sender, MouseButtonEventArgs e)
         {
             m_ViewModel.PeakOverloadCountCh1 = 0;
@@ -1799,6 +1821,54 @@ namespace Tobi.Plugin.AudioPane
                     Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(refreshUI_LoadingMessageHidden));
                 }
             }
+        }
+
+        public void ZoomIncreaseOrDecrease(bool decrease)
+        {            
+            if (!m_ViewModel.State.Audio.HasContent)
+            {
+                // ZoomFitFull();
+                return;
+            }
+
+            double widthToUse = WaveFormScroll.ViewportWidth;
+
+            double delta = ZoomSlider.Maximum - ZoomSlider.Minimum;
+            double step = delta / 10;
+            double value = ZoomSlider.Value;
+            if (decrease)
+            {
+                value -= step;
+            }
+            else
+            {
+                value += step;
+            }
+            if (value > ZoomSlider.Maximum)
+            {
+                value = ZoomSlider.Maximum;
+            }
+            if (value < ZoomSlider.Minimum)
+            {
+                value = ZoomSlider.Minimum;
+            }
+            //ZoomSlider.LargeChange
+            //ZoomSlider.SmallChange
+            ZoomSlider.Value = value;
+        }
+
+        public void ZoomIncrease()
+        {
+            m_Logger.Log("AudioPaneView.ZoomIncrease", Category.Debug, Priority.Medium);
+
+            ZoomIncreaseOrDecrease(false);
+        }
+
+        public void ZoomDecrease()
+        {
+            m_Logger.Log("AudioPaneView.ZoomDecrease", Category.Debug, Priority.Medium);
+
+            ZoomIncreaseOrDecrease(true);
         }
 
         public void ZoomFitFull()
