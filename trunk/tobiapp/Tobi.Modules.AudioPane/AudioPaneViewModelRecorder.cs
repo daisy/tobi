@@ -42,6 +42,7 @@ namespace Tobi.Plugin.AudioPane
 
         public RichDelegateCommand CommandTogglePlayPreviewBeforeRecord { get; private set; }
         public RichDelegateCommand CommandToggleRecordOverwrite { get; private set; }
+        public RichDelegateCommand CommandToggleSelectAfterRecord { get; private set; }
         
         public RichDelegateCommand CommandStartMonitor { get; private set; }
         public RichDelegateCommand CommandStopMonitor { get; private set; }
@@ -392,7 +393,9 @@ namespace Tobi.Plugin.AudioPane
 
                     if (EventAggregator != null)
                     {
-                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.AudioRecordPlayPreview + (Settings.Default.Audio_EnablePlayPreviewBeforeRecord ? " [ON]" : " [OFF]"));
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(RecordPlayPreviewString
+                            //Tobi_Plugin_AudioPane_Lang.AudioRecordPlayPreview + (Settings.Default.Audio_EnablePlayPreviewBeforeRecord ? " [ON]" : " [OFF]")
+                            );
                     }
                 },
                 () => true,
@@ -415,7 +418,9 @@ namespace Tobi.Plugin.AudioPane
 
                     if (EventAggregator != null)
                     {
-                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(Tobi_Plugin_AudioPane_Lang.AudioRecordOverwrite + (Settings.Default.Audio_EnableRecordOverwrite ? " [ON]" : " [OFF]"));
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(RecordOverwriteString
+                            //Tobi_Plugin_AudioPane_Lang.AudioRecordOverwrite + (Settings.Default.Audio_EnableRecordOverwrite ? " [ON]" : " [OFF]")
+                            );
                     }
                 },
                 () => true,
@@ -424,6 +429,32 @@ namespace Tobi.Plugin.AudioPane
                 );
 
             m_ShellView.RegisterRichCommand(CommandToggleRecordOverwrite);
+            //
+            CommandToggleSelectAfterRecord = new RichDelegateCommand(
+                Tobi_Plugin_AudioPane_Lang.CmdAudioToggleSelectAfterRecord_ShortDesc,
+                Tobi_Plugin_AudioPane_Lang.CmdAudioToggleSelectAfterRecord_LongDesc,
+                null, // KeyGesture obtained from settings (see last parameters below)
+                null, //m_ShellView.LoadGnomeGionIcon("Gion_music-player"),
+                () =>
+                {
+                    Settings.Default.Audio_DisableSelectAfterRecord =
+                        !Settings.Default.Audio_DisableSelectAfterRecord;
+
+                    RaisePropertyChanged(() => SelectAfterRecordString);
+
+                    if (EventAggregator != null)
+                    {
+                        EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(SelectAfterRecordString
+                            //Tobi_Plugin_AudioPane_Lang.AudioSelectAfterRecord + (Settings.Default.Audio_DisableSelectAfterRecord ? " [OFF]" : " [ON]")
+                            );
+                    }
+                },
+                () => true,
+                Settings_KeyGestures.Default,
+                null //PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_TogglePlayPreviewBeforeRecord)
+                );
+
+            m_ShellView.RegisterRichCommand(CommandToggleSelectAfterRecord);
         }
 
         private long m_RecordAfterPlayOverwriteSelection = -1;

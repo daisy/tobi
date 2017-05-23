@@ -414,7 +414,11 @@ namespace Tobi.Plugin.AudioPane
             get { return Tobi_Plugin_AudioPane_Lang.AudioRecordOverwrite + (Settings.Default.Audio_EnableRecordOverwrite ? " [ON]" : " [OFF]"); }
         }
 
-
+        public string SelectAfterRecordString
+        {
+            get { return Tobi_Plugin_AudioPane_Lang.AudioSelectAfterRecord + (Settings.Default.Audio_DisableSelectAfterRecord? " [OFF]" : " [ON]"); }
+        }
+        
         [NotifyDependsOn("IsAutoPlay")]
         public string IsAutoPlayString
         {

@@ -466,6 +466,10 @@ m_Stream.Length);
             {
                 RaisePropertyChanged(() => RecordPlayPreviewString);
             }
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_DisableSelectAfterRecord))
+            {
+                RaisePropertyChanged(() => SelectAfterRecordString);
+            }
             //else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_AutoPlayAfterSplit))
             //{
             //    RaisePropertyChanged(() => IsAutoPlayString);
