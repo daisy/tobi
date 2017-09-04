@@ -194,7 +194,7 @@ namespace Tobi.Plugin.AudioPane
 
                         CommandSelectRight.Execute();
                     }
-                    else if (Settings.Default.Audio_EnableRecordOverwrite
+                    else if (Settings.Default.Audio_Record_OverwriteFollowingAudio
                                 && !IsSelectionSet)
                     {
                         SetRecordAfterPlayOverwriteSelection(-1);
@@ -411,15 +411,15 @@ namespace Tobi.Plugin.AudioPane
                 null, //m_ShellView.LoadGnomeGionIcon("Gion_music-player"),
                 () =>
                 {
-                    Settings.Default.Audio_EnableRecordOverwrite =
-                        !Settings.Default.Audio_EnableRecordOverwrite;
+                    Settings.Default.Audio_Record_OverwriteFollowingAudio =
+                        !Settings.Default.Audio_Record_OverwriteFollowingAudio;
 
                     RaisePropertyChanged(() => RecordOverwriteString);
 
                     if (EventAggregator != null)
                     {
                         EventAggregator.GetEvent<StatusBarMessageUpdateEvent>().Publish(RecordOverwriteString
-                            //Tobi_Plugin_AudioPane_Lang.AudioRecordOverwrite + (Settings.Default.Audio_EnableRecordOverwrite ? " [ON]" : " [OFF]")
+                            //Tobi_Plugin_AudioPane_Lang.AudioRecordOverwrite + (Settings.Default.Audio_Record_OverwriteFollowingAudio ? " [ON]" : " [OFF]")
                             );
                     }
                 },
@@ -437,8 +437,8 @@ namespace Tobi.Plugin.AudioPane
                 null, //m_ShellView.LoadGnomeGionIcon("Gion_music-player"),
                 () =>
                 {
-                    Settings.Default.Audio_DisableSelectAfterRecord =
-                        !Settings.Default.Audio_DisableSelectAfterRecord;
+                    Settings.Default.Audio_DisableAfterRecordSelection =
+                        !Settings.Default.Audio_DisableAfterRecordSelection;
 
                     RaisePropertyChanged(() => SelectAfterRecordString);
 
@@ -896,7 +896,7 @@ namespace Tobi.Plugin.AudioPane
                                 }
                                 //CommandPlay.Execute();
                                 
-                                if (Settings.Default.Audio_EnableRecordOverwrite)
+                                if (Settings.Default.Audio_Record_OverwriteFollowingAudio)
                                 {
                                     CommandSelectAll.Execute();
                                     CommandStartRecord.Execute();

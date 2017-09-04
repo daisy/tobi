@@ -214,8 +214,17 @@ namespace Tobi.Plugin.AudioPane
                         //if (LastPlayHeadTime >= State.Audio.ConvertBytesToMilliseconds(State.Audio.DataLength))
                         if (PlayBytePosition >= State.Audio.DataLength)
                         {
-                            //LastPlayHeadTime = 0; infinite loop !
-                            AudioPlayer_PlayFromTo(0, -1);
+                            if (Settings.Default.Audio_DisableAutoJumpToBegin_AtEndOfPlayback)
+                            {
+                                //m_LastSetPlayBytePosition = State.Audio.DataLength;
+                                //PlayBytePosition = State.Audio.DataLength;
+                                AudioCues.PlayBeep();
+                            }
+                            else
+                            {
+                                //LastPlayHeadTime = 0; infinite loop !
+                                AudioPlayer_PlayFromTo(0, -1);
+                            }
                         }
                         else
                         {
@@ -411,12 +420,12 @@ namespace Tobi.Plugin.AudioPane
 
         public string RecordOverwriteString
         {
-            get { return Tobi_Plugin_AudioPane_Lang.AudioRecordOverwrite + (Settings.Default.Audio_EnableRecordOverwrite ? " [ON]" : " [OFF]"); }
+            get { return Tobi_Plugin_AudioPane_Lang.AudioRecordOverwrite + (Settings.Default.Audio_Record_OverwriteFollowingAudio ? " [ON]" : " [OFF]"); }
         }
 
         public string SelectAfterRecordString
         {
-            get { return Tobi_Plugin_AudioPane_Lang.AudioSelectAfterRecord + (Settings.Default.Audio_DisableSelectAfterRecord? " [OFF]" : " [ON]"); }
+            get { return Tobi_Plugin_AudioPane_Lang.AudioSelectAfterRecord + (Settings.Default.Audio_DisableAfterRecordSelection ? " [OFF]" : " [ON]"); }
         }
         
         [NotifyDependsOn("IsAutoPlay")]

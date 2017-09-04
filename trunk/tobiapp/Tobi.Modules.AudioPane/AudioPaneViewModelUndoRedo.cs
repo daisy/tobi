@@ -616,7 +616,7 @@ namespace Tobi.Plugin.AudioPane
                 {
                     if (m_OnUndoRedoManagerChanged_targetNode1 != null && m_OnUndoRedoManagerChanged_byteStart >= 0 && (!m_OnUndoRedoManagerChanged_done || m_OnUndoRedoManagerChanged_byteDur > 0))
                     {
-                        bool deselectAndPosEnd = Settings.Default.Audio_DisableSelectAfterRecord &&
+                        bool deselectAndPosEnd = Settings.Default.Audio_DisableAfterRecordSelection &&
                                                  m_DeferredRecordingDataItems != null && // hack to detect actual recording operation, rather than REDO
                                                  m_OnUndoRedoManagerChanged_done && m_OnUndoRedoManagerChanged_wasInitByAdd;
                         UndoRedoManagerChanged_RestoreAudioTreeNodeSelectionState(m_OnUndoRedoManagerChanged_targetNode1, m_OnUndoRedoManagerChanged_targetNode2, m_OnUndoRedoManagerChanged_byteStart, m_OnUndoRedoManagerChanged_byteDur, m_OnUndoRedoManagerChanged_done, deselectAndPosEnd);

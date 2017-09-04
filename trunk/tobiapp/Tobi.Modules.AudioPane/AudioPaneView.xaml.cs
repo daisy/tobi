@@ -2367,7 +2367,7 @@ namespace Tobi.Plugin.AudioPane
 
         private void OnMouseUp_RecordOverwrite(object sender, MouseButtonEventArgs e)
         {
-            //Settings.Default.Audio_EnableRecordOverwrite = !Settings.Default.Audio_EnableRecordOverwrite;
+            //Settings.Default.Audio_Record_OverwriteFollowingAudio = !Settings.Default.Audio_Record_OverwriteFollowingAudio;
             m_ViewModel.CommandToggleRecordOverwrite.Execute();
         }
 

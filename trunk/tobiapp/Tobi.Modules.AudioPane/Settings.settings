@@ -14,7 +14,10 @@
     <Setting Name="Audio_AutoPlayAfterSplit" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="Audio_DisableSelectAfterRecord" Type="System.Boolean" Scope="User">
+    <Setting Name="Audio_DisableAfterRecordSelection" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Audio_DisableAutoJumpToBegin_AtEndOfPlayback" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Audio_DisableSingleWavFileRecord" Type="System.Boolean" Scope="User">
@@ -23,7 +26,7 @@
     <Setting Name="Audio_PlayKeepPitch" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="Audio_EnableRecordOverwrite" Type="System.Boolean" Scope="User">
+    <Setting Name="Audio_Record_OverwriteFollowingAudio" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Audio_EnablePlayPreviewBeforeRecord" Type="System.Boolean" Scope="User">
