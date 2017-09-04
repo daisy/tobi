@@ -12,7 +12,7 @@ namespace Tobi.Plugin.AudioPane {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.0.1.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -74,12 +74,24 @@ namespace Tobi.Plugin.AudioPane {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool Audio_DisableSelectAfterRecord {
+        public bool Audio_DisableAfterRecordSelection {
             get {
-                return ((bool)(this["Audio_DisableSelectAfterRecord"]));
+                return ((bool)(this["Audio_DisableAfterRecordSelection"]));
             }
             set {
-                this["Audio_DisableSelectAfterRecord"] = value;
+                this["Audio_DisableAfterRecordSelection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Audio_DisableAutoJumpToBegin_AtEndOfPlayback {
+            get {
+                return ((bool)(this["Audio_DisableAutoJumpToBegin_AtEndOfPlayback"]));
+            }
+            set {
+                this["Audio_DisableAutoJumpToBegin_AtEndOfPlayback"] = value;
             }
         }
         
@@ -110,12 +122,12 @@ namespace Tobi.Plugin.AudioPane {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool Audio_EnableRecordOverwrite {
+        public bool Audio_Record_OverwriteFollowingAudio {
             get {
-                return ((bool)(this["Audio_EnableRecordOverwrite"]));
+                return ((bool)(this["Audio_Record_OverwriteFollowingAudio"]));
             }
             set {
-                this["Audio_EnableRecordOverwrite"] = value;
+                this["Audio_Record_OverwriteFollowingAudio"] = value;
             }
         }
         

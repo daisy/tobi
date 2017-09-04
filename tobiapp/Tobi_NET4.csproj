@@ -20,11 +20,10 @@
     <StartupObject>Tobi.App</StartupObject>
     <ApplicationIcon>Tobi.ico</ApplicationIcon>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <ManifestCertificateThumbprint>04A0A425E909F108B2D9D3E9CC238861C1DD4C45</ManifestCertificateThumbprint>
     <ManifestKeyFile>Tobi.pfx</ManifestKeyFile>
-    <GenerateManifests>true</GenerateManifests>
-    <NoWin32Manifest>true</NoWin32Manifest>
+    <GenerateManifests>false</GenerateManifests>
     <PublishUrl>C:\Users\Daniel\DAISY\tobi\trunk\tobiapp\TobiClickOnceNET4_2.6.1.2\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -72,6 +71,12 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework.Aero">
@@ -218,6 +223,7 @@
     <Content Include="License.rtf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\app.manifest" />
     <None Include="Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

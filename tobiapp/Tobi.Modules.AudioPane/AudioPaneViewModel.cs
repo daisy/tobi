@@ -458,7 +458,7 @@ m_Stream.Length);
                 m_Player.UseSoundTouch = Settings.Default.Audio_PlayKeepPitch;
                 m_Player.Resume();
             }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_EnableRecordOverwrite))
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_Record_OverwriteFollowingAudio))
             {
                 RaisePropertyChanged(() => RecordOverwriteString);
             }
@@ -466,7 +466,7 @@ m_Stream.Length);
             {
                 RaisePropertyChanged(() => RecordPlayPreviewString);
             }
-            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_DisableSelectAfterRecord))
+            else if (e.PropertyName == GetMemberName(() => Settings.Default.Audio_DisableAfterRecordSelection))
             {
                 RaisePropertyChanged(() => SelectAfterRecordString);
             }
