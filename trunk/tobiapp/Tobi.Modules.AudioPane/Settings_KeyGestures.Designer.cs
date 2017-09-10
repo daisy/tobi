@@ -12,7 +12,7 @@ namespace Tobi.Plugin.AudioPane {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.0.1.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
     public sealed partial class Settings_KeyGestures : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings_KeyGestures defaultInstance = ((Settings_KeyGestures)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings_KeyGestures())));
@@ -289,7 +289,7 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ CTRL ] D0 (0)")]
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] 0")]
         public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_PlaybackRateReset {
             get {
                 return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_PlaybackRateReset"]));
