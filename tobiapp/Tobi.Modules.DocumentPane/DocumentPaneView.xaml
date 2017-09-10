@@ -193,6 +193,9 @@ Background="Transparent"
     
                       >
       <!-- 
+      
+                  MinZoom="100"
+                  MaxZoom="100"
      PreviewKeyDown="OnPreviewKeyDown_DocViewer" -->
 
       <!-- FlowDocumentScrollViewer.CommandBindings>
@@ -248,6 +251,7 @@ Background="{Binding
 Background="{Binding
         Converter={DocumentPane:BackgroundColorToBrushConverter},
         Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                    
                     >
         <!--
 Background="Transparent"
@@ -307,8 +311,13 @@ Background="Transparent"
                                            
     IsSelectionEnabled="True"
                         Focusable="True"
+    
                       >
-    <!--Background="{Binding
+    <!--
+    
+                  MinZoom="100"
+                  MaxZoom="100"
+    Background="{Binding
     Converter={XAML:ColorToBrushConverter},
     Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"-->
     <!-- 
@@ -350,6 +359,7 @@ Background="Transparent"
 Background="{Binding
       Converter={DocumentPane:BackgroundColorToBrushConverter},
       Source={x:Static DocumentPane:Settings.Default}, Path=Document_Back, Mode=OneWay}"
+                  
                     >
 
       <!--<FlowDocument.Background>
