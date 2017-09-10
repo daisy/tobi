@@ -1016,6 +1016,7 @@ namespace Tobi.Common.UI
                 || e.Key == Key.Home || e.Key == Key.End
                 || e.Key == Key.Left || e.Key == Key.Right
                 || e.Key == Key.Up || e.Key == Key.Down
+                || e.Key == Key.OemMinus || e.Key == Key.OemPlus
                 //|| e.Key == Key.Space
                 )
                 )
