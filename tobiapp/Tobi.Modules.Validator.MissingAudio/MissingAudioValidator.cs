@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Windows.Threading;
@@ -7,6 +8,7 @@ using AudioLib;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Logging;
 using Tobi.Common;
+using Tobi.Common.MVVM;
 using Tobi.Common.Validation;
 using urakawa;
 using urakawa.command;
@@ -14,6 +16,7 @@ using urakawa.commands;
 using urakawa.core;
 using urakawa.daisy;
 using urakawa.events.undo;
+using urakawa.property.xml;
 using urakawa.undo;
 using urakawa.xuk;
 
@@ -59,6 +62,8 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
             m_EventAggregator.GetEvent<NoAudioContentFoundByFlowDocumentParserEvent>().Subscribe(OnNoAudioContentFoundByFlowDocumentParserEvent, NoAudioContentFoundByFlowDocumentParserEvent.THREAD_OPTION);
 
+            Tobi.Common.Settings.Default.PropertyChanged += OnSettingsPropertyChanged;
+
             m_Logger.Log(@"MissingAudioValidator initialized", Category.Debug, Priority.Medium);
         }
 
@@ -69,7 +74,8 @@ namespace Tobi.Plugin.Validator.MissingAudio
                 updateTreeNodeAudioStatus(forceRemove, childTreeNode);
             }
 
-            if (!forceRemove && node.NeedsAudio() && !node.HasOrInheritsAudio())
+            if (!forceRemove && node.NeedsAudio() && !node.HasOrInheritsAudio()
+                && (!Tobi.Common.Settings.Default.ValidMissingAudioElements_Enable || !isTreeNodeValidNoAudio(node)))
             {
                 bool alreadyInList = false;
                 foreach (var vItem in ValidationItems)
@@ -193,11 +199,80 @@ namespace Tobi.Plugin.Validator.MissingAudio
 
                 forceRemove = (command is TreeNodeInsertCommand && !done) || (command is TreeNodeRemoveCommand && done);
             }
+            
 
             if (node != null)
             {
                 updateTreeNodeAudioStatus(forceRemove, node);
             }
+        }
+
+        private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == PropertyChangedNotifyBase.GetMemberName(() => Tobi.Common.Settings.Default.ValidMissingAudioElements))
+            {
+                m_ValidNoAudioElements = null;
+            }
+        }
+
+        private List<string> m_ValidNoAudioElements;
+        private bool isElementValidNoAudio(string name, string epubType)
+        {
+            if (m_ValidNoAudioElements == null)
+            {
+                string[] names = Tobi.Common.Settings.Default.ValidMissingAudioElements.Split(new char[] { ',', ' ', ';', '/' });
+
+                //m_SkippableElements = new List<string>(names);
+                m_ValidNoAudioElements = new List<string>(names.Length);
+
+                foreach (string n in names)
+                {
+                    string n_ = n.Trim(); //.ToLower();
+                    if (!string.IsNullOrEmpty(n_))
+                    {
+                        m_ValidNoAudioElements.Add(n_);
+                    }
+                }
+            }
+
+            foreach (var str in m_ValidNoAudioElements)
+            {
+                if (str.Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+                if (!string.IsNullOrEmpty(epubType) && str.Equals(epubType, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
+
+            //return m_ValidNoAudioElements.Contains(name.ToLower());
+        }
+        
+        public bool isTreeNodeValidNoAudio(TreeNode node)
+        {
+            if (node.HasXmlProperty)
+            {
+                string epubType = null;
+                XmlProperty xmlProp = node.GetXmlProperty();
+                XmlAttribute attrEpubType = xmlProp.GetAttribute("epub:type", DiagramContentModelHelper.NS_URL_EPUB);
+                if (attrEpubType != null && !string.IsNullOrEmpty(attrEpubType.Value))
+                {
+                    epubType = attrEpubType.Value;
+                }
+                
+                if (isElementValidNoAudio(node.GetXmlElementLocalName(), epubType))
+                {
+                    return true;
+                }
+            }
+            if (node.Parent == null)
+            {
+                return false;
+            }
+            return isTreeNodeValidNoAudio(node.Parent);
         }
 
         private UndoRedoManager.Hooker m_UndoRedoManagerHooker = null;
@@ -237,6 +312,11 @@ namespace Tobi.Plugin.Validator.MissingAudio
         {
             DebugFix.Assert(treeNode.NeedsAudio());
             DebugFix.Assert(!treeNode.HasOrInheritsAudio());
+
+            if (Tobi.Common.Settings.Default.ValidMissingAudioElements_Enable && isTreeNodeValidNoAudio(treeNode))
+            {
+                return;
+            }
 
             foreach (var valItem in ValidationItems)
             {
