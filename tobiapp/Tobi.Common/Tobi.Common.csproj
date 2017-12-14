@@ -141,7 +141,9 @@
     <Compile Include="IMenuBarView.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="ITobiPlugin.cs" />
-    <Compile Include="IShellView.cs" />
+    <Compile Include="IShellView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="IToolbarsView.cs" />
     <Compile Include="IUrakawaSession.cs" />
     <Compile Include="MarkedTreeNodeFoundByFlowDocumentParserEvent.cs" />
