@@ -289,13 +289,13 @@ namespace Tobi.Plugin.AudioPane {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] 0")]
-        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_PlaybackRateReset {
+        [global::System.Configuration.DefaultSettingValueAttribute("[ SHIFT CTRL ] DOWN")]
+        public global::Tobi.Common.UI.KeyGestureString Keyboard_Audio_ResetPlaybackRate {
             get {
-                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_PlaybackRateReset"]));
+                return ((global::Tobi.Common.UI.KeyGestureString)(this["Keyboard_Audio_ResetPlaybackRate"]));
             }
             set {
-                this["Keyboard_Audio_PlaybackRateReset"] = value;
+                this["Keyboard_Audio_ResetPlaybackRate"] = value;
             }
         }
         

@@ -14,6 +14,7 @@ using Tobi.Common.MVVM.Command;
 using System.Management;
 using urakawa.data;
 using urakawa.ExternalFiles;
+using System.Net;
 
 #if USE_ISOLATED_STORAGE
 using System.IO.IsolatedStorage;
@@ -21,6 +22,19 @@ using System.IO.IsolatedStorage;
 
 namespace Tobi.Common
 {
+    public class WebClientWithTimeout : WebClient
+    {
+        public int Timeout { get; set; }
+
+        protected override WebRequest GetWebRequest(Uri uri)
+        {
+            WebRequest lWebRequest = base.GetWebRequest(uri);
+            lWebRequest.Timeout = Timeout;
+            ((HttpWebRequest)lWebRequest).ReadWriteTimeout = Timeout;
+            return lWebRequest;
+        }
+    }
+
     public static class ApplicationConstants
     {
         //http://daisy.trac.cvsdude.com/tobi/

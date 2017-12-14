@@ -64,7 +64,7 @@ namespace Tobi.Plugin.AudioPane
                 //&& !IsWaveFormLoading
                       ,
                    Settings_KeyGestures.Default,
-                   PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_PlaybackRateReset));
+                   PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_Audio_ResetPlaybackRate));
 
             m_ShellView.RegisterRichCommand(CommandPlaybackRateReset);
             //

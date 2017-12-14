@@ -75,7 +75,7 @@ namespace Tobi
                     string thisVersion = ApplicationConstants.GetVersion();
 
                     string url = "http://data.daisy.org/projects/tobi/install/net-4/Tobi_NET4.application";
-                    var webClient = new WebClient { UseDefaultCredentials = true };
+                    var webClient = new WebClientWithTimeout { UseDefaultCredentials = true, Timeout = 5 * 1000 }; // 5 seconds
                     StreamReader streamReader = null;
                     try
                     {

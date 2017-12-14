@@ -70,8 +70,8 @@
     <Setting Name="Keyboard_Paste" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] V</Value>
     </Setting>
-    <Setting Name="Keyboard_Audio_PlaybackRateReset" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
-      <Value Profile="(Default)">[ SHIFT CTRL ] 0</Value>
+    <Setting Name="Keyboard_Audio_ResetPlaybackRate" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
+      <Value Profile="(Default)">[ SHIFT CTRL ] DOWN</Value>
     </Setting>
     <Setting Name="Keyboard_Audio_PlaybackRateUp" Type="Tobi.Common.UI.KeyGestureString" Scope="User">
       <Value Profile="(Default)">[ CTRL ] Up</Value>

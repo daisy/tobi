@@ -228,7 +228,7 @@ namespace Tobi
 
             if (Settings.Default.EnableAnonymousUsageReport)
             {
-                var webClient = new WebClient { UseDefaultCredentials = true };
+                var webClient = new WebClientWithTimeout { UseDefaultCredentials = true, Timeout = 5 * 1000 }; // 5 seconds
                 StreamReader streamReader = null;
                 try
                 {
