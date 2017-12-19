@@ -24,7 +24,7 @@
     <ManifestCertificateThumbprint>04A0A425E909F108B2D9D3E9CC238861C1DD4C45</ManifestCertificateThumbprint>
     <ManifestKeyFile>Tobi.pfx</ManifestKeyFile>
     <GenerateManifests>false</GenerateManifests>
-    <PublishUrl>C:\Users\Daniel\DAISY\tobi\trunk\tobiapp\TobiClickOnceNET4_2.6.1.2\</PublishUrl>
+    <PublishUrl>C:\Users\Daniel\DAISY\tobi\trunk\tobiapp\TobiClickOnceNET4_2.6.2.0\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -42,8 +42,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>2.6.1.2</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.6.2.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

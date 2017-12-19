@@ -2581,7 +2581,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Tobi_NET4.resources, Version=2.6.1.1, Culture=fr, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Tobi_NET4.resources, Version=2.6.1.2, Culture=fr, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_093DFB078BA741E688F1083CBA3E2C89"
@@ -2998,7 +2998,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Tobi_NET4.resources, Version=2.6.1.1, Culture=es, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Tobi_NET4.resources, Version=2.6.1.2, Culture=es, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_36EA460698BA440A85FE70081EF908D1"
@@ -3377,7 +3377,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SharpVectors.Core, Version=0.3.1.12407, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SharpVectors.Core, Version=0.3.1.28805, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_4C4CDEB3B877F1C6C6F365E2B60109D1"
@@ -3581,7 +3581,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SharpVectors.Model, Version=0.3.1.12408, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SharpVectors.Model, Version=0.3.1.28807, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_5457F7A5D8B37C7E2B178C0BAE19FFE2"
@@ -4069,7 +4069,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SharpVectors.Css, Version=0.3.1.12408, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SharpVectors.Css, Version=0.3.1.28807, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_72BD34EA781CDEA1276ACE2AE0C6629F"
@@ -5109,7 +5109,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SharpVectors.Dom, Version=0.3.1.12407, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SharpVectors.Dom, Version=0.3.1.28806, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_A1D5980C58FEB54264A8056856326E44"
@@ -5276,6 +5276,11 @@
             "AssemblyAsmDisplayName" = "8:System.ComponentModel.Composition, Version=2010.2.11.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_AC2B960FD624FB5F64F826B0DDBCA46A"
+                    {
+                    "Name" = "8:System.ComponentModel.Composition.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:System.ComponentModel.Composition.dll"
             "TargetName" = "8:"
@@ -6853,7 +6858,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2699327728A24D7DA4BFFDFB49F801F3"
             {
-            "Name" = "8:Tobi 2.6.1.2 (NET4) [offline installed]"
+            "Name" = "8:Tobi 2.6.2.0 (NET4) [offline installed]"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -6881,7 +6886,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CBE561907C1C4D1A8F4FB21D8C589275"
             {
-            "Name" = "8:Tobi 2.6.1.2 (NET4) [offline installed]"
+            "Name" = "8:Tobi 2.6.2.0 (NET4) [offline installed]"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -7212,7 +7217,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
             {
-            "SourcePath" = "8:..\\obj\\Debug\\Tobi_NET4.exe"
+            "SourcePath" = "8:..\\obj\\Release\\Tobi_NET4.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
