@@ -168,6 +168,15 @@
 <data name="AudioRecordOverwrite" xml:space="preserve">
     <value>Enregistrer par-dessus</value>
   </data>
+  <data name="AudioSelectAfterRecord" xml:space="preserve">
+    <value>Selection après enregistrement</value>
+  </data>
+  <data name="CmdAudioToggleSelectAfterRecord_ShortDesc" xml:space="preserve">
+    <value>Selection après enregistrement on/off</value>
+  </data>
+  <data name="CmdAudioToggleSelectAfterRecord_LongDesc" xml:space="preserve">
+    <value>Active/désactive la selection automatique après enregistrement</value>
+  </data>
     <data name="AudioRecordPlayPreview" xml:space="preserve">
     <value>Aperçu avant enregistrement</value>
   </data>

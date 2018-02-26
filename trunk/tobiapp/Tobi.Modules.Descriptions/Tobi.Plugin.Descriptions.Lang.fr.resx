@@ -214,7 +214,7 @@
     <value>Éditer le texte descriptif</value>
   </data>
   <data name="EnterTextPlaceholder" xml:space="preserve">
-    <value>[editer le texte]</value>
+    <value>[éditer le texte]</value>
   </data>
   <data name="Export" xml:space="preserve">
     <value>Exporter</value>
