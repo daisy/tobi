@@ -70,7 +70,7 @@ namespace Tobi
 
 
                 bool clickOnce = ApplicationDeployment.IsNetworkDeployed;
-                if (!clickOnce)
+                if (!clickOnce && Settings.Default.EnableVersionChecking)
                 {
                     string thisVersion = ApplicationConstants.GetVersion();
 
