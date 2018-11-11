@@ -945,12 +945,15 @@ namespace Tobi.Plugin.Urakawa
             {
                 DebugFix.Assert(string.IsNullOrEmpty(exportSpineItemProjectPath));
 
+                string audioExportDTBOOKElementNameTriggers = Settings.Default.AudioExportFileCreateLevelNames;
+
                 converter = new Daisy3_Export(pres,
                     //useTitleInFileName,
                     exportDirectory, null,
                  Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                  Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
-                 IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, Settings.Default.ExportGenerateSmilNotes);
+                 IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, Settings.Default.ExportGenerateSmilNotes,
+                    audioExportDTBOOKElementNameTriggers);
 
                 //See AddSectionNameToAudioFileName()
                 ((Daisy3_Export)converter).AudioFileNameCharsLimit = (int)Math.Round(Settings.Default.AudioExportFileNameSectionHeadingMaxLength);
