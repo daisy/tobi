@@ -208,7 +208,7 @@ namespace Tobi.Plugin.Urakawa
                 Path.GetDirectoryName(DocumentFilePath),
                 Daisy3_Import.GetXukDirectory(DocumentFilePath));
 
-            //string xukPath = Daisy3_Import.GetXukFilePath(outputDirectory, DocumentFilePath);
+            //string xukPath = Daisy3_Import.GetXukFilePath(outputDirectory, DocumentFilePath); Settings.Default.UseTitleInFileNames
             //if (File.Exists(xukPath))
             if (Directory.Exists(outputDirectory))
             {
@@ -379,10 +379,12 @@ namespace Tobi.Plugin.Urakawa
             {
                 Settings.Default.AudioProjectSampleRate = SampleRate.Hz44100;
             }
+            
+            bool useTitleInFileName = Settings.Default.UseTitleInFileNames;
 
-
-
-            var converter = new Daisy3_Import(DocumentFilePath, outputDirectory,
+            var converter = new Daisy3_Import(DocumentFilePath,
+                useTitleInFileName,
+                outputDirectory,
                 IsAcmCodecsDisabled,
                 Settings.Default.AudioProjectSampleRate,
                 Settings.Default.AudioProjectStereo,
@@ -432,60 +434,63 @@ namespace Tobi.Plugin.Urakawa
                 string projectDir = Path.GetDirectoryName(xukPath);
                 DebugFix.Assert(outputDirectory == projectDir);
 
-                string title = converter.GetTitle();
-                if (!string.IsNullOrEmpty(title))
+                if (useTitleInFileName)
                 {
-                    string fileName = Daisy3_Import.GetXukFilePath(projectDir, DocumentFilePath, title, false);
-                    fileName = Path.GetFileNameWithoutExtension(fileName);
-
-                    string parent = Path.GetDirectoryName(projectDir);
-
-                    //string fileName = Path.GetFileNameWithoutExtension(xukPath);
-
-                    ////while (fileName.StartsWith("_"))
-                    ////{
-                    ////    fileName = fileName.Substring(1, fileName.Length - 1);
-                    ////}
-
-                    //char[] chars = new char[] { '_' };
-                    //fileName = fileName.TrimStart(chars);
-
-
-                    string newProjectDir = Path.Combine(parent, fileName); // + Daisy3_Import.XUK_DIR
-
-                    if (newProjectDir != projectDir)
+                    string title = converter.GetTitle();
+                    if (!string.IsNullOrEmpty(title))
                     {
-                        bool okay = true;
+                        string fileName = Daisy3_Import.GetXukFilePath(projectDir, DocumentFilePath, title, false);
+                        fileName = Path.GetFileNameWithoutExtension(fileName);
 
-                        if (Directory.Exists(newProjectDir))
+                        string parent = Path.GetDirectoryName(projectDir);
+
+                        //string fileName = Path.GetFileNameWithoutExtension(xukPath);
+
+                        ////while (fileName.StartsWith("_"))
+                        ////{
+                        ////    fileName = fileName.Substring(1, fileName.Length - 1);
+                        ////}
+
+                        //char[] chars = new char[] { '_' };
+                        //fileName = fileName.TrimStart(chars);
+
+
+                        string newProjectDir = Path.Combine(parent, fileName); // + Daisy3_Import.XUK_DIR
+
+                        if (newProjectDir != projectDir)
                         {
-                            if (askUserConfirmOverwriteFileFolder(newProjectDir, true, null))
-                            {
-                                try
-                                {
-                                    FileDataProvider.TryDeleteDirectory(newProjectDir, false);
-                                }
-                                catch (Exception ex)
-                                {
-#if DEBUG
-                                    Debugger.Break();
-#endif // DEBUG
-                                    Console.WriteLine(ex.Message);
-                                    Console.WriteLine(ex.StackTrace);
+                            bool okay = true;
 
+                            if (Directory.Exists(newProjectDir))
+                            {
+                                if (askUserConfirmOverwriteFileFolder(newProjectDir, true, null))
+                                {
+                                    try
+                                    {
+                                        FileDataProvider.TryDeleteDirectory(newProjectDir, false);
+                                    }
+                                    catch (Exception ex)
+                                    {
+#if DEBUG
+                                        Debugger.Break();
+#endif // DEBUG
+                                        Console.WriteLine(ex.Message);
+                                        Console.WriteLine(ex.StackTrace);
+
+                                        okay = false;
+                                    }
+                                }
+                                else
+                                {
                                     okay = false;
                                 }
                             }
-                            else
-                            {
-                                okay = false;
-                            }
-                        }
 
-                        if (okay)
-                        {
-                            Directory.Move(projectDir, newProjectDir);
-                            xukPath = Path.Combine(newProjectDir, Path.GetFileName(xukPath));
+                            if (okay)
+                            {
+                                Directory.Move(projectDir, newProjectDir);
+                                xukPath = Path.Combine(newProjectDir, Path.GetFileName(xukPath));
+                            }
                         }
                     }
                 }

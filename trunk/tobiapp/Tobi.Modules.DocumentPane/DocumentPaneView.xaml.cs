@@ -3048,6 +3048,12 @@ return l;
                     {
                         //old project format
                         fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title, -1);
+
+                        if (!File.Exists(fullXukPath))
+                        {
+                            // Settings.Default.UseTitleInFileNames
+                            fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, null, -1);
+                        }
                     }
 
                     if (!File.Exists(fullXukPath))

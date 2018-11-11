@@ -1585,7 +1585,7 @@ namespace Tobi.Plugin.Urakawa
                 else
                 {
                     //old project format
-                    fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, title, -1);
+                    fullXukPath = Daisy3_Import.GetXukFilePath_SpineItem(rootDir, path, (Settings.Default.UseTitleInFileNames ? title : null), -1);
                 }
 
                 if (!File.Exists(fullXukPath))

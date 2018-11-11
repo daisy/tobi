@@ -842,6 +842,7 @@ namespace Tobi.Plugin.Urakawa
                     }
 
                     string path = DocumentFilePath;
+                    // IF Settings.Default.UseTitleInFileNames
                     //string title = Daisy3_Import.GetTitle(DocumentProject.Presentations.Get(0));
                     //if (!string.IsNullOrEmpty(title))
                     //{
@@ -909,7 +910,8 @@ namespace Tobi.Plugin.Urakawa
                           || @"body".Equals(pres.RootNode.GetXmlElementLocalName(), StringComparison.OrdinalIgnoreCase)
                 //|| HasXukSpine
                           ;
-
+            
+            bool useTitleInFileName = Settings.Default.UseTitleInFileNames;
 
             IDualCancellableProgressReporter converter = null;
             if (isEPUB)
@@ -926,7 +928,9 @@ namespace Tobi.Plugin.Urakawa
                     DebugFix.Assert(HasXukSpine);
                 }
 #endif
-                converter = new Epub3_Export(DocumentFilePath, pres, exportDirectory,
+                converter = new Epub3_Export(DocumentFilePath, pres,
+                    useTitleInFileName,
+                    exportDirectory,
                      Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                      Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
                      IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, exportSpineItemProjectPath,
@@ -941,7 +945,9 @@ namespace Tobi.Plugin.Urakawa
             {
                 DebugFix.Assert(string.IsNullOrEmpty(exportSpineItemProjectPath));
 
-                converter = new Daisy3_Export(pres, exportDirectory, null,
+                converter = new Daisy3_Export(pres,
+                    //useTitleInFileName,
+                    exportDirectory, null,
                  Settings.Default.AudioExportEncodeToMp3, (ushort)Settings.Default.AudioExportMp3Bitrate,
                  Settings.Default.AudioExportSampleRate, Settings.Default.AudioExportStereo,
                  IsAcmCodecsDisabled, Settings.Default.ExportIncludeImageDescriptions, Settings.Default.ExportGenerateSmilNotes);
@@ -950,7 +956,7 @@ namespace Tobi.Plugin.Urakawa
                 ((Daisy3_Export)converter).AudioFileNameCharsLimit = (int)Math.Round(Settings.Default.AudioExportFileNameSectionHeadingMaxLength);
 
                 // AddSectionNameToAudioFile is for OBI!!
-                ((Daisy3_Export)converter).IsAdjustAudioFileNameEnabled = Settings.Default.AudioExportFileNameSectionHeading;
+                ((Daisy3_Export)converter).IsAdjustAudioFileNameEnabled = Settings.Default.AudioExportFileNameSectionHeading && useTitleInFileName;
             }
 
             bool error = m_ShellView.RunModalCancellableProgressTask(true,
