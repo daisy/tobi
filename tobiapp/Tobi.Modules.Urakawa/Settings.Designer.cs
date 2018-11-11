@@ -85,6 +85,18 @@ namespace Tobi.Plugin.Urakawa {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AudioExportFileCreateLevelNames {
+            get {
+                return ((string)(this["AudioExportFileCreateLevelNames"]));
+            }
+            set {
+                this["AudioExportFileCreateLevelNames"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AudioExportFileNameSectionHeading {
             get {
