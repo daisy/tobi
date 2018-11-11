@@ -310,13 +310,13 @@
         "Entry"
         {
         "MsmKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
-        "OwnerKey" = "8:_DBBEABF275F7E5CCD1A07E9EF91324EF"
+        "OwnerKey" = "8:_BA384522DFF372761B781547ECBFD8E7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
-        "OwnerKey" = "8:_BA384522DFF372761B781547ECBFD8E7"
+        "OwnerKey" = "8:_DBBEABF275F7E5CCD1A07E9EF91324EF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -880,7 +880,7 @@
         "Entry"
         {
         "MsmKey" = "8:_91970C02154C2A843938F7A3B9A665F0"
-        "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -892,7 +892,7 @@
         "Entry"
         {
         "MsmKey" = "8:_91970C02154C2A843938F7A3B9A665F0"
-        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -946,13 +946,13 @@
         "Entry"
         {
         "MsmKey" = "8:_9BA494CB51070696CDE0D1DA0CFBB8F8"
-        "OwnerKey" = "8:_BA384522DFF372761B781547ECBFD8E7"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_9BA494CB51070696CDE0D1DA0CFBB8F8"
-        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "OwnerKey" = "8:_BA384522DFF372761B781547ECBFD8E7"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1414,25 +1414,7 @@
         "Entry"
         {
         "MsmKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
-        "OwnerKey" = "8:_91970C02154C2A843938F7A3B9A665F0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
-        "OwnerKey" = "8:_9BA494CB51070696CDE0D1DA0CFBB8F8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
-        "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
-        "OwnerKey" = "8:_DBBEABF275F7E5CCD1A07E9EF91324EF"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1444,7 +1426,25 @@
         "Entry"
         {
         "MsmKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
-        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "OwnerKey" = "8:_DBBEABF275F7E5CCD1A07E9EF91324EF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
+        "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
+        "OwnerKey" = "8:_9BA494CB51070696CDE0D1DA0CFBB8F8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CBF813F68343AC5A51A9164FC7E06C8D"
+        "OwnerKey" = "8:_91970C02154C2A843938F7A3B9A665F0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1726,7 +1726,7 @@
         "Entry"
         {
         "MsmKey" = "8:_E9AAA3B64DEEE6EAF8FFE2B55586295E"
-        "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
+        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1738,7 +1738,7 @@
         "Entry"
         {
         "MsmKey" = "8:_E9AAA3B64DEEE6EAF8FFE2B55586295E"
-        "OwnerKey" = "8:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
+        "OwnerKey" = "8:_3B46411D370BAF1233EC250C7EB7B67C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2510,7 +2510,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SharpVectors.Css, Version=0.3.1.30290, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SharpVectors.Css, Version=0.3.1.26267, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -3166,7 +3166,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SharpVectors.Core, Version=0.3.1.30289, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SharpVectors.Core, Version=0.3.1.26267, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -3447,7 +3447,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Tobi_NET3.resources, Version=2.6.1.2, Culture=es, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Tobi_NET3.resources, Version=2.6.2.0, Culture=es, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -4389,7 +4389,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Tobi_NET3.resources, Version=2.6.1.2, Culture=fr, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Tobi_NET3.resources, Version=2.6.2.0, Culture=fr, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -4593,7 +4593,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SharpVectors.Dom, Version=0.3.1.30289, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SharpVectors.Dom, Version=0.3.1.26267, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -6091,7 +6091,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:SharpVectors.Model, Version=0.3.1.30290, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:SharpVectors.Model, Version=0.3.1.26268, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -6350,15 +6350,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Tobi (NET3)"
-        "ProductCode" = "8:{59B470DA-1804-4D0B-9C6E-44AF274EA51B}"
-        "PackageCode" = "8:{59EF6B36-942F-44EE-9C9E-30B66C162068}"
+        "ProductCode" = "8:{7CF79063-BF14-4BC1-BFAC-1514EA0D0862}"
+        "PackageCode" = "8:{B2D22BB4-322F-4A5E-99B4-6E3AB8037139}"
         "UpgradeCode" = "8:{2F5EA56E-A940-4B5D-9362-2309A907FA11}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:02.06.0200"
+        "ProductVersion" = "8:02.06.0300"
         "Manufacturer" = "8:DAISY Consortium"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://daisy.org/tobi"
@@ -6473,7 +6473,7 @@
         {
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2699327728A24D7DA4BFFDFB49F801F3"
             {
-            "Name" = "8:Tobi 2.6.2.0 (NET3) [offline installed]"
+            "Name" = "8:Tobi 2.6.3.0 (NET3) [offline installed]"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -6501,7 +6501,7 @@
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_CBE561907C1C4D1A8F4FB21D8C589275"
             {
-            "Name" = "8:Tobi 2.6.2.0 (NET3) [offline installed]"
+            "Name" = "8:Tobi 2.6.3.0 (NET3) [offline installed]"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -6832,7 +6832,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_04DBF6A8AA0D4FE59145C52C1F76E2A9"
             {
-            "SourcePath" = "8:..\\obj\\Release\\Tobi_NET3.exe"
+            "SourcePath" = "8:..\\obj\\Debug\\Tobi_NET3.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_604749D0A56B40C1875B60180ED327F2"
