@@ -20,6 +20,9 @@
     <Setting Name="AudioExportFileNameSectionHeading" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="UseTitleInFileNames" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="AudioExportFileNameSectionHeadingMaxLength" Type="System.Double" Scope="User">
       <Value Profile="(Default)">15</Value>
     </Setting>
