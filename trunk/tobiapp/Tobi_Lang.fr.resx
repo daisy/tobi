@@ -235,12 +235,15 @@
     <value>_Documentation hors ligne</value>
   </data>
 <data name="UserId_title" xml:space="preserve">
-    <value>Informations utilisateur</value>
+    <value>Informations utilisateur, statistiques d'utilisation</value>
   </data>
   <data name="UserId_message" xml:space="preserve">
     <value>Veuillez renseigner un courriel/nom et un intitulé, de type : [nom@domaine.fr (donneur de voix bénévole)]</value>
   </data>
   <data name="UserId_details" xml:space="preserve">
-    <value>Par défaut, les statistiques liées à l'utilisation de Tobi sont anonymisées. En ajoutant un simple identifiant, vous aiderez l'équipe de développement de Tobi grâce à l'ensemble de vos remontées. Pour en savoir plus, rendez-vous sur http://www.daisy.org/tobi/privacy</value>
+    <value>Par défaut, les statistiques liées à l'utilisation de Tobi sont anonymisées (addresse IP, date/heure, version de Windows). En ajoutant un simple identifiant, vous aiderez l'équipe de développement de Tobi grâce à l'ensemble de vos remontées. Pour en savoir plus, rendez-vous sur http://www.daisy.org/tobi/privacy</value>
+  </data>
+  <data name="UserId_consent" xml:space="preserve">
+    <value>Autoriser l'enregistrement des statistiques d'utilisation</value>
   </data>
 </root>

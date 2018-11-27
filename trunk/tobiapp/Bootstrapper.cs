@@ -74,7 +74,7 @@ namespace Tobi
     /// </summary>
     public class Bootstrapper : UnityBootstrapper
     {
-        private string askUserId(IShellView shellView, string title, string message, string info)
+        private string askUserId(IShellView shellView, string title, string message, string info, string consent, string settingValue)
         {
             m_Logger.Log("Bootstrapper.askUserId", Category.Debug, Priority.Medium);
 
@@ -124,9 +124,9 @@ namespace Tobi
             {
                 FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
                 IsThreeState = false,
-                IsChecked = Settings.Default.UserId_DoNotAskAgain,
+                IsChecked = Tobi.Settings.Default.EnableAnonymousUsageReport,
                 VerticalAlignment = VerticalAlignment.Center,
-                Content = Tobi_Common_Lang.DoNotShowMessageAgain,
+                Content = consent,
                 Margin = new Thickness(0, 16, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
             };
@@ -146,13 +146,13 @@ namespace Tobi
             var windowPopup = new PopupModalWindow(shellView, // m_ShellView
                                                    title,
                                                    panel,
-                                                   PopupModalWindow.DialogButtonsSet.OkCancel, // PopupModalWindow.DialogButtonsSet.YesNo
+                                                   PopupModalWindow.DialogButtonsSet.Ok, // PopupModalWindow.DialogButtonsSet.YesNo // OkCancel
                                                    PopupModalWindow.DialogButton.Ok, //PopupModalWindow.DialogButton.Yes
-                                                   true, 425, 190, details, 70, null);
+                                                   true, 625, 190, details, 70, null);
 
             windowPopup.ShowModal();
 
-            Settings.Default.UserId_DoNotAskAgain = checkBox.IsChecked.Value;
+            Tobi.Settings.Default.EnableAnonymousUsageReport = checkBox.IsChecked.Value;
 
             if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
             {
@@ -164,29 +164,39 @@ namespace Tobi
 
         public void usageReport(IShellView shellView)
         {
-            string defaultSettingValue = (string)Settings.Default.Properties["UserId"].DefaultValue;
-            string settingValue = Tobi.Settings.Default.UserId;
-            if (!String.IsNullOrEmpty(settingValue))
-            {
-                settingValue = settingValue.Trim();
-            }
+            string uid = "";
 
-            if (String.IsNullOrEmpty(settingValue) || settingValue.Equals(defaultSettingValue))
+            if (!Tobi.Settings.Default.EnableAnonymousUsageReport_UserConfirm)
             {
-                String userid = Settings.Default.UserId_DoNotAskAgain ? "" : askUserId(shellView, Tobi_Lang.UserId_title, Tobi_Lang.UserId_message, Tobi_Lang.UserId_details);
-                if (!String.IsNullOrEmpty(userid))
+                Tobi.Settings.Default.EnableAnonymousUsageReport = false; // reset
+                Tobi.Settings.Default.EnableAnonymousUsageReport_UserConfirm = true;
+
+                string defaultSettingValue = (string)Settings.Default.Properties["UserId"].DefaultValue;
+                string settingValue = Tobi.Settings.Default.UserId;
+                if (!String.IsNullOrEmpty(settingValue))
                 {
-                    userid = userid.Trim();
+                    settingValue = settingValue.Trim();
                 }
-                if (String.IsNullOrEmpty(userid))
+
+                // NEED USER CONFIRM (explicit consent, opt-in)
+                if (true) // String.IsNullOrEmpty(settingValue) || settingValue.Equals(defaultSettingValue))
                 {
-                    Tobi.Settings.Default.UserId = defaultSettingValue;
-                    settingValue = "";
-                }
-                else
-                {
-                    Tobi.Settings.Default.UserId = userid;
-                    settingValue = userid;
+                    // Settings.Default.UserId_DoNotAskAgain ? "" :
+                    String userid = askUserId(shellView, Tobi_Lang.UserId_title, Tobi_Lang.UserId_message, Tobi_Lang.UserId_details, Tobi_Lang.UserId_consent, settingValue);
+                    if (!String.IsNullOrEmpty(userid))
+                    {
+                        userid = userid.Trim();
+                    }
+                    if (String.IsNullOrEmpty(userid))
+                    {
+                        Tobi.Settings.Default.UserId = defaultSettingValue;
+                        uid = "";
+                    }
+                    else
+                    {
+                        Tobi.Settings.Default.UserId = userid;
+                        uid = userid;
+                    }
                 }
             }
 
@@ -201,7 +211,7 @@ namespace Tobi
             url += "&datetimeutc=" + Uri.EscapeDataString(DateTime.UtcNow.ToString("yyyy-MM-dd_HH:mm:ss_K", CultureInfo.InvariantCulture));
             url += "&os=" + Uri.EscapeDataString(ApplicationConstants.OS_INFORMATION);
             url += "&lang=" + Thread.CurrentThread.CurrentUICulture;
-            url += "&userid=" + Uri.EscapeDataString(settingValue);
+            url += "&userid=" + Uri.EscapeDataString(uid);
 
             // THIS BREAKS PRIVACY, so we don't 
             //string ipAddress = "";
@@ -226,7 +236,7 @@ namespace Tobi
             //    url += "&localip=" + Uri.EscapeDataString(ipAddress);
             //}
 
-            if (Settings.Default.EnableAnonymousUsageReport)
+            if (Settings.Default.EnableAnonymousUsageReport && Settings.Default.EnableAnonymousUsageReport_UserConfirm)
             {
                 var webClient = new WebClientWithTimeout { UseDefaultCredentials = true, Timeout = 5 * 1000 }; // 5 seconds
                 StreamReader streamReader = null;
