@@ -100,7 +100,7 @@ namespace Tobi
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
-                Text = ""
+                Text = String.IsNullOrEmpty(settingValue) ? "" : settingValue
             };
 
             //var iconProvider = new ScalableGreyableImageProvider(
