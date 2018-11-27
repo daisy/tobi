@@ -19,7 +19,7 @@ namespace Tobi {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Tobi_Lang {
@@ -394,7 +394,16 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to By default, Tobi usage statistics are anonymous. By adding a simple identifier, you are helping the Tobi development team process software feedback. Read more about privacy at http://www.daisy.org/tobi/privacy.
+        ///   Looks up a localized string similar to Authorize the recording of usage statistics.
+        /// </summary>
+        public static string UserId_consent {
+            get {
+                return ResourceManager.GetString("UserId_consent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By default, Tobi usage statistics are anonymous (IP address, date/time, Windows version). By adding a simple identifier, you are helping the Tobi development team process software feedback. Read more about privacy at http://www.daisy.org/tobi/privacy.
         /// </summary>
         public static string UserId_details {
             get {
@@ -412,7 +421,7 @@ namespace Tobi {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User information.
+        ///   Looks up a localized string similar to User information, usage statistics.
         /// </summary>
         public static string UserId_title {
             get {

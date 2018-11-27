@@ -235,12 +235,15 @@
     <value>_Local documentation</value>
   </data>
   <data name="UserId_title" xml:space="preserve">
-    <value>User information</value>
+    <value>User information, usage statistics</value>
   </data>
   <data name="UserId_message" xml:space="preserve">
     <value>Please enter an email/name and role, for example: [name@domain.org (volunteer narrator)]</value>
   </data>
   <data name="UserId_details" xml:space="preserve">
-    <value>By default, Tobi usage statistics are anonymous. By adding a simple identifier, you are helping the Tobi development team process software feedback. Read more about privacy at http://www.daisy.org/tobi/privacy</value>
+    <value>By default, Tobi usage statistics are anonymous (IP address, date/time, Windows version). By adding a simple identifier, you are helping the Tobi development team process software feedback. Read more about privacy at http://www.daisy.org/tobi/privacy</value>
+  </data>
+  <data name="UserId_consent" xml:space="preserve">
+    <value>Authorize the recording of usage statistics</value>
   </data>
 </root>
