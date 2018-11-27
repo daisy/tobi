@@ -131,7 +131,9 @@ namespace Tobi
                         exit();
                     }
                 },
-                () => { return Application.Current.Windows.Count == 1 && !m_UrakawaSession.isAudioRecording; },
+                () => {
+                    return Application.Current.Windows.Count == (Debugger.IsAttached ? 2 : 1) && !m_UrakawaSession.isAudioRecording;
+                },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_AppExit));
 
