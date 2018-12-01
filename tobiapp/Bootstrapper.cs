@@ -176,6 +176,9 @@ namespace Tobi
                 if (!String.IsNullOrEmpty(settingValue))
                 {
                     settingValue = settingValue.Trim();
+                    if (settingValue.Equals(defaultSettingValue, StringComparison.OrdinalIgnoreCase)) {
+                        settingValue = ""; // can be null also
+                    }
                 }
 
                 // NEED USER CONFIRM (explicit consent, opt-in)
@@ -196,6 +199,10 @@ namespace Tobi
                     {
                         Tobi.Settings.Default.UserId = userid;
                         uid = userid;
+                        if (userid.Equals(defaultSettingValue, StringComparison.OrdinalIgnoreCase))
+                        {
+                            uid = "";
+                        }
                     }
                 }
             }
