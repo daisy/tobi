@@ -308,7 +308,18 @@ namespace Tobi.Plugin.Urakawa
                 HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Center,
             };
-
+            checkAuto.Checked += new RoutedEventHandler((sender, ev) =>
+            {
+                combo.IsEnabled = false;
+                checkBox.IsEnabled = false;
+                label_.IsEnabled = false;
+            });
+            checkAuto.Unchecked += new RoutedEventHandler((sender, ev) =>
+            {
+                combo.IsEnabled = true;
+                checkBox.IsEnabled = true;
+                label_.IsEnabled = true;
+            });
             var panel_ = new StackPanel
             {
                 Orientation = System.Windows.Controls.Orientation.Horizontal,
@@ -325,9 +336,9 @@ namespace Tobi.Plugin.Urakawa
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
             };
+            panel.Children.Add(panel_);
             panel.Children.Add(combo);
             panel.Children.Add(panel__);
-            panel.Children.Add(panel_);
 
 
             //var line = new Separator()
