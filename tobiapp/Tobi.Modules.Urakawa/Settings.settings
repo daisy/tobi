@@ -17,7 +17,7 @@
     <Setting Name="Pipeline2Url" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://localhost:8181</Value>
     </Setting>
-    <Setting Name="AudioExportFileCreateLevelNames" Type="System.String" Scope="User">
+    <Setting Name="AudioExportFileSplitLevelNames" Type="System.String" Scope="User">
       <Value Profile="(Default)"> </Value>
     </Setting>
     <Setting Name="AudioExportFileNameSectionHeading" Type="System.Boolean" Scope="User">

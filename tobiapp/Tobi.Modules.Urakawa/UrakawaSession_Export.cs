@@ -676,10 +676,69 @@ namespace Tobi.Plugin.Urakawa
                     };
                     panelAudioExportFileName.Children.Add(labelAudioExportFileName);
                     panelAudioExportFileName.Children.Add(checkBoxAudioExportFileName);
-                    
 
 
-                    
+
+
+                    var labelAudioExportLevels = new TextBlock
+                    {
+                        Text = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements,
+                        Margin = new Thickness(0, 16, 8, 0),
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Focusable = true,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+
+                    var comboAudioExportLevels = new ComboBox
+                    {
+                        Margin = new Thickness(0, 0, 0, 12)
+                    };
+
+                    string trimmedAudioExportFileCreateLevelNames = String.IsNullOrEmpty(Settings.Default.AudioExportFileSplitLevelNames) ? "" : Settings.Default.AudioExportFileSplitLevelNames.Trim();
+
+                    ComboBoxItem comboAudioExportLevels_Item1 = new ComboBoxItem();
+                    comboAudioExportLevels_Item1.Content = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements_Default +
+                        " (level*, section)";
+                    comboAudioExportLevels.Items.Add(comboAudioExportLevels_Item1);
+
+                    ComboBoxItem comboAudioExportLevels_Item2 = new ComboBoxItem();
+                    comboAudioExportLevels_Item2.Content = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements_Current +
+                        " (" + (String.IsNullOrEmpty(trimmedAudioExportFileCreateLevelNames) ? Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements_Undefined : trimmedAudioExportFileCreateLevelNames) + ")";
+                    comboAudioExportLevels.Items.Add(comboAudioExportLevels_Item2);
+
+                    ComboBoxItem comboAudioExportLevels_Item3 = new ComboBoxItem();
+                    comboAudioExportLevels_Item3.Content = "level1";
+                    comboAudioExportLevels.Items.Add(comboAudioExportLevels_Item3);
+
+                    ComboBoxItem comboAudioExportLevels_Item4 = new ComboBoxItem();
+                    comboAudioExportLevels_Item4.Content = "level2";
+                    comboAudioExportLevels.Items.Add(comboAudioExportLevels_Item4);
+
+                    ComboBoxItem comboAudioExportLevels_Item5 = new ComboBoxItem();
+                    comboAudioExportLevels_Item5.Content = "level3";
+                    comboAudioExportLevels.Items.Add(comboAudioExportLevels_Item5);
+
+                    if (!String.IsNullOrEmpty(trimmedAudioExportFileCreateLevelNames))
+                    {
+                        comboAudioExportLevels.SelectedItem = comboAudioExportLevels_Item2;
+                        comboAudioExportLevels.Text = comboAudioExportLevels_Item2.Content.ToString();
+                    }
+                    else
+                    {
+                        comboAudioExportLevels.SelectedItem = comboAudioExportLevels_Item1;
+                        comboAudioExportLevels.Text = comboAudioExportLevels_Item1.Content.ToString();
+                    }
+                
+                    //var panelAudioExportLevels = new StackPanel
+                    //{
+                    //    Orientation = System.Windows.Controls.Orientation.Horizontal,
+                    //    HorizontalAlignment = System.Windows.HorizontalAlignment.Right,
+                    //    VerticalAlignment = VerticalAlignment.Center,
+                    //};
+                    //panelAudioExportLevels.Children.Add(labelAudioExportLevels);
+                    //panelAudioExportLevels.Children.Add(comboAudioExportLevels);
+
 
 
 
@@ -719,6 +778,10 @@ namespace Tobi.Plugin.Urakawa
                     {
                         rootPanel.Children.Add(panelGenSmilNote);
                         rootPanel.Children.Add(panelAudioExportFileName);
+
+                        //panelAudioExportLevels
+                        rootPanel.Children.Add(labelAudioExportLevels);
+                        rootPanel.Children.Add(comboAudioExportLevels);
                     }
 
 
@@ -727,7 +790,7 @@ namespace Tobi.Plugin.Urakawa
                                                            rootPanel,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           false, 300, isEPUB ? 300 : 290, null, 40, null);
+                                                           false, 300, isEPUB ? 300 : 320, null, 40, null);
 
                     windowPopup_.EnableEnterKeyDefault = true;
 
@@ -810,6 +873,22 @@ namespace Tobi.Plugin.Urakawa
 
                     Settings.Default.AudioExportFileNameSectionHeading =
                         checkBoxAudioExportFileName.IsChecked.Value;
+
+
+                    if (comboAudioExportLevels.SelectedItem == comboAudioExportLevels_Item1) // DEFAULT
+                    {
+                        Settings.Default.AudioExportFileSplitLevelNames = "";
+                    }
+                    else if (comboAudioExportLevels.SelectedItem == comboAudioExportLevels_Item2) // CURRENT
+                    {
+                        // unchanged
+                        // Settings.Default.AudioExportFileCreateLevelNames = comboAudioExportLevels_Item2.Content.ToString();
+                    }
+                    else if (comboAudioExportLevels.SelectedItem != null)
+                    {
+                        Settings.Default.AudioExportFileSplitLevelNames = ((ComboBoxItem)comboAudioExportLevels.SelectedItem).Content.ToString();
+                    }
+
 
                     string rootFolder = Path.GetDirectoryName(DocumentFilePath);
 
@@ -945,7 +1024,7 @@ namespace Tobi.Plugin.Urakawa
             {
                 DebugFix.Assert(string.IsNullOrEmpty(exportSpineItemProjectPath));
 
-                string audioExportDTBOOKElementNameTriggers = Settings.Default.AudioExportFileCreateLevelNames;
+                string audioExportDTBOOKElementNameTriggers = Settings.Default.AudioExportFileSplitLevelNames;
 
                 converter = new Daisy3_Export(pres,
                     //useTitleInFileName,

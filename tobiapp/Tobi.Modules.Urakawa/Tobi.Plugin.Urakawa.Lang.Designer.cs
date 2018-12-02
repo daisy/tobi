@@ -19,7 +19,7 @@ namespace Tobi.Plugin.Urakawa {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Tobi_Plugin_Urakawa_Lang {
@@ -498,6 +498,42 @@ namespace Tobi.Plugin.Urakawa {
         public static string ExportAddAudioFileNameHeadings {
             get {
                 return ResourceManager.GetString("ExportAddAudioFileNameHeadings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split audio files (DTBook elements): .
+        /// </summary>
+        public static string ExportAudioSplitXMLElements {
+            get {
+                return ResourceManager.GetString("ExportAudioSplitXMLElements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current setting.
+        /// </summary>
+        public static string ExportAudioSplitXMLElements_Current {
+            get {
+                return ResourceManager.GetString("ExportAudioSplitXMLElements_Current", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        public static string ExportAudioSplitXMLElements_Default {
+            get {
+                return ResourceManager.GetString("ExportAudioSplitXMLElements_Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to not set.
+        /// </summary>
+        public static string ExportAudioSplitXMLElements_Undefined {
+            get {
+                return ResourceManager.GetString("ExportAudioSplitXMLElements_Undefined", resourceCulture);
             }
         }
         

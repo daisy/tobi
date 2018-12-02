@@ -196,7 +196,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Tobi.Plugin.Urakawa.Lang.fr.resx" />
+    <EmbeddedResource Include="Tobi.Plugin.Urakawa.Lang.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Tobi.Plugin.Urakawa.Lang.es.resx" />
     <EmbeddedResource Include="Tobi.Plugin.Urakawa.Lang.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
