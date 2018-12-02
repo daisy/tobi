@@ -333,6 +333,18 @@ Do you want to continue ?</value>
   <data name="ExportAddAudioFileNameHeadings" xml:space="preserve">
     <value>Add headings to audio filenames: </value>
   </data>
+  <data name="ExportAudioSplitXMLElements" xml:space="preserve">
+    <value>Split audio files (DTBook elements): </value>
+  </data>
+  <data name="ExportAudioSplitXMLElements_Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="ExportAudioSplitXMLElements_Current" xml:space="preserve">
+    <value>Current setting</value>
+  </data>
+  <data name="ExportAudioSplitXMLElements_Undefined" xml:space="preserve">
+    <value>not set</value>
+  </data>
   <data name="ExportGenerateSmilNotes" xml:space="preserve">
     <value>Generate SMIL note references: </value>
   </data>

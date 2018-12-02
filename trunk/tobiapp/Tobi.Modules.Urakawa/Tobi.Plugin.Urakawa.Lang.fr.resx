@@ -324,6 +324,18 @@ Voulez-vous continuer ?</value>
   <data name="ExportAddAudioFileNameHeadings" xml:space="preserve">
     <value>Ajouter les titres au noms de fichiers audio : </value>
   </data>
+  <data name="ExportAudioSplitXMLElements" xml:space="preserve">
+    <value>Fragmentation des fichiers audio (élements DTBook): </value>
+  </data>
+  <data name="ExportAudioSplitXMLElements_Default" xml:space="preserve">
+    <value>Défaut</value>
+  </data>
+  <data name="ExportAudioSplitXMLElements_Current" xml:space="preserve">
+    <value>Configuration existante</value>
+  </data>
+  <data name="ExportAudioSplitXMLElements_Undefined" xml:space="preserve">
+    <value>non configuré</value>
+  </data>
   <data name="ExportGenerateSmilNotes" xml:space="preserve">
     <value>Produire SMIL pour les références de note: </value>
   </data>
