@@ -338,6 +338,8 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                   IsChecked="{Binding Value, Mode=TwoWay}"
                   IsThreeState="False"
                   Margin="2"
+                  
+                   FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                    >
           <!--False-->
 
@@ -631,12 +633,14 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                   Unchecked="OnUnCheckAll"
                   IsThreeState="False"
                   Margin="2"
-                   
+                    FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
                         ToolTip="{x:Static Common:Tobi_Common_Lang.CheckUnCheckAll}">
 
                 <CheckBox.Style>
                   <Style TargetType="{x:Type CheckBox}">
                     <Style.Setters>
+                      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+                      
                       <Setter Property="AutomationProperties.Name" Value="{x:Static Common:Tobi_Common_Lang.CheckUnCheckAll}"/>
                     </Style.Setters>
                   </Style>
@@ -650,8 +654,37 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                   IsChecked="{Binding IsChecked, Mode=TwoWay}"
                   IsThreeState="False"
                   Margin="2"
-                        FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
-                   />
+                         FocusVisualStyle="{StaticResource MyFocusVisualStyle}"
+                        >
+                <CheckBox.Style>
+                  <Style TargetType="{x:Type CheckBox}">
+                    <Style.Setters>
+                      <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+                    </Style.Setters>
+
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Value}" Value="True">
+                        <DataTrigger.Setters>
+                          <Setter Property="FocusVisualStyle" Value="{StaticResource MyFocusVisualStyle}"/>
+                        </DataTrigger.Setters>
+                        <DataTrigger.EnterActions>
+                          <BeginStoryboard>
+                            <Storyboard>
+                              <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.0010000"
+                                                           Storyboard.TargetProperty="Content">
+
+                                <DiscreteObjectKeyFrame KeyTime="00:00:00"
+                                                        Value=""/>
+                                <!--True-->
+                              </ObjectAnimationUsingKeyFrames>
+                            </Storyboard>
+                          </BeginStoryboard>
+                        </DataTrigger.EnterActions>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </CheckBox.Style>
+              </CheckBox>
             </DataTemplate>
 
           </GridViewColumn.CellTemplate>
@@ -763,7 +796,7 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 <Border x:Name="Border"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="0"
+                            BorderThickness="1.5"
                         SnapsToDevicePixels="true"
                          Margin="0"
                         Padding="0">
@@ -775,16 +808,17 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
                 </Border>
 
                 <ControlTemplate.Triggers>
-                  <Trigger Property="IsSelected"  Value="true">
+                  <!--<Trigger Property="IsSelected"  Value="true">
                     <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                  </Trigger>
+                  </Trigger>-->
                   <MultiTrigger>
                     <MultiTrigger.Conditions>
                       <Condition Property="IsSelected" Value="true" />
                       <Condition Property="Selector.IsSelectionActive" Value="True" />
                     </MultiTrigger.Conditions>
                     <!--<Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />-->
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                    <!--<Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>-->
+                    <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
                   </MultiTrigger>
                 </ControlTemplate.Triggers>
               </ControlTemplate>
@@ -802,13 +836,24 @@ search:SearchOperations.SearchTerm="{Binding ElementName=SearchBox, Path=Text, M
         </Style.Setters>
 
         <Style.Triggers>
-          <MultiTrigger>
+          <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+          </Trigger>
+          <!--<MultiTrigger>
             <MultiTrigger.Conditions>
               <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
               <Condition Property="IsSelected" Value="False"/>
             </MultiTrigger.Conditions>
             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
           </MultiTrigger>
+          <MultiTrigger>
+            <MultiTrigger.Conditions>
+              <Condition Property="ItemsControl.AlternationIndex" Value="0"/>
+              <Condition Property="IsSelected" Value="True"/>
+              <Condition Property="Selector.IsSelectionActive" Value="False" />
+            </MultiTrigger.Conditions>
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"/>
+          </MultiTrigger>-->
           <!-- REMOVED to avoid interference with IsChanged / Message style activation
           Trigger Property="IsSelected" Value="True">
             <Setter Property="FontWeight" Value="Bold" />
