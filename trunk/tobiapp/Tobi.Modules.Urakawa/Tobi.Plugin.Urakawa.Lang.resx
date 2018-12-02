@@ -339,6 +339,9 @@ Do you want to continue ?</value>
   <data name="ExportAudioSplitXMLElements_Default" xml:space="preserve">
     <value>Default</value>
   </data>
+  <data name="ExportAudioSplitXMLElements_Custom" xml:space="preserve">
+    <value>Customize...</value>
+  </data>
   <data name="ExportAudioSplitXMLElements_Current" xml:space="preserve">
     <value>Current setting</value>
   </data>

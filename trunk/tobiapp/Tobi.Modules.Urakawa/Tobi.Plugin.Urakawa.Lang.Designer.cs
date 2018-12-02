@@ -520,6 +520,15 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Customize....
+        /// </summary>
+        public static string ExportAudioSplitXMLElements_Custom {
+            get {
+                return ResourceManager.GetString("ExportAudioSplitXMLElements_Custom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default.
         /// </summary>
         public static string ExportAudioSplitXMLElements_Default {

@@ -679,6 +679,13 @@ namespace Tobi.Plugin.Urakawa
 
 
 
+                    var buttonAudioExportLevels = new System.Windows.Controls.Button
+                    {
+                        Content = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements_Custom,
+                        Margin = new Thickness(0, 4, 0, 0),
+                        HorizontalAlignment = System.Windows.HorizontalAlignment.Right
+                    };
+                    //buttonAudioExportLevels.FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"];
 
                     var labelAudioExportLevels = new TextBlock
                     {
@@ -692,7 +699,7 @@ namespace Tobi.Plugin.Urakawa
 
                     var comboAudioExportLevels = new ComboBox
                     {
-                        Margin = new Thickness(0, 0, 0, 12)
+                        Margin = new Thickness(0, 0, 0, 0)
                     };
 
                     string trimmedAudioExportFileCreateLevelNames = String.IsNullOrEmpty(Settings.Default.AudioExportFileSplitLevelNames) ? "" : Settings.Default.AudioExportFileSplitLevelNames.Trim();
@@ -712,11 +719,11 @@ namespace Tobi.Plugin.Urakawa
                     comboAudioExportLevels.Items.Add(comboAudioExportLevels_Item3);
 
                     ComboBoxItem comboAudioExportLevels_Item4 = new ComboBoxItem();
-                    comboAudioExportLevels_Item4.Content = "level2";
+                    comboAudioExportLevels_Item4.Content = "level1, level2";
                     comboAudioExportLevels.Items.Add(comboAudioExportLevels_Item4);
 
                     ComboBoxItem comboAudioExportLevels_Item5 = new ComboBoxItem();
-                    comboAudioExportLevels_Item5.Content = "level3";
+                    comboAudioExportLevels_Item5.Content = "level1, level2, level3";
                     comboAudioExportLevels.Items.Add(comboAudioExportLevels_Item5);
 
                     if (!String.IsNullOrEmpty(trimmedAudioExportFileCreateLevelNames))
@@ -729,7 +736,7 @@ namespace Tobi.Plugin.Urakawa
                         comboAudioExportLevels.SelectedItem = comboAudioExportLevels_Item1;
                         comboAudioExportLevels.Text = comboAudioExportLevels_Item1.Content.ToString();
                     }
-                
+
                     //var panelAudioExportLevels = new StackPanel
                     //{
                     //    Orientation = System.Windows.Controls.Orientation.Horizontal,
@@ -738,6 +745,82 @@ namespace Tobi.Plugin.Urakawa
                     //};
                     //panelAudioExportLevels.Children.Add(labelAudioExportLevels);
                     //panelAudioExportLevels.Children.Add(comboAudioExportLevels);
+
+                    buttonAudioExportLevels.Click += (s, e) =>
+                    {
+                        var label = new TextBlock // TextBoxReadOnlyCaretVisible
+                        {
+                            //FocusVisualStyle = (Style)Application.Current.Resources["MyFocusVisualStyle"],
+
+                            //BorderThickness = new Thickness(1),
+                            //Padding = new Thickness(6),
+
+                            //TextReadOnly = message,
+                            Text = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements,
+                            FontWeight = FontWeights.Bold,
+
+                            Margin = new Thickness(0, 0, 8, 0),
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Focusable = true,
+                            TextWrapping = TextWrapping.Wrap
+                        };
+
+                        var input = new System.Windows.Controls.TextBox()
+                        {
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Text = Settings.Default.AudioExportFileSplitLevelNames
+                        };
+
+                        //var iconProvider = new ScalableGreyableImageProvider(
+                        //    m_ShellView.LoadTangoIcon("help-browser"),
+                        //    m_ShellView.MagnificationLevel);
+
+                        var panel = new StackPanel
+                        {
+                            Orientation = System.Windows.Controls.Orientation.Vertical,
+                            HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+                            VerticalAlignment = VerticalAlignment.Stretch,
+                        };
+                        //panel.Margin = new Thickness(8, 8, 8, 0);
+
+                        //panel.Children.Add(iconProvider.IconLarge);
+                        panel.Children.Add(label);
+                        panel.Children.Add(input);
+
+                        var windowPopup = new PopupModalWindow(m_ShellView,
+                                                               UserInterfaceStrings.EscapeMnemonic(Tobi_Plugin_Urakawa_Lang.ExportSettings),
+                                                               panel,
+                                                               PopupModalWindow.DialogButtonsSet.OkCancel, // PopupModalWindow.DialogButtonsSet.YesNo // OkCancel
+                                                               PopupModalWindow.DialogButton.Ok, //PopupModalWindow.DialogButton.Yes
+                                                               true, 400, 140, null, 70, null);
+
+                        windowPopup.EnableEnterKeyDefault = true;
+                        windowPopup.ShowModal();
+                        
+                        if (PopupModalWindow.IsButtonOkYesApply(windowPopup.ClickedDialogButton))
+                        {
+                            string trimmedCustom = input.Text.Trim();
+                            if (!String.IsNullOrEmpty(trimmedCustom))
+                            {
+                                Settings.Default.AudioExportFileSplitLevelNames = trimmedCustom;
+                                comboAudioExportLevels_Item2.Content = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements_Current + " (" + trimmedCustom + ")";
+
+                                comboAudioExportLevels.SelectedItem = comboAudioExportLevels_Item2;
+                                comboAudioExportLevels.Text = comboAudioExportLevels_Item2.Content.ToString();
+                            }
+                            else
+                            {
+                                Settings.Default.AudioExportFileSplitLevelNames = "";
+                                comboAudioExportLevels_Item2.Content = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements_Current + " (" + Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements_Undefined + ")";
+
+                                comboAudioExportLevels.SelectedItem = comboAudioExportLevels_Item1;
+                                comboAudioExportLevels.Text = comboAudioExportLevels_Item1.Content.ToString();
+                            }
+                        }
+                    };
+
 
 
 
@@ -782,6 +865,7 @@ namespace Tobi.Plugin.Urakawa
                         //panelAudioExportLevels
                         rootPanel.Children.Add(labelAudioExportLevels);
                         rootPanel.Children.Add(comboAudioExportLevels);
+                        rootPanel.Children.Add(buttonAudioExportLevels);
                     }
 
 
@@ -790,7 +874,7 @@ namespace Tobi.Plugin.Urakawa
                                                            rootPanel,
                                                            PopupModalWindow.DialogButtonsSet.OkCancel,
                                                            PopupModalWindow.DialogButton.Ok,
-                                                           false, 300, isEPUB ? 300 : 320, null, 40, null);
+                                                           false, 300, isEPUB ? 300 : 340, null, 40, null);
 
                     windowPopup_.EnableEnterKeyDefault = true;
 
