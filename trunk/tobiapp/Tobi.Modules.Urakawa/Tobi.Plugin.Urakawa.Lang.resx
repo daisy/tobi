@@ -333,11 +333,14 @@ Do you want to continue ?</value>
   <data name="ExportAddAudioFileNameHeadings" xml:space="preserve">
     <value>Add headings to audio filenames: </value>
   </data>
-  <data name="ExportAudioSplitXMLElements" xml:space="preserve">
+  <data name="ExportAudioCreateFor" xml:space="preserve">
+    <value>Create audio files for: </value>
+  </data>
+  <data name="ExportAudioSplitDTBookElements" xml:space="preserve">
     <value>Split audio files (DTBook elements): </value>
   </data>
   <data name="ExportAudioSplitXMLElements_Default" xml:space="preserve">
-    <value>Default</value>
+    <value>Default, for each:</value>
   </data>
   <data name="ExportAudioSplitXMLElements_Custom" xml:space="preserve">
     <value>Customize...</value>

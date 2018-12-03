@@ -324,11 +324,14 @@ Voulez-vous continuer ?</value>
   <data name="ExportAddAudioFileNameHeadings" xml:space="preserve">
     <value>Ajouter les titres au noms de fichiers audio : </value>
   </data>
-  <data name="ExportAudioSplitXMLElements" xml:space="preserve">
+  <data name="ExportAudioCreateFor" xml:space="preserve">
+    <value>Créer des fichiers audio pour: </value>
+  </data>
+  <data name="ExportAudioSplitDTBookElements" xml:space="preserve">
     <value>Fragmentation des fichiers audio (élements DTBook): </value>
   </data>
   <data name="ExportAudioSplitXMLElements_Default" xml:space="preserve">
-    <value>Défaut</value>
+    <value>Défaut, pour:</value>
   </data>
   <data name="ExportAudioSplitXMLElements_Custom" xml:space="preserve">
     <value>Customiser...</value>
