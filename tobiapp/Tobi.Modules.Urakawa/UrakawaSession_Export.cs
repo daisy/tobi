@@ -689,7 +689,7 @@ namespace Tobi.Plugin.Urakawa
 
                     var labelAudioExportLevels = new TextBlock
                     {
-                        Text = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements,
+                        Text = Tobi_Plugin_Urakawa_Lang.ExportAudioCreateFor,
                         Margin = new Thickness(0, 16, 8, 0),
                         HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                         VerticalAlignment = VerticalAlignment.Center,
@@ -706,7 +706,7 @@ namespace Tobi.Plugin.Urakawa
 
                     ComboBoxItem comboAudioExportLevels_Item1 = new ComboBoxItem();
                     comboAudioExportLevels_Item1.Content = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements_Default +
-                        " (level*, section)";
+                        " level*, section";
                     comboAudioExportLevels.Items.Add(comboAudioExportLevels_Item1);
 
                     ComboBoxItem comboAudioExportLevels_Item2 = new ComboBoxItem();
@@ -756,7 +756,7 @@ namespace Tobi.Plugin.Urakawa
                             //Padding = new Thickness(6),
 
                             //TextReadOnly = message,
-                            Text = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitXMLElements,
+                            Text = Tobi_Plugin_Urakawa_Lang.ExportAudioSplitDTBookElements,
                             FontWeight = FontWeights.Bold,
 
                             Margin = new Thickness(0, 0, 8, 0),

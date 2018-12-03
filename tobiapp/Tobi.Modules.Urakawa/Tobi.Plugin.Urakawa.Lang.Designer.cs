@@ -502,11 +502,20 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create audio files for: .
+        /// </summary>
+        public static string ExportAudioCreateFor {
+            get {
+                return ResourceManager.GetString("ExportAudioCreateFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Split audio files (DTBook elements): .
         /// </summary>
-        public static string ExportAudioSplitXMLElements {
+        public static string ExportAudioSplitDTBookElements {
             get {
-                return ResourceManager.GetString("ExportAudioSplitXMLElements", resourceCulture);
+                return ResourceManager.GetString("ExportAudioSplitDTBookElements", resourceCulture);
             }
         }
         
@@ -529,7 +538,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Default.
+        ///   Looks up a localized string similar to Default, for each:.
         /// </summary>
         public static string ExportAudioSplitXMLElements_Default {
             get {
