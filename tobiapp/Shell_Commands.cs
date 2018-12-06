@@ -134,7 +134,7 @@ namespace Tobi
                 () => {
                     m_Logger.Log(@"Application.Current.Windows.Count: " + Application.Current.Windows.Count + " -- " + Debugger.IsAttached, Category.Debug, Priority.Medium);
                     return Application.Current.Windows.Count ==
-#if NET4
+#if NET40
                     (Debugger.IsAttached ? 2 : 1) 
 #else
                     1
