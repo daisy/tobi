@@ -300,8 +300,12 @@ c.Execute();
             //}
             Thread.CurrentThread.CurrentUICulture = c4;
 
-            //DebugFix.Assert(Thread.CurrentThread.CurrentUICulture.Equals(Thread.CurrentThread.CurrentCulture));
+            //Thread.CurrentThread.CurrentCulture = c4;
+            //FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement),
+            //    new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 
+            //DebugFix.Assert(Thread.CurrentThread.CurrentUICulture.Equals(Thread.CurrentThread.CurrentCulture));
+            
             str = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
             str = CultureInfo.CurrentCulture.ThreeLetterWindowsLanguageName;
             str = CultureInfo.CurrentCulture.ThreeLetterISOLanguageName;
@@ -379,6 +383,7 @@ c.Execute();
                 while (enume1.MoveNext())
                 {
                     var current = (SettingsProperty)enume1.Current;
+                    Console.WriteLine("--- " + current.Name + ":");
                     Console.WriteLine(current.DefaultValue);
                     Console.WriteLine(Settings.Default[current.Name]);
                 }
