@@ -331,7 +331,7 @@ Voulez-vous continuer ?</value>
     <value>Fragmentation des fichiers audio (élements DTBook): </value>
   </data>
   <data name="ExportAudioSplitXMLElements_Default" xml:space="preserve">
-    <value>Défaut, pour:</value>
+    <value>(défaut) Pour chaque:</value>
   </data>
   <data name="ExportAudioSplitXMLElements_Custom" xml:space="preserve">
     <value>Customiser...</value>
