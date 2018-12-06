@@ -132,7 +132,14 @@ namespace Tobi
                     }
                 },
                 () => {
-                    return Application.Current.Windows.Count == (Debugger.IsAttached ? 2 : 1) && !m_UrakawaSession.isAudioRecording;
+                    m_Logger.Log(@"Application.Current.Windows.Count: " + Application.Current.Windows.Count + " -- " + Debugger.IsAttached, Category.Debug, Priority.Medium);
+                    return Application.Current.Windows.Count ==
+#if NET4
+                    (Debugger.IsAttached ? 2 : 1) 
+#else
+                    1
+#endif
+                    && !m_UrakawaSession.isAudioRecording;
                 },
                 Settings_KeyGestures.Default,
                 PropertyChangedNotifyBase.GetMemberName(() => Settings_KeyGestures.Default.Keyboard_AppExit));
