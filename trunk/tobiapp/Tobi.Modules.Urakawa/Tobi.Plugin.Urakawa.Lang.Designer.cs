@@ -538,7 +538,7 @@ namespace Tobi.Plugin.Urakawa {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Default, for each:.
+        ///   Looks up a localized string similar to (default) For each:.
         /// </summary>
         public static string ExportAudioSplitXMLElements_Default {
             get {
