@@ -283,6 +283,7 @@ c.Execute();
 
             if (str == "en") str = "en-GB";
             if (str == "fr") str = "fr-FR";
+            if (str == "hi") str = "hi-IN";
 
             var c3 = CultureInfo.GetCultureInfoByIetfLanguageTag(str);
 
@@ -294,11 +295,15 @@ c.Execute();
 
             DebugFix.Assert(c3.Equals(c5));
 
+            var c6 = CultureInfo.CreateSpecificCulture(str);
+
+            DebugFix.Assert(c3.Equals(c6));
+
             //if (!c4.IsNeutralCulture)
             //{
             //    Thread.CurrentThread.CurrentCulture = c4;
             //}
-            Thread.CurrentThread.CurrentUICulture = c4;
+            Thread.CurrentThread.CurrentUICulture = c6;
 
             //Thread.CurrentThread.CurrentCulture = c4;
             //FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement),
@@ -394,7 +399,32 @@ c.Execute();
                 HandleConfigurationErrorsException(ex);
             }
 
+            Console.WriteLine("<RESOURCE SET LANGs>");
+            var cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
+            foreach (var culture in cultures)
+            {
+                try
+                {
+                    var rs = Tobi_Lang.ResourceManager.GetResourceSet(culture, true, false);
+                    if (rs != null)
+                    {
+                        Console.WriteLine(culture.Name + " ==> " + culture.NativeName);
+                    }
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
+            }
+            Console.WriteLine("</RESOURCE SET LANGs>");
+
 #if DEBUG
+            var keys = Tobi_Lang.ResourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, true)
+                .Cast<DictionaryEntry>()
+                .Select(entry => entry.Key)
+                .Cast<string>();
+            var resources = keys.ToDictionary(key => key, key => Tobi_Lang.ResourceManager.GetString(key, CultureInfo.GetCultureInfo("fr")));
+
             var str = Tobi_Lang.LangStringKey1;
 #endif
             try
@@ -440,8 +470,8 @@ c.Execute();
 
 #if DEBUG
             str = Tobi_Lang.LangStringKey1;
-#endif
 
+#endif
             if (false && ApplicationDeployment.IsNetworkDeployed)
             {
                 string lang = Thread.CurrentThread.CurrentUICulture.ToString();
